@@ -42,9 +42,18 @@ import { getLevel, defaultLevel } from '../src/levels/index.js';
 // goto targets, milestones, bins, key actions; src/levels/meeting/gate.js documents the shape).
 export const DEFAULT_LEVEL = defaultLevel.id;
 // Milestones every level gets for the engine's own mechanics (the level's gate.milestones win on a clash):
-// attention's noises (src/sim/mechanics/attention.js). 'noise' is also a bin key. A level that never makes a
-// noise never sees either, so its results don't change.
-const ENGINE_MILESTONES = { noise: () => 'noise', 'npc:heard': (p) => `heard:${p.id}` };
+// attention's noises (src/sim/mechanics/attention.js), put-downs (putdown.js) and inspections (inspection.js).
+// 'noise' is also a bin key; the others count in a level's bins only if its gate.binKeys lists them. A level
+// that never fires one never sees it, so its results don't change.
+const ENGINE_MILESTONES = {
+  noise: () => 'noise',
+  'npc:heard': (p) => `heard:${p.id}`,
+  'item:put': (p) => `put@${p.spot}`,
+  'inspect:pass': (p) => `tick${p.index}`,
+  'inspect:fail': (p) => `cross${p.index}`,
+  'inspect:done': (p) => (p.failed === null ? 'inspected' : 'flunked'),
+  'inspect:moved': () => 'moved',
+};
 const ENGINE_BIN_KEYS = ['noise'];
 const data = {};
 export function levelData(id) {

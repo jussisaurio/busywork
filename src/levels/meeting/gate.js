@@ -9,6 +9,7 @@
 //                The order is behaviour: the fuzzer's rng picks by index.
 //   interactable the targets a plan can `interact` with (a goto there is often followed by one)
 //   milestones   event name -> (payload) => milestone name or null: what a run did (first minute of each)
+//                (on top of the engine's: tools/fuzz.mjs ENGINE_MILESTONES; a level's own win on a clash)
 //   binKeys      the milestones that define an outcome bin (the rest are only reported)
 //   keyActions   the milestones whose time span across all wins the report lists
 //   renderEvents events that tools/golden-render.mjs also renders at (and 20 frames after), besides the engine's

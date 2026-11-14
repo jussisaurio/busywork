@@ -103,7 +103,6 @@ export default {
     renderEvents: ['boss:workAssigned'],
     milestones: {
       'note:written': () => 'wrote',
-      'item:put': (p) => `put@${p.spot}`,
       'note:recovered': () => 'pocketed',
       'meeting:cancelled': () => 'cancelled',
       'boss:workAssigned': () => 'work',

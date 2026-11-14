@@ -84,11 +84,7 @@ export default {
     interactable: ['my_seat', 'dave_desk'],
     milestones: {
       'item:pickup': () => 'grabbed',
-      'item:put': (p) => `put@${p.spot}`,
       'inspect:start': () => 'audit',
-      'inspect:pass': (p) => `tick${p.index}`,
-      'inspect:fail': (p) => `cross${p.index}`,
-      'inspect:moved': () => 'moved',
       'laptop:recovered': () => 'pocketed',
       'auditor:workAssigned': () => 'work',
       caught: () => 'caught',
