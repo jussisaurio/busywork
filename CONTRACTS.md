@@ -40,7 +40,7 @@ everyone relies on**.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
+  `hunts`, `doors`, `inspections`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
   `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
@@ -69,6 +69,14 @@ everyone relies on**.
   back, with his `says`). `owner: <cast id>`: he reacts once to each item he finds there (sees it within 2 tiles):
   `found: 'take'` (default; `npc.carry`, `world[place]` = his id) or a behaviour hook's name, run as
   `arrive(game, npc, sim, { type, spot, item })`. No owner: nobody minds it.
+  `inspections` (`src/sim/mechanics/inspection.js`): `[{ npc, at, override, plan, label, look?, checks, pass?, fail? }]`. From
+  game minute `at` (once he is on the floor with no override, never after the gather; once a loop) he walks the `checks` in
+  order: `{ item, spot, from? }` (an item of that type lies on that spot; he stands at `from`, default the spot) or
+  `{ who: 'player'|castId, zone, from }`. Each is judged when he arrives at it, not before: a ✔️ or ❌ sign over the item's
+  place, the person or the zone, then he stands `look` s (default 1). All ✔️: `pass { set?, event?, says? }`. The first ❌ ends
+  it: `fail { set?, event?, says?, then? }`, `then` = `'caught'` (rules caught, reason 'inspection', by him) | `'stare'` |
+  `'hunt'` (his `level.hunts` entry) | a behaviour hook's name (`arrive(game, npc, sim, { index })`) | none. A lure can pull
+  him off it (dropped); the gather leaves him to finish.
   `failSign` (optional): `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (scenario's end beat).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
@@ -261,6 +269,10 @@ game = {
 | `item:drop` / `item:pickup` | `{type}` | interactions |
 | `item:put` | `{type, spot}` | interactions (put down on a spot that takes it) |
 | `item:found` | `{type, spot, by}` | sim (a spot's cast owner found it there) |
+| `inspect:start` | `{by}` | sim (an inspection sets off) |
+| `inspect:pass` / `inspect:fail` | `{by, index}` | sim (check `index` judged on arrival: ✔️ / ❌ sign) |
+| `inspect:done` | `{by, failed}` | sim (`failed`: the ❌ check's index, or null) |
+| `inspect:moved` | `{by, index}` | sim (an item he already ticked off left its spot mid-inspection; once per check) |
 | `player:sit` / `player:stand` | `{}` | player / interactions |
 | `busy:start` / `busy:end` | `{pose}` | player |
 | `witness:notice` | `{by}` | rules (❓, first sight of something sneaky) |

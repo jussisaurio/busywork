@@ -1,9 +1,9 @@
 // The level's NPC mechanics, in check order: level.lures, then level.hunts, then level.doors, then the spots a
-// cast member owns (putdown.js), each in level order.
-// A mechanic kind (lure.js, hunt.js, door.js, putdown.js) exports, each optional except owns/key/build:
+// cast member owns (putdown.js), then level.inspections, each in level order.
+// A mechanic kind (lure.js, hunt.js, door.js, putdown.js, inspection.js) exports, each optional except owns/key/build:
 //   entries(level)            its data list, if not level[field]
 //   owns(data, npc)           npc.override is this mechanic's (for this NPC)
-//   check(game, npc, data, now)  every step, before planning (lure: the pull; hunt: the end)
+//   check(game, npc, data, now, sim)  every step, before planning (lure: the pull; hunt: the end); sim: HOOK_API
 //   key(data, npc) / build(game, npc, plan, data)   the plan while it owns the override
 //   tick(game, npc, dt, data)  every step while it owns the override, before walking
 //   label(game, npc, data)     a debug label instead of the plan's (null: the plan's)
@@ -17,8 +17,9 @@ import * as lure from './lure.js';
 import * as hunt from './hunt.js';
 import * as door from './door.js';
 import * as putdown from './putdown.js';
+import * as inspection from './inspection.js';
 
-const KINDS = [['lures', lure], ['hunts', hunt], ['doors', door], ['spots', putdown]];
+const KINDS = [['lures', lure], ['hunts', hunt], ['doors', door], ['spots', putdown], ['inspections', inspection]];
 const cache = new WeakMap();
 
 export function mechanics(level) {

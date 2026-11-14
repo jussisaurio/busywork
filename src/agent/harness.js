@@ -510,6 +510,10 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'item:pickup': s = `you picked up the ${p.type}`; break;
       case 'item:put': s = `you put the ${p.type} down at ${p.spot}`; break;
       case 'item:found': s = `${NAME[p.by] ?? p.by} found the ${p.type} at ${p.spot}`; break;
+      case 'inspect:start': s = `${NAME[p.by] ?? p.by} starts an inspection 📋`; break;
+      case 'inspect:pass': s = `${NAME[p.by] ?? p.by} ticks off check ${p.index + 1} ✔️`; break;
+      case 'inspect:fail': s = `${NAME[p.by] ?? p.by} marks check ${p.index + 1} ❌`; break;
+      case 'inspect:done': s = `${NAME[p.by] ?? p.by} finishes the inspection ${p.failed === null ? '✔️' : '❌'}`; break;
       default:
         if (verbose) s = `${e.name} ${JSON.stringify(p)}`;
     }
