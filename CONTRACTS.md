@@ -332,7 +332,8 @@ only on level, seed, budget and batch, not on the worker count or the machine. I
 pass/fail test. It is also a module (`fuzz()`, `evaluate(plan, L)`, `report()`, `levelData(id)`). What the tools know
 about a level comes from its folder: `levelData(id)` merges the route ids (`level.routes`), the day
 (`day.meetingAt` ends every plan) and `level.gate` (`src/levels/meeting/gate.js`: `mustUse` lessons, `targets` and
-`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name),
+`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name; every
+level also gets the engine's `noise` -> 'noise' and `npc:heard` -> 'heard:<id>', and 'noise' as a bin key),
 `binKeys`, `keyActions`). Workers get the level id and build their own data; `evaluate()` builds
 `createHarness({ level: L.id })`. An unknown `--level` (on every tool below too) exits 2 with the registry's ids.
 `tools/gate.mjs [--level meeting]` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default

@@ -11,6 +11,7 @@ import { viewerOf, spotPos } from '../src/game/perception.js';
 import { makeNoise } from '../src/sim/mechanics/attention.js';
 import { createHarness } from '../src/agent/harness.js';
 import { levels } from '../src/levels/index.js';
+import { levelData } from './fuzz.mjs';
 
 const BASE = levels.meeting;
 let fails = 0;
@@ -218,6 +219,19 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   h.begin();
   while (h.game.phase === 'day') h.frame();
   ok(h.game.clock.minute >= at('4:00') && !h.log.some((e) => e.name === 'noise' || e.name === 'npc:heard'), 'a level-1 day emits no noise or npc:heard');
+}
+
+// 10. Tools: the events are fuzz milestones ('noise' a bin key) and the harness says them.
+{
+  const L = levelData('meeting');
+  ok(L.milestones.noise({}) === 'noise' && L.milestones['npc:heard']({ id: 'x' }) === 'heard:x', 'fuzz: noise and heard:<id> milestones for every level');
+  ok(L.binKeys.filter((k) => k === 'noise').length === 1 && L.binKeys.slice(0, -1).join() === BASE.gate.binKeys.join(), "fuzz: 'noise' is a bin key, after the level's own");
+  const h = createHarness({ level: 'meeting' });
+  const lines = h.describeEvents([
+    { minute: 1, name: 'noise', payload: { x: 1, y: 1, radius: 3 } },
+    { minute: 1, name: 'npc:heard', payload: { id: 'zed' } },
+  ]);
+  ok(lines.length === 2 && /noise/.test(lines[0]) && /zed looks toward the noise/.test(lines[1]), `harness: ${lines.map((l) => l.trim()).join(' / ')}`);
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

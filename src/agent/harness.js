@@ -484,6 +484,8 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'loop:start': s = null; break;
       case 'item:drop': s = `you dropped the ${p.type}`; break;
       case 'item:pickup': s = `you picked up the ${p.type}`; break;
+      case 'noise': s = 'a noise! heads turn'; break; // (sim/mechanics/attention.js)
+      case 'npc:heard': s = `${NAME[p.id] ?? p.id} looks toward the noise`; break;
       default:
         if (verbose) s = `${e.name} ${JSON.stringify(p)}`;
     }
