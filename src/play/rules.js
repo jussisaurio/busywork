@@ -11,8 +11,7 @@
 // he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
 import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
 import { say, burst, shake, sightline } from '../core/fx.js';
-import { npcSees, findNpc } from '../game/perception.js';
-import { inZone } from '../levels/meeting/map.js';
+import { npcSees, findNpc, inZone } from '../game/perception.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
@@ -40,8 +39,8 @@ function bossEnforcing(boss) {
 }
 
 // The boss hears a witness shout if he's on the floor (not away, not outside in the lobby).
-function bossHears(boss) {
-  return bossEnforcing(boss) && !inZone('outside', boss.x, boss.y);
+function bossHears(game, boss) {
+  return bossEnforcing(boss) && !inZone(game, 'outside', boss.x, boss.y);
 }
 
 // Kev's projector just broke and the player is where the culprit would be.
@@ -49,7 +48,7 @@ function atScene(game, s, npc) {
   const p = game.player;
   if (npc.id !== 'kev' || s.sceneTold) return false;
   if (npc.override !== 'alerted' && npc.override !== 'fixing') return false;
-  if (inZone('meeting_room', p.x, p.y)) return true;
+  if (inZone(game, 'meeting_room', p.x, p.y)) return true;
   return !p.busy && Math.hypot(p.x - SCENE_DOOR.x, p.y - SCENE_DOOR.y) <= SCENE_RADIUS;
 }
 
@@ -94,7 +93,7 @@ export function updateRules(game, dt) {
   // A witness who shouted at an empty office tells the boss once he's back within earshot.
   if (s.grudge) {
     const w = findNpc(game, s.grudge.by);
-    if (w && w.active && bossHears(boss)) {
+    if (w && w.active && bossHears(game, boss)) {
       s.grudge.t += dt;
       if (s.grudge.t >= TELL_DELAY) {
         tellLate(game, s, w);
@@ -200,7 +199,7 @@ function react(game, s, npc, offence) {
   // Caught in the act (or at the scene): they shout and point. The boss hears it if he's around.
   say(game, npc.id, offence === 'evidence' ? ['🥪', '❗', '👉'] : ['❗', '👉'], { kind: 'alert', ttl: 1.6 });
   const boss = findNpc(game, 'boss');
-  const heard = bossHears(boss);
+  const heard = bossHears(game, boss);
   game.events.emit('witness:tattle', { by: npc.id, reason: offence, heard });
   if (heard) assignWork(game, 'tattle');
   else if (!s.grudge) s.grudge = { by: npc.id, icon: SAW_ICON[what] ?? '❗', reason: offence, t: 0 };

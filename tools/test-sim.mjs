@@ -6,8 +6,12 @@ import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
 import { FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
-import { SPOTS, ROUTES, inZone } from '../src/levels/meeting/map.js';
-import { MEETING_GATHER_AT, NPC_DEFS } from '../src/levels/meeting/cast.js';
+import { inZone } from '../src/game/perception.js';
+import { levels } from '../src/levels/index.js';
+import { MEETING_GATHER_AT } from '../src/levels/meeting/cast.js';
+
+const LEVEL = levels.meeting; // createGame()'s default level
+const { spots: SPOTS, patrols: ROUTES } = LEVEL;
 
 const VERBOSE = process.argv.includes('-v');
 let fails = 0;
@@ -187,9 +191,9 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
     hooks: [{ at: at('3:20'), fn: (g) => { g.world.keycard = 'player'; } }],
     onStep: (g) => {
       const b = g.npcs.find((n) => n.id === 'boss');
-      if (inZone('outside', b.x, b.y)) leftOffice = true;
+      if (inZone(g, 'outside', b.x, b.y)) leftOffice = true;
       if (g.world.bossLockedOut && lockedAt == null) lockedAt = g.clock.minute;
-      if (lockedAt != null && !inZone('outside', b.x, b.y)) reentered = true;
+      if (lockedAt != null && !inZone(g, 'outside', b.x, b.y)) reentered = true;
     },
   });
   const b = npc(R, 'boss');
@@ -317,7 +321,7 @@ let projRun = null;
 // ---------------------------------------------------------------- away window too short
 { // Temporarily shorten the boss's restroom window (3:12 -> 3:15): he can't get there in time,
   // so he never vanishes and just carries on with the next entry. Restored right after.
-  const entry = NPC_DEFS.find((d) => d.id === 'boss').schedule.find((e) => e.at === at('3:22'));
+  const entry = LEVEL.cast.find((d) => d.id === 'boss').schedule.find((e) => e.at === at('3:22'));
   entry.at = at('3:15');
   let R;
   try { R = runDay({ until: at('3:30') }); } finally { entry.at = at('3:22'); }

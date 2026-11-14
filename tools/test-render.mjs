@@ -52,7 +52,6 @@ const { createGame, resetLoop } = await import('../src/state.js');
 const { say, burst, sightline } = await import('../src/core/fx.js');
 const { createRng } = await import('../src/core/rng.js');
 const { spotPos } = await import('../src/game/perception.js');
-const { NPC_DEFS } = await import('../src/levels/meeting/cast.js');
 const { VISION, at, MEETING_AT } = await import('../src/config.js');
 const { DIRS } = await import('../src/core/vision.js');
 const { LEGEND_PLAY } = await import('../src/render/hud.js');
@@ -76,8 +75,8 @@ fake.installDom();
 // --- 3. game states ---------------------------------------------------------------
 const SPOT_FOR = { boss: 'boss_desk', lin: 'lin_desk', kev: 'kev_desk' };
 function makeNpcs(game) {
-  return NPC_DEFS.map((d, i) => {
-    const s = spotPos(SPOT_FOR[d.id] || 'player_desk');
+  return game.level.cast.map((d, i) => {
+    const s = spotPos(game, SPOT_FOR[d.id] || 'player_desk');
     return {
       id: d.id, icon: d.icon, color: d.color, voice: d.voice, meetingSpot: d.meetingSpot,
       x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(VISION[d.id] || VISION.default) },
@@ -251,7 +250,7 @@ for (const pj of ['ok', 'broken', 'fixing']) for (const kevGone of [false, true]
     Object.assign(g.world, { projector: pj, kevGone, fixProgress: pj === 'fixing' ? fp : 0 });
     if (pj === 'fixing') {
       const k = npc(g, 'kev');
-      const s = spotPos('projector');
+      const s = spotPos(g, 'projector');
       Object.assign(k, { x: s.x, y: s.y, dir: s.dir, override: 'fixing', pose: 'stand' });
     }
     if (kevGone) npc(g, 'kev').active = false;
@@ -271,7 +270,7 @@ for (const kc of ['rack', 'player', 'dropped', 'boss']) for (const jacket of ['r
 day((g) => {
   Object.assign(g.world, { keycard: 'boss', jacket: 'boss', bossLockedOut: true });
   const b = npc(g, 'boss');
-  const s = spotPos('door_out');
+  const s = spotPos(g, 'door_out');
   Object.assign(b, { x: s.x, y: s.y, dir: s.dir, pose: 'stand', override: 'lockedOut', hasJacket: true });
 });
 draw('boss locked out');
@@ -433,7 +432,7 @@ for (const ov of ['alerted', 'fixing', 'hunting', 'lockedOut', 'meeting']) {
 day((g) => { npc(g, 'kev').active = false; });
 draw('inactive NPC (kev)');
 day((g) => {
-  const s = spotPos('elevator');
+  const s = spotPos(g, 'elevator');
   Object.assign(npc(g, 'kev'), { x: s.x, y: s.y + 0.3, pose: 'walk', moving: true, dir: DIRS.N });
 });
 draw('NPC at elevator');

@@ -6,6 +6,7 @@
 // exactly once, nodes connected only to nodes/params of the same context. It also counts node
 // creation (idle frames must stay cheap) and fires `onended` as time advances, so leaks show up.
 import { createEvents } from '../src/core/events.js';
+import { levels } from '../src/levels/index.js';
 
 let fails = 0;
 const ok = (c, m) => {
@@ -292,6 +293,7 @@ ok(touched.length === 0, `import touches no window property${touched.length ? ` 
 function makeGame() {
   return {
     events: createEvents(),
+    level: levels.meeting,
     phase: 'day',
     settings: { showCones: true, muted: false },
     debug: { speed: 1 },

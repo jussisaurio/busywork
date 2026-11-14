@@ -14,12 +14,11 @@ import {
   SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, MEETING_AT, at,
   GLANCE_EVERY, GLANCE_EVERY_BY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
-import { SPOTS, ROUTES, inZone } from '../levels/meeting/map.js';
-import { NPC_DEFS, MEETING_GATHER_AT } from '../levels/meeting/cast.js';
+import { MEETING_GATHER_AT } from '../levels/meeting/cast.js';
 import { DIRS, angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
 import { say, shake } from '../core/fx.js';
-import { spotPos } from '../game/perception.js';
+import { spotPos, inZone } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 
 // --- Tunables ------------------------------------------------------------------
@@ -58,15 +57,15 @@ const nextNonSay = (sched, i) => {
 
 export function createNpcs(game) {
   const now = game.clock ? game.clock.minute : 0;
-  return NPC_DEFS.map((def) => createNpc(def, now));
+  return game.level.cast.map((def) => createNpc(game, def, now));
 }
 
 // One NPC as the sim builds it at game minute `now` (test fakes come from here too, so they carry the
-// private fields). The schedule is copied: tests edit NPC_DEFS, and NPCs must not see that mid-day.
-export function createNpc(def, now = 0) {
+// private fields). The schedule is copied: tests edit the level's cast, and NPCs must not see that mid-day.
+export function createNpc(game, def, now = 0) {
   const sched = def.schedule.map((e) => ({ ...e }));
   const first = sched.find((e) => e.spot);
-  const p = spotPos(first.spot);
+  const p = spotPos(game, first.spot);
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
   const fridgeIdx = sched.findIndex((e) => e.do !== 'say' && e.spot === 'fridge');
   return {
@@ -142,7 +141,7 @@ function updateNpc(game, npc, dt, now) {
   checkOverrides(game, npc, now);
 
   const key = planKey(npc, now);
-  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(npc, now, key));
+  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, now, key));
 
   const px = npc.x;
   const py = npc.y;
@@ -256,13 +255,13 @@ function planKey(npc, now) {
   }
 }
 
-const spotLeg = (name, extra = {}) => {
-  const s = SPOTS[name];
+const spotLeg = (game, name, extra = {}) => {
+  const s = game.level.spots[name];
   return { x: s.x, y: s.y, face: DIRS[s.face], name, ...extra };
 };
 
 // plan: { key, label, legs[{x, y, face?, arrive?}], li, path, wp, done, pose, vanish, loop, onDone }
-function buildPlan(npc, now, key) {
+function buildPlan(game, npc, now, key) {
   const plan = {
     key, label: key, legs: [], li: 0, path: null, wp: 0, done: false,
     pose: 'stand', vanish: null, loop: false, onDone: null, hurry: false,
@@ -274,14 +273,14 @@ function buildPlan(npc, now, key) {
   }
   const kind = key.split('#')[0];
   if (kind === 'fix') {
-    plan.legs.push(spotLeg('projector', { arrive: kevArrive }));
+    plan.legs.push(spotLeg(game, 'projector', { arrive: kevArrive }));
     plan.label = 'fix projector';
   } else if (kind === 'hunt') {
-    plan.legs = ROUTES.lin_hunt.map(([x, y]) => ({ x, y, arrive: huntLook }));
+    plan.legs = game.level.patrols.lin_hunt.map(([x, y]) => ({ x, y, arrive: huntLook }));
     plan.loop = true; // back and forth until the override ends
     plan.label = 'hunt sandwich';
   } else if (kind === 'meeting') {
-    plan.legs.push(spotLeg(npc.meetingSpot));
+    plan.legs.push(spotLeg(game, npc.meetingSpot));
     plan.pose = 'sit';
     plan.hurry = true;
     plan.onDone = meetingArrive;
@@ -290,11 +289,11 @@ function buildPlan(npc, now, key) {
     const i = entryIndex(npc, now);
     const e = npc._schedule[i];
     const f = entryFlags(npc, i);
-    if (f.fridge) plan.legs.push(spotLeg('fridge', { arrive: linFridge }));
-    if (f.jacket) plan.legs.push(spotLeg('coat_rack', { arrive: bossJacket }));
-    if (e.do === 'patrol') plan.legs.push(...ROUTES[e.route].map(([x, y]) => ({ x, y })));
+    if (f.fridge) plan.legs.push(spotLeg(game, 'fridge', { arrive: linFridge }));
+    if (f.jacket) plan.legs.push(spotLeg(game, 'coat_rack', { arrive: bossJacket }));
+    if (e.do === 'patrol') plan.legs.push(...game.level.patrols[e.route].map(([x, y]) => ({ x, y })));
     else if (!(f.fridge && e.spot === 'fridge')) {
-      plan.legs.push(spotLeg(e.spot, e.spot === 'coffee' ? { arrive: coffeeArrive } : {}));
+      plan.legs.push(spotLeg(game, e.spot, e.spot === 'coffee' ? { arrive: coffeeArrive } : {}));
     }
     plan.pose = e.do === 'sit' ? 'sit' : 'stand';
     plan.vanish = e.do === 'away' || e.do === 'leave' ? e.do : null;
@@ -302,9 +301,9 @@ function buildPlan(npc, now, key) {
   }
   // 3. Lockout check: the boss coming in from the lobby must get through the glass door first.
   // (Only when heading inside, so walking out through door_out never triggers it.)
-  const inLobby = npc.id === 'boss' && inZone('outside', npc.x, npc.y);
-  if (inLobby && plan.legs.length && !inZone('outside', plan.legs[0].x, plan.legs[0].y)) {
-    plan.legs.unshift(spotLeg('door_out', { arrive: bossDoorCheck }));
+  const inLobby = npc.id === 'boss' && inZone(game, 'outside', npc.x, npc.y);
+  if (inLobby && plan.legs.length && !inZone(game, 'outside', plan.legs[0].x, plan.legs[0].y)) {
+    plan.legs.unshift(spotLeg(game, 'door_out', { arrive: bossDoorCheck }));
   }
   return plan;
 }
@@ -520,7 +519,7 @@ export function npcTakes(npc, item) {
 
 // 4:00, attendance rule: everyone at the table turns to your empty chair. 🪑❓ … 😠👉
 export function stareAtEmptyChair(game) {
-  const c = spotPos('meeting_player');
+  const c = spotPos(game, 'meeting_player');
   for (const n of game.npcs) {
     if (!n.active || n.override !== 'meeting') continue;
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
@@ -542,7 +541,7 @@ function meetingArrive(game, npc) {
   if (game.world.projector !== 'ok') {
     say(game, npc.id, ['📽️', '💥', '🤷'], { kind: 'speech', voice: npc.voice });
   } else {
-    const p = spotPos('meeting_presenter'); // looks expectantly at where the presenter stands
+    const p = spotPos(game, 'meeting_presenter'); // looks expectantly at where the presenter stands
     npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
     say(game, npc.id, ['📊', '👀'], { kind: 'speech', voice: npc.voice });
   }

@@ -39,10 +39,11 @@ everyone relies on**.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`. Engine code reads it as `game.level`.
-- `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES`, `ZONES` + `inZone(name, x, y)`
+- `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
 - `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]) and `MEETING_GATHER_AT`.
-- `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(name)`, `findNpc(game, id)`.
+- `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`, `inZone(game, name, x, y)`,
+  `findNpc(game, id)`. spotPos and inZone read the level's spots and zones (`game.level`).
 - `src/state.js`: `createGame()` and `resetLoop(game)`. These hold the state shape below.
 - `src/game/loop.js`: `startLoop(game)` and `tick(game, dt)`. This is the sim step order. The headless harness uses it too.
 
@@ -104,7 +105,7 @@ game = {
 ## NPC shape (created and owned by the sim; everyone else reads it)
 ```js
 {
-  id: 'boss'|'lin'|'kev', icon, color, voice, meetingSpot,   // copied from NPC_DEFS
+  id: 'boss'|'lin'|'kev', icon, color, voice, meetingSpot,   // copied from the level's cast (NPC_DEFS)
   x, y, dir,                 // dir = body facing (radians)
   glance: { offset: 0 },     // extra head angle in radians (added to dir for vision and head drawing)
   vision: { fov, radius },   // from VISION[id] (config)
@@ -122,7 +123,7 @@ game = {
 
 ## Module APIs
 ### Sim (`src/sim/npcs.js`, `src/sim/nav.js`)
-- `createNpcs(game)` returns the NPC array (the coordinator assigns it to `game.npcs`). Positions start at each NPC's first schedule spot.
+- `createNpcs(game)` returns the NPC array (the coordinator assigns it to `game.npcs`), one per `game.level.cast` entry, in cast order. Positions start at each NPC's first schedule spot.
 - `updateNpcs(game, dt)`: runs schedules, walking, glances and the sim overrides below.
 - `findPath(map, from, to, who='npc')` returns `[{x,y}...]` tile path or `null`. Nav details are up to the sim agent.
 

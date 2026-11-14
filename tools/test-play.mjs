@@ -18,7 +18,6 @@ import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
 import { advanceClock } from '../src/game/loop.js';
 import { createNpc } from '../src/sim/npcs.js';
-import { NPC_DEFS } from '../src/levels/meeting/cast.js';
 import { createInput } from '../src/play/input.js';
 
 let fails = 0;
@@ -68,8 +67,8 @@ const evs = (name) => log.filter((e) => e.name === name);
 const p = () => game.player;
 
 function fakeNpc(id, spot, extra = {}) {
-  const s = spotPos(spot);
-  return Object.assign(createNpc(NPC_DEFS.find((d) => d.id === id)), {
+  const s = spotPos(game, spot);
+  return Object.assign(createNpc(game, game.level.cast.find((d) => d.id === id)), {
     x: s.x, y: s.y, dir: s.dir, pose: 'sit', label: 'fake',
     ...extra,
   });

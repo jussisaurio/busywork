@@ -62,15 +62,11 @@ export const SPOTS = {
   meeting_player: { x: 13, y: 5, face: 'N' }, // your (empty, mustard) chair at the meeting table
 };
 
-// Areas in tile units, half-open: x0 <= x < x1, y0 <= y < y1.
+// Areas in tile units, half-open: x0 <= x < x1, y0 <= y < y1 (perception.js inZone(game, name, x, y)).
 export const ZONES = {
   meeting_room: { x0: 9, y0: 1, x1: 19, y1: 6 }, // where you must be at 4:00 (attendance rule)
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby, beyond the glass entrance
 };
-export function inZone(name, x, y) {
-  const z = ZONES[name];
-  return !!z && x >= z.x0 && x < z.x1 && y >= z.y0 && y < z.y1;
-}
 
 // Patrol routes: lists of tile coords walked in order.
 export const ROUTES = {

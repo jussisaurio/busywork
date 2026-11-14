@@ -10,7 +10,6 @@
 // long-lived nodes are the buses, the compressor and the music's tremolo chain.
 
 import { at, MEETING_AT } from '../config.js';
-import { ZONES } from '../levels/meeting/map.js';
 import { spotPos, findNpc } from '../game/perception.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
 import { babble, hum, voiceOf } from './babble.js';
@@ -20,7 +19,6 @@ import { createMusic } from './music.js';
 const MASTER = 0.55;
 const BUS = { sfx: 0.9, voice: 0.32, music: 0.12 }; // babble is dense: ~9 dB under the sfx bus
 const MAP_W = 30; // fallback when game.map is missing
-const LOBBY_Y = ZONES.outside.y0 - 0.5; // the glass wall's mid-line, just above the lobby (outside)
 const CLOCK_FROM = at('3:50'); // wall clock starts ticking
 const TOCK_FROM = at('3:55'); // tick-tock
 const HALF_FROM = at('3:57'); // every half minute
@@ -129,7 +127,8 @@ export function createAudio(opts = {}) {
     const py = fin(p?.y, NaN);
     if (!Number.isFinite(px) || !Number.isFinite(py)) return { pan, gain: 1, muffle: 0 };
     const gain = clamp(1.1 - Math.hypot(x - px, y - py) / 30, 0.5, 1);
-    const muffle = y >= LOBBY_Y !== py >= LOBBY_Y ? 1100 : 0;
+    const lobbyY = fin(game?.level?.zones?.outside?.y0, Infinity) - 0.5; // the glass wall's mid-line, just above the lobby
+    const muffle = y >= lobbyY !== py >= lobbyY ? 1100 : 0;
     return { pan, gain, muffle };
   }
   // Recipe options for a sound at an entity / spot / point.
@@ -137,7 +136,8 @@ export function createAudio(opts = {}) {
     const pl = place(pos);
     return { t: now(), pan: pl.pan, gain: pl.gain * (pl.muffle ? 0.6 : 1), ...extra };
   };
-  const atSpot = (name, extra) => atPos(spotPos(name), extra);
+  const spotAt = (name) => (game?.level ? spotPos(game, name) : null); // a level spot, null on a game without a level
+  const atSpot = (name, extra) => atPos(spotAt(name), extra);
   const atEnt = (id, extra) => atPos(entity(id), extra);
 
   // --- Babble ----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ export function createAudio(opts = {}) {
     sfx.elevatorDing(E, atSpot('elevator'));
   }
   const nearSpot = (pos, name, r) => {
-    const s = spotPos(name);
+    const s = spotAt(name);
     return !!(pos && s && Math.hypot(fin(pos.x, 1e9) - s.x, fin(pos.y, 1e9) - s.y) <= r);
   };
 
@@ -311,7 +311,7 @@ export function createAudio(opts = {}) {
     },
     'meeting:gather': () => {
       // Distant murmur from the meeting room (bypasses the per-voice throttle).
-      const pl = place(spotPos('projector'));
+      const pl = place(spotAt('projector'));
       const t = now();
       ['boss', 'lin', 'kev'].forEach((v, i) => {
         babble(E, {

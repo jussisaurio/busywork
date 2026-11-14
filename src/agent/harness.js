@@ -12,7 +12,6 @@ import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
 import { TARGET_ACTIONS } from '../play/interactions.js';
-import { SPOTS } from '../levels/meeting/map.js';
 import { createScriptedInput } from './scripted-input.js';
 
 // Events that end a waiting/walking command early so the agent can react.
@@ -167,9 +166,10 @@ export function createHarness() {
         fallback: (x, y) => Math.hypot(x + 0.5 - it.cx, y + 0.5 - it.cy) <= r,
       };
     }
-    const spotName = LANDMARKS[name] ?? (SPOTS[name] ? name : null);
+    const spots = game.level.spots;
+    const spotName = LANDMARKS[name] ?? (spots[name] ? name : null);
     if (spotName) {
-      const s = SPOTS[spotName];
+      const s = spots[spotName];
       return { label: name, isGoal: (x, y) => x === s.x && y === s.y };
     }
     throw new Error(`unknown target '${name}'. Try one of: ${game.map.interactables.map((i) => i.id).join(' ')} ${Object.keys(LANDMARKS).join(' ')} or x,y`);

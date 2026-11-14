@@ -4,9 +4,8 @@
 // Attendance rule: stopping the meeting only counts if you're in the meeting room at 4:00.
 // Everyone else is there; the one empty chair is yours. Result 'blamed' (a fail).
 import { CAUGHT_DELAY, MEETING_AT } from '../config.js';
-import { SPOTS, inZone } from '../levels/meeting/map.js';
 import { say, burst } from '../core/fx.js';
-import { spotPos } from '../game/perception.js';
+import { spotPos, inZone } from '../game/perception.js';
 import { stareAtEmptyChair } from '../sim/npcs.js';
 import { cancelAction } from './interactions.js';
 import { setBusy, standUp } from './player.js';
@@ -23,7 +22,7 @@ export function updateScenario(game, dt) {
     s.beatT += dt;
     if (game.outcome.result === 'fail' && !s.crickets && s.beatT >= CRICKETS_AT) {
       s.crickets = true;
-      const proj = SPOTS.projector;
+      const proj = game.level.spots.projector;
       say(game, { x: proj.x + 0.5, y: proj.y + 1.5 }, ['🦗'], { kind: 'sign', ttl: 1.5 });
     }
     if (s.beatT >= END_BEAT) endDay(game);
@@ -55,7 +54,7 @@ function startMeeting(game, s) {
   const routes = [];
   if (w.bossLockedOut) routes.push('keycard');
   if (w.projector === 'broken') routes.push('projector');
-  const present = inZone('meeting_room', p.x, p.y);
+  const present = inZone(game, 'meeting_room', p.x, p.y);
   const result = !routes.length ? 'fail' : present ? 'win' : 'blamed';
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
@@ -73,7 +72,7 @@ function startMeeting(game, s) {
   if (result === 'fail') {
     // You are now presenting. There are no slides.
     burst(game, 'paper', p.x, p.y, 8);
-    const spot = spotPos('meeting_presenter');
+    const spot = spotPos(game, 'meeting_presenter');
     p.x = spot.x;
     p.y = spot.y;
     p.dir = spot.dir;

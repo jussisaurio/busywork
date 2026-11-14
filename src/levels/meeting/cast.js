@@ -4,7 +4,7 @@
 // do:
 //   sit     { spot }          walk to spot, face spot.face, seated (glances enabled)
 //   visit   { spot }          walk to spot, face spot.face, stand
-//   patrol  { route }         walk the ROUTES[route] points in order, then stand at the last
+//   patrol  { route }         walk the level's patrols[route] points in order, then stand at the last
 //   away    { spot }          walk to spot, then vanish (inactive: not drawn, sees nothing)
 //                             until the next entry starts; reappear at that spot
 //   leave   { spot }          walk to spot and vanish for the rest of the day

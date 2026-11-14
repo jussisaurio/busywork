@@ -2,7 +2,6 @@
 import { parseMap } from './core/map.js';
 import { createEvents } from './core/events.js';
 import { createFx } from './core/fx.js';
-import { MAP, LEGEND } from './levels/meeting/map.js';
 import { defaultLevel } from './levels/index.js';
 import { spotPos } from './game/perception.js';
 
@@ -10,7 +9,7 @@ export function createGame({ events, input, level = defaultLevel } = {}) {
   const game = {
     events: events ?? createEvents(),
     level,
-    map: parseMap(MAP, LEGEND),
+    map: parseMap(level.map.rows, level.map.legend),
     persist: { loop: 0, routesFound: [] },
     phase: 'title',
     settings: { showCones: true, muted: false },
@@ -24,7 +23,7 @@ export function createGame({ events, input, level = defaultLevel } = {}) {
 
 // Rebuild everything that belongs to a single day. NPCs are created by loop.startLoop.
 export function resetLoop(game) {
-  const desk = spotPos('player_desk');
+  const desk = spotPos(game, 'player_desk');
   game.fx = createFx();
   game.loopTime = 0;
   game.paused = false; // main.js: Esc / the ⏸ button / losing focus; nothing ticks while true

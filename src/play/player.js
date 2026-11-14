@@ -70,7 +70,7 @@ export function setBusy(game, busy, pose) {
 // Snap to the player's chair. Emits player:sit if not already seated.
 export function sitAtDesk(game) {
   const p = game.player;
-  const s = spotPos('player_desk');
+  const s = spotPos(game, 'player_desk');
   p.x = s.x;
   p.y = s.y;
   p.dir = s.dir;
