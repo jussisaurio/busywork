@@ -40,8 +40,8 @@ everyone relies on**.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `behaviours`, `meeting`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
-  `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
+  `hunts`, `doors`, `behaviours`, `meeting`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `poses`, `cones`,
+  `itemIcons`, `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -72,6 +72,15 @@ everyone relies on**.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
   🪪 keycard), the one source of route icons. `outcomeOrder`: the order `outcome.routes` lists achieved routes in (keycard,
   projector). `initialWorld()`: the `world` object below, fresh for each loop (resetLoop).
+  Presentation (render reads these, the sim never does; field notes in `levels/meeting/decor.js` and `looks.js`):
+  `decor.props`: furniture with moving parts, `[{ tile, draw, state(world, game) }]`, drawn in order on the first map tile
+  `tile` by the renderer's painter `draw`, which shows what `state` returns: `'slideProjector'` `{ state: 'ok'|'broken'|'fixing',
+  fix, beam }` (a beam lights `decor.screen`), `'carafe'` `{ full }`, `'coatRack'` `{ coat, tag }`. `poses`: `arms: [{ when(npc,
+  world, game), arms, item?, angry?, crank? }]` (the first rule that holds sets his arms, a characters.js pose name or a function
+  of the npc; none: `'desk'` sitting, `'walk'` walking) and `marks: [{ when, angry?, badge?, jacket? }]` (every rule that holds
+  applies; `jacket: false` draws him in shirtsleeves). The authority scowls on his own once he catches you. `cones`: `{ alert:
+  [override], eyesOn: { [npcId]: itemType } }`: an NPC in an `alert` override has a hot cone, and so does one who sees you
+  holding his `eyesOn` item (the authority's cone also heats with `suspicion[id]`).
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
 - `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, vision, glanceEvery?, coneTint, schedule[]).
@@ -148,7 +157,6 @@ game = {
   pose: 'sit',               // 'sit' | 'stand' | 'walk'
   moving: false,
   override: null,            // null | 'alerted' | 'fixing' | 'hunting' | 'lockedOut' | 'meeting'
-  hasJacket: false,          // drawn wearing his jacket (level 1: the boss, set by the fetchJacket hook after 3:35)
   carry: null,               // null | item type: Kev holding the day's cup (poured it, or took it off you)
   wants: null,               // null | item type he knows is his and misses: Kev found the pot empty (☕❓😩). Every ~6 s
                              // he daydreams of it (🥱 + the item's icon) unless working a lure's job; cleared when he gets it
@@ -172,7 +180,7 @@ game = {
    (this delays his leaving if needed). If he is walking out to the elevator, he turns back.
    When he vanishes at the elevator: `world.kevGone = true`, emit `'kev:left'` (his leave entry's `gone`).
 2. **Jacket and keycard** (the boss's `fetchJacket` prelude, `level.behaviours`). When the boss starts his 3:35 entry (he is at his desk): he walks to the coat rack first, takes the jacket
-   (`world.jacket='boss'`, `hasJacket=true`, emit `'boss:jacket'`). If `world.keycard==='rack'`, it becomes `'boss'`.
+   (`world.jacket='boss'`, emit `'boss:jacket'`; the hook marks him `_jacket`). If `world.keycard==='rack'`, it becomes `'boss'`.
    Then he goes to smoke.
 3. **Lockout** (a door, `level.doors`). When the boss walks back from outside (3:48), if `world.keycard !== 'boss'` he stops at `SPOTS.door_out`, facing N:
    `override='lockedOut'`, `world.bossLockedOut=true`, emit `'boss:lockedOut'`. Then every ~2.5 s he `say`s one of 😠🚪🪪 / 🪪❓ / 👊🚪

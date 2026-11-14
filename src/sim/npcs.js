@@ -75,7 +75,6 @@ export function createNpc(game, def, now = 0) {
     pose: first.do === 'sit' ? 'sit' : 'stand',
     moving: false,
     override: null,
-    hasJacket: false, // render: drawn with his jacket on (a behaviour hook sets it)
     carry: null, // null | item type he carries (Kev's coffee, once he has the day's cup)
     wants: null, // null | item type he now knows is his and misses (Kev found the pot empty: someone has his cup)
     label: `${first.do} ${first.spot}`,

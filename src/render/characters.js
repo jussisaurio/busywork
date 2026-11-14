@@ -40,7 +40,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    keycard: false, crank: false, stain: false,
+    badge: false, crank: false, stain: false,
   };
 }
 
@@ -102,7 +102,7 @@ function computeHands(s, g) {
       lx = lsx - rx * 5; ly = lsy - 4 - ry * 5;
       rxh = rsx + rx * 5; ryh = rsy - 4 + ry * 5;
       break;
-    case 'smoke': {
+    case 'puff': {
       const k = smokeLift(t);
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       const dx = rsx + rx * 3 + fx * 2;
@@ -400,7 +400,7 @@ export function drawPerson(ctx, look, s, x, y) {
     ctx.globalAlpha = 1;
   }
 
-  if (s.arms === 'smoke') drawSmoke(ctx, s, G);
+  if (s.arms === 'puff') drawSmoke(ctx, s, G);
 
   if (s.typing) {
     for (let i = 0; i < 3; i++) {
@@ -418,8 +418,8 @@ export function drawPerson(ctx, look, s, x, y) {
   ctx.restore();
 }
 
-// The boss's keycard on a teal lanyard, clipped to the jacket pocket.
-function drawKeycardTag(ctx) {
+// A badge (level 1: the boss's keycard) on a teal lanyard, clipped to the jacket pocket.
+function drawBadge(ctx) {
   const { cd, sd, bodyY, brx, bry } = G;
   if (sd < -0.25) return; // pocket is on the front
   const side = cd >= 0 ? 1 : -1;
@@ -512,7 +512,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
       ctx.fillStyle = 'rgba(0,0,0,0.25)';
       ctx.fillRect(-0.5, top + 2, 1, bry * 1.3);
     }
-    if (s.keycard && !noJacket) drawKeycardTag(ctx);
+    if (s.badge && !noJacket) drawBadge(ctx);
     return;
   }
   if (look.torso === 'sweater') {
@@ -753,10 +753,13 @@ function drawPlayerRing(ctx, game, t, mem) {
   ctx.globalAlpha = 1;
 }
 
+const NONE = [];
+const NO_POSES = {};
+
 export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.keycard = false; s.crank = false; s.stain = false;
+  s.badge = false; s.crank = false; s.stain = false;
 }
 
 // The emoji for a held item type: the level's (game.level.itemIcons), '❔' if it has none, null for empty hands.
@@ -798,39 +801,36 @@ function drawNpc(ctx, game, n, t) {
   s.pose = n.pose === 'sit' ? 'sit' : n.pose === 'walk' || n.moving ? 'walk' : 'stand';
   s.moving = !!n.moving;
   s.phase = t * 10 + (n.id ? n.id.length * 1.3 : 0);
-  s.jacket = n.id === 'boss' ? n.hasJacket !== false : true;
-  const ov = n.override;
-  if (ov === 'lockedOut') {
-    s.arms = 'bang';
-    s.angry = true;
-  } else if (ov === 'fixing') {
-    s.arms = 'reach';
-    s.item = '🔧';
-    s.crank = true;
-  } else if (n.id === 'boss' && ov === 'meeting' && world.projector !== 'ok' && !n.moving) {
-    s.arms = 'shrug';
-  } else if (!ov && n.anim === 'smoking') {
-    s.arms = n.moving ? 'walk' : 'smoke';
-    s.item = '🚬';
-  } else if (n.id === 'lin' && world.sandwich === 'lin') {
-    s.arms = 'carry';
-    s.item = '🥪';
+  // The level's poses (level.poses, e.g. src/levels/meeting/looks.js): the first arms rule that holds, else
+  // sitting at a desk or walking; then every marks rule that holds.
+  const poses = game.level.poses || NO_POSES;
+  let rule = null;
+  for (const r of poses.arms || NONE) if (r.when(n, world, game)) { rule = r; break; }
+  if (rule) {
+    s.arms = typeof rule.arms === 'function' ? rule.arms(n) : rule.arms;
+    if (rule.item) s.item = rule.item;
+    if (rule.angry) s.angry = true;
+    if (rule.crank) s.crank = true;
   } else if (s.pose === 'sit') {
     s.arms = 'desk';
   } else if (s.pose === 'walk') {
     s.arms = 'walk';
   }
-  // The day's last coffee: in hand while the hands are free, otherwise set down beside him.
+  // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
   let mug = false;
-  if (n.carry === 'coffee') {
+  if (n.carry) {
     if (!s.item && s.pose !== 'sit' && (s.arms === 'walk' || s.arms === 'idle')) {
       s.arms = 'mug';
       s.item = itemIcon(game.level.itemIcons, n.carry);
     } else mug = true;
   }
-  if (ov === 'alerted' || ov === 'hunting') s.angry = n.id === 'boss' || ov === 'hunting';
-  if (n.id === 'boss' && game.caught) s.angry = true;
-  if (n.id === 'boss' && world.keycard === 'boss') s.keycard = true;
+  for (const r of poses.marks || NONE) {
+    if (!r.when(n, world, game)) continue;
+    if (r.angry) s.angry = true;
+    if (r.badge) s.badge = true;
+    if (r.jacket === false) s.jacket = false;
+  }
+  if (game.caught && n.id && n.id === game.level.roles?.authority?.id) s.angry = true; // the authority, catching you
   const px = fin(n.x) * T;
   const py = fin(n.y) * T;
   const mugBehind = mug && Math.sin(s.dir) < 0; // on the far side of him: he overlaps it

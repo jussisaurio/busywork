@@ -373,10 +373,12 @@ export function drawActionRing(ctx, game, t) {
   }
 }
 
+// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
 export function drawSuspicion(ctx, game, t) {
-  const s = game.suspicion ? fin(game.suspicion.boss) : 0;
+  const id = game.level?.roles?.authority?.id;
+  const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
   if (!(s > 0)) return;
-  const boss = game.npcs && findNpc(game, 'boss');
+  const boss = game.npcs && findNpc(game, id);
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;

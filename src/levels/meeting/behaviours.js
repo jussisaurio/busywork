@@ -32,11 +32,11 @@ export const BEHAVIOURS = {
   // The boss collects his jacket (and the keycard in it, if it's still there) on his way out for a smoke.
   fetchJacket: {
     spot: 'coat_rack',
-    pending: (npc) => !npc.hasJacket,
+    pending: (npc) => !npc._jacket,
     arrive(game, npc, sim) {
       const w = game.world;
-      w.jacket = npc.id;
-      npc.hasJacket = true;
+      w.jacket = npc.id; // he's wearing it now (looks.js POSES)
+      npc._jacket = true;
       if (w.keycard === 'rack') w.keycard = npc.id;
       sim.holdFor(npc, 0.8);
       game.events.emit('boss:jacket', {});

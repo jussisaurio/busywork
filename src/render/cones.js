@@ -35,18 +35,23 @@ function castRay(map, ox, oy, dx, dy, maxDist) {
   return maxDist;
 }
 
-// 0..1: how hard this NPC is "noticing" the player right now (derived, read-only).
+const NO_CONES = {};
+
+// 0..1: how hard this NPC is "noticing" the player right now (derived, read-only). The authority's suspicion
+// (game.suspicion, keyed by his id); the level's cones (level.cones: alert overrides, items an NPC has eyes on).
 function noticeLevel(game, npc) {
   let lvl = 0;
   if (game.caught && game.caught.by === npc.id) return 1;
-  if (npc.id === 'boss') {
-    const s = game.suspicion ? fin(game.suspicion.boss) : 0;
+  if (game.suspicion && Object.hasOwn(game.suspicion, npc.id)) {
+    const s = fin(game.suspicion[npc.id]);
     if (s > 0) lvl = 0.35 + 0.65 * clamp(s, 0, 1);
   }
-  if (npc.override === 'alerted' || npc.override === 'hunting') lvl = Math.max(lvl, 0.55);
+  const cones = (game.level && game.level.cones) || NO_CONES;
+  if (npc.override && cones.alert && cones.alert.includes(npc.override)) lvl = Math.max(lvl, 0.55);
   const p = game.player;
   if (p && game.phase === 'day') {
-    const risky = (p.action && p.action.sneaky) || (npc.id === 'lin' && p.held === 'sandwich');
+    const eyes = cones.eyesOn;
+    const risky = (p.action && p.action.sneaky) || (p.held && eyes && Object.hasOwn(eyes, npc.id) && eyes[npc.id] === p.held);
     if (risky && game.map && npcSees(game, npc, p.x, p.y)) lvl = Math.max(lvl, 0.8);
   }
   return lvl;
@@ -56,6 +61,7 @@ export function drawCones(ctx, game, t) {
   if (!game.settings || !game.settings.showCones || !game.map) return;
   const npcs = game.npcs || [];
   const map = game.map;
+  const authority = game.level?.roles?.authority?.id ?? null; // his cone is a little stronger
   for (let n = 0; n < npcs.length; n++) {
     const npc = npcs[n];
     if (!npc || !npc.active || !npc.vision) continue;
@@ -72,7 +78,7 @@ export function drawCones(ctx, game, t) {
     const r = Math.round(tint[0] + (RED[0] - tint[0]) * mix);
     const g = Math.round(tint[1] + (RED[1] - tint[1]) * mix);
     const b = Math.round(tint[2] + (RED[2] - tint[2]) * mix);
-    const base = npc.id === 'boss' ? 0.2 : 0.13;
+    const base = npc.id === authority ? 0.2 : 0.13;
     const a = clamp(base + notice * 0.28 * pulse, 0, 0.6);
     const cx = ox * T;
     const cy = oy * T;

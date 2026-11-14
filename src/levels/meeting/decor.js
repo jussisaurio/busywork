@@ -47,6 +47,26 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 }, // kitchen upper cabinets over the counter
   screen: { x: 15, y: 0, w: 3 }, // projection screen on the meeting room's north wall
   clock: { x: 17, y: 6 }, // hallway wall clock showing the game time
+  // Furniture with moving parts, drawn every frame in this order on the first map tile with char `tile`, by the
+  // renderer's painter `draw`, showing what state(world, game) returns:
+  //   slideProjector  { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }  (the beam lights `screen`)
+  //   carafe          { full }
+  //   coatRack        { coat, tag }  (a jacket on the rack; a badge clipped to it)
+  props: [
+    {
+      tile: 'J',
+      draw: 'slideProjector',
+      state: (w, game) => ({
+        state: w.projector || 'ok',
+        fix: w.fixProgress || 0,
+        // on from day.beamAt, and for a failed meeting's end beat (you are presenting)
+        beam: w.projector === 'ok' && ((game.clock ? game.clock.minute : 0) >= game.level.day.beamAt
+          || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail')),
+      }),
+    },
+    { tile: 'C', draw: 'carafe', state: (w) => ({ full: w.coffee !== 'taken' }) }, // full until the one cup is taken
+    { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
+  ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
   // Workstations whose sitter's spot is <owner>_desk, south of the desk (personal screen, mug and prop).

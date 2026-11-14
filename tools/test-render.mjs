@@ -83,7 +83,6 @@ function makeNpcs(game) {
       id: d.id, icon: d.icon, color: d.color, voice: d.voice, meetingSpot: d.meetingSpot,
       x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(d.vision || VISION_DEFAULT) },
       coneTint: d.coneTint, active: true, pose: 'sit', moving: false, override: null, carry: null,
-      hasJacket: d.id === 'boss' ? game.world.jacket === 'boss' : false,
       label: d.id, rng: createRng(1000 + i),
     };
   });
@@ -263,7 +262,6 @@ for (const pj of ['ok', 'broken', 'fixing']) for (const kevGone of [false, true]
 for (const kc of ['rack', 'player', 'dropped', 'boss']) for (const jacket of ['rack', 'boss']) {
   day((g) => {
     Object.assign(g.world, { keycard: kc, jacket });
-    npc(g, 'boss').hasJacket = jacket === 'boss';
     if (kc === 'player') g.player.held = 'keycard';
     if (kc === 'dropped') g.world.items.push({ type: 'keycard', x: 8.2, y: 10.4 });
   });
@@ -273,7 +271,7 @@ day((g) => {
   Object.assign(g.world, { keycard: 'boss', jacket: 'boss', bossLockedOut: true });
   const b = npc(g, 'boss');
   const s = spotPos(g, 'door_out');
-  Object.assign(b, { x: s.x, y: s.y, dir: s.dir, pose: 'stand', override: 'lockedOut', hasJacket: true });
+  Object.assign(b, { x: s.x, y: s.y, dir: s.dir, pose: 'stand', override: 'lockedOut' });
 });
 draw('boss locked out');
 for (const sw of ['fridge', 'player', 'dropped', 'eaten', 'lin']) {
@@ -381,7 +379,6 @@ draw('sightline() from the sim');
 day((g) => {
   g.world.keycard = 'boss'; g.world.jacket = 'boss';
   const b = npc(g, 'boss');
-  b.hasJacket = true;
   b.pose = 'walk'; b.moving = true;
 });
 for (const d of DIR_LIST) { npc(game, 'boss').dir = d; game.time += 0.1; draw(`boss wears keycard dir=${d.toFixed(2)}`); }
@@ -489,7 +486,7 @@ for (const o of OUTCOMES) {
     const { jacketless, kevGone, ...outcome } = o;
     g.outcome = { ...outcome, loop: 3, minute: o.result === 'caught' ? 47.5 : MEETING_AT };
     if (o.result === 'caught') g.caught = { by: 'boss', reason: 'contraband', t: 1 };
-    if (jacketless) npc(g, 'boss').hasJacket = false;
+    if (jacketless) g.world.jacket = 'rack';
     if (kevGone) { g.world.kevGone = true; npc(g, 'kev').active = false; }
     g.phase = 'end';
   });

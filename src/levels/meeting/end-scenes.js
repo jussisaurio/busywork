@@ -31,7 +31,7 @@ function endKind(o) {
 
 function bossJacket(game) {
   const boss = game.npcs && findNpc(game, 'boss');
-  return boss ? boss.hasJacket !== false : true;
+  return boss ? game.world.jacket === boss.id : true;
 }
 
 function tableauKeycard(ctx, game, t, e) {
