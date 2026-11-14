@@ -21,7 +21,7 @@ everyone relies on**.
 ## File ownership
 | Owner | Files |
 |---|---|
-| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/data/*`, `src/agent/*` (AI-agent harness), `tools/test-core.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `*.md` |
+| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/data/*`, `src/agent/*` (AI-agent harness), `tools/test-core.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/golden.mjs`, `*.md` |
 | sim agent | `src/sim/nav.js`, `src/sim/npcs.js`, `tools/test-sim.mjs` |
 | gameplay agent | `src/play/input.js`, `src/play/player.js`, `src/play/interactions.js`, `src/play/rules.js`, `src/play/scenario.js`, `tools/test-play.mjs` |
 | render agent | `src/render/*.js`, `tools/test-render.mjs` |
@@ -61,6 +61,7 @@ game = {
   rng,                        // createRng(SEED)
   fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player', kind, age, ttl }]
   loopTime: 0,                // real (sim) seconds since loop start
+  paused: false,              // main.js only: nothing ticks while true (see Frame / step order)
   clock: { minute: 0, ff: false, forced: 0 },
       // ff: true while fast-forwarding (pretending in place: typing at the desk or a phone call; not the folder stride). Set by player.js.
       // forced: game minutes of assigned work remaining. Set by rules.js; main/loop decrements it.
@@ -148,9 +149,9 @@ game = {
 ### Gameplay (`src/play/*`)
 - `createInput(target=window)` returns the **Input** interface:
   `{ isDown(action), pressed(action), axis() → {x,y} (normalised or 0), destroy() }`.
-  Actions: `up down left right interact busy restart mute cones slower faster start`.
+  Actions: `up down left right interact busy restart pause mute cones slower faster start`.
   `pressed()` is consume-on-read, and an unconsumed press expires after 0.2 s.
-  Keys: WASD/arrows; E/Space/Enter = interact (Enter/Space/E also = start); Shift or P = busy (shown to the player as "pretend"); R; M; V; `[` `]`.
+  Keys: WASD/arrows; E/Space/Enter = interact (Enter/Space/E also = start); Shift or P = busy (shown to the player as "pretend"); R; Esc = pause; M; V; `[` `]`.
   Prevent default on arrows/space so the page doesn't scroll.
   For node tests, any object with the same interface works (write a scripted fake in the test).
 - `updatePlayer(game, dt)`: movement with tile collision (circle radius PLAYER_RADIUS vs solid tiles, sliding along walls),
@@ -240,6 +241,9 @@ per animation frame (realDt capped at 0.1):
            mult = (clock.forced>0 ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
            repeat mult times: tick(game, FIXED_DT)
          R → startLoop
+         Esc / ⏸ click (PAUSE_BTN in render/hud.js) / window blur → game.paused = true: no ticks, the
+           accumulator is dropped, fx frozen (updateFx dt 0), audio.setPaused(true) suspends the
+           AudioContext. resetLoop clears game.paused. Pausing only applies mid-day (no outcome, not caught).
   end:   input start → startLoop
   updateFx(game, realDt); audio.update(game, realDt); renderer.render(game)
 
@@ -255,5 +259,13 @@ mirroring main.js (fast-forward and forced-work multipliers included). Commands 
 `observe()` returns a text view limited to what a human can see: map, watched tiles, people, bubbles, HUD.
 NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's command log on every call
 (the game is deterministic), so no server is needed.
+`tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
+result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
+across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--verbose]
+[--json out.json]`, ~1 ms per day per core, worker_threads. Its report is for a designer, not a pass/fail test.
+`tools/golden.mjs` is the refactor safety net: it replays a fixed corpus (`tools/golden.json`: one plan per outcome
+the fuzzer found, plus hand-written ones with raw movement and several loops) and compares a digest of every event
+and of the contract-level state after each command. A refactor must leave it passing. Re-record (`--write`) only
+for an intended behaviour change, and say so in the commit.
 **Implication for everyone:** gameplay must not read wall-clock time (`performance.now`, `Date`) or `Math.random`.
 Only `input.js` may use real time, for press expiry.

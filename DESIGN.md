@@ -39,10 +39,11 @@ many ways there are to win are all left for the player to discover.
 | E / Space | interact (the nearest valid target shows a ✋ hint) |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |
+| Esc, or the ⏸ button (top right) | pause; any click, or Esc again, resumes. Losing window focus pauses too |
 | M / V | mute / toggle vision cones |
 
 A key legend is always on screen: a key cap and one word for each control ("do", "pretend",
-"restart", "mute", "vision"). It is on the title screen, and in play on the blank wall block under
+"restart", "pause", "mute", "vision"). It is on the title screen, and in play on the blank wall block under
 the open office. Held keys show pushed down. Naming a control is not a hint, so this is the only
 text in play.
 

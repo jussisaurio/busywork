@@ -27,9 +27,10 @@ The designer's feedback, verbatim:
 > One thing I'm not sure of anymore is if it makes sense that you not being present in the meeting room gets you
 > blamed for the projector incident. It should probably be related to coffee-specific evidence somehow.
 
+**Decided since (by the designer-in-chief, after the fuzzer data in `FUZZ.md`): attendance as a blame rule goes.**
 Answer: what coffee-specific evidence blames you for the projector, how the player sees it, how they learn to
-avoid it, and whether it's a real decision or a chore. Also decide what happens to the **keycard** route and to
-**attendance** (keep, drop, or replace). Note what exists: eating Lin's sandwich leaves mustard on your sweater
+avoid it, and whether it's a real decision or a chore. The coordinator's current view is that the **keycard**
+route needs no replacement (the boss is locked outside; nobody is there to blame you); argue if you disagree. Note what exists: eating Lin's sandwich leaves mustard on your sweater
 (evidence while she hunts); after spilling, the cup currently vanishes from your hands; Kev blames whoever is
 at the scene while the projector is broken.
 

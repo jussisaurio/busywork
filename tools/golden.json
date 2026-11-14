@@ -1,0 +1,4351 @@
+{
+ "note": "written by tools/golden.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "51f2f53fc42a05d7",
+    "b2b0c2f6538c2f9a",
+    "05469f3e9d9d152a",
+    "d1b4c0b6739631f9"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "852439b47c194c97",
+    "ed5d0cc98720bd61"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2a707f387ae10b6b",
+    "f895cfcc4248ab28"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "e53b4aecc5103fe7",
+    "cfad9806758bf02c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "db6dfe90a00041a0",
+    "25bb9ca2f4052f64"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "94be12fb8ad8788f",
+    "08433e8a173be2df"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "e6d044eab42ab220",
+    "3e743f45cf7ac566"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "d4d898ddcd38abad",
+    "6152ca2ed7ba675a",
+    "3d87bbf081abd52a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "f6cc1807e86dfd65"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "83f225967d58691e",
+    "50ff8c7808aff502",
+    "cc7911d48fba995d",
+    "9cbe7bcb445aa8e5",
+    "8753e17a90818dd8",
+    "f82e866625dfc031"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1.5s",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "99d2445a7096991f",
+    "d146dd101eddc4c4",
+    "a0d489b3b18ffb9a",
+    "18a4a4916b45d7e0",
+    "ef9f64e686a096e1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b24b2f975bd518cb",
+    "c68f3bdb0e691389",
+    "509f9a6f4c86c8fb",
+    "1d0f4c92d6b7c9b9",
+    "503e3cde8fb8a5ca",
+    "f6cc1807e86dfd65"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "fe8adbe0e70085f3",
+    "46948d3e4627860e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto coat_rack",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "7476fe4cef1915c0",
+    "15b56fcdaeaf99c1",
+    "7aa30ab7bcf5e4bc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b24b2f975bd518cb",
+    "c68f3bdb0e691389",
+    "9fc12d6df0e9d518",
+    "28d5f6a423407233",
+    "386dddf838027d6f",
+    "934e0930081f089e",
+    "88f5780ac1439e07"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "e8b556cf58e13737",
+    "c69aaed2055b6f62"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "f0da3a8ac761e645",
+    "732d293a331586da"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "b24b2f975bd518cb",
+    "c68f3bdb0e691389",
+    "756533c27f21177a",
+    "242b0f59d9e3eb07",
+    "618ad6fe5182961e",
+    "46948d3e4627860e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "pretend until 2:46",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "300d807c56594ab2",
+    "b555249872cfa97e",
+    "873b54666f330333",
+    "054e8db5a1fc55a4",
+    "6a9d02c0fe137f75",
+    "61bd01d916cc1559",
+    "6675415b88111ae5"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "7906c82dcea35b6f",
+    "de72707f6641d932",
+    "f895cfcc4248ab28"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "7906c82dcea35b6f",
+    "a42df032e9a4f42d",
+    "5d1e6ae1ab88783e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "pretend until 3:33",
+    "goto projector pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "eea6ed4a904f5d51",
+    "dc11d9b2df9af5ba",
+    "16423f388d6a145a",
+    "0624f82e33db1a98",
+    "e07f03a5ff05d398"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:53",
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "852439b47c194c97",
+    "873f20067c4593bd",
+    "2e15008d0cf16923",
+    "5f6dd31d02195752",
+    "8c58cddcf5abf0eb",
+    "a94cad6eb71cf580",
+    "bb3bf3780ffd84cd",
+    "04d841f223f92b4c"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "7f4e9abddc006da5",
+    "c1d1db9a9d613581",
+    "823bfbba1e3e5187"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "b598a46846ec5931",
+    "3bc5601a0dcd5786",
+    "028cafdc8f9415c5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "a38c1c19b8deba58",
+    "da28d8b84f7467e1",
+    "cc7911d48fba995d",
+    "a4858693b0d0e6db",
+    "011839d20d6b2538"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_seat pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "595045ef0f27f89b",
+    "d41ce54ef2aa791e",
+    "347b002bc35ea3ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b24b2f975bd518cb",
+    "c68f3bdb0e691389",
+    "756533c27f21177a",
+    "242b0f59d9e3eb07",
+    "46c392eb04c49e31",
+    "54490e67d4dfa129"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "19106902b61262ea",
+    "18e8b5e70f65b49e",
+    "9014a37399e471cd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "4fa6a2867547dfd4",
+    "45c3f7ebb6df3ac5",
+    "1bdc44893e33dec5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "86a2f8f0f7a3db9f",
+    "7f25fa20dcbb6150",
+    "4c3ba343ee82acae",
+    "dc6028037c8b2bc1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "659cc8f05d53a728",
+    "82409dea21ecfd51",
+    "ff1df7eb22c135cb",
+    "90c0a69112260178",
+    "e0424c3308ea8338"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "3296aedbb76ee7e4",
+    "f5904e19d4213bea"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 3:45",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "c9c3744fad062f17",
+    "f59cb63b8be3c0cf",
+    "83ddd33cd75ca4ad",
+    "7029ca395acc9a65"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend 1.25s",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "c57c4df1f9cfa615",
+    "0eeb2fbc8dbc4ed0",
+    "6fd1add2cc078602",
+    "88cb9ffb2cc71211",
+    "7ef5d18176e10b8c",
+    "dc95d06061653a68",
+    "34572e29e6c8be91"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "wait until 2:35",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "3760c2f9316f9574",
+    "d357113c16b2811c",
+    "715517194a802bee",
+    "3f989e20f7be3cbc",
+    "880aa5de1f3b6323",
+    "a5bd0d1bb56f7c44",
+    "db5e1255f54b9a62"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "12de7d695ec3b17c",
+    "73cdcb8eafb6a4a7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "c57c4df1f9cfa615",
+    "0eeb2fbc8dbc4ed0",
+    "6fd1add2cc078602",
+    "88cb9ffb2cc71211",
+    "7ef5d18176e10b8c",
+    "acc013f45753fed6"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "7f4e9abddc006da5",
+    "8cde0c711076a8ef",
+    "5eca7b578585a867",
+    "08d3ec50fac8d5a3",
+    "87672cd851fc550f",
+    "8d44ebae8ebd5f55"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "659cc8f05d53a728",
+    "88f4282f8a54fd17",
+    "f1314f59c6095a5a",
+    "810720c4deec3035",
+    "fa0e03835ab45322"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "5189dd1488c4ded0",
+    "9aa57bfd5a440a3b",
+    "fdaae6a8948e9d46"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "pretend until 3:07",
+    "goto projector pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "b8db261def2269ee",
+    "68265ae8255ba902",
+    "e741c21b6e0e1a2b",
+    "ebb65dd2b4cac2a3",
+    "d7372913376c24a0",
+    "b4b107e6df6c5ddc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_seat pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "b24b2f975bd518cb",
+    "c68f3bdb0e691389",
+    "756533c27f21177a",
+    "242b0f59d9e3eb07",
+    "adc25e55902f9b77",
+    "328c20bf05e10938",
+    "347b002bc35ea3ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "659cc8f05d53a728",
+    "82409dea21ecfd51",
+    "ff1df7eb22c135cb",
+    "ff21ab8c7bb46788",
+    "ad5f9401fad7d2c1",
+    "c81adf7de47d4c5c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend 1.88s",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "c57c4df1f9cfa615",
+    "0eeb2fbc8dbc4ed0",
+    "6fd1add2cc078602",
+    "88cb9ffb2cc71211",
+    "7ef5d18176e10b8c",
+    "cd0ce608581707ed",
+    "488c59a05e8b2c06",
+    "8936de066143494b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "82ad6ed88381f42d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "659cc8f05d53a728",
+    "82409dea21ecfd51",
+    "ff1df7eb22c135cb",
+    "39ff99bd55dc8704",
+    "8aa43af33e3167c5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "wait until 2:35",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "3760c2f9316f9574",
+    "d357113c16b2811c",
+    "715517194a802bee",
+    "3f989e20f7be3cbc",
+    "d3683917d015d093",
+    "0f8b04ff759ad6b9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:53",
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "0f28588bfb0b845a",
+    "297ae0d9514ab756",
+    "c947f0ef842eaa2d",
+    "9080867f18b19276",
+    "ccdccbea43e3a83c",
+    "d8457f509814a0d6",
+    "565da05ff5f0d0e4",
+    "13e771c5b78c1864"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "interact",
+    "goto fridge",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "7f4e9abddc006da5",
+    "8cde0c711076a8ef",
+    "dfb62c8d03671ca2",
+    "eb31c537f5d1936d",
+    "70d12b2f3d9cfe4e",
+    "e75272d6764fb8b4",
+    "6b2609d22a556d7e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "68e4a12fd628747e",
+    "0609c40ea0334be0",
+    "858f5c23ced9714a",
+    "52239b764e192732",
+    "d27e8151433e2bed",
+    "e2234e29761b09cf"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:34",
+    "goto coat_rack",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "3c7dd1646062ec22",
+    "b03741cad89bc96b",
+    "9aeb9fbae4619415",
+    "c5f144e0289d4867",
+    "017a9f11e0044f2a"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "f48144a15cce7e5c",
+    "7e7826e31150297e",
+    "2c2aeac9c79a2a7e",
+    "2dff95d998d429a0",
+    "b95f287a0e45b087",
+    "20d7fe5e88fecb58",
+    "778999cf80031992"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "0e79dd759fa3dadd",
+    "ae8d957ac4453f89",
+    "a72fd366a9c2f602"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "pretend until 2:49",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "ad87715cc31178b9",
+    "38d29be393da18fd",
+    "f0192fe38ed0f815",
+    "92a44767c85a33f8",
+    "6c7dfce791617414",
+    "f0b5f3901311e04f",
+    "5d38885da78eebb6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "75cb682a6d4a0d6c",
+    "cb8ffc4d5531bac5",
+    "14e667572d641970",
+    "bcf624154acfc299"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:34",
+    "goto coat_rack",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "3c7dd1646062ec22",
+    "b03741cad89bc96b",
+    "9aeb9fbae4619415",
+    "21881b8b1690d03a",
+    "3a9043d45218c93f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "wait until 3:27",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "ba2ecc1199ae0a34",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "e036fc2620292df8",
+    "b3707572e4534e99",
+    "dfb43fc6cc75cce8",
+    "c8d020b5db586159"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "goto boss_desk",
+    "goto coat_rack pretend",
+    "wait until 3:26",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "c57c4df1f9cfa615",
+    "c1ba4e820b922913",
+    "7c64a5cd24cd8cc8",
+    "ba446d6ba7f9e7cb",
+    "72bc2ee59c480867",
+    "dc39cdc76880c8ff",
+    "0fc05b3a41a998ee"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "interact",
+    "goto coat_rack",
+    "goto kitchen_table pretend",
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "7f4e9abddc006da5",
+    "8cde0c711076a8ef",
+    "fc372be5d49333ea",
+    "511a327b4e41367d",
+    "9720e582e0f49883",
+    "7644527759539133",
+    "275684033f32ce02",
+    "dd4928b2d3da189b",
+    "a0588838127f7427"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "pretend until 3:08",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "5bd96cfa0ec9c4fc",
+    "18ca40dc73a37209",
+    "87cd72e03657e32a",
+    "1cc94acc5ef4478f",
+    "575536b80df27aed",
+    "cb2a9fd3f25e1063",
+    "e5368fd12708700b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "7906c82dcea35b6f",
+    "0578b33329eeb0e5",
+    "fc440149773282f4",
+    "c7aacb14896a73ab",
+    "f6cc1807e86dfd65"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine pretend",
+    "goto fridge pretend",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "5189dd1488c4ded0",
+    "dab6b5636c268104",
+    "5c3e541ca835bc76",
+    "ae73a67fc5f45a6a",
+    "885bcdf8c87dd978",
+    "8b365e33256b1b42",
+    "39b477d6ca64f26a"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "7f4e9abddc006da5",
+    "8cde0c711076a8ef",
+    "5eca7b578585a867",
+    "08d3ec50fac8d5a3",
+    "c77cebbffccc01d8",
+    "1f9b1cb4252cea70"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "5189dd1488c4ded0",
+    "75ce4585c31d4a6e",
+    "38160cc3747008e6",
+    "80bdc0abfc29fd9f",
+    "732d293a331586da"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "pretend until 3:02",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "4fa6a2867547dfd4",
+    "e21192cfef86efef",
+    "f9e204a83ba45fec",
+    "f343debec74841ea",
+    "37aea1a5f54090bf",
+    "4b91b867155297e7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "goto entrance pretend",
+    "wait until 3:35",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "e68b45513857f753",
+    "a03f10ef367743e5",
+    "4a9d58d77a256499",
+    "1f8e5b7c97629add",
+    "5f91486f7c51d24c",
+    "150cf4494d088ac5",
+    "bd75f1e9a7fdef4f",
+    "6daadb22fa26af5d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "5189dd1488c4ded0",
+    "75ce4585c31d4a6e",
+    "38160cc3747008e6",
+    "b926983dadce1dca",
+    "dc6028037c8b2bc1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "pretend until 3:07",
+    "goto projector pretend",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "b8db261def2269ee",
+    "68265ae8255ba902",
+    "e741c21b6e0e1a2b",
+    "ebb65dd2b4cac2a3",
+    "803b3003fc93b07b",
+    "704c53f281615c02"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "interact",
+    "goto restroom_door pretend",
+    "goto coat_rack",
+    "pretend 1.41s",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "ae186e7a10257747",
+    "e5241f0199b1c654",
+    "62efd199b72a4b20",
+    "8e59a0873972da6c",
+    "018ea44e0e6e46ab",
+    "d9dd800b88b9f124",
+    "683cf7eb31e5ee16",
+    "21afd8088c71d1b4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "f158d93a64d3be5a",
+    "12fe9d991523fb46",
+    "1830fd6e0d0a1486",
+    "a840b785d1b80469",
+    "33434c08d7368ebe",
+    "5d9c798dd2821142",
+    "8112ce0f49ff623b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "wait until 3:26",
+    "wait until 3:44",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "ba2ecc1199ae0a34",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "e036fc2620292df8",
+    "d8f09695f8a3cda6",
+    "5d13ce5ebe66275c",
+    "2e6d37a3ebafea51",
+    "3a5b995819575ef5"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "601e5403301d4cfe",
+    "792398cf1268ecac",
+    "d270590ed705a003",
+    "b7b8e583d718c007",
+    "ef131d1eab99e735",
+    "d3f0ded800fb9b6a",
+    "df23febb6aa27c79",
+    "9e0583d9cf700aae",
+    "b9c969c5c6f7e5df",
+    "33411b8b8b9d5922"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "7db3e1f0f0fdc294",
+    "388f970f5de63ee3",
+    "4e733d102c60882a",
+    "943cc4bed5abe29f",
+    "b3dc76a713d2d9c1",
+    "133c14e2e1876454"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "goto coat_rack",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "3c7dd1646062ec22",
+    "b03741cad89bc96b",
+    "9aeb9fbae4619415",
+    "22dac6395885c7af",
+    "809001f7ad01c3d7",
+    "7f5c0c6d6935776a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "670414dbbcdafcb8",
+    "2a4674e9c8f0136c",
+    "6db43bb5b511c56a",
+    "4e8bf998ef2ac071",
+    "9c32e4c7a2a4070b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "75cb682a6d4a0d6c",
+    "cb8ffc4d5531bac5",
+    "5209847708aeb0f8",
+    "464937efce6955eb",
+    "b6ce2d9a8fa4581b",
+    "0c901d85281782be"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack pretend",
+    "wait until 3:26",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "c57c4df1f9cfa615",
+    "0eeb2fbc8dbc4ed0",
+    "6fd1add2cc078602",
+    "99e871fd7bca0281",
+    "095b427b6b812fc4",
+    "83c39e792c389bf6",
+    "274b8271c161a025"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "68e4a12fd628747e",
+    "0609c40ea0334be0",
+    "858f5c23ced9714a",
+    "52239b764e192732",
+    "773106856c0bb778",
+    "33d1d4062cce54bf"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "7906c82dcea35b6f",
+    "0578b33329eeb0e5",
+    "fc440149773282f4",
+    "08ffdcf6808c2554",
+    "cfad9806758bf02c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:32",
+    "interact",
+    "goto lin_desk",
+    "wait until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "a6f348d1ad797703",
+    "5d24dbc1f377a047",
+    "d781eb9f7b5cf5fa",
+    "94c9987b8146668a",
+    "e8c9e732deef7574"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "pretend until 2:55",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "149fc2f92f32b87b",
+    "26464a8529aab28d",
+    "67f8d8970801c859",
+    "15a213a6b342c870",
+    "e438e03b495c7d3a",
+    "9934288199ec9922",
+    "b6025ec08159267a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard+projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "a2e18bee9d7c9ab0",
+    "49dadfd3bd2fb55f",
+    "89e39295cafef87d",
+    "929c488d27bbd359",
+    "e8fb856ca83e0b13",
+    "37dd4f398fff67ca"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "670414dbbcdafcb8",
+    "2a4674e9c8f0136c",
+    "ce61f520119183d6",
+    "e054d80eb0b1dc45"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "670414dbbcdafcb8",
+    "2a4674e9c8f0136c",
+    "d3b1a6d90a3e224f",
+    "89f3638a7a6cbb9b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:36",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4faedeb7e3d37edf",
+    "659cc8f05d53a728",
+    "82409dea21ecfd51",
+    "ff1df7eb22c135cb",
+    "ef875fc2f285b3be",
+    "8c15a6d969d5b127",
+    "0f65ce68df5a2c4a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:32",
+    "interact",
+    "goto lin_desk",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "a6f348d1ad797703",
+    "5d24dbc1f377a047",
+    "d781eb9f7b5cf5fa",
+    "3c03a9af4d54efbf",
+    "8496eae6d5a7fe50"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "268b89d5b03579e5",
+    "8ae9fcd8ad4be533",
+    "18cb155c45552714",
+    "269e58a91d61abb6",
+    "d376f26da0c899c8",
+    "0217fc9a2786b203",
+    "c0ba867c30af9d07"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "df8a175285f2b82e",
+    "dae4c52bf34736c4",
+    "56b2affbd06bf83b",
+    "a56763396e31a5f7",
+    "7a91e8da000b677e",
+    "05ddd73e7c0aa703"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "29b9017d468ec8d7",
+    "498338bd2c5f9b00",
+    "cacf10813ad46d2a",
+    "0e25ae65ff5125a5",
+    "00bc8038d4684f9f",
+    "0480245926fc42d8",
+    "5189dd1488c4ded0",
+    "75ce4585c31d4a6e",
+    "38160cc3747008e6",
+    "6d15ad2aee90748a",
+    "548533109cb708e1",
+    "dce1215541f0c00d"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto fridge",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "601e5403301d4cfe",
+    "ecb1f7da840ebbfa",
+    "d708a3de6641c119",
+    "04aaf796231c46fc",
+    "05a60676a470a2fd",
+    "b289b7b96af0b30f",
+    "b32d73fe8318b7f7",
+    "f2cfd6ea749ffd71",
+    "a6d0603107d8cae5",
+    "f00988a08215837c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "pretend until 2:58",
+    "goto meeting_seat",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "7b19f59b8429a3db",
+    "b73fe35376989e19",
+    "ba2c614392c9a878",
+    "10dc0a60ce5aa422",
+    "1368815b2c9dc38c",
+    "680c13c332437d24"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "5826ab8f0cf73039",
+    "c411d1cafb84a10b",
+    "715e40e0639d1030",
+    "5defca5da4fd9bcc",
+    "f3d0d1bf87309a26",
+    "ad066f7012feb4cf",
+    "302ea2e5caf550e3",
+    "b02460a19fc065fa",
+    "3293f7ed02ad7534"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:15",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "4ef73493d2256581",
+    "fdb6f7e80b16166e",
+    "cc69d7b7981d7885",
+    "a9ce9fed49b76ec7",
+    "9f5e25b41a2f5582",
+    "e027c3a0ba0b4df1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "a2e18bee9d7c9ab0",
+    "49dadfd3bd2fb55f",
+    "89e39295cafef87d",
+    "929c488d27bbd359",
+    "5b95b9de09b9517e",
+    "26c028d155e1277c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "goto kev_desk pretend",
+    "wait until 3:32",
+    "wait until 3:51",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "8d33e2d14bbe309f",
+    "7475022cfbaad29a",
+    "dc51f1f87fd8064b",
+    "8a8a9c83dc0626d1",
+    "0d8f54887202142d",
+    "790d4bcae8693e54",
+    "5f020a52d318399f",
+    "21b0541ed2cd199c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "4582d3122cec5466",
+    "128fdc4f072218f5",
+    "bdecd32e9943886b",
+    "afc400eb14b659b1",
+    "54439e757ffe4093",
+    "5a5dc7d220aaeece",
+    "b3150cbe30d96caa",
+    "ad5d487258250208",
+    "cf7cf215561bfb97",
+    "e8265e2361a2b1fd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "pretend until 2:55",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "4fa6a2867547dfd4",
+    "e21192cfef86efef",
+    "a74ad6bde1bf8c2d",
+    "688e83d1ce7b892b",
+    "baaf1cb81afeccae",
+    "90ac811c6c35ee8f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard+projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "68a207be986d7736",
+    "2799384483b2be16",
+    "d346bbae5bf6a6bb",
+    "61eea5aecdc85e63",
+    "f91bde059d22548c",
+    "17012401bb0c6b7d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto lin_desk pretend",
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "pretend until 2:54",
+    "sit pretend",
+    "goto fridge",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dc5a24bf1b8856d0",
+    "ce16e9f57282b8c0",
+    "44d7fa0fe383e347",
+    "537af57cbd83166f",
+    "f135d5c51e8667c4",
+    "7e2aa55eb21e7dcb",
+    "05bc300b989d8482",
+    "cfc16ddb0c4ffd40",
+    "02f618aa229d45cb",
+    "76f7877bc00a4903",
+    "08de985872fac7fa",
+    "d1e455f4ae74eec9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "268b89d5b03579e5",
+    "8ae9fcd8ad4be533",
+    "18cb155c45552714",
+    "269e58a91d61abb6",
+    "d376f26da0c899c8",
+    "e199e5c10efc77a3",
+    "8a7e8ea796a7f796",
+    "836d99f559094ace"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "pretend until 3:03",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "4fa6a2867547dfd4",
+    "e21192cfef86efef",
+    "c2759c398fafaf9e",
+    "6b73444098552e8e",
+    "294486caaea39302",
+    "f4248a2533c75ed5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "670414dbbcdafcb8",
+    "2a4674e9c8f0136c",
+    "6db43bb5b511c56a",
+    "9c1bdfe875e36607",
+    "05b6cf211ad14765"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:22",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "6d64556fefef975b",
+    "fd1e158673c9aa75",
+    "6c8d81c22b242931",
+    "a26804397f76c432",
+    "f5773f50e8871885",
+    "47d9a658da047c1a",
+    "33a01dcb244a167d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "175758194bba0d83",
+    "811fb68ed9918ac6",
+    "16071c7d2a9bfe0e",
+    "e24c717b2ded5712",
+    "d89ff3c241d2fbe0",
+    "ac283bd378aadb75"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "wait until 3:03",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "670414dbbcdafcb8",
+    "501eb4a2a7e94f1a",
+    "ba10abcf986fcdd1",
+    "f24631e8a2e5c747",
+    "4d089bcd1e9ff40b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "wait until 3:32",
+    "wait until 3:51",
+    "goto lin_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "83f225967d58691e",
+    "b6a8820d7be79110",
+    "3c13f98a407042e2",
+    "fe8c8ab5606f3e17",
+    "75d94b0e945270e5",
+    "7944fb4d292a021c",
+    "b4d12bc5454503d8",
+    "5f8698b3b2a1192c",
+    "9755ab20005f7d26",
+    "283424296ca6208e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "interact",
+    "goto coat_rack",
+    "wait until 3:34",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "83f225967d58691e",
+    "41502a842ac2feb0",
+    "2ff27e3bab943910",
+    "ab8033dfbc73f907",
+    "36e17d7407013f55",
+    "11c55e22bc1bb333",
+    "c57633c3f35e711e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack",
+    "pretend until 3:10",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "a825ccf7a9520d81",
+    "7c1661602adaf12c",
+    "c2be86db8a310ab0",
+    "63180e1538a00729",
+    "957d9bb7715c860d",
+    "ee43830644cf9a1e",
+    "bd12734d1309a17a",
+    "7780b02ab4c79523",
+    "45e38e6bd8c280f9",
+    "dcaa1e281b3db97c",
+    "0f6684f5cafd4233",
+    "07f3e548501b18f8",
+    "0e74ec63eeee9f8a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:23",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "cd67d920b438ef97",
+    "417cc333aa390ef1",
+    "820c7f95fc47ced9",
+    "344095b6f1cab997",
+    "a9a01bedaada7e77",
+    "6fd358458090dee0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "68a207be986d7736",
+    "2799384483b2be16",
+    "d346bbae5bf6a6bb",
+    "61eea5aecdc85e63",
+    "0ce16691e79936be",
+    "2b2b6dd2d8f66e21"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard+projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "68a207be986d7736",
+    "2799384483b2be16",
+    "d346bbae5bf6a6bb",
+    "61eea5aecdc85e63",
+    "1a79fc2dd9f6161d",
+    "80caf9efa81d5353",
+    "f8e166837ab9cf94"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector",
+    "interact",
+    "pretend until 3:27",
+    "interact",
+    "goto coffee_machine pretend",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "67ebaa9c900e829b",
+    "9af8ba409cd57913",
+    "f3e42f9886a3a00a",
+    "46701d1dc04e7f4e",
+    "a7c4b89237183563",
+    "c473efca4698f634",
+    "2e2882c8cea2bcb5",
+    "7882eadb7ff47fb1",
+    "2782d28707792041"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b397c00b6083bef4",
+    "79368a204f50307b",
+    "b343d8f1c73959f0",
+    "f6ebf21c8f734b66",
+    "37abd7901b532979",
+    "1032f5149c666ef1",
+    "ee0c383a13b449e5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "68a207be986d7736",
+    "2799384483b2be16",
+    "d346bbae5bf6a6bb",
+    "61eea5aecdc85e63",
+    "d6db30c22dc6b19f",
+    "5c32f223f1060cec",
+    "85095fcc3d21cdaa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "interact",
+    "goto restroom_door pretend",
+    "goto coat_rack",
+    "interact",
+    "goto coat_rack",
+    "pretend 2.82s",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "ae186e7a10257747",
+    "e5241f0199b1c654",
+    "62efd199b72a4b20",
+    "8e59a0873972da6c",
+    "e1a1a4f66b07ca38",
+    "5e38f31b31caeae2",
+    "838dbe158b04d6bf",
+    "e5f0b692ef40007d",
+    "636e247b98a14b7f",
+    "df4c0858bd59f6d3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "4582d3122cec5466",
+    "128fdc4f072218f5",
+    "bdecd32e9943886b",
+    "afc400eb14b659b1",
+    "59fef86e3310a4de",
+    "931daea7bcfdf761",
+    "87995a2b4216c150",
+    "2650cbbf934be2fb",
+    "febb74e07e93f087",
+    "6094cc9e86abf5c9",
+    "e2eb63f8b737382e",
+    "3fcfaa88b59917a4",
+    "470d69c03e8636aa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto restroom_door pretend",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "ba2ecc1199ae0a34",
+    "5bd96cfa0ec9c4fc",
+    "c05993343afcbf68",
+    "4fa6a2867547dfd4",
+    "d344fb180b5bdba0",
+    "9cdcf26b60afd40c",
+    "adf0ed0b7eead96b",
+    "774b4c3b67a8c905"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "goto coffee_machine",
+    "interact",
+    "goto projector",
+    "interact",
+    "goto coat_rack",
+    "pretend until 3:13",
+    "goto coffee_machine",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "08262456ed010ff0",
+    "e65e66d33e8ce81f",
+    "a0b1a861a370413a",
+    "506d4707a0767768",
+    "27542c44971d54b1",
+    "252a3a6b5b2aa4c3",
+    "be51b4abce7f2b7b",
+    "edec2040c1797adc",
+    "ea082889f23c044f",
+    "c8753395f8b66bee",
+    "8af16667bd2d43fe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "a2e18bee9d7c9ab0",
+    "49dadfd3bd2fb55f",
+    "89e39295cafef87d",
+    "929c488d27bbd359",
+    "f50635739a822d8d",
+    "424aecb4e41600d6",
+    "231fccb6ffc2421d"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:26",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard+projector",
+   "digests": [
+    "601e5403301d4cfe",
+    "792398cf1268ecac",
+    "d270590ed705a003",
+    "b7c94849a51f5a2a",
+    "53cf316a53349a91",
+    "63e213c47954684d",
+    "2847e69e66a85224",
+    "49b1c23d2d02fadc",
+    "241154eb58cec988",
+    "f9a5f6475fb6eeff",
+    "25b556f764de7e88",
+    "63d2ea12bf468138",
+    "e69b889fc0bcb3b8",
+    "6fd00f96642b172e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "pretend until 3:24",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "86a2f8f0f7a3db9f",
+    "7f25fa20dcbb6150",
+    "6fa94afa906822ce",
+    "57d71af96ef0b6e7",
+    "102bcd92a4535919",
+    "e76cba3a08ec8620",
+    "c0a2fba60f18dfca",
+    "bdbd183935256299",
+    "c87270a63aef64ea",
+    "1acc989394a840fa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "wait until 3:10",
+    "goto kev_desk pretend",
+    "wait until 3:32",
+    "wait until 3:51",
+    "goto lin_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_room pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "6a745f34800c7341",
+    "8db213726c7f2f52",
+    "2261a4c9942a6e05",
+    "328ba845904c030f",
+    "2a8013728c362c6b",
+    "bd63e85e169f2ad5",
+    "d54c7ba482f24082",
+    "aee53ee448f497eb",
+    "0e1cf26fafad8e5a",
+    "7e3bea14de3028a6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b397c00b6083bef4",
+    "79368a204f50307b",
+    "b343d8f1c73959f0",
+    "f6ebf21c8f734b66",
+    "37abd7901b532979",
+    "b49bccb7e98d94be",
+    "734084426d2cf5f5",
+    "5b8aced8bfa69330"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "interact",
+    "goto coat_rack",
+    "wait 5s",
+    "interact",
+    "goto projector pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "edd086eef2950acc",
+    "75cb682a6d4a0d6c",
+    "cb8ffc4d5531bac5",
+    "7115a63aaed48203",
+    "ba544d27d1a9770e",
+    "518ab6470b0ff047",
+    "d51400f519e88fb2",
+    "746c73c9dc2a5fdc",
+    "1a90857183a9f486"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "pretend until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "6f6375eef836e5eb",
+    "36a08bcb7c4c478a",
+    "bfc6cfe129137154",
+    "f682666d02813445",
+    "fcff1cfd710fcc81",
+    "5b85a41fc99c6f30",
+    "2d6b2607d05bf6ec",
+    "d9b1712cabd61c25"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend until 3:12",
+    "goto projector pretend",
+    "pretend until 3:27",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "7e134abc73207319",
+    "4411fcc1fd443c08",
+    "1160d2bf36e2de1d",
+    "268b89d5b03579e5",
+    "3affcdb6dab41f7e",
+    "2b813a252c3593f2",
+    "8f47ae5fbd3b19c4",
+    "48697618ad0432b0",
+    "6fa26c097fc20171",
+    "ced354e23130863e",
+    "d999cf5cd6f6e69d",
+    "cb834f6a756cbb45"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine",
+    "goto coffee_machine",
+    "interact",
+    "goto projector",
+    "interact",
+    "goto coat_rack",
+    "pretend until 3:13",
+    "goto coffee_machine",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "d816c2ef714cb4c7",
+    "08262456ed010ff0",
+    "e65e66d33e8ce81f",
+    "a0b1a861a370413a",
+    "506d4707a0767768",
+    "27542c44971d54b1",
+    "252a3a6b5b2aa4c3",
+    "be51b4abce7f2b7b",
+    "edec2040c1797adc",
+    "ea082889f23c044f",
+    "f7e5d10bf7abb085",
+    "1277f05797250ebb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_seat pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "68e4a12fd628747e",
+    "0609c40ea0334be0",
+    "858f5c23ced9714a",
+    "52239b764e192732",
+    "38fdc6abb9f7370b",
+    "6440f6f07e8fd0d5",
+    "52e462feab43bdcc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "interact",
+    "pretend until 3:24",
+    "interact",
+    "pretend until 3:26",
+    "goto kitchen_table",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "86a2f8f0f7a3db9f",
+    "7f25fa20dcbb6150",
+    "a34ab55e39792eb0",
+    "cbf54b8d3b40ab72",
+    "1b28598ac269fabb",
+    "963c9cc1b426e2ae",
+    "7d0795e7a5bebe86",
+    "840b1f0e43a6bc0f",
+    "92aaab2dfd168607",
+    "63a2870a7772c985",
+    "7698f2db54f8a1ef",
+    "368dda6c76c4339c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "175758194bba0d83",
+    "811fb68ed9918ac6",
+    "16071c7d2a9bfe0e",
+    "e24c717b2ded5712",
+    "39ef135547739bf8",
+    "f6af5a7defd1c6da",
+    "b3924adf567d5d11"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "601e5403301d4cfe",
+    "792398cf1268ecac",
+    "d270590ed705a003",
+    "81f16162e16b1dc9",
+    "221456e8153dcd93",
+    "63e213c47954684d",
+    "2847e69e66a85224",
+    "5afc1b423c64451c",
+    "354a68dcd96bd311",
+    "a518f073bbad8de9",
+    "facc4cee46b09ee2",
+    "9986fc4e9d79b91e",
+    "73928025d9696098",
+    "7fc76c7bf2d0c624"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "pretend until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "88383289b3523ec7",
+    "77d89fc48919ccfb",
+    "af629bbfb97b825f",
+    "94167d912b724932",
+    "f071d914ce4f0689",
+    "a01f999908a93300",
+    "07d9a50ff961faec",
+    "9342ff17b7620ac7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "7b8f2ff648ad94fa",
+    "745b5c7a139019a6",
+    "0ff3f0bdfa677836",
+    "2e5a89f7737d89ef",
+    "fbf2c6dbad3fce76",
+    "9c32e4c7a2a4070b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "wait 1.5s",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "interact",
+    "goto restroom_door pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard+projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "68e4a12fd628747e",
+    "0609c40ea0334be0",
+    "858f5c23ced9714a",
+    "52239b764e192732",
+    "d7107028ea2f3b66",
+    "82eedc0abc3aed5d",
+    "666ba4607901134f",
+    "75775048e584d22f",
+    "98aca9dc5de7ad3c",
+    "ecd76d3bcc241c8e",
+    "5ff5edd366fb1552",
+    "b1592df1b22eee23",
+    "6f9f50de26e8a130",
+    "40a301246d83a538",
+    "ffe9076451a97c78"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "e74f37b06626385d",
+    "4a0671508c3fa2a2",
+    "eb7cfb9c488ae32a",
+    "135f4bc868845f03",
+    "9b971da4b6f31d0d",
+    "807d7abfb1d031cb",
+    "a5eb819e6579911f",
+    "d5d34c3e3ee06d64"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:26",
+    "goto boss_desk",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "f1fb8d479d75cee4",
+    "4b4846f61f1d2389",
+    "1e76b91b6e526f59",
+    "6cd5d280dda92891",
+    "c0e74e6e227c7120",
+    "7575f5832691d277",
+    "70466ad6335a800a",
+    "d707af3aeef598f1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:19",
+    "goto boss_desk",
+    "pretend until 2:57",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "f1fb8d479d75cee4",
+    "8c333e1b67a9ca98",
+    "3a56f56823cf3a91",
+    "cfaabc725a7c25ab",
+    "6dcebf45f474e175",
+    "bfc2cd4dc395cdea",
+    "16f2856b2ca1d044",
+    "0767e73d41707510"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "wait 1s",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "goto coffee_machine",
+    "wait until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "ac4186b457f2d5d6",
+    "81d1d3baca364de5",
+    "110854c4907a1085",
+    "eb7cfb9c488ae32a",
+    "135f4bc868845f03",
+    "9b971da4b6f31d0d",
+    "807d7abfb1d031cb",
+    "e75a1fc6c475eeb0",
+    "4deba11bbd8ec8a7",
+    "39eadfba4ad9f8ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "pretend until 3:28",
+    "goto coat_rack pretend",
+    "interact",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c2b6f698bb71a961",
+    "baadc9f541390bff",
+    "48d8d1573442dbde",
+    "307316d268f46613",
+    "11a84821f6345ebb",
+    "96e55624299e4e41"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 3:26",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "601e5403301d4cfe",
+    "792398cf1268ecac",
+    "d270590ed705a003",
+    "b7c94849a51f5a2a",
+    "53cf316a53349a91",
+    "63e213c47954684d",
+    "2847e69e66a85224",
+    "49b1c23d2d02fadc",
+    "241154eb58cec988",
+    "f9a5f6475fb6eeff",
+    "25b556f764de7e88",
+    "fdd39f77d501e4c5",
+    "a60006b1dbf28a9a",
+    "ac735ff36456adc0",
+    "133d86afa30b5dac"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "goto boss_office_door pretend",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "4b43d15eabdb92ac",
+    "ad51d585c4549ac8",
+    "9f3706b5bb3868a5",
+    "1ebfd65a4ebaf181",
+    "52ba5b90933d4a8a",
+    "72cdc66cbd6c19df",
+    "9002845efe740c28",
+    "bfbe18aabc0a2290",
+    "bfbe18aabc0a2290",
+    "bfbe18aabc0a2290"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "wait until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "f0da3a8ac761e645",
+    "928fd67f3a5dc4a6",
+    "ca2f9fdde5bfb302",
+    "9e1786a3c7e4e9d1",
+    "faf5e2aa832e3678",
+    "bf3f823f50f8e06a",
+    "a8e6fe89305fc4d6",
+    "d74476a2a31168b4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto fridge pretend",
+    "pretend until 3:34",
+    "interact",
+    "goto coffee_machine pretend",
+    "wait 1.5s",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard+projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "68e4a12fd628747e",
+    "0609c40ea0334be0",
+    "858f5c23ced9714a",
+    "52239b764e192732",
+    "d7107028ea2f3b66",
+    "123f713958da4c7b",
+    "2e0b65c6425573d5",
+    "8ff1d69788f0f4e3",
+    "9a8314b868891741",
+    "4bcf3d629bd8e4ca",
+    "6d4fcc8e392f0251",
+    "4fdcaadaa535a4b5",
+    "e673fa400ce8d2e6",
+    "c9c337525a68140f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "e74f37b06626385d",
+    "4a0671508c3fa2a2",
+    "eb7cfb9c488ae32a",
+    "135f4bc868845f03",
+    "94eda42f03a15b8f",
+    "7e0bbff0ee6d6011"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "goto fridge pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto coat_rack",
+    "goto coat_rack pretend",
+    "interact",
+    "goto coffee_machine",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "2fc1ac5ee23f4a1b",
+    "4582d3122cec5466",
+    "128fdc4f072218f5",
+    "bdecd32e9943886b",
+    "afc400eb14b659b1",
+    "59fef86e3310a4de",
+    "931daea7bcfdf761",
+    "87995a2b4216c150",
+    "2650cbbf934be2fb",
+    "febb74e07e93f087",
+    "b7d814eeb806892c",
+    "d50058d83aba4aa6",
+    "3db363bb5ffc8f6c",
+    "bc957cd0a2908ec6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto fridge",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 3:28",
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "9f433cbb3655f2aa",
+    "5f3bed5f2ddf2223",
+    "faba8df806a4b80e",
+    "c3678fa7ed3cb2da",
+    "e050ac318a663545",
+    "af4386317a1b3ba3",
+    "9ba7433bc37be18a",
+    "ad49fcc72944dee2",
+    "1525158b3c87d5ee",
+    "60a0004cd967225a",
+    "5cbf211e892e3ec3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "f0da3a8ac761e645",
+    "ce12c659e6b2d478",
+    "a745f574456f8b78",
+    "38d93850d5b1c080",
+    "3f01d0cf412fca7b",
+    "89807f1ef7aa47ad",
+    "1a1563004f5975f4",
+    "e931007a31d98248",
+    "8aae2a26c7d3ca50"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:26",
+    "goto boss_desk",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "f1fb8d479d75cee4",
+    "4b4846f61f1d2389",
+    "1e76b91b6e526f59",
+    "6cd5d280dda92891",
+    "c0e74e6e227c7120",
+    "7575f5832691d277",
+    "5ee0de12d65d1d9e",
+    "da8c09858ddbde4a",
+    "6c9a62c5577f46ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge",
+    "interact",
+    "wait until 3:10",
+    "goto kev_desk pretend",
+    "wait until 3:34",
+    "wait until 3:51",
+    "goto lin_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 2:43",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "951d1ddfca56ac9a",
+    "378f19221372cdc8",
+    "6a745f34800c7341",
+    "8db213726c7f2f52",
+    "2261a4c9942a6e05",
+    "328ba845904c030f",
+    "2a8013728c362c6b",
+    "bd63e85e169f2ad5",
+    "d54c7ba482f24082",
+    "6b4519df58fb18ad",
+    "2f3255a853a889da",
+    "0c1568b21d74cf52"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "e74f37b06626385d",
+    "63815ac37c26cf55",
+    "74390dfdcb7f6330",
+    "9f51958e77cfe5ae",
+    "c4f56ed4552fed34"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "96ac278797d75dc7",
+    "d17733c184931a77",
+    "d8b81e975fd1f7f6",
+    "f0da3a8ac761e645",
+    "ce12c659e6b2d478",
+    "a745f574456f8b78",
+    "38d93850d5b1c080",
+    "3f01d0cf412fca7b",
+    "89807f1ef7aa47ad",
+    "2dbfc245d4c2eb92",
+    "09f2b5c6727b5be9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "sit pretend",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "f03914e4620d8419",
+    "f9b2371be67416f2",
+    "4284365ca32f0bfe",
+    "8e5cbef20e00050d",
+    "f6728cd6fa421d09",
+    "ad7380f166fa391f",
+    "40dab76abeb6f00f",
+    "c278f49b25c29f76",
+    "c38d54ec35828b9c",
+    "bdd7cf155f5a4057",
+    "ed7f173fe93e6762",
+    "192318f8a6f375a9",
+    "192318f8a6f375a9",
+    "192318f8a6f375a9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:26",
+    "goto boss_desk",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "pretend until 3:56",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed keycard",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "f1fb8d479d75cee4",
+    "4b4846f61f1d2389",
+    "1e76b91b6e526f59",
+    "6cd5d280dda92891",
+    "c0e74e6e227c7120",
+    "dd863cc63c94cd5b",
+    "b14ec89a951e3813",
+    "81e3deabb0fba030",
+    "c6ebd21442849e33"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "interact",
+    "wait 8s",
+    "goto fridge",
+    "interact",
+    "goto coat_rack pretend",
+    "goto fridge",
+    "interact",
+    "pretend until 3:28",
+    "goto coffee_machine pretend",
+    "wait 1.5s",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "4cf9a842fbf86333",
+    "e0679fb2ed4b4926",
+    "98a4b767a0036649",
+    "f3a79d2dea62a3ce",
+    "3e7fc5aa2e43c682",
+    "24e97d75b7b5d2e7",
+    "03a350ea8410395e",
+    "26cb8870cf626ff0",
+    "f1b65c0d0217c71a",
+    "a641d83952886e63",
+    "ddb8e29816d043c7",
+    "4e582189acc25103",
+    "f757d649070595d9",
+    "b04e0fa9cc613a84",
+    "753eca9ef0010885"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "wait 1s",
+    "interact",
+    "wait 8s",
+    "goto fridge",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 3:28",
+    "goto coffee_machine pretend",
+    "wait 1.5s",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto boss_office_door pretend",
+    "wait until 4:00"
+   ],
+   "summary": "blamed projector",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "99b910a07fc6f600",
+    "f2681a3c2bbe11e7",
+    "ccced602148d3a2d",
+    "b14be283b71ae789",
+    "70c807b646ae6275",
+    "5b469d33a4ecd021",
+    "f13ee7db132e524e",
+    "e1b3b5240687a015",
+    "fbc2ee49e10db64d",
+    "b72629ad0452e8c0",
+    "3954b3c9cc4500e7",
+    "9f0578f0ccbd3579",
+    "2dcd20ced002c069",
+    "13f9d2ae3a8fb62d",
+    "517280c63507d35e",
+    "96ec1d243cc6502f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kitchen_table",
+    "goto coffee_machine pretend",
+    "interact",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "71763bf5dcd6e5b1",
+    "10e7302072d71c04",
+    "a99d3fa4df64974e",
+    "04d01ef10a0058c5",
+    "809187a0ed738df8",
+    "14942c3f03f54376",
+    "e4f90639929a964b",
+    "9b07a178c1791b82",
+    "3ec108cca4f350ff",
+    "5c59110fb28f2c6a",
+    "7fc1b72716278c0c",
+    "08c49ac653d45bf0",
+    "baff6477de08cb32",
+    "baff6477de08cb32",
+    "baff6477de08cb32"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine pretend",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:25",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "96ccb3aa2b53e6e9",
+    "40e7f9fd767d2092",
+    "4851ea477f57139d",
+    "92e1c5704323feeb",
+    "c834f650d937d8ec",
+    "df533794f82cd08b",
+    "c4a6aad38f5d37f4",
+    "e74f37b06626385d",
+    "4a0671508c3fa2a2",
+    "eb7cfb9c488ae32a",
+    "135f4bc868845f03",
+    "9b971da4b6f31d0d",
+    "27c9739f38f2c867",
+    "55a066a0c0befd3d",
+    "c2d7b848320ad3c7",
+    "4ebb7a2368521b8d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "goto projector pretend",
+    "interact",
+    "goto fridge pretend",
+    "interact",
+    "wait until 3:19",
+    "sit pretend",
+    "interact",
+    "pretend until 3:26",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_desk",
+    "goto projector pretend",
+    "pretend 8s",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "6ae60ff6da0a162a",
+    "b251e5887b5b787a",
+    "7b8f2ff648ad94fa",
+    "745b5c7a139019a6",
+    "9f8a3282a74718c3",
+    "c7b16f527fd6b8d3",
+    "dbfc6fa73f9977f1",
+    "504abd65e4e2ccb6",
+    "99eb913588ed9bd7",
+    "d455e9b36e9f26ed",
+    "244cfe1f720fd139",
+    "68ced86212165b9c",
+    "68ced86212165b9c",
+    "68ced86212165b9c",
+    "68ced86212165b9c"
+   ]
+  },
+  {
+   "cmds": [
+    "move E 1.5s",
+    "move S 2s pretend",
+    "move W 1s",
+    "wait 3s",
+    "goto coffee_machine",
+    "interact",
+    "move N 2s",
+    "wait until 2:50",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "59b727705515cf87",
+    "c40266164786c412",
+    "f42ebb6184ec3d22",
+    "de746f47c7aacaef",
+    "911a5f37520be14e",
+    "ac4c94cfb3cb7ed2",
+    "afe2e54e99fc4e0f",
+    "67dba90b44ae761a",
+    "9b7896240d323522",
+    "26559e929ee5d106"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "edd0f45294349361",
+    "b1835c1973cd94d6",
+    "c9b3a6127b6c36da",
+    "1b605686c044a673"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fridge pretend",
+    "interact",
+    "interact",
+    "pretend until 3:10",
+    "goto lin_desk",
+    "wait 5s",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a2255d4906928fc5",
+    "6b4751416b2b933d",
+    "716ecd9c29390b71",
+    "db6dfe90a00041a0",
+    "126c1d55dedc7d7d",
+    "956673b41978fc74",
+    "55fb1fd80bde9048",
+    "1ba45c8181d1d37e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coffee_machine",
+    "interact",
+    "restart",
+    "pretend until 2:46",
+    "goto coat_rack pretend",
+    "interact",
+    "goto meeting_seat pretend",
+    "pretend until 4:00",
+    "continue",
+    "move S 1s",
+    "wait 2s"
+   ],
+   "summary": "win keycard",
+   "digests": [
+    "a8a45bfdf04b1c1c",
+    "60c20caf49f29e6d",
+    "b1c42a7e1b965da4",
+    "ed1662ad2e3eef9a",
+    "e64811fb6c22cc92",
+    "7d0b4939d39cc903",
+    "89d675aea56b2c1f",
+    "9fe596b96220fde2",
+    "994b38e6b3a60fcb",
+    "4e7eb1e39199f5ea",
+    "836b97f463082c4f",
+    "64f538d798f6af69"
+   ]
+  }
+ ]
+}
