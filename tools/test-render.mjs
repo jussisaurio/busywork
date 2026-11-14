@@ -5,6 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { performance } from 'node:perf_hooks';
+import { createFakeCanvas, badStr } from './lib/fake-canvas.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
@@ -57,152 +58,20 @@ const { DIRS } = await import('../src/core/vision.js');
 const { LEGEND_PLAY } = await import('../src/render/hud.js');
 
 // --- 1. fake canvas ---------------------------------------------------------------
-const METHODS = new Set(('arc arcTo beginPath bezierCurveTo clearRect clip closePath createConicGradient createImageData ' +
-  'createLinearGradient createPattern createRadialGradient drawFocusIfNeeded drawImage ellipse fill fillRect fillText ' +
-  'getContextAttributes getImageData getLineDash getTransform isPointInPath isPointInStroke lineTo measureText moveTo ' +
-  'putImageData quadraticCurveTo rect reset resetTransform restore rotate roundRect save scale setLineDash setTransform ' +
-  'stroke strokeRect strokeText transform translate').split(' '));
-const ENUMS = {
-  textAlign: ['left', 'right', 'center', 'start', 'end'],
-  textBaseline: ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'],
-  lineCap: ['butt', 'round', 'square'],
-  lineJoin: ['round', 'bevel', 'miter'],
-  globalCompositeOperation: ['source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in',
-    'destination-out', 'destination-atop', 'lighter', 'copy', 'xor', 'multiply', 'screen', 'overlay', 'darken', 'lighten',
-    'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'],
-};
-const errors = [];
 const wordy = new Set();
 const LEGEND_WORDS = new Set(LEGEND_PLAY.flatMap((k) => [k.key, k.label]));
-let scene = 'setup';
-let calls = 0;
-let dashCalls = 0; // dashed strokes started (HUD slots, sightlines)
-const fail = (msg) => {
-  if (errors.length < 60) errors.push(`[${scene}] ${msg}`);
-};
-const badStr = (s) => /NaN|undefined|Infinity|\[object/.test(s);
-function validColor(v) {
-  if (v && typeof v === 'object') return !!v.__fake;
-  if (typeof v !== 'string' || badStr(v)) return false;
-  if (/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v)) return true;
-  const m = v.match(/^rgba?\(([^)]*)\)$/);
-  if (m) {
-    const parts = m[1].split(',').map((s) => s.trim());
-    if (parts.length < 3 || parts.length > 4) return false;
-    if (!parts.every((p) => /^-?\d+(\.\d+)?%?$/.test(p))) return false;
-    const a = parts.length === 4 ? Number(parts[3]) : 1;
-    return a >= 0 && a <= 1 && parts.slice(0, 3).every((p) => Number(p) >= 0 && Number(p) <= 255);
-  }
-  return /^[a-z]+$/i.test(v);
-}
-const gradient = () => ({
-  __fake: true,
-  addColorStop(off, color) {
-    if (!Number.isFinite(off) || off < 0 || off > 1) fail(`addColorStop offset ${off}`);
-    if (!validColor(color)) fail(`addColorStop color ${color}`);
+const fake = createFakeCanvas({
+  onCall(label, key, [txt]) {
+    if (key !== 'fillText' || (typeof txt !== 'string' && typeof txt !== 'number') || badStr(String(txt))) return;
+    // "No text except the mission card": outside the title screen only digits, ':', '×', '.', emoji
+    // and the key legend (one word naming each control).
+    if (!fake.scene.startsWith('title') && /[A-Za-z]/.test(String(txt)) && !LEGEND_WORDS.has(String(txt))) wordy.add(`${fake.scene}: "${txt}"`);
   },
 });
-
-const contexts = [];
-function makeCanvas(label, w = 300, h = 150) {
-  const canvas = { width: w, height: h, style: {}, label };
-  const state = { depth: 0, underflow: 0, label };
-  const props = {
-    canvas, globalAlpha: 1, fillStyle: '#000000', strokeStyle: '#000000', lineWidth: 1, lineCap: 'butt',
-    lineJoin: 'miter', miterLimit: 10, lineDashOffset: 0, font: '10px sans-serif', textAlign: 'start',
-    textBaseline: 'alphabetic', direction: 'inherit', shadowBlur: 0, shadowColor: 'rgba(0,0,0,0)', shadowOffsetX: 0,
-    shadowOffsetY: 0, globalCompositeOperation: 'source-over', imageSmoothingEnabled: true, imageSmoothingQuality: 'low',
-    filter: 'none', letterSpacing: '0px', fontKerning: 'auto',
-  };
-  const special = {
-    save() { state.depth++; },
-    restore() { if (state.depth === 0) state.underflow++; else state.depth--; },
-    measureText(s) { return { width: String(s).length * 8 }; },
-    createLinearGradient: gradient,
-    createConicGradient: gradient,
-    createRadialGradient(x0, y0, r0, x1, y1, r1) {
-      if (r0 < 0 || r1 < 0) fail(`createRadialGradient negative radius ${r0} ${r1}`);
-      return gradient();
-    },
-    createPattern() { return { __fake: true, setTransform() {} }; },
-    arc(x, y, r) { if (r < 0) fail(`arc negative radius ${r}`); },
-    arcTo(x1, y1, x2, y2, r) { if (r < 0) fail(`arcTo negative radius ${r}`); },
-    ellipse(x, y, rx, ry) { if (rx < 0 || ry < 0) fail(`ellipse negative radius ${rx} ${ry}`); },
-    roundRect(x, y, w, h, r) { if (typeof r === 'number' && r < 0) fail(`roundRect negative radius ${r}`); },
-    drawImage(img) {
-      if (!img || !(img.width > 0) || !(img.height > 0)) fail('drawImage with empty source');
-    },
-    fillText(txt) {
-      if (typeof txt !== 'string' && typeof txt !== 'number') fail(`fillText non-string ${typeof txt}`);
-      else if (badStr(String(txt))) fail(`fillText "${txt}"`);
-      // "No text except the mission card": outside the title screen only digits, ':', '×', '.', emoji
-      // and the key legend (one word naming each control).
-      else if (!scene.startsWith('title') && /[A-Za-z]/.test(String(txt)) && !LEGEND_WORDS.has(String(txt))) wordy.add(`${scene}: "${txt}"`);
-    },
-    setLineDash(arr) {
-      if (!Array.isArray(arr) || arr.some((v) => !Number.isFinite(v) || v < 0)) fail(`setLineDash ${arr}`);
-      else if (arr.length) dashCalls++;
-    },
-    getLineDash() { return []; },
-    getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; },
-  };
-  const fns = {};
-  const ctx = new Proxy({}, {
-    get(_, key) {
-      if (key === '__state') return state;
-      if (typeof key === 'symbol') return undefined;
-      if (Object.prototype.hasOwnProperty.call(props, key)) return props[key];
-      if (!fns[key]) {
-        if (!METHODS.has(key)) fail(`unknown ctx member read: ${key}`);
-        fns[key] = (...args) => {
-          calls++;
-          for (let i = 0; i < args.length; i++) {
-            const a = args[i];
-            if (typeof a === 'number' && !Number.isFinite(a)) fail(`${key} arg ${i} = ${a}`);
-            if (a === undefined) fail(`${key} arg ${i} undefined`);
-          }
-          const sp = special[key];
-          return sp ? sp(...args) : undefined;
-        };
-      }
-      return fns[key];
-    },
-    set(_, key, value) {
-      if (!Object.prototype.hasOwnProperty.call(props, key)) fail(`unknown ctx property set: ${String(key)}`);
-      if (value === undefined || value === null) fail(`${String(key)} = ${value}`);
-      else if (typeof value === 'number' && !Number.isFinite(value)) fail(`${String(key)} = ${value}`);
-      else if (key === 'fillStyle' || key === 'strokeStyle' || key === 'shadowColor') {
-        if (!validColor(value)) fail(`${key} = ${value}`);
-      } else if (typeof value === 'string' && badStr(value)) fail(`${String(key)} = ${value}`);
-      if (key === 'font' && !/(^|\s)\d+(\.\d+)?px\s/.test(value)) fail(`font = ${value}`);
-      if (key === 'globalAlpha' && (value < 0 || value > 1)) fail(`globalAlpha out of range ${value}`);
-      if (key === 'lineWidth' && !(value > 0)) fail(`lineWidth ${value}`);
-      if (key === 'shadowBlur' && value < 0) fail(`shadowBlur ${value}`);
-      if (ENUMS[key] && !ENUMS[key].includes(value)) fail(`${key} = ${value}`);
-      props[key] = value;
-      return true;
-    },
-  });
-  contexts.push(ctx);
-  canvas.getContext = (type) => (type === '2d' ? ctx : null);
-  return canvas;
-}
+const { errors, contexts, listeners, fail, makeCanvas } = fake;
 
 // --- 2. DOM stubs -----------------------------------------------------------------
-const listeners = {};
-globalThis.window = {
-  innerWidth: 1280, innerHeight: 800, devicePixelRatio: 2,
-  addEventListener(type, fn) { (listeners[type] ||= []).push(fn); },
-  removeEventListener() {},
-};
-let created = 0;
-globalThis.document = {
-  createElement(tag) {
-    if (tag !== 'canvas') throw new Error(`unexpected createElement(${tag})`);
-    created++;
-    return makeCanvas(`offscreen${created}`);
-  },
-};
+fake.installDom();
 
 // --- 3. game states ---------------------------------------------------------------
 const SPOT_FOR = { boss: 'boss_desk', lin: 'lin_desk', kev: 'kev_desk' };
@@ -224,7 +93,7 @@ const canvas = makeCanvas('main');
 const mainCtx = canvas.getContext('2d');
 const renderer = createRenderer(canvas, { strict: true });
 ok(listeners.resize && listeners.resize.length === 1, 'resize listener registered inside createRenderer');
-ok(created === 0, 'no offscreen canvas until first render');
+ok(fake.created === 0, 'no offscreen canvas until first render');
 
 const game = createGame();
 const SKIP = new Set(['events', 'map', 'rng', 'input']);
@@ -232,7 +101,7 @@ const snap = (g) => JSON.stringify(g, (k, v) => (SKIP.has(k) ? undefined : v));
 let renders = 0;
 let mutated = 0;
 function draw(name) {
-  scene = name;
+  fake.scene = name;
   const before = snap(game);
   try {
     renderer.render(game);
@@ -267,7 +136,7 @@ for (const t of [0, 0.05, 0.3, 0.8, 1.5, 3, 10, 30]) {
   game.time = t;
   draw(`title t=${t}`);
 }
-ok(created === 1, 'offscreen static layer created lazily (once)');
+ok(fake.created === 1, 'offscreen static layer created lazily (once)');
 game.persist.routesFound = ['projector'];
 game.persist.loop = 4;
 game.time = 40;
@@ -444,9 +313,9 @@ draw('unknown carry values');
 // Sightline flashes: every kind across its life, live positions, and garbage.
 // dashes(): dashed strokes in one render, compared against the same day without lines.
 function dashes(name) {
-  const d0 = dashCalls;
+  const d0 = fake.dashCalls;
   draw(name);
-  return dashCalls - d0;
+  return fake.dashCalls - d0;
 }
 day();
 const baseDashes = dashes('sightline baseline (no lines)');
@@ -693,9 +562,9 @@ day((g) => {
   burst(g, 'smoke', 13.5, 3.5, 30, { ttl: 99 });
   burst(g, 'paper', 13.5, 9.5, 30, { ttl: 99 });
 });
-scene = 'perf';
+fake.scene = 'perf';
 const before = snap(game);
-const callsBefore = calls;
+const callsBefore = fake.calls;
 const t0 = performance.now();
 const FRAMES = 300;
 for (let i = 0; i < FRAMES; i++) {
@@ -705,7 +574,7 @@ for (let i = 0; i < FRAMES; i++) {
   renderer.render(game);
 }
 const ms = (performance.now() - t0) / FRAMES;
-const perFrame = Math.round((calls - callsBefore) / FRAMES);
+const perFrame = Math.round((fake.calls - callsBefore) / FRAMES);
 void before;
 ok(errors.length === 0, `perf run clean (${FRAMES} frames)`);
 if (errors.length) for (const e of errors.slice(0, 20)) console.log('   ', e);
