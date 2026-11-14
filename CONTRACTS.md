@@ -299,9 +299,12 @@ plans win more than 1%, anything crashes or a day never ends, or a win skips a `
 `{ id, cmd }` (a plan command that ran contains that word) or `{ id, event }` (that event fired). Level 1's lesson
 is pretend. The one-screen report shows each way to win with its minimal plan and timing windows, the checks and
 the verdict. `tools/test-gate.mjs` tests the verdict logic on synthetic fuzz results.
-`tools/golden.mjs` is the refactor safety net: it replays a fixed corpus (`tools/golden.json`: one plan per outcome
-the fuzzer found, plus hand-written ones with raw movement and several loops) and compares a digest of every event
-and of the contract-level state after each command. A refactor must leave it passing. Re-record (`--write`) only
-for an intended behaviour change, and say so in the commit.
+`tools/golden.mjs [--level meeting]` is the refactor safety net: it replays a fixed corpus (the level's
+`src/levels/<id>/golden.json`: one plan per outcome the fuzzer found, plus the level's hand-written
+`level.gate.goldenPlans` with raw movement and several loops) and compares a digest of every event and of the
+contract-level state after each command. `tools/golden-render.mjs [--level meeting]` does the same for drawing
+(`src/levels/<id>/golden-render.json`). Each level's goldens live in its own folder, so the folder name must be the
+level id. A refactor must leave both passing. Re-record (`--write`) only for an intended behaviour change, and say so
+in the commit.
 **Implication for everyone:** gameplay must not read wall-clock time (`performance.now`, `Date`) or `Math.random`.
 Only `input.js` may use real time, for press expiry.
