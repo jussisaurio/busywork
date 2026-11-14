@@ -1,7 +1,7 @@
 // game.fx drawing (bubbles, particles, sightlines) plus small in-world overlays: interaction hint,
 // action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
-  T, MAP_W, MAP_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle, fillEllipse,
+  T, MAP_W, MAP_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
   starPath, loopIcon, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
@@ -32,17 +32,17 @@ function anchorOf(game, owner) {
   return false;
 }
 
-export function drawBubbles(ctx, game, t) {
+export function drawBubbles(ctx, game) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, t);
+    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y);
   }
 }
 
-export function drawBubble(ctx, b, ax, ay, t) {
+export function drawBubble(ctx, b, ax, ay) {
   const icons = Array.isArray(b.icons) ? b.icons : b.icons != null ? [String(b.icons)] : [];
   const age = Math.max(0, fin(b.age));
   const ttl = fin(b.ttl, 2.5);
@@ -436,7 +436,7 @@ export function drawLoopStamp(ctx, game, cx, cy) {
 }
 
 // Vignette over the map area during the busted/meeting beat.
-export function drawVignette(ctx, k, x0, y0, w, h, t) {
+export function drawVignette(ctx, k, x0, y0, w, h) {
   if (k <= 0) return;
   const cx = x0 + w / 2;
   const cy = y0 + h / 2;
@@ -445,8 +445,4 @@ export function drawVignette(ctx, k, x0, y0, w, h, t) {
   g.addColorStop(1, `rgba(20,10,6,${(0.75 * k).toFixed(3)})`);
   ctx.fillStyle = g;
   ctx.fillRect(x0, y0, w, h);
-}
-
-export function dropShadow(ctx, x, y, rx, ry) {
-  fillEllipse(ctx, x, y, rx, ry, 'rgba(0,0,0,0.25)');
 }

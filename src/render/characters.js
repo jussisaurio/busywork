@@ -780,8 +780,7 @@ export function resetState(s, t) {
 
 export function itemIcon(held) {
   if (!held) return null;
-  const type = typeof held === 'string' ? held : held.type;
-  return ITEM_ICON[type] || '❔';
+  return ITEM_ICON[held] || '❔';
 }
 
 function drawPlayer(ctx, game, t) {

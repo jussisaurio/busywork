@@ -7,7 +7,6 @@ export const SEED = 20261114; // same seed every loop -> deterministic days
 
 // --- Clock -----------------------------------------------------------------
 export const DAY_START = 14 * 60 + 30; // 2:30 PM as minute-of-day
-export const DAY_END = 16 * 60; // 4:00 PM, meeting starts
 export const GAME_MIN_PER_SEC = 0.6; // 90 game minutes ~= 150 real seconds
 export const FF_MULT = 6; // look busy while seated at own desk = fast-forward
 export const FORCED_MULT = 8; // speed while serving a "work assigned" penalty

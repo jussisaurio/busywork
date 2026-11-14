@@ -54,7 +54,7 @@ export function updatePlayer(game, dt) {
 
   // Fast-forward while pretending in place: typing at your desk, or a phone call anywhere. Never while walking
   // (×6 movement is uncontrollable) or during an action.
-  game.clock.ff = p.busy && p.busyPose !== 'folder' && !p.action && !(game.clock.forced > 0);
+  game.clock.ff = p.busy && p.busyPose !== 'folder' && !p.action;
 }
 
 // Set busy state; emits busy:start / busy:end on toggles (pose changes while busy are silent;
@@ -92,7 +92,7 @@ export function standUp(game) {
 // Circle (radius r) vs solid tiles. Moves in sub-steps no longer than r/2 (no tunnelling),
 // pushing out of overlapped tiles along the contact normal, which slides along walls
 // and rounds corners.
-export function moveWithCollision(map, x, y, dx, dy, r) {
+function moveWithCollision(map, x, y, dx, dy, r) {
   const steps = Math.max(1, Math.ceil(Math.hypot(dx, dy) / (r * 0.5)));
   for (let i = 0; i < steps; i++) {
     x += dx / steps;
@@ -105,7 +105,7 @@ export function moveWithCollision(map, x, y, dx, dy, r) {
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
 const SKIN = 1e-6;
 
-export function resolveCircle(map, x, y, r) {
+function resolveCircle(map, x, y, r) {
   for (let iter = 0; iter < 4; iter++) {
     let pushed = false;
     const x0 = Math.floor(x - r);

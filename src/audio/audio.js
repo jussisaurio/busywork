@@ -114,10 +114,7 @@ export function createAudio(opts = {}) {
   function posOf(owner) {
     if (owner && typeof owner === 'object') return owner;
     if (typeof owner !== 'string') return null;
-    const e = entity(owner);
-    if (e) return e;
-    const m = /^(-?[\d.]+),(-?[\d.]+)$/.exec(owner); // fx.say ownerKey for point owners
-    return m ? { x: Number(m[1]), y: Number(m[2]) } : null;
+    return entity(owner);
   }
   // -> { pan, gain, muffle } for a world position (pan by x; quieter far from the player;
   // muffled through the glass when the source and the player are on different sides).

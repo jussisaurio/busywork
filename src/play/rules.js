@@ -217,7 +217,7 @@ function tellLate(game, s, w) {
 }
 
 // The boss sends you back to your desk to type for WORK_PENALTY_MIN game minutes.
-export function assignWork(game, reason) {
+function assignWork(game, reason) {
   const s = game.rules;
   const p = game.player;
   const boss = findNpc(game, 'boss');
@@ -239,7 +239,7 @@ export function assignWork(game, reason) {
   game.events.emit('boss:workAssigned', { reason });
 }
 
-export function caught(game, reason) {
+function caught(game, reason) {
   if (game.caught) return;
   const p = game.player;
   game.caught = { by: 'boss', reason, t: 0 };

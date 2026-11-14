@@ -344,7 +344,7 @@ function compass(rad) {
   return COMPASS8[i];
 }
 // The ✋ hint in words (a human sees the target highlighted plus an action icon).
-export function focusText(game) {
+function focusText(game) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
   const verb = f.action === 'drop' ? `drop the ${game.player.held}` : TARGET_ACTIONS[f.action]?.text ?? f.action ?? 'interact';
@@ -354,8 +354,6 @@ const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
 
 const WORLD_TEXT = {
   projector: { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' },
-  keycard: { rack: "in the boss's jacket on the coat rack", player: 'in YOUR hand', dropped: 'on the floor', boss: 'with the boss' },
-  sandwich: { fridge: 'in the fridge', player: 'in YOUR hand', dropped: 'on the floor', eaten: 'eaten (by you)', lin: 'Lin has it' },
 };
 
 export function observe(game, { map = true, debug = false } = {}) {
@@ -429,7 +427,7 @@ export function observe(game, { map = true, debug = false } = {}) {
 
 // ASCII map: walls/furniture from the level, '*' = floor some NPC can currently see,
 // @ = you, b/l/k = boss/Lin/Kev (only if visible on the floor), letters = interactables.
-export function renderMap(game) {
+function renderMap(game) {
   const m = game.map;
   const grid = m.rows.map((r) => r.split(''));
   const actives = game.npcs.filter((n) => n.active);

@@ -37,7 +37,7 @@ function chairList() {
 
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
-export function mapInfo(map) {
+function mapInfo(map) {
   let info = infoCache.get(map);
   if (info) return info;
   const w = map.w;
@@ -597,7 +597,7 @@ function drawWallDecor(ctx, map, info) {
   drawWindow(ctx, map, 25, 27, 0); // kitchen
   drawPainting(ctx, map, 10, 6, 0);
   drawPainting(ctx, map, 25, 6, 1);
-  drawPainting(ctx, map, 2, 0, 1) || null;
+  drawPainting(ctx, map, 2, 0, 1);
   // kitchen upper cabinets over the counter
   for (let x = 21; x <= 23; x++) {
     if (!hasFront(map, x, 0)) continue;
@@ -806,15 +806,13 @@ function drawDesk(ctx, d) {
   const leftX = d.x0 * T + 14;
   const rightX = d.x1 * T + 16;
   const mug = owner === 'player' ? C.tomato : owner === 'lin' ? C.teal : owner === 'kev' ? C.olive : C.mustard;
-  if (owner !== 'player' || true) {
-    fillCircle(ctx, leftX, py + 15, 3.6, mug);
-    fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');
-    ctx.strokeStyle = mug;
-    ctx.lineWidth = 1.4;
-    ctx.beginPath();
-    ctx.arc(leftX + 4, py + 15, 1.8, -1.2, 1.2);
-    ctx.stroke();
-  }
+  fillCircle(ctx, leftX, py + 15, 3.6, mug);
+  fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');
+  ctx.strokeStyle = mug;
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.arc(leftX + 4, py + 15, 1.8, -1.2, 1.2);
+  ctx.stroke();
   if (owner === 'lin') {
     fillCircle(ctx, rightX, py + 13, 4.5, C.pot);
     for (let i = 0; i < 6; i++) {
@@ -1219,7 +1217,6 @@ function drawRackItems(ctx, cx, cy, jacket, keycard, t) {
     ctx.lineTo(cx + 3, ty + 4);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#e8e2d2';
     fillCircle(ctx, cx + 0.5, ty + 15, 0.9, '#c9c2b0');
     fillCircle(ctx, cx + 0.5, ty + 18, 0.9, '#c9c2b0');
     // pocket

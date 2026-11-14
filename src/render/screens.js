@@ -24,7 +24,7 @@ function bubble(ctx, icons, x, y, age, kind = 'speech', scale = 1) {
   BUBBLE.kind = kind;
   BUBBLE.age = age;
   if (scale === 1) {
-    drawBubble(ctx, BUBBLE, x, y, 0);
+    drawBubble(ctx, BUBBLE, x, y);
     return;
   }
   // drawBubble keeps bubbles inside the map, so scale about a point well inside it
@@ -32,7 +32,7 @@ function bubble(ctx, icons, x, y, age, kind = 'speech', scale = 1) {
   ctx.translate(x, y);
   ctx.scale(scale, scale);
   ctx.translate(-VIEW_W / 2, -VIEW_H / 2);
-  drawBubble(ctx, BUBBLE, VIEW_W / 2, VIEW_H / 2, 0);
+  drawBubble(ctx, BUBBLE, VIEW_W / 2, VIEW_H / 2);
   ctx.restore();
 }
 
@@ -398,7 +398,6 @@ function tableauKeycard(ctx, game, t, e) {
   ctx.fillStyle = 'rgba(255,255,255,0.75)';
   for (let i = 0; i < 3; i++) ctx.fillRect(476 + i * 3, TAB.y + 30 + i * 70, 2, 34);
   // smudges + impact rings
-  ctx.fillStyle = 'rgba(255,255,255,0.22)';
   fillEllipse(ctx, 480, 230, 5, 7, 'rgba(255,255,255,0.22)');
   fillEllipse(ctx, 481, 214, 4, 6, 'rgba(255,255,255,0.18)');
   if (Math.sin(t * 14) > 0.6 || Math.sin(t * 14 + Math.PI / 2) > 0.6) {

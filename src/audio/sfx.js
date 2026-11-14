@@ -191,7 +191,6 @@ export function shuffle(E, o = {}) {
   }
 }
 
-// ❓ Soft "hm?" blip, pitched to the witness.
 // 🤤☕ … 😌 Kev gets a coffee at last: a delighted "ooh" (rising), then a long slurp.
 export function slurp(E, o = {}) {
   const t = T(E, o); const g = G(o); const pan = o.pan;
@@ -200,6 +199,7 @@ export function slurp(E, o = {}) {
   tone(E, { t: t + 1.8, type: 'triangle', f: 520, f2: 390, dur: 0.3, attack: 0.04, gain: 0.04 * g, lp: 1200, pan }); // "ahh"
 }
 
+// ❓ Soft "hm?" blip, pitched to the witness.
 export function notice(E, o = {}) {
   const base = { boss: 300, lin: 620, kev: 440 }[o.by] ?? 500;
   tone(E, { t: T(E, o), type: 'triangle', f: base, f2: base * 1.45, dur: 0.14, attack: 0.02, gain: 0.05 * G(o), lp: 1800, pan: o.pan });

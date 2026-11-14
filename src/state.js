@@ -1,10 +1,8 @@
 // Game state construction. Shape documented in CONTRACTS.md.
 import { parseMap } from './core/map.js';
 import { createEvents } from './core/events.js';
-import { createRng } from './core/rng.js';
 import { createFx } from './core/fx.js';
 import { MAP, LEGEND } from './data/level.js';
-import { SEED } from './config.js';
 import { spotPos } from './game/perception.js';
 
 export function createGame({ events, input } = {}) {
@@ -25,7 +23,6 @@ export function createGame({ events, input } = {}) {
 // Rebuild everything that belongs to a single day. NPCs are created by loop.startLoop.
 export function resetLoop(game) {
   const desk = spotPos('player_desk');
-  game.rng = createRng(SEED);
   game.fx = createFx();
   game.loopTime = 0;
   game.paused = false; // main.js: Esc / the ⏸ button / losing focus; nothing ticks while true

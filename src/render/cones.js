@@ -9,7 +9,7 @@ const MAX_STEPS = 64;
 const RED = [255, 64, 44];
 
 // Distance (tiles) from (ox, oy) along unit (dx, dy) to the first opaque tile, capped at maxDist.
-export function castRay(map, ox, oy, dx, dy, maxDist) {
+function castRay(map, ox, oy, dx, dy, maxDist) {
   let mx = Math.floor(ox);
   let my = Math.floor(oy);
   const stepX = dx > 0 ? 1 : -1;
@@ -36,7 +36,7 @@ export function castRay(map, ox, oy, dx, dy, maxDist) {
 }
 
 // 0..1: how hard this NPC is "noticing" the player right now (derived, read-only).
-export function noticeLevel(game, npc) {
+function noticeLevel(game, npc) {
   let lvl = 0;
   if (game.caught && game.caught.by === npc.id) return 1;
   if (npc.id === 'boss') {
