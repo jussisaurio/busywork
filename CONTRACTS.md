@@ -38,15 +38,16 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `owns`, `sceneDoor`, `routes`,
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `routes`,
   `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
-  done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place? }` (`place`: the world
-  field that tracks where it is).
+  done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
+  (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
+  reclaim?(game, npc) }`). `roles`: `authority { id, offDuty, helpless, deafIn }` (his sighting means caught; `suspicion[id]`),
+  `evidence { by, while, mark, knows, icon }`, `scene { by, while, zone, door, radius?, fresh(world), icon }`; everyone else is a witness.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
-  `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
-  rules.js measures `SCENE_RADIUS` from. `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
+  `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
   🪪 keycard), the one source of route icons. `outcomeOrder`: the order `outcome.routes` lists achieved routes in (keycard,
   projector). `initialWorld()`: the `world` object below, fresh for each loop (resetLoop).
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`

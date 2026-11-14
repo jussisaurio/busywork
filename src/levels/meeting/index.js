@@ -8,9 +8,8 @@
 //   cast     the NPC definitions, in order: the order is behaviour (update, witness and event order)
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
 //   interactions  the player's actions here (interactions.js; play/interactions.js adds sit, drop, pick_up)
-//   items    carryable item types and their flags (items.js)
-//   owns     who takes which item back on sight (play/rules.js)
-//   sceneDoor  the meeting-room door: Kev blames whoever is within rules.js SCENE_RADIUS of it
+//   items    carryable item types and their flags: icon, place, edible, contraband, owner (items.js)
+//   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
@@ -20,6 +19,7 @@ import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
+import { ROLES } from './roles.js';
 
 export default {
   id: 'meeting',
@@ -41,8 +41,7 @@ export default {
   },
   interactions: INTERACTIONS,
   items: ITEMS,
-  owns: { lin: 'sandwich', kev: 'coffee' },
-  sceneDoor: { x: 14.5, y: 6.5 },
+  roles: ROLES,
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
     { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },

@@ -35,8 +35,9 @@ export const PLAYER_RADIUS = 0.3; // collision circle
 export const NPC_SPEED = 2.6;
 export const INTERACT_RADIUS = 1.5; // from player centre to interactable tile centre
 
-// Picking a floor item up (real seconds). The level's own actions carry their timings (level.interactions).
-export const PICK_UP_TIME = 0.3;
+// Generic action timings (real seconds). The level's own actions carry theirs (level.interactions).
+export const PICK_UP_TIME = 0.3; // a floor item
+export const EAT_TIME = 2.0; // an edible item in hand
 
 // --- Perception --------------------------------------------------------------
 export const deg = (d) => (d * Math.PI) / 180;

@@ -2,12 +2,14 @@
 // Runs right after updatePlayer.
 //
 // The actions are the level's (level.interactions, keyed by verb; see levels/meeting/interactions.js for the
-// row fields) followed by the generic ones every level has:
+// row fields), then one per edible item, then the generic ones every level has:
+//   holding an edible item                       -> eat_<type> (sneaky to its owner; leaves player.smeared)
 //   own_desk (not seated)                        -> sit (instant)
 //   holding anything, no level 'self' row valid  -> drop (instant)
 //   empty hands, dropped item within ITEM_RADIUS -> pick_up
 // The nearest valid target wins; 'self' targets only apply when nothing else is valid.
-import { INTERACT_RADIUS, PICK_UP_TIME } from '../config.js';
+import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
+import { say, burst } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 
 const ITEM_RADIUS = 1.0; // pick-up reach for floor items
@@ -27,13 +29,35 @@ const GENERIC = {
 // Use actionRow(game, verb).
 export const TARGET_ACTIONS = { ...GENERIC };
 
-// A level's action table: its own rows first (in its order), then the generic rows it does not replace.
+// Eating an edible item you hold: the boss reads it as slacking, its owner (if any) as theft, and the mustard
+// (player.smeared) stays on you for the loop.
+function eatRow(type, item) {
+  const owner = item.owner?.id ?? null;
+  return {
+    on: 'self', icon: '😋', text: `eat the ${type}`, duration: EAT_TIME, sneaky: !!owner, owner, idle: true, saw: item.icon,
+    can: (p) => p.held === type,
+    done(game) {
+      const p = game.player;
+      p.held = null;
+      p.smeared = true; // the evidence is now on you
+      if (item.place) game.world[item.place] = 'eaten';
+      burst(game, 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
+      say(game, 'player', ['😋'], { kind: 'thought', ttl: 1.5 });
+      game.events.emit(`${type}:eaten`, {});
+    },
+  };
+}
+
+// A level's action table: its own rows first (in its order), then an eat row per edible item, then the generic
+// rows. A level row replaces a generated or generic row of the same verb.
 const tables = new WeakMap();
 function actionsOf(level) {
   let table = tables.get(level);
   if (!table) {
     table = { ...level.interactions };
-    for (const [verb, row] of Object.entries(GENERIC)) if (!(verb in table)) table[verb] = row;
+    const add = (verb, row) => { if (!(verb in table)) table[verb] = row; };
+    for (const [type, item] of Object.entries(level.items ?? {})) if (item.edible) add(`eat_${type}`, eatRow(type, item));
+    for (const [verb, row] of Object.entries(GENERIC)) add(verb, row);
     tables.set(level, table);
     Object.assign(TARGET_ACTIONS, table);
   }

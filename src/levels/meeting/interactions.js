@@ -1,4 +1,5 @@
-// The meeting's player actions (level.interactions; the engine adds sit, drop and pick_up after these).
+// The meeting's player actions (level.interactions). The engine adds, after these, eat_sandwich (the sandwich is
+// edible, items.js) and the generic sit, drop and pick_up.
 // Each row, keyed by verb:
 //   on        the target that offers it: an interactable type, 'item' (a floor item) or 'self' (what is in hand)
 //   icon      the ✋ hint (player.focus.icon); text: the harness's words for it
@@ -7,7 +8,7 @@
 //   saw       the icon a witness's grudge bubble shows for it
 //   can(p, w, item)  offered only while this holds; a timed action is cancelled ('invalid') once it stops
 //   done(game, a)    the result, applied right after 'action:done'
-// For one target the first possible row wins (so eat_sandwich beats the engine's drop).
+// For one target the first possible row wins.
 import { say, burst, shake } from '../../core/fx.js';
 
 export const INTERACTIONS = {
@@ -50,19 +51,6 @@ export const INTERACTIONS = {
       game.player.held = 'sandwich';
       game.world.sandwich = 'player';
       game.events.emit('sandwich:taken', {});
-    },
-  },
-  eat_sandwich: {
-    on: 'self', icon: '😋', text: 'eat the sandwich', duration: 2.0, sneaky: true, owner: 'lin', idle: true, saw: '🥪',
-    can: (p) => p.held === 'sandwich',
-    done(game) {
-      const p = game.player;
-      p.held = null;
-      p.smeared = true; // the evidence is now on you
-      game.world.sandwich = 'eaten';
-      burst(game, 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
-      say(game, 'player', ['😋'], { kind: 'thought', ttl: 1.5 });
-      game.events.emit('sandwich:eaten', {});
     },
   },
 };
