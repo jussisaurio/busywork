@@ -52,6 +52,7 @@ export const DECOR = {
   //   slideProjector  { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }  (the beam lights `screen`)
   //   carafe          { full }
   //   coatRack        { coat, tag }  (a jacket on the rack; a badge clipped to it)
+  //   icon            { icon, size? }  (any level: one emoji on the tile, 18 px by default)
   props: [
     {
       tile: 'J',

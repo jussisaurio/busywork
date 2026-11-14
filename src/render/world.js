@@ -1053,6 +1053,10 @@ const PROP_PAINTERS = {
   coatRack(ctx, info, at, shown, t) {
     drawRackItems(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.coat, shown.tag, t);
   },
+  // { icon, size? }: any level's stand-in, one emoji on the tile (nothing when icon is empty).
+  icon(ctx, info, at, shown) {
+    if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
+  },
 };
 
 export function sparkle(ctx, x, y, r, color) {

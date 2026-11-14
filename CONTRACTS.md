@@ -75,7 +75,8 @@ everyone relies on**.
   Presentation (render reads these, the sim never does; field notes in `levels/meeting/decor.js` and `looks.js`):
   `decor.props`: furniture with moving parts, `[{ tile, draw, state(world, game) }]`, drawn in order on the first map tile
   `tile` by the renderer's painter `draw`, which shows what `state` returns: `'slideProjector'` `{ state: 'ok'|'broken'|'fixing',
-  fix, beam }` (a beam lights `decor.screen`), `'carafe'` `{ full }`, `'coatRack'` `{ coat, tag }`. `poses`: `arms: [{ when(npc,
+  fix, beam }` (a beam lights `decor.screen`), `'carafe'` `{ full }`, `'coatRack'` `{ coat, tag }`, and for any level `'icon'`
+  `{ icon, size? }` (one emoji on the tile, 18 px by default). `poses`: `arms: [{ when(npc,
   world, game), arms, item?, angry?, crank? }]` (the first rule that holds sets his arms, a characters.js pose name or a function
   of the npc; none: `'desk'` sitting, `'walk'` walking) and `marks: [{ when, angry?, badge?, jacket? }]` (every rule that holds
   applies; `jacket: false` draws him in shirtsleeves). The authority scowls on his own once he catches you. `cones`: `{ alert:
