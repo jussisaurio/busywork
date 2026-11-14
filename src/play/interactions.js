@@ -69,10 +69,26 @@ export function actionRow(game, verb) {
   return actionsOf(game.level)[verb] ?? null;
 }
 
+// A level's rows grouped by target, each list in table order (built once per level: findFocus runs every tick).
+const byTarget = new WeakMap();
+function rowsFor(level, target) {
+  let groups = byTarget.get(level);
+  if (!groups) {
+    groups = new Map();
+    for (const [verb, row] of Object.entries(actionsOf(level))) {
+      if (!groups.has(row.on)) groups.set(row.on, []);
+      groups.get(row.on).push([verb, row]);
+    }
+    byTarget.set(level, groups);
+  }
+  return groups.get(target) ?? NONE;
+}
+const NONE = [];
+
 // The action a target offers right now, or null. target: an interactable type, 'self', or 'item' (with the item).
 function targetAction(game, target, item = null) {
-  for (const [verb, row] of Object.entries(actionsOf(game.level))) {
-    if (row.on === target && row.can(game.player, game.world, item)) return verb;
+  for (const [verb, row] of rowsFor(game.level, target)) {
+    if (row.can(game.player, game.world, item)) return verb;
   }
   return null;
 }
@@ -82,18 +98,18 @@ function findFocus(game) {
   let best = null;
   let bestD = Infinity;
   for (const it of game.map.interactables) {
-    const verb = targetAction(game, it.type);
-    if (!verb) continue;
     const d = Math.hypot(it.cx - p.x, it.cy - p.y);
-    if (d <= INTERACT_RADIUS && d < bestD) {
+    if (!(d <= INTERACT_RADIUS && d < bestD)) continue; // can() is pure, so test reach first
+    const verb = targetAction(game, it.type);
+    if (verb) {
       bestD = d;
       best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: actionRow(game, verb).icon, action: verb };
     }
   }
   for (const item of game.world.items) {
-    if (!targetAction(game, 'item', item)) continue;
     const d = Math.hypot(item.x - p.x, item.y - p.y);
-    if (d <= ITEM_RADIUS && d < bestD) {
+    if (!(d <= ITEM_RADIUS && d < bestD)) continue;
+    if (targetAction(game, 'item', item)) {
       bestD = d;
       best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: actionRow(game, 'pick_up').icon, action: 'pick_up', item };
     }
