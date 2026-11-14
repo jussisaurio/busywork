@@ -10,7 +10,7 @@ export function setOverride(npc, ov) {
 
 // Leaving an override: resume whatever the schedule says now (or the meeting after the gather).
 export function endOverride(npc) {
-  if (npc._gathered && !npc._gone) setOverride(npc, 'meeting');
+  if (npc._gathered && !npc._gone) setOverride(npc, npc._gathered); // the meeting's override (npcs.js gather)
   else npc.override = null;
   npc._look = null;
 }

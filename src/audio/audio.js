@@ -14,7 +14,7 @@
 
 import { spotPos, findNpc } from '../game/perception.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
-import { babble, hum, voiceOf, sfxPitch } from './babble.js';
+import { babble, hum, voiceOf, sfxPitch, voicesFor } from './babble.js';
 import * as sfx from './sfx.js';
 import { createMusic } from './music.js';
 
@@ -143,6 +143,7 @@ export function createAudio(opts = {}) {
   const sounds = () => game?.level?.sounds ?? NO_SOUNDS;
   const entry = (table, key) => (table && typeof key === 'string' && Object.hasOwn(table, key) ? table[key] : null);
   // The voice an NPC (or the player) speaks with: its `voice`, else its id.
+  const voices = () => voicesFor(game?.level?.voices); // the engine's voices plus the level's cast's
   const voiceFor = (id) => {
     const n = entity(id);
     return n && typeof n.voice === 'string' ? n.voice : id;
@@ -150,7 +151,7 @@ export function createAudio(opts = {}) {
   // The talking-map key of that voice (as onSay files it).
   const voiceKey = (id) => {
     const v = voiceFor(id);
-    const vid = voiceOf(v);
+    const vid = voiceOf(v, voices());
     return vid === 'generic' && typeof v === 'string' ? v : vid;
   };
 
@@ -202,7 +203,7 @@ export function createAudio(opts = {}) {
       oldest.end = t + 0.05;
     }
     const start = busy ? t + 0.04 : t;
-    const b = (o.kind === 'thought' ? hum : babble)(E, { ...o, t: start });
+    const b = (o.kind === 'thought' ? hum : babble)(E, { ...o, voices: voices(), t: start });
     talking.set(key, { start: b.start, end: b.end, kill: b.kill, kind: o.kind });
   }
   function onSay(p) {
@@ -218,7 +219,7 @@ export function createAudio(opts = {}) {
       if (icon !== undefined) play(signs[icon], p);
       return;
     }
-    const vid = voiceOf(typeof p.voice === 'string' ? p.voice : p.owner);
+    const vid = voiceOf(typeof p.voice === 'string' ? p.voice : p.owner, voices());
     const key = vid === 'generic' && typeof p.voice === 'string' ? p.voice : vid;
     if (p.kind === 'thought') {
       const cur = talking.get(key);
@@ -245,7 +246,7 @@ export function createAudio(opts = {}) {
   function tattleOnce(p) {
     if (recently('tattle', 0.3)) return;
     const by = typeof p?.by === 'string' ? p.by : null;
-    const pitch = sfxPitch(voiceFor(by));
+    const pitch = sfxPitch(voiceFor(by), voices());
     // Contraband: the witness takes their thing back, by default with a grumble ("hey, that's mine");
     // level.sounds.contraband can give someone another reaction. A real tattle is the playground "nyah-nyah".
     if (p?.reason === 'contraband') {
@@ -291,10 +292,10 @@ export function createAudio(opts = {}) {
     'busy:start': (p) => sfx.shuffle(E, atEnt('player', { pose: p?.pose })),
     'witness:notice': (p) => {
       // rules.js says a ❓ thought right before this; its hum already is the "hm?".
-      const vid = voiceOf(p?.by);
+      const vid = voiceOf(p?.by, voices());
       const h = last[`hum:${vid}`];
       if (h !== undefined && fin(E.ctx.currentTime, 0) - h < 0.15) return;
-      sfx.notice(E, atEnt(p?.by, { f: sfxPitch(voiceFor(p?.by)).notice }));
+      sfx.notice(E, atEnt(p?.by, { f: sfxPitch(voiceFor(p?.by), voices()).notice }));
     },
     'witness:tattle': (p) => tattleOnce(p),
     'work:done': () => sfx.relief(E, { t: now() }),
@@ -331,6 +332,7 @@ export function createAudio(opts = {}) {
       cast.forEach((n, i) => {
         babble(E, {
           voiceId: typeof n.voice === 'string' ? n.voice : n.id,
+          voices: voices(),
           icons: ['💬', '💬', '💬'],
           kind: 'speech',
           t: t + 0.25 * i,

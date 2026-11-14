@@ -1,11 +1,13 @@
 // Level registry: id -> level object (shape: src/levels/meeting/index.js). createGame() uses defaultLevel.
 import meeting from './meeting/index.js';
+import fixture from './fixture/index.js';
 import fixtureAttention from './fixture-attention/index.js';
 import fixturePutdown from './fixture-putdown/index.js';
 import fixtureInspection from './fixture-inspection/index.js';
 
 export const levels = {
   meeting,
+  fixture, // test level: a level is one folder
   'fixture-attention': fixtureAttention, // test level: attention
   'fixture-putdown': fixturePutdown, // test level: put down
   'fixture-inspection': fixtureInspection, // test level: inspection

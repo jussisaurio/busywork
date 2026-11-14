@@ -33,5 +33,35 @@ export const LOOKS = {
   },
 };
 
+// level.poses: what render/characters.js draws the cast doing, beyond sitting, walking and standing.
+//   arms   the first rule whose when(npc, world, game) holds sets the arms: { when, arms, item?, angry?, crank? }
+//          arms: a characters.js computeHands pose ('bang' fists on glass, 'reach', 'shrug', 'puff' hand to mouth,
+//          'carry' in both hands, ...) or a function of the npc; item: an emoji in hand; crank: a wrench turning.
+//          No rule holds: 'desk' sitting, 'walk' walking, else idle. What an NPC carries (npc.carry) is drawn in
+//          hand while his hands are free, else set down beside him.
+//   marks  every rule that holds sets its flags: angry (a scowl), badge (a tag on a 'suit' torso),
+//          jacket: false (a look with a `shirt` is drawn in it). The authority scowls on his own when he catches you.
+export const POSES = {
+  arms: [
+    { when: (n) => n.override === 'lockedOut', arms: 'bang', angry: true },
+    { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
+    // No projector, no slides: the boss shrugs at the head of the table.
+    { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'shrug' },
+    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
+    { when: (n, w) => n.id === 'lin' && w.sandwich === 'lin', arms: 'carry', item: '🥪' },
+  ],
+  marks: [
+    { when: (n) => n.override === 'hunting' || (n.id === 'boss' && n.override === 'alerted'), angry: true },
+    { when: (n, w) => n.id === 'boss' && w.keycard === 'boss', badge: true },
+    { when: (n, w) => n.id === 'boss' && w.jacket !== 'boss', jacket: false }, // in shirt and suspenders until he fetches it
+  ],
+};
+
+// level.cones: what makes an NPC's vision cone flare red (render/cones.js), besides the authority's suspicion
+// and a sneaky action he sees.
+//   alert   overrides during which he's on alert
+//   eyesOn  npc id -> the item type that flares his cone when he sees it in your hands
+export const CONES = { alert: ['alerted', 'hunting'], eyesOn: { lin: 'sandwich' } };
+
 // level.itemIcons: the emoji for each item type (held, in hands, dropped on the floor, in the HUD).
 export const ITEM_ICONS = { coffee: '☕', keycard: '🪪', sandwich: '🥪' };

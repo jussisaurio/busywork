@@ -56,7 +56,7 @@ function startMeeting(game, s) {
   // Everything achieved this loop counts (both routes can be true at once), in the level's outcomeOrder.
   const level = game.level;
   const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
-  const present = inZone(game, 'meeting_room', p.x, p.y);
+  const present = inZone(game, level.meeting.room, p.x, p.y);
   const result = !routes.length ? 'fail' : present ? 'win' : 'blamed';
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
@@ -74,7 +74,7 @@ function startMeeting(game, s) {
   if (result === 'fail') {
     // You are now presenting. There are no slides.
     burst(game, 'paper', p.x, p.y, 8);
-    const spot = spotPos(game, 'meeting_presenter');
+    const spot = spotPos(game, game.level.meeting.presenter);
     p.x = spot.x;
     p.y = spot.y;
     p.dir = spot.dir;

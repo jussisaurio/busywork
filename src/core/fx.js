@@ -31,7 +31,7 @@ export function say(game, owner, icons, opts = {}) {
   return bubble;
 }
 
-// kind: 'smoke' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
+// kind: 'puff' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
 export function burst(game, kind, x, y, n = 8, opts = {}) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;

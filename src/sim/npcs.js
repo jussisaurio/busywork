@@ -77,7 +77,6 @@ export function createNpc(game, def, now = 0) {
     pose: first.do === 'sit' ? 'sit' : 'stand',
     moving: false,
     override: null,
-    hasJacket: false, // render: drawn with his jacket on (a behaviour hook sets it)
     carry: null, // null | item type he carries (Kev's coffee, once he has the day's cup)
     wants: null, // null | item type he now knows is his and misses (Kev found the pot empty: someone has his cup)
     label: `${first.do} ${first.spot}`,
@@ -93,7 +92,7 @@ export function createNpc(game, def, now = 0) {
     _look: null, // look-around (a hunt's): { t, angle }
     _heard: null, // a noise holding his attention (mechanics/attention.js)
     _gone: false, // left for the day
-    _gathered: false, // the 3:54 gather has been processed for this NPC
+    _gathered: false, // the gather has been processed for this NPC: then the meeting's override name (endOverride)
     _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
     _bangT: 0, // a door's knocking: s to the next bang...
     _bangI: 0, // ...and which line
@@ -109,11 +108,12 @@ export function updateNpcs(game, dt) {
 
   // 5. Meeting gather, once per loop. The flag lives on the NPCs, so a new loop starts clean.
   if (now >= game.level.day.gatherAt && npcs.length && !npcs.some((n) => n._gathered)) {
+    const ov = game.level.meeting.override;
     for (const n of npcs) {
-      n._gathered = true;
+      n._gathered = ov;
       // A lure's job is finished first (endOverride sends him to the meeting afterwards).
       if (n._gone || mechanicOf(game, n)?.kind.keepsThroughMeeting) continue;
-      setOverride(n, 'meeting');
+      setOverride(n, ov);
     }
     game.events.emit('meeting:gather', {});
   }
@@ -243,7 +243,7 @@ function planKey(game, npc, now) {
   if (m) return m.kind.key(m.data, npc);
   const seq = npc._ovSeq;
   switch (npc.override) {
-    case 'meeting': return `meeting#${seq}`;
+    case game.level.meeting.override: return `${npc.override}#${seq}`;
     default: {
       const i = entryIndex(npc, now);
       const names = npc._schedule[i].prelude;
@@ -268,12 +268,12 @@ function buildPlan(game, npc, now, key) {
   const m = mechanicOf(game, npc);
   if (m) {
     m.kind.build(game, npc, plan, m.data);
-  } else if (kind === 'meeting') {
+  } else if (kind === game.level.meeting.override) {
     plan.legs.push(spotLeg(game, npc.meetingSpot));
     plan.pose = 'sit';
     plan.hurry = true;
     plan.onDone = npc._meetingArrive ? runHook(hook(game, npc._meetingArrive)) : null;
-    plan.label = `meeting ${npc.meetingSpot}`;
+    plan.label = `${kind} ${npc.meetingSpot}`;
   } else {
     const i = entryIndex(npc, now);
     const e = npc._schedule[i];
@@ -413,9 +413,10 @@ export function npcTakes(npc, item) {
 
 // 4:00, attendance rule: everyone at the table turns to your empty chair. 🪑❓ … 😠👉
 export function stareAtEmptyChair(game) {
-  const c = spotPos(game, 'meeting_player');
+  const m = game.level.meeting;
+  const c = spotPos(game, m.chair);
   for (const n of game.npcs) {
-    if (!n.active || n.override !== 'meeting') continue;
+    if (!n.active || n.override !== m.override) continue;
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
     n._gl.hold = 0; // stop any glance: all eyes on the chair
     say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });

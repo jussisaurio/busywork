@@ -31,7 +31,7 @@ function endKind(o) {
 
 function bossJacket(game) {
   const boss = game.npcs && findNpc(game, 'boss');
-  return boss ? boss.hasJacket !== false : true;
+  return boss ? game.world.jacket === boss.id : true;
 }
 
 function tableauKeycard(ctx, game, t, e) {
@@ -313,7 +313,7 @@ function tableauBlamed(ctx, game, t, e, o) {
   ctx.save();
   ctx.translate(476, 302);
   ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, -Math.PI / 2, C.mustard, C.mustardDark);
+  drawChair(ctx, 0, 0, -Math.PI / 2, C.ochre, C.ochreDark);
   ctx.restore();
   // what they're saying
   bubble(ctx, lockedOut && !kev ? B_BLAME : B_POINT, 272, 206, e, 'speech', 1.4);

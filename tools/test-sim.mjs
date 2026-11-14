@@ -163,7 +163,7 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   ok(said(R, 'boss', '🚬❓').length === 1, 'boss thinks 🚬❓ once');
   const jk = evAt(R, 'boss:jacket');
   ok(jk != null && jk >= at('3:35') && jk < at('3:37'), `boss takes jacket ~3:35 (${fmtS(jk)})`);
-  ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss' && npc(R, 'boss').hasJacket, 'keycard and jacket -> boss');
+  ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss', 'keycard and jacket -> boss');
   ok(arr(R, 'boss', 'smoke', at('3:35'), at('3:48')) != null, `boss reaches smoke spot (${fmt(arr(R, 'boss', 'smoke'))})`);
   ok(arr(R, 'boss', 'boss_desk', at('3:48'), at('3:54')) != null, `boss back at desk before 3:54 (${fmt(arr(R, 'boss', 'boss_desk', at('3:48')))})`);
   ok(!R.game.world.bossLockedOut && !R.counts['boss:lockedOut'], 'boss NOT locked out');

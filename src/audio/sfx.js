@@ -33,7 +33,7 @@ export function pour(E, o = {}) {
   }
 }
 
-// 💥 Coffee hits the projector: splash, then an electric zap and a power-down whine.
+// 💥 Liquid meets electronics: splash, then an electric zap and a power-down whine.
 export function splashZap(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;
   hiss(E, { t, dur: 0.4, gain: 0.2 * g, type: 'lowpass', f: 4000, f2: 500, q: 0.8, pan });
@@ -54,7 +54,7 @@ export function splashZap(E, o = {}) {
     P.setF(osc.frequency, rand(90, 1100), tk);
     P.set(env.gain, rand(0.35, 1) * 0.09 * g, tk);
   }
-  P.lin(env.gain, 0, tz + 0.43);
+  P.ramp(env.gain, 0, tz + 0.43);
   chain(osc, bp, env, s.out(E.sfx, pan));
   s.play(osc, tz, tz + 0.45);
   s.done();
@@ -80,9 +80,9 @@ function fridgeHum(E, t, dur, gain, pan) {
   const lp = s.filter('lowpass', 380, 0.9);
   const env = s.gain(0);
   P.set(env.gain, 0, t);
-  P.lin(env.gain, gain, t + 0.1);
-  P.lin(env.gain, gain, t + dur * 0.6);
-  P.lin(env.gain, 0, t + dur);
+  P.ramp(env.gain, gain, t + 0.1);
+  P.ramp(env.gain, gain, t + dur * 0.6);
+  P.ramp(env.gain, 0, t + dur);
   chain(osc, lp, env, s.out(E.sfx, pan));
   s.play(osc, t, t + dur + 0.02);
   s.done();
@@ -117,7 +117,7 @@ export function munch(E, o = {}) {
     const env = s.gain(0);
     P.set(env.gain, 0, tk);
     for (let j = 0; j < 7; j++) P.set(env.gain, rand(0.2, 1) * 0.11 * g, tk + 0.002 + j * 0.012);
-    P.lin(env.gain, 0, tk + 0.11);
+    P.ramp(env.gain, 0, tk + 0.11);
     chain(n, bp, env, s.out(E.sfx, pan));
     s.play(n, tk, tk + 0.12, Math.random() * 0.8);
     s.done();
@@ -166,9 +166,9 @@ export function creak(E, o = {}) {
   const env = s.gain(0);
   for (let tt = t0; tt < t0 + dur; tt += rand(0.012, 0.03)) P.setF(osc.frequency, rand(95, 210) * (up ? 1.2 : 1), tt);
   P.set(env.gain, 0, t0);
-  P.lin(env.gain, 0.17 * g * (up ? 0.6 : 1), t0 + 0.03);
-  P.lin(env.gain, 0.11 * g * (up ? 0.6 : 1), t0 + dur * 0.7);
-  P.lin(env.gain, 0, t0 + dur);
+  P.ramp(env.gain, 0.17 * g * (up ? 0.6 : 1), t0 + 0.03);
+  P.ramp(env.gain, 0.11 * g * (up ? 0.6 : 1), t0 + dur * 0.7);
+  P.ramp(env.gain, 0, t0 + dur);
   chain(osc, bp, env, s.out(E.sfx, pan));
   s.play(osc, t0, t0 + dur + 0.02);
   s.done();
@@ -253,15 +253,15 @@ export function sadTrombone(E, o = {}) {
     P.setF(osc.frequency, f * 1.01, tt);
     P.expF(osc.frequency, f * (i === 3 ? 0.96 : 0.995), tt + d * 0.9);
     P.setF(lp.frequency, 350, tt);
-    P.lin(lp.frequency, 1500, tt + 0.07);
-    P.lin(lp.frequency, 650, tt + d * 0.9);
+    P.ramp(lp.frequency, 1500, tt + 0.07);
+    P.ramp(lp.frequency, 650, tt + d * 0.9);
     P.set(env.gain, 0, tt);
-    P.lin(env.gain, 0.1 * g, tt + 0.03);
-    P.lin(env.gain, 0.08 * g, tt + d * 0.85);
-    P.lin(env.gain, 0, tt + d * 0.97);
+    P.ramp(env.gain, 0.1 * g, tt + 0.03);
+    P.ramp(env.gain, 0.08 * g, tt + d * 0.85);
+    P.ramp(env.gain, 0, tt + d * 0.97);
     if (i === 3) {
       P.set(vib.gain, 0, tt + 0.15);
-      P.lin(vib.gain, 5, tt + 0.4);
+      P.ramp(vib.gain, 5, tt + 0.4);
     }
     tt += d;
   }
@@ -304,9 +304,9 @@ export function scratch(E, o = {}) {
     fn(osc.frequency, f * 0.35, t + dt);
   });
   P.set(env.gain, 0, t);
-  P.lin(env.gain, 0.2 * g, t + 0.01);
-  P.lin(env.gain, 0.15 * g, t + 0.25);
-  P.lin(env.gain, 0, t + 0.33);
+  P.ramp(env.gain, 0.2 * g, t + 0.01);
+  P.ramp(env.gain, 0.15 * g, t + 0.25);
+  P.ramp(env.gain, 0, t + 0.33);
   chain(n, bp, env);
   chain(osc, lp, og, env);
   env.connect(E.sfx);
@@ -400,8 +400,8 @@ export function rewind(E, o = {}) {
   P.setF(osc.frequency, 160, t);
   P.expF(osc.frequency, 1500, t + 0.5);
   P.set(env.gain, 0, t);
-  for (let k = 0; k < 12; k++) P.lin(env.gain, (k % 2 ? 0.012 : 0.035) * g, t + 0.04 * (k + 1));
-  P.lin(env.gain, 0, t + 0.52);
+  for (let k = 0; k < 12; k++) P.ramp(env.gain, (k % 2 ? 0.012 : 0.035) * g, t + 0.04 * (k + 1));
+  P.ramp(env.gain, 0, t + 0.52);
   chain(osc, lp, env, E.sfx);
   s.play(osc, t, t + 0.55);
   s.done();
@@ -436,8 +436,8 @@ export function crickets(E, o = {}) {
     for (let c = 0; c < 4; c++) {
       for (let p = 0; p < 3; p++) {
         P.set(env.gain, 0, tt);
-        P.lin(env.gain, gain, tt + 0.006);
-        P.lin(env.gain, 0, tt + 0.022);
+        P.ramp(env.gain, gain, tt + 0.006);
+        P.ramp(env.gain, 0, tt + 0.022);
         tt += 0.035;
       }
       tt += 0.55 + rand(0, 0.1);

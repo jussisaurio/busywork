@@ -102,7 +102,7 @@ export function drawBubble(ctx, b, ax, ay) {
   } else if (kind === 'sign') {
     ctx.fillStyle = C.walnutEdge;
     ctx.fillRect(-1.5, h / 2 - 2, 3, Math.max(0, tailY - h / 2 + 4));
-    ctx.fillStyle = C.mustard;
+    ctx.fillStyle = C.ochre;
     rrect(ctx, -w / 2 - 2, -h / 2 - 2, w + 4, h + 4, 4);
     ctx.fill();
     ctx.fillStyle = C.cream;
@@ -161,7 +161,7 @@ function cloudPath(ctx, w, h) {
 }
 
 // --- particles -----------------------------------------------------------------
-export const CONFETTI = [C.tomato, C.mustard, C.teal, '#7fb3c8', '#f2ead3', C.olive];
+export const CONFETTI = [C.tomato, C.ochre, C.teal, '#7fb3c8', '#f2ead3', C.olive];
 
 export function drawParticles(ctx, game, t) {
   const list = game.fx && game.fx.particles;
@@ -180,7 +180,7 @@ export function drawParticles(ctx, game, t) {
     const vy = fin(p.vy);
     ctx.globalAlpha = 1;
     switch (p.kind) {
-      case 'smoke': {
+      case 'puff': {
         ctx.globalAlpha = 0.5 * (1 - k);
         fillCircle(ctx, x + Math.sin(age * 3 + seed * 6) * 2, y - k * 12, 3 + k * 9, seed < 0.5 ? '#8a8580' : '#a29d97');
         break;
@@ -360,7 +360,7 @@ export function drawActionRing(ctx, game, t) {
   circle(ctx, x, y, r);
   ctx.stroke();
   // Same look for every action: colouring "sneaky" ones would explain a rule (no hand-holding).
-  ctx.strokeStyle = C.mustard;
+  ctx.strokeStyle = C.ochre;
   ctx.lineWidth = 3.2;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -373,10 +373,12 @@ export function drawActionRing(ctx, game, t) {
   }
 }
 
+// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
 export function drawSuspicion(ctx, game, t) {
-  const s = game.suspicion ? fin(game.suspicion.boss) : 0;
+  const id = game.level?.roles?.authority?.id;
+  const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
   if (!(s > 0)) return;
-  const boss = game.npcs && findNpc(game, 'boss');
+  const boss = game.npcs && findNpc(game, id);
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;

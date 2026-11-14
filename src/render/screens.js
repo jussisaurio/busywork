@@ -36,14 +36,14 @@ function playKey(ctx, cx, cy, w, h, t) {
 // Title
 // =============================================================================
 const TITLE = 'BUSYWORK';
-const MISSION = ['4:00 PM. You promised slides. You made none.', 'Make sure the meeting never happens.'];
+const NO_TITLE = { mission: ['', ''], badge: [] };
 
 export function drawTitle(ctx, game, t, mem) {
   const e = Math.max(0, t - fin(mem.titleStart, t));
   ctx.fillStyle = 'rgba(22,16,12,0.76)';
   ctx.fillRect(0, 0, VIEW_W, VIEW_H);
   // mid-century stripes
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   ctx.fillRect(0, 0, VIEW_W, 6);
   ctx.fillStyle = C.teal;
   ctx.fillRect(0, 6, VIEW_W, 4);
@@ -69,7 +69,7 @@ export function drawTitle(ctx, game, t, mem) {
   }
   ctx.globalAlpha = 1;
   const ul = clamp((e - 0.5) / 0.4, 0, 1);
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   rrect(ctx, VIEW_W / 2 - 190 * ul, 168, 380 * ul, 6, 3);
   ctx.fill();
   ctx.fillStyle = C.teal;
@@ -90,6 +90,7 @@ export function drawTitle(ctx, game, t, mem) {
   ctx.fillRect(-310, -36, 620, 4);
   let size = 21;
   const base = font(size, TYPE_FAMILY, 'bold');
+  const { mission: MISSION, badge } = game.level.title || NO_TITLE;
   const maxW = Math.max(textWidth(ctx, base, MISSION[0]), textWidth(ctx, base, MISSION[1]), 1);
   if (maxW > 580) size = Math.max(10, Math.floor((size * 580) / maxW));
   const mf = font(size, TYPE_FAMILY, 'bold');
@@ -125,8 +126,8 @@ export function drawTitle(ctx, game, t, mem) {
   ctx.rotate(Math.sin(t * 3) * 0.07);
   emoji(ctx, '🕓', 0, 0, 72);
   ctx.restore();
-  emoji(ctx, '📊', 826, 394, 30);
-  emoji(ctx, '❌', 842, 404, 18);
+  if (badge[0]) emoji(ctx, badge[0], 826, 394, 30);
+  if (badge[1]) emoji(ctx, badge[1], 842, 404, 18);
 
   // Controls: a key cap and one plain word each (same words as the in-play legend).
   const wf = font(TITLE_KEYS_STYLE.font, UI_FAMILY, 'bold');

@@ -41,6 +41,7 @@ export default {
   map: { rows: MAP, legend: {} },
   spots: SPOTS,
   zones: { meeting_room: { x0: 8, y0: 1, x1: 15, y1: 4 }, room_a: { x0: 1, y0: 7, x1: 7, y1: 10 } },
+  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter' },
   patrols: {},
   cast: [{
     id: 'auditor',

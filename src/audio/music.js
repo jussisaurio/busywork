@@ -74,7 +74,7 @@ export function createMusic(E, out) {
     P.set(mg.gain, f * 1.6 * vel, t);
     P.exp(mg.gain, f * 0.25, t + 0.5);
     P.set(env.gain, 0, t);
-    P.lin(env.gain, 0.15 * vel, t + 0.004);
+    P.ramp(env.gain, 0.15 * vel, t + 0.004);
     P.exp(env.gain, 0.05 * vel, t + clamp(dur, 0.1, rel - 0.05));
     P.exp(env.gain, EPS, t + rel);
     chain(mod, mg, car.frequency);

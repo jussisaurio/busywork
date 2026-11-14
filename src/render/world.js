@@ -18,9 +18,10 @@ const FACE = { N: -Math.PI / 2, S: Math.PI / 2, E: 0, W: Math.PI };
 const NO_DECOR = {};
 const NO_PADS = {};
 const NO_ICONS = {};
+const NONE = [];
 const decorOf = (level) => level.decor || NO_DECOR;
 // A workstation whose owner has no decor.desks entry.
-const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.mustard, prop: 'paper' };
+const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.ochre, prop: 'paper' };
 
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
@@ -99,9 +100,7 @@ function mapInfo(map, level) {
     zoneAt: (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? null : zone[y * w + x]),
     desks,
     playerDesk: desks.find((d) => d.kind === 'player') || null,
-    projector: find1('J'),
-    rack: find1('K'),
-    coffee: find1('C'),
+    props: (decor.props || NONE).map((pr) => find1(pr.tile)), // decor.props' tiles, in order (null: not on the map)
     entrance: find1('L'),
     elevator: map.find('E'),
     screen: sc ? { x: sc.x * T + 2, y: frontY(sc.y) - 1, w: sc.w * T - 6, h: 28 } : null,
@@ -569,7 +568,7 @@ function drawPainting(ctx, map, x, y, variant) {
   ctx.fillStyle = C.cream;
   ctx.fillRect(px, fy + 2, w, FRONT - 6);
   if (variant === 0) {
-    fillCircle(ctx, px + 12, fy + 6, 3.2, C.mustard);
+    fillCircle(ctx, px + 12, fy + 6, 3.2, C.ochre);
     ctx.fillStyle = C.teal;
     ctx.fillRect(px + 18, fy + 3, 10, 5);
     ctx.fillStyle = C.tomato;
@@ -578,7 +577,7 @@ function drawPainting(ctx, map, x, y, variant) {
     ctx.fillStyle = C.olive;
     ctx.fillRect(px + 4, fy + 3, 14, 5);
     fillCircle(ctx, px + 26, fy + 6, 3, C.teal);
-    ctx.fillStyle = C.mustard;
+    ctx.fillStyle = C.ochre;
     ctx.fillRect(px + 32, fy + 3, 4, 5);
   }
 }
@@ -682,7 +681,7 @@ function drawDesk(ctx, d, decor) {
     const ly = d.y0 * T + 11;
     fillCircle(ctx, lx - 4, ly, 5, '#d9d4c8');
     fillCircle(ctx, lx - 4, ly, 3, '#b8b2a5');
-    fillCircle(ctx, lx + 7, ly + 3, 3, C.mustard);
+    fillCircle(ctx, lx + 7, ly + 3, 3, C.ochre);
     fillCircle(ctx, lx + 7, ly + 3, 1.8, '#5b3a20');
     const sx = d.x1 * T + 4;
     ctx.fillStyle = C.steelDark;
@@ -740,7 +739,7 @@ function drawDesk(ctx, d, decor) {
     ctx.fillStyle = '#c9a43a'; // brass name plate
     ctx.fillRect(midX - 7, py + h - 9, 14, 3);
     // desk lamp (mustard shade)
-    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.mustard);
+    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.ochre);
     fillCircle(ctx, px + w - 12, py + 9, 2.5, '#fff1c2');
     // phone + mug
     ctx.fillStyle = '#2f2b29';
@@ -977,20 +976,16 @@ export function drawWorldDynamic(ctx, game, t) {
   const world = game.world || {};
   const minute = game.clock ? game.clock.minute : 0;
 
-  drawWallClock(ctx, map, minute, decorOf(game.level).clock);
+  const decor = decorOf(game.level);
+  drawWallClock(ctx, map, minute, decor.clock);
 
-  // Projector + screen.
-  if (info.projector) {
-    const beam = world.projector === 'ok' && (minute >= game.level.day.beamAt || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail'));
-    if (beam && info.screen) drawBeam(ctx, info, t);
-    drawProjector(ctx, info.projector.x * T + T / 2, info.projector.y * T + T / 2, world.projector || 'ok', world.fixProgress || 0, t);
+  // Furniture with moving parts (decor.props), in order, each showing what its state(world, game) says.
+  const props = decor.props || NONE;
+  for (let i = 0; i < props.length; i++) {
+    const at = info.props[i];
+    const paint = at && PROP_PAINTERS[props[i].draw];
+    if (paint) paint(ctx, info, at, props[i].state(world, game), t);
   }
-
-  // Coffee pot: full until someone takes the last of it ('taken'); missing state means full.
-  if (info.coffee) drawCarafe(ctx, info.coffee.x * T, info.coffee.y * T, world.coffee !== 'taken', t);
-
-  // Coat rack: jacket and keycard.
-  if (info.rack) drawRackItems(ctx, info.rack.x * T + T / 2, info.rack.y * T + T / 2, world.jacket === 'rack', world.keycard === 'rack', t);
 
   // Player's desk: a paper stack while serving assigned work.
   if (info.playerDesk) {
@@ -1043,6 +1038,27 @@ export function drawWorldDynamic(ctx, game, t) {
   }
 }
 
+// The decor.props painters, by name: (ctx, info, tile, shown, t). `shown` is the prop's state(world, game).
+const PROP_PAINTERS = {
+  // { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }: a beam lights decor.screen.
+  slideProjector(ctx, info, at, shown, t) {
+    if (shown.beam && info.screen) drawBeam(ctx, info, at, t);
+    drawProjector(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.state, shown.fix, t);
+  },
+  // { full }: a full pot, or clear glass with dregs.
+  carafe(ctx, info, at, shown, t) {
+    drawCarafe(ctx, at.x * T, at.y * T, shown.full, t);
+  },
+  // { coat, tag }: a jacket on the rack, a badge clipped to it.
+  coatRack(ctx, info, at, shown, t) {
+    drawRackItems(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.coat, shown.tag, t);
+  },
+  // { icon, size? }: any level's stand-in, one emoji on the tile (nothing when icon is empty).
+  icon(ctx, info, at, shown) {
+    if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
+  },
+};
+
 export function sparkle(ctx, x, y, r, color) {
   ctx.fillStyle = color;
   ctx.beginPath();
@@ -1070,8 +1086,7 @@ function drawWallClock(ctx, map, minute, clock) {
   clockHands(ctx, cx, cy, minute, 3, 1.4, 4.6, 0.9, C.tomatoDark);
 }
 
-function drawBeam(ctx, info, t) {
-  const p = info.projector;
+function drawBeam(ctx, info, p, t) {
   const lx = p.x * T + T / 2;
   const ly = p.y * T + T / 2 - 8;
   const sc = info.screen;
