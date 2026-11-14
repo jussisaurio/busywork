@@ -362,6 +362,37 @@ let projRun = null;
   ok(tA.every((s, i) => s === tC[i]), 'determinism: boss glances identical with/without sandwich stolen');
 }
 
+// ---------------------------------------------------------------- 5b. level data drives the specials (P3)
+{
+  // npc.anim follows the schedule entry: the boss smokes from his 3:35 entry (coat-rack walk included) until 3:48.
+  const anims = [];
+  runDay({ until: at('3:50'), onStep: (g) => {
+    const b = g.npcs[0];
+    const last = anims[anims.length - 1];
+    if (b.anim !== (last?.anim ?? null)) anims.push({ m: g.clock.minute, anim: b.anim, label: b.label });
+  } });
+  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'visit smoke' && fmt(anims[0].m) === '3:35'
+    && anims[1].anim === null, `anim: boss 'smoking' only during 'visit smoke' (${anims.map((a) => `${fmt(a.m)} ${a.anim}`).join(', ')})`);
+
+  // A hook name the level doesn't define fails when the NPC is created, not mid-day.
+  const badCast = LEVEL.cast.map((d) => (d.id === 'kev'
+    ? { ...d, schedule: d.schedule.map((e) => (e.arrive ? { ...e, arrive: 'noSuchHook' } : e)) } : d));
+  let msg = '';
+  try { createNpcs(createGame({ level: { ...LEVEL, cast: badCast } })); } catch (e) { msg = e.message; }
+  ok(/noSuchHook/.test(msg), `hooks: an unknown behaviour name throws at createNpcs (${msg || 'no throw'})`);
+
+  // Without mechanics, hooks, leave effects or a fail sign, a level still runs its day: a cast on plain schedules.
+  const strip = ({ prelude, arrive, gone, anim, ...e }) => e;
+  const plain = {
+    ...LEVEL, lures: undefined, hunts: undefined, doors: undefined, behaviours: undefined, failSign: undefined,
+    cast: LEVEL.cast.map(({ meetingArrive, ...d }) => ({ ...d, schedule: d.schedule.map(strip) })),
+  };
+  const P = runDay({ game: createGame({ level: plain }), hooks: [breakAt(at('2:50'))] });
+  const specials = ['kev:alerted', 'boss:jacket', 'boss:lockedOut', 'kev:left', 'coffee:taken', 'sandwich:missing'];
+  ok(specials.every((e) => !P.counts[e]) && P.counts['meeting:gather'] === 1 && P.game.npcs.every((n) => !n._navFail),
+    `level data: a level without mechanics or hooks runs its day (${specials.filter((e) => P.counts[e]).join(' ') || 'no specials'})`);
+}
+
 // ---------------------------------------------------------------- 6. perf (fast-forward headroom)
 {
   ok(base.ms < 1000, `perf: full day (${base.steps} steps) in ${base.ms.toFixed(0)} ms`);
