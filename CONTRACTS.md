@@ -99,6 +99,7 @@ game = {
   // --- persistent (survive loops) ---
   events,                     // event bus
   level,                      // the level object (createGame({ level }), default src/levels defaultLevel)
+                              // (the browser picks it with ?level=<id>; an unknown id shows getLevel's error)
   map,                        // parsed map
   persist: { loop: 0, routesFoundBy: { [level.id]: [] } },   // found route ids per level (subset of its routes)
   // persist.routesFound: accessor for routesFoundBy[game.level.id] (read, push or assign; created empty on first read)
