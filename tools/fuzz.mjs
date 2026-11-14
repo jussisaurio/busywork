@@ -9,10 +9,10 @@
 // candidates are mutations/crossovers of elites. Winning elites are then shrunk (drop steps while the
 // same win survives), so the report shows the minimal plan for every way to win.
 //
-//   node tools/fuzz.mjs [--budget 6000] [--seed 1] [--batch 288] [--workers N] [--json out.json] [--verbose]
+//   node tools/fuzz.mjs [--level meeting] [--budget 6000] [--seed 1] [--batch 288] [--workers N] [--json out.json] [--verbose]
 //
-// The archive depends only on --seed, --budget and --batch (plans per generation), never on --workers or
-// the machine, so a seed reproduces anywhere.
+// The archive depends only on --level, --seed, --budget and --batch (plans per generation), never on --workers
+// or the machine, so a seed reproduces anywhere.
 //
 // Flags in the report are heuristics for a designer to look at, not test failures (tools/gate.mjs turns
 // them into a pass/fail verdict):
@@ -24,7 +24,8 @@
 // windows, to compare with the ones DESIGN.md claims.
 //
 // As a module: fuzz(opts) runs the search and returns plain results; report(), winLines() and toJson()
-// format them; evaluate(plan, level) plays one plan. tools/gate.mjs uses all of these.
+// format them; evaluate(plan, L) plays one plan of the level levelData(id) describes. tools/gate.mjs uses
+// all of these.
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { availableParallelism } from 'node:os';
 import { writeFileSync } from 'node:fs';
@@ -32,60 +33,27 @@ import { fileURLToPath } from 'node:url';
 import { createHarness } from '../src/agent/harness.js';
 import { createRng } from '../src/core/rng.js';
 import { at, formatClock } from '../src/config.js';
-import { levels } from '../src/levels/index.js';
+import { getLevel, defaultLevel } from '../src/levels/index.js';
 
 // =================================================================================================
-// LEVEL DATA: everything tools/fuzz.mjs and tools/gate.mjs know about a specific level, in one table.
-// Only level 1 exists until src/levels/ lands, and the harness always builds it. P5.1: --level <id>
-// replaces DEFAULT_LEVEL in the two CLIs, evaluate() builds that level, and each entry moves into its
-// level folder.
-export const DEFAULT_LEVEL = 'meeting';
-export const LEVELS = {
-  meeting: {
-    // Route ids (outcome.routes). The gate fails if a route has no winning plan.
-    routes: ['projector', 'keycard'],
-    // The lessons the level exists to teach: the gate fails on a win that skips one. Data, checked by
-    // usedLessons(): { id, cmd } = a plan command that ran contains the word cmd (it pressed that button);
-    // { id, event } = that event fired during the day.
-    // pretend: no win without it in 30k days (design-jam/FUZZ.md); the phone pose hides what you carry.
-    mustUse: [{ id: 'pretend', cmd: 'pretend' }],
-    // Where a plan can go (harness goto targets): interactables first (what `interact` acts on), then landmarks.
-    targets: [
-      'coffee_machine', 'projector', 'coat_rack', 'fridge',
-      'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'kitchen_table', 'entrance',
-      'restroom_door', 'meeting_room', 'meeting_seat',
-    ],
-    interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge'],
-    // Events that describe what a run did (first minute each happened is recorded).
-    milestones: {
-      'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
-      'projector:broken': () => 'broke',
-      'projector:fixed': () => 'fixed',
-      'keycard:taken': () => 'card',
-      'keycard:recovered': () => 'cardLost',
-      'boss:lockedOut': () => 'lockout',
-      'sandwich:taken': () => 'sandwich',
-      'sandwich:eaten': () => 'ate',
-      'sandwich:missing': () => 'hunt',
-      'sandwich:returned': () => 'sandwichBack',
-      'coffee:confiscated': () => 'coffeeBack',
-      'witness:tattle': (p) => (p.reason === 'contraband' ? null : 'tattle'),
-      'boss:workAssigned': () => 'work',
-      caught: () => 'caught',
-    },
-    // Milestones that define an outcome bin (the rest are only reported).
-    binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught'],
-    // Milestones whose time span across all wins the report lists.
-    keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate'],
-  },
-};
+// LEVEL DATA: everything tools/fuzz.mjs and tools/gate.mjs know about a level comes from its folder: the
+// route ids (level.routes), the level's day (day.meetingAt ends every plan) and level.gate (mustUse lessons,
+// goto targets, milestones, bins, key actions; src/levels/meeting/gate.js documents the shape).
+export const DEFAULT_LEVEL = defaultLevel.id;
+const data = {};
+export function levelData(id) {
+  if (data[id]) return data[id];
+  const level = getLevel(id); // throws on an unknown id, listing the registry
+  if (!level.gate) throw new Error(`level '${id}' has no gate data (level.gate, see src/levels/meeting/gate.js)`);
+  const meetingAt = level.day.meetingAt;
+  // lastMinute: the last minute a timed wait can end on (3:59 in level 1).
+  return (data[id] = { id, routes: level.routes.map((r) => r.id), ...level.gate, meetingAt, lastMinute: meetingAt - 1 });
+}
 // =================================================================================================
 
 const SELF = fileURLToPath(import.meta.url);
 export const EASY_STEPS = 3; // a win in this few steps is suspicious
 export const EASY_RATE = 0.01; // so is a random plan winning more than 1% of the time
-const MEETING_AT = levels[DEFAULT_LEVEL].day.meetingAt; // P5.1: the --level's day
-const LAST_MINUTE = MEETING_AT - 1; // the last minute a timed wait can end on (3:59)
 // Plans per MAP-Elites generation. A constant, not derived from the core count: the archive must not depend
 // on the machine. 288 = the 12 workers x 24 that design-jam/FUZZ.md was recorded with.
 export const BATCH = 288;
@@ -108,7 +76,8 @@ function stepToCmd(s) {
     default: throw new Error(`bad step ${JSON.stringify(s)}`);
   }
 }
-export const planToCmds = (plan) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(MEETING_AT)}`];
+// L: levelData(id); the final stance is held until the level's meeting.
+export const planToCmds = (plan, L) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(L.meetingAt)}`];
 
 function randomStep(rng, L) {
   const r = rng.next();
@@ -117,7 +86,7 @@ function randomStep(rng, L) {
     return { k: 'goto', t, busy: rng.chance(0.6) };
   }
   if (r < 0.62) return { k: 'do' };
-  if (r < 0.82) return { k: 'until', m: rng.int(1, LAST_MINUTE), busy: rng.chance(0.7) };
+  if (r < 0.82) return { k: 'until', m: rng.int(1, L.lastMinute), busy: rng.chance(0.7) };
   if (r < 0.94) return { k: 'for', s: rng.pick([0.5, 1, 1.5, 2, 3, 5, 8]), busy: rng.chance(0.6) };
   return { k: 'sit' };
 }
@@ -154,7 +123,7 @@ function mutate(rng, L, plan, other) {
       // Nudge a time: the main way to find (and probe the edges of) a window.
       const idx = p.steps.findIndex((s, j) => j >= pos && (s.k === 'until' || s.k === 'for'));
       const s = p.steps[idx];
-      if (s?.k === 'until') s.m = Math.max(1, Math.min(LAST_MINUTE, s.m + rng.pick([-6, -3, -2, -1, 1, 2, 3, 6])));
+      if (s?.k === 'until') s.m = Math.max(1, Math.min(L.lastMinute, s.m + rng.pick([-6, -3, -2, -1, 1, 2, 3, 6])));
       else if (s?.k === 'for') s.s = Math.max(0.25, +(s.s * rng.pick([0.5, 0.75, 1.5, 2])).toFixed(2));
     } else if (r < 0.8) {
       const s = p.steps[pos];
@@ -188,13 +157,13 @@ export function usedLessons(L, ran, log) {
   return L.mustUse.filter(used).map((l) => l.id);
 }
 
-export function evaluate(plan, L = LEVELS[DEFAULT_LEVEL]) {
-  const h = createHarness();
+export function evaluate(plan, L = levelData(DEFAULT_LEVEL)) {
+  const h = createHarness({ level: L.id });
   h.begin();
   const g = h.game;
   let error = null;
   const ran = [];
-  for (const cmd of planToCmds(plan)) {
+  for (const cmd of planToCmds(plan, L)) {
     if (g.phase !== 'day' || g.outcome || g.caught) break;
     // Skip a wait whose time has passed (the harness would no-op it anyway).
     const until = cmd.match(/until (\d+:\d+)$/);
@@ -260,7 +229,7 @@ function makePool(n, level) {
 }
 
 if (!isMainThread && workerData?.worker) {
-  const L = LEVELS[workerData.level];
+  const L = levelData(workerData.level);
   parentPort.on('message', (chunk) => {
     parentPort.postMessage(chunk.map(([i, plan]) => {
       try {
@@ -282,8 +251,7 @@ if (!isMainThread && workerData?.worker) {
 //             without: { lessonId: smallest winning plan that skipped it }, minimal: plan, windows: [...] } },
 //     crashes: [{ cmds, error }] (the first 10), crashCount }
 export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, batch = BATCH, workers = defaultWorkers(), progress = null } = {}) {
-  const L = LEVELS[level];
-  if (!L) throw new Error(`unknown level '${level}' (known: ${Object.keys(LEVELS).join(', ')})`);
+  const L = levelData(level);
   const rng = createRng(seed);
   const pool = makePool(workers, level);
   const t0 = performance.now();
@@ -303,7 +271,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
     res.forEach((r, i) => {
       if (!r.error) return;
       crashCount++;
-      if (crashes.length < 10) crashes.push({ cmds: planToCmds(plans[i]), error: r.error });
+      if (crashes.length < 10) crashes.push({ cmds: planToCmds(plans[i], L), error: r.error });
     });
     return res;
   };
@@ -385,7 +353,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
       w.windows = [];
       for (let i = 0; i < plan.steps.length; i++) {
         if (plan.steps[i].k !== 'until') continue;
-        const ms = Array.from({ length: LAST_MINUTE }, (_, j) => j + 1);
+        const ms = Array.from({ length: L.lastMinute }, (_, j) => j + 1);
         const cands = ms.map((m) => {
           const p = clone(plan);
           p.steps[i].m = m;
@@ -418,12 +386,13 @@ const pct = (n, d) => `${((100 * n) / Math.max(1, d)).toFixed(2)}%`;
 
 // One way to win: counts, key action times, the minimal plan and its timing windows.
 export function winLines(r, wk) {
+  const L = levelData(r.level);
   const w = r.wins[wk];
   const out = [`WIN ${wk}: ${w.count} winning days found, ${w.randomCount} of them from random plans`];
   const kt = Object.entries(w.keyTimes).map(([k, [a, b]]) => `${k} ${fmt(a)}–${fmt(b)}`).join(', ');
   if (kt) out.push(`  key actions seen in wins: ${kt}`);
   out.push(`  minimal plan (${size(w.minimal)} steps):`);
-  for (const c of planToCmds(w.minimal)) out.push(`    ${c}`);
+  for (const c of planToCmds(w.minimal, L)) out.push(`    ${c}`);
   for (const win of w.windows) {
     const spans = win.spans.map(([a, b]) => (a === b ? fmt(a) : `${fmt(a)}–${fmt(b)}`)).join(', ') || 'none';
     out.push(`  window for step ${win.step + 1} (${win.cmd}): wins when it ends at ${spans}`);
@@ -432,7 +401,7 @@ export function winLines(r, wk) {
 }
 
 export function report(r, { verbose = false } = {}) {
-  const L = LEVELS[r.level];
+  const L = levelData(r.level);
   const lines = [];
   const say = (s = '') => lines.push(s);
   say(`fuzz: ${r.evaluated} days in ${r.secs.toFixed(1)} s (${r.workers} workers, batch ${r.batch}, seed ${r.seed}), ${r.bins.size} distinct outcomes`);
@@ -451,7 +420,7 @@ export function report(r, { verbose = false } = {}) {
     if (w.randomCount / Math.max(1, r.randomEvaluated) > EASY_RATE) flags.push(`EASY      ${wk}: ${w.randomCount}/${r.randomEvaluated} random plans win`);
     for (const [id, p] of Object.entries(w.without)) {
       flags.push(`NO-${id.toUpperCase()} ${wk}: a win without ${id} (${size(p)} steps)`);
-      if (verbose) for (const c of planToCmds(p)) say(`    (no ${id}) ${c}`);
+      if (verbose) for (const c of planToCmds(p, L)) say(`    (no ${id}) ${c}`);
     }
   }
   for (const id of L.routes) if (!combos.some((wk) => wk.split('+').includes(id))) flags.push(`NO-WIN    route ${id}: no plan won it`);
@@ -468,15 +437,15 @@ export function report(r, { verbose = false } = {}) {
 
 // The --json archive (tools/golden.mjs --from reads bins[].cmds and wins[].minimal). Everything but secs
 // depends only on level, seed, budget and batch.
-export const toJson = (r) => ({
+export const toJson = (r, L = levelData(r.level)) => ({
   level: r.level, evaluated: r.evaluated, seed: r.seed, budget: r.budget, batch: r.batch, secs: r.secs,
   randomWins: r.randomWins, randomEvaluated: r.randomEvaluated,
   wins: Object.fromEntries(Object.entries(r.wins).map(([k, w]) => [k, {
     count: w.count, randomCount: w.randomCount, keyTimes: w.keyTimes,
-    without: Object.fromEntries(Object.entries(w.without).map(([id, p]) => [id, planToCmds(p)])),
-    minimal: planToCmds(w.minimal), windows: w.windows,
+    without: Object.fromEntries(Object.entries(w.without).map(([id, p]) => [id, planToCmds(p, L)])),
+    minimal: planToCmds(w.minimal, L), windows: w.windows,
   }])),
-  bins: Object.fromEntries([...r.bins.entries()].map(([k, e]) => [k, { cmds: planToCmds(e.plan), res: e.res }])),
+  bins: Object.fromEntries([...r.bins.entries()].map(([k, e]) => [k, { cmds: planToCmds(e.plan, L), res: e.res }])),
   crashes: r.crashes, crashCount: r.crashCount,
 });
 
@@ -490,8 +459,15 @@ if (isMainThread && process.argv[1] === SELF) {
   };
   const verbose = process.argv.includes('--verbose');
   const jsonOut = arg('json', null);
+  const level = arg('level', DEFAULT_LEVEL);
+  try {
+    levelData(level);
+  } catch (e) {
+    console.error(`fuzz: ${e.message}`);
+    process.exit(2);
+  }
   const r = await fuzz({
-    level: DEFAULT_LEVEL, // P5.1: arg('level', DEFAULT_LEVEL)
+    level,
     budget: Number(arg('budget', 6000)),
     seed: Number(arg('seed', 1)),
     batch: Number(arg('batch', BATCH)),

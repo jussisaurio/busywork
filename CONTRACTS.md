@@ -284,12 +284,16 @@ targets (interactables, then landmarks); `describeEvents(events, { level })` def
 and a harness's own `h.describeEvents` uses its level.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
-across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--batch 288]
-[--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends only on
-seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a pass/fail test.
-It is also a module (`fuzz()`, `evaluate()`, `report()`). Its `LEVELS` table (top of the file) holds everything the
-tools know about a level: route ids, `mustUse` lessons, goto targets, milestones.
-`tools/gate.mjs` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
+across the day to measure the real windows). `node tools/fuzz.mjs [--level meeting] [--budget 20000] [--seed N]
+[--batch 288] [--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends
+only on level, seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a
+pass/fail test. It is also a module (`fuzz()`, `evaluate(plan, L)`, `report()`, `levelData(id)`). What the tools know
+about a level comes from its folder: `levelData(id)` merges the route ids (`level.routes`), the day
+(`day.meetingAt` ends every plan) and `level.gate` (`src/levels/meeting/gate.js`: `mustUse` lessons, `targets` and
+`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name),
+`binKeys`, `keyActions`). Workers get the level id and build their own data; `evaluate()` builds
+`createHarness({ level: L.id })`. An unknown `--level` (on every tool below too) exits 2 with the registry's ids.
+`tools/gate.mjs [--level meeting]` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
 `--budget 30000`, ~30 s) and exits 1 if a route has no winning plan, a win takes 3 plan steps or fewer, random
 plans win more than 1%, anything crashes or a day never ends, or a win skips a `mustUse` lesson. A lesson is data:
 `{ id, cmd }` (a plan command that ran contains that word) or `{ id, event }` (that event fired). Level 1's lesson

@@ -1,7 +1,7 @@
 // Tests for tools/gate.mjs: the verdict logic on synthetic fuzz results (no fuzzing), plus how a day's
 // mustUse lessons are matched (two real days through the harness).
 import { checkGate, gateReport } from './gate.mjs';
-import { evaluate, usedLessons, LEVELS } from './fuzz.mjs';
+import { evaluate, usedLessons, levelData } from './fuzz.mjs';
 
 let fails = 0;
 const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m); } else console.log('ok  ', m); };
@@ -68,11 +68,11 @@ ok(usedLessons(LL, ['goto pretender'], [{ name: 'sandwich:taken' }]).join() === 
 
 // Two real days (level 1, design-jam/FUZZ.md's minimal keycard win, with and without pretend).
 const keycard = (busy) => ({ steps: [{ k: 'until', m: 16, busy }, { k: 'goto', t: 'coat_rack', busy }, { k: 'do' }, { k: 'goto', t: 'meeting_seat', busy }], endBusy: busy });
-let d = evaluate(keycard(true), LEVELS.meeting);
+let d = evaluate(keycard(true), levelData('meeting'));
 ok(d.result === 'win' && d.routes.join() === 'keycard' && d.used.join() === 'pretend' && !d.error, 'level 1: the minimal keycard plan wins and uses pretend');
-d = evaluate(keycard(false), LEVELS.meeting);
+d = evaluate(keycard(false), levelData('meeting'));
 ok(d.result !== 'win' && d.used.length === 0, 'level 1: the same plan without pretend does not win, and uses no lesson');
-d = evaluate({ steps: [{ k: 'until', m: 80, busy: false }, { k: 'until', m: 1, busy: true }], endBusy: false }, LEVELS.meeting);
+d = evaluate({ steps: [{ k: 'until', m: 80, busy: false }, { k: 'until', m: 1, busy: true }], endBusy: false }, levelData('meeting'));
 ok(d.used.length === 0, 'level 1: a pretend wait skipped because its time had passed does not count');
 
 console.log(fails ? `${fails} FAILED` : 'all passed');
