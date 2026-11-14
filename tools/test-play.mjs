@@ -220,7 +220,7 @@ section('brew -> carry -> spill');
   run(1.3);
   ok(game.world.projector === 'broken' && p().held === null, 'projector broken, hands empty');
   ok(evs('projector:broken').length === 1, 'projector:broken emitted once');
-  ok(game.fx.particles.some((q) => q.kind === 'sparks') && game.fx.particles.some((q) => q.kind === 'smoke'), 'sparks + smoke burst');
+  ok(game.fx.particles.some((q) => q.kind === 'sparks') && game.fx.particles.some((q) => q.kind === 'puff'), 'sparks + puff burst');
   step();
   ok(p().focus === null, 'no focus at a broken projector with empty hands');
 }

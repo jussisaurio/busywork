@@ -224,7 +224,7 @@ day((g) => {
 draw('bubbles at map edges / inactive owner');
 
 // Particles
-const PKINDS = ['smoke', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
+const PKINDS = ['puff', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
 for (const kind of PKINDS) {
   day((g) => {
     burst(g, kind, 12, 8, 10, { lift: 1 });
@@ -560,7 +560,7 @@ day((g) => {
   sightline(g, 'boss', 'notice', 99);
   say(g, 'boss', ['☕', '❓'], { kind: 'thought', ttl: 99 });
   say(g, 'lin', ['🥪', '❗'], { kind: 'speech', ttl: 99 });
-  burst(g, 'smoke', 13.5, 3.5, 30, { ttl: 99 });
+  burst(g, 'puff', 13.5, 3.5, 30, { ttl: 99 });
   burst(g, 'paper', 13.5, 9.5, 30, { ttl: 99 });
 });
 fake.scene = 'perf';

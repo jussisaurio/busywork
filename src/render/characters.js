@@ -40,7 +40,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    keycard: false, crank: false, mustard: false,
+    keycard: false, crank: false, stain: false,
   };
 }
 
@@ -357,7 +357,7 @@ export function drawPerson(ctx, look, s, x, y) {
   fillEllipse(ctx, 0, bodyY + 1.5, brx, bry, bodyDark);
   fillEllipse(ctx, 0, bodyY, brx * 0.97, bry * 0.9, bodyCol);
   drawTorsoDetail(ctx, look, s, noJacket);
-  if (s.mustard) drawMustard(ctx);
+  if (s.stain) drawMustard(ctx);
   if (s.item && mugOverTorso(s, G)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
@@ -546,8 +546,8 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
       ctx.lineTo(cx - 1.2, bodyY + bry * 0.8);
       ctx.closePath();
       ctx.fill();
-      fillCircle(ctx, cx + 2.4, bodyY - 1, 0.8, C.mustard);
-      fillCircle(ctx, cx + 2.2, bodyY + 2.5, 0.8, C.mustard);
+      fillCircle(ctx, cx + 2.4, bodyY - 1, 0.8, C.ochre);
+      fillCircle(ctx, cx + 2.2, bodyY + 2.5, 0.8, C.ochre);
     }
     return;
   }
@@ -756,7 +756,7 @@ function drawPlayerRing(ctx, game, t, mem) {
 export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.keycard = false; s.crank = false; s.mustard = false;
+  s.keycard = false; s.crank = false; s.stain = false;
 }
 
 // The emoji for a held item type: the level's (game.level.itemIcons), '❔' if it has none, null for empty hands.
@@ -781,7 +781,7 @@ function drawPlayer(ctx, game, t) {
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
-  s.mustard = !!p.smeared;
+  s.stain = !!p.smeared;
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
   drawPerson(ctx, lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
 }

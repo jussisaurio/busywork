@@ -20,7 +20,7 @@ const NO_PADS = {};
 const NO_ICONS = {};
 const decorOf = (level) => level.decor || NO_DECOR;
 // A workstation whose owner has no decor.desks entry.
-const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.mustard, prop: 'paper' };
+const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.ochre, prop: 'paper' };
 
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
@@ -569,7 +569,7 @@ function drawPainting(ctx, map, x, y, variant) {
   ctx.fillStyle = C.cream;
   ctx.fillRect(px, fy + 2, w, FRONT - 6);
   if (variant === 0) {
-    fillCircle(ctx, px + 12, fy + 6, 3.2, C.mustard);
+    fillCircle(ctx, px + 12, fy + 6, 3.2, C.ochre);
     ctx.fillStyle = C.teal;
     ctx.fillRect(px + 18, fy + 3, 10, 5);
     ctx.fillStyle = C.tomato;
@@ -578,7 +578,7 @@ function drawPainting(ctx, map, x, y, variant) {
     ctx.fillStyle = C.olive;
     ctx.fillRect(px + 4, fy + 3, 14, 5);
     fillCircle(ctx, px + 26, fy + 6, 3, C.teal);
-    ctx.fillStyle = C.mustard;
+    ctx.fillStyle = C.ochre;
     ctx.fillRect(px + 32, fy + 3, 4, 5);
   }
 }
@@ -682,7 +682,7 @@ function drawDesk(ctx, d, decor) {
     const ly = d.y0 * T + 11;
     fillCircle(ctx, lx - 4, ly, 5, '#d9d4c8');
     fillCircle(ctx, lx - 4, ly, 3, '#b8b2a5');
-    fillCircle(ctx, lx + 7, ly + 3, 3, C.mustard);
+    fillCircle(ctx, lx + 7, ly + 3, 3, C.ochre);
     fillCircle(ctx, lx + 7, ly + 3, 1.8, '#5b3a20');
     const sx = d.x1 * T + 4;
     ctx.fillStyle = C.steelDark;
@@ -740,7 +740,7 @@ function drawDesk(ctx, d, decor) {
     ctx.fillStyle = '#c9a43a'; // brass name plate
     ctx.fillRect(midX - 7, py + h - 9, 14, 3);
     // desk lamp (mustard shade)
-    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.mustard);
+    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.ochre);
     fillCircle(ctx, px + w - 12, py + 9, 2.5, '#fff1c2');
     // phone + mug
     ctx.fillStyle = '#2f2b29';

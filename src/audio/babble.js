@@ -223,18 +223,18 @@ export function babble(E, opts) {
     const [a1, a2] = VOWELS[x.vowel];
     const [b1, b2] = VOWELS[x.vowel2];
     P.setF(f1.frequency, a1 * V.fmt, tv);
-    P.lin(f1.frequency, b1 * V.fmt, tv + d);
+    P.ramp(f1.frequency, b1 * V.fmt, tv + d);
     P.setF(f2.frequency, a2 * V.fmt, tv);
-    P.lin(f2.frequency, b2 * V.fmt, tv + d);
+    P.ramp(f2.frequency, b2 * V.fmt, tv + d);
     P.set(env.gain, 0, tv);
-    P.lin(env.gain, x.amp, tv + x.atk);
-    P.lin(env.gain, x.amp * 0.7, tv + Math.max(x.atk + 0.005, d * 0.7));
-    P.lin(env.gain, 0, tv + d);
+    P.ramp(env.gain, x.amp, tv + x.atk);
+    P.ramp(env.gain, x.amp * 0.7, tv + Math.max(x.atk + 0.005, d * 0.7));
+    P.ramp(env.gain, 0, tv + d);
     if (x.cons && nEnv) {
       P.setF(nf.frequency, V.consF * rand(0.7, 1.4), t0);
       P.set(nEnv.gain, 0, t0);
-      P.lin(nEnv.gain, V.consAmp * x.amp, t0 + 0.004);
-      P.lin(nEnv.gain, 0, t0 + 0.02 + rand(0, 0.012));
+      P.ramp(nEnv.gain, V.consAmp * x.amp, t0 + 0.004);
+      P.ramp(nEnv.gain, 0, t0 + 0.02 + rand(0, 0.012));
     }
   }
   s.play(osc, t, end);
@@ -250,7 +250,7 @@ export function babble(E, opts) {
       const a = Math.max(t, fin(at, t));
       if (a >= end) return;
       P.set(kill.gain, level, a);
-      P.lin(kill.gain, 0, a + 0.04);
+      P.ramp(kill.gain, 0, a + 0.04);
     },
   };
 }
@@ -276,9 +276,9 @@ export function hum(E, opts) {
   }
   const pk = 0.28 * clamp(fin(opts.gain, 1), 0, 3);
   P.set(g.gain, 0, t);
-  P.lin(g.gain, pk, t + 0.05);
-  P.lin(g.gain, pk * 0.75, t + dur * 0.7);
-  P.lin(g.gain, 0, t + dur);
+  P.ramp(g.gain, pk, t + 0.05);
+  P.ramp(g.gain, pk * 0.75, t + dur * 0.7);
+  P.ramp(g.gain, 0, t + dur);
   chain(osc, lp, g, s.out(opts.dest ?? E.voice, opts.pan));
   s.play(osc, t, t + dur + 0.02);
   s.done();

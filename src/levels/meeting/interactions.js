@@ -19,7 +19,7 @@ export const INTERACTIONS = {
       game.player.held = 'coffee';
       game.world.coffee = 'taken';
       game.events.emit('coffee:taken', { by: 'player' });
-      burst(game, 'smoke', a.x, a.y, 5, { speed: 0.4, lift: 0.8, ttl: 1.0 }); // steam
+      burst(game, 'puff', a.x, a.y, 5, { speed: 0.4, lift: 0.8, ttl: 1.0 }); // steam
     },
   },
   spill_coffee: {
@@ -29,7 +29,7 @@ export const INTERACTIONS = {
       game.player.held = null;
       game.world.projector = 'broken';
       burst(game, 'sparks', a.x, a.y, 16, { speed: 2.5, ttl: 0.6 });
-      burst(game, 'smoke', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
+      burst(game, 'puff', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
       shake(game, 0.12, 0.25);
       say(game, 'player', ['😇'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('projector:broken', {});

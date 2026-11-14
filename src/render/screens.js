@@ -43,7 +43,7 @@ export function drawTitle(ctx, game, t, mem) {
   ctx.fillStyle = 'rgba(22,16,12,0.76)';
   ctx.fillRect(0, 0, VIEW_W, VIEW_H);
   // mid-century stripes
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   ctx.fillRect(0, 0, VIEW_W, 6);
   ctx.fillStyle = C.teal;
   ctx.fillRect(0, 6, VIEW_W, 4);
@@ -69,7 +69,7 @@ export function drawTitle(ctx, game, t, mem) {
   }
   ctx.globalAlpha = 1;
   const ul = clamp((e - 0.5) / 0.4, 0, 1);
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   rrect(ctx, VIEW_W / 2 - 190 * ul, 168, 380 * ul, 6, 3);
   ctx.fill();
   ctx.fillStyle = C.teal;

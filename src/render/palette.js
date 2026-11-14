@@ -1,4 +1,4 @@
-// Muted mid-century office palette: oatmeal carpet, walnut, mustard, teal, and one tomato-red hero.
+// Muted mid-century office palette: oatmeal carpet, walnut, ochre, teal, and one tomato-red hero.
 export const C = {
   bg: '#1d1a17',
   ink: '#2a211b',
@@ -61,8 +61,8 @@ export const C = {
   steelDark: '#8b9297',
 
   // accents
-  mustard: '#d6a23a',
-  mustardDark: '#a97b22',
+  ochre: '#d6a23a',
+  ochreDark: '#a97b22',
   teal: '#2f8f83',
   tealDark: '#22675f',
   olive: '#5f6b3a',

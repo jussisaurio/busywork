@@ -12,31 +12,6 @@
  {
   "file": "src/audio/babble.js",
   "identifier": "lin",
-  "count": 12
- },
- {
-  "file": "src/audio/music.js",
-  "identifier": "lin",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "lin",
-  "count": 21
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "projector",
-  "count": 1
- },
- {
-  "file": "src/audio/synth.js",
-  "identifier": "lin",
-  "count": 5
- },
- {
-  "file": "src/core/fx.js",
-  "identifier": "smoke",
   "count": 1
  },
  {
@@ -75,11 +50,6 @@
   "count": 3
  },
  {
-  "file": "src/render/characters.js",
-  "identifier": "mustard",
-  "count": 6
- },
- {
   "file": "src/render/cones.js",
   "identifier": "boss",
   "count": 3
@@ -97,31 +67,6 @@
  {
   "file": "src/render/effects.js",
   "identifier": "boss",
-  "count": 2
- },
- {
-  "file": "src/render/effects.js",
-  "identifier": "smoke",
-  "count": 1
- },
- {
-  "file": "src/render/effects.js",
-  "identifier": "mustard",
-  "count": 3
- },
- {
-  "file": "src/render/hud.js",
-  "identifier": "mustard",
-  "count": 4
- },
- {
-  "file": "src/render/palette.js",
-  "identifier": "mustard",
-  "count": 1
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "mustard",
   "count": 2
  },
  {
@@ -137,11 +82,6 @@
  {
   "file": "src/render/world.js",
   "identifier": "coffee",
-  "count": 5
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "mustard",
   "count": 5
  }
 ]

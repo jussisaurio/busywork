@@ -23,7 +23,7 @@ function panel(ctx, x, y, w, h, color = C.hudPanel) {
 export function drawHud(ctx, game, t, mem) {
   ctx.fillStyle = C.hudBg;
   ctx.fillRect(0, 0, VIEW_W, HUD_H);
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   ctx.fillRect(0, HUD_H - 3, VIEW_W, 1.5);
   ctx.fillStyle = C.teal;
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
@@ -155,7 +155,7 @@ function drawClock(ctx, minute, t, day) {
   // mini analog face
   const cx = 34;
   const cy = 28;
-  fillCircle(ctx, cx, cy, 15, red ? C.hudRed : C.mustard);
+  fillCircle(ctx, cx, cy, 15, red ? C.hudRed : C.ochre);
   fillCircle(ctx, cx, cy, 12.5, C.cream);
   ctx.fillStyle = C.ink;
   for (let i = 0; i < 12; i++) {
@@ -218,7 +218,7 @@ export function drawRouteSlots(ctx, routes, found, x, y, size, gap, opts) {
     rrect(ctx, sx, y, size, size, 7);
     ctx.fill();
     if (on) {
-      ctx.strokeStyle = C.mustard;
+      ctx.strokeStyle = C.ochre;
       ctx.lineWidth = 2;
       rrect(ctx, sx + 1, y + 1, size - 2, size - 2, 6);
       ctx.stroke();
@@ -260,7 +260,7 @@ function drawStatus(ctx, game, clock, t) {
   }
   const speed = game.debug ? fin(game.debug.speed, 1) : 1;
   if (speed !== 1) {
-    text(ctx, `×${speed}`, x - 2, cy + 1, font(15, MONO_FAMILY, 'bold'), C.mustard, 'right');
+    text(ctx, `×${speed}`, x - 2, cy + 1, font(15, MONO_FAMILY, 'bold'), C.ochre, 'right');
     x -= 40;
   }
   if (game.settings && game.settings.showCones === false) {
