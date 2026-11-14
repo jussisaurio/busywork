@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // State-space fuzzer: searches for player plans that do surprising things, especially wins that are
 // too easy. A plan is a short list of harness macro-steps (goto X [pretend], do, sit, pretend/wait
-// until T, pretend/wait N seconds), then a stance held until 4:00. The day is deterministic, so every
+// until T, pretend/wait N seconds, and put S [pretend] in levels with spots that take items), then a stance held
+// until 4:00. The day is deterministic, so every
 // candidate replays from 2:30 (a day costs ~5-30 ms headless).
 //
 // Search: MAP-Elites. Every run is binned by what happened (result, routes, milestones such as
@@ -47,7 +48,9 @@ export function levelData(id) {
   if (!level.gate) throw new Error(`level '${id}' has no gate data (level.gate, see src/levels/meeting/gate.js)`);
   const meetingAt = level.day.meetingAt;
   // lastMinute: the last minute a timed wait can end on (3:59 in level 1).
-  return (data[id] = { id, routes: level.routes.map((r) => r.id), ...level.gate, meetingAt, lastMinute: meetingAt - 1 });
+  // putSpots: where a plan can `put` (the spots that take items, mechanics/putdown.js).
+  const putSpots = Object.keys(level.spots).filter((name) => level.spots[name].accepts?.length);
+  return (data[id] = { id, routes: level.routes.map((r) => r.id), ...level.gate, meetingAt, lastMinute: meetingAt - 1, putSpots });
 }
 // =================================================================================================
 
@@ -71,6 +74,7 @@ function stepToCmd(s) {
     case 'goto': return `goto ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'do': return 'interact';
     case 'sit': return 'sit pretend';
+    case 'put': return `put ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'until': return `${s.busy ? 'pretend' : 'wait'} until ${fmt(s.m)}`;
     case 'for': return `${s.busy ? 'pretend' : 'wait'} ${s.s}s`;
     default: throw new Error(`bad step ${JSON.stringify(s)}`);
@@ -80,6 +84,8 @@ function stepToCmd(s) {
 export const planToCmds = (plan, L) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(L.meetingAt)}`];
 
 function randomStep(rng, L) {
+  // Only levels with spots that take items put things down (no rng draw otherwise: level 1's plans stay the same).
+  if (L.putSpots?.length && rng.chance(0.12)) return { k: 'put', t: rng.pick(L.putSpots), busy: rng.chance(0.6) };
   const r = rng.next();
   if (r < 0.42) {
     const t = rng.chance(0.55) ? rng.pick(L.interactable) : rng.pick(L.targets);
@@ -169,7 +175,7 @@ export function evaluate(plan, L = levelData(DEFAULT_LEVEL)) {
     const until = cmd.match(/until (\d+:\d+)$/);
     if (until && at(until[1]) <= g.clock.minute) continue;
     const r = h.run(cmd);
-    const noop = /no path|nothing to interact/.test(r.text);
+    const noop = /no path|nothing to interact|nothing to put down/.test(r.text);
     if (!r.ok && !noop) {
       error = `${cmd} :: ${r.text}`;
       break;

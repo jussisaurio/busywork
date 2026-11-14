@@ -6,11 +6,13 @@
 //   holding an edible item                       -> eat_<type> (sneaky to its owner; leaves player.smeared)
 //   own_desk (not seated)                        -> sit (instant)
 //   holding anything, no level 'self' row valid  -> drop (instant)
-//   empty hands, dropped item within ITEM_RADIUS -> pick_up
+//   empty hands, dropped item within ITEM_RADIUS -> pick_up (an item on a spot: within INTERACT_RADIUS)
+//   holding what a free spot takes               -> put (instant; mechanics/putdown.js)
 // The nearest valid target wins; 'self' targets only apply when nothing else is valid.
 import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
+import { PUT_ROW, putFocus } from '../sim/mechanics/putdown.js';
 
 const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
@@ -23,6 +25,7 @@ const GENERIC = {
     can: (p, w, item) => !p.held && w.items.includes(item),
     done: pickUp,
   },
+  put: PUT_ROW, // holding what a free spot in reach takes (mechanics/putdown.js; instant)
 };
 
 // Deprecated: every action row seen so far, keyed by verb (the harness reads its hint text from here).
@@ -108,12 +111,13 @@ function findFocus(game) {
   }
   for (const item of game.world.items) {
     const d = Math.hypot(item.x - p.x, item.y - p.y);
-    if (!(d <= ITEM_RADIUS && d < bestD)) continue;
+    if (!(d <= (item.spot ? INTERACT_RADIUS : ITEM_RADIUS) && d < bestD)) continue; // (a spot's: on a desk)
     if (targetAction(game, 'item', item)) {
       bestD = d;
       best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: actionRow(game, 'pick_up').icon, action: 'pick_up', item };
     }
   }
+  best = putFocus(game, bestD, actionRow(game, 'put')) ?? best;
   if (!best) {
     const verb = targetAction(game, 'self');
     if (verb) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: actionRow(game, verb).icon, action: verb };
@@ -154,7 +158,7 @@ function startAction(game, focus) {
   if (focus.kind !== 'self') p.dir = Math.atan2(focus.y - p.y, focus.x - p.x);
 
   if (row.instant) {
-    row.done(game);
+    row.done(game, focus);
     p.focus = findFocus(game);
     return;
   }

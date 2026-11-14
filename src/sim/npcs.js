@@ -227,9 +227,10 @@ function tickSayQueue(game, npc, dt) {
   }
 }
 
-// Lures start and hunts end (polled from world state, so no event subscriptions leak across loops).
+// Lures start and hunts end (polled from world state, so no event subscriptions leak across loops). A check that
+// runs level hooks gets HOOK_API.
 function checkOverrides(game, npc, now) {
-  for (const m of mechanicsFor(game.level, npc.id)) m.kind.check?.(game, npc, m.data, now);
+  for (const m of mechanicsFor(game.level, npc.id)) m.kind.check?.(game, npc, m.data, now, HOOK_API);
 }
 
 function planKey(game, npc, now) {

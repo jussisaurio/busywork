@@ -14,6 +14,7 @@ import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../co
 import { say, burst, shake, sightline } from '../core/fx.js';
 import { npcSees, findNpc, inZone } from '../game/perception.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
+import { judge } from '../sim/mechanics/index.js';
 import { cancelAction, dropHeld, actionRow } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
 
@@ -154,6 +155,7 @@ export function updateRules(game, dt) {
       game.events.emit(`${type}:recovered`, {});
     }
   }
+  if (judge(game, JUDGE)) return; // mechanics with a say: what lies on your desk (putdown.js), ...
   const auth = roles(game).authority;
   if (!auth) return;
 
@@ -263,10 +265,12 @@ function assignWork(game, reason) {
   game.events.emit(`${id}:workAssigned`, { reason });
 }
 
-function caught(game, reason) {
+// What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
+const JUDGE = { claims, enforcing, caught: (game, reason, by) => caught(game, reason, by) };
+
+function caught(game, reason, by = roles(game).authority.id) {
   if (game.caught) return;
   const p = game.player;
-  const by = roles(game).authority.id;
   game.caught = { by, reason, t: 0 };
   cancelAction(game, 'caught');
   p.locked = true;
