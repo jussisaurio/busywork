@@ -263,8 +263,17 @@ NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's comm
 (the game is deterministic), so no server is needed.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
-across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--verbose]
-[--json out.json]`, ~1 ms per day per core, worker_threads. Its report is for a designer, not a pass/fail test.
+across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--batch 288]
+[--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends only on
+seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a pass/fail test.
+It is also a module (`fuzz()`, `evaluate()`, `report()`). Its `LEVELS` table (top of the file) holds everything the
+tools know about a level: route ids, `mustUse` lessons, goto targets, milestones.
+`tools/gate.mjs` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
+`--budget 30000`, ~30 s) and exits 1 if a route has no winning plan, a win takes 3 plan steps or fewer, random
+plans win more than 1%, anything crashes or a day never ends, or a win skips a `mustUse` lesson. A lesson is data:
+`{ id, cmd }` (a plan command that ran contains that word) or `{ id, event }` (that event fired). Level 1's lesson
+is pretend. The one-screen report shows each way to win with its minimal plan and timing windows, the checks and
+the verdict. `tools/test-gate.mjs` tests the verdict logic on synthetic fuzz results.
 `tools/golden.mjs` is the refactor safety net: it replays a fixed corpus (`tools/golden.json`: one plan per outcome
 the fuzzer found, plus hand-written ones with raw movement and several loops) and compares a digest of every event
 and of the contract-level state after each command. A refactor must leave it passing. Re-record (`--write`) only
