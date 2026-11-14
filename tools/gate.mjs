@@ -1,0 +1,105 @@
+#!/usr/bin/env node
+// Gate: the automated filter a level must pass before a human plays it (REFACTOR.md P5.2). It runs the
+// fuzzer (tools/fuzz.mjs) and fails (exit 1) on any of:
+//   routes    a route of the level that no plan wins
+//   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until 4:00 is not a step)
+//   random    random plans winning more than EASY_RATE (1%) of the time
+//   crash     any crash or harness error (a command threw, or a day never ended)
+//   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend)
+// It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
+// and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
+//
+//   node tools/gate.mjs [--budget 30000] [--seed 1] [--batch 288] [--workers N]
+//
+// Level data (routes, mustUse lessons, harness targets) is the LEVELS table at the top of tools/fuzz.mjs.
+import { fileURLToPath } from 'node:url';
+import { fuzz, winLines, combosOf, planToCmds, LEVELS, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
+
+// ---- Level under test. P5.1: `arg('level', DEFAULT_LEVEL)` once the harness builds game.level. ----
+const LEVEL = DEFAULT_LEVEL;
+
+// Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
+export const DEFAULT_BUDGET = 30000;
+
+const pct = (x) => `${(100 * x).toFixed(2)}%`;
+const oneLine = (plan) => planToCmds(plan).join(' ; ');
+
+// The verdict, from fuzz() results (or synthetic ones of the same shape: wins, randomWins, randomEvaluated,
+// crashes, crashCount). Returns one { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
+export function checkGate(r, L, { easySteps = EASY_STEPS, easyRate = EASY_RATE } = {}) {
+  const combos = combosOf(r);
+  const checks = [];
+  const check = (name, ok, text, detail = []) => checks.push({ name, ok, text, detail });
+
+  const missing = L.routes.filter((id) => !combos.some((wk) => wk.split('+').includes(id)));
+  check('routes', !missing.length, missing.length
+    ? `no plan wins route ${missing.join(', ')}`
+    : `every route has a winning plan: ${L.routes.join(', ')}`);
+
+  const steps = (wk) => r.wins[wk].minimal.steps.length;
+  const easy = combos.filter((wk) => steps(wk) <= easySteps);
+  const fewest = combos.length ? combos.reduce((a, b) => (steps(b) < steps(a) ? b : a)) : null;
+  check('easy', !easy.length, easy.length
+    ? `win in ${easySteps} steps or fewer: ${easy.map((wk) => `${wk} (${steps(wk)})`).join(', ')}`
+    : `no win in ${easySteps} steps or fewer${fewest ? ` (fewest: ${steps(fewest)}, ${fewest})` : ''}`,
+  easy.map((wk) => `${wk}: ${oneLine(r.wins[wk].minimal)}`));
+
+  const rate = r.randomWins / Math.max(1, r.randomEvaluated);
+  check('random', rate <= easyRate, `random plans win ${r.randomWins}/${r.randomEvaluated} = ${pct(rate)} (limit ${pct(easyRate)})`);
+
+  const crashCount = Math.max(r.crashCount ?? 0, r.crashes.length);
+  check('crash', !crashCount, crashCount ? `${crashCount} crashes or harness errors` : 'no crashes or harness errors',
+    r.crashes.slice(0, 2).flatMap((c) => [c.error, `  plan: ${c.cmds.join(' ; ')}`]));
+
+  for (const { id } of L.mustUse) {
+    const skips = combos.filter((wk) => r.wins[wk].without?.[id]);
+    check(id, !skips.length, skips.length ? `a win without ${id}: ${skips.join(', ')}` : `every win uses ${id}`,
+      skips.map((wk) => `${wk}: ${oneLine(r.wins[wk].without[id])}`));
+  }
+  return checks;
+}
+
+export function gateReport(r, checks) {
+  const lines = [];
+  const say = (s = '') => lines.push(s);
+  say(`gate: level ${r.level}, seed ${r.seed}, budget ${r.budget}, batch ${r.batch}: ${r.evaluated} days in ${r.secs.toFixed(1)} s (${r.workers} workers), ${r.bins.size} outcome bins`);
+  const combos = combosOf(r);
+  if (!combos.length) say('\nno wins found');
+  for (const wk of combos) {
+    say();
+    for (const l of winLines(r, wk)) say(l);
+  }
+  say('\nchecks:');
+  const w = Math.max(...checks.map((c) => c.name.length)) + 2;
+  for (const c of checks) {
+    say(`  ${c.ok ? 'ok  ' : 'FAIL'}  ${c.name.padEnd(w)}${c.text}`);
+    for (const d of c.detail) say(`          ${d}`);
+  }
+  const failed = checks.filter((c) => !c.ok);
+  say(failed.length ? `verdict: FAIL (${failed.map((c) => c.name).join(', ')})` : `verdict: PASS: level ${r.level} is ready for a human playtest`);
+  return lines.join('\n');
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const arg = (name, def) => {
+    const i = process.argv.indexOf(`--${name}`);
+    return i > 0 ? process.argv[i + 1] : def;
+  };
+  const opts = {
+    level: LEVEL,
+    budget: Number(arg('budget', DEFAULT_BUDGET)),
+    seed: Number(arg('seed', 1)),
+    batch: Number(arg('batch', BATCH)),
+    workers: Number(arg('workers', defaultWorkers())),
+  };
+  console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
+  try {
+    const r = await fuzz(opts);
+    const checks = checkGate(r, LEVELS[opts.level]);
+    console.log(gateReport(r, checks));
+    process.exitCode = checks.every((c) => c.ok) ? 0 : 1;
+  } catch (e) {
+    console.log(`gate: level ${opts.level}\nverdict: FAIL (crash: the fuzzer itself failed)\n${e?.stack ?? e}`);
+    process.exitCode = 1;
+  }
+}
