@@ -34,6 +34,7 @@
 //   itemIcons  the emoji for each item type (looks.js; render)
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
+//   voices   how the cast talks, by cast `voice` name (voices.js; audio/babble.js)
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
@@ -43,6 +44,7 @@ import { DECOR } from './decor.js';
 import { LOOKS, POSES, CONES, ITEM_ICONS } from './looks.js';
 import { END_SCENES } from './end-scenes.js';
 import { SOUNDS } from './sounds.js';
+import { VOICES } from './voices.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
@@ -102,4 +104,5 @@ export default {
   itemIcons: ITEM_ICONS,
   endScenes: END_SCENES,
   sounds: SOUNDS,
+  voices: VOICES,
 };

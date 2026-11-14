@@ -41,7 +41,7 @@ everyone relies on**.
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
   `hunts`, `doors`, `behaviours`, `meeting`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `poses`, `cones`,
-  `itemIcons`, `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
+  `itemIcons`, `endScenes`, `sounds`, `voices`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -80,7 +80,9 @@ everyone relies on**.
   of the npc; none: `'desk'` sitting, `'walk'` walking) and `marks: [{ when, angry?, badge?, jacket? }]` (every rule that holds
   applies; `jacket: false` draws him in shirtsleeves). The authority scowls on his own once he catches you. `cones`: `{ alert:
   [override], eyesOn: { [npcId]: itemType } }`: an NPC in an `alert` override has a hot cone, and so does one who sees you
-  holding his `eyesOn` item (the authority's cone also heats with `suspicion[id]`).
+  holding his `eyesOn` item (the authority's cone also heats with `suspicion[id]`). `voices` (`levels/meeting/voices.js`): how the
+  cast talks, `{ [voiceName]: params }` in `audio/babble.js` VOICES' fields, added to the engine's `player` and `generic` voices
+  (a level's voice of the same name wins). A cast entry's `voice` names one; an unknown name speaks with `generic`.
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
 - `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, vision, glanceEvery?, coneTint, schedule[]).

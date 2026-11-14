@@ -283,7 +283,9 @@ installAC(FakeAudioContext);
 // Import (must have no side effects)
 
 const { createAudio } = await import('../src/audio/audio.js');
-const { planBabble, VOICES } = await import('../src/audio/babble.js');
+const { planBabble: planWith, VOICES, voicesFor } = await import('../src/audio/babble.js');
+const MEETING_VOICES = voicesFor(levels.meeting.voices);
+const planBabble = (v, icons, kind) => planWith(v, icons, kind, MEETING_VOICES); // level 1's cast, as the game speaks
 ok(FakeAudioContext.instances === 0, 'import creates no AudioContext');
 ok(touched.length === 0, `import touches no window property${touched.length ? ` (touched: ${touched.join(',')})` : ''}`);
 
