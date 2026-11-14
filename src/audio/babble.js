@@ -26,6 +26,7 @@ const VOWELS = {
 //   body: low-passed direct source level (chestiness). cons: consonant chance; consF: its colour.
 //   growl: amplitude-wobble rate (Hz) for gruffness. post: extra filters [type, f, Q, dB].
 //   gain: overall level. bounce: alternating up/down pitch (sing-song).
+//   pitch: pinned pitches for the voice's one-shot sounds (see sfxPitch), instead of the f0-derived ones.
 export const VOICES = {
   // Boss: low, gruff, slow, dropping.
   boss: {
@@ -33,6 +34,7 @@ export const VOICES = {
     fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
     vowels: ['a', 'o', 'u', 'uh', 'ae'], cons: 0.3, consF: 1700, consAmp: 0.18,
     growl: 31, post: [['lowpass', 2600, 0.7]], gain: 1.15,
+    pitch: { notice: 300, tattle: 1, grumble: 220 }, // tuned before the f0 rule; the boss never tattles today
   },
   // Lin: mid-high, quick, crisp.
   lin: {
@@ -40,6 +42,7 @@ export const VOICES = {
     fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
     vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22,
     gain: 0.8,
+    pitch: { notice: 620, tattle: 1.12, grumble: 260 },
   },
   // Kev: mid, mumbly, nasal (hollow square source, nasal peak, dull top, legato, near-monotone).
   kev: {
@@ -47,6 +50,7 @@ export const VOICES = {
     fmt: 0.95, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.06, bodyF: 450,
     vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
     post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
+    pitch: { notice: 440, tattle: 0.84, grumble: 190 },
   },
   // Player: bright and squeaky.
   player: {
@@ -73,6 +77,15 @@ const MAX_LEN = 2.2; // seconds; longer plans are sped up to fit
 
 export function voiceOf(id) {
   return typeof id === 'string' && Object.hasOwn(VOICES, id) ? id : 'generic';
+}
+
+// Pitches for a voice's one-shot sounds (sfx.js notice: Hz, tattle: ratio, grumble: Hz): the generic
+// voice's scaled by f0, unless the voice pins its own.
+export function sfxPitch(voiceId) {
+  const V = VOICES[voiceOf(voiceId)];
+  const k = V.f0 / VOICES.generic.f0;
+  const pin = V.pitch ?? {};
+  return { notice: pin.notice ?? 500 * k, tattle: pin.tattle ?? k, grumble: pin.grumble ?? 220 * k };
 }
 
 // Plan an utterance (pure; exported for tests). Times are relative to the start.

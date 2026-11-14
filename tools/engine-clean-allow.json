@@ -35,46 +35,6 @@
   "count": 6
  },
  {
-  "file": "src/audio/audio.js",
-  "identifier": "boss",
-  "count": 9
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "kev",
-  "count": 5
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "sandwich",
-  "count": 4
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "keycard",
-  "count": 1
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "projector",
-  "count": 10
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "coffee",
-  "count": 5
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "fridge",
-  "count": 3
- },
- {
   "file": "src/audio/babble.js",
   "identifier": "boss",
   "count": 1
@@ -96,37 +56,12 @@
  },
  {
   "file": "src/audio/sfx.js",
-  "identifier": "boss",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "kev",
-  "count": 3
- },
- {
-  "file": "src/audio/sfx.js",
   "identifier": "lin",
-  "count": 24
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "sandwich",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "keycard",
-  "count": 1
+  "count": 21
  },
  {
   "file": "src/audio/sfx.js",
   "identifier": "projector",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "coffee",
   "count": 1
  },
  {

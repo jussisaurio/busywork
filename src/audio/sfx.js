@@ -126,19 +126,19 @@ export function munch(E, o = {}) {
   tone(E, { t: t + 0.8, f: 420, f2: 140, dur: 0.14, gain: 0.1 * g, lp: 900, pan });
 }
 
-// Item dropped at the player's feet.
+// Item dropped at the player's feet. o.type: what it sounds like ('card', 'soft', 'mug'; else a thud).
 export function drop(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;
   switch (o.type) {
-    case 'keycard':
+    case 'card':
       tone(E, { t, type: 'triangle', f: 1500, f2: 1100, dur: 0.04, gain: 0.06 * g, pan });
       tone(E, { t: t + 0.07, type: 'triangle', f: 1250, f2: 900, dur: 0.03, gain: 0.035 * g, pan });
       break;
-    case 'sandwich':
+    case 'soft':
       tone(E, { t, f: 210, f2: 90, dur: 0.09, gain: 0.12 * g, lp: 800, pan });
       hiss(E, { t, dur: 0.06, gain: 0.05 * g, type: 'lowpass', f: 700, pan });
       break;
-    case 'coffee':
+    case 'mug':
       bell(E, { t, f: 2100, dur: 0.25, gain: 0.04 * g, pan });
       hiss(E, { t: t + 0.01, dur: 0.2, gain: 0.04 * g, type: 'bandpass', f: 900, q: 2, pan });
       break;
@@ -199,16 +199,17 @@ export function slurp(E, o = {}) {
   tone(E, { t: t + 1.8, type: 'triangle', f: 520, f2: 390, dur: 0.3, attack: 0.04, gain: 0.04 * g, lp: 1200, pan }); // "ahh"
 }
 
-// ❓ Soft "hm?" blip, pitched to the witness.
+// ❓ Soft "hm?" blip, pitched to the witness (o.f, babble.js sfxPitch).
 export function notice(E, o = {}) {
-  const base = { boss: 300, lin: 620, kev: 440 }[o.by] ?? 500;
+  const base = fin(o.f, 500);
   tone(E, { t: T(E, o), type: 'triangle', f: base, f2: base * 1.45, dur: 0.14, attack: 0.02, gain: 0.05 * G(o), lp: 1800, pan: o.pan });
 }
 
-// ❗👉 Tattle: the playground "nyah-nyah" (falling minor third, sol-mi-la-sol-mi), pitched per witness.
+// ❗👉 Tattle: the playground "nyah-nyah" (falling minor third, sol-mi-la-sol-mi), pitched per witness
+// (o.k, a ratio: babble.js sfxPitch).
 export function tattle(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;
-  const k = { lin: 1.12, kev: 0.84 }[o.by] ?? 1;
+  const k = fin(o.k, 1);
   const notes = [784, 659, 880, 784, 659].map((f) => f * k);
   const durs = [0.13, 0.13, 0.09, 0.09, 0.2];
   let at = t;
@@ -218,10 +219,10 @@ export function tattle(E, o = {}) {
   }
 }
 
-// 😠☕ "Hey, that's mine": a short low two-tone grumble.
+// 😠☕ "Hey, that's mine": a short low two-tone grumble, pitched per witness (o.f, babble.js sfxPitch).
 export function grumble(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;
-  const base = { lin: 260, kev: 190 }[o.by] ?? 220;
+  const base = fin(o.f, 220);
   tone(E, { t, type: 'sawtooth', f: base, f2: base * 0.9, dur: 0.16, attack: 0.01, gain: 0.035 * g, lp: 700, pan });
   tone(E, { t: t + 0.19, type: 'sawtooth', f: base * 0.85, f2: base * 0.75, dur: 0.22, attack: 0.01, gain: 0.035 * g, lp: 600, pan });
 }
