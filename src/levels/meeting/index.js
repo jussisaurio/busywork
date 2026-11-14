@@ -14,6 +14,10 @@
 //   hunts    ... an NPC searches for something until she finds it or gives up
 //   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
 //   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
+//   meeting  the day's frame: { override, room, chair, presenter }. At day.gatherAt every NPC on the floor gets
+//            override `override` and walks to its cast `meetingSpot` (sim; plan key `<override>#<n>`); at
+//            day.meetingAt you win only standing in zone `room`; blamed, the table stares at spot `chair`;
+//            a failed meeting puts you at spot `presenter` (play/scenario.js)
 //   failSign    { spot, offset: [dx, dy] }: where a failed meeting's 🦗 sign appears (tiles from the spot's corner)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
@@ -68,6 +72,7 @@ export default {
   hunts: HUNTS,
   doors: DOORS,
   behaviours: BEHAVIOURS,
+  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter' },
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },

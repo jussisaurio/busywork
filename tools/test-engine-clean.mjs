@@ -11,7 +11,10 @@ import { join, relative } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const ALLOW = fileURLToPath(new URL('./engine-clean-allow.json', import.meta.url));
-const IDS = ['boss', 'kev', 'lin', 'sandwich', 'keycard', 'projector', 'coffee', 'fridge', 'smoke', 'mustard'];
+const IDS = [
+  'boss', 'kev', 'lin', 'sandwich', 'keycard', 'projector', 'coffee', 'fridge', 'smoke', 'mustard',
+  'meeting_room', 'meeting_player', 'meeting_presenter', // the meeting frame (level.meeting)
+];
 const id = IDS.join('|');
 const PATTERNS = [
   new RegExp(`(['"\`])(${id})\\1`, 'g'),

@@ -40,7 +40,7 @@ everyone relies on**.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
+  `hunts`, `doors`, `behaviours`, `meeting`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
   `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
@@ -61,6 +61,11 @@ everyone relies on**.
   `speak(game, npc, lines)`, `want(npc, item)`, `faceSpot(game, npc, spot)`, `startHunt(game, npc)`. An unknown name throws when the
   NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes. Any entry may
   carry `anim` (copied to `npc.anim` while he follows it).
+  `meeting`: the day's frame, `{ override, room, chair, presenter }`. At `day.gatherAt` every NPC still on the floor gets override
+  `override` and walks to its cast `meetingSpot` (plan key `<override>#<n>`; a lure's NPC finishes first, then gets it on
+  `endOverride`). At `day.meetingAt` you win only standing in zone `room`; blamed, everyone in `override` stares at spot `chair`;
+  a failed meeting puts you at spot `presenter` (`play/scenario.js`). Level 1: `'meeting'`, `'meeting_room'`, `'meeting_player'`,
+  `'meeting_presenter'`. The event `meeting:gather` and the cancel reason `'meeting'` are engine words, the same for every level.
   `failSign` (optional): `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (scenario's end beat).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
