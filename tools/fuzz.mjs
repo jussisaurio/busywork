@@ -22,7 +22,7 @@
 //   NO-WIN    a route of the level that no plan won
 //   CRASH     a command threw or a day never ended (a game bug, or a harness bug)
 // The report also lists the time span of each route's key action across all wins found: the real
-// windows, to compare with the ones DESIGN.md claims.
+// windows, to compare with the ones the level's LEVEL.md claims.
 //
 // As a module: fuzz(opts) runs the search and returns plain results; report(), winLines() and toJson()
 // format them; evaluate(plan, L) plays one plan of the level levelData(id) describes. tools/gate.mjs uses
