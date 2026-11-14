@@ -3,7 +3,9 @@
 // harness plans and renders frames into the recording fake canvas (tools/lib/fake-canvas.mjs): after every
 // command, paused after the first one, at the end of the frame of each notable event and again 20 frames
 // later (particles in flight, forced work under way), and over the end screen. Each render is digested (every ctx call and property set, numbers rounded to
-// 1e-3, measureText and other queries left out) and compared against tools/golden-render.json.
+// 1e-3, measureText and other queries left out) and compared against tools/golden-render.json. A property set only
+// counts once a call on that canvas follows it, so a set overwritten before any call (it draws nothing) is left out,
+// and the sets between two calls are digested in name order (they commute).
 // Math.random (only fx particles use it) is seeded per plan here, and each plan gets a fresh game and renderer.
 //
 //   node tools/golden-render.mjs           check; exit 1 and name the first render that differs
@@ -47,12 +49,24 @@ function fmt(v) {
 const QUERY = /^(get|measureText|isPointIn)/;
 
 let hash = null;
+const pending = new Map(); // canvas label -> Map(prop -> value) set since that canvas's last call
+function flush(label) {
+  const sets = pending.get(label);
+  if (!sets || !sets.size) return;
+  const name = label.replace(/\d+$/, '');
+  for (const key of [...sets.keys()].sort()) hash.update(`${name} ${key}=${fmt(sets.get(key))}\n`);
+  sets.clear();
+}
 const fake = createFakeCanvas({
   onCall(label, key, args) {
-    if (hash && !QUERY.test(key)) hash.update(`${label.replace(/\d+$/, '')} ${key} ${args.map(fmt).join(',')}\n`);
+    if (!hash) return;
+    flush(label);
+    if (!QUERY.test(key)) hash.update(`${label.replace(/\d+$/, '')} ${key} ${args.map(fmt).join(',')}\n`);
   },
   onSet(label, key, value) {
-    if (hash) hash.update(`${label.replace(/\d+$/, '')} ${key}=${fmt(value)}\n`);
+    if (!hash) return;
+    if (!pending.has(label)) pending.set(label, new Map());
+    pending.get(label).set(key, value);
   },
 });
 fake.installDom({ innerWidth: 960, innerHeight: 600, devicePixelRatio: 1 });
@@ -78,7 +92,9 @@ function renderTrace(cmds, seed) {
   const draw = (label) => {
     fake.scene = label;
     hash = createHash('sha1');
+    pending.clear();
     renderer.render(g);
+    for (const l of pending.keys()) flush(l);
     out.push({ label, d: hash.digest('hex').slice(0, 16) });
     hash = null;
     for (const c of fake.contexts) {
