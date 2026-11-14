@@ -70,8 +70,8 @@ export function updateFx(game, dt) {
     p.age += dt;
     p.x += p.vx * dt;
     p.y += p.vy * dt;
-    p.vx *= 0.92;
-    p.vy *= 0.92;
+    p.vx *= 0.92 ** (dt * 60); // drag per 1/60 s, whatever the step
+    p.vy *= 0.92 ** (dt * 60);
   }
   fx.particles = fx.particles.filter((p) => p.age < p.ttl);
   if (fx.lines) {
