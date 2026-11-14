@@ -196,7 +196,7 @@ The coordinator chose what goes in. Findings left out are listed at the end.
 - DESIGN.md keeps only game-wide rules. Level-1 specifics move to `src/levels/meeting/LEVEL.md`.
 - `src/levels/README.md`: how to author a level, in one page, with the fixture as the example.
 
-## P7: tier-1 mechanics (after P6)
+## P7: tier-1 mechanics (in parallel with P5.3/P5.4)
 
 Three more engine mechanics, built before any new level, because many level ideas need them (TALLY.md). Level
 1 doesn't use them yet, so **both level-1 goldens stay identical** (no new rng draws, no new `world` fields).
@@ -231,7 +231,12 @@ time. Each works in its own worktree.
   - **P3**: sim.
   - **P4.1–4.3**: decor, end scenes, audio.
   - **P4.4 + P5.1**: harness and `--level` flags, together because both edit the harness.
-- P5.3 (the fixture level) and P5.4 run once those three are merged. P6 comes after them, then P7.
+- Once those three are merged, three more agents work in parallel, each in its own worktree:
+  - **P5.3 + P5.4**: the fixture level, the empty allow-list and `?level=`.
+  - **P7.1 + P7.2**: put down, then inspection.
+  - **P7.3**: attention.
+  Their fixture levels use the level format of the start point; the merge adapts them to P5.4's changes.
+- P6 comes last, so the docs describe the final format, P7 mechanics included.
 
 ## Intended changes (each one its own commit, with a stated re-record)
 
