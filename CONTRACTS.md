@@ -240,7 +240,7 @@ per animation frame (realDt capped at 0.1):
   game.time += realDt
   title: input start → startLoop
   day:   accumulate realDt; per FIXED_DT step:
-           mult = (clock.forced>0 ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
+           mult = frameMult(game) = (clock.forced>0 ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
            repeat mult times: tick(game, FIXED_DT)
          R → startLoop
          Esc / ⏸ click (PAUSE_BTN in render/hud.js) / window blur → game.paused = true: no ticks, the
@@ -250,7 +250,7 @@ per animation frame (realDt capped at 0.1):
   updateFx(game, realDt); audio.update(game, realDt); renderer.render(game)
 
 tick(game, dt):  updatePlayer → updateInteractions → updateNpcs → updateRules → updateScenario
-                 → clock.minute += dt*GAME_MIN_PER_SEC; clock.forced decrements by the same; loopTime += dt
+                 → advanceClock: clock.minute += dt*GAME_MIN_PER_SEC; clock.forced decrements by the same; loopTime += dt
 ```
 
 ## AI-agent harness (`src/agent/*`, `tools/play.mjs`)

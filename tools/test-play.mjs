@@ -1,6 +1,6 @@
 // Headless gameplay tests (player, interactions, rules, scenario, input).
-// Does NOT import src/sim/* or src/game/loop.js: NPCs are hand-made fakes and the tick is
-// stepped here in contract order: player -> interactions -> [npcs skipped] -> rules -> scenario -> clock.
+// Does NOT run the NPC sim: NPCs are hand-made fakes and the tick is stepped here in contract order:
+// player -> interactions -> [npcs skipped] -> rules -> scenario -> clock (loop.js advanceClock).
 //
 //   node tools/test-play.mjs
 import {
@@ -15,6 +15,7 @@ import { updatePlayer } from '../src/play/player.js';
 import { updateInteractions } from '../src/play/interactions.js';
 import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
+import { advanceClock } from '../src/game/loop.js';
 import { createInput } from '../src/play/input.js';
 
 let fails = 0;
@@ -108,10 +109,7 @@ function step(n = 1) {
     // updateNpcs skipped: fake NPCs stay where the test puts them.
     updateRules(game, FIXED_DT);
     updateScenario(game, FIXED_DT);
-    const dm = FIXED_DT * GAME_MIN_PER_SEC;
-    game.clock.minute += dm;
-    if (game.clock.forced > 0) game.clock.forced = Math.max(0, game.clock.forced - dm);
-    game.loopTime += FIXED_DT;
+    advanceClock(game, FIXED_DT);
     input.age(FIXED_DT);
     if (!circleClear(p().x, p().y)) violations++;
   }

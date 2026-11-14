@@ -1,10 +1,11 @@
 // Headless tests for the NPC sim (src/sim/*). Run: node tools/test-sim.mjs [-v]
-// Drives the sim directly (no loop.js / play/*): updateNpcs + updateFx + clock advance per step.
+// Drives the sim directly (no player, interactions, rules or scenario): updateNpcs + updateFx + advanceClock per step.
 import { createGame, resetLoop } from '../src/state.js';
 import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
-import { GAME_MIN_PER_SEC, FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
+import { advanceClock } from '../src/game/loop.js';
+import { FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
 import { SPOTS, ROUTES } from '../src/data/level.js';
 import { MEETING_GATHER_AT, NPC_DEFS } from '../src/data/schedules.js';
 
@@ -78,8 +79,7 @@ function runDay({ hooks = [], until = MEETING_AT + 0.5, sampleAt = [], onStep, g
     while (samples.length && samples[0] <= m) {
       R.snaps[samples.shift()] = game.npcs.map((n) => [n.id, n.x, n.y, n.dir, n.glance.offset, n.active, n.pose, n.label]);
     }
-    game.clock.minute += FIXED_DT * GAME_MIN_PER_SEC;
-    game.loopTime += FIXED_DT;
+    advanceClock(game, FIXED_DT);
     R.steps++;
   }
   R.ms = performance.now() - t0;
