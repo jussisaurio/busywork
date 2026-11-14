@@ -222,17 +222,12 @@
  {
   "file": "src/render/characters.js",
   "identifier": "boss",
-  "count": 9
- },
- {
-  "file": "src/render/characters.js",
-  "identifier": "kev",
-  "count": 2
+  "count": 7
  },
  {
   "file": "src/render/characters.js",
   "identifier": "lin",
-  "count": 4
+  "count": 2
  },
  {
   "file": "src/render/characters.js",
@@ -252,7 +247,7 @@
  {
   "file": "src/render/characters.js",
   "identifier": "coffee",
-  "count": 4
+  "count": 2
  },
  {
   "file": "src/render/characters.js",
@@ -335,36 +330,6 @@
   "count": 3
  },
  {
-  "file": "src/render/util.js",
-  "identifier": "sandwich",
-  "count": 1
- },
- {
-  "file": "src/render/util.js",
-  "identifier": "keycard",
-  "count": 1
- },
- {
-  "file": "src/render/util.js",
-  "identifier": "coffee",
-  "count": 1
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "boss",
-  "count": 3
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "kev",
-  "count": 4
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "lin",
-  "count": 4
- },
- {
   "file": "src/render/world.js",
   "identifier": "keycard",
   "count": 1
@@ -378,11 +343,6 @@
   "file": "src/render/world.js",
   "identifier": "coffee",
   "count": 5
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "smoke",
-  "count": 3
  },
  {
   "file": "src/render/world.js",

@@ -5,7 +5,7 @@ import {
   MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
-import { LOOKS, personState, resetState, drawPerson } from './characters.js';
+import { lookFor, personState, resetState, drawPerson } from './characters.js';
 import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { drawProjector, drawChair, sparkle } from './world.js';
 import { drawBubble, CONFETTI } from './effects.js';
@@ -140,7 +140,7 @@ export function drawTitle(ctx, game, t, mem) {
   hp.arms = 'folder';
   hp.smug = true;
   hp.scale = 2.6;
-  drawPerson(ctx, LOOKS.player, hp, 120, 352);
+  drawPerson(ctx, lookFor(game.level.looks, 'player'), hp, 120, 352);
   ctx.save();
   ctx.translate(842, 330);
   ctx.rotate(Math.sin(t * 3) * 0.07);
@@ -380,7 +380,7 @@ function tableauKeycard(ctx, game, t, e) {
   p.arms = 'cheer';
   p.smug = true;
   p.scale = 2.3;
-  drawPerson(ctx, LOOKS.player, p, 340, 280 - Math.abs(Math.sin(t * 6)) * 8);
+  drawPerson(ctx, game.level.looks.player, p, 340, 280 - Math.abs(Math.sin(t * 6)) * 8);
   // boss outside, banging on the glass
   const b = person(t);
   b.dir = Math.PI;
@@ -389,7 +389,7 @@ function tableauKeycard(ctx, game, t, e) {
   b.angry = true;
   b.jacket = bossJacket(game);
   b.scale = 2.2;
-  drawPerson(ctx, LOOKS.boss, b, 548, 272);
+  drawPerson(ctx, game.level.looks.boss, b, 548, 272);
   // the glass wall between them
   ctx.fillStyle = 'rgba(170,215,234,0.5)';
   ctx.fillRect(472, TAB.y, 16, TAB.h);
@@ -433,7 +433,7 @@ function tableauProjector(ctx, game, t, e) {
   l.pose = 'sit';
   l.arms = 'desk';
   l.scale = 2;
-  drawPerson(ctx, LOOKS.lin, l, 270, 222);
+  drawPerson(ctx, game.level.looks.lin, l, 270, 222);
   // boss shrugging
   const b = person(t);
   b.dir = Math.PI / 2;
@@ -441,7 +441,7 @@ function tableauProjector(ctx, game, t, e) {
   b.arms = 'shrug';
   b.jacket = bossJacket(game);
   b.scale = 2.2;
-  drawPerson(ctx, LOOKS.boss, b, 660, 222);
+  drawPerson(ctx, game.level.looks.boss, b, 660, 222);
   // table
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   rrect(ctx, 262, 238, 440, 86, 30);
@@ -473,7 +473,7 @@ function tableauFail(ctx, game, t, e) {
   p.head = p.dir + Math.sin(t * 2.6) * 0.5;
   p.sweat = true;
   p.scale = 2.3;
-  drawPerson(ctx, LOOKS.player, p, 480, 262);
+  drawPerson(ctx, game.level.looks.player, p, 480, 262);
   // staring coworkers
   const k = person(t);
   k.dir = 0.25;
@@ -482,7 +482,7 @@ function tableauFail(ctx, game, t, e) {
   k.arms = 'desk';
   k.glance = 1;
   k.scale = 2;
-  if (!game.world || !game.world.kevGone) drawPerson(ctx, LOOKS.kev, k, 262, 206); // he went home at 3:00 (unless kept late)
+  if (!game.world || !game.world.kevGone) drawPerson(ctx, game.level.looks.kev, k, 262, 206); // he went home at 3:00 (unless kept late)
   const l = person(t);
   l.dir = -0.15;
   l.head = -0.25;
@@ -490,14 +490,14 @@ function tableauFail(ctx, game, t, e) {
   l.arms = 'desk';
   l.glance = 1;
   l.scale = 2;
-  drawPerson(ctx, LOOKS.lin, l, 300, 300);
+  drawPerson(ctx, game.level.looks.lin, l, 300, 300);
   const b = person(t);
   b.dir = Math.PI;
   b.head = Math.PI + 0.15;
   b.glance = 1;
   b.jacket = bossJacket(game);
   b.scale = 2.2;
-  drawPerson(ctx, LOOKS.boss, b, 676, 268);
+  drawPerson(ctx, game.level.looks.boss, b, 676, 268);
   bubble(ctx, B_DOTS, 676, 186, e, 'thought');
   // the lone cricket
   const hop = Math.abs(Math.sin(e * 5));
@@ -525,7 +525,7 @@ function tableauCaught(ctx, game, t, e) {
   p.sweat = true;
   p.jacket = false;
   p.scale = 2.4;
-  drawPerson(ctx, LOOKS.player, p, px, 268);
+  drawPerson(ctx, game.level.looks.player, p, px, 268);
   // the boss, rooted to the spot, pointing the way out
   const b = person(t);
   b.dir = 0.08;
@@ -536,7 +536,7 @@ function tableauCaught(ctx, game, t, e) {
   b.jacket = bossJacket(game);
   b.scale = 2.6;
   const jab = Math.max(0, Math.sin(t * 5)) * 3; // little jabs at the door
-  drawPerson(ctx, LOOKS.boss, b, 262 + jab, 282);
+  drawPerson(ctx, game.level.looks.boss, b, 262 + jab, 282);
   bubble(ctx, B_ANGRY, 276, 206, e, 'alert');
 }
 
@@ -612,7 +612,7 @@ function tableauBlamed(ctx, game, t, e, o) {
     b.angry = true;
     b.jacket = bossJacket(game);
     b.scale = 2.5;
-    drawPerson(ctx, LOOKS.boss, b, 476, 222);
+    drawPerson(ctx, game.level.looks.boss, b, 476, 222);
   }
   // table, with a slide printout at each place but yours
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -646,14 +646,14 @@ function tableauBlamed(ctx, game, t, e, o) {
   l.item = '👉';
   l.angry = true;
   l.scale = 2.4;
-  drawPerson(ctx, LOOKS.lin, l, 272, 262);
+  drawPerson(ctx, game.level.looks.lin, l, 272, 262);
   if (kev) {
     const k = person(t);
     k.dir = Math.PI - 0.42;
     k.head = Math.PI - 0.3 + Math.sin(t * 1.7) * 0.2;
     k.glance = 1;
     k.scale = 2.4;
-    drawPerson(ctx, LOOKS.kev, k, 680, 262);
+    drawPerson(ctx, game.level.looks.kev, k, 680, 262);
   }
   // your chair: empty, in a pool of light
   for (let i = 3; i >= 1; i--) fillEllipse(ctx, 476, 316, 26 + i * 14, 7 + i * 4, `rgba(255,240,200,${(0.08 * (4 - i)).toFixed(3)})`);
@@ -697,7 +697,7 @@ function bossAtWindow(ctx, game, t) {
   b.angry = true;
   b.jacket = bossJacket(game);
   b.scale = 2.2;
-  drawPerson(ctx, LOOKS.boss, b, wx + ww / 2, wy + wh - 4); // face centred, fists on the glass
+  drawPerson(ctx, game.level.looks.boss, b, wx + ww / 2, wy + wh - 4); // face centred, fists on the glass
   ctx.fillStyle = C.glass;
   ctx.fillRect(wx, wy, ww, wh);
   ctx.fillStyle = C.glassHi;

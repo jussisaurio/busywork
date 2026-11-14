@@ -9,7 +9,6 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { DECOR } from './decor-meeting.js';
 import { formatClock, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
@@ -32,7 +31,7 @@ export function drawHud(ctx, game, t, mem) {
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
   drawClock(ctx, fin(clock.minute), t, game.level.day);
   drawGoal(ctx);
-  drawHeld(ctx, game.player && game.player.held);
+  drawHeld(ctx, game.level.itemIcons, game.player && game.player.held);
   // loop counter + found routes
   panel(ctx, 342, 6, 160, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
@@ -125,13 +124,15 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Centred on DECOR.legendAt (map tiles).
+// Centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
+  const at = game.level.decor && game.level.decor.legendAt;
+  if (!at) return;
   const p = game.player || {};
   PRESSED['⇧'] = !!p.busy;
   PRESSED.E = !!p.action;
-  drawLegendRow(ctx, LEGEND_PLAY, DECOR.legendAt.x * T, HUD_H + DECOR.legendAt.y * T, LEGEND_PLAY_STYLE, PRESSED);
+  drawLegendRow(ctx, LEGEND_PLAY, at.x * T, HUD_H + at.y * T, LEGEND_PLAY_STYLE, PRESSED);
 }
 
 // "3:50 PM" -> "3:50": digits only (the analog face carries the rest).
@@ -186,7 +187,7 @@ function drawGoal(ctx) {
   emoji(ctx, '❌', 258, 36, 12);
 }
 
-function drawHeld(ctx, held) {
+function drawHeld(ctx, icons, held) {
   panel(ctx, 286, 6, 44, 44);
   ctx.strokeStyle = 'rgba(243,230,200,0.22)';
   ctx.lineWidth = 1.5;
@@ -194,7 +195,7 @@ function drawHeld(ctx, held) {
   rrect(ctx, 292, 12, 32, 32, 6);
   ctx.stroke();
   ctx.setLineDash([]);
-  const ic = itemIcon(held);
+  const ic = itemIcon(icons, held);
   if (ic) emoji(ctx, ic, 308, 29, 24);
   else {
     ctx.globalAlpha = 0.18;

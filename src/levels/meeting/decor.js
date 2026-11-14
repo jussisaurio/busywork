@@ -1,6 +1,8 @@
-// Set dressing for level 1, "The 4 PM Meeting": where the renderer puts chairs, wall decor and the key
-// legend. Pure data (no imports, no logic) so it can move into the level folder unchanged as level.decor.
+// Set dressing for level 1, "The 4 PM Meeting" (level.decor): where the renderer puts chairs, wall decor, desk
+// clutter and the key legend. Data only (palette colours, no logic); render/world.js and render/hud.js read it.
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
+import { C } from '../../render/palette.js';
+
 const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
@@ -49,6 +51,16 @@ export const DECOR = {
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
   // Workstations whose sitter's spot is <owner>_desk, south of the desk (personal screen, mug and prop).
   deskOwners: ['lin_desk', 'kev_desk'],
+  // Per-owner workstation clutter ('player' is the desk with the P tile); other workstations get the
+  // renderer's default (dark screen, mustard mug, a sheet of paper). screenArt: 'code' | 'grid' | 'blankSlide';
+  // prop: 'plant' | 'earbuds' | 'paper' | null.
+  desks: {
+    player: { screen: '#f4f1e6', screenArt: 'blankSlide', mug: C.tomato, prop: null },
+    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
+    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+  },
+  // Lobby ashtray, on the tile east of this spot.
+  ashtray: { spot: 'smoke' },
   // Floor zones flooded from one tile in each room (walls, glass and doors stop the flood).
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },

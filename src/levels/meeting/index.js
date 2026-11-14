@@ -13,9 +13,14 @@
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
 //   initialWorld()  a fresh game.world for a new loop (state.js resetLoop)
+//   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
+//   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
+//   itemIcons  the emoji for each item type (looks.js; render)
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
+import { DECOR } from './decor.js';
+import { LOOKS, ITEM_ICONS } from './looks.js';
 
 export default {
   id: 'meeting',
@@ -54,4 +59,7 @@ export default {
     kevGone: false,
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
   }),
+  decor: DECOR,
+  looks: LOOKS,
+  itemIcons: ITEM_ICONS,
 };
