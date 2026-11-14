@@ -504,7 +504,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'action:cancel': s = `your action was interrupted (${p.reason})`; break;
       case 'npc:vanish': s = `${NAME[p.id] ?? p.id} left the floor`; break;
       case 'npc:appear': s = `${NAME[p.id] ?? p.id} is back`; break;
-      case 'meeting:gather': s = 'everyone heads to the meeting room'; break;
+      case 'meeting:gather': s = 'everyone gathers for the meeting'; break; // a level's describe() names the place
       case 'day:end': s = `DAY OVER (${p.outcome?.result})`; break;
       case 'loop:start': s = null; break;
       case 'item:drop': s = `you dropped the ${p.type}`; break;

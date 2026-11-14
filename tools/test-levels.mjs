@@ -49,6 +49,7 @@ const CASES = [
   ['outcomeOrder misses a route', { ...M, outcomeOrder: ['keycard'] }, 'meeting', /outcomeOrder: lists route 'projector' 0 times/],
   ['harness landmark', { ...M, harness: { ...M.harness, landmarks: { ...M.harness.landmarks, sofa: 'sofa' } } }, 'meeting', /harness\.landmarks\.sofa: no spot 'sofa'/],
   ['gate target', { ...M, gate: { ...M.gate, targets: [...M.gate.targets, 'sofa'] } }, 'meeting', /gate\.targets\[\d+\]: 'sofa' is no interactable id, landmark or x,y/],
+  ['gate renderEvents', { ...M, gate: { ...M.gate, renderEvents: 'projector:broken' } }, 'meeting', /gate\.renderEvents: not a list of event names/],
   ['legend draw', { ...M, map: { ...M.map, legend: { ...M.map.legend, F: { ...M.map.legend.F, draw: 'icebox' } } } }, 'meeting', /map\.legend\['F'\]\.draw: no tile draw 'icebox'/],
   ['decor elevator spot', { ...M, decor: { ...M.decor, elevator: { spot: 'lift' } } }, 'meeting', /decor\.elevator\.spot: no spot 'lift'/],
   ['decor desk owner faces no desk', { ...M, spots: { ...M.spots, kev_desk: { ...M.spots.kev_desk, face: 'S' } } }, 'meeting', /decor\.deskOwners\[1\]: spot 'kev_desk' faces S onto no desk/],

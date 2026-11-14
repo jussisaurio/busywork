@@ -137,6 +137,7 @@ export default {
     mustUse: [{ id: 'noise', event: 'noise' }],
     targets: ['workstation', 'donut', 'water_cooler', 'printer', 'doorway', 'boss', 'meeting_room'],
     interactable: ['workstation', 'donut', 'water_cooler'],
+    renderEvents: ['boss:workAssigned'],
     milestones: { 'donut:eaten': () => 'ate', 'boss:workAssigned': () => 'work', caught: () => 'caught' },
     binKeys: ['ate', 'work', 'caught'],
     keyActions: ['noise', 'ate'],

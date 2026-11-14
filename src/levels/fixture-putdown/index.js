@@ -100,6 +100,7 @@ export default {
     mustUse: [{ id: 'put', event: 'item:put' }],
     targets: ['own_desk', 'my_seat', 'boss_desk', 'box', 'restroom_door', 'meeting_room', 'meeting_seat'],
     interactable: ['own_desk'],
+    renderEvents: ['boss:workAssigned'],
     milestones: {
       'note:written': () => 'wrote',
       'item:put': (p) => `put@${p.spot}`,

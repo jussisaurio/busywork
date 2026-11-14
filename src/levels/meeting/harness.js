@@ -110,6 +110,7 @@ export default {
         }
         return null;
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
+      case 'meeting:gather': return 'everyone heads to the meeting room';
       default: return undefined;
     }
   },

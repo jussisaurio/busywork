@@ -35,7 +35,7 @@
 //   initialWorld  a function returning an object with an `items` list
 //   harness     optional; landmarks name spots
 //   gate        optional; targets are interactable ids, landmarks or "x,y"; interactable targets; mustUse
-//               { id, cmd | event }; milestones functions
+//               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
 //               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
@@ -321,6 +321,7 @@ export function levelProblems(level, key) {
       if (!isStr(u?.id) || !(isStr(u?.cmd) || isStr(u?.event))) bad(`gate.mustUse[${i}]`, 'needs { id, cmd } or { id, event }');
     }
     for (const [name, f] of Object.entries(gate.milestones ?? {})) if (!isFn(f)) bad(`gate.milestones[${q(name)}]`, 'not a function');
+    if (gate.renderEvents !== undefined && !(Array.isArray(gate.renderEvents) && gate.renderEvents.every(isStr))) bad('gate.renderEvents', 'not a list of event names');
   }
 
   // --- presentation -----------------------------------------------------------------------------
