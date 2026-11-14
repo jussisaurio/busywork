@@ -4,12 +4,12 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap,
+  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
   MONO_FAMILY, UI_FAMILY, ROUTE_ICONS,
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { at, formatClock, MEETING_AT, WORK_PENALTY_MIN, DAY_START } from '../config.js';
+import { at, formatClock, MEETING_AT, WORK_PENALTY_MIN } from '../config.js';
 
 const RED_AT = at('3:50');
 const PULSE_AT = MEETING_AT - 2;
@@ -163,23 +163,7 @@ function drawClock(ctx, minute, t) {
     const a = (i / 12) * Math.PI * 2;
     fillCircle(ctx, cx + Math.cos(a) * 10, cy + Math.sin(a) * 10, i % 3 ? 0.6 : 1.1, C.ink);
   }
-  const total = DAY_START + minute;
-  const mA = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  const hA = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = C.ink;
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(hA) * 6, cy + Math.sin(hA) * 6);
-  ctx.stroke();
-  ctx.strokeStyle = red ? C.tomatoDark : C.ink;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(mA) * 9.5, cy + Math.sin(mA) * 9.5);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
+  clockHands(ctx, cx, cy, minute, 6, 2.4, 9.5, 1.5, red ? C.tomatoDark : C.ink);
   fillCircle(ctx, cx, cy, 1.5, C.tomato);
 
   const hm = clockDigits(minute);

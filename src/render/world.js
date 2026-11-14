@@ -1,10 +1,12 @@
 // The office: a static layer (floors, walls, glass, furniture) cached in an offscreen
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
-import { T, MAP_W, MAP_H, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
+import {
+  T, MAP_W, MAP_H, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp, clockHands, drawScreen,
+} from './util.js';
 import { C } from './palette.js';
 import { SPOTS } from '../data/level.js';
-import { at, DAY_START, WORK_PENALTY_MIN } from '../config.js';
+import { at, WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
 const WALLISH = new Set(['#', 'R', 'E']);
@@ -610,15 +612,9 @@ function drawWallDecor(ctx, map, info) {
   }
   // projection screen (rolled down, unlit) on the meeting room wall
   const sc = info.screen;
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(sc.x + 2, sc.y + 3, sc.w, sc.h);
-  ctx.fillStyle = '#4a4440';
-  rrect(ctx, sc.x - 3, sc.y - 2, sc.w + 6, 4, 2);
-  ctx.fill();
-  ctx.fillStyle = '#e8e6de';
-  ctx.fillRect(sc.x, sc.y + 1, sc.w, sc.h);
-  ctx.fillStyle = '#c9c5b8';
-  ctx.fillRect(sc.x, sc.y + sc.h - 2, sc.w, 2);
+  drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, {
+    shadow: 'rgba(0,0,0,0.25)', bar: [3, 3, 4, 2], face: '#e8e6de', hem: '#c9c5b8',
+  });
 }
 
 // --- furniture ---------------------------------------------------------------
@@ -1082,23 +1078,7 @@ function drawWallClock(ctx, map, minute) {
   const cy = frontY(y) + FRONT / 2 - 1;
   fillCircle(ctx, cx, cy, 6.5, '#1f1814');
   fillCircle(ctx, cx, cy, 5.3, C.cream);
-  const total = DAY_START + (Number.isFinite(minute) ? minute : 0);
-  const mAng = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  const hAng = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
-  ctx.strokeStyle = C.ink;
-  ctx.lineCap = 'round';
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(hAng) * 3, cy + Math.sin(hAng) * 3);
-  ctx.stroke();
-  ctx.lineWidth = 0.9;
-  ctx.strokeStyle = C.tomatoDark;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(mAng) * 4.6, cy + Math.sin(mAng) * 4.6);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
+  clockHands(ctx, cx, cy, minute, 3, 1.4, 4.6, 0.9, C.tomatoDark);
 }
 
 function drawBeam(ctx, info, t) {
@@ -1115,10 +1095,7 @@ function drawBeam(ctx, info, t) {
   ctx.lineTo(lx + 2, ly);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,240,0.25)';
-  ctx.fillRect(sc.x - 4, sc.y - 2, sc.w + 8, sc.h + 6);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(sc.x, sc.y + 1, sc.w, sc.h);
+  drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, { glow: ['rgba(255,255,240,0.25)', 4, 3, 3], face: '#ffffff' });
 }
 
 export function drawProjector(ctx, cx, cy, state, fix, t) {

@@ -1,26 +1,30 @@
 // People: top-down with a hint of 3/4. Body ellipse + head circle + facing cues
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
-import { T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, ITEM_ICON } from './util.js';
+import {
+  T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper, ITEM_ICON,
+} from './util.js';
 import { C } from './palette.js';
 
+// bubbleDy / eyeDy: px from a person's tile position up to their speech-bubble anchor / their eyes (headY).
 export const LOOKS = {
   player: {
     body: C.tomato, bodyDark: C.tomatoDark, skin: '#f1c9a2', skinDark: '#d9a47c', hair: '#7a3b1e',
-    hairStyle: 'tuft', legs: '#3a3946', wide: 1, tall: 1, head: 6.6, trim: '#f3e6c8',
+    hairStyle: 'tuft', legs: '#3a3946', wide: 1, tall: 1, head: 6.6, trim: '#f3e6c8', bubbleDy: 30, eyeDy: 12,
   },
   boss: {
     body: C.navy, bodyDark: C.navyDark, shirt: '#d7e4ee', shirtDark: '#a9bccb', tie: '#9c2a22',
     skin: '#ebb792', skinDark: '#cf9670', hair: '#a19c95', hairStyle: 'horseshoe', mustache: true,
-    legs: '#1c2232', wide: 1.25, tall: 1.12, head: 7.4,
+    legs: '#1c2232', wide: 1.25, tall: 1.12, head: 7.4, bubbleDy: 36, eyeDy: 14,
   },
   lin: {
     body: C.teal, bodyDark: C.tealDark, skin: '#d9a77c', skinDark: '#bb875e', hair: '#1f1a1a',
     hairStyle: 'bun', glasses: true, legs: '#4a3b33', wide: 0.95, tall: 1, head: 6.4, trim: '#f3e6c8',
+    bubbleDy: 30, eyeDy: 12,
   },
   kev: {
     body: C.olive, bodyDark: C.oliveDark, skin: '#c98d62', skinDark: '#a8714a', hair: '#3a2a1c',
-    hairStyle: 'spiky', hood: true, legs: '#2f3340', wide: 1.05, tall: 1, head: 6.6,
+    hairStyle: 'spiky', hood: true, legs: '#2f3340', wide: 1.05, tall: 1, head: 6.6, bubbleDy: 30, eyeDy: 12,
   },
 };
 
@@ -38,11 +42,17 @@ export function lookFor(id, color) {
   if (!l) {
     l = {
       body: shade(key, 1), bodyDark: shade(key, 0.72), skin: '#e2b58d', skinDark: '#c4936b', hair: '#3a2a1c',
-      hairStyle: 'cap', legs: '#3a3640', wide: 1, tall: 1, head: 6.6,
+      hairStyle: 'cap', legs: '#3a3640', wide: 1, tall: 1, head: 6.6, bubbleDy: 30, eyeDy: 12,
     };
     genericLooks.set(key, l);
   }
   return l;
+}
+
+// Screen y (px) of a person's eyes (key 'eyeDy') or bubble anchor ('bubbleDy'); sitting lowers both 3 px.
+// d is the tile y used when n.y is not a finite number.
+export function headY(n, key, d = 0) {
+  return fin(n.y, d) * T - lookFor(n.id, n.color)[key] + (n.seated || n.pose === 'sit' ? 3 : 0);
 }
 
 // Reusable per-draw description.
@@ -406,12 +416,7 @@ export function drawPerson(ctx, look, s, x, y) {
     const sx = hr * 0.95;
     const sy = headY - hr * 0.3 + ph * 6;
     ctx.globalAlpha = 1 - ph * 0.6;
-    ctx.fillStyle = '#8fd0ff';
-    ctx.beginPath();
-    ctx.moveTo(sx, sy - 3.5);
-    ctx.quadraticCurveTo(sx + 2.4, sy, sx, sy + 1.6);
-    ctx.quadraticCurveTo(sx - 2.4, sy, sx, sy - 3.5);
-    ctx.fill();
+    drawDrop(ctx, sx, sy, 3.5, 2.4, 1.6);
     ctx.globalAlpha = 1;
   }
 
@@ -426,11 +431,7 @@ export function drawPerson(ctx, look, s, x, y) {
       ctx.globalAlpha = 1 - ph;
       ctx.translate(px, py);
       ctx.rotate(Math.sin(s.t * 5 + i) * 0.6);
-      ctx.fillStyle = C.white;
-      ctx.fillRect(-3, -4, 6, 8);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillRect(-2, -2, 4, 0.7);
-      ctx.fillRect(-2, 0, 4, 0.7);
+      drawPaper(ctx, 6, 8, 2);
       ctx.restore();
     }
   }
