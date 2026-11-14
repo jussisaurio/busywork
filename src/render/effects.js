@@ -16,13 +16,13 @@ function anchorOf(game, owner) {
     const p = game.player;
     if (p && (owner === 'player' || owner === p.id)) {
       ANCHOR.x = fin(p.x) * T;
-      ANCHOR.y = headY(p, 'bubbleDy');
+      ANCHOR.y = headY(game.level.looks, p, 'bubbleDy');
       return true;
     }
     const n = game.npcs && findNpc(game, owner);
     if (!n || !n.active) return false;
     ANCHOR.x = fin(n.x) * T;
-    ANCHOR.y = headY(n, 'bubbleDy');
+    ANCHOR.y = headY(game.level.looks, n, 'bubbleDy');
     return true;
   }
   if (owner && typeof owner === 'object' && Number.isFinite(owner.x) && Number.isFinite(owner.y)) {
@@ -272,7 +272,7 @@ export function drawSightlines(ctx, game, t) {
     if (!(fade > 0.01)) continue;
     // eyes: head centre, nudged toward you so the line leaves the face, not the hair
     let ex = fin(n.x, NaN) * T;
-    let ey = headY(n, 'eyeDy', NaN);
+    let ey = headY(game.level.looks, n, 'eyeDy', NaN);
     if (!Number.isFinite(ex) || !Number.isFinite(ey)) continue;
     const dx = px - ex;
     const dy = py - ey;
@@ -381,7 +381,7 @@ export function drawSuspicion(ctx, game, t) {
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;
   const x = fin(boss.x) * T + 17 + jit;
-  const y = fin(boss.y) * T - lookFor(boss.id, boss.color).bubbleDy - 10;
+  const y = fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10;
   const h = 20;
   ctx.fillStyle = 'rgba(24,19,15,0.8)';
   rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);

@@ -1,45 +1,5 @@
 [
  {
-  "file": "src/audio/audio.js",
-  "identifier": "boss",
-  "count": 9
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "kev",
-  "count": 5
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "sandwich",
-  "count": 4
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "keycard",
-  "count": 1
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "projector",
-  "count": 10
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "coffee",
-  "count": 5
- },
- {
-  "file": "src/audio/audio.js",
-  "identifier": "fridge",
-  "count": 3
- },
- {
   "file": "src/audio/babble.js",
   "identifier": "boss",
   "count": 1
@@ -61,37 +21,12 @@
  },
  {
   "file": "src/audio/sfx.js",
-  "identifier": "boss",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "kev",
-  "count": 3
- },
- {
-  "file": "src/audio/sfx.js",
   "identifier": "lin",
-  "count": 24
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "sandwich",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "keycard",
-  "count": 1
+  "count": 21
  },
  {
   "file": "src/audio/sfx.js",
   "identifier": "projector",
-  "count": 1
- },
- {
-  "file": "src/audio/sfx.js",
-  "identifier": "coffee",
   "count": 1
  },
  {
@@ -187,17 +122,12 @@
  {
   "file": "src/render/characters.js",
   "identifier": "boss",
-  "count": 9
- },
- {
-  "file": "src/render/characters.js",
-  "identifier": "kev",
-  "count": 2
+  "count": 7
  },
  {
   "file": "src/render/characters.js",
   "identifier": "lin",
-  "count": 4
+  "count": 2
  },
  {
   "file": "src/render/characters.js",
@@ -217,7 +147,7 @@
  {
   "file": "src/render/characters.js",
   "identifier": "coffee",
-  "count": 4
+  "count": 2
  },
  {
   "file": "src/render/characters.js",
@@ -271,65 +201,10 @@
  },
  {
   "file": "src/render/screens.js",
-  "identifier": "boss",
-  "count": 7
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "kev",
+  "identifier": "mustard",
   "count": 2
  },
  {
-  "file": "src/render/screens.js",
-  "identifier": "lin",
-  "count": 3
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "keycard",
-  "count": 6
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "projector",
-  "count": 5
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "mustard",
-  "count": 3
- },
- {
-  "file": "src/render/util.js",
-  "identifier": "sandwich",
-  "count": 1
- },
- {
-  "file": "src/render/util.js",
-  "identifier": "keycard",
-  "count": 1
- },
- {
-  "file": "src/render/util.js",
-  "identifier": "coffee",
-  "count": 1
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "boss",
-  "count": 3
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "kev",
-  "count": 4
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "lin",
-  "count": 4
- },
- {
   "file": "src/render/world.js",
   "identifier": "keycard",
   "count": 1
@@ -343,11 +218,6 @@
   "file": "src/render/world.js",
   "identifier": "coffee",
   "count": 5
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "smoke",
-  "count": 3
  },
  {
   "file": "src/render/world.js",

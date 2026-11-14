@@ -17,11 +17,20 @@
 //            (harness.js; read by src/agent/harness.js)
 //   gate     what the fuzzer and the gate know beyond this object: mustUse lessons, plan targets, milestones
 //            (gate.js; read by tools/fuzz.mjs levelData())
+//   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
+//   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
+//   itemIcons  the emoji for each item type (looks.js; render)
+//   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
+//   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { DECOR } from './decor.js';
+import { LOOKS, ITEM_ICONS } from './looks.js';
+import { END_SCENES } from './end-scenes.js';
+import { SOUNDS } from './sounds.js';
 
 export default {
   id: 'meeting',
@@ -62,4 +71,9 @@ export default {
   }),
   harness,
   gate,
+  decor: DECOR,
+  looks: LOOKS,
+  itemIcons: ITEM_ICONS,
+  endScenes: END_SCENES,
+  sounds: SOUNDS,
 };

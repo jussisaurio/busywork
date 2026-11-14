@@ -2,11 +2,10 @@
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
 import {
-  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp, clockHands, drawScreen,
+  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, clamp, clockHands, drawScreen,
 } from './util.js';
 import { C } from './palette.js';
 import { WORK_PENALTY_MIN } from '../config.js';
-import { DECOR } from './decor-meeting.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
 const WALLISH = new Set(['#', 'R', 'E']);
@@ -15,12 +14,21 @@ const DESKISH = new Set(['T', 'P', 'J', 'C']);
 
 const FACE = { N: -Math.PI / 2, S: Math.PI / 2, E: 0, W: Math.PI };
 
+// Set dressing comes from the level (level.decor, e.g. src/levels/meeting/decor.js). Every field is optional.
+const NO_DECOR = {};
+const NO_PADS = {};
+const NO_ICONS = {};
+const decorOf = (level) => level.decor || NO_DECOR;
+// A workstation whose owner has no decor.desks entry.
+const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.mustard, prop: 'paper' };
+
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
 function mapInfo(map, level) {
   const SPOTS = level.spots;
   let info = infoCache.get(map);
   if (info) return info;
+  const decor = decorOf(level);
   const w = map.w;
   const h = map.h;
   const zone = new Array(w * h).fill(null);
@@ -36,7 +44,7 @@ function mapInfo(map, level) {
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
   };
-  for (const s of DECOR.zoneSeeds) flood(s.x, s.y, s.zone);
+  for (const s of decor.zoneSeeds || []) flood(s.x, s.y, s.zone);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const c = map.char(x, y);
@@ -73,10 +81,10 @@ function mapInfo(map, level) {
       else if (comp.chars.has('J')) comp.kind = 'meeting';
       else if (comp.chars.has('C')) comp.kind = 'counter';
       else if (z === 'kitchen') comp.kind = 'kitchenTable';
-      else if (z === 'office') comp.kind = 'boss';
+      else if (z === 'office') comp.kind = 'exec';
       else comp.kind = 'work';
       comp.owner = null;
-      for (const spot of DECOR.deskOwners) {
+      for (const spot of decor.deskOwners || []) {
         const s = SPOTS[spot];
         if (s && s.x >= comp.x0 && s.x <= comp.x1 && s.y === comp.y1 + 1) comp.owner = spot.replace(/_desk$/, '');
       }
@@ -85,6 +93,7 @@ function mapInfo(map, level) {
     }
   }
   const find1 = (c) => map.find(c)[0] || null;
+  const sc = decor.screen;
   info = {
     zone,
     zoneAt: (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? null : zone[y * w + x]),
@@ -95,7 +104,7 @@ function mapInfo(map, level) {
     coffee: find1('C'),
     entrance: find1('L'),
     elevator: map.find('E'),
-    screen: { x: DECOR.screen.x * T + 2, y: frontY(DECOR.screen.y) - 1, w: DECOR.screen.w * T - 6, h: 28 },
+    screen: sc ? { x: sc.x * T + 2, y: frontY(sc.y) - 1, w: sc.w * T - 6, h: 28 } : null,
   };
   infoCache.set(map, info);
   return info;
@@ -106,6 +115,7 @@ function mapInfo(map, level) {
 // =============================================================================
 export function drawStaticLayer(ctx, map, level) {
   const SPOTS = level.spots;
+  const decor = decorOf(level);
   const info = mapInfo(map, level);
   ctx.fillStyle = C.wallVoid;
   ctx.fillRect(0, 0, map.w * T, map.h * T);
@@ -138,13 +148,13 @@ export function drawStaticLayer(ctx, map, level) {
   }
   if (info.elevator.length) drawElevator(ctx, info.elevator);
   // 6. wall decorations
-  drawWallDecor(ctx, map, info);
+  drawWallDecor(ctx, map, info, decor);
   // 7. chairs (under desks), 8. desks
-  for (const c of DECOR.chairs) {
+  for (const c of decor.chairs || []) {
     const p = c.spot ? SPOTS[c.spot] : c;
     if (p) drawChair(ctx, p.x * T + T / 2, p.y * T + T / 2, FACE[c.face], c.color[0], c.color[1]);
   }
-  for (const d of info.desks) drawDesk(ctx, d);
+  for (const d of info.desks) drawDesk(ctx, d, decor);
   // 9. appliances and props
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
@@ -155,10 +165,11 @@ export function drawStaticLayer(ctx, map, level) {
       else if (c === 'K') drawRackBase(ctx, x * T + T / 2, y * T + T / 2);
     }
   }
-  // lobby ashtray by the smoking spot
-  if (SPOTS.smoke) {
-    const ax = (SPOTS.smoke.x + 1) * T + 10;
-    const ay = (SPOTS.smoke.y) * T + 8;
+  // ashtray on the tile east of a spot
+  const ash = decor.ashtray && SPOTS[decor.ashtray.spot];
+  if (ash) {
+    const ax = (ash.x + 1) * T + 10;
+    const ay = (ash.y) * T + 8;
     fillEllipse(ctx, ax, ay + 6, 6, 2.5, 'rgba(0,0,0,0.2)');
     fillCircle(ctx, ax, ay, 5, C.steelDark);
     fillCircle(ctx, ax, ay, 3.6, '#d9cfb4');
@@ -258,8 +269,8 @@ function paintFloor(ctx, kind, x, y) {
 }
 
 function drawRugs(ctx, map, info) {
-  // Boss office: mustard rug with teal border under the desk.
-  const bd = info.desks.find((d) => d.kind === 'boss');
+  // Executive office: mustard rug with teal border under the desk.
+  const bd = info.desks.find((d) => d.kind === 'exec');
   if (bd) {
     const x = (bd.x0 - 1) * T + 8;
     const y = (bd.y0 - 1) * T + 6;
@@ -572,22 +583,24 @@ function drawPainting(ctx, map, x, y, variant) {
   }
 }
 
-function drawWallDecor(ctx, map, info) {
-  for (const w of DECOR.windows) drawWindow(ctx, map, w.x0, w.x1, w.y);
-  for (const p of DECOR.paintings) drawPainting(ctx, map, p.x, p.y, p.variant);
-  const cab = DECOR.cabinets;
-  for (let x = cab.x0; x <= cab.x1; x++) {
-    if (!hasFront(map, x, cab.y)) continue;
-    const fy = frontY(cab.y);
-    ctx.fillStyle = C.tealDark;
-    ctx.fillRect(x * T + 1, fy - 2, T - 2, FRONT);
-    ctx.fillStyle = C.teal;
-    ctx.fillRect(x * T + 3, fy, T - 6, FRONT - 4);
-    fillCircle(ctx, x * T + T / 2, fy + FRONT - 6, 1.2, C.cream);
+function drawWallDecor(ctx, map, info, decor) {
+  for (const w of decor.windows || []) drawWindow(ctx, map, w.x0, w.x1, w.y);
+  for (const p of decor.paintings || []) drawPainting(ctx, map, p.x, p.y, p.variant);
+  const cab = decor.cabinets;
+  if (cab) {
+    for (let x = cab.x0; x <= cab.x1; x++) {
+      if (!hasFront(map, x, cab.y)) continue;
+      const fy = frontY(cab.y);
+      ctx.fillStyle = C.tealDark;
+      ctx.fillRect(x * T + 1, fy - 2, T - 2, FRONT);
+      ctx.fillStyle = C.teal;
+      ctx.fillRect(x * T + 3, fy, T - 6, FRONT - 4);
+      fillCircle(ctx, x * T + T / 2, fy + FRONT - 6, 1.2, C.cream);
+    }
   }
   // projection screen (rolled down, unlit)
   const sc = info.screen;
-  drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, {
+  if (sc) drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, {
     shadow: 'rgba(0,0,0,0.25)', bar: [3, 3, 4, 2], face: '#e8e6de', hem: '#c9c5b8',
   });
 }
@@ -650,7 +663,7 @@ function grain(ctx, px, py, w, h, seed) {
   ctx.stroke();
 }
 
-function drawDesk(ctx, d) {
+function drawDesk(ctx, d, decor) {
   const px = d.x0 * T + 2;
   const py = d.y0 * T + 3;
   const w = (d.x1 - d.x0 + 1) * T - 4;
@@ -698,12 +711,13 @@ function drawDesk(ctx, d) {
     deskBase(ctx, px, py, w, h, C.walnutTop, C.walnutEdge, 14);
     grain(ctx, px, py, w, h, seed);
     // notepads + water glasses at the seats
-    for (const sx of DECOR.notepads.north) {
+    const pads = decor.notepads || NO_PADS;
+    for (const sx of pads.north || []) {
       ctx.fillStyle = C.paper;
       ctx.fillRect(sx * T + 10, py + 4, 11, 8);
       fillCircle(ctx, sx * T + 25, py + 7, 2.5, 'rgba(200,230,240,0.85)');
     }
-    for (const sx of DECOR.notepads.south) {
+    for (const sx of pads.south || []) {
       ctx.fillStyle = C.paper;
       ctx.fillRect(sx * T + 10, py + h - 17, 11, 8);
     }
@@ -712,8 +726,8 @@ function drawDesk(ctx, d) {
   deskBase(ctx, px, py, w, h, C.walnutTop, C.walnutEdge);
   grain(ctx, px, py, w, h, seed);
   const midX = ((d.x0 + d.x1 + 1) / 2) * T;
-  if (d.kind === 'boss') {
-    // Boss sits north of the desk facing south: monitor back at the south edge.
+  if (d.kind === 'exec') {
+    // The executive sits north of the desk facing south: monitor back at the south edge.
     ctx.fillStyle = '#29453a';
     rrect(ctx, midX - 14, py + 4, 28, 13, 2); // leather blotter
     ctx.fill();
@@ -736,8 +750,9 @@ function drawDesk(ctx, d) {
     fillCircle(ctx, px + 12, py + 18, 2, '#4a2e1a');
     return;
   }
-  // Workstation: sitter is south of the desk, facing north.
-  const owner = d.owner;
+  // Workstation: sitter is south of the desk, facing north. Screen, mug and prop come from the owner's
+  // decor.desks style.
+  const st = (decor.desks && decor.desks[d.owner]) || DESK_STYLE;
   const monTopY = py + 3;
   ctx.fillStyle = 'rgba(0,0,0,0.18)';
   rrect(ctx, midX - 11, monTopY + 3, 24, 17, 2);
@@ -748,17 +763,16 @@ function drawDesk(ctx, d) {
   ctx.fillStyle = C.bezel;
   rrect(ctx, midX - 12, monTopY + 6, 24, 11, 2); // screen face (faces the sitter)
   ctx.fill();
-  const scr = owner === 'player' ? '#f4f1e6' : owner === 'kev' ? '#1f3d2a' : owner === 'lin' ? '#cfe2ee' : '#37494c';
-  ctx.fillStyle = scr;
+  ctx.fillStyle = st.screen;
   ctx.fillRect(midX - 10, monTopY + 8, 20, 7);
-  if (owner === 'kev') {
+  if (st.screenArt === 'code') {
     ctx.fillStyle = '#7fe08a';
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9, monTopY + 9 + i * 2, 4 + hash(i, 7) * 12, 1);
-  } else if (owner === 'lin') {
+  } else if (st.screenArt === 'grid') {
     ctx.fillStyle = 'rgba(40,90,120,0.6)';
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9, monTopY + 9 + i * 2, 18, 0.8);
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9 + i * 6, monTopY + 8, 0.8, 7);
-  } else if (owner === 'player') {
+  } else if (st.screenArt === 'blankSlide') {
     ctx.fillStyle = '#c9c3b3'; // a blank slide titled nothing
     ctx.fillRect(midX - 6, monTopY + 9.5, 12, 1.2);
   }
@@ -776,7 +790,7 @@ function drawDesk(ctx, d) {
   // personal items
   const leftX = d.x0 * T + 14;
   const rightX = d.x1 * T + 16;
-  const mug = owner === 'player' ? C.tomato : owner === 'lin' ? C.teal : owner === 'kev' ? C.olive : C.mustard;
+  const mug = st.mug;
   fillCircle(ctx, leftX, py + 15, 3.6, mug);
   fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');
   ctx.strokeStyle = mug;
@@ -784,13 +798,13 @@ function drawDesk(ctx, d) {
   ctx.beginPath();
   ctx.arc(leftX + 4, py + 15, 1.8, -1.2, 1.2);
   ctx.stroke();
-  if (owner === 'lin') {
+  if (st.prop === 'plant') {
     fillCircle(ctx, rightX, py + 13, 4.5, C.pot);
     for (let i = 0; i < 6; i++) {
       const a = (i / 6) * Math.PI * 2;
       fillEllipse(ctx, rightX + Math.cos(a) * 3, py + 12 + Math.sin(a) * 2.5, 2.6, 1.6, C.plantB);
     }
-  } else if (owner === 'kev') {
+  } else if (st.prop === 'earbuds') {
     fillCircle(ctx, rightX - 2, py + 12, 3, '#9aa45a');
     fillCircle(ctx, rightX - 2, py + 12, 1.6, '#c8ccd0');
     ctx.strokeStyle = '#222';
@@ -799,7 +813,7 @@ function drawDesk(ctx, d) {
     ctx.moveTo(rightX - 12, py + 20);
     ctx.bezierCurveTo(rightX - 4, py + 12, rightX + 4, py + 24, rightX + 8, py + 16);
     ctx.stroke();
-  } else if (owner !== 'player') {
+  } else if (st.prop === 'paper') {
     ctx.fillStyle = C.white;
     ctx.save();
     ctx.translate(rightX, py + 13);
@@ -963,12 +977,12 @@ export function drawWorldDynamic(ctx, game, t) {
   const world = game.world || {};
   const minute = game.clock ? game.clock.minute : 0;
 
-  drawWallClock(ctx, map, minute);
+  drawWallClock(ctx, map, minute, decorOf(game.level).clock);
 
   // Projector + screen.
   if (info.projector) {
     const beam = world.projector === 'ok' && (minute >= game.level.day.beamAt || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail'));
-    if (beam) drawBeam(ctx, info, t);
+    if (beam && info.screen) drawBeam(ctx, info, t);
     drawProjector(ctx, info.projector.x * T + T / 2, info.projector.y * T + T / 2, world.projector || 'ok', world.fixProgress || 0, t);
   }
 
@@ -998,13 +1012,14 @@ export function drawWorldDynamic(ctx, game, t) {
 
   // Dropped items on the floor.
   const items = world.items || [];
+  const icons = game.level.itemIcons || NO_ICONS;
   for (let i = 0; i < items.length; i++) {
     const it = items[i];
     const x = it.x * T;
     const y = it.y * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     fillEllipse(ctx, x, y + 6, 7, 2.5, 'rgba(0,0,0,0.22)');
-    emoji(ctx, ITEM_ICON[it.type] || '❔', x, y + Math.sin(t * 3 + i) * 1, 14);
+    emoji(ctx, icons[it.type] || '❔', x, y + Math.sin(t * 3 + i) * 1, 14);
     if ((t + i * 0.7) % 2.4 < 0.25) sparkle(ctx, x + 6, y - 6, 3.5, '#fff');
   }
 
@@ -1043,9 +1058,10 @@ export function sparkle(ctx, x, y, r, color) {
   ctx.fill();
 }
 
-function drawWallClock(ctx, map, minute) {
+function drawWallClock(ctx, map, minute, clock) {
   // Analog wall clock showing the game time.
-  const { x, y } = DECOR.clock;
+  if (!clock) return;
+  const { x, y } = clock;
   if (!hasFront(map, x, y)) return;
   const cx = x * T + T / 2;
   const cy = frontY(y) + FRONT / 2 - 1;

@@ -17,8 +17,6 @@ export const MONO_FAMILY = 'ui-monospace,"SF Mono",Menlo,Consolas,monospace';
 export const TYPE_FAMILY = '"Courier New",Courier,monospace';
 export const TITLE_FAMILY = '"Arial Black","Helvetica Neue",Impact,sans-serif';
 
-export const ITEM_ICON = { coffee: '☕', keycard: '🪪', sandwich: '🥪' };
-
 // --- fonts / text -------------------------------------------------------------
 const fontCache = new Map();
 export function font(size, family = UI_FAMILY, weight = '') {
