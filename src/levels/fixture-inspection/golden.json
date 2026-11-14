@@ -71,10 +71,10 @@
    "cmds": [
     "wait until 3:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "cbc3850f225d4550",
-    "58a3214b7170ac55"
+    "35babd36748b8115",
+    "f573ff46218894a6"
    ]
   },
   {
@@ -102,13 +102,13 @@
     "interact",
     "wait until 3:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
     "85b34ff8774e9194",
     "b421c2a6a0962284",
     "b5ef1dd05a5d26ed",
-    "7f89cc104634783f",
-    "58a3214b7170ac55"
+    "3b1c8ddc3d47a499",
+    "f573ff46218894a6"
    ]
   },
   {
@@ -119,8 +119,8 @@
    "summary": "caught",
    "digests": [
     "745a085d7d005f19",
-    "f1df1b5233ba7e48",
-    "e6c03fe6a44a0e2c"
+    "2e138b8fa8fb706e",
+    "75a9fe81a3699755"
    ]
   },
   {
@@ -153,8 +153,8 @@
     "e8036b7262aeab24",
     "baabf0579b03015d",
     "c2efce61aa90ba82",
-    "c16372e8ae095497",
-    "73f933eb76b5f083"
+    "f5c5a2735e963736",
+    "6d8a45b6fb7bb02c"
    ]
   },
   {
@@ -271,8 +271,8 @@
     "09d502499e2873c2",
     "f67373b00875e53e",
     "954fa2f1407eb5de",
-    "02a06e6f63f52be3",
-    "6c1ee84006a42596"
+    "b9feb9893a3aa76c",
+    "069b1ff3e03e719d"
    ]
   },
   {
@@ -403,14 +403,14 @@
     "goto meeting_seat",
     "wait until 3:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
     "9dfbda929abf176e",
     "3ec9c141e724649a",
     "e3b99e3297cbc59b",
-    "6bbd46d149425508",
-    "ef5da6b55e7615ae",
-    "1fd5034b0f66df73"
+    "427a3a2c61088d71",
+    "44de540350942b9d",
+    "57bd5c584ab13e4e"
    ]
   },
   {
@@ -424,7 +424,7 @@
     "interact",
     "wait until 3:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
     "85b34ff8774e9194",
     "b421c2a6a0962284",
@@ -433,8 +433,8 @@
     "f4d0dbb03ee543d8",
     "4f772726927a69a7",
     "f6db0ff19bb5ce6b",
-    "19c823338a30bbe9",
-    "58a3214b7170ac55"
+    "9bddb2b9749b734a",
+    "13deb1529eafe878"
    ]
   },
   {
@@ -453,8 +453,8 @@
     "c9de16c082c96bb2",
     "4f7468084816a603",
     "be72b92cee0b1369",
-    "930bb6bb06146c8b",
-    "7369d7b350bea86a"
+    "33a885844fceccf8",
+    "12cefcb4ac402986"
    ]
   },
   {
@@ -506,11 +506,11 @@
     "wait until 2:50",
     "pretend until 3:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "5bf3f3f790635df1",
-    "ef5da6b55e7615ae",
-    "1fd5034b0f66df73"
+    "35babd36748b8115",
+    "f573ff46218894a6",
+    "b75c332d25d7d48e"
    ]
   }
  ]

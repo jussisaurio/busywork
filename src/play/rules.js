@@ -95,6 +95,9 @@ export function updateRules(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
   const s = game.rules;
   const p = game.player;
+  // Mechanics with a say (what lies on your desk: putdown.js; a failed inspection: inspection.js) judge first,
+  // even while you serve assigned work: evidence doesn't wait.
+  if (judge(game, JUDGE)) return;
 
   // Serving assigned work: nothing else applies until it's done.
   if (s.working) {
@@ -155,7 +158,6 @@ export function updateRules(game, dt) {
       game.events.emit(`${type}:recovered`, {});
     }
   }
-  if (judge(game, JUDGE)) return; // mechanics with a say: what lies on your desk (putdown.js), ...
   const auth = roles(game).authority;
   if (!auth) return;
 
