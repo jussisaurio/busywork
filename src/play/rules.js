@@ -13,7 +13,7 @@ import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../co
 import { say, burst, shake, sightline } from '../core/fx.js';
 import { npcSees, findNpc } from '../game/perception.js';
 import { inZone } from '../data/level.js';
-import { npcTakes } from '../sim/npcs.js';
+import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
 
@@ -190,7 +190,7 @@ function react(game, s, npc, offence) {
   if (offence === 'contraband') {
     if (own === 'coffee') {
       say(game, npc.id, ['🤤', '☕'], { kind: 'speech' });
-      (npc._sayQ ??= []).push({ t: 1.3, icons: ['😌'], kind: 'speech' });
+      npcSayLater(npc, 1.3, ['😌'], 'speech');
     } else {
       say(game, npc.id, ['😠', '🥪'], { kind: 'speech' });
     }

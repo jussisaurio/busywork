@@ -1,6 +1,7 @@
 // Headless gameplay tests (player, interactions, rules, scenario, input).
-// Does NOT run the NPC sim: NPCs are hand-made fakes and the tick is stepped here in contract order:
-// player -> interactions -> [npcs skipped] -> rules -> scenario -> clock (loop.js advanceClock).
+// Does NOT run the NPC sim: NPCs come from the sim's createNpc but are placed by hand, and the tick is
+// stepped here in contract order: player -> interactions -> [npcs skipped] -> rules -> scenario -> clock
+// (loop.js advanceClock).
 //
 //   node tools/test-play.mjs
 import {
@@ -16,6 +17,8 @@ import { updateInteractions } from '../src/play/interactions.js';
 import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
 import { advanceClock } from '../src/game/loop.js';
+import { createNpc } from '../src/sim/npcs.js';
+import { NPC_DEFS } from '../src/data/schedules.js';
 import { createInput } from '../src/play/input.js';
 
 let fails = 0;
@@ -66,15 +69,10 @@ const p = () => game.player;
 
 function fakeNpc(id, spot, extra = {}) {
   const s = spotPos(spot);
-  return {
-    id, icon: '', color: '#000', voice: id, meetingSpot: 'meeting_head',
-    x: s.x, y: s.y, dir: s.dir,
-    glance: { offset: 0 },
-    vision: { ...(VISION[id] ?? VISION.default) },
-    active: true, pose: 'sit', moving: false, override: null, hasJacket: false,
-    label: 'fake', rng: createRng(1),
+  return Object.assign(createNpc(NPC_DEFS.find((d) => d.id === id)), {
+    x: s.x, y: s.y, dir: s.dir, pose: 'sit', label: 'fake',
     ...extra,
-  };
+  });
 }
 
 // Equivalent of loop.startLoop without the sim.
@@ -674,7 +672,7 @@ section('contraband');
   ok(!p().held && kev.carry === 'coffee' && evs('coffee:confiscated')[0]?.payload.by === 'kev', 'Kev sees the coffee: confiscated (npc.carry)');
   ok(evs('witness:tattle')[0]?.payload.reason === 'contraband' && evs('boss:workAssigned').length === 0, 'contraband only: no tattle, no work');
   ok(evs('say').some((e) => e.payload.owner === 'kev' && e.payload.icons.join('') === '🤤☕'), 'Kev says 🤤☕ (a coffee!)');
-  ok(kev._sayQ?.some((q) => q.icons.join('') === '😌'), '… then 😌 (queued for the sim)');
+  ok(kev._sayQ.some((q) => q.icons.join('') === '😌'), '… then 😌 (queued for the sim)');
   ok(kev.wants === null, 'and is satisfied (wants cleared)');
 
   const kev2 = fakeNpc('kev', 'kev_desk', { wants: 'coffee' });

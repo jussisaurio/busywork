@@ -59,54 +59,63 @@ const nextNonSay = (sched, i) => {
 
 export function createNpcs(game) {
   const now = game.clock ? game.clock.minute : 0;
-  return NPC_DEFS.map((def) => {
-    const sched = def.schedule;
-    const first = sched.find((e) => e.spot);
-    const p = spotPos(first.spot);
-    const rng = createRng((SEED ^ hash(def.id)) >>> 0);
-    const fridgeIdx = sched.findIndex((e) => e.do !== 'say' && e.spot === 'fridge');
-    return {
-      id: def.id,
-      icon: def.icon,
-      color: def.color,
-      voice: def.voice,
-      meetingSpot: def.meetingSpot,
-      x: p.x,
-      y: p.y,
-      dir: p.dir,
-      glance: { offset: 0 },
-      vision: { ...(VISION[def.id] ?? VISION.default) },
-      active: true,
-      pose: first.do === 'sit' ? 'sit' : 'stand',
-      moving: false,
-      override: null,
-      hasJacket: false,
-      carry: null, // null | 'coffee' (Kev, once he has the day's cup)
-      wants: null, // null | 'coffee': Kev found the pot empty, and now he knows someone has his cup
-      label: `${first.do} ${first.spot}`,
-      rng,
-      // --- private sim state ---
-      _schedule: sched,
-      _said: sched.map((e) => e.do === 'say' && e.at < now), // schedule 'say' entries fire once
-      _fridgeIdx: fridgeIdx, // Lin: the fridge visit...
-      _fridgeNext: fridgeIdx >= 0 ? nextNonSay(sched, fridgeIdx) : -1, // ...and the entry after it
-      _smokeIdx: sched.findIndex((e) => e.do !== 'say' && e.spot === 'smoke'), // boss: jacket first
-      _plan: null,
-      _wait: 0, // s to stand still before continuing the plan
-      _sayQ: [], // delayed bubbles: { t, icons, kind }
-      _faceTarget: p.dir,
-      _look: null, // hunt look-around: { t }
-      _gone: false, // left for the day
-      _fridgeChecked: false,
-      _gathered: false, // the 3:54 gather has been processed for this NPC
-      _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
-      _reacted: false, // boss meeting reaction done
-      _bangT: 0,
-      _bangI: 0,
-      _navFail: 0, // unreachable destinations (should stay 0; the test checks)
-      _gl: { timer: rng.range(...glanceEvery(def.id)), target: 0, hold: 0, speed: 0 },
-    };
-  });
+  return NPC_DEFS.map((def) => createNpc(def, now));
+}
+
+// One NPC as the sim builds it at game minute `now` (test fakes come from here too, so they carry the
+// private fields). The schedule is copied: tests edit NPC_DEFS, and NPCs must not see that mid-day.
+export function createNpc(def, now = 0) {
+  const sched = def.schedule.map((e) => ({ ...e }));
+  const first = sched.find((e) => e.spot);
+  const p = spotPos(first.spot);
+  const rng = createRng((SEED ^ hash(def.id)) >>> 0);
+  const fridgeIdx = sched.findIndex((e) => e.do !== 'say' && e.spot === 'fridge');
+  return {
+    id: def.id,
+    icon: def.icon,
+    color: def.color,
+    voice: def.voice,
+    meetingSpot: def.meetingSpot,
+    x: p.x,
+    y: p.y,
+    dir: p.dir,
+    glance: { offset: 0 },
+    vision: { ...(VISION[def.id] ?? VISION.default) },
+    active: true,
+    pose: first.do === 'sit' ? 'sit' : 'stand',
+    moving: false,
+    override: null,
+    hasJacket: false,
+    carry: null, // null | 'coffee' (Kev, once he has the day's cup)
+    wants: null, // null | 'coffee': Kev found the pot empty, and now he knows someone has his cup
+    label: `${first.do} ${first.spot}`,
+    rng,
+    // --- private sim state ---
+    _schedule: sched,
+    _said: sched.map((e) => e.do === 'say' && e.at < now), // schedule 'say' entries fire once
+    _fridgeIdx: fridgeIdx, // Lin: the fridge visit...
+    _fridgeNext: fridgeIdx >= 0 ? nextNonSay(sched, fridgeIdx) : -1, // ...and the entry after it
+    _smokeIdx: sched.findIndex((e) => e.do !== 'say' && e.spot === 'smoke'), // boss: jacket first
+    _plan: null,
+    _wait: 0, // s to stand still before continuing the plan
+    _sayQ: [], // delayed bubbles: { t, icons, kind }
+    _faceTarget: p.dir,
+    _look: null, // hunt look-around: { t }
+    _gone: false, // left for the day
+    _fridgeChecked: false,
+    _gathered: false, // the 3:54 gather has been processed for this NPC
+    _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
+    _reacted: false, // boss meeting reaction done
+    _bangT: 0,
+    _bangI: 0,
+    _navFail: 0, // unreachable destinations (should stay 0; the test checks)
+    _gl: { timer: rng.range(...glanceEvery(def.id)), target: 0, hold: 0, speed: 0 },
+  };
+}
+
+// A speech bubble `t` seconds from now, queued behind any already waiting.
+export function npcSayLater(npc, t, icons, kind) {
+  npc._sayQ.push({ t, icons, kind });
 }
 
 export function updateNpcs(game, dt) {
@@ -479,7 +488,7 @@ function linFridge(game, npc) {
   }
   game.events.emit('sandwich:missing', {});
   say(game, npc.id, ['🥪', '❓'], { kind: 'thought', voice: npc.voice, ttl: 1.4 });
-  npc._sayQ.push({ t: 1.4, icons: ['😠'], kind: 'speech' });
+  npcSayLater(npc, 1.4, ['😠'], 'speech');
   setOverride(npc, 'hunting');
   npc._wait = Math.max(npc._wait, HUNT_SHOCK_TIME);
 }
@@ -498,7 +507,7 @@ function coffeeArrive(game, npc) {
   npc.wants = 'coffee';
   npc._craveT = CRAVE_FIRST;
   say(game, npc.id, ['☕', '❓'], { kind: 'thought', voice: npc.voice, ttl: 1.2 });
-  npc._sayQ.push({ t: 1.2, icons: ['😩'], kind: 'speech' });
+  npcSayLater(npc, 1.2, ['😩'], 'speech');
   npc._wait = Math.max(npc._wait, EMPTY_POT_TIME);
   game.events.emit('coffee:missing', { by: npc.id });
 }
@@ -515,9 +524,9 @@ export function stareAtEmptyChair(game) {
   for (const n of game.npcs) {
     if (!n.active || n.override !== 'meeting') continue;
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
-    if (n._gl) n._gl.hold = 0; // stop any glance: all eyes on the chair
+    n._gl.hold = 0; // stop any glance: all eyes on the chair
     say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
-    (n._sayQ ??= []).push({ t: 1.0, icons: ['😠', '👉'], kind: 'speech' });
+    npcSayLater(n, 1.0, ['😠', '👉'], 'speech');
   }
 }
 
