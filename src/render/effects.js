@@ -5,6 +5,7 @@ import {
   starPath, loopIcon, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
+import { findNpc } from '../game/perception.js';
 
 // --- bubbles -------------------------------------------------------------------
 const ANCHOR = { x: 0, y: 0 };
@@ -17,17 +18,11 @@ function anchorOf(game, owner) {
       ANCHOR.y = fin(p.y) * T - (p.seated ? 27 : 30);
       return true;
     }
-    const npcs = game.npcs || [];
-    for (let i = 0; i < npcs.length; i++) {
-      const n = npcs[i];
-      if (n && n.id === owner) {
-        if (!n.active) return false;
-        ANCHOR.x = fin(n.x) * T;
-        ANCHOR.y = fin(n.y) * T - (n.id === 'boss' ? 36 : 30) + (n.pose === 'sit' ? 3 : 0);
-        return true;
-      }
-    }
-    return false;
+    const n = game.npcs && findNpc(game, owner);
+    if (!n || !n.active) return false;
+    ANCHOR.x = fin(n.x) * T;
+    ANCHOR.y = fin(n.y) * T - (n.id === 'boss' ? 36 : 30) + (n.pose === 'sit' ? 3 : 0);
+    return true;
   }
   if (owner && typeof owner === 'object' && Number.isFinite(owner.x) && Number.isFinite(owner.y)) {
     ANCHOR.x = owner.x * T;
@@ -273,14 +268,12 @@ export function drawSightlines(ctx, game, t) {
   const px = fin(p.x, NaN) * T;
   const py = fin(p.y, NaN) * T - (p.seated ? 1 : 4); // chest, not feet
   if (!Number.isFinite(px) || !Number.isFinite(py)) return;
-  const npcs = game.npcs || [];
   ctx.save();
   ctx.lineCap = 'round';
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i];
     if (!l) continue;
-    let n = null;
-    for (let j = 0; j < npcs.length; j++) if (npcs[j] && npcs[j].id === l.from) n = npcs[j];
+    const n = game.npcs && findNpc(game, l.from);
     if (!n || !n.active) continue;
     const st = LINE_STYLE[l.kind] || LINE_STYLE.notice;
     const ttl = fin(l.ttl, 0.8) > 0 ? fin(l.ttl, 0.8) : 0.8;
@@ -394,9 +387,7 @@ export function drawActionRing(ctx, game, t) {
 export function drawSuspicion(ctx, game, t) {
   const s = game.suspicion ? fin(game.suspicion.boss) : 0;
   if (!(s > 0)) return;
-  const npcs = game.npcs || [];
-  let boss = null;
-  for (let i = 0; i < npcs.length; i++) if (npcs[i] && npcs[i].id === 'boss') boss = npcs[i];
+  const boss = game.npcs && findNpc(game, 'boss');
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;

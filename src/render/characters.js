@@ -50,7 +50,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    keycard: false, crank: false,
+    keycard: false, crank: false, mustard: false,
   };
 }
 
@@ -772,7 +772,7 @@ function drawPlayerRing(ctx, game, t, mem) {
   ctx.globalAlpha = 1;
 }
 
-function resetState(s, t) {
+export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
   s.keycard = false; s.crank = false; s.mustard = false;

@@ -14,7 +14,7 @@ import {
   SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, MEETING_AT, at,
   GLANCE_EVERY, GLANCE_EVERY_BY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
-import { SPOTS, ROUTES } from '../data/level.js';
+import { SPOTS, ROUTES, inZone } from '../data/level.js';
 import { NPC_DEFS, MEETING_GATHER_AT } from '../data/schedules.js';
 import { DIRS, angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
@@ -25,7 +25,6 @@ import { findPath, smoothPath } from './nav.js';
 // --- Tunables ------------------------------------------------------------------
 const TURN_RATE = 9; // body turn speed (rad/s)
 const BODY_R = 0.3; // half-size of the body box kept clear of solid tiles when smoothing paths
-const OUTSIDE_Y = 14; // tile rows >= this are the lobby, outside the glass entrance (row 13)
 const HUNT_END = at('3:24'); // Lin gives up hunting for her sandwich (covers the boss's restroom walk)
 const HUNT_LOOK = 1.25; // rad: head sweep at each hunt waypoint (~72 deg each side)
 const HUNT_LOOK_TIME = 1.4; // s paused at each hunt waypoint (look right, look left, back)
@@ -303,7 +302,8 @@ function buildPlan(npc, now, key) {
   }
   // 3. Lockout check: the boss coming in from the lobby must get through the glass door first.
   // (Only when heading inside, so walking out through door_out never triggers it.)
-  if (npc.id === 'boss' && Math.floor(npc.y) >= OUTSIDE_Y && plan.legs.length && plan.legs[0].y < OUTSIDE_Y) {
+  const inLobby = npc.id === 'boss' && inZone('outside', npc.x, npc.y);
+  if (inLobby && plan.legs.length && !inZone('outside', plan.legs[0].x, plan.legs[0].y)) {
     plan.legs.unshift(spotLeg('door_out', { arrive: bossDoorCheck }));
   }
   return plan;

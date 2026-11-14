@@ -6,7 +6,7 @@ import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
 import { FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
-import { SPOTS, ROUTES } from '../src/data/level.js';
+import { SPOTS, ROUTES, inZone } from '../src/data/level.js';
 import { MEETING_GATHER_AT, NPC_DEFS } from '../src/data/schedules.js';
 
 const VERBOSE = process.argv.includes('-v');
@@ -187,9 +187,9 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
     hooks: [{ at: at('3:20'), fn: (g) => { g.world.keycard = 'player'; } }],
     onStep: (g) => {
       const b = g.npcs.find((n) => n.id === 'boss');
-      if (b.y >= 14) leftOffice = true;
+      if (inZone('outside', b.x, b.y)) leftOffice = true;
       if (g.world.bossLockedOut && lockedAt == null) lockedAt = g.clock.minute;
-      if (lockedAt != null && b.y < 14) reentered = true;
+      if (lockedAt != null && !inZone('outside', b.x, b.y)) reentered = true;
     },
   });
   const b = npc(R, 'boss');

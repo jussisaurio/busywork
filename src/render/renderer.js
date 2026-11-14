@@ -13,6 +13,7 @@ import {
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
 import { MEETING_AT } from '../config.js';
+import { findNpc } from '../game/perception.js';
 
 export function createRenderer(canvas, opts = {}) {
   const strict = !!opts.strict;
@@ -115,14 +116,10 @@ export function createRenderer(canvas, opts = {}) {
       const p = game.player;
       let fx = p ? fin(p.x) * T : MAP_W / 2;
       let fy = p ? fin(p.y) * T : MAP_H / 2;
-      if (game.caught && game.npcs) {
-        for (let i = 0; i < game.npcs.length; i++) {
-          const n = game.npcs[i];
-          if (n && n.id === game.caught.by && n.active) {
-            fx = (fx + fin(n.x) * T) / 2;
-            fy = (fy + fin(n.y) * T) / 2;
-          }
-        }
+      const by = game.caught && game.npcs && findNpc(game, game.caught.by);
+      if (by && by.active) {
+        fx = (fx + fin(by.x) * T) / 2;
+        fy = (fy + fin(by.y) * T) / 2;
       }
       fx = clamp(fx, 0, MAP_W);
       fy = clamp(fy, 0, MAP_H);

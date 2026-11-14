@@ -3,6 +3,7 @@
 // Each scenario must end with the expected outcome. Run: node tools/routes.mjs [--verbose]
 import { createHarness, describeEvents } from '../src/agent/harness.js';
 import { formatClock } from '../src/config.js';
+import { findNpc } from '../src/game/perception.js';
 
 const verbose = process.argv.includes('--verbose');
 
@@ -25,7 +26,7 @@ function makeCtx(h) {
     }
     return pred(g);
   };
-  const npc = (id) => g.npcs.find((n) => n.id === id);
+  const npc = (id) => findNpc(g, id);
   return { g, run, waitFor, npc, transcript, log: h.log };
 }
 

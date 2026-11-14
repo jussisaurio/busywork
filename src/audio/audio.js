@@ -10,7 +10,8 @@
 // long-lived nodes are the buses, the compressor and the music's tremolo chain.
 
 import { at, MEETING_AT } from '../config.js';
-import { SPOTS } from '../data/level.js';
+import { ZONES } from '../data/level.js';
+import { spotPos, findNpc } from '../game/perception.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
 import { babble, hum, voiceOf } from './babble.js';
 import * as sfx from './sfx.js';
@@ -19,16 +20,11 @@ import { createMusic } from './music.js';
 const MASTER = 0.55;
 const BUS = { sfx: 0.9, voice: 0.32, music: 0.12 }; // babble is dense: ~9 dB under the sfx bus
 const MAP_W = 30; // fallback when game.map is missing
-const LOBBY_Y = 13.5; // rows below the glass wall are outside (lobby)
+const LOBBY_Y = ZONES.outside.y0 - 0.5; // the glass wall's mid-line, just above the lobby (outside)
 const CLOCK_FROM = at('3:50'); // wall clock starts ticking
 const TOCK_FROM = at('3:55'); // tick-tock
 const HALF_FROM = at('3:57'); // every half minute
 const MAX_TALK = 3; // overlapping utterances
-
-const spotPos = (name) => {
-  const s = SPOTS[name];
-  return s ? { x: s.x + 0.5, y: s.y + 0.5 } : null;
-};
 
 // Looked up only inside unlock().
 function getAudioContextClass() {
@@ -113,9 +109,7 @@ export function createAudio(opts = {}) {
   function entity(id) {
     if (!game || typeof id !== 'string') return null;
     if (id === 'player') return game.player ?? null;
-    const list = Array.isArray(game.npcs) ? game.npcs : [];
-    for (const n of list) if (n && n.id === id) return n;
-    return null;
+    return (Array.isArray(game.npcs) && findNpc(game, id)) || null;
   }
   function posOf(owner) {
     if (owner && typeof owner === 'object') return owner;

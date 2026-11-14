@@ -5,16 +5,16 @@ import {
   MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY, ROUTE_ICONS,
 } from './util.js';
 import { C } from './palette.js';
-import { LOOKS, personState, drawPerson } from './characters.js';
+import { LOOKS, personState, resetState, drawPerson } from './characters.js';
 import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { drawProjector, drawChair, sparkle } from './world.js';
 import { drawBubble } from './effects.js';
+import { findNpc } from '../game/perception.js';
 
 const P = personState();
 function person(t) {
-  P.dir = Math.PI / 2; P.head = P.dir; P.pose = 'stand'; P.moving = false; P.phase = 0; P.arms = 'idle';
-  P.item = null; P.scale = 1; P.jacket = true; P.smug = false; P.sweat = false; P.glance = 0; P.t = t;
-  P.typing = false; P.angry = false; P.keycard = false; P.crank = false;
+  resetState(P, t);
+  P.dir = Math.PI / 2; P.head = P.dir;
   return P;
 }
 
@@ -364,9 +364,8 @@ function confetti(ctx, x0, w, y0, h, e, n) {
 }
 
 function bossJacket(game) {
-  const npcs = game.npcs || [];
-  for (let i = 0; i < npcs.length; i++) if (npcs[i] && npcs[i].id === 'boss') return npcs[i].hasJacket !== false;
-  return true;
+  const boss = game.npcs && findNpc(game, 'boss');
+  return boss ? boss.hasJacket !== false : true;
 }
 
 function tableauKeycard(ctx, game, t, e) {
