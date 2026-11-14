@@ -3,7 +3,7 @@
 // wall clock, coffee carafe, dropped items, elevator doors).
 import { T, MAP_W, MAP_H, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
 import { C } from './palette.js';
-import { SPOTS } from '../data/level.js';
+import { SPOTS } from '../levels/meeting/map.js';
 import { at, DAY_START, WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)

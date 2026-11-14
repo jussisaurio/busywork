@@ -1,6 +1,6 @@
 // Who can see what. Shared by rules (witnesses), sim (reactions) and renderer (cones).
 import { canSee, DIRS } from '../core/vision.js';
-import { SPOTS } from '../data/level.js';
+import { SPOTS } from '../levels/meeting/map.js';
 
 // The effective viewer for an NPC, including the current head glance.
 export function viewerOf(npc) {

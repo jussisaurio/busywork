@@ -12,7 +12,7 @@ import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
 import { TARGET_ACTIONS } from '../play/interactions.js';
-import { SPOTS } from '../data/level.js';
+import { SPOTS } from '../levels/meeting/map.js';
 import { createScriptedInput } from './scripted-input.js';
 
 // Events that end a waiting/walking command early so the agent can react.

@@ -6,8 +6,8 @@ import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
 import { FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
-import { SPOTS, ROUTES, inZone } from '../src/data/level.js';
-import { MEETING_GATHER_AT, NPC_DEFS } from '../src/data/schedules.js';
+import { SPOTS, ROUTES, inZone } from '../src/levels/meeting/map.js';
+import { MEETING_GATHER_AT, NPC_DEFS } from '../src/levels/meeting/cast.js';
 
 const VERBOSE = process.argv.includes('-v');
 let fails = 0;

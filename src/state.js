@@ -2,12 +2,14 @@
 import { parseMap } from './core/map.js';
 import { createEvents } from './core/events.js';
 import { createFx } from './core/fx.js';
-import { MAP, LEGEND } from './data/level.js';
+import { MAP, LEGEND } from './levels/meeting/map.js';
+import { defaultLevel } from './levels/index.js';
 import { spotPos } from './game/perception.js';
 
-export function createGame({ events, input } = {}) {
+export function createGame({ events, input, level = defaultLevel } = {}) {
   const game = {
     events: events ?? createEvents(),
+    level,
     map: parseMap(MAP, LEGEND),
     persist: { loop: 0, routesFound: [] },
     phase: 'title',

@@ -1,6 +1,6 @@
 // Small drawing helpers shared by the render modules. Pure functions, no DOM access.
 import { TILE } from '../config.js';
-import { MAP } from '../data/level.js';
+import { MAP } from '../levels/meeting/map.js';
 
 export const T = TILE;
 export const HUD_H = 56; // HUD band on top of the map (logical px)

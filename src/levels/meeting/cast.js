@@ -17,7 +17,7 @@
 //   - Lin hunts for her sandwich if it's gone when she visits the fridge (stretch).
 //   - At 3:54 everyone still on the floor goes to their meeting seat.
 
-import { at } from '../config.js';
+import { at } from '../../config.js';
 
 const s = (time, entry) => ({ at: at(time), ...entry });
 

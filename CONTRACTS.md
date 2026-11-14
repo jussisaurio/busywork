@@ -21,7 +21,7 @@ everyone relies on**.
 ## File ownership
 | Owner | Files |
 |---|---|
-| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/data/*`, `src/agent/*` (AI-agent harness), `tools/test-core.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/golden.mjs`, `*.md` |
+| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/levels/*`, `src/agent/*` (AI-agent harness), `tools/test-core.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/golden.mjs`, `*.md` |
 | sim agent | `src/sim/nav.js`, `src/sim/npcs.js`, `tools/test-sim.mjs` |
 | gameplay agent | `src/play/input.js`, `src/play/player.js`, `src/play/interactions.js`, `src/play/rules.js`, `src/play/scenario.js`, `tools/test-play.mjs` |
 | render agent | `src/render/*.js`, `tools/test-render.mjs` |
@@ -37,9 +37,11 @@ everyone relies on**.
   **Use `say()` for every speech, thought or alert bubble.** It also emits the `'say'` event for audio.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
-- `src/data/level.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES`, `ZONES` + `inZone(name, x, y)`
+- `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`. Engine code reads it as `game.level`.
+- `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES`, `ZONES` + `inZone(name, x, y)`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
-- `src/data/schedules.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]) and `MEETING_GATHER_AT`.
+- `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]) and `MEETING_GATHER_AT`.
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(name)`, `findNpc(game, id)`.
 - `src/state.js`: `createGame()` and `resetLoop(game)`. These hold the state shape below.
 - `src/game/loop.js`: `startLoop(game)` and `tick(game, dt)`. This is the sim step order. The headless harness uses it too.
@@ -49,6 +51,7 @@ everyone relies on**.
 game = {
   // --- persistent (survive loops) ---
   events,                     // event bus
+  level,                      // the level object (createGame({ level }), default src/levels defaultLevel)
   map,                        // parsed map
   persist: { loop: 0, routesFound: [] },   // routesFound: subset of ['projector','keycard']
   phase: 'title',             // 'title' | 'day' | 'end'

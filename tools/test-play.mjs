@@ -18,7 +18,7 @@ import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
 import { advanceClock } from '../src/game/loop.js';
 import { createNpc } from '../src/sim/npcs.js';
-import { NPC_DEFS } from '../src/data/schedules.js';
+import { NPC_DEFS } from '../src/levels/meeting/cast.js';
 import { createInput } from '../src/play/input.js';
 
 let fails = 0;

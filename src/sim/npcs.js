@@ -14,8 +14,8 @@ import {
   SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, MEETING_AT, at,
   GLANCE_EVERY, GLANCE_EVERY_BY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
-import { SPOTS, ROUTES, inZone } from '../data/level.js';
-import { NPC_DEFS, MEETING_GATHER_AT } from '../data/schedules.js';
+import { SPOTS, ROUTES, inZone } from '../levels/meeting/map.js';
+import { NPC_DEFS, MEETING_GATHER_AT } from '../levels/meeting/cast.js';
 import { DIRS, angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
 import { say, shake } from '../core/fx.js';

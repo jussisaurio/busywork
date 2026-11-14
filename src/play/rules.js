@@ -12,7 +12,7 @@
 import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
 import { say, burst, shake, sightline } from '../core/fx.js';
 import { npcSees, findNpc } from '../game/perception.js';
-import { inZone } from '../data/level.js';
+import { inZone } from '../levels/meeting/map.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';

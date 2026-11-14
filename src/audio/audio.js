@@ -10,7 +10,7 @@
 // long-lived nodes are the buses, the compressor and the music's tremolo chain.
 
 import { at, MEETING_AT } from '../config.js';
-import { ZONES } from '../data/level.js';
+import { ZONES } from '../levels/meeting/map.js';
 import { spotPos, findNpc } from '../game/perception.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
 import { babble, hum, voiceOf } from './babble.js';
