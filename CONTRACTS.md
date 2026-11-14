@@ -73,6 +73,7 @@ everyone relies on**.
   🪪 keycard), the one source of route icons. `outcomeOrder`: the order `outcome.routes` lists achieved routes in (keycard,
   projector). `initialWorld()`: the `world` object below, fresh for each loop (resetLoop).
   Presentation (render reads these, the sim never does; field notes in `levels/meeting/decor.js` and `looks.js`):
+  `title`: the title card, `{ mission: [line1, line2], badge: [icon, overlay] }` (the typed mission and the emoji under the 🕓).
   `decor.props`: furniture with moving parts, `[{ tile, draw, state(world, game) }]`, drawn in order on the first map tile
   `tile` by the renderer's painter `draw`, which shows what `state` returns: `'slideProjector'` `{ state: 'ok'|'broken'|'fixing',
   fix, beam }` (a beam lights `decor.screen`), `'carafe'` `{ full }`, `'coatRack'` `{ coat, tag }`, and for any level `'icon'`

@@ -27,6 +27,8 @@
 //            (harness.js; read by src/agent/harness.js)
 //   gate     what the fuzzer and the gate know beyond this object: mustUse lessons, plan targets, milestones
 //            (gate.js; read by tools/fuzz.mjs levelData())
+//   title    the title card: { mission: [line, line], badge: [icon, overlay] }, the two typed mission lines and the
+//            emoji under the 🕓 (render screens.js)
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
 //   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
 //   poses    what the cast is drawn doing: arms rules and marks (looks.js; render characters.js)
@@ -97,6 +99,7 @@ export default {
   }),
   harness,
   gate,
+  title: { mission: ['4:00 PM. You promised slides. You made none.', 'Make sure the meeting never happens.'], badge: ['📊', '❌'] },
   decor: DECOR,
   looks: LOOKS,
   poses: POSES,
