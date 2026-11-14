@@ -15,7 +15,7 @@ import { ACTIONS, INTERACT_RADIUS } from '../config.js';
 import { say, burst, shake } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 
-export const ITEM_RADIUS = 1.0; // pick-up reach for floor items
+const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
 // Every player action: the target that offers it (an interactable type, a floor 'item', or 'self' for what
 // is in hand), when it is possible, its ✋ hint icon (player.focus.icon) and the harness's words for it.
@@ -58,12 +58,12 @@ export const TARGET_ACTIONS = {
 const ROWS = Object.entries(TARGET_ACTIONS);
 
 // The action a target offers right now, or null. target: an interactable type, 'self', or 'item' (with the item).
-export function targetAction(game, target, item = null) {
+function targetAction(game, target, item = null) {
   for (const [verb, row] of ROWS) if (row.on === target && row.can(game.player, game.world, item)) return verb;
   return null;
 }
 
-export function findFocus(game) {
+function findFocus(game) {
   const p = game.player;
   let best = null;
   let bestD = Infinity;

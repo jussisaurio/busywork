@@ -121,7 +121,7 @@ export function findPath(map, from, to, who = 'npc') {
 
 // Is the straight walk a->b clear for a body box of half-size r? (positions in tile units)
 // Samples every 0.1 tiles; with r >= 0.1 the centre point can never enter a blocked tile.
-export function clearLine(map, ax, ay, bx, by, who = 'npc', r = 0.3) {
+function clearLine(map, ax, ay, bx, by, who = 'npc', r = 0.3) {
   const dist = Math.hypot(bx - ax, by - ay);
   const n = Math.max(1, Math.ceil(dist / 0.1));
   const ok = (x, y) => map.isWalkable(Math.floor(x), Math.floor(y), who);

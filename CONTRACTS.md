@@ -11,7 +11,7 @@ everyone relies on**.
 - Units: positions are floats in **tile units**. Tile (x,y) covers [x,x+1)×[y,y+1), and its centre is (x+0.5, y+0.5).
   Angles are radians: 0 = east, π/2 = south (canvas convention). `dt` is **real seconds per sim step** (1/60).
   Game time is `game.clock.minute` = minutes since 2:30 PM. Use `at('3:10')` from config.js to compare.
-- Randomness that affects gameplay must be deterministic. Use the per-NPC rng (see Sim) or `game.rng`.
+- Randomness that affects gameplay must be deterministic. Use the per-NPC rng (see Sim).
   `Math.random` is allowed only for visual-only things (particles, wobble).
 - **Only edit files you own.** If you need a contract change, implement against the contract as written,
   work around it locally, and say so in your final report. You may add private fields to entities with a
@@ -58,7 +58,6 @@ game = {
   input,                      // set by main.js (see Input)
 
   // --- per loop (rebuilt by resetLoop) ---
-  rng,                        // createRng(SEED)
   fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player', kind, age, ttl }]
   loopTime: 0,                // real (sim) seconds since loop start
   paused: false,              // main.js only: nothing ticks while true (see Frame / step order)
@@ -139,7 +138,7 @@ game = {
 4. **Lin's sandwich (stretch).** On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
    (`'lin'`) and eats at the kitchen table as scheduled. Otherwise: emit `'sandwich:missing'`, say 🥪❓ then 😠,
    `override='hunting'`. She walks `ROUTES.lin_hunt` back and forth (glancing often) until `at('3:24')` (or until she has it back, `world.sandwich === 'lin'`, or `world.linKnows`), then 😤, and resumes the schedule.
-5. **Meeting.** At `MEETING_GATHER_AT` (3:55), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
+5. **Meeting.** At `MEETING_GATHER_AT` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
    `meetingSpot`. When the boss arrives: if the projector is broken, `say` 📽️💥🤷. Otherwise `say` 📊👀 (looks at the player's spot).
    Emit `'meeting:gather'` once.
 - `away` entries: walk to the spot, then `active=false` until the next entry starts (emit `'npc:vanish' {id}`). Reappear at that
@@ -209,7 +208,7 @@ game = {
 | `loop:start` | `{loop}` | loop.js |
 | `say` | `{owner, icons, kind, voice}` | fx.say (anyone) |
 | `action:start` / `action:done` | `{type, targetId}` | interactions |
-| `action:cancel` | `{type, reason: 'moved'\|'witnessed'\|'caught'}` | interactions / rules |
+| `action:cancel` | `{type, targetId, reason: 'moved'\|'invalid'\|'locked'\|'witnessed'\|'caught'\|'meeting'}` | interactions / rules / scenario |
 | `item:drop` / `item:pickup` | `{type}` | interactions |
 | `player:sit` / `player:stand` | `{}` | player / interactions |
 | `busy:start` / `busy:end` | `{pose}` | player |
@@ -263,8 +262,17 @@ NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's comm
 (the game is deterministic), so no server is needed.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
-across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--verbose]
-[--json out.json]`, ~1 ms per day per core, worker_threads. Its report is for a designer, not a pass/fail test.
+across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--batch 288]
+[--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends only on
+seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a pass/fail test.
+It is also a module (`fuzz()`, `evaluate()`, `report()`). Its `LEVELS` table (top of the file) holds everything the
+tools know about a level: route ids, `mustUse` lessons, goto targets, milestones.
+`tools/gate.mjs` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
+`--budget 30000`, ~30 s) and exits 1 if a route has no winning plan, a win takes 3 plan steps or fewer, random
+plans win more than 1%, anything crashes or a day never ends, or a win skips a `mustUse` lesson. A lesson is data:
+`{ id, cmd }` (a plan command that ran contains that word) or `{ id, event }` (that event fired). Level 1's lesson
+is pretend. The one-screen report shows each way to win with its minimal plan and timing windows, the checks and
+the verdict. `tools/test-gate.mjs` tests the verdict logic on synthetic fuzz results.
 `tools/golden.mjs` is the refactor safety net: it replays a fixed corpus (`tools/golden.json`: one plan per outcome
 the fuzzer found, plus hand-written ones with raw movement and several loops) and compares a digest of every event
 and of the contract-level state after each command. A refactor must leave it passing. Re-record (`--write`) only

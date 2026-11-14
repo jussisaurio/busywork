@@ -37,8 +37,8 @@ const SANDWICH_TIME = 0.6; // s Lin spends taking her sandwich out of the fridge
 const BANGS = [['😠', '🚪', '🪪'], ['🪪', '❓'], ['👊', '🚪']]; // cycled (deterministic)
 const BANG_EVERY = [2.5, 2.2, 2.8]; // s until the next bang, cycled alongside BANGS
 const FIRST_BANG = 0.8; // s after the door doesn't open
-// Walking to the meeting, NPCs speed up just enough to be seated by MEETING_AT (the boss needs
-// ~5.3 game min from his desk but the gather starts only 5 min before). Capped multiplier:
+// Walking to the meeting, NPCs speed up just enough to be seated by MEETING_AT when the walk from where they
+// are at the gather is longer than the time left. Capped multiplier:
 const MEETING_HURRY_MAX = 1.3;
 
 // FNV-1a: stable 32-bit hash of the NPC id for its rng seed.
@@ -232,7 +232,7 @@ function checkOverrides(game, npc, now) {
 // Special prelude legs for a schedule entry.
 function entryFlags(npc, i) {
   return {
-    // Lin must actually open the fridge, even if her 3:02 entry starts while she's still walking.
+    // Lin must actually open the fridge, even if her 3:04 entry starts while she's still walking.
     fridge: npc._fridgeIdx >= 0 && !npc._fridgeChecked && (i === npc._fridgeIdx || i === npc._fridgeNext),
     // The boss collects his jacket on his way out for a smoke.
     jacket: npc._smokeIdx >= 0 && i === npc._smokeIdx && !npc.hasJacket,

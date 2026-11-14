@@ -41,7 +41,7 @@ export function perc(param, t, a, dur, peak) {
 }
 
 // Flat gain envelope (beeps): quick attack, hold, quick release.
-export function flat(param, t, a, dur, peak) {
+function flat(param, t, a, dur, peak) {
   const pk = Math.max(0, fin(peak, 0));
   const d = Math.max(0.02, fin(dur, 0.1));
   const at = clamp(a, 0.001, d * 0.4);

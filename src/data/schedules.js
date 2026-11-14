@@ -15,7 +15,7 @@
 //   - The boss picks up his jacket (and keycard) when leaving for his smoke; on the way
 //     back in he is locked out at the entrance if he doesn't have the keycard.
 //   - Lin hunts for her sandwich if it's gone when she visits the fridge (stretch).
-//   - At 3:55 everyone still on the floor goes to their meeting seat.
+//   - At 3:54 everyone still on the floor goes to their meeting seat.
 
 import { at } from '../config.js';
 

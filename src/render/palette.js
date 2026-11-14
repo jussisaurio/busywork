@@ -86,10 +86,6 @@ export const C = {
   hudPanel: '#18130f',
   hudText: '#f3e6c8',
   hudRed: '#ff5a43',
-  chipOk: '#cfe0c4',
-  chipBad: '#f1b8a6',
-  chipWarn: '#f3d38a',
-  chipNeutral: '#e3d8c0',
 };
 
 // Vision cone tints (r,g,b).

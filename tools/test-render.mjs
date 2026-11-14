@@ -375,8 +375,8 @@ day((g) => { g.fx.lines = 'nope'; });
 draw('fx.lines not an array');
 day((g) => { delete g.fx.lines; });
 draw('fx.lines missing');
-day((g) => { g.fx = { bubbles: [], particles: [], shake: { t: 0, amount: 0 } }; sightline(g, 'lin', 'notice'); });
-draw('fx.lines created on demand by sightline()');
+day((g) => { sightline(g, 'lin', 'notice'); });
+draw('sightline() from the sim');
 day((g) => {
   g.world.keycard = 'boss'; g.world.jacket = 'boss';
   const b = npc(g, 'boss');

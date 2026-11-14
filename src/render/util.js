@@ -66,7 +66,6 @@ export function text(ctx, str, x, y, fontStr, color, align = 'center', baseline 
 
 // --- math ---------------------------------------------------------------------
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
-export const lerp = (a, b, t) => a + (b - a) * t;
 export const easeOutCubic = (t) => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
 export function easeOutBack(t) {
   t = clamp(t, 0, 1);

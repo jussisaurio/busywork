@@ -147,10 +147,10 @@ export function createRenderer(canvas, opts = {}) {
       drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t);
       drawFocusHint(ctx, game, t);
-      drawBubbles(ctx, game, t);
+      drawBubbles(ctx, game);
     }
     ctx.restore();
-    if (beatK > 0) drawVignette(ctx, beatK, 0, HUD_H, MAP_W, MAP_H, t);
+    if (beatK > 0) drawVignette(ctx, beatK, 0, HUD_H, MAP_W, MAP_H);
   }
 
   function frame(game) {
