@@ -234,5 +234,22 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   ok(lines.length === 2 && /noise/.test(lines[0]) && /zed looks toward the noise/.test(lines[1]), `harness: ${lines.map((l) => l.trim()).join(' / ')}`);
 }
 
+// 11. The fixture level (src/levels/fixture-attention): the printer's noise is what wins it.
+{
+  const FA = levels['fixture-attention'];
+  const play = (level, cmds) => {
+    const h = createHarness({ level });
+    h.begin();
+    for (const c of cmds) if (h.game.phase === 'day' && !h.game.outcome && !h.game.caught) h.run(c);
+    while (h.game.phase === 'day' && !h.game.outcome) h.frame();
+    return h.game.outcome.result;
+  };
+  const route = ['goto workstation', 'interact', 'goto donut', 'interact', 'pretend until 2:40'];
+  ok(play(FA, route) === 'win', 'fixture: print, run, eat, look busy: win');
+  const { noise, ...silent } = FA.interactions.print;
+  ok(noise && play({ ...FA, interactions: { ...FA.interactions, print: silent } }, route) !== 'win', 'fixture: the same plan with a silent printer: no win');
+  ok(play(FA, route.map((c) => (c === 'goto donut' ? 'goto donut pretend' : c))) === 'caught', 'fixture: strolling over (pretend) is too slow: caught');
+}
+
 console.log(fails ? `${fails} FAILED` : 'all passed');
 process.exit(fails ? 1 : 0);

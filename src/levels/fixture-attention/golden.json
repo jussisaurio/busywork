@@ -1,0 +1,189 @@
+{
+ "note": "written by tools/golden.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "goto workstation",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "e7be46a58d1084f0",
+    "8f6a2939363d4e59",
+    "cb8a990e96ccac93",
+    "0d12239972325faa"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "26753edfc6a94db7",
+    "f19313529bb06777"
+   ]
+  },
+  {
+   "cmds": [
+    "goto donut pretend",
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d4595294eae6a727",
+    "0dd62fd01c11991c",
+    "d5727b732ea9cdfb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut pretend",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a1151743e5ca9f22",
+    "52a5f76f0142163c",
+    "7d3f9ad9abcb5117",
+    "96d3b5c10cbe5582",
+    "bcce8da74f2d2fc2",
+    "32a86b033c6a6cbd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto donut pretend",
+    "interact",
+    "wait until 2:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d4595294eae6a727",
+    "85638eb5add34e2c",
+    "acf6febec6080c5a",
+    "dd2697d5cb153f7e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "wait until 2:40"
+   ],
+   "summary": "blamed donut",
+   "digests": [
+    "a1151743e5ca9f22",
+    "52a5f76f0142163c",
+    "d8b53fbde2e83d53",
+    "929315b209c02972",
+    "ebe2b11af9366fe6",
+    "ca9fa0a54bb8598c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a1151743e5ca9f22",
+    "52a5f76f0142163c",
+    "d8b53fbde2e83d53",
+    "2c13ef0b74b77c49",
+    "d86d42d89d388ac3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "goto water_cooler pretend",
+    "pretend until 2:40"
+   ],
+   "summary": "blamed donut",
+   "digests": [
+    "a1151743e5ca9f22",
+    "52a5f76f0142163c",
+    "d8b53fbde2e83d53",
+    "929315b209c02972",
+    "5c7d236d9236370c",
+    "0a328f89be214562",
+    "f949b8155d48222f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "win donut",
+   "digests": [
+    "a1151743e5ca9f22",
+    "52a5f76f0142163c",
+    "d8b53fbde2e83d53",
+    "929315b209c02972",
+    "0aca148116fdb856",
+    "44d6295ac539f98a"
+   ]
+  },
+  {
+   "cmds": [
+    "move W 0.5s",
+    "goto workstation",
+    "interact",
+    "goto donut pretend",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e6ec7234cb718617",
+    "a9185706135e1889",
+    "f2ae2b95c2e6cc0a",
+    "60912416548bae92",
+    "2bfec0bf5491dc84",
+    "5cac020a0ffc7169",
+    "47c5e943f771432b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation",
+    "interact",
+    "goto donut",
+    "interact",
+    "pretend until 2:40",
+    "continue",
+    "goto donut",
+    "interact"
+   ],
+   "summary": "fail",
+   "digests": [
+    "e7be46a58d1084f0",
+    "8f6a2939363d4e59",
+    "61d62dc2486bd41c",
+    "d45336a5383af520",
+    "ad332281d8f7cdce",
+    "76881712ce9b68ee",
+    "47d8f2f01983dc66",
+    "11fe8fa53847fbf5",
+    "b71a94b55582bca2"
+   ]
+  }
+ ]
+}
