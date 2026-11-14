@@ -34,17 +34,6 @@ function claims(npc, item) {
   return npc.id !== 'kev' || npc.wants === 'coffee';
 }
 
-// Per-loop state, keyed by the player object (resetLoop builds a new one every loop).
-const states = new WeakMap();
-function rulesState(game) {
-  let s = states.get(game.player);
-  if (!s) {
-    s = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null };
-    states.set(game.player, s);
-  }
-  return s;
-}
-
 // Does the boss currently enforce suspicion/contraband?
 function bossEnforcing(boss) {
   return !!boss && boss.active && boss.override !== 'lockedOut' && boss.override !== 'meeting';
@@ -84,7 +73,7 @@ function offenceFor(game, s, npc, boss) {
 
 export function updateRules(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
-  const s = rulesState(game);
+  const s = game.rules;
   const p = game.player;
 
   // Serving assigned work: nothing else applies until it's done.
@@ -229,7 +218,7 @@ function tellLate(game, s, w) {
 
 // The boss sends you back to your desk to type for WORK_PENALTY_MIN game minutes.
 export function assignWork(game, reason) {
-  const s = rulesState(game);
+  const s = game.rules;
   const p = game.player;
   const boss = findNpc(game, 'boss');
   // If the boss is off-floor (restroom), the order still lands: show it over the player.

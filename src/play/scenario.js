@@ -14,20 +14,9 @@ import { setBusy } from './player.js';
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome
 const CRICKETS_AT = 0.9; // fail beat: 🦗 sign appears at this point
 
-// Per-loop state, keyed by the player object (rebuilt every loop).
-const states = new WeakMap();
-function scenarioState(game) {
-  let s = states.get(game.player);
-  if (!s) {
-    s = { beatT: 0, crickets: false };
-    states.set(game.player, s);
-  }
-  return s;
-}
-
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
-  const s = scenarioState(game);
+  const s = game.scenario;
 
   // Meeting beat in progress.
   if (game.outcome) {

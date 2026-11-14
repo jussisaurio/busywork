@@ -61,4 +61,6 @@ export function resetLoop(game) {
   game.suspicion = { boss: 0 };
   game.caught = null;
   game.outcome = null;
+  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null }; // rules.js only: who saw what, the grudge
+  game.scenario = { beatT: 0, crickets: false }; // scenario.js only: the end beat
 }

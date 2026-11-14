@@ -94,6 +94,8 @@ game = {
   caught: null,               // null | { by: 'boss', reason: 'action'|'contraband', t }
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes: [...], newRoutes: [...], loop, minute }
                               // 'blamed': a route was achieved but you weren't in the meeting room at 4:00 (newRoutes empty)
+  rules: { seen, lastNotice, working, sceneTold, grudge },   // private to rules.js
+  scenario: { beatT, crickets },                              // private to scenario.js (the end beat)
 }
 ```
 
