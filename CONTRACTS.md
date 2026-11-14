@@ -38,11 +38,14 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`. Engine code reads it as `game.level`.
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`, `routes`, `outcomeOrder`,
+  `initialWorld()`. Engine code reads it as `game.level`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
-  rules.js measures `SCENE_RADIUS` from.
+  rules.js measures `SCENE_RADIUS` from. `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
+  🪪 keycard), the one source of route icons. `outcomeOrder`: the order `outcome.routes` lists achieved routes in (keycard,
+  projector). `initialWorld()`: the `world` object below, fresh for each loop (resetLoop).
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
 - `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, vision, glanceEvery?, coneTint, schedule[]).
@@ -58,7 +61,8 @@ game = {
   events,                     // event bus
   level,                      // the level object (createGame({ level }), default src/levels defaultLevel)
   map,                        // parsed map
-  persist: { loop: 0, routesFound: [] },   // routesFound: subset of ['projector','keycard']
+  persist: { loop: 0, routesFoundBy: { [level.id]: [] } },   // found route ids per level (subset of its routes)
+  // persist.routesFound: accessor for routesFoundBy[game.level.id] (read, push or assign; created empty on first read)
   phase: 'title',             // 'title' | 'day' | 'end'
   settings: { showCones: true, muted: false },
   debug: { speed: 1 },        // integer sim multiplier ([ and ] keys)
@@ -85,7 +89,7 @@ game = {
     focus: null,              // null | { kind: 'interactable'|'item'|'self', id, x, y, icon, action, item }  (✋ hint target; item: the floor item)
   },
   npcs: [],                   // created by the sim's createNpcs(game). See NPC shape.
-  world: {
+  world: {                    // game.level.initialWorld()
     projector: 'ok',          // 'ok' | 'broken' | 'fixing'
     fixProgress: 0,           // 0..1 while Kev fixes
     keycard: 'rack',          // 'rack' | 'player' | 'dropped' | 'boss'

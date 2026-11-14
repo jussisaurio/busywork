@@ -50,10 +50,9 @@ function startMeeting(game, s) {
   const p = game.player;
   const w = game.world;
 
-  // Everything achieved this loop counts (both routes can be true at once).
-  const routes = [];
-  if (w.bossLockedOut) routes.push('keycard');
-  if (w.projector === 'broken') routes.push('projector');
+  // Everything achieved this loop counts (both routes can be true at once), in the level's outcomeOrder.
+  const level = game.level;
+  const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
   const present = inZone(game, 'meeting_room', p.x, p.y);
   const result = !routes.length ? 'fail' : present ? 'win' : 'blamed';
   const found = game.persist.routesFound;

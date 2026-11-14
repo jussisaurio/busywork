@@ -10,13 +10,20 @@ export function createGame({ events, input, level = defaultLevel } = {}) {
     events: events ?? createEvents(),
     level,
     map: parseMap(level.map.rows, level.map.legend),
-    persist: { loop: 0, routesFound: [] },
+    persist: { loop: 0, routesFoundBy: { [level.id]: [] } },
     phase: 'title',
     settings: { showCones: true, muted: false },
     debug: { speed: 1 },
     time: 0,
     input: input ?? null,
   };
+  // persist.routesFound is the current level's list in routesFoundBy (each level keeps its own;
+  // a level first played after a switch starts empty).
+  Object.defineProperty(game.persist, 'routesFound', {
+    get: () => (game.persist.routesFoundBy[game.level.id] ??= []),
+    set: (v) => { game.persist.routesFoundBy[game.level.id] = v; },
+    enumerable: true,
+  });
   resetLoop(game);
   return game;
 }
@@ -44,18 +51,7 @@ export function resetLoop(game) {
     focus: null,
   };
   game.npcs = [];
-  game.world = {
-    projector: 'ok',
-    fixProgress: 0,
-    keycard: 'rack',
-    jacket: 'rack',
-    bossLockedOut: false,
-    sandwich: 'fridge',
-    coffee: 'pot', // 'pot' (one full carafe) | 'taken' (no coffee left today)
-    items: [],
-    kevGone: false,
-    linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
-  };
+  game.world = game.level.initialWorld();
   game.suspicion = { boss: 0 };
   game.caught = null;
   game.outcome = null;

@@ -123,6 +123,8 @@ const common = (R, tag) => {
   ok(badRoute.length === 0, 'nav: route points are floor');
   // at() and formatClock() still count from config.js DAY_START: the level's day must agree.
   ok(LEVEL.day.start === DAY_START, 'level day.start matches config DAY_START');
+  const routeIds = LEVEL.routes.map((r) => r.id);
+  ok(LEVEL.outcomeOrder.length === routeIds.length && LEVEL.outcomeOrder.every((id) => routeIds.includes(id)), 'level outcomeOrder lists each route once');
 }
 
 // ---------------------------------------------------------------- 1. untouched day

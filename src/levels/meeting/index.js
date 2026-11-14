@@ -9,6 +9,10 @@
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
 //   owns     who takes which item back on sight (play/rules.js)
 //   sceneDoor  the meeting-room door: Kev blames whoever is within rules.js SCENE_RADIUS of it
+//   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
+//            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
+//   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
+//   initialWorld()  a fresh game.world for a new loop (state.js resetLoop)
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
@@ -33,4 +37,21 @@ export default {
   },
   owns: { lin: 'sandwich', kev: 'coffee' },
   sceneDoor: { x: 14.5, y: 6.5 },
+  routes: [
+    { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
+    { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },
+  ],
+  outcomeOrder: ['keycard', 'projector'],
+  initialWorld: () => ({
+    projector: 'ok',
+    fixProgress: 0,
+    keycard: 'rack',
+    jacket: 'rack',
+    bossLockedOut: false,
+    sandwich: 'fridge',
+    coffee: 'pot', // 'pot' (one full carafe) | 'taken' (no coffee left today)
+    items: [],
+    kevGone: false,
+    linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
+  }),
 };

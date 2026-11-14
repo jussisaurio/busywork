@@ -5,7 +5,7 @@
 // found-route slots and a few status icons.
 import {
   T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap,
-  MONO_FAMILY, UI_FAMILY, ROUTE_ICONS,
+  MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
@@ -36,7 +36,7 @@ export function drawHud(ctx, game, t, mem) {
   panel(ctx, 342, 6, 160, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
   text(ctx, String(Math.max(0, (game.persist && game.persist.loop) | 0)), 377, 29, font(22, MONO_FAMILY, 'bold'), C.hudText, 'left');
-  drawRouteSlots(ctx, game.persist ? game.persist.routesFound : [], 418, 10, 36, 4);
+  drawRouteSlots(ctx, game.level.routes, game.persist ? game.persist.routesFound : [], 418, 10, 36, 4);
   drawStatus(ctx, game, clock, t);
   if (game.phase === 'day') {
     drawPauseButton(ctx, !!game.paused);
@@ -218,13 +218,13 @@ function drawHeld(ctx, held) {
   }
 }
 
-// Route slots, one per route. A found route shows its icon; an unfound one is a blank slot
-// (never a greyed-out icon: that would reveal the solution). opts.hide lists found routes to draw
-// blank anyway (the end screen stamps them in). Shared with the title and end screens.
-export function drawRouteSlots(ctx, found, x, y, size, gap, opts) {
+// Route slots, one per route (the level's routes, in order). A found route shows its icon; an unfound
+// one is a blank slot (never a greyed-out icon: that would reveal the solution). opts.hide lists found
+// routes to draw blank anyway (the end screen stamps them in). Shared with the title and end screens.
+export function drawRouteSlots(ctx, routes, found, x, y, size, gap, opts) {
   const list = Array.isArray(found) ? found : [];
-  for (let i = 0; i < ROUTE_ICONS.length; i++) {
-    const [id, icon] = ROUTE_ICONS[i];
+  for (let i = 0; i < routes.length; i++) {
+    const { id, icon } = routes[i];
     const sx = x + i * (size + gap);
     const hidden = opts && opts.hide && opts.hide.includes(id);
     const on = list.includes(id) && !hidden;

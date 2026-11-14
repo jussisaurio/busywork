@@ -360,7 +360,7 @@ export function observe(game, { map = true, debug = false } = {}) {
   const out = [];
   const p = game.player;
   // Same as the HUD: one slot per route, blank until found.
-  const routes = [['projector', '📽️'], ['keycard', '🪪']].map(([id, icon]) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
+  const routes = game.level.routes.map(({ id, icon }) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
   const meetingAt = game.level.day.meetingAt;
   out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute)} (meeting at ${formatClock(meetingAt)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
 

@@ -2,7 +2,7 @@
 import {
   VIEW_W, VIEW_H, clamp, fin, hash, easeOutBack, easeOutCubic, emoji, text, font, textWidth,
   rrect, circle, fillEllipse, loopIcon, keycap,
-  MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY, ROUTE_ICONS,
+  MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { LOOKS, personState, resetState, drawPerson } from './characters.js';
@@ -160,7 +160,7 @@ export function drawTitle(ctx, game, t, mem) {
 
   // Routes found so far + loop count
   const found = game.persist ? game.persist.routesFound : [];
-  drawRouteSlots(ctx, found, VIEW_W / 2 - 44, 424, 42, 4);
+  drawRouteSlots(ctx, game.level.routes, found, VIEW_W / 2 - 44, 424, 42, 4);
   const loops = (game.persist && game.persist.loop) | 0;
   if (loops > 0) {
     loopIcon(ctx, VIEW_W / 2 + 70, 445, 8, C.cream, 2.5);
@@ -223,8 +223,9 @@ export function drawEnd(ctx, game, t, mem) {
   let shakeX = 0;
   let shakeY = 0;
   let j = 0;
-  for (let i = 0; i < ROUTE_ICONS.length; i++) {
-    if (!newRoutes.includes(ROUTE_ICONS[i][0])) continue;
+  const slots = game.level.routes;
+  for (let i = 0; i < slots.length; i++) {
+    if (!newRoutes.includes(slots[i].id)) continue;
     const se = e - stampAt(j++);
     if (se >= 0.16 && se < 0.34) {
       const f = 1 - (se - 0.16) / 0.18;
@@ -283,10 +284,10 @@ export function drawEnd(ctx, game, t, mem) {
   const sx = VIEW_W / 2 - size - gap / 2;
   const sy = 404;
   const found = (game.persist && game.persist.routesFound) || [];
-  drawRouteSlots(ctx, found, sx, sy, size, gap, { hide: newRoutes });
+  drawRouteSlots(ctx, slots, found, sx, sy, size, gap, { hide: newRoutes });
   j = 0;
-  for (let i = 0; i < ROUTE_ICONS.length; i++) {
-    const [id, icon] = ROUTE_ICONS[i];
+  for (let i = 0; i < slots.length; i++) {
+    const { id, icon } = slots[i];
     if (!newRoutes.includes(id)) continue;
     const se = e - stampAt(j++);
     if (se < 0) continue;
