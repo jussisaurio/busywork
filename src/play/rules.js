@@ -26,6 +26,16 @@ const TELL_DELAY = 1.2; // seconds after the authority is back on the floor befo
 export const SCENE_RADIUS = 3.5;
 
 const NO_ROLE = {};
+// The level's items that are contraband and tracked in world (cached per level: updateRules runs every step).
+const contrabandCache = new WeakMap();
+function contrabandItems(level) {
+  let list = contrabandCache.get(level);
+  if (!list) {
+    list = Object.entries(level.items ?? {}).filter(([, item]) => item.contraband && item.place);
+    contrabandCache.set(level, list);
+  }
+  return list;
+}
 const roles = (game) => game.level.roles ?? NO_ROLE;
 const itemFlags = (game, type) => (type ? game.level.items?.[type] : undefined);
 // The authority's NPC, or null.
@@ -132,8 +142,8 @@ export function updateRules(game, dt) {
   }
 
   // Contraband lying where its confiscator can see it goes straight back into his pocket (the keycard).
-  for (const [type, item] of Object.entries(game.level.items ?? {})) {
-    if (!item.contraband || !item.place || game.world[item.place] !== 'dropped') continue;
+  for (const [type, item] of contrabandItems(game.level)) {
+    if (game.world[item.place] !== 'dropped') continue;
     const by = findNpc(game, item.contraband);
     if (!enforcing(game, by)) continue;
     const it = game.world.items.find((i) => i.type === type);

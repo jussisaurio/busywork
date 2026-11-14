@@ -20,7 +20,7 @@ import { say } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
-import { mechanics, mechanicOf, startHunt } from './mechanics/index.js';
+import { mechanicsFor, mechanicOf, startHunt } from './mechanics/index.js';
 
 export { npcSayLater };
 
@@ -229,7 +229,7 @@ function tickSayQueue(game, npc, dt) {
 
 // Lures start and hunts end (polled from world state, so no event subscriptions leak across loops).
 function checkOverrides(game, npc, now) {
-  for (const m of mechanics(game.level)) m.kind.check?.(game, npc, m.data, now);
+  for (const m of mechanicsFor(game.level, npc.id)) m.kind.check?.(game, npc, m.data, now);
 }
 
 function planKey(game, npc, now) {
@@ -241,6 +241,8 @@ function planKey(game, npc, now) {
     case 'meeting': return `meeting#${seq}`;
     default: {
       const i = entryIndex(npc, now);
+      const names = npc._schedule[i].prelude;
+      if (!names) return `e${i}`; // the common case: no allocation every step
       return `e${i}${preludes(game, npc, i).map((name) => `+${name}`).join('')}`;
     }
   }
@@ -284,7 +286,7 @@ function buildPlan(game, npc, now, key) {
   }
   if (plan.done) return plan; // (a door's lockout)
   // Doors: coming in from a door's zone, its NPCs go through the door first.
-  for (const d of mechanics(game.level)) d.kind.prelude?.(game, npc, plan, d.data);
+  for (const d of mechanicsFor(game.level, npc.id)) d.kind.prelude?.(game, npc, plan, d.data);
   return plan;
 }
 

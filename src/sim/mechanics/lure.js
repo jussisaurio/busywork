@@ -53,7 +53,13 @@ function arrive(game, npc, lure) {
   speak(game, npc, lure.work.start?.says);
 }
 
-const holds = (w, set) => !set || Object.entries(set).every(([k, v]) => w[k] === v);
+const setEntries = new WeakMap(); // Object.entries(set), cached: tick runs every step while he works
+function holds(w, set) {
+  if (!set) return true;
+  let e = setEntries.get(set);
+  if (!e) setEntries.set(set, (e = Object.entries(set)));
+  return e.every(([k, v]) => w[k] === v);
+}
 
 export function tick(game, npc, dt, lure) {
   const work = lure.work;

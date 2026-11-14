@@ -8,6 +8,8 @@
 //   working(data, npc)         busy at the job: no daydreaming about wants (npcs.js crave)
 //   prelude(game, npc, plan, data)  may add legs in front of any plan that isn't finished at birth
 //   keepsThroughMeeting        the gather doesn't send its NPC to the meeting
+// A mechanic only ever acts on the NPCs its data names (`npc`, or the list `npcs`): the sim asks each NPC's own
+// list (mechanicsFor), so every hook above may assume the NPC is one of its own.
 import * as lure from './lure.js';
 import * as hunt from './hunt.js';
 import * as door from './door.js';
@@ -24,10 +26,23 @@ export function mechanics(level) {
   return list;
 }
 
+// The level's mechanics that name this NPC, in check order (cached per level and NPC id).
+const byNpc = new WeakMap();
+export function mechanicsFor(level, id) {
+  let map = byNpc.get(level);
+  if (!map) byNpc.set(level, (map = new Map()));
+  let list = map.get(id);
+  if (!list) {
+    list = mechanics(level).filter(({ data }) => data.npc === id || (data.npcs ?? []).includes(id));
+    map.set(id, list);
+  }
+  return list;
+}
+
 // The mechanic that owns the NPC's current override, or null (none, the meeting, or a level hook's).
 export function mechanicOf(game, npc) {
   if (!npc.override) return null;
-  for (const m of mechanics(game.level)) if (m.kind.owns(m.data, npc)) return m;
+  for (const m of mechanicsFor(game.level, npc.id)) if (m.kind.owns(m.data, npc)) return m;
   return null;
 }
 
