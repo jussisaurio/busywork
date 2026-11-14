@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+# Runtime state from the AI playtest harness and agents' scratch scripts
+.agent-sessions/
+design-jam/scratch/
