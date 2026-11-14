@@ -37,9 +37,10 @@ everyone relies on**.
   **Use `say()` for every speech, thought or alert bubble.** It also emits the `'say'` event for audio.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
-- `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
+- `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
+  listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`, `routes`, `outcomeOrder`,
-  `initialWorld()`. Engine code reads it as `game.level`.
+  `initialWorld()`, `harness`. Engine code reads it as `game.level`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
@@ -273,22 +274,41 @@ mirroring main.js (fast-forward and forced-work multipliers included). Commands 
 `observe()` returns a text view limited to what a human can see: map, watched tiles, people, bubbles, HUD.
 NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's command log on every call
 (the game is deterministic), so no server is needed.
+The level's own words live in `level.harness` (`src/levels/meeting/harness.js`, which documents each field): `mission`,
+`landmarks` (extra `goto` names -> spot names; `sit` walks to `my_seat`, and the golden plans use these names), `stops`
+(`{ hard, soft }` level events that end a command early, on top of caught/day:end and witness:notice/witness:tattle/
+action:cancel), `names`, `mapKey`, and text hooks `outcomeText(o)`, `playerText(game)`, `statusText(game)`,
+`npcText(game, n)`, `worldText(game)` and `describe(event, memo)` (a line, `null` for silence, `undefined` for the
+harness's own text). All optional: without them the harness prints plain defaults. `helpText(level)` lists the goto
+targets (interactables, then landmarks); `describeEvents(events, { level })` defaults to the registry's default level,
+and a harness's own `h.describeEvents` uses its level. `createHarness({ level })` takes a level object or a registry
+id (default: the registry's default level). `node tools/play.mjs new <session> --level <id>` writes the level id as
+the first line of `.agent-sessions/<session>.jsonl`, and later calls replay that level (a log without that line plays
+the default level; a `--level` that differs from the session's is an error). `help --level <id>` prints that
+level's help.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
-across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--batch 288]
-[--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends only on
-seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a pass/fail test.
-It is also a module (`fuzz()`, `evaluate()`, `report()`). Its `LEVELS` table (top of the file) holds everything the
-tools know about a level: route ids, `mustUse` lessons, goto targets, milestones.
-`tools/gate.mjs` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
+across the day to measure the real windows). `node tools/fuzz.mjs [--level meeting] [--budget 20000] [--seed N]
+[--batch 288] [--workers N] [--verbose] [--json out.json]`, ~1 ms per day per core, worker_threads. The output depends
+only on level, seed, budget and batch, not on the worker count or the machine. Its report is for a designer, not a
+pass/fail test. It is also a module (`fuzz()`, `evaluate(plan, L)`, `report()`, `levelData(id)`). What the tools know
+about a level comes from its folder: `levelData(id)` merges the route ids (`level.routes`), the day
+(`day.meetingAt` ends every plan) and `level.gate` (`src/levels/meeting/gate.js`: `mustUse` lessons, `targets` and
+`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name),
+`binKeys`, `keyActions`). Workers get the level id and build their own data; `evaluate()` builds
+`createHarness({ level: L.id })`. An unknown `--level` (on every tool below too) exits 2 with the registry's ids.
+`tools/gate.mjs [--level meeting]` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
 `--budget 30000`, ~30 s) and exits 1 if a route has no winning plan, a win takes 3 plan steps or fewer, random
 plans win more than 1%, anything crashes or a day never ends, or a win skips a `mustUse` lesson. A lesson is data:
 `{ id, cmd }` (a plan command that ran contains that word) or `{ id, event }` (that event fired). Level 1's lesson
 is pretend. The one-screen report shows each way to win with its minimal plan and timing windows, the checks and
 the verdict. `tools/test-gate.mjs` tests the verdict logic on synthetic fuzz results.
-`tools/golden.mjs` is the refactor safety net: it replays a fixed corpus (`tools/golden.json`: one plan per outcome
-the fuzzer found, plus hand-written ones with raw movement and several loops) and compares a digest of every event
-and of the contract-level state after each command. A refactor must leave it passing. Re-record (`--write`) only
-for an intended behaviour change, and say so in the commit.
+`tools/golden.mjs [--level meeting]` is the refactor safety net: it replays a fixed corpus (the level's
+`src/levels/<id>/golden.json`: one plan per outcome the fuzzer found, plus the level's hand-written
+`level.gate.goldenPlans` with raw movement and several loops) and compares a digest of every event and of the
+contract-level state after each command. `tools/golden-render.mjs [--level meeting]` does the same for drawing
+(`src/levels/<id>/golden-render.json`). Each level's goldens live in its own folder, so the folder name must be the
+level id. A refactor must leave both passing. Re-record (`--write`) only for an intended behaviour change, and say so
+in the commit.
 **Implication for everyone:** gameplay must not read wall-clock time (`performance.now`, `Date`) or `Math.random`.
 Only `input.js` may use real time, for press expiry.

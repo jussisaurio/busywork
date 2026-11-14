@@ -9,24 +9,23 @@
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
 // and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
 //
-//   node tools/gate.mjs [--budget 30000] [--seed 1] [--batch 288] [--workers N]
+//   node tools/gate.mjs [--level meeting] [--budget 30000] [--seed 1] [--batch 288] [--workers N]
 //
-// Level data (routes, mustUse lessons, harness targets) is the LEVELS table at the top of tools/fuzz.mjs.
+// Level data (route ids, mustUse lessons, goto targets) comes from the level's folder: fuzz.mjs levelData(id)
+// reads level.routes and level.gate (src/levels/meeting/gate.js).
 import { fileURLToPath } from 'node:url';
-import { fuzz, winLines, combosOf, planToCmds, LEVELS, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
-
-// ---- Level under test. P5.1: `arg('level', DEFAULT_LEVEL)` once the harness builds game.level. ----
-const LEVEL = DEFAULT_LEVEL;
+import { fuzz, winLines, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
 
 // Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
 
 const pct = (x) => `${(100 * x).toFixed(2)}%`;
-const oneLine = (plan) => planToCmds(plan).join(' ; ');
 
-// The verdict, from fuzz() results (or synthetic ones of the same shape: wins, randomWins, randomEvaluated,
-// crashes, crashCount). Returns one { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
-export function checkGate(r, L, { easySteps = EASY_STEPS, easyRate = EASY_RATE } = {}) {
+// The verdict, from fuzz() results (or synthetic ones of the same shape: level, wins, randomWins, randomEvaluated,
+// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). Returns one
+// { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
+export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE } = {}) {
+  const oneLine = (plan) => planToCmds(plan, levelData(r.level)).join(' ; ');
   const combos = combosOf(r);
   const checks = [];
   const check = (name, ok, text, detail = []) => checks.push({ name, ok, text, detail });
@@ -85,8 +84,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const i = process.argv.indexOf(`--${name}`);
     return i > 0 ? process.argv[i + 1] : def;
   };
+  const level = arg('level', DEFAULT_LEVEL);
+  try {
+    levelData(level);
+  } catch (e) {
+    console.error(`gate: ${e.message}`);
+    process.exit(2);
+  }
   const opts = {
-    level: LEVEL,
+    level,
     budget: Number(arg('budget', DEFAULT_BUDGET)),
     seed: Number(arg('seed', 1)),
     batch: Number(arg('batch', BATCH)),
@@ -95,7 +101,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
   try {
     const r = await fuzz(opts);
-    const checks = checkGate(r, LEVELS[opts.level]);
+    const checks = checkGate(r, levelData(opts.level));
     console.log(gateReport(r, checks));
     process.exitCode = checks.every((c) => c.ok) ? 0 : 1;
   } catch (e) {

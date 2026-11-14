@@ -3,31 +3,35 @@
 // harness plans and renders frames into the recording fake canvas (tools/lib/fake-canvas.mjs): after every
 // command, paused after the first one, at the end of the frame of each notable event and again 20 frames
 // later (particles in flight, forced work under way), and over the end screen. Each render is digested (every ctx call and property set, numbers rounded to
-// 1e-3, measureText and other queries left out) and compared against tools/golden-render.json. A property set only
+// 1e-3, measureText and other queries left out) and compared against the level's src/levels/<id>/golden-render.json. A property set only
 // counts once a call on that canvas follows it, so a set overwritten before any call (it draws nothing) is left out,
 // and the sets between two calls are digested in name order (they commute).
 // Math.random (only fx particles use it) is seeded per plan here, and each plan gets a fresh game and renderer.
 //
-//   node tools/golden-render.mjs           check; exit 1 and name the first render that differs
-//   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else PICK below)
+//   node tools/golden-render.mjs [--level meeting]  check; exit 1 and name the first render that differs
+//   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else pick() below)
 //
 // Re-record only when a visual change is intended, and say so in the commit.
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { createRenderer } from '../src/render/renderer.js';
 import { createHarness } from '../src/agent/harness.js';
 import { updateFx } from '../src/core/fx.js';
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
+import { levelArg, levelFile } from './lib/level-arg.mjs';
 
-const FILE = fileURLToPath(new URL('./golden-render.json', import.meta.url));
-const GOLDEN = fileURLToPath(new URL('./golden.json', import.meta.url));
+const LEVEL = levelArg('golden-render');
+const FILE = levelFile(LEVEL, 'golden-render.json');
+const GOLDEN = levelFile(LEVEL, 'golden.json');
 const MAX_DRAIN_FRAMES = 60 * 60 * 5;
 const LATER = 20;
-// Indices into tools/golden.json for the first --write. Between them: projector broken + sparks and the fix,
-// keycard lockout and recovery, sandwich eaten (mustard) and returned, coffee confiscated, caught, every
-// blamed and win end screen, forced work, item drop/pickup, and the multi-loop hand-written plan.
-const PICK = [0, 5, 6, 8, 10, 12, 14, 18, 19, 21, 23, 41, 55, 82, 111, 134, 159, 160, 161, 162];
+// The first --write's plans: up to PICK_N plans spread evenly over the level's golden.json. (Level 1's corpus
+// was hand-picked: indices 0, 5, 6, 8, 10, 12, 14, 18, 19, 21, 23, 41, 55, 82, 111, 134, 159, 160, 161, 162 of
+// its golden.json, covering the projector broken + sparks and the fix, keycard lockout and recovery, sandwich
+// eaten (mustard) and returned, coffee confiscated, caught, every blamed and win end screen, forced work,
+// item drop/pickup, and the multi-loop hand-written plan.)
+const PICK_N = 20;
+const pick = (plans) => (plans.length <= PICK_N ? plans : Array.from({ length: PICK_N }, (_, i) => plans[Math.round((i * (plans.length - 1)) / (PICK_N - 1))]));
 const NOTABLE = new Set([
   'caught', 'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:bang', 'boss:lockedOut', 'boss:workAssigned',
   'work:done', 'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'coffee:confiscated',
@@ -85,7 +89,7 @@ function seeded(seed) {
 // Replays one plan; returns one digest per render plus a label saying where it was taken.
 function renderTrace(cmds, seed) {
   Math.random = seeded(seed);
-  const h = createHarness();
+  const h = createHarness({ level: LEVEL });
   const g = h.game;
   const renderer = createRenderer(fake.makeCanvas('main'), { strict: true });
   const out = [];
@@ -160,7 +164,7 @@ const write = process.argv.includes('--write');
 if (write) {
   const plans = existsSync(FILE)
     ? JSON.parse(readFileSync(FILE, 'utf8')).plans.map((p) => p.cmds)
-    : PICK.map((i) => JSON.parse(readFileSync(GOLDEN, 'utf8')).plans[i].cmds);
+    : pick(JSON.parse(readFileSync(GOLDEN, 'utf8')).plans.map((p) => p.cmds));
   const out = plans.map((cmds, i) => {
     const t = renderTrace(cmds, i + 1);
     return { cmds, summary: t.summary, renders: t.renders.map((r) => r.d) };
@@ -168,7 +172,7 @@ if (write) {
   finish();
   writeFileSync(FILE, JSON.stringify({ note: 'written by tools/golden-render.mjs --write; do not edit by hand', plans: out }, null, 1) + '\n');
   const n = out.reduce((s, p) => s + p.renders.length, 0);
-  console.log(`golden-render: recorded ${n} renders over ${out.length} plans (${[...new Set(out.map((p) => p.summary))].join(', ')})`);
+  console.log(`golden-render: ${LEVEL.id}: recorded ${n} renders over ${out.length} plans (${[...new Set(out.map((p) => p.summary))].join(', ')})`);
 } else {
   const { plans } = JSON.parse(readFileSync(FILE, 'utf8'));
   let bad = 0;
@@ -188,8 +192,8 @@ if (write) {
   finish();
   const secs = ((performance.now() - t0) / 1000).toFixed(1);
   if (bad) {
-    console.log(`golden-render: ${bad}/${plans.length} plans drew differently (${secs} s)`);
+    console.log(`golden-render: ${LEVEL.id}: ${bad}/${plans.length} plans drew differently (${secs} s)`);
     process.exit(1);
   }
-  console.log(`golden-render: all ${n} renders over ${plans.length} plans identical (${secs} s)`);
+  console.log(`golden-render: ${LEVEL.id}: all ${n} renders over ${plans.length} plans identical (${secs} s)`);
 }

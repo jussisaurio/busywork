@@ -13,9 +13,15 @@
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
 //   initialWorld()  a fresh game.world for a new loop (state.js resetLoop)
+//   harness  the AI-agent harness's words for this level: goto landmarks, stop events, observe/event text
+//            (harness.js; read by src/agent/harness.js)
+//   gate     what the fuzzer and the gate know beyond this object: mustUse lessons, plan targets, milestones
+//            (gate.js; read by tools/fuzz.mjs levelData())
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
+import harness from './harness.js';
+import gate from './gate.js';
 
 export default {
   id: 'meeting',
@@ -54,4 +60,6 @@ export default {
     kevGone: false,
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
   }),
+  harness,
+  gate,
 };
