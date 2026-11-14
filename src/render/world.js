@@ -1,9 +1,8 @@
 // The office: a static layer (floors, walls, glass, furniture) cached in an offscreen
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
-import { T, MAP_W, MAP_H, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
+import { T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
 import { C } from './palette.js';
-import { SPOTS } from '../levels/meeting/map.js';
 import { at, DAY_START, WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
@@ -14,7 +13,7 @@ const DESKISH = new Set(['T', 'P', 'J', 'C']);
 // Static chairs: [tileX, tileY, facing radians, seat color, back color]
 const N = -Math.PI / 2, S = Math.PI / 2, E = 0, W = Math.PI;
 const FACE = { N, S, E, W };
-function chairList() {
+function chairList(SPOTS) {
   const sp = (k) => SPOTS[k];
   const out = [];
   const add = (x, y, dir, seat, back) => out.push([x, y, dir, seat, back]);
@@ -37,7 +36,8 @@ function chairList() {
 
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
-function mapInfo(map) {
+function mapInfo(map, level) {
+  const SPOTS = level.spots;
   let info = infoCache.get(map);
   if (info) return info;
   const w = map.w;
@@ -127,10 +127,11 @@ function mapInfo(map) {
 // =============================================================================
 // Static layer
 // =============================================================================
-export function drawStaticLayer(ctx, map) {
-  const info = mapInfo(map);
+export function drawStaticLayer(ctx, map, level) {
+  const SPOTS = level.spots;
+  const info = mapInfo(map, level);
   ctx.fillStyle = C.wallVoid;
-  ctx.fillRect(0, 0, MAP_W, MAP_H);
+  ctx.fillRect(0, 0, map.w * T, map.h * T);
 
   // 1. floors
   for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) drawFloorTile(ctx, map, info, x, y);
@@ -162,7 +163,7 @@ export function drawStaticLayer(ctx, map) {
   // 6. wall decorations
   drawWallDecor(ctx, map, info);
   // 7. chairs (under desks), 8. desks
-  for (const [x, y, dir, seat, back] of chairList()) drawChair(ctx, x * T + T / 2, y * T + T / 2, dir, seat, back);
+  for (const [x, y, dir, seat, back] of chairList(SPOTS)) drawChair(ctx, x * T + T / 2, y * T + T / 2, dir, seat, back);
   for (const d of info.desks) drawDesk(ctx, d);
   // 9. appliances and props
   for (let y = 0; y < map.h; y++) {
@@ -987,7 +988,8 @@ function drawRackBase(ctx, cx, cy) {
 // =============================================================================
 export function drawWorldDynamic(ctx, game, t) {
   const map = game.map;
-  const info = mapInfo(map);
+  const SPOTS = game.level.spots;
+  const info = mapInfo(map, game.level);
   const world = game.world || {};
   const minute = game.clock ? game.clock.minute : 0;
 

@@ -1,7 +1,7 @@
 // game.fx drawing (bubbles, particles, sightlines) plus small in-world overlays: interaction hint,
 // action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
-  T, MAP_W, MAP_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
+  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
   starPath, loopIcon, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
@@ -58,9 +58,9 @@ export function drawBubble(ctx, b, ax, ay) {
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
-  // bubble centre, clamped inside the map
-  const bx = clamp(ax, w / 2 + 4, MAP_W - w / 2 - 4);
-  const by = clamp(ay - lift - h / 2, h / 2 + 4, MAP_H - h / 2 - 4);
+  // bubble centre, clamped inside the play area
+  const bx = clamp(ax, w / 2 + 4, PLAY_W - w / 2 - 4);
+  const by = clamp(ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
 
   ctx.save();
   ctx.globalAlpha = alpha;

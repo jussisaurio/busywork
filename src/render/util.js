@@ -1,13 +1,14 @@
 // Small drawing helpers shared by the render modules. Pure functions, no DOM access.
 import { TILE } from '../config.js';
-import { MAP } from '../levels/meeting/map.js';
 
 export const T = TILE;
 export const HUD_H = 56; // HUD band on top of the map (logical px)
-export const MAP_W = MAP[0].length * TILE; // 960
-export const MAP_H = MAP.length * TILE; // 544
-export const VIEW_W = MAP_W;
-export const VIEW_H = MAP_H + HUD_H; // 600
+// The play area: a fixed 30 x 17-tile view under the HUD (HUD and screen layouts are pixel positions in it).
+// The map itself is drawn at game.map's size (map.w * T, map.h * T) from the view's top-left corner.
+export const PLAY_W = 30 * TILE; // 960
+export const PLAY_H = 17 * TILE; // 544
+export const VIEW_W = PLAY_W;
+export const VIEW_H = PLAY_H + HUD_H; // 600
 
 export const EMOJI_FAMILY = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif';
 export const UI_FAMILY = '"Avenir Next","Trebuchet MS","Helvetica Neue",Arial,sans-serif';
