@@ -38,13 +38,16 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `routes`,
-  `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
+  `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
   reclaim?(game, npc) }`). `roles`: `authority { id, offDuty, helpless, deafIn }` (his sighting means caught; `suspicion[id]`),
   `evidence { by, while, mark, knows, icon }`, `scene { by, while, zone, door, radius?, fresh(world), icon }`; everyone else is a witness.
+  NPC mechanics (`levels/meeting/mechanics.js`; the engine's `src/sim/mechanics/*` document each field), each a list in check order:
+  `lures`: `[{ npc, when(world), override, plan, label, spot, react { wait, says?, event? }, work { override, minutes, progress,
+  start { set?, event?, says? }, done { set?, event?, says? } } }]`. Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
@@ -141,9 +144,9 @@ game = {
 - `findPath(map, from, to, who='npc')` returns `[{x,y}...]` tile path or `null`. Nav details are up to the sim agent.
 
 **Sim overrides (the sim owns these behaviours):**
-1. **Kev repairs.** On `'projector:broken'`, if Kev is `active` and not gone: `override='alerted'`, `say` 🔧❗,
+1. **Kev repairs** (a lure, `level.lures`). On `'projector:broken'`, if Kev is `active` and not gone: `override='alerted'`, `say` 🔧❗,
    he walks to `SPOTS.projector`, then `override='fixing'`, `world.projector='fixing'`, and `fixProgress` goes 0→1 over
-   `KEV_FIX_MIN` game minutes. Then `world.projector='ok'`, emit `'projector:fixed'`, `say` 👍, and he resumes his schedule
+   5 game minutes. Then `world.projector='ok'`, emit `'projector:fixed'`, `say` 👍, and he resumes his schedule
    (this delays his leaving if needed). If he is walking out to the elevator, he turns back.
    When he vanishes at the elevator: `world.kevGone = true`, emit `'kev:left'`.
 2. **Jacket and keycard.** When the boss starts his 3:35 entry (he is at his desk): he walks to the coat rack first, takes the jacket

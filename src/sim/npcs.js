@@ -1,5 +1,5 @@
-// NPC simulation: schedule execution, walking, smooth turning, glances, and the five
-// sim overrides from CONTRACTS.md (Kev repairs, jacket/keycard, lockout, sandwich hunt, meeting).
+// NPC simulation: schedule execution, walking, smooth turning, glances, the meeting gather, and the level's
+// mechanics (mechanics/*: lures, ...) and the rest of the sim overrides from CONTRACTS.md.
 //
 // Design notes
 // - All per-loop state lives on the NPC objects (fields with a leading underscore). There is no
@@ -11,7 +11,7 @@
 //   the glance is shown. So glance timing is a pure function of loop time per NPC: independent
 //   of the player and of the other NPCs (learnable across loops).
 import {
-  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT, KEV_FIX_MIN, at,
+  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT, at,
   GLANCE_EVERY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
 import { DIRS, angleDiff } from '../core/vision.js';
@@ -19,6 +19,10 @@ import { createRng } from '../core/rng.js';
 import { say, shake } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
+import { setOverride, endOverride, npcSayLater, holdFor, spotLeg } from './override.js';
+import { mechanics, mechanicOf } from './mechanics/index.js';
+
+export { npcSayLater };
 
 // --- Tunables ------------------------------------------------------------------
 const TURN_RATE = 9; // body turn speed (rad/s)
@@ -27,7 +31,6 @@ const HUNT_END = at('3:24'); // Lin gives up hunting for her sandwich (covers th
 const HUNT_LOOK = 1.25; // rad: head sweep at each hunt waypoint (~72 deg each side)
 const HUNT_LOOK_TIME = 1.4; // s paused at each hunt waypoint (look right, look left, back)
 const HUNT_SHOCK_TIME = 1.8; // s standing at the empty fridge before the hunt starts
-const KEV_REACT_TIME = 0.4; // s between 🔧❗ and Kev setting off
 const JACKET_TIME = 0.8; // s the boss spends at the coat rack
 const POUR_TIME = 1.0; // s Kev spends pouring the day's cup
 const EMPTY_POT_TIME = 1.6; // s Kev stares at the empty pot
@@ -113,11 +116,6 @@ export function createNpc(game, def, now = 0) {
   };
 }
 
-// A speech bubble `t` seconds from now, queued behind any already waiting.
-export function npcSayLater(npc, t, icons, kind) {
-  npc._sayQ.push({ t, icons, kind });
-}
-
 export function updateNpcs(game, dt) {
   const now = game.clock.minute;
   const npcs = game.npcs;
@@ -126,8 +124,8 @@ export function updateNpcs(game, dt) {
   if (now >= game.level.day.gatherAt && npcs.length && !npcs.some((n) => n._gathered)) {
     for (const n of npcs) {
       n._gathered = true;
-      // Kev finishes a repair first (endOverride sends him to the meeting afterwards).
-      if (n._gone || n.override === 'lockedOut' || n.override === 'alerted' || n.override === 'fixing') continue;
+      // A lure's job is finished first (endOverride sends him to the meeting afterwards).
+      if (n._gone || n.override === 'lockedOut' || mechanicOf(game, n)?.kind.keepsThroughMeeting) continue;
       setOverride(n, 'meeting');
     }
     game.events.emit('meeting:gather', {});
@@ -142,7 +140,7 @@ function updateNpc(game, npc, dt, now) {
   crave(game, npc, dt);
   checkOverrides(game, npc, now);
 
-  const key = planKey(npc, now);
+  const key = planKey(game, npc, now);
   if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, now, key));
 
   const px = npc.x;
@@ -152,9 +150,8 @@ function updateNpc(game, npc, dt, now) {
   if (npc.moving && !npc._plan.done) npc.pose = 'walk'; // (the arrival step keeps finishPlan's pose)
   updateFacing(npc, dt);
   updateGlance(npc, dt);
-  npc.label = npc.override === 'fixing'
-    ? `fixing ${Math.round(game.world.fixProgress * 100)}%`
-    : npc._plan.label;
+  const m = mechanicOf(game, npc);
+  npc.label = (m && m.kind.label?.(game, npc, m.data)) ?? npc._plan.label;
 }
 
 // --- Schedule ---------------------------------------------------------------------
@@ -201,28 +198,10 @@ function tickSayQueue(game, npc, dt) {
   }
 }
 
-function setOverride(npc, ov) {
-  npc.override = ov;
-  npc._ovSeq++;
-}
-
-// Leaving an override: resume whatever the schedule says now (or the meeting after 3:54).
-function endOverride(npc) {
-  if (npc._gathered && !npc._gone) setOverride(npc, 'meeting');
-  else npc.override = null;
-  npc._look = null;
-}
-
 function checkOverrides(game, npc, now) {
   const w = game.world;
-  // 1. Kev repairs (polled from world state, so no event subscriptions leak across loops).
-  if (npc.id === 'kev' && npc.active && !npc._gone && w.projector === 'broken'
-      && npc.override !== 'alerted' && npc.override !== 'fixing') {
-    setOverride(npc, 'alerted');
-    npc._wait = Math.max(npc._wait, KEV_REACT_TIME);
-    say(game, npc.id, ['🔧', '❗'], { kind: 'alert', voice: npc.voice });
-    game.events.emit('kev:alerted', {});
-  }
+  // 1. Lures (polled from world state, so no event subscriptions leak across loops).
+  for (const m of mechanics(game.level)) m.kind.check?.(game, npc, m.data, now);
   // 4. Lin stops hunting at 3:24, as soon as she has her sandwich back, or when she knows who ate it.
   if (npc.override === 'hunting' && (now >= HUNT_END || w.sandwich === 'lin' || w.linKnows)) {
     say(game, npc.id, ['😤'], { kind: 'speech', voice: npc.voice });
@@ -240,13 +219,13 @@ function entryFlags(npc, i) {
   };
 }
 
-function planKey(npc, now) {
+function planKey(game, npc, now) {
   if (npc._gone) return 'gone';
+  const m = mechanicOf(game, npc);
+  if (m) return m.kind.key(m.data, npc);
   const seq = npc._ovSeq;
   switch (npc.override) {
     case 'lockedOut': return 'lockout';
-    case 'alerted':
-    case 'fixing': return `fix#${seq}`; // alerted -> fixing keeps the same plan
     case 'hunting': return `hunt#${seq}`;
     case 'meeting': return `meeting#${seq}`;
     default: {
@@ -256,11 +235,6 @@ function planKey(npc, now) {
     }
   }
 }
-
-const spotLeg = (game, name, extra = {}) => {
-  const s = game.level.spots[name];
-  return { x: s.x, y: s.y, face: DIRS[s.face], name, ...extra };
-};
 
 // plan: { key, label, legs[{x, y, face?, arrive?}], li, path, wp, done, pose, vanish, loop, onDone }
 function buildPlan(game, npc, now, key) {
@@ -274,9 +248,9 @@ function buildPlan(game, npc, now, key) {
     return plan;
   }
   const kind = key.split('#')[0];
-  if (kind === 'fix') {
-    plan.legs.push(spotLeg(game, 'projector', { arrive: kevArrive }));
-    plan.label = 'fix projector';
+  const m = mechanicOf(game, npc);
+  if (m) {
+    m.kind.build(game, npc, plan, m.data);
   } else if (kind === 'hunt') {
     plan.legs = game.level.patrols.lin_hunt.map(([x, y]) => ({ x, y, arrive: huntLook }));
     plan.loop = true; // back and forth until the override ends
@@ -322,7 +296,8 @@ function setPlan(game, npc, plan) {
 
 function stepPlan(game, npc, dt) {
   const plan = npc._plan;
-  if (npc.override === 'fixing') tickFix(game, npc, dt);
+  const m = mechanicOf(game, npc);
+  if (m) m.kind.tick?.(game, npc, dt, m.data);
   if (npc.override === 'lockedOut') tickBang(game, npc, dt);
   if (npc._look) npc._look.t += dt;
   if (npc._wait > 0) {
@@ -422,29 +397,6 @@ function finishPlan(game, npc, plan) {
 }
 
 // --- Override behaviours (leg arrival callbacks and per-step ticks) -------------------
-
-// 1. Kev at the projector.
-function kevArrive(game, npc) {
-  const w = game.world;
-  if (w.projector !== 'broken') return endOverride(npc);
-  npc.override = 'fixing'; // same episode as 'alerted': no _ovSeq bump, keep the plan
-  w.projector = 'fixing';
-  w.fixProgress = 0;
-  game.events.emit('projector:fixing', {});
-}
-
-function tickFix(game, npc, dt) {
-  const w = game.world;
-  if (w.projector !== 'fixing') return endOverride(npc);
-  w.fixProgress = Math.min(1, w.fixProgress + (dt * GAME_MIN_PER_SEC) / KEV_FIX_MIN);
-  if (w.fixProgress >= 1 - 1e-9) {
-    w.projector = 'ok';
-    w.fixProgress = 0;
-    game.events.emit('projector:fixed', {});
-    say(game, npc.id, ['👍'], { kind: 'speech', voice: npc.voice });
-    endOverride(npc); // resumes the schedule: he still goes home, just later
-  }
-}
 
 // 2. Boss at the coat rack.
 function bossJacket(game, npc) {

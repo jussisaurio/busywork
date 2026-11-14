@@ -55,4 +55,3 @@ export const GLANCE_TURN_TIME = 0.25; // head turn tween, gives a tiny telegraph
 export const SUSPICION_FILL_SEC = 1.6; // boss sees you idle this long -> work assigned
 export const SUSPICION_DECAY_SEC = 3.0;
 export const CAUGHT_DELAY = 1.6; // seconds of "busted" beat before the end screen
-export const KEV_FIX_MIN = 5; // game minutes to repair the projector
