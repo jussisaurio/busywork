@@ -9,7 +9,10 @@
 // candidates are mutations/crossovers of elites. Winning elites are then shrunk (drop steps while the
 // same win survives), so the report shows the minimal plan for every way to win.
 //
-//   node tools/fuzz.mjs [--budget 6000] [--seed 1] [--workers N] [--json out.json] [--verbose]
+//   node tools/fuzz.mjs [--budget 6000] [--seed 1] [--batch 288] [--workers N] [--json out.json] [--verbose]
+//
+// The archive depends only on --seed, --budget and --batch (plans per generation), never on --workers or
+// the machine, so a seed reproduces anywhere.
 //
 // Flags in the report are heuristics for a designer to look at, not test failures:
 //   EASY      a win whose minimal plan has <= EASY_STEPS steps, or random plans win too often
@@ -23,11 +26,15 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../src/agent/harness.js';
 import { createRng } from '../src/core/rng.js';
+import { at, formatClock, MEETING_AT } from '../src/config.js';
 
 const SELF = fileURLToPath(import.meta.url);
 const EASY_STEPS = 3; // a win in this few steps is suspicious
 const EASY_RATE = 0.01; // so is a random plan winning more than 1% of the time
-const LAST_MINUTE = 89; // 3:59
+const LAST_MINUTE = MEETING_AT - 1; // the last minute a timed wait can end on (3:59)
+// Plans per MAP-Elites generation. A constant, not derived from the core count: the archive must not depend
+// on the machine. 288 = the 12 workers x 24 that design-jam/FUZZ.md was recorded with.
+const BATCH = 288;
 
 // Where a plan can go. Interactables first (they're what `do` acts on), then landmarks.
 const TARGETS = [
@@ -57,10 +64,8 @@ const MILESTONES = {
 // Milestones that define a bin (the rest are only reported).
 const BIN_KEYS = ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught'];
 
-const fmt = (m) => {
-  const t = 150 + Math.round(m); // 2:30 PM = 150 minutes past noon
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
-};
+// Game minute -> "3:12", the clock form `wait/pretend until` takes.
+const fmt = (m) => formatClock(Math.round(m)).replace(/ [AP]M$/, '');
 
 // ---------------------------------------------------------------------------------------------
 // Plans
@@ -75,7 +80,7 @@ function stepToCmd(s) {
     default: throw new Error(`bad step ${JSON.stringify(s)}`);
   }
 }
-export const planToCmds = (plan) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until 4:00`];
+export const planToCmds = (plan) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(MEETING_AT)}`];
 
 function randomStep(rng) {
   const r = rng.next();
@@ -149,13 +154,12 @@ export function evaluate(plan) {
   h.begin();
   const g = h.game;
   let error = null;
-  for (const cmd of planToCmds(plan)) {
+  const cmds = planToCmds(plan);
+  for (const cmd of cmds) {
     if (g.phase !== 'day' || g.outcome || g.caught) break;
-    if (/until (\d+:\d+)$/.test(cmd)) {
-      // Skip a wait whose time has passed (the harness would no-op it anyway).
-      const [hh, mm] = cmd.slice(cmd.lastIndexOf(' ') + 1).split(':').map(Number);
-      if ((hh * 60 + mm) - 150 <= g.clock.minute) continue;
-    }
+    // Skip a wait whose time has passed (the harness would no-op it anyway).
+    const until = cmd.match(/until (\d+:\d+)$/);
+    if (until && at(until[1]) <= g.clock.minute) continue;
     const r = h.run(cmd);
     if (!r.ok && !/no path|nothing to interact/.test(r.text)) {
       error = `${cmd} :: ${r.text}`;
@@ -169,14 +173,13 @@ export function evaluate(plan) {
     const k = f && f(e.payload ?? {});
     if (k && ms[k] === undefined) ms[k] = +e.minute.toFixed(1);
   }
-  const used = new Set(planToCmds(plan).filter((c) => /pretend/.test(c)).length ? ['pretend'] : []);
   const o = g.outcome ?? { result: error ? 'error' : 'unfinished', routes: [] };
   return {
     result: o.result,
     routes: [...(o.routes ?? [])].sort(),
     caughtBy: g.caught?.reason ?? null,
     ms,
-    pretend: used.has('pretend'),
+    pretend: cmds.some((c) => /pretend/.test(c)),
     error,
   };
 }
@@ -238,6 +241,7 @@ async function main() {
   const budget = Number(arg('budget', 6000));
   const seed = Number(arg('seed', 1));
   const nWorkers = Number(arg('workers', Math.max(1, availableParallelism() - 2)));
+  const batch = Number(arg('batch', BATCH));
   const jsonOut = arg('json', null);
   const verbose = process.argv.includes('--verbose');
   const rng = createRng(seed);
@@ -288,12 +292,11 @@ async function main() {
   }
 
   // 2. MAP-Elites: mutate elites, wins and rare bins more often.
-  const BATCH = nWorkers * 24;
   while (evaluated < budget) {
     const bins = [...elites.values()];
     const wins = bins.filter((e) => winKey(e.res));
     const plans = [];
-    for (let i = 0; i < BATCH && evaluated + plans.length < budget; i++) {
+    for (let i = 0; i < batch && evaluated + plans.length < budget; i++) {
       const pickWin = wins.length && rng.chance(0.35);
       const a = pickWin ? rng.pick(wins) : rng.pick(bins);
       const b = rng.chance(0.25) ? rng.pick(bins) : null;
@@ -358,7 +361,7 @@ async function main() {
   const secs = (performance.now() - t0) / 1000;
   const lines = [];
   const say = (s = '') => lines.push(s);
-  say(`fuzz: ${evaluated} days in ${secs.toFixed(1)} s (${nWorkers} workers, seed ${seed}), ${elites.size} distinct outcomes`);
+  say(`fuzz: ${evaluated} days in ${secs.toFixed(1)} s (${nWorkers} workers, batch ${batch}, seed ${seed}), ${elites.size} distinct outcomes`);
   const results = {};
   for (const e of elites.values()) results[e.res.result] = (results[e.res.result] ?? 0) + 1;
   say(`outcome bins by result: ${Object.entries(results).map(([k, v]) => `${k} ${v}`).join(', ')}`);
@@ -393,7 +396,7 @@ async function main() {
   console.log(lines.join('\n'));
   if (jsonOut) {
     writeFileSync(jsonOut, JSON.stringify({
-      evaluated, seed, secs, randomWins, randomEvaluated,
+      evaluated, seed, batch, secs, randomWins, randomEvaluated,
       wins: Object.fromEntries([...winStats.entries()].map(([k, s]) => [k, { ...s, minimal: planToCmds(minimal.get(k).plan), windows: windows.get(k) }])),
       bins: Object.fromEntries([...elites.entries()].map(([k, e]) => [k, { cmds: planToCmds(e.plan), res: e.res }])),
       crashes,
