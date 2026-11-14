@@ -37,9 +37,10 @@ everyone relies on**.
   **Use `say()` for every speech, thought or alert bubble.** It also emits the `'say'` event for audio.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
-- `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
+- `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
+  listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`, `routes`, `outcomeOrder`,
-  `initialWorld()`. Engine code reads it as `game.level`.
+  `initialWorld()`, `harness`. Engine code reads it as `game.level`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
@@ -273,6 +274,14 @@ mirroring main.js (fast-forward and forced-work multipliers included). Commands 
 `observe()` returns a text view limited to what a human can see: map, watched tiles, people, bubbles, HUD.
 NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's command log on every call
 (the game is deterministic), so no server is needed.
+The level's own words live in `level.harness` (`src/levels/meeting/harness.js`, which documents each field): `mission`,
+`landmarks` (extra `goto` names -> spot names; `sit` walks to `my_seat`, and the golden plans use these names), `stops`
+(`{ hard, soft }` level events that end a command early, on top of caught/day:end and witness:notice/witness:tattle/
+action:cancel), `names`, `mapKey`, and text hooks `outcomeText(o)`, `playerText(game)`, `statusText(game)`,
+`npcText(game, n)`, `worldText(game)` and `describe(event, memo)` (a line, `null` for silence, `undefined` for the
+harness's own text). All optional: without them the harness prints plain defaults. `helpText(level)` lists the goto
+targets (interactables, then landmarks); `describeEvents(events, { level })` defaults to the registry's default level,
+and a harness's own `h.describeEvents` uses its level.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
 across the day to measure the real windows). `node tools/fuzz.mjs [--budget 20000] [--seed N] [--batch 288]

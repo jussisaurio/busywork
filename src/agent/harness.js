@@ -5,6 +5,9 @@
 // Observations are deliberately "what a human sees": positions, facing, head turns, who can see
 // you (the vision cones), speech bubbles, the HUD. NPC schedules and intent are NOT exposed
 // (pass { debug: true } to observe() for that).
+//
+// The level's own words (goto landmarks, stop events, the WORLD line, event lines) come from
+// game.level.harness (src/levels/meeting/harness.js documents the shape).
 
 import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
@@ -12,33 +15,35 @@ import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
 import { TARGET_ACTIONS } from '../play/interactions.js';
+import { parseMap } from '../core/map.js';
 import { createScriptedInput } from './scripted-input.js';
+import { getLevel, defaultLevel } from '../levels/index.js';
 
-// Events that end a waiting/walking command early so the agent can react.
-const HARD_STOP = new Set(['caught', 'day:end', 'boss:workAssigned']);
-const SOFT_STOP = new Set(['witness:notice', 'witness:tattle', 'boss:suspicious', 'action:cancel', 'sandwich:returned', 'coffee:confiscated']);
+// Events that end a waiting/walking command early so the agent can react (the level adds its own: harness.stops).
+const HARD_STOP = ['caught', 'day:end'];
+const SOFT_STOP = ['witness:notice', 'witness:tattle', 'action:cancel'];
 const MAX_CMD_FRAMES = 60 * 200; // safety: one command never runs longer than 200 real seconds
 
-// Landmarks the agent can `goto` by name (besides interactable ids and "x,y").
-const LANDMARKS = {
-  my_seat: 'player_desk',
-  boss_desk: 'boss_desk',
-  lin_desk: 'lin_desk',
-  kev_desk: 'kev_desk',
-  boss_office_door: 'boss_door',
-  kitchen_table: 'kitchen_table',
-  entrance: 'door_in',
-  restroom_door: 'restroom',
-  meeting_room: 'meeting_presenter',
-  meeting_seat: 'meeting_player',
-};
+// Greedy word wrap for the help's target list.
+function wrap(words, width) {
+  const lines = [];
+  for (const w of words) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && last.length + 1 + w.length <= width) lines[lines.length - 1] = `${last} ${w}`;
+    else lines.push(w);
+  }
+  return lines;
+}
 
-export const HELP = `Commands (one per call or several in a row):
+// The command reference for a level (its goto targets: interactables, then landmarks).
+export function helpText(level = defaultLevel) {
+  const ids = parseMap(level.map.rows, level.map.legend).interactables.map((i) => i.id);
+  const targets = [...wrap(ids, 62), ...wrap(Object.keys(level.harness?.landmarks ?? {}), 62)];
+  targets[targets.length - 1] += ' | x,y (tile)';
+  return `Commands (one per call or several in a row):
   look                         observe without acting
   goto <target> [pretend]      walk there by the shortest path; 'pretend' = hold PRETEND (Shift) while walking
-                               targets: coat_rack fridge coffee_machine projector own_desk
-                                        my_seat boss_desk lin_desk kev_desk boss_office_door
-                                        kitchen_table entrance restroom_door meeting_room meeting_seat | x,y (tile)
+${targets.map((l, i) => `${' '.repeat(i ? 40 : 31)}${i ? '' : 'targets: '}${l}`).join('\n')}
   move <N|S|E|W|NE|NW|SE|SW> <dur> [pretend]   raw walking
   interact                     press E (uses the current ✋ target) and wait for the action to finish
   sit                          goto own_desk and sit down (same as: goto my_seat; interact)
@@ -48,10 +53,16 @@ export const HELP = `Commands (one per call or several in a row):
   restart                      give up and restart the loop now
 durations: 5s (real seconds) | 3m (game minutes) | until 3:10 (clock, PM)
 Waiting/walking commands stop early when something notable happens.`;
+}
 
-export function createHarness() {
+// level: a level id from src/levels/index.js or a level object (default: the registry's default level).
+export function createHarness({ level = defaultLevel } = {}) {
   const input = createScriptedInput();
-  const game = createGame({ input });
+  const game = createGame({ input, level: typeof level === 'string' ? getLevel(level) : level });
+  const H = game.level.harness ?? {};
+  const LANDMARKS = H.landmarks ?? {};
+  const hardStop = new Set([...HARD_STOP, ...(H.stops?.hard ?? [])]);
+  const softStop = new Set([...SOFT_STOP, ...(H.stops?.soft ?? [])]);
   const log = []; // { loop, minute, name, payload }
   game.events.on('*', (name, payload) => {
     log.push({ loop: game.persist.loop, minute: game.clock.minute, name, payload });
@@ -77,7 +88,7 @@ export function createHarness() {
       frames++;
       for (let i = start; i < log.length; i++) {
         const n = log[i].name;
-        if (HARD_STOP.has(n) || (soft && SOFT_STOP.has(n))) return { frames, stoppedBy: n };
+        if (hardStop.has(n) || (soft && softStop.has(n))) return { frames, stoppedBy: n };
       }
       if (done()) return { frames, stoppedBy: null };
     }
@@ -225,7 +236,7 @@ export function createHarness() {
     let cmd = (tokens.shift() ?? 'look').toLowerCase();
     const notes = [];
 
-    if (cmd === 'help') return { text: HELP };
+    if (cmd === 'help') return { text: helpText(game.level) };
     if (cmd === 'look') return { text: '' };
     if (cmd === 'continue' || cmd === 'start') {
       if (game.phase === 'day' && !game.outcome) return { text: 'the day is still going (use restart to give up)' };
@@ -331,7 +342,7 @@ export function createHarness() {
     },
     frame,
     observe: (opts) => observe(game, opts),
-    describeEvents,
+    describeEvents: (events, opts) => describeEvents(events, { level: game.level, ...opts }),
   };
 }
 
@@ -352,13 +363,10 @@ function focusText(game) {
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
 
-const WORLD_TEXT = {
-  projector: { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' },
-};
-
 export function observe(game, { map = true, debug = false } = {}) {
   const out = [];
   const p = game.player;
+  const H = game.level.harness ?? {};
   // Same as the HUD: one slot per route, blank until found.
   const routes = game.level.routes.map(({ id, icon }) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
   const meetingAt = game.level.day.meetingAt;
@@ -366,10 +374,7 @@ export function observe(game, { map = true, debug = false } = {}) {
 
   if (game.phase === 'end' && game.outcome) {
     const o = game.outcome;
-    const verdict = o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})`
-      : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
-      : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
-      : 'FAIL: the meeting happened and you presented a blank slide 🦗';
+    const verdict = H.outcomeText?.(o) ?? `${o.result.toUpperCase()}${o.routes?.length ? ` (routes: ${o.routes.join(' + ')})` : ''}`;
     out.push(`DAY OVER: ${verdict}${o.newRoutes?.length ? ` | NEW route: ${o.newRoutes.join(', ')}` : ''}. Use 'continue' for the next loop.`);
     return out.join('\n');
   }
@@ -382,15 +387,14 @@ export function observe(game, { map = true, debug = false } = {}) {
   state.push(`at (${f1(p.x)},${f1(p.y)}) facing ${compass(p.dir)}`);
   state.push(p.seated ? 'seated at your desk' : p.moving ? 'walking' : 'standing');
   state.push(`hands: ${p.held ?? 'empty'}`);
-  if (p.smeared) state.push('mustard down your sweater');
+  if (H.playerText) state.push(...H.playerText(game));
   if (p.busy) state.push(`PRETENDING (${p.busyPose})`);
   if (p.action) state.push(`doing ${p.action.type} ${Math.round((p.action.t / p.action.duration) * 100)}%`);
   if (game.clock.forced > 0) state.push(`FORCED WORK: ${Math.ceil(game.clock.forced)} game min left`);
   if (game.clock.ff) state.push(`time ×${FF_MULT}`);
   out.push(`YOU: ${state.join(', ')}`);
-  // Only what a player would see: the ❓ meter over the boss's head (when it shows).
-  const status = [];
-  if (game.suspicion.boss > 0) status.push(`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`);
+  // Only what a player would see (the level's statusText: what shows over people's heads).
+  const status = H.statusText ? [...H.statusText(game)] : [];
   if (game.caught) status.push('CAUGHT!');
   if (status.length) out.push(status.join(' | '));
   out.push(`✋ target: ${focusText(game)}`);
@@ -406,28 +410,24 @@ export function observe(game, { map = true, debug = false } = {}) {
     const off = n.glance?.offset ?? 0;
     if (Math.abs(off) > 0.2) bits.push(`head turned ${off > 0 ? 'right' : 'left'} → looking ${compass(n.dir + off)}`);
     if (npcSees(game, n, p.x, p.y)) bits.push('👁 CAN SEE YOU');
-    if (n.override === 'lockedOut') bits.push('stuck outside the entrance');
-    if (n.override === 'fixing') bits.push(`fixing the projector ${Math.round(game.world.fixProgress * 100)}%`);
-    if (n.carry) bits.push(`holding ${n.carry === 'coffee' ? 'a coffee ☕' : n.carry}`);
+    if (H.npcText) bits.push(...H.npcText(game, n));
+    else if (n.carry) bits.push(`holding ${n.carry}`);
     if (debug) bits.push(`[debug: ${n.label ?? ''} override=${n.override}]`);
     out.push(`  ${n.id.padEnd(4)} ${bits.join(', ')}`);
   }
   const bubbles = game.fx.bubbles.map((b) => `${typeof b.owner === 'string' ? b.owner : 'sign'}: ${b.kind === 'thought' ? '💭' : '💬'} ${b.icons.join('')}`);
   if (bubbles.length) out.push(`BUBBLES: ${bubbles.join(' | ')}`);
 
-  const w = game.world;
-  // Only what is visible on screen (the fridge is opaque; pockets are private).
-  const rack = w.jacket === 'rack' ? `the boss's jacket${w.keycard === 'rack' ? ' (a keycard clipped to it)' : ''}` : 'nothing';
-  const floor = w.items.length ? `; on the floor: ${w.items.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}` : '';
-  const pot = w.coffee === 'pot' ? 'a full pot of coffee' : 'an empty pot';
-  out.push(`WORLD: projector ${WORLD_TEXT.projector[w.projector] ?? w.projector}; coffee machine: ${pot}; coat rack holds ${rack}${floor}`);
+  const items = game.world.items;
+  if (H.worldText) out.push(H.worldText(game));
+  else if (items.length) out.push(`WORLD: on the floor: ${items.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}`);
 
   if (map) out.push(renderMap(game));
   return out.join('\n');
 }
 
 // ASCII map: walls/furniture from the level, '*' = floor some NPC can currently see,
-// @ = you, b/l/k = boss/Lin/Kev (only if visible on the floor), letters = interactables.
+// @ = you, an NPC's id initial (only if visible on the floor), letters = interactables.
 function renderMap(game) {
   const m = game.map;
   const grid = m.rows.map((r) => r.split(''));
@@ -439,33 +439,33 @@ function renderMap(game) {
     }
   }
   for (const it of game.world.items) grid[Math.floor(it.y)][Math.floor(it.x)] = 'i';
-  const letters = { boss: 'b', lin: 'l', kev: 'k' };
-  for (const n of actives) grid[Math.floor(n.y)][Math.floor(n.x)] = letters[n.id] ?? 'n';
+  for (const n of actives) grid[Math.floor(n.y)][Math.floor(n.x)] = n.id[0].toLowerCase();
   grid[Math.floor(game.player.y)][Math.floor(game.player.x)] = '@';
   const tens = '    ' + Array.from({ length: m.w }, (_, i) => (i % 10 === 0 ? String(i / 10) : ' ')).join('');
   const ones = '    ' + Array.from({ length: m.w }, (_, i) => String(i % 10)).join('');
   const rows = grid.map((r, y) => `${String(y).padStart(3)} ${r.join('')}`);
   return [
-    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance (glass door, staff keycard),',
-    '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, R restroom, E elevator, i item,',
-    '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
+    ...(game.level.harness?.mapKey ?? ['MAP (# wall, G glass, T desk/table, D door, H plant, i item, @ you, a letter: a person, * floor someone can see right now):']),
     tens,
     ones,
     ...rows,
   ].join('\n');
 }
 
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
-export function describeEvents(events, { verbose = false } = {}) {
+// One line per event a human would notice. level: whose words (default: the registry's default level);
+// its harness.describe() speaks for the level's own events first.
+export function describeEvents(events, { verbose = false, level = defaultLevel } = {}) {
+  const H = level.harness ?? {};
+  const NAME = { player: 'you', ...H.names };
+  const memo = {};
   const lines = [];
-  let lastBang = -Infinity;
   let lastText = null;
   let repeats = 0;
   for (const e of events) {
     const t = formatClock(e.minute);
     const p = e.payload ?? {};
-    let s = null;
-    switch (e.name) {
+    let s = H.describe?.(e, memo);
+    if (s === undefined) switch (e.name) {
       case 'say': {
         const who = typeof p.owner === 'string' ? NAME[p.owner] ?? p.owner : 'a sign';
         const you = p.owner === 'player';
@@ -473,33 +473,10 @@ export function describeEvents(events, { verbose = false } = {}) {
         break;
       }
       case 'witness:notice': s = `${NAME[p.by] ?? p.by} noticed you ❓`; break;
-      case 'witness:tattle': s = p.reason === 'contraband'
-        ? `${NAME[p.by] ?? p.by} saw what you're carrying 😠`
-        : p.late
-          ? `${NAME[p.by] ?? p.by} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
-          : `${NAME[p.by] ?? p.by} shouts and points at you ${p.reason === 'evidence' ? '🥪❗👉' : '❗👉'}${p.heard ? ' (the boss heard)' : ' (the boss is away… for now)'}`; break;
-      case 'coffee:taken': s = p.by === 'player' ? 'you poured the coffee ☕ (the pot is empty now)' : `${NAME[p.by] ?? p.by} poured the coffee ☕ (the pot is empty now)`; break;
-      case 'coffee:missing': s = `${NAME[p.by] ?? p.by} found the coffee pot empty`; break;
-      case 'coffee:confiscated': s = `${NAME[p.by] ?? p.by} took the coffee off you ☕`; break;
-      case 'boss:suspicious': s = 'the boss eyes you ❓ (a meter over his head starts filling)'; break;
-      case 'boss:workAssigned': s = `the boss assigned you work 📄 (${p.reason})`; break;
+      case 'witness:tattle': s = `${NAME[p.by] ?? p.by} points at you ❗👉`; break;
       case 'work:done': s = 'forced work finished'; break;
       case 'caught': s = `CAUGHT by ${NAME[p.by] ?? p.by} (${p.reason})`; break;
       case 'action:cancel': s = `your action was interrupted (${p.reason})`; break;
-      case 'projector:broken': s = 'the projector is broken 💥'; break;
-      case 'kev:alerted': s = 'Kev heard the projector 🔧❗'; break;
-      case 'projector:fixing': s = 'Kev is fixing the projector'; break;
-      case 'projector:fixed': s = 'the projector is fixed'; break;
-      case 'keycard:taken': s = 'you took the keycard 🪪'; break;
-      case 'keycard:recovered': s = 'the boss spotted his keycard on the floor and pocketed it 🪪❗'; break;
-      case 'sandwich:taken': s = 'you took the sandwich 🥪'; break;
-      case 'sandwich:eaten': s = 'you ate the sandwich'; break;
-      case 'sandwich:returned': s = 'Lin took her sandwich back'; break;
-      case 'sandwich:missing': s = 'Lin found the fridge empty'; break;
-      case 'boss:jacket': s = 'the boss put on his jacket and walks off'; break;
-      case 'boss:lockedOut': s = 'the boss is locked out at the entrance!'; break;
-      case 'boss:bang': if (e.minute - lastBang > 3) { s = 'the boss bangs on the glass'; lastBang = e.minute; } break;
-      case 'kev:left': s = 'ding: the elevator doors close behind Kev'; break;
       case 'npc:vanish': s = `${NAME[p.id] ?? p.id} left the floor`; break;
       case 'npc:appear': s = `${NAME[p.id] ?? p.id} is back`; break;
       case 'meeting:gather': s = 'everyone heads to the meeting room'; break;

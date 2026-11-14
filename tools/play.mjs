@@ -12,7 +12,8 @@
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createHarness, describeEvents, HELP } from '../src/agent/harness.js';
+import { createHarness, describeEvents, helpText } from '../src/agent/harness.js';
+import { defaultLevel } from '../src/levels/index.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = join(ROOT, '.agent-sessions');
@@ -22,10 +23,10 @@ const flags = new Set(args.filter((a) => a.startsWith('--')));
 const rest = args.filter((a) => !a.startsWith('--'));
 const obsOpts = { map: !flags.has('--no-map'), debug: flags.has('--debug') };
 
-const MISSION = `MISSION: 4:00 PM. You promised slides. You made none. Make sure the meeting never happens.`;
+const MISSION = defaultLevel.harness.mission;
 
 if (!rest.length || rest[0] === 'help') {
-  console.log(`${MISSION}\n\n${HELP}`);
+  console.log(`${MISSION}\n\n${helpText(defaultLevel)}`);
   process.exit(0);
 }
 

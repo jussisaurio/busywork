@@ -1,40 +1,5 @@
 [
  {
-  "file": "src/agent/harness.js",
-  "identifier": "boss",
-  "count": 11
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "kev",
-  "count": 4
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "sandwich",
-  "count": 5
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "keycard",
-  "count": 3
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "projector",
-  "count": 7
- },
- {
-  "file": "src/agent/harness.js",
-  "identifier": "coffee",
-  "count": 6
- },
- {
   "file": "src/audio/audio.js",
   "identifier": "boss",
   "count": 9
