@@ -30,7 +30,10 @@ export const TILE_DRAWS = [
 ];
 const WALLISH = new Set(['wall', 'restroom', 'elevator']);
 const STRUCT = new Set([...WALLISH, 'glass', 'entrance', 'door']); // glass arms connect to these
-const DESKISH = new Set(['desk', 'own_desk', 'meeting_table', 'coffee_machine']);
+// Draws that join into one desk piece; a decor.deskOwners spot faces one of these.
+export const DESK_DRAWS = ['desk', 'own_desk', 'meeting_table', 'coffee_machine'];
+const DESKISH = new Set(DESK_DRAWS);
+const STEP = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }; // a spot's face as a tile step
 
 // The draw at tile (x, y), from a grid built once per map.
 const drawGrids = new WeakMap();
@@ -126,12 +129,27 @@ function mapInfo(map, level) {
       else if (z === 'kitchen') comp.kind = 'kitchenTable';
       else if (z === 'office') comp.kind = 'exec';
       else comp.kind = 'work';
+      // The sitter: a decor.deskOwners spot (at the player's desk, player_desk) whose face points into this
+      // piece. Its face turns the workstation (comp.face; no sitter: 'N', sat at from the south).
+      const facesIn = (s) => {
+        const step = s && STEP[s.face];
+        if (!step) return false;
+        const tx = s.x + step[0];
+        const ty = s.y + step[1];
+        return tx >= comp.x0 && tx <= comp.x1 && ty >= comp.y0 && ty <= comp.y1 && DESKISH.has(drawAt(map, tx, ty));
+      };
       comp.owner = null;
+      comp.face = 'N';
       for (const spot of decor.deskOwners || []) {
-        const s = SPOTS[spot];
-        if (s && s.x >= comp.x0 && s.x <= comp.x1 && s.y === comp.y1 + 1) comp.owner = spot.replace(/_desk$/, '');
+        if (facesIn(SPOTS[spot])) {
+          comp.owner = spot.replace(/_desk$/, '');
+          comp.face = SPOTS[spot].face;
+        }
       }
-      if (comp.kind === 'player') comp.owner = 'player';
+      if (comp.kind === 'player') {
+        comp.owner = 'player';
+        if (facesIn(SPOTS.player_desk)) comp.face = SPOTS.player_desk.face;
+      }
       desks.push(comp);
     }
   }
@@ -792,9 +810,31 @@ function drawDesk(ctx, d, decor) {
     fillCircle(ctx, px + 12, py + 18, 2, '#4a2e1a');
     return;
   }
-  // Workstation: sitter is south of the desk, facing north. Screen, mug and prop come from the owner's
-  // decor.desks style.
+  // Workstation. Screen, mug and prop come from the owner's decor.desks style; d.face is the sitter's face.
   const st = (decor.desks && decor.desks[d.owner]) || DESK_STYLE;
+  if (d.face === 'N' || !TURN[d.face]) {
+    drawWorkstation(ctx, px, py, w, h, midX, d.x0 * T + 14, d.x1 * T + 16, st);
+    return;
+  }
+  // Any other face: the same workstation drawn in a frame turned about the desk's centre, its long side across
+  // the sitter's line of sight.
+  const across = d.face === 'S' ? d.x1 - d.x0 + 1 : d.y1 - d.y0 + 1;
+  const along = d.face === 'S' ? d.y1 - d.y0 + 1 : d.x1 - d.x0 + 1;
+  const lw = across * T - 4;
+  const lh = along * T - 5;
+  ctx.save();
+  ctx.translate(px + w / 2, py + h / 2);
+  ctx.rotate(TURN[d.face]);
+  drawWorkstation(ctx, -lw / 2, -lh / 2, lw, lh, 0, -lw / 2 + 12, lw / 2 - 14, st);
+  ctx.restore();
+}
+
+// A canvas turn that takes the 'N' workstation (sitter at local +y) to a sitter facing this way.
+const TURN = { N: 0, E: Math.PI / 2, S: Math.PI, W: -Math.PI / 2 };
+
+// A workstation sat at from the south (+y), facing north: monitor at the top edge, keyboard at the bottom, the
+// owner's mug left and prop right. midX: the monitor's centre; leftX, rightX: the mug's and the prop's x.
+function drawWorkstation(ctx, px, py, w, h, midX, leftX, rightX, st) {
   const monTopY = py + 3;
   ctx.fillStyle = 'rgba(0,0,0,0.18)';
   rrect(ctx, midX - 11, monTopY + 3, 24, 17, 2);
@@ -830,8 +870,6 @@ function drawDesk(ctx, d, decor) {
   for (let r = 0; r < 2; r++) for (let k = 0; k < 6; k++) ctx.fillRect(midX - 8 + k * 3, kbY + 1.3 + r * 2.2, 2, 1.2);
   fillEllipse(ctx, midX + 15, kbY + 3, 2.4, 3, C.keyboard);
   // personal items
-  const leftX = d.x0 * T + 14;
-  const rightX = d.x1 * T + 16;
   const mug = st.mug;
   fillCircle(ctx, leftX, py + 15, 3.6, mug);
   fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');

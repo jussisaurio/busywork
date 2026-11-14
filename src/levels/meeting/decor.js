@@ -70,7 +70,8 @@ export const DECOR = {
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
-  // Workstations whose sitter's spot is <owner>_desk, south of the desk (personal screen, mug and prop).
+  // Workstations whose sitter's spot is <owner>_desk (personal screen, mug and prop). The spot's face points at
+  // the desk and turns the workstation to it; here both sit south of their desks, facing N.
   deskOwners: ['lin_desk', 'kev_desk'],
   // Per-owner workstation clutter ('player' is the desk with the P tile); other workstations get the
   // renderer's default (dark screen, mustard mug, a sheet of paper). screenArt: 'code' | 'grid' | 'blankSlide';

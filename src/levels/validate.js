@@ -36,7 +36,8 @@
 //   harness     optional; landmarks name spots
 //   gate        optional; targets are interactable ids, landmarks or "x,y"; interactable targets; mustUse
 //               { id, cmd | event }; milestones functions
-//   decor       optional; chairs, deskOwners, ashtray, elevator name spots; props draw with a renderer painter
+//   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
+//               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
 //               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional; kindOf() maps every possible outcome to a scene in scenes, each { win, icons, draw() }
@@ -44,7 +45,7 @@
 import { parseMap } from '../core/map.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
-import { PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
+import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
@@ -330,7 +331,15 @@ export function levelProblems(level, key) {
       else if (!isNum(c?.x) || !isNum(c?.y)) bad(`decor.chairs[${i}]`, 'needs a spot or x, y');
       if (DIRS[c?.face] === undefined) bad(`decor.chairs[${i}].face`, `${q(c?.face)} is not N, E, S or W`);
     }
-    for (const [i, s] of (decor.deskOwners ?? []).entries()) spot(`decor.deskOwners[${i}]`, s);
+    const STEP = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
+    for (const [i, s] of (decor.deskOwners ?? []).entries()) {
+      spot(`decor.deskOwners[${i}]`, s);
+      const sp = has(spots, s) ? spots[s] : null;
+      const step = sp && STEP[sp.face];
+      if (!map || !step) continue;
+      const t = map.tile(sp.x + step[0], sp.y + step[1]);
+      if (!DESK_DRAWS.includes(t.draw ?? t.kind)) bad(`decor.deskOwners[${i}]`, `spot ${q(s)} faces ${sp.face} onto no desk`);
+    }
     if (decor.ashtray !== undefined) spot('decor.ashtray.spot', decor.ashtray?.spot);
     if (decor.elevator !== undefined) spot('decor.elevator.spot', decor.elevator?.spot);
     for (const [i, pr] of (decor.props ?? []).entries()) {

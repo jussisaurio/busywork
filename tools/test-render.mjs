@@ -516,6 +516,60 @@ for (const [w, h, dpr] of [[1920, 1080, 1], [800, 1200, 3], [1, 1, 1], [3000, 60
 ok(wordy.size === 0, 'no letters drawn outside the title screen (digits and icons only)');
 if (wordy.size) for (const w of [...wordy].slice(0, 15)) console.log('   ', w);
 
+// Workstations turn to their sitter: the monitor sits on the far side of the desk from the deskOwners spot that
+// faces into it. A transform-tracking ctx finds each monitor box's world-space centre.
+{
+  const { drawStaticLayer } = await import('../src/render/world.js');
+  const { parseMap } = await import('../src/core/map.js');
+  const { C } = await import('../src/render/palette.js');
+  const rows = ['#########', '#.......#', '#.T.TTT.#', '#.T.....#', '#.T.....#', '#.......#', '#########'];
+  const map = () => parseMap(rows);
+  const monitors = (spots) => {
+    let m = [1, 0, 0, 1, 0, 0];
+    const stack = [];
+    let path = [];
+    const out = [];
+    const tx = (x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+    const own = {
+      fillStyle: '#000',
+      save() { stack.push(m); },
+      restore() { m = stack.pop(); },
+      translate(x, y) { m = [m[0], m[1], m[2], m[3], m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]; },
+      rotate(a) {
+        const c = Math.cos(a);
+        const s = Math.sin(a);
+        m = [m[0] * c + m[2] * s, m[1] * c + m[3] * s, m[2] * c - m[0] * s, m[3] * c - m[1] * s, m[4], m[5]];
+      },
+      beginPath() { path = []; },
+      moveTo(x, y) { path.push(tx(x, y)); },
+      arcTo(x, y) { path.push(tx(x, y)); },
+      fill() {
+        if (own.fillStyle !== C.monitor || !path.length) return;
+        const xs = path.map((p) => p[0]);
+        const ys = path.map((p) => p[1]);
+        out.push([(Math.min(...xs) + Math.max(...xs)) / 2 / 32, (Math.min(...ys) + Math.max(...ys)) / 2 / 32]);
+      },
+      measureText: () => ({ width: 0 }),
+    };
+    const nop = () => ({ addColorStop() {} });
+    const ctx = new Proxy(own, { get: (o, k) => (k in o ? o[k] : nop), set: (o, k, v) => { o[k] = v; return true; } });
+    drawStaticLayer(ctx, map(), { spots: spots, decor: { deskOwners: Object.keys(spots) } });
+    return out;
+  };
+  // Vertical desk: x 2, y 2-4 (centre 2.5, 3.5). Horizontal desk: x 4-6, y 2 (centre 5.5, 2.5).
+  const near = (ms, x0, x1, y0, y1) => ms.find(([x, y]) => x >= x0 && x <= x1 && y >= y0 && y <= y1);
+  const v = (face, x) => near(monitors({ a_desk: { x, y: 3, face } }), 1.5, 3.5, 1.5, 5.5);
+  const hz = (face, y) => near(monitors({ a_desk: { x: 5, y, face } }), 3.5, 7.5, 1.5, 3.5);
+  const e = v('E', 1);
+  const w = v('W', 3);
+  const n = hz('N', 3);
+  const so = hz('S', 1);
+  ok(e && e[0] > 2.5 && Math.abs(e[1] - 3.5) < 0.6, `sitter west, facing E: monitor on the desk's east side (${e})`);
+  ok(w && w[0] < 2.5 && Math.abs(w[1] - 3.5) < 0.6, `sitter east, facing W: monitor on the desk's west side (${w})`);
+  ok(n && n[1] < 2.5 && Math.abs(n[0] - 5.5) < 0.6, `sitter south, facing N: monitor on the desk's north side (${n})`);
+  ok(so && so[1] > 2.5 && Math.abs(so[0] - 5.5) < 0.6, `sitter north, facing S: monitor on the desk's south side (${so})`);
+}
+
 // Report coverage errors so far
 ok(errors.length === 0, `${renders} renders: no throws, NaN args, bad styles, negative radii or save/restore leaks`);
 if (errors.length) for (const e of errors.slice(0, 40)) console.log('   ', e);
