@@ -83,6 +83,7 @@ export default {
       },
     },
   },
+  title: { mission: ['3:00 PM. The boss does whatever the suggestion box says.', 'Suggest there is no meeting.'], badge: ['📝', '❌'] },
   routes: [{ id: 'box', icon: '📝', achieved: (w) => w.cancelled }],
   outcomeOrder: ['box'],
   initialWorld: () => ({ note: 'pad', cancelled: false, items: [] }),

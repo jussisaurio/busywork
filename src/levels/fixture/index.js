@@ -8,7 +8,7 @@
 import { at } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { CAST, BEHAVIOURS } from './cast.js';
-import { DECOR, LOOKS, TITLE, END_SCENES } from './presentation.js';
+import { DECOR, LOOKS, TITLE, END_SCENES, VOICES } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -172,4 +172,5 @@ export default {
   looks: LOOKS,
   itemIcons: { cake: '🎂' },
   endScenes: END_SCENES,
+  voices: VOICES,
 };

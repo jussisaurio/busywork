@@ -1039,7 +1039,8 @@ export function drawWorldDynamic(ctx, game, t) {
 }
 
 // The decor.props painters, by name: (ctx, info, tile, shown, t). `shown` is the prop's state(world, game).
-const PROP_PAINTERS = {
+// Exported for the level validator (src/levels/validate.js): a prop must name one of these.
+export const PROP_PAINTERS = {
   // { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }: a beam lights decor.screen.
   slideProjector(ctx, info, at, shown, t) {
     if (shown.beam && info.screen) drawBeam(ctx, info, at, t);

@@ -147,6 +147,15 @@ export default {
       ['goto workstation', 'interact', 'goto donut', 'interact', 'pretend until 2:40', 'continue', 'goto donut', 'interact'],
     ],
   },
+  title: { mission: ['2:40 PM. The meeting is the boss and the last donut.', 'Eat it.'], badge: ['🍩', '❌'] },
+  // How the boss talks (level.voices; fields: src/audio/babble.js VOICES).
+  voices: {
+    boss: {
+      wave: 'sawtooth', f0: 95, spread: 0.06, decl: 0.22, syl: [0.15, 0.2], gap: [0.04, 0.07], atk: 0.02,
+      fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
+      vowels: ['a', 'o', 'u', 'uh'], cons: 0.3, consF: 1700, consAmp: 0.18, gain: 1.1,
+    },
+  },
   decor: {
     chairs: [
       { spot: 'boss_chair', face: 'W', color: ['#6b2f24', '#4e2019'] },

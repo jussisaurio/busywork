@@ -1,0 +1,397 @@
+// Level validation: the registry (src/levels/index.js) runs validateLevel once per level as it builds, so a level
+// that names something it doesn't have fails at load, with every problem listed, instead of misbehaving mid-day
+// (an NPC walking to nowhere, a silent generic voice, a prop that never draws).
+//
+//   validateLevel(level, key)  throws one Error: "level '<key>' is broken:" and one line per problem, each
+//                              starting with the field path (e.g. "cast[1] (kev).meetingSpot: no spot 'x'")
+//   levelProblems(level, key)  the same lines as a list (empty: the level is fine)
+//
+// The rules, by field (a field marked optional is checked only when present):
+//   id          a string equal to the registry key
+//   title       { mission: [line, line], badge: [icon, overlay] }
+//   map         { rows, legend? }: parseMap accepts it (equal row lengths, every letter in the legend); each legend
+//               entry has a kind and boolean solid/opaque, and an optional render `draw` the renderer knows
+//   spots       each { x, y } inside the map on a tile an NPC can stand on, face (optional) N/E/S/W
+//   zones       each { x0, y0, x1, y1 } with x0 < x1, y0 < y1, inside the map
+//   patrols     optional; each a list of [x, y] inside the map
+//   cast        a list; ids unique strings, not 'player'; schedule non-empty with `at` in order, `do` one of sit,
+//               visit, patrol, away, leave, say; sit/visit/away/leave name a spot, patrol a patrols route, say
+//               icons; some entry names a spot (the start); prelude (a name or a list) and arrive name behaviours,
+//               a prelude's with a spot; meetingSpot a spot; meetingArrive a behaviour; voice (optional) a name
+//               in the engine's voices or level.voices
+//   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
+//   day         start, gatherAt, meetingAt numbers, gatherAt <= meetingAt; the cosmetic times numbers if present
+//   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
+//   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
+//               noise.at (optional) a spot
+//   items       optional; owner.id and contraband cast ids
+//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
+//   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
+//               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
+//               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
+//   failSign    optional; spot a spot
+//   routes      a non-empty list of { id, icon, achieved() }, ids unique
+//   outcomeOrder  every route id exactly once
+//   initialWorld  a function returning an object with an `items` list
+//   harness     optional; landmarks name spots
+//   gate        optional; targets are interactable ids, landmarks or "x,y"; interactable targets; mustUse
+//               { id, cmd | event }; milestones functions
+//   decor       optional; chairs, deskOwners, ashtray, elevator name spots; props draw with a renderer painter
+//               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
+//   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
+//   endScenes   optional; kindOf() maps every possible outcome to a scene in scenes, each { win, icons, draw() }
+//   voices      optional; an object of voice objects
+import { parseMap } from '../core/map.js';
+import { DIRS } from '../core/vision.js';
+import { voicesFor } from '../audio/babble.js';
+import { PROP_PAINTERS } from '../render/world.js';
+
+const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
+const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
+const DAY_EXTRA = ['clockRedAt', 'clockTickAt', 'tockAt', 'halfMinuteAt', 'beamAt'];
+const ROW_TARGETS = new Set(['self', 'item', 'spot']); // besides the map's interactable types
+const FAIL_THEN = new Set(['caught', 'stare', 'hunt']);
+const SCENE_RESULTS = ['caught', 'fail'];
+
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const isFn = (v) => typeof v === 'function';
+const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+const isStr = (v) => typeof v === 'string' && v.length > 0;
+const q = (v) => `'${v}'`;
+
+export function levelProblems(level, key) {
+  const out = [];
+  const bad = (path, msg) => out.push(`${path}: ${msg}`);
+  if (!isObj(level)) return ['level: not an object'];
+
+  // --- names the rest refers to -----------------------------------------------------------------
+  const spots = isObj(level.spots) ? level.spots : {};
+  const zones = isObj(level.zones) ? level.zones : {};
+  const patrols = isObj(level.patrols) ? level.patrols : {};
+  const behaviours = isObj(level.behaviours) ? level.behaviours : {};
+  const items = isObj(level.items) ? level.items : {};
+  const cast = Array.isArray(level.cast) ? level.cast : [];
+  const castIds = new Set(cast.map((c) => c?.id));
+  const has = (o, name) => isStr(name) && Object.hasOwn(o, name);
+  const spot = (path, name) => { if (!has(spots, name)) bad(path, `no spot ${q(name)}`); };
+  const zone = (path, name) => { if (!has(zones, name)) bad(path, `no zone ${q(name)}`); };
+  const npc = (path, id) => { if (!castIds.has(id) || !isStr(id)) bad(path, `no cast member ${q(id)}`); };
+  const behaviour = (path, name) => { if (!has(behaviours, name)) bad(path, `no behaviour ${q(name)} in level.behaviours`); };
+  const route = (path, name) => { if (!has(patrols, name)) bad(path, `no route ${q(name)} in level.patrols`); };
+  const itemType = (path, type) => { if (!has(items, type)) bad(path, `no item type ${q(type)} in level.items`); };
+  const list = (path, v) => { if (!Array.isArray(v)) { bad(path, 'not a list'); return []; } return v; };
+
+  // --- identity and title -----------------------------------------------------------------------
+  if (!isStr(level.id)) bad('id', 'missing');
+  else if (key !== undefined && level.id !== key) bad('id', `${q(level.id)} differs from its registry key ${q(key)}`);
+  const t = level.title;
+  if (!isObj(t)) bad('title', 'missing ({ mission: [line, line], badge: [icon, overlay] })');
+  else {
+    if (!Array.isArray(t.mission) || t.mission.length !== 2 || !t.mission.every((s) => typeof s === 'string')) bad('title.mission', 'not two lines');
+    if (!Array.isArray(t.badge)) bad('title.badge', 'not a list of icons');
+  }
+
+  // --- map --------------------------------------------------------------------------------------
+  let map = null;
+  if (!isObj(level.map) || !Array.isArray(level.map.rows) || !level.map.rows.length) bad('map.rows', 'missing');
+  else {
+    const legend = level.map.legend ?? {};
+    for (const [c, d] of Object.entries(legend)) {
+      const path = `map.legend[${q(c)}]`;
+      if (c.length !== 1) bad(path, 'not one letter');
+      if (!isObj(d)) { bad(path, 'not an object'); continue; }
+      if (!isStr(d.kind)) bad(`${path}.kind`, 'missing');
+      if (typeof d.solid !== 'boolean') bad(`${path}.solid`, 'not true or false');
+      if (typeof d.opaque !== 'boolean') bad(`${path}.opaque`, 'not true or false');
+    }
+    try {
+      map = parseMap(level.map.rows, legend);
+    } catch (e) {
+      bad('map', e.message);
+    }
+  }
+  const inMap = (x, y) => !map || (x >= 0 && y >= 0 && x < map.w && y < map.h);
+  const interTypes = new Set((map?.interactables ?? []).map((i) => i.type));
+  const interIds = new Set((map?.interactables ?? []).map((i) => i.id));
+
+  // --- spots, zones, patrols --------------------------------------------------------------------
+  if (!isObj(level.spots)) bad('spots', 'missing');
+  for (const [name, s] of Object.entries(spots)) {
+    const path = `spots.${name}`;
+    if (!isObj(s) || !Number.isInteger(s.x) || !Number.isInteger(s.y)) { bad(path, 'not { x, y } in whole tiles'); continue; }
+    if (!inMap(s.x, s.y)) bad(path, `(${s.x}, ${s.y}) is off the map`);
+    else if (map && !map.isWalkable(s.x, s.y, 'npc')) bad(path, `(${s.x}, ${s.y}) is a solid tile`);
+    if (s.face !== undefined && DIRS[s.face] === undefined) bad(`${path}.face`, `${q(s.face)} is not N, E, S or W`);
+    if (s.accepts !== undefined) {
+      for (const [i, type] of list(`${path}.accepts`, s.accepts).entries()) itemType(`${path}.accepts[${i}]`, type);
+      if (s.owner !== undefined && s.owner !== null && s.owner !== 'player') npc(`${path}.owner`, s.owner);
+      if (s.found !== undefined && s.found !== 'take') behaviour(`${path}.found`, s.found);
+    }
+  }
+  if (!isObj(level.zones)) bad('zones', 'missing');
+  for (const [name, z] of Object.entries(zones)) {
+    const path = `zones.${name}`;
+    if (!isObj(z) || ![z.x0, z.y0, z.x1, z.y1].every(isNum)) { bad(path, 'not { x0, y0, x1, y1 }'); continue; }
+    if (!(z.x0 < z.x1 && z.y0 < z.y1)) bad(path, 'empty (needs x0 < x1 and y0 < y1)');
+    if (map && (z.x0 < 0 || z.y0 < 0 || z.x1 > map.w || z.y1 > map.h)) bad(path, 'reaches off the map');
+  }
+  if (level.patrols !== undefined && !isObj(level.patrols)) bad('patrols', 'not an object');
+  for (const [name, pts] of Object.entries(patrols)) {
+    for (const [i, pt] of list(`patrols.${name}`, pts).entries()) {
+      if (!Array.isArray(pt) || !isNum(pt[0]) || !isNum(pt[1]) || !inMap(pt[0], pt[1])) bad(`patrols.${name}[${i}]`, 'not an [x, y] on the map');
+    }
+  }
+
+  // --- behaviours, cast -------------------------------------------------------------------------
+  if (level.behaviours !== undefined && !isObj(level.behaviours)) bad('behaviours', 'not an object');
+  for (const [name, b] of Object.entries(behaviours)) {
+    if (!isObj(b) || !isFn(b.arrive)) bad(`behaviours.${name}`, 'needs arrive(game, npc, sim)');
+    else if (b.spot !== undefined) spot(`behaviours.${name}.spot`, b.spot);
+  }
+  if (!Array.isArray(level.cast)) bad('cast', 'missing (a list)');
+  const voices = voicesFor(isObj(level.voices) ? level.voices : null);
+  const seenIds = new Set();
+  for (const [i, def] of cast.entries()) {
+    const path = `cast[${i}]${isStr(def?.id) ? ` (${def.id})` : ''}`;
+    if (!isObj(def)) { bad(path, 'not an object'); continue; }
+    if (!isStr(def.id)) bad(`${path}.id`, 'missing');
+    else if (def.id === 'player') bad(`${path}.id`, "'player' is the player's");
+    else if (seenIds.has(def.id)) bad(`${path}.id`, 'used twice');
+    seenIds.add(def.id);
+    spot(`${path}.meetingSpot`, def.meetingSpot);
+    if (def.meetingArrive !== undefined) behaviour(`${path}.meetingArrive`, def.meetingArrive);
+    if (def.voice !== undefined && !(isStr(def.voice) && Object.hasOwn(voices, def.voice))) {
+      bad(`${path}.voice`, `no voice ${q(def.voice)} (engine voices or level.voices)`);
+    }
+    const sched = list(`${path}.schedule`, def.schedule);
+    if (!sched.length) bad(`${path}.schedule`, 'empty');
+    else if (!sched.some((e) => e?.spot)) bad(`${path}.schedule`, 'no entry names a spot (where he starts)');
+    let last = -Infinity;
+    for (const [k, e] of sched.entries()) {
+      const ep = `${path}.schedule[${k}]`;
+      if (!isObj(e)) { bad(ep, 'not an object'); continue; }
+      if (!isNum(e.at)) bad(`${ep}.at`, 'not a game minute');
+      else if (e.at < last) bad(`${ep}.at`, 'earlier than the entry before it');
+      else last = e.at;
+      if (!DOS.has(e.do)) { bad(`${ep}.do`, `${q(e.do)} is not one of ${[...DOS].join(', ')}`); continue; }
+      if (SPOT_DOS.has(e.do) || e.spot !== undefined) spot(`${ep}.spot`, e.spot);
+      if (e.do === 'patrol') route(`${ep}.route`, e.route);
+      if (e.do === 'say' && !Array.isArray(e.icons)) bad(`${ep}.icons`, 'not a list');
+      if (e.prelude !== undefined) {
+        for (const name of [].concat(e.prelude)) {
+          behaviour(`${ep}.prelude`, name);
+          if (has(behaviours, name) && isObj(behaviours[name]) && behaviours[name].spot === undefined) {
+            bad(`${ep}.prelude`, `behaviour ${q(name)} has no spot to walk to`);
+          }
+        }
+      }
+      if (e.arrive !== undefined) behaviour(`${ep}.arrive`, e.arrive);
+    }
+  }
+
+  // --- the day and its frame --------------------------------------------------------------------
+  const day = level.day;
+  if (!isObj(day)) bad('day', 'missing');
+  else {
+    for (const f of ['start', 'gatherAt', 'meetingAt']) if (!isNum(day[f])) bad(`day.${f}`, 'not a number');
+    for (const f of DAY_EXTRA) if (day[f] !== undefined && !isNum(day[f])) bad(`day.${f}`, 'not a number');
+    if (isNum(day.gatherAt) && isNum(day.meetingAt) && day.gatherAt > day.meetingAt) bad('day.gatherAt', 'after day.meetingAt');
+  }
+  const m = level.meeting;
+  if (!isObj(m)) bad('meeting', 'missing');
+  else {
+    if (!isStr(m.override)) bad('meeting.override', 'missing');
+    zone('meeting.room', m.room);
+    spot('meeting.chair', m.chair);
+    spot('meeting.presenter', m.presenter);
+  }
+
+  // --- the player's actions, items, roles ---------------------------------------------------------
+  if (!isObj(level.interactions)) bad('interactions', 'missing (an object, maybe {})');
+  else {
+    for (const [verb, row] of Object.entries(level.interactions)) {
+      const path = `interactions.${verb}`;
+      if (!isObj(row)) { bad(path, 'not an object'); continue; }
+      if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
+      if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
+    }
+  }
+  if (level.items !== undefined && !isObj(level.items)) bad('items', 'not an object');
+  for (const [type, it] of Object.entries(items)) {
+    if (!isObj(it)) { bad(`items.${type}`, 'not an object'); continue; }
+    if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
+    if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
+  }
+  const roles = level.roles;
+  if (roles !== undefined) {
+    if (!isObj(roles)) bad('roles', 'not an object');
+    else {
+      if (roles.authority) {
+        npc('roles.authority.id', roles.authority.id);
+        if (roles.authority.deafIn != null) zone('roles.authority.deafIn', roles.authority.deafIn);
+      }
+      if (roles.evidence) npc('roles.evidence.by', roles.evidence.by);
+      if (roles.scene) {
+        npc('roles.scene.by', roles.scene.by);
+        if (roles.scene.zone !== undefined) zone('roles.scene.zone', roles.scene.zone);
+      }
+    }
+  }
+
+  // --- mechanics (src/sim/mechanics/*) --------------------------------------------------------------
+  for (const [i, l] of (level.lures ?? []).entries()) {
+    npc(`lures[${i}].npc`, l?.npc);
+    spot(`lures[${i}].spot`, l?.spot);
+    if (!isFn(l?.when)) bad(`lures[${i}].when`, 'not a function');
+  }
+  for (const [i, h] of (level.hunts ?? []).entries()) {
+    npc(`hunts[${i}].npc`, h?.npc);
+    route(`hunts[${i}].route`, h?.route);
+  }
+  for (const [i, d] of (level.doors ?? []).entries()) {
+    spot(`doors[${i}].spot`, d?.spot);
+    zone(`doors[${i}].zone`, d?.zone);
+    for (const [k, id] of list(`doors[${i}].npcs`, d?.npcs).entries()) npc(`doors[${i}].npcs[${k}]`, id);
+  }
+  for (const [i, insp] of (level.inspections ?? []).entries()) {
+    const path = `inspections[${i}]`;
+    npc(`${path}.npc`, insp?.npc);
+    for (const [k, c] of list(`${path}.checks`, insp?.checks).entries()) {
+      const cp = `${path}.checks[${k}]`;
+      if (c?.item !== undefined) {
+        itemType(`${cp}.item`, c.item);
+        spot(`${cp}.spot`, c.spot);
+      } else {
+        if (c?.who !== 'player') npc(`${cp}.who`, c?.who);
+        zone(`${cp}.zone`, c?.zone);
+      }
+      if (c?.from !== undefined || c?.item === undefined) spot(`${cp}.from`, c?.from);
+    }
+    const then = insp?.fail?.then;
+    if (then !== undefined && !FAIL_THEN.has(then)) behaviour(`${path}.fail.then`, then);
+    if (then === 'hunt' && !(level.hunts ?? []).some((h) => h?.npc === insp.npc)) bad(`${path}.fail.then`, `no hunt for ${q(insp.npc)} in level.hunts`);
+  }
+  if (level.noises !== undefined) {
+    for (const [name, n] of Object.entries(level.noises)) {
+      const path = `noises[${q(name)}]`;
+      if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
+      spot(`${path}.at`, n?.at);
+      for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
+    }
+  }
+  if (level.failSign !== undefined) spot('failSign.spot', level.failSign?.spot);
+
+  // --- routes and the world ---------------------------------------------------------------------
+  const routes = list('routes', level.routes);
+  if (Array.isArray(level.routes) && !routes.length) bad('routes', 'empty');
+  const routeIds = [];
+  for (const [i, r] of routes.entries()) {
+    if (!isStr(r?.id)) bad(`routes[${i}].id`, 'missing');
+    else if (routeIds.includes(r.id)) bad(`routes[${i}].id`, `${q(r.id)} used twice`);
+    else routeIds.push(r.id);
+    if (!isStr(r?.icon)) bad(`routes[${i}].icon`, 'missing');
+    if (!isFn(r?.achieved)) bad(`routes[${i}].achieved`, 'not a function');
+  }
+  const order = list('outcomeOrder', level.outcomeOrder);
+  for (const id of routeIds) {
+    const n = order.filter((o) => o === id).length;
+    if (n !== 1) bad('outcomeOrder', `lists route ${q(id)} ${n} times (needs 1)`);
+  }
+  for (const id of order) if (!routeIds.includes(id)) bad('outcomeOrder', `no route ${q(id)}`);
+  if (!isFn(level.initialWorld)) bad('initialWorld', 'not a function');
+  else {
+    let w;
+    try { w = level.initialWorld(); } catch (e) { bad('initialWorld()', `throws: ${e.message}`); }
+    if (w !== undefined && !(isObj(w) && Array.isArray(w.items))) bad('initialWorld()', 'returns no { items: [] }');
+  }
+
+  // --- tools: harness and gate ------------------------------------------------------------------
+  const landmarks = isObj(level.harness?.landmarks) ? level.harness.landmarks : {};
+  for (const [name, s] of Object.entries(landmarks)) spot(`harness.landmarks.${name}`, s);
+  const gate = level.gate;
+  if (gate !== undefined) {
+    const targets = list('gate.targets', gate.targets);
+    for (const [i, tg] of targets.entries()) {
+      if (!interIds.has(tg) && !has(landmarks, tg) && !/^\d+,\d+$/.test(tg)) bad(`gate.targets[${i}]`, `${q(tg)} is no interactable id, landmark or x,y`);
+    }
+    for (const [i, tg] of (gate.interactable ?? []).entries()) if (!targets.includes(tg)) bad(`gate.interactable[${i}]`, `${q(tg)} is not in gate.targets`);
+    for (const [i, u] of (gate.mustUse ?? []).entries()) {
+      if (!isStr(u?.id) || !(isStr(u?.cmd) || isStr(u?.event))) bad(`gate.mustUse[${i}]`, 'needs { id, cmd } or { id, event }');
+    }
+    for (const [name, f] of Object.entries(gate.milestones ?? {})) if (!isFn(f)) bad(`gate.milestones[${q(name)}]`, 'not a function');
+  }
+
+  // --- presentation -----------------------------------------------------------------------------
+  const decor = level.decor;
+  if (decor !== undefined) {
+    for (const [i, c] of (decor.chairs ?? []).entries()) {
+      if (c?.spot !== undefined) spot(`decor.chairs[${i}].spot`, c.spot);
+      else if (!isNum(c?.x) || !isNum(c?.y)) bad(`decor.chairs[${i}]`, 'needs a spot or x, y');
+      if (DIRS[c?.face] === undefined) bad(`decor.chairs[${i}].face`, `${q(c?.face)} is not N, E, S or W`);
+    }
+    for (const [i, s] of (decor.deskOwners ?? []).entries()) spot(`decor.deskOwners[${i}]`, s);
+    if (decor.ashtray !== undefined) spot('decor.ashtray.spot', decor.ashtray?.spot);
+    for (const [i, pr] of (decor.props ?? []).entries()) {
+      const path = `decor.props[${i}]`;
+      if (!Object.hasOwn(PROP_PAINTERS, pr?.draw)) bad(`${path}.draw`, `no painter ${q(pr?.draw)} (${Object.keys(PROP_PAINTERS).join(', ')})`);
+      if (map && !(level.map.rows.some((r) => r.includes(pr?.tile)) && typeof pr?.tile === 'string' && pr.tile.length === 1)) {
+        bad(`${path}.tile`, `${q(pr?.tile)} is not on the map`);
+      }
+      if (!isFn(pr?.state)) bad(`${path}.state`, 'not a function');
+    }
+    for (const [i, s] of (decor.zoneSeeds ?? []).entries()) if (!inMap(s?.x, s?.y)) bad(`decor.zoneSeeds[${i}]`, 'off the map');
+  }
+  const sounds = level.sounds;
+  if (sounds !== undefined) {
+    const spec = (path, sp) => {
+      if (!isObj(sp)) return;
+      if (sp.spot !== undefined) spot(`${path}.spot`, sp.spot);
+      if (sp.who !== undefined && sp.who !== 'player') npc(`${path}.who`, sp.who);
+    };
+    for (const kind of ['start', 'done']) for (const [k, sp] of Object.entries(sounds.actions?.[kind] ?? {})) spec(`sounds.actions.${kind}.${k}`, sp);
+    for (const field of ['events', 'signs', 'contraband', 'repeats']) for (const [k, sp] of Object.entries(sounds[field] ?? {})) spec(`sounds.${field}[${q(k)}]`, sp);
+    if (sounds.murmur !== undefined) spot('sounds.murmur.spot', sounds.murmur?.spot);
+    if (sounds.elevator !== undefined) spot('sounds.elevator.spot', sounds.elevator?.spot);
+  }
+  const ends = level.endScenes;
+  if (ends !== undefined) {
+    if (!isObj(ends) || !isFn(ends.kindOf) || !isObj(ends.scenes)) bad('endScenes', 'needs kindOf(outcome) and scenes');
+    else {
+      for (const [name, sc] of Object.entries(ends.scenes)) {
+        if (!isObj(sc) || typeof sc.win !== 'boolean' || !Array.isArray(sc.icons) || !isFn(sc.draw)) bad(`endScenes.scenes.${name}`, 'needs { win, icons, draw() }');
+      }
+      for (const o of possibleOutcomes(order.filter((id) => routeIds.includes(id)))) {
+        let kind;
+        try { kind = ends.kindOf(o); } catch (e) { bad('endScenes.kindOf', `throws for ${outcomeText(o)}: ${e.message}`); continue; }
+        if (!has(ends.scenes, kind)) bad('endScenes.kindOf', `${outcomeText(o)} gives ${q(kind)}, which is not in scenes`);
+      }
+    }
+  }
+  if (level.voices !== undefined) {
+    if (!isObj(level.voices)) bad('voices', 'not an object');
+    else for (const [name, v] of Object.entries(level.voices)) if (!isObj(v)) bad(`voices.${name}`, 'not an object');
+  }
+  return out;
+}
+
+// Every outcome scenario.js can make, by result and routes (routes in outcomeOrder order): win and blamed with each
+// non-empty set of routes (each one alone and all together, past six routes), caught and fail with none.
+function possibleOutcomes(order) {
+  const sets = [];
+  if (order.length <= 6) {
+    for (let mask = 1; mask < 1 << order.length; mask++) sets.push(order.filter((_, i) => mask & (1 << i)));
+  } else {
+    sets.push(...order.map((id) => [id]), order);
+  }
+  const out = [];
+  for (const routes of sets) for (const result of ['win', 'blamed']) out.push({ result, routes, newRoutes: [] });
+  for (const result of SCENE_RESULTS) out.push({ result, routes: [], newRoutes: [] });
+  return out;
+}
+const outcomeText = (o) => `${o.result}${o.routes.length ? ` [${o.routes.join(', ')}]` : ''}`;
+
+export function validateLevel(level, key) {
+  const problems = levelProblems(level, key);
+  if (problems.length) throw new Error(`level '${key ?? level?.id}' is broken:\n  ${problems.join('\n  ')}`);
+  return level;
+}

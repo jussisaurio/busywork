@@ -42,11 +42,9 @@ const cache = new WeakMap();
 export function putSpots(level) {
   let list = cache.get(level);
   if (!list) {
-    list = Object.entries(level.spots ?? {}).filter(([, s]) => s.accepts?.length).map(([name, s]) => {
-      const found = s.found ?? 'take';
-      if (found !== 'take' && !level.behaviours?.[found]) throw new Error(`spot '${name}': no behaviour '${found}' in level.behaviours`);
-      return { name, accepts: s.accepts, owner: s.owner ?? null, found, ...restOf(s) };
-    });
+    // (src/levels/validate.js checks at load that accepts, owner and found name what exists.)
+    list = Object.entries(level.spots ?? {}).filter(([, s]) => s.accepts?.length)
+      .map(([name, s]) => ({ name, accepts: s.accepts, owner: s.owner ?? null, found: s.found ?? 'take', ...restOf(s) }));
     cache.set(level, list);
   }
   return list;

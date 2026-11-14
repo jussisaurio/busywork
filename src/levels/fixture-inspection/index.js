@@ -65,6 +65,7 @@ export default {
   interactions: {},
   items: { laptop: { icon: '💻', place: 'laptop', contraband: 'auditor' } },
   roles: { authority: { id: 'auditor', offDuty: ['meeting'], helpless: [] } },
+  title: { mission: ['3:00 PM. Inventory day: the auditor counts two laptops.', 'The office has one.'], badge: ['💻', '❌'] },
   routes: [{ id: 'audit', icon: '💻', achieved: (w) => w.audited }],
   outcomeOrder: ['audit'],
   initialWorld: () => ({ laptop: 'player_desk', audited: false, items: [itemOn(SPOTS, 'player_desk', 'laptop')] }),

@@ -137,18 +137,4 @@ export function judge(game, rules) {
   return true;
 }
 
-// Level data errors, at load (mechanics/index.js entries).
-export function entries(level) {
-  for (const insp of level.inspections ?? []) {
-    for (const [k, c] of insp.checks.entries()) {
-      const where = `inspection by '${insp.npc}', check ${k}`;
-      if (!level.spots[c.from ?? c.spot]) throw new Error(`${where}: no spot '${c.from ?? c.spot}'`);
-      if (c.zone && !level.zones[c.zone]) throw new Error(`${where}: no zone '${c.zone}'`);
-    }
-    const then = insp.fail?.then;
-    if (then && !['caught', 'stare', 'hunt'].includes(then) && !level.behaviours?.[then]) {
-      throw new Error(`inspection by '${insp.npc}': no behaviour '${then}' in level.behaviours`);
-    }
-  }
-  return level.inspections ?? [];
-}
+// Level data errors (a check's spot or zone, fail.then) are src/levels/validate.js's, at load.
