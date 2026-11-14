@@ -809,7 +809,7 @@ function drawNpc(ctx, game, n, t) {
     s.crank = true;
   } else if (n.id === 'boss' && ov === 'meeting' && world.projector !== 'ok' && !n.moving) {
     s.arms = 'shrug';
-  } else if (n.id === 'boss' && !ov && n.label === 'visit smoke') {
+  } else if (!ov && n.anim === 'smoking') {
     s.arms = n.moving ? 'walk' : 'smoke';
     s.item = '🚬';
   } else if (n.id === 'lin' && world.sandwich === 'lin') {

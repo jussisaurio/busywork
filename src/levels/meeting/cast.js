@@ -7,14 +7,16 @@
 //   patrol  { route }         walk the level's patrols[route] points in order, then stand at the last
 //   away    { spot }          walk to spot, then vanish (inactive: not drawn, sees nothing)
 //                             until the next entry starts; reappear at that spot
-//   leave   { spot }          walk to spot and vanish for the rest of the day
+//   leave   { spot, gone? }   walk to spot and vanish for the rest of the day; gone: { set?, event? } applied then
 //   say     { icons, kind }   instant: pictogram bubble (does not change activity)
+// Any moving entry may carry `anim`: a name the renderer draws him with while he follows it (npc.anim; 'smoking': arms and 🚬).
+// Hooks (behaviours.js): an entry's `prelude` (a leg first) and `arrive` (on reaching its spot), and a cast
+// member's `meetingArrive` (on sitting down at the meeting).
 //
-// Special rules the sim layers on top (see CONTRACTS.md "Sim overrides"):
-//   - Kev repairs a broken projector whenever he is on the floor.
-//   - The boss picks up his jacket (and keycard) when leaving for his smoke; on the way
-//     back in he is locked out at the entrance if he doesn't have the keycard.
-//   - Lin hunts for her sandwich if it's gone when she visits the fridge (stretch).
+// Layered on top (mechanics.js; CONTRACTS.md "Sim overrides"):
+//   - Kev repairs a broken projector whenever he is on the floor (a lure).
+//   - On the way back in from his smoke the boss is locked out at the entrance if he doesn't have the keycard (a door).
+//   - Lin hunts for her sandwich if it's gone when she checks the fridge (a hunt).
 //   - At 3:54 everyone still on the floor goes to their meeting seat.
 //
 // Per NPC: vision { fov, radius } (config VISION_DEFAULT if absent), glanceEvery (real s between seated
@@ -31,6 +33,7 @@ export const NPC_DEFS = [
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'meeting_head',
+    meetingArrive: 'presenter',
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [3, 5.5], // twitchy, so the 'Lin is away' windows still carry risk
     coneTint: [255, 160, 82],
@@ -41,7 +44,7 @@ export const NPC_DEFS = [
       s('3:12', { do: 'away', spot: 'restroom' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
       s('3:22', { do: 'sit', spot: 'boss_desk' }),
       s('3:33', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
-      s('3:35', { do: 'visit', spot: 'smoke' }),
+      s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket', anim: 'smoking' }),
       s('3:48', { do: 'sit', spot: 'boss_desk' }),
     ],
   },
@@ -55,10 +58,10 @@ export const NPC_DEFS = [
     coneTint: [214, 230, 140],
     schedule: [
       s('2:30', { do: 'sit', spot: 'kev_desk' }),
-      s('2:38', { do: 'visit', spot: 'coffee' }),
+      s('2:38', { do: 'visit', spot: 'coffee', arrive: 'pourCoffee' }),
       s('2:44', { do: 'sit', spot: 'kev_desk' }),
       s('2:58', { do: 'say', icons: ['🎒', '👋'], kind: 'speech' }),
-      s('3:00', { do: 'leave', spot: 'elevator' }),
+      s('3:00', { do: 'leave', spot: 'elevator', gone: { set: { kevGone: true }, event: 'kev:left' } }),
     ],
   },
   {
@@ -71,8 +74,8 @@ export const NPC_DEFS = [
     coneTint: [150, 230, 214],
     schedule: [
       s('2:30', { do: 'sit', spot: 'lin_desk' }),
-      s('2:58', { do: 'visit', spot: 'fridge' }), // away ~2:58–3:12, but the boss is at his desk
-      s('3:04', { do: 'visit', spot: 'kitchen_table' }),
+      s('2:58', { do: 'visit', spot: 'fridge', prelude: 'checkFridge' }), // away ~2:58–3:12, but the boss is at his desk
+      s('3:04', { do: 'visit', spot: 'kitchen_table', prelude: 'checkFridge' }),
       s('3:07', { do: 'sit', spot: 'lin_desk' }),
       s('3:30', { do: 'away', spot: 'restroom' }), // away ~3:30–3:42, boss at desk until 3:35
       s('3:37', { do: 'sit', spot: 'lin_desk' }),

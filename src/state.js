@@ -52,7 +52,8 @@ export function resetLoop(game) {
   };
   game.npcs = [];
   game.world = game.level.initialWorld();
-  game.suspicion = { boss: 0 };
+  const authority = game.level.roles?.authority;
+  game.suspicion = authority ? { [authority.id]: 0 } : {}; // the authority's ❓ meter (play/rules.js), keyed by his id
   game.caught = null;
   game.outcome = null;
   game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null }; // rules.js only: who saw what, the grudge

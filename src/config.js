@@ -35,17 +35,9 @@ export const PLAYER_RADIUS = 0.3; // collision circle
 export const NPC_SPEED = 2.6;
 export const INTERACT_RADIUS = 1.5; // from player centre to interactable tile centre
 
-// Timed actions (real seconds). sneaky: witnesses matter while in progress.
-// owner: only that NPC knows it's wrong (a sandwich is just a sandwich to everyone but Lin).
-// idle: the boss reads it as slacking (his ❓ meter fills while he watches).
-export const ACTIONS = {
-  brew_coffee: { duration: 1.0, sneaky: false }, // pours the day's only cup (Kev's, at 2:38)
-  spill_coffee: { duration: 1.2, sneaky: true },
-  take_keycard: { duration: 1.0, sneaky: true },
-  take_sandwich: { duration: 0.8, sneaky: true, owner: 'lin' },
-  eat_sandwich: { duration: 2.0, sneaky: true, owner: 'lin', idle: true },
-  pick_up: { duration: 0.3, sneaky: false },
-};
+// Generic action timings (real seconds). The level's own actions carry theirs (level.interactions).
+export const PICK_UP_TIME = 0.3; // a floor item
+export const EAT_TIME = 2.0; // an edible item in hand
 
 // --- Perception --------------------------------------------------------------
 export const deg = (d) => (d * Math.PI) / 180;
@@ -63,4 +55,3 @@ export const GLANCE_TURN_TIME = 0.25; // head turn tween, gives a tiny telegraph
 export const SUSPICION_FILL_SEC = 1.6; // boss sees you idle this long -> work assigned
 export const SUSPICION_DECAY_SEC = 3.0;
 export const CAUGHT_DELAY = 1.6; // seconds of "busted" beat before the end screen
-export const KEV_FIX_MIN = 5; // game minutes to repair the projector

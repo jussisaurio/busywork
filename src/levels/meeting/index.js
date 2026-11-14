@@ -7,8 +7,14 @@
 //   patrols  named point lists for { do: 'patrol', route } schedule entries
 //   cast     the NPC definitions, in order: the order is behaviour (update, witness and event order)
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
-//   owns     who takes which item back on sight (play/rules.js)
-//   sceneDoor  the meeting-room door: Kev blames whoever is within rules.js SCENE_RADIUS of it
+//   interactions  the player's actions here (interactions.js; play/interactions.js adds sit, drop, pick_up)
+//   items    carryable item types and their flags: icon, place, edible, contraband, owner (items.js)
+//   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
+//   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
+//   hunts    ... an NPC searches for something until she finds it or gives up
+//   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
+//   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
+//   failSign    { spot, offset: [dx, dy] }: where a failed meeting's 🦗 sign appears (tiles from the spot's corner)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
@@ -31,6 +37,11 @@ import { DECOR } from './decor.js';
 import { LOOKS, ITEM_ICONS } from './looks.js';
 import { END_SCENES } from './end-scenes.js';
 import { SOUNDS } from './sounds.js';
+import { INTERACTIONS } from './interactions.js';
+import { ITEMS } from './items.js';
+import { ROLES } from './roles.js';
+import { LURES, HUNTS, DOORS } from './mechanics.js';
+import { BEHAVIOURS } from './behaviours.js';
 
 export default {
   id: 'meeting',
@@ -50,8 +61,14 @@ export default {
     halfMinuteAt: at('3:57'), // audio: a tick every half minute
     beamAt: at('3:55'), // the projector beam lights the screen
   },
-  owns: { lin: 'sandwich', kev: 'coffee' },
-  sceneDoor: { x: 14.5, y: 6.5 },
+  interactions: INTERACTIONS,
+  items: ITEMS,
+  roles: ROLES,
+  lures: LURES,
+  hunts: HUNTS,
+  doors: DOORS,
+  behaviours: BEHAVIOURS,
+  failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
     { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },

@@ -1,0 +1,25 @@
+// Who plays which part in the office rules (level.roles; play/rules.js). Owners and contraband are item flags
+// (items.js). Every cast member who is not the authority is a witness: they shout and point at what they see,
+// and the authority hears it now, or is told once he is back within earshot.
+export const ROLES = {
+  // Whoever's sighting means caught. Owns the suspicion meter (game.suspicion[id]) and assigns work.
+  //   offDuty   his overrides during which he enforces nothing (suspicion, contraband, hearing shouts)
+  //   helpless  his overrides during which he can't act even on a sneaky action he sees (locked out)
+  //   deafIn    the zone where he can't hear a witness shout (the lobby, outside the glass)
+  authority: { id: 'boss', offDuty: ['lockedOut', 'meeting'], helpless: ['lockedOut'], deafIn: 'outside' },
+  // A mark on the player (a player field) that lasts the loop and that pretending doesn't hide. The witness `by`
+  // reads it as guilt while in override `while` (Lin hunting her sandwich sees the mustard); telling on you sets
+  // world[knows] (her hunt is over).
+  evidence: { by: 'lin', while: 'hunting', mark: 'smeared', knows: 'linKnows', icon: '🥪' },
+  // While the investigator `by` is in one of the `while` overrides (Kev going to or fixing his broken projector),
+  // he blames whoever he sees in `zone`, or within `radius` (default rules.js SCENE_RADIUS) of `door` unless busy.
+  // Once per breakage: `fresh(world)` holding makes the next breakage a fresh scene.
+  scene: {
+    by: 'kev',
+    while: ['alerted', 'fixing'],
+    zone: 'meeting_room',
+    door: { x: 14.5, y: 6.5 },
+    fresh: (w) => w.projector === 'ok',
+    icon: '📽️',
+  },
+};

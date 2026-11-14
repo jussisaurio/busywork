@@ -35,94 +35,14 @@
   "count": 5
  },
  {
-  "file": "src/config.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
   "file": "src/core/fx.js",
   "identifier": "smoke",
   "count": 1
  },
  {
-  "file": "src/play/interactions.js",
-  "identifier": "sandwich",
-  "count": 11
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "keycard",
-  "count": 8
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "projector",
-  "count": 4
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "coffee",
-  "count": 6
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "fridge",
-  "count": 3
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "smoke",
-  "count": 2
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "boss",
-  "count": 22
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "kev",
-  "count": 2
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "sandwich",
-  "count": 3
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "keycard",
-  "count": 5
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "projector",
-  "count": 1
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "coffee",
-  "count": 3
- },
- {
-  "file": "src/play/rules.js",
-  "identifier": "fridge",
-  "count": 1
- },
- {
-  "file": "src/play/scenario.js",
-  "identifier": "projector",
-  "count": 1
- },
- {
   "file": "src/render/characters.js",
   "identifier": "boss",
-  "count": 7
+  "count": 6
  },
  {
   "file": "src/render/characters.js",
@@ -223,55 +143,5 @@
   "file": "src/render/world.js",
   "identifier": "mustard",
   "count": 5
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "boss",
-  "count": 9
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "kev",
-  "count": 4
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "lin",
-  "count": 3
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "sandwich",
-  "count": 5
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "keycard",
-  "count": 3
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "projector",
-  "count": 9
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "coffee",
-  "count": 11
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "fridge",
-  "count": 8
- },
- {
-  "file": "src/sim/npcs.js",
-  "identifier": "smoke",
-  "count": 1
- },
- {
-  "file": "src/state.js",
-  "identifier": "boss",
-  "count": 1
  }
 ]
