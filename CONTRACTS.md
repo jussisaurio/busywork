@@ -39,7 +39,7 @@ everyone relies on**.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  `hunts`, `doors`, `behaviours`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -52,6 +52,12 @@ everyone relies on**.
   hook through `startHunt(game, npc)`, `src/sim/mechanics/index.js`). `doors`: `[{ spot, zone, npcs, opens(game, npc), override,
   plan, label, locked { set?, event? }, bang { first, lines [{ say, next }], event?, shake? } }]` (whether a door tile blocks
   walking or sight is the map legend's `npcPassable`/`opaque`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
+  `behaviours` (`levels/meeting/behaviours.js`): level-only hooks keyed by name, `{ spot?, pending?(npc), arrive(game, npc, sim) }`.
+  The cast names them: a schedule entry's `prelude` (a name or a list: a leg to the hook's `spot` before the entry's own, while
+  `pending(npc)` holds; a prelude to the entry's own spot replaces its leg) and `arrive` (on reaching the entry's spot), and a cast
+  member's `meetingArrive` (on sitting down at the meeting). `sim` is the sim's helpers for hooks: `holdFor(npc, s)`,
+  `speak(game, npc, lines)`, `want(npc, item)`, `faceSpot(game, npc, spot)`, `startHunt(game, npc)`. An unknown name throws when the
+  NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
@@ -133,9 +139,10 @@ game = {
   pose: 'sit',               // 'sit' | 'stand' | 'walk'
   moving: false,
   override: null,            // null | 'alerted' | 'fixing' | 'hunting' | 'lockedOut' | 'meeting'
-  hasJacket: false,          // boss only: wearing the jacket (after 3:35)
-  carry: null,               // null | 'coffee': Kev holding the day's cup (poured it, or took it off you)
-  wants: null,               // null | 'coffee': Kev found the pot empty (☕❓😩); cleared when he gets the cup
+  hasJacket: false,          // drawn wearing his jacket (level 1: the boss, set by the fetchJacket hook after 3:35)
+  carry: null,               // null | item type: Kev holding the day's cup (poured it, or took it off you)
+  wants: null,               // null | item type he knows is his and misses: Kev found the pot empty (☕❓😩). Every ~6 s
+                             // he daydreams of it (🥱 + the item's icon) unless working a lure's job; cleared when he gets it
   label: 'sit boss_desk',    // debug string of the current activity
   rng,                       // createRng(SEED ^ hash(id)): per-NPC, so glances don't depend on player actions
 }
@@ -152,19 +159,21 @@ game = {
    he walks to `SPOTS.projector`, then `override='fixing'`, `world.projector='fixing'`, and `fixProgress` goes 0→1 over
    5 game minutes. Then `world.projector='ok'`, emit `'projector:fixed'`, `say` 👍, and he resumes his schedule
    (this delays his leaving if needed). If he is walking out to the elevator, he turns back.
-   When he vanishes at the elevator: `world.kevGone = true`, emit `'kev:left'`.
-2. **Jacket and keycard.** When the boss starts his 3:35 entry (he is at his desk): he walks to the coat rack first, takes the jacket
+   When he vanishes at the elevator: `world.kevGone = true`, emit `'kev:left'` (his leave entry's `gone`).
+2. **Jacket and keycard** (the boss's `fetchJacket` prelude, `level.behaviours`). When the boss starts his 3:35 entry (he is at his desk): he walks to the coat rack first, takes the jacket
    (`world.jacket='boss'`, `hasJacket=true`, emit `'boss:jacket'`). If `world.keycard==='rack'`, it becomes `'boss'`.
    Then he goes to smoke.
 3. **Lockout** (a door, `level.doors`). When the boss walks back from outside (3:48), if `world.keycard !== 'boss'` he stops at `SPOTS.door_out`, facing N:
    `override='lockedOut'`, `world.bossLockedOut=true`, emit `'boss:lockedOut'`. Then every ~2.5 s he `say`s one of 😠🚪🪪 / 🪪❓ / 👊🚪
    (kind 'speech'), emits `'boss:bang'` and does a small `shake`. He stays there for the rest of the day.
-4. **Lin's sandwich** (a hunt, `level.hunts`). On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
+4. **Lin's sandwich** (a hunt, `level.hunts`, started by Lin's `checkFridge` prelude). On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
    (`'lin'`) and eats at the kitchen table as scheduled. Otherwise: emit `'sandwich:missing'`, say 🥪❓ then 😠,
    `override='hunting'`. She walks `ROUTES.lin_hunt` back and forth (glancing often) until `at('3:24')` (or until she has it back, `world.sandwich === 'lin'`, or `world.linKnows`), then 😤, and resumes the schedule.
 5. **Meeting.** At `day.gatherAt` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
-   `meetingSpot`. When the boss arrives: if the projector is broken, `say` 📽️💥🤷. Otherwise `say` 📊👀 (looks at the player's spot).
+   `meetingSpot`. When the boss arrives (his `presenter` hook, `meetingArrive`): if the projector is broken, `say` 📽️💥🤷. Otherwise `say` 📊👀 (looks at the player's spot).
    Emit `'meeting:gather'` once.
+- Kev's 2:38 coffee (his `pourCoffee` arrive hook): if `world.coffee==='pot'` he pours it (`'taken'`, `carry='coffee'`, emit
+  `'coffee:taken' {by}`). Otherwise, empty-handed: ☕❓ then 😩, `want(npc, 'coffee')`, emit `'coffee:missing' {by}`.
 - `away` entries: walk to the spot, then `active=false` until the next entry starts (emit `'npc:vanish' {id}`). Reappear at that
   spot (`'npc:appear' {id}`). `leave` vanishes for good.
 - Glances: seated (and standing still) NPCs use the GLANCE_* tunables, with the turn tweened over GLANCE_TURN_TIME. Walking NPCs face their direction of travel (turning

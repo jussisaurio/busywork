@@ -13,6 +13,7 @@
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up
 //   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
+//   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
@@ -24,6 +25,7 @@ import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
 import { LURES, HUNTS, DOORS } from './mechanics.js';
+import { BEHAVIOURS } from './behaviours.js';
 
 export default {
   id: 'meeting',
@@ -49,6 +51,7 @@ export default {
   lures: LURES,
   hunts: HUNTS,
   doors: DOORS,
+  behaviours: BEHAVIOURS,
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
     { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },

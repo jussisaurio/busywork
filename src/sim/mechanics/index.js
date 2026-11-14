@@ -5,6 +5,7 @@
 //   key(data, npc) / build(game, npc, plan, data)   the plan while it owns the override
 //   tick(game, npc, dt, data)  every step while it owns the override, before walking
 //   label(game, npc, data)     a debug label instead of the plan's (null: the plan's)
+//   working(data, npc)         busy at the job: no daydreaming about wants (npcs.js crave)
 //   prelude(game, npc, plan, data)  may add legs in front of any plan that isn't finished at birth
 //   keepsThroughMeeting        the gather doesn't send its NPC to the meeting
 import * as lure from './lure.js';

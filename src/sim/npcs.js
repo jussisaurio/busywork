@@ -19,7 +19,7 @@ import { createRng } from '../core/rng.js';
 import { say } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
-import { setOverride, npcSayLater, spotLeg } from './override.js';
+import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
 import { mechanics, mechanicOf, startHunt } from './mechanics/index.js';
 
 export { npcSayLater };
@@ -30,10 +30,6 @@ const BODY_R = 0.3; // half-size of the body box kept clear of solid tiles when 
 const LOOK_RIGHT = 0.55; // s into a look-around (_look, a hunt's): head right until then, then left...
 const LOOK_LEFT = 1.1; // ...until then, then back to centre
 const LOOK_TURN = 0.2; // s to swing the head by the look angle
-const JACKET_TIME = 0.8; // s the boss spends at the coat rack
-const POUR_TIME = 1.0; // s Kev spends pouring the day's cup
-const EMPTY_POT_TIME = 1.6; // s Kev stares at the empty pot
-const SANDWICH_TIME = 0.6; // s Lin spends taking her sandwich out of the fridge
 // Walking to the meeting, NPCs speed up just enough to be seated by the meeting (level day.meetingAt) when the walk from where they
 // are at the gather is longer than the time left. Capped multiplier:
 const MEETING_HURRY_MAX = 1.3;
@@ -48,11 +44,6 @@ function hash(str) {
   return h >>> 0;
 }
 
-const nextNonSay = (sched, i) => {
-  for (let j = i + 1; j < sched.length; j++) if (sched[j].do !== 'say') return j;
-  return -1;
-};
-
 export function createNpcs(game) {
   const now = game.clock ? game.clock.minute : 0;
   return game.level.cast.map((def) => createNpc(game, def, now));
@@ -65,7 +56,7 @@ export function createNpc(game, def, now = 0) {
   const first = sched.find((e) => e.spot);
   const p = spotPos(game, first.spot);
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
-  const fridgeIdx = sched.findIndex((e) => e.do !== 'say' && e.spot === 'fridge');
+  for (const name of hookNames(def, sched)) hook(game, name); // an unknown name throws now, not mid-day
   const glanceEvery = def.glanceEvery ?? GLANCE_EVERY;
   return {
     id: def.id,
@@ -73,6 +64,7 @@ export function createNpc(game, def, now = 0) {
     color: def.color,
     voice: def.voice,
     meetingSpot: def.meetingSpot,
+    _meetingArrive: def.meetingArrive ?? null, // behaviour hook on sitting down at the meeting
     x: p.x,
     y: p.y,
     dir: p.dir,
@@ -83,27 +75,22 @@ export function createNpc(game, def, now = 0) {
     pose: first.do === 'sit' ? 'sit' : 'stand',
     moving: false,
     override: null,
-    hasJacket: false,
-    carry: null, // null | 'coffee' (Kev, once he has the day's cup)
-    wants: null, // null | 'coffee': Kev found the pot empty, and now he knows someone has his cup
+    hasJacket: false, // render: drawn with his jacket on (a behaviour hook sets it)
+    carry: null, // null | item type he carries (Kev's coffee, once he has the day's cup)
+    wants: null, // null | item type he now knows is his and misses (Kev found the pot empty: someone has his cup)
     label: `${first.do} ${first.spot}`,
     rng,
     // --- private sim state ---
     _schedule: sched,
     _said: sched.map((e) => e.do === 'say' && e.at < now), // schedule 'say' entries fire once
-    _fridgeIdx: fridgeIdx, // Lin: the fridge visit...
-    _fridgeNext: fridgeIdx >= 0 ? nextNonSay(sched, fridgeIdx) : -1, // ...and the entry after it
-    _smokeIdx: sched.findIndex((e) => e.do !== 'say' && e.spot === 'smoke'), // boss: jacket first
     _plan: null,
     _wait: 0, // s to stand still before continuing the plan
     _sayQ: [], // delayed bubbles: { t, icons, kind }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
     _gone: false, // left for the day
-    _fridgeChecked: false,
     _gathered: false, // the 3:54 gather has been processed for this NPC
     _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
-    _reacted: false, // boss meeting reaction done
     _bangT: 0, // a door's knocking: s to the next bang...
     _bangI: 0, // ...and which line
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
@@ -173,16 +160,60 @@ function fireScheduleSays(game, npc, now) {
   }
 }
 
-// Kev without his afternoon coffee: a yawn and a ☕ daydream every few seconds, until he gets one.
-// It's the setup for the grab: a desperate man sees your cup.
-const CRAVE_FIRST = 4; // s after the 😩 at the empty pot
+// Wanting an item (npc.wants): a yawn and a daydream of it every few seconds until he has it, except while
+// working a lure's job. Level 1: Kev without his afternoon coffee 🥱☕, the setup for the grab: a desperate man
+// sees your cup.
+const CRAVE_FIRST = 4; // s after he learns it's gone (want())
 const CRAVE_EVERY = 6;
+function want(npc, item) {
+  npc.wants = item;
+  npc._craveT = CRAVE_FIRST;
+}
 function crave(game, npc, dt) {
-  if (npc.wants !== 'coffee' || !npc.active || npc.override === 'fixing') return;
+  if (!npc.wants || !npc.active) return;
+  const m = mechanicOf(game, npc);
+  if (m?.kind.working?.(m.data, npc)) return;
   npc._craveT = (npc._craveT ?? CRAVE_FIRST) - dt;
   if (npc._craveT > 0) return;
   npc._craveT = CRAVE_EVERY;
-  say(game, npc.id, ['🥱', '☕'], { kind: 'thought', voice: npc.voice, ttl: 1.4 });
+  const icon = game.level.items?.[npc.wants]?.icon ?? npc.wants;
+  say(game, npc.id, ['🥱', icon], { kind: 'thought', voice: npc.voice, ttl: 1.4 });
+}
+
+// --- Behaviour hooks (level.behaviours) ------------------------------------------------
+
+// What a hook gets as its third argument (documented in levels/meeting/behaviours.js).
+const HOOK_API = {
+  holdFor,
+  speak,
+  want,
+  startHunt,
+  faceSpot(game, npc, name) {
+    const p = spotPos(game, name);
+    npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
+  },
+};
+
+function hook(game, name) {
+  const b = game.level.behaviours?.[name];
+  if (!b) throw new Error(`no behaviour '${name}' in level.behaviours`);
+  return b;
+}
+
+const runHook = (b) => (game, npc) => b.arrive(game, npc, HOOK_API);
+
+function* hookNames(def, sched) {
+  if (def.meetingArrive) yield def.meetingArrive;
+  for (const e of sched) {
+    if (e.prelude) yield* [].concat(e.prelude);
+    if (e.arrive) yield e.arrive;
+  }
+}
+
+// The preludes of schedule entry i still to walk, in the entry's order.
+function preludes(game, npc, i) {
+  const names = npc._schedule[i].prelude;
+  return names ? [].concat(names).filter((name) => hook(game, name).pending?.(npc) ?? true) : [];
 }
 
 function tickSayQueue(game, npc, dt) {
@@ -199,16 +230,6 @@ function checkOverrides(game, npc, now) {
   for (const m of mechanics(game.level)) m.kind.check?.(game, npc, m.data, now);
 }
 
-// Special prelude legs for a schedule entry.
-function entryFlags(npc, i) {
-  return {
-    // Lin must actually open the fridge, even if her 3:04 entry starts while she's still walking.
-    fridge: npc._fridgeIdx >= 0 && !npc._fridgeChecked && (i === npc._fridgeIdx || i === npc._fridgeNext),
-    // The boss collects his jacket on his way out for a smoke.
-    jacket: npc._smokeIdx >= 0 && i === npc._smokeIdx && !npc.hasJacket,
-  };
-}
-
 function planKey(game, npc, now) {
   if (npc._gone) return 'gone';
   const m = mechanicOf(game, npc);
@@ -218,8 +239,7 @@ function planKey(game, npc, now) {
     case 'meeting': return `meeting#${seq}`;
     default: {
       const i = entryIndex(npc, now);
-      const f = entryFlags(npc, i);
-      return `e${i}${f.fridge ? 'F' : ''}${f.jacket ? 'J' : ''}`;
+      return `e${i}${preludes(game, npc, i).map((name) => `+${name}`).join('')}`;
     }
   }
 }
@@ -243,20 +263,20 @@ function buildPlan(game, npc, now, key) {
     plan.legs.push(spotLeg(game, npc.meetingSpot));
     plan.pose = 'sit';
     plan.hurry = true;
-    plan.onDone = meetingArrive;
+    plan.onDone = npc._meetingArrive ? runHook(hook(game, npc._meetingArrive)) : null;
     plan.label = `meeting ${npc.meetingSpot}`;
   } else {
     const i = entryIndex(npc, now);
     const e = npc._schedule[i];
-    const f = entryFlags(npc, i);
-    if (f.fridge) plan.legs.push(spotLeg(game, 'fridge', { arrive: linFridge }));
-    if (f.jacket) plan.legs.push(spotLeg(game, 'coat_rack', { arrive: bossJacket }));
+    const pre = preludes(game, npc, i).map((name) => hook(game, name));
+    for (const b of pre) plan.legs.push(spotLeg(game, b.spot, { arrive: runHook(b) }));
     if (e.do === 'patrol') plan.legs.push(...game.level.patrols[e.route].map(([x, y]) => ({ x, y })));
-    else if (!(f.fridge && e.spot === 'fridge')) {
-      plan.legs.push(spotLeg(game, e.spot, e.spot === 'coffee' ? { arrive: coffeeArrive } : {}));
+    else if (!pre.some((b) => b.spot === e.spot)) {
+      plan.legs.push(spotLeg(game, e.spot, e.arrive ? { arrive: runHook(hook(game, e.arrive)) } : {}));
     }
     plan.pose = e.do === 'sit' ? 'sit' : 'stand';
     plan.vanish = e.do === 'away' || e.do === 'leave' ? e.do : null;
+    plan.gone = e.do === 'leave' ? e.gone ?? null : null;
     plan.label = `${e.do} ${e.spot ?? e.route}`;
   }
   if (plan.done) return plan; // (a door's lockout)
@@ -367,57 +387,13 @@ function finishPlan(game, npc, plan) {
     game.events.emit('npc:vanish', { id: npc.id });
     if (plan.vanish === 'leave') {
       npc._gone = true;
-      if (npc.id === 'kev') {
-        game.world.kevGone = true;
-        game.events.emit('kev:left', {});
-      }
+      applyEffect(game, plan.gone);
     }
   }
   if (plan.onDone) plan.onDone(game, npc);
 }
 
-// --- Override behaviours (leg arrival callbacks and per-step ticks) -------------------
-
-// 2. Boss at the coat rack.
-function bossJacket(game, npc) {
-  const w = game.world;
-  w.jacket = 'boss';
-  npc.hasJacket = true;
-  if (w.keycard === 'rack') w.keycard = 'boss';
-  npc._wait = Math.max(npc._wait, JACKET_TIME);
-  game.events.emit('boss:jacket', {});
-}
-
-// 4. Lin opens the fridge.
-function linFridge(game, npc) {
-  const w = game.world;
-  npc._fridgeChecked = true;
-  if (w.sandwich === 'fridge' || w.sandwich === 'lin') {
-    w.sandwich = 'lin';
-    npc._wait = Math.max(npc._wait, SANDWICH_TIME);
-    return;
-  }
-  startHunt(game, npc);
-}
-
-// 6. The coffee pot holds one cup a day. Whoever gets there first has it.
-function coffeeArrive(game, npc) {
-  const w = game.world;
-  if (w.coffee === 'pot' && !npc.carry) {
-    w.coffee = 'taken';
-    npc.carry = 'coffee';
-    npc._wait = Math.max(npc._wait, POUR_TIME);
-    game.events.emit('coffee:taken', { by: npc.id });
-    return;
-  }
-  if (npc.carry) return;
-  npc.wants = 'coffee';
-  npc._craveT = CRAVE_FIRST;
-  say(game, npc.id, ['☕', '❓'], { kind: 'thought', voice: npc.voice, ttl: 1.2 });
-  npcSayLater(npc, 1.2, ['😩'], 'speech');
-  npc._wait = Math.max(npc._wait, EMPTY_POT_TIME);
-  game.events.emit('coffee:missing', { by: npc.id });
-}
+// --- Witnesses and the meeting ------------------------------------------------------
 
 // A witness takes their thing back (rules.js: Kev and the coffee).
 export function npcTakes(npc, item) {
@@ -434,19 +410,6 @@ export function stareAtEmptyChair(game) {
     n._gl.hold = 0; // stop any glance: all eyes on the chair
     say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
     npcSayLater(n, 1.0, ['😠', '👉'], 'speech');
-  }
-}
-
-// 5. Arrival at the meeting seat.
-function meetingArrive(game, npc) {
-  if (npc.id !== 'boss' || npc._reacted) return;
-  npc._reacted = true;
-  if (game.world.projector !== 'ok') {
-    say(game, npc.id, ['📽️', '💥', '🤷'], { kind: 'speech', voice: npc.voice });
-  } else {
-    const p = spotPos(game, 'meeting_presenter'); // looks expectantly at where the presenter stands
-    npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
-    say(game, npc.id, ['📊', '👀'], { kind: 'speech', voice: npc.voice });
   }
 }
 

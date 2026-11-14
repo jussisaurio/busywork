@@ -15,12 +15,15 @@
 //     start     { set?, event?, says? } applied on arrival. He gives up (endOverride) as soon as a field that
 //               start.set set changes (someone else dealt with it, or undid it)
 //     done      { set?, event?, says? } applied when progress reaches 1, then endOverride
-// Debug label while working: `${work.override} N%`.
+// Debug label while working: `${work.override} N%`. While working he doesn't daydream about what he wants (crave).
 // The gather leaves him to finish the job (endOverride sends him to the meeting afterwards).
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { setOverride, endOverride, holdFor, speak, applyEffect, spotLeg } from '../override.js';
 
 export const keepsThroughMeeting = true;
+
+// Busy with the job itself (not on his way to it).
+export const working = (lure, npc) => npc.override === lure.work.override;
 
 export const owns = (lure, npc) =>
   npc.id === lure.npc && (npc.override === lure.override || npc.override === lure.work.override);
