@@ -1,0 +1,699 @@
+{
+ "note": "written by tools/golden.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "goto own_desk pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "837c7f86a6d19fd0",
+    "a581b4e466515409",
+    "0b3e5f327618cc79",
+    "0e4c7986d95bc23b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3037f7d1f856f1b0",
+    "9c0b303ce271cd67"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:50",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "02093a1041cae0fe",
+    "a9411c74b9f4be4a",
+    "15fa5862e2e20e57",
+    "f1728b9492e472b2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 8s",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "addb28397a073f01",
+    "dd9eefcdd07654a4",
+    "8a4d0b27c3d99c44",
+    "77796e77a5725252",
+    "d2bde783d4b3877d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:40",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "af1df52a586a3e1b",
+    "dfe8f8a697278760",
+    "902a9e7cebf13692",
+    "11d8d3ba29d44737"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:55",
+    "interact",
+    "put box",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "32ec9df7537ab3dc",
+    "d6fc47382f7aee95",
+    "2ac89a86901d7a0a",
+    "bf705b00367e2319",
+    "e161676d6ea27b4d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "56bdf9eb8d45ce80",
+    "db19fef1bc927efb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "667cb65f6fb45dae",
+    "8b7071dbbc4bb46e",
+    "956c29887155034e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "put box pretend",
+    "wait until 3:00"
+   ],
+   "summary": "blamed box",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "99ff4557d1662d35",
+    "fbf46fe950a403cf",
+    "f8c1922bcefa5aec"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:52",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "9219879b7498b6ff",
+    "600c45b765ba3b4d",
+    "ab5fa01cf0f799ca",
+    "badbfc0af37c7786",
+    "3a26d2f81e412683"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:55",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c0a502326d47c75f",
+    "d18a7ff3c4f6a1da",
+    "4a2ac2b32d925929",
+    "61f7aff6744ea8a8",
+    "a7b87d855641205a"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:57",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "997f7ad7082f8c7d",
+    "882dfcd619508e34",
+    "ade88d99267b5e6d",
+    "11d8d3ba29d44737"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:42",
+    "interact",
+    "put box",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed box",
+   "digests": [
+    "fc6d0e05e309ff65",
+    "ff93faf6820b980b",
+    "10ce09b0b7dc3c2b",
+    "c92ab8a2df791b9d",
+    "376b05c85242c231"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:56",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5e337cc522c28c1d",
+    "1df52a31ab8e4536",
+    "848965065a38b2cd",
+    "7f7f491b757b6466"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:55",
+    "interact",
+    "put box",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c0a502326d47c75f",
+    "d18a7ff3c4f6a1da",
+    "1094a9d9904f5446",
+    "c70913d3778a9a60",
+    "1d2eb42e7f6b25c5"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:33",
+    "interact",
+    "interact",
+    "put box pretend",
+    "goto meeting_seat pretend",
+    "wait until 3:00"
+   ],
+   "summary": "win box",
+   "digests": [
+    "c4c39a7ddeb84386",
+    "9ac9b51641c4131e",
+    "80c386e9d2192313",
+    "5f6c6d52bd800595",
+    "058acfaf53cf8671",
+    "b6229ce14d9c46a2",
+    "3f4b663f25227c9d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "40216f8cbdedc07f",
+    "3bc214e7847717eb",
+    "15fa5862e2e20e57",
+    "f1728b9492e472b2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:40",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "af1df52a586a3e1b",
+    "dfe8f8a697278760",
+    "73d054c2d1ec8c3a",
+    "e2fb9a92e328f5c8",
+    "a6fa06385d6bed49",
+    "7eb5addaf970d591"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:33",
+    "interact",
+    "interact",
+    "put box pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c4c39a7ddeb84386",
+    "9ac9b51641c4131e",
+    "80c386e9d2192313",
+    "5f6c6d52bd800595",
+    "616eef43c6bee986",
+    "56e2b39e9e327e01",
+    "dc5f8dc9cf966273"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:33",
+    "goto own_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "goto meeting_seat pretend",
+    "wait until 3:00"
+   ],
+   "summary": "win box",
+   "digests": [
+    "c4c39a7ddeb84386",
+    "f45341dc4399454b",
+    "733b4e4aa1854932",
+    "287d3a7bf5cf5281",
+    "bddfc445e841ffcb",
+    "532ad70948bd1b4e",
+    "d336dc1bc10c9217",
+    "b6229ce14d9c46a2",
+    "3f4b663f25227c9d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "put box pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "99ff4557d1662d35",
+    "f18980677e56dde6",
+    "3cafe0abacb1e7eb",
+    "5c42ecf68425cdd4"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "goto meeting_seat pretend",
+    "pretend until 3:00"
+   ],
+   "summary": "win box",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "93536e56a52b0186",
+    "2ce223d1c2258f06",
+    "2b75718f3544e5a9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "wait until 3:00"
+   ],
+   "summary": "blamed box",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "13920cbfd3bc7b51",
+    "f8c1922bcefa5aec"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "put box pretend",
+    "goto meeting_seat pretend",
+    "wait until 3:00"
+   ],
+   "summary": "win box",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "99ff4557d1662d35",
+    "dce6f6b78e3c2122",
+    "9ceacf0dd9f681ec",
+    "3f4b663f25227c9d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:57",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "997f7ad7082f8c7d",
+    "882dfcd619508e34",
+    "e7c836c80bdc16f7",
+    "c766c3dac76c947c",
+    "110871b56d9db89e",
+    "b187e3d2430413b2",
+    "e161676d6ea27b4d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "32fbefdb624b8fbd",
+    "b4d6982890e3c0fe",
+    "b28fce537197abc6",
+    "97cd8fdfe9053c72"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "2893f14d18498424",
+    "0b84ba0119156696",
+    "5c42ecf68425cdd4"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:33",
+    "goto own_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c4c39a7ddeb84386",
+    "f45341dc4399454b",
+    "733b4e4aa1854932",
+    "287d3a7bf5cf5281",
+    "bddfc445e841ffcb",
+    "532ad70948bd1b4e",
+    "f09798ba4bca62bb",
+    "23c1a784b5b38279",
+    "3b3b6ff3b2883cbd"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed box",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "d8460e0257240309",
+    "b7f83113728c9140"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "f69da470e8985d6e",
+    "4db52c10e96ec5ca",
+    "67c0e31be46beec2",
+    "d3beb4985543ff27"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "put box pretend",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "58f7b58b13c7f69b",
+    "95872bedd5377926",
+    "e0488dca40393681",
+    "186a9a39a932fe42",
+    "a6fa06385d6bed49",
+    "7eb5addaf970d591"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "put box pretend",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "58f7b58b13c7f69b",
+    "95872bedd5377926",
+    "e0488dca40393681",
+    "186a9a39a932fe42",
+    "0fdb1dfb5de013a8",
+    "97cd8fdfe9053c72"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "put box pretend",
+    "interact",
+    "put box pretend",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "404f6c4f237d9314",
+    "9dfb860e78da87d1",
+    "d44ec6e9b65913d2",
+    "a0afade7aa743ec8",
+    "08d570eec735ecdb",
+    "23a63f5358077b8e",
+    "80b1748dd419c521",
+    "97cd8fdfe9053c72"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:40",
+    "interact",
+    "goto restroom_door pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "af1df52a586a3e1b",
+    "dfe8f8a697278760",
+    "73d054c2d1ec8c3a",
+    "e2fb9a92e328f5c8",
+    "a353c287ff49f0b9",
+    "97cd8fdfe9053c72"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "put player_desk",
+    "interact",
+    "put box pretend",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "2893f14d18498424",
+    "196f42b0b24b7971",
+    "26ae45268ff4ecd4",
+    "695c717f15d7e5f5",
+    "97cd8fdfe9053c72"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:33",
+    "interact",
+    "interact",
+    "interact",
+    "put box pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93223a2df9f44d8f",
+    "3338f661e017abd7",
+    "0b6aaa7fc91808a2",
+    "4a1c1038f752a0fd",
+    "2e3cc2c557c9713d",
+    "2893f14d18498424",
+    "d4a4433f9b3cc817",
+    "11d8d3ba29d44737"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "put player_desk",
+    "wait until 2:46"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "667cb65f6fb45dae",
+    "8b7071dbbc4bb46e",
+    "956c29887155034e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:39",
+    "interact",
+    "move E 1s",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a801ff8b6c58dfd4",
+    "769490f2485b2c58",
+    "2e50e0030d1c4dcc",
+    "610a2da6f59c5f74",
+    "987886948acfe68d",
+    "f712c5d14505236c"
+   ]
+  }
+ ]
+}

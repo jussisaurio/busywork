@@ -40,7 +40,7 @@ everyone relies on**.
 - `src/levels/index.js`: the level registry `levels` (`meeting`, plus the `fixture-<mechanic>` test levels), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `noises`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
+  `hunts`, `doors`, `noises`, `inspections`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
   `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
@@ -64,6 +64,22 @@ everyone relies on**.
   `speak(game, npc, lines)`, `want(npc, item)`, `faceSpot(game, npc, spot)`, `startHunt(game, npc)`. An unknown name throws when the
   NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes. Any entry may
   carry `anim` (copied to `npc.anim` while he follows it).
+  Put down (`src/sim/mechanics/putdown.js`): a spot may take items, `spots[name] = { x, y, face, accepts: [type, ...],
+  owner?, found? }`. One item at a time; it lies on the tile the spot faces (its own tile without a face) as a world item
+  `{ type, x, y, spot: name }` (`itemOn(spots, name, type)` builds one for `initialWorld`), and `world[place]` = the spot's
+  name for an item with a `place`. `owner: 'player'`: the office rules judge what lies there as if you held it, at once and
+  even while you pretend (the authority sees contraband there: caught 'contraband'; an owner who knows it's his takes it
+  back, with his `says`). `owner: <cast id>`: he reacts once to each item he finds there (sees it within 2 tiles):
+  `found: 'take'` (default; `npc.carry`, `world[place]` = his id) or a behaviour hook's name, run as
+  `arrive(game, npc, sim, { type, spot, item })`. No owner: nobody minds it.
+  `inspections` (`src/sim/mechanics/inspection.js`): `[{ npc, at, override, plan, label, look?, checks, pass?, fail? }]`. From
+  game minute `at` (once he is on the floor with no override, never after the gather; once a loop) he walks the `checks` in
+  order: `{ item, spot, from? }` (an item of that type lies on that spot; he stands at `from`, default the spot) or
+  `{ who: 'player'|castId, zone, from }`. Each is judged when he arrives at it, not before: a ✔️ or ❌ sign over the item's
+  place, the person or the zone, then he stands `look` s (default 1). All ✔️: `pass { set?, event?, says? }`. The first ❌ ends
+  it: `fail { set?, event?, says?, then? }`, `then` = `'caught'` (rules caught, reason 'inspection', by him) | `'stare'` |
+  `'hunt'` (his `level.hunts` entry) | a behaviour hook's name (`arrive(game, npc, sim, { index })`) | none. A lure can pull
+  him off it (dropped); the gather leaves him to finish.
   `failSign` (optional): `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (scenario's end beat).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
@@ -208,7 +224,7 @@ game = {
   busy/pose logic, seated logic, sets `clock.ff`. Locked during forced work (seated, typing).
   Any movement input while seated stands you up.
 - `updateInteractions(game, dt)`: finds `player.focus`, starts, progresses and cancels timed actions, and applies their results
-  (`done`, right after `'action:done'`). The table is `level.interactions` then the generic sit, drop and pick_up (`actionRow(game, verb)`;
+  (`done`, right after `'action:done'`). The table is `level.interactions` then the generic sit, drop, pick_up and put (`actionRow(game, verb)`;
   an action is cancelled `'invalid'` once it stops being offered). Level 1:
   - coffee_machine + empty hands, coffee 'pot' → brew_coffee → held 'coffee', coffee 'taken', emit 'coffee:taken' {by:'player'}
   - projector + coffee, projector 'ok' → spill_coffee (sneaky) → projector 'broken', held null, emit 'projector:broken', sparks/smoke burst
@@ -217,7 +233,8 @@ game = {
   - own_desk → sit (snap to SPOTS.player_desk, seated)
   - holding the sandwich with no other valid target → eat_sandwich (sneaky) → sandwich 'eaten', crumbs, emit 'sandwich:eaten'
   - holding something else with no other valid target → drop it at the player's feet (an item with a `place`: `world[place]` → 'dropped')
-  - empty hands near a dropped item (≤1.0 tiles) → pick_up
+  - empty hands near a dropped item (≤1.0 tiles; an item on a spot ≤INTERACT_RADIUS) → pick_up
+  - holding what a free spot takes, within INTERACT_RADIUS of where it would lie → put (instant; `'item:put' {type, spot}`)
   The nearest valid target wins. Movement input during an action cancels it (`'action:cancel' {reason:'moved'}`).
 - `updateRules(game, dt)`: witnesses (NOTICE 0.3 s of continuous sight, ❓ at first sight), tattling, owners taking things back,
   contraband, boss suspicion, work assignment (sets `clock.forced = WORK_PENALTY_MIN`, snaps the player to the desk, emits
@@ -260,6 +277,12 @@ game = {
 | `action:start` / `action:done` | `{type, targetId}` | interactions |
 | `action:cancel` | `{type, targetId, reason: 'moved'\|'invalid'\|'locked'\|'witnessed'\|'caught'\|'meeting'}` | interactions / rules / scenario |
 | `item:drop` / `item:pickup` | `{type}` | interactions |
+| `item:put` | `{type, spot}` | interactions (put down on a spot that takes it) |
+| `item:found` | `{type, spot, by}` | sim (a spot's cast owner found it there) |
+| `inspect:start` | `{by}` | sim (an inspection sets off) |
+| `inspect:pass` / `inspect:fail` | `{by, index}` | sim (check `index` judged on arrival: ✔️ / ❌ sign) |
+| `inspect:done` | `{by, failed}` | sim (`failed`: the ❌ check's index, or null) |
+| `inspect:moved` | `{by, index}` | sim (an item he already ticked off left its spot mid-inspection; once per check) |
 | `player:sit` / `player:stand` | `{}` | player / interactions |
 | `busy:start` / `busy:end` | `{pose}` | player |
 | `witness:notice` | `{by}` | rules (❓, first sight of something sneaky) |
@@ -307,7 +330,7 @@ tick(game, dt):  updatePlayer → updateInteractions → updateNpcs → updateRu
 ## AI-agent harness (`src/agent/*`, `tools/play.mjs`)
 An LLM agent (or a script) can play the real game headlessly. `createHarness()` builds a game with a
 scripted Input (same interface as the keyboard), and `run('<command>')` executes human-level commands
-(`goto`, `interact`, `busy`, `wait`, `move`, `sit`, `continue`, `restart`) by pressing virtual keys frame by frame,
+(`goto`, `interact`, `busy`, `wait`, `move`, `sit`, `put`, `continue`, `restart`) by pressing virtual keys frame by frame,
 mirroring main.js (fast-forward and forced-work multipliers included). Commands stop early on notable events.
 `observe()` returns a text view limited to what a human can see: map, watched tiles, people, bubbles, HUD.
 NPC schedules are hidden unless `{debug:true}`. The CLI replays a session's command log on every call
@@ -317,7 +340,9 @@ The level's own words live in `level.harness` (`src/levels/meeting/harness.js`, 
 (`{ hard, soft }` level events that end a command early, on top of caught/day:end and witness:notice/witness:tattle/
 action:cancel), `names`, `mapKey`, and text hooks `outcomeText(o)`, `playerText(game)`, `statusText(game)`,
 `npcText(game, n)`, `worldText(game)` and `describe(event, memo)` (a line, `null` for silence, `undefined` for the
-harness's own text). All optional: without them the harness prints plain defaults. `helpText(level)` lists the goto
+harness's own text). All optional: without them the harness prints plain defaults. `put [spot] [pretend]` walks to the
+nearest free spot (or that spot) that takes what you hold and puts it down; with no such spot it is a no-op ("nothing to put
+down"), which the fuzzer skips. `helpText(level)` lists the goto
 targets (interactables, then landmarks); `describeEvents(events, { level })` defaults to the registry's default level,
 and a harness's own `h.describeEvents` uses its level. `createHarness({ level })` takes a level object or a registry
 id (default: the registry's default level). `node tools/play.mjs new <session> --level <id>` writes the level id as
@@ -334,7 +359,8 @@ about a level comes from its folder: `levelData(id)` merges the route ids (`leve
 (`day.meetingAt` ends every plan) and `level.gate` (`src/levels/meeting/gate.js`: `mustUse` lessons, `targets` and
 `interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name; every
 level also gets the engine's `noise` -> 'noise' and `npc:heard` -> 'heard:<id>', and 'noise' as a bin key),
-`binKeys`, `keyActions`). Workers get the level id and build their own data; `evaluate()` builds
+`binKeys`, `keyActions`). A level with spots that take items also gets `put <spot> [pretend]` plan steps (levels without
+them draw exactly the random numbers they always did). Workers get the level id and build their own data; `evaluate()` builds
 `createHarness({ level: L.id })`. An unknown `--level` (on every tool below too) exits 2 with the registry's ids.
 `tools/gate.mjs [--level meeting]` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
 `--budget 30000`, ~30 s) and exits 1 if a route has no winning plan, a win takes 3 plan steps or fewer, random

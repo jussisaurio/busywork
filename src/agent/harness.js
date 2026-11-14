@@ -15,6 +15,7 @@ import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
 import { TARGET_ACTIONS } from '../play/interactions.js';
+import { putSpots, canPut } from '../sim/mechanics/putdown.js';
 import { parseMap } from '../core/map.js';
 import { createScriptedInput } from './scripted-input.js';
 import { getLevel, defaultLevel } from '../levels/index.js';
@@ -46,6 +47,7 @@ export function helpText(level = defaultLevel) {
 ${targets.map((l, i) => `${' '.repeat(i ? 40 : 31)}${i ? '' : 'targets: '}${l}`).join('\n')}
   move <N|S|E|W|NE|NW|SE|SW> <dur> [pretend]   raw walking
   interact                     press E (uses the current ✋ target) and wait for the action to finish
+  put [spot] [pretend]         walk to the nearest free spot (or that one) that takes what you hold, put it down
   sit                          goto own_desk and sit down (same as: goto my_seat; interact)
   pretend <dur>                hold PRETEND (Shift) in place
   wait <dur>                   stand/sit idle
@@ -287,6 +289,9 @@ export function createHarness({ level = defaultLevel } = {}) {
       case 'interact':
         result = interact();
         break;
+      case 'put':
+        result = put(tokens.find((t) => !PRETEND(t)), tokens.some(PRETEND));
+        break;
       case 'busy':
       case 'wait': {
         const d = parseDuration(tokens);
@@ -302,6 +307,25 @@ export function createHarness({ level = defaultLevel } = {}) {
     }
     if (result.text) notes.push(result.text);
     return { text: notes.join('\n') };
+  }
+
+  // Put down what you hold on `name` (a spot), or on the nearest free spot that takes it.
+  function put(name, busy) {
+    const p = game.player;
+    const free = putSpots(game.level).filter((e) => (!name || e.name === name) && canPut(p, game.world, e));
+    const what = p.held ? `the ${p.held}` : 'empty hands';
+    if (!free.length) {
+      frame();
+      return { text: `nothing to put down here: no free spot${name ? ` ${name}` : ''} takes ${what}` };
+    }
+    const isTarget = () => p.focus?.action === 'put' && free.some((e) => e.name === p.focus.id);
+    if (!isTarget()) {
+      const e = free.reduce((a, b) => (Math.hypot(b.x - p.x, b.y - p.y) < Math.hypot(a.x - p.x, a.y - p.y) ? b : a));
+      const g = goto(e.name, busy);
+      if (!/^walked/.test(g.text)) return g;
+      if (!isTarget()) return { text: `${g.text}, but the ✋ target is ${focusText(game)}` };
+    }
+    return interact();
   }
 
   function interact() {
@@ -468,6 +492,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
     if (s === undefined) switch (e.name) {
       case 'say': {
         const who = typeof p.owner === 'string' ? NAME[p.owner] ?? p.owner : 'a sign';
+        if (p.kind === 'sign' && typeof p.owner === 'string') { s = `a sign over ${who} says ${p.icons.join('')}`; break; } // an inspection's ✔️
         const you = p.owner === 'player';
         s = `${who} ${p.kind === 'thought' ? (you ? 'think' : 'thinks') : you ? 'say' : 'says'} ${p.icons.join('')}`;
         break;
@@ -486,6 +511,12 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'item:pickup': s = `you picked up the ${p.type}`; break;
       case 'noise': s = 'a noise! heads turn'; break; // (sim/mechanics/attention.js)
       case 'npc:heard': s = `${NAME[p.id] ?? p.id} looks toward the noise`; break;
+      case 'item:put': s = `you put the ${p.type} down at ${p.spot}`; break;
+      case 'item:found': s = `${NAME[p.by] ?? p.by} found the ${p.type} at ${p.spot}`; break;
+      case 'inspect:start': s = `${NAME[p.by] ?? p.by} starts an inspection 📋`; break;
+      case 'inspect:pass': s = `${NAME[p.by] ?? p.by} ticks off check ${p.index + 1} ✔️`; break;
+      case 'inspect:fail': s = `${NAME[p.by] ?? p.by} marks check ${p.index + 1} ❌`; break;
+      case 'inspect:done': s = `${NAME[p.by] ?? p.by} finishes the inspection ${p.failed === null ? '✔️' : '❌'}`; break;
       default:
         if (verbose) s = `${e.name} ${JSON.stringify(p)}`;
     }
