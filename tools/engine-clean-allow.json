@@ -1,0 +1,562 @@
+[
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "boss",
+  "count": 12
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "kev",
+  "count": 4
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "lin",
+  "count": 3
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "sandwich",
+  "count": 6
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "keycard",
+  "count": 5
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "projector",
+  "count": 8
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "coffee",
+  "count": 6
+ },
+ {
+  "file": "src/agent/harness.js",
+  "identifier": "fridge",
+  "count": 1
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "boss",
+  "count": 9
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "kev",
+  "count": 5
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "lin",
+  "count": 2
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "sandwich",
+  "count": 4
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "keycard",
+  "count": 1
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "projector",
+  "count": 10
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "coffee",
+  "count": 5
+ },
+ {
+  "file": "src/audio/audio.js",
+  "identifier": "fridge",
+  "count": 3
+ },
+ {
+  "file": "src/audio/babble.js",
+  "identifier": "boss",
+  "count": 1
+ },
+ {
+  "file": "src/audio/babble.js",
+  "identifier": "kev",
+  "count": 1
+ },
+ {
+  "file": "src/audio/babble.js",
+  "identifier": "lin",
+  "count": 12
+ },
+ {
+  "file": "src/audio/music.js",
+  "identifier": "lin",
+  "count": 1
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "boss",
+  "count": 1
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "kev",
+  "count": 3
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "lin",
+  "count": 24
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "sandwich",
+  "count": 1
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "keycard",
+  "count": 1
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "projector",
+  "count": 1
+ },
+ {
+  "file": "src/audio/sfx.js",
+  "identifier": "coffee",
+  "count": 1
+ },
+ {
+  "file": "src/audio/synth.js",
+  "identifier": "lin",
+  "count": 5
+ },
+ {
+  "file": "src/config.js",
+  "identifier": "boss",
+  "count": 2
+ },
+ {
+  "file": "src/config.js",
+  "identifier": "kev",
+  "count": 1
+ },
+ {
+  "file": "src/config.js",
+  "identifier": "lin",
+  "count": 3
+ },
+ {
+  "file": "src/core/fx.js",
+  "identifier": "smoke",
+  "count": 1
+ },
+ {
+  "file": "src/data/level.js",
+  "identifier": "projector",
+  "count": 3
+ },
+ {
+  "file": "src/data/level.js",
+  "identifier": "coffee",
+  "count": 1
+ },
+ {
+  "file": "src/data/level.js",
+  "identifier": "fridge",
+  "count": 3
+ },
+ {
+  "file": "src/data/level.js",
+  "identifier": "smoke",
+  "count": 1
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "boss",
+  "count": 2
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "kev",
+  "count": 2
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "lin",
+  "count": 2
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "coffee",
+  "count": 1
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "fridge",
+  "count": 1
+ },
+ {
+  "file": "src/data/schedules.js",
+  "identifier": "smoke",
+  "count": 1
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "sandwich",
+  "count": 13
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "keycard",
+  "count": 9
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "projector",
+  "count": 5
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "coffee",
+  "count": 8
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "fridge",
+  "count": 4
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "smoke",
+  "count": 2
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "boss",
+  "count": 22
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "kev",
+  "count": 3
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "lin",
+  "count": 3
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "sandwich",
+  "count": 4
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "keycard",
+  "count": 5
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "projector",
+  "count": 1
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "coffee",
+  "count": 4
+ },
+ {
+  "file": "src/play/rules.js",
+  "identifier": "fridge",
+  "count": 1
+ },
+ {
+  "file": "src/play/scenario.js",
+  "identifier": "keycard",
+  "count": 1
+ },
+ {
+  "file": "src/play/scenario.js",
+  "identifier": "projector",
+  "count": 3
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "boss",
+  "count": 9
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "kev",
+  "count": 2
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "lin",
+  "count": 4
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "sandwich",
+  "count": 1
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "keycard",
+  "count": 5
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "projector",
+  "count": 1
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "coffee",
+  "count": 4
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "smoke",
+  "count": 3
+ },
+ {
+  "file": "src/render/characters.js",
+  "identifier": "mustard",
+  "count": 5
+ },
+ {
+  "file": "src/render/cones.js",
+  "identifier": "boss",
+  "count": 3
+ },
+ {
+  "file": "src/render/cones.js",
+  "identifier": "lin",
+  "count": 1
+ },
+ {
+  "file": "src/render/cones.js",
+  "identifier": "sandwich",
+  "count": 1
+ },
+ {
+  "file": "src/render/effects.js",
+  "identifier": "boss",
+  "count": 4
+ },
+ {
+  "file": "src/render/effects.js",
+  "identifier": "smoke",
+  "count": 1
+ },
+ {
+  "file": "src/render/effects.js",
+  "identifier": "mustard",
+  "count": 3
+ },
+ {
+  "file": "src/render/hud.js",
+  "identifier": "mustard",
+  "count": 4
+ },
+ {
+  "file": "src/render/palette.js",
+  "identifier": "boss",
+  "count": 1
+ },
+ {
+  "file": "src/render/palette.js",
+  "identifier": "kev",
+  "count": 1
+ },
+ {
+  "file": "src/render/palette.js",
+  "identifier": "lin",
+  "count": 1
+ },
+ {
+  "file": "src/render/palette.js",
+  "identifier": "mustard",
+  "count": 1
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "boss",
+  "count": 7
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "kev",
+  "count": 2
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "lin",
+  "count": 3
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "keycard",
+  "count": 7
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "projector",
+  "count": 5
+ },
+ {
+  "file": "src/render/screens.js",
+  "identifier": "mustard",
+  "count": 4
+ },
+ {
+  "file": "src/render/util.js",
+  "identifier": "sandwich",
+  "count": 1
+ },
+ {
+  "file": "src/render/util.js",
+  "identifier": "keycard",
+  "count": 2
+ },
+ {
+  "file": "src/render/util.js",
+  "identifier": "projector",
+  "count": 1
+ },
+ {
+  "file": "src/render/util.js",
+  "identifier": "coffee",
+  "count": 1
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "boss",
+  "count": 3
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "kev",
+  "count": 5
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "lin",
+  "count": 5
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "keycard",
+  "count": 1
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "projector",
+  "count": 8
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "coffee",
+  "count": 5
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "fridge",
+  "count": 1
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "smoke",
+  "count": 3
+ },
+ {
+  "file": "src/render/world.js",
+  "identifier": "mustard",
+  "count": 10
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "boss",
+  "count": 9
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "kev",
+  "count": 4
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "lin",
+  "count": 3
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "sandwich",
+  "count": 5
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "keycard",
+  "count": 3
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "projector",
+  "count": 9
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "coffee",
+  "count": 11
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "fridge",
+  "count": 8
+ },
+ {
+  "file": "src/sim/npcs.js",
+  "identifier": "smoke",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "boss",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "sandwich",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "keycard",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "projector",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "coffee",
+  "count": 1
+ },
+ {
+  "file": "src/state.js",
+  "identifier": "fridge",
+  "count": 1
+ }
+]
