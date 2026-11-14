@@ -9,6 +9,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
+import { DECOR } from './decor-meeting.js';
 import { at, formatClock, MEETING_AT, WORK_PENALTY_MIN } from '../config.js';
 
 const RED_AT = at('3:50');
@@ -127,13 +128,13 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Sits on the blank wall block under the open office, east of the lobby (map rows 14-16).
+// Centred on DECOR.legendAt (map tiles).
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
   const p = game.player || {};
   PRESSED['⇧'] = !!p.busy;
   PRESSED.E = !!p.action;
-  drawLegendRow(ctx, LEGEND_PLAY, 640, HUD_H + 15 * T + 16, LEGEND_PLAY_STYLE, PRESSED);
+  drawLegendRow(ctx, LEGEND_PLAY, DECOR.legendAt.x * T, HUD_H + DECOR.legendAt.y * T, LEGEND_PLAY_STYLE, PRESSED);
 }
 
 // "3:50 PM" -> "3:50": digits only (the analog face carries the rest).
