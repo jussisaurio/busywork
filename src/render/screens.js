@@ -1,14 +1,14 @@
 // Title and end screens. Both are drawn over the (dimmed) office.
 import {
   VIEW_W, VIEW_H, clamp, fin, hash, easeOutBack, easeOutCubic, emoji, text, font, textWidth,
-  rrect, circle, fillEllipse, loopIcon, keycap,
+  rrect, circle, fillEllipse, loopIcon, keycap, drawScreen,
   MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { LOOKS, personState, resetState, drawPerson } from './characters.js';
 import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { drawProjector, drawChair, sparkle } from './world.js';
-import { drawBubble } from './effects.js';
+import { drawBubble, CONFETTI } from './effects.js';
 import { findNpc } from '../game/perception.js';
 
 const P = personState();
@@ -348,8 +348,8 @@ function floorTiles(ctx, x, y, w, h) {
   for (let gy = 0; gy <= h; gy += 40) ctx.fillRect(x, y + gy, w, 1.5);
 }
 
+const END_CONFETTI = CONFETTI.slice(0, 5); // no olive here
 function confetti(ctx, x0, w, y0, h, e, n) {
-  const cols = [C.tomato, C.mustard, C.teal, '#7fb3c8', '#f2ead3'];
   for (let i = 0; i < n; i++) {
     const sp = 40 + hash(i, 1) * 50;
     const x = x0 + hash(i, 2) * w + Math.sin(e * 3 + i) * 6;
@@ -357,7 +357,7 @@ function confetti(ctx, x0, w, y0, h, e, n) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(e * 4 + i);
-    ctx.fillStyle = cols[i % cols.length];
+    ctx.fillStyle = END_CONFETTI[i % END_CONFETTI.length];
     const fw = 6 * Math.abs(Math.cos(e * 8 + i)) + 1;
     ctx.fillRect(-fw / 2, -2, fw, 4);
     ctx.restore();
@@ -425,12 +425,7 @@ function tableauKeycard(ctx, game, t, e) {
 function tableauProjector(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, '#3d7a72', '#397369');
   // dead screen
-  ctx.fillStyle = '#4a4440';
-  ctx.fillRect(386, 100, 188, 6);
-  ctx.fillStyle = '#d9d6cc';
-  ctx.fillRect(392, 106, 176, 70);
-  ctx.fillStyle = 'rgba(0,0,0,0.08)';
-  for (let i = 0; i < 6; i++) ctx.fillRect(392, 112 + i * 11 + ((t * 30) % 11), 176, 2);
+  drawScreen(ctx, 392, 106, 176, 70, { bar: [6, 6, 6], face: '#d9d6cc', scan: ['rgba(0,0,0,0.08)', 6, 11, t] });
   // seated Lin (behind the table)
   const l = person(t);
   l.dir = 0;
@@ -469,15 +464,9 @@ function tableauProjector(ctx, game, t, e) {
 function tableauFail(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   // blank white slide, glowing
-  ctx.fillStyle = 'rgba(255,255,235,0.35)';
-  ctx.fillRect(372, 98, 216, 96);
-  ctx.fillStyle = '#4a4440';
-  ctx.fillRect(376, 98, 208, 6);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(382, 104, 196, 84);
-  ctx.strokeStyle = 'rgba(0,0,0,0.12)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(382.5, 104.5, 195, 83);
+  drawScreen(ctx, 382, 104, 196, 84, {
+    glow: ['rgba(255,255,235,0.35)', 10, 6, 6], bar: [6, 6, 6], face: '#ffffff', edge: 'rgba(0,0,0,0.12)',
+  });
   // presenter
   const p = person(t);
   p.dir = Math.PI / 2;
@@ -681,20 +670,10 @@ function tableauBlamed(ctx, game, t, e, o) {
 
 // The meeting-room screen: a blank glowing slide (nobody presented), or dead if the projector went.
 function meetingScreen(ctx, t, dead, dx) {
-  const x = 386 + dx;
-  ctx.fillStyle = '#4a4440';
-  ctx.fillRect(x, 98, 188, 6);
-  if (dead) {
-    ctx.fillStyle = '#9d9a92';
-    ctx.fillRect(x + 6, 104, 176, 62);
-    ctx.fillStyle = 'rgba(0,0,0,0.1)';
-    for (let i = 0; i < 6; i++) ctx.fillRect(x + 6, 108 + i * 10 + ((t * 30) % 10), 176, 2);
-    return;
-  }
-  ctx.fillStyle = 'rgba(255,255,235,0.3)';
-  ctx.fillRect(x, 104, 188, 68);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(x + 6, 104, 176, 62);
+  const x = 392 + dx;
+  const bar = [6, 6, 6];
+  if (dead) drawScreen(ctx, x, 104, 176, 62, { bar, face: '#9d9a92', scan: ['rgba(0,0,0,0.1)', 4, 10, t] });
+  else drawScreen(ctx, x, 104, 176, 62, { bar, glow: ['rgba(255,255,235,0.3)', 6, 0, 6], glowOverBar: true, face: '#ffffff' });
 }
 
 // Locked out: the boss's face pressed to a window in the back corner, fists on the glass.

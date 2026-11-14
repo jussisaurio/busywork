@@ -2,9 +2,10 @@
 // action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
   T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
-  starPath, loopIcon, text, font, MONO_FAMILY,
+  starPath, loopIcon, drawDrop, drawPaper, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
+import { headY, lookFor } from './characters.js';
 import { findNpc } from '../game/perception.js';
 
 // --- bubbles -------------------------------------------------------------------
@@ -15,13 +16,13 @@ function anchorOf(game, owner) {
     const p = game.player;
     if (p && (owner === 'player' || owner === p.id)) {
       ANCHOR.x = fin(p.x) * T;
-      ANCHOR.y = fin(p.y) * T - (p.seated ? 27 : 30);
+      ANCHOR.y = headY(p, 'bubbleDy');
       return true;
     }
     const n = game.npcs && findNpc(game, owner);
     if (!n || !n.active) return false;
     ANCHOR.x = fin(n.x) * T;
-    ANCHOR.y = fin(n.y) * T - (n.id === 'boss' ? 36 : 30) + (n.pose === 'sit' ? 3 : 0);
+    ANCHOR.y = headY(n, 'bubbleDy');
     return true;
   }
   if (owner && typeof owner === 'object' && Number.isFinite(owner.x) && Number.isFinite(owner.y)) {
@@ -160,7 +161,7 @@ function cloudPath(ctx, w, h) {
 }
 
 // --- particles -----------------------------------------------------------------
-const CONFETTI = [C.tomato, C.mustard, C.teal, '#7fb3c8', '#f2ead3', C.olive];
+export const CONFETTI = [C.tomato, C.mustard, C.teal, '#7fb3c8', '#f2ead3', C.olive];
 
 export function drawParticles(ctx, game, t) {
   const list = game.fx && game.fx.particles;
@@ -174,7 +175,7 @@ export function drawParticles(ctx, game, t) {
     const ttl = Math.max(0.01, fin(p.ttl, 1));
     const age = Math.max(0, fin(p.age));
     const k = clamp(age / ttl, 0, 1);
-    const seed = hash(Math.floor(ttl * 100003), i);
+    const seed = hash(Math.floor(ttl * 100003)); // ttl is random per particle; an index would shift as others die
     const vx = fin(p.vx);
     const vy = fin(p.vy);
     ctx.globalAlpha = 1;
@@ -205,12 +206,7 @@ export function drawParticles(ctx, game, t) {
         ctx.save();
         ctx.translate(x, y + k * 6);
         ctx.rotate(age * 5 * (seed < 0.5 ? -1 : 1) + seed * 6);
-        ctx.fillStyle = C.white;
-        ctx.fillRect(-3.5, -4.5, 7, 9);
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.fillRect(-2.5, -2.5, 5, 0.7);
-        ctx.fillRect(-2.5, -0.5, 5, 0.7);
-        ctx.fillRect(-2.5, 1.5, 3.5, 0.7);
+        drawPaper(ctx, 7, 9, 3);
         ctx.restore();
         break;
       }
@@ -221,13 +217,7 @@ export function drawParticles(ctx, game, t) {
       }
       case 'sweat': {
         ctx.globalAlpha = 1 - k;
-        const yy = y + k * 5;
-        ctx.fillStyle = '#8fd0ff';
-        ctx.beginPath();
-        ctx.moveTo(x, yy - 3);
-        ctx.quadraticCurveTo(x + 2.2, yy, x, yy + 1.5);
-        ctx.quadraticCurveTo(x - 2.2, yy, x, yy - 3);
-        ctx.fill();
+        drawDrop(ctx, x, y + k * 5, 3, 2.2, 1.5);
         break;
       }
       case 'confetti': {
@@ -281,9 +271,8 @@ export function drawSightlines(ctx, game, t) {
     const fade = 1 - age / ttl;
     if (!(fade > 0.01)) continue;
     // eyes: head centre, nudged toward you so the line leaves the face, not the hair
-    const boss = n.id === 'boss';
     let ex = fin(n.x, NaN) * T;
-    let ey = fin(n.y, NaN) * T - (boss ? 14 : 12) + (n.pose === 'sit' ? 3 : 0);
+    let ey = headY(n, 'eyeDy', NaN);
     if (!Number.isFinite(ex) || !Number.isFinite(ey)) continue;
     const dx = px - ex;
     const dy = py - ey;
@@ -392,7 +381,7 @@ export function drawSuspicion(ctx, game, t) {
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;
   const x = fin(boss.x) * T + 17 + jit;
-  const y = fin(boss.y) * T - 46;
+  const y = fin(boss.y) * T - lookFor(boss.id, boss.color).bubbleDy - 10;
   const h = 20;
   ctx.fillStyle = 'rgba(24,19,15,0.8)';
   rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);

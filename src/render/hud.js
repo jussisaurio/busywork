@@ -4,12 +4,13 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap,
+  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
   MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { formatClock, WORK_PENALTY_MIN, DAY_START } from '../config.js';
+import { DECOR } from './decor-meeting.js';
+import { formatClock, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -124,13 +125,13 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Sits on the blank wall block under the open office, east of the lobby (map rows 14-16).
+// Centred on DECOR.legendAt (map tiles).
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
   const p = game.player || {};
   PRESSED['⇧'] = !!p.busy;
   PRESSED.E = !!p.action;
-  drawLegendRow(ctx, LEGEND_PLAY, 640, HUD_H + 15 * T + 16, LEGEND_PLAY_STYLE, PRESSED);
+  drawLegendRow(ctx, LEGEND_PLAY, DECOR.legendAt.x * T, HUD_H + DECOR.legendAt.y * T, LEGEND_PLAY_STYLE, PRESSED);
 }
 
 // "3:50 PM" -> "3:50": digits only (the analog face carries the rest).
@@ -160,23 +161,7 @@ function drawClock(ctx, minute, t, day) {
     const a = (i / 12) * Math.PI * 2;
     fillCircle(ctx, cx + Math.cos(a) * 10, cy + Math.sin(a) * 10, i % 3 ? 0.6 : 1.1, C.ink);
   }
-  const total = DAY_START + minute;
-  const mA = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  const hA = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = C.ink;
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(hA) * 6, cy + Math.sin(hA) * 6);
-  ctx.stroke();
-  ctx.strokeStyle = red ? C.tomatoDark : C.ink;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(mA) * 9.5, cy + Math.sin(mA) * 9.5);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
+  clockHands(ctx, cx, cy, minute, 6, 2.4, 9.5, 1.5, red ? C.tomatoDark : C.ink);
   fillCircle(ctx, cx, cy, 1.5, C.tomato);
 
   const hm = clockDigits(minute);
