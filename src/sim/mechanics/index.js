@@ -9,8 +9,9 @@
 //   keepsThroughMeeting        the gather doesn't send its NPC to the meeting
 import * as lure from './lure.js';
 import * as hunt from './hunt.js';
+import * as door from './door.js';
 
-const KINDS = [['lures', lure], ['hunts', hunt]];
+const KINDS = [['lures', lure], ['hunts', hunt], ['doors', door]];
 const cache = new WeakMap();
 
 export function mechanics(level) {

@@ -39,7 +39,7 @@ everyone relies on**.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  `hunts`, `doors`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -49,7 +49,9 @@ everyone relies on**.
   `lures`: `[{ npc, when(world), override, plan, label, spot, react { wait, says?, event? }, work { override, minutes, progress,
   start { set?, event?, says? }, done { set?, event?, says? } } }]`. `hunts`: `[{ npc, override, plan, label, route,
   look { angle, time }, start { event?, says?, wait? }, until?, found(game, npc), end { says? } }]` (started by a behaviour
-  hook through `startHunt(game, npc)`, `src/sim/mechanics/index.js`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
+  hook through `startHunt(game, npc)`, `src/sim/mechanics/index.js`). `doors`: `[{ spot, zone, npcs, opens(game, npc), override,
+  plan, label, locked { set?, event? }, bang { first, lines [{ say, next }], event?, shake? } }]` (whether a door tile blocks
+  walking or sight is the map legend's `npcPassable`/`opaque`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
@@ -154,7 +156,7 @@ game = {
 2. **Jacket and keycard.** When the boss starts his 3:35 entry (he is at his desk): he walks to the coat rack first, takes the jacket
    (`world.jacket='boss'`, `hasJacket=true`, emit `'boss:jacket'`). If `world.keycard==='rack'`, it becomes `'boss'`.
    Then he goes to smoke.
-3. **Lockout.** When the boss walks back from outside (3:48), if `world.keycard !== 'boss'` he stops at `SPOTS.door_out`, facing N:
+3. **Lockout** (a door, `level.doors`). When the boss walks back from outside (3:48), if `world.keycard !== 'boss'` he stops at `SPOTS.door_out`, facing N:
    `override='lockedOut'`, `world.bossLockedOut=true`, emit `'boss:lockedOut'`. Then every ~2.5 s he `say`s one of 😠🚪🪪 / 🪪❓ / 👊🚪
    (kind 'speech'), emits `'boss:bang'` and does a small `shake`. He stays there for the rest of the day.
 4. **Lin's sandwich** (a hunt, `level.hunts`). On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it

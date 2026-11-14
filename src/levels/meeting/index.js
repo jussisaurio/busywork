@@ -12,6 +12,7 @@
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up
+//   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
@@ -22,7 +23,7 @@ import { NPC_DEFS } from './cast.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
-import { LURES, HUNTS } from './mechanics.js';
+import { LURES, HUNTS, DOORS } from './mechanics.js';
 
 export default {
   id: 'meeting',
@@ -47,6 +48,7 @@ export default {
   roles: ROLES,
   lures: LURES,
   hunts: HUNTS,
+  doors: DOORS,
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
     { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },

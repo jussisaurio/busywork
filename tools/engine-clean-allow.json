@@ -317,7 +317,7 @@
  {
   "file": "src/sim/npcs.js",
   "identifier": "boss",
-  "count": 9
+  "count": 5
  },
  {
   "file": "src/sim/npcs.js",
@@ -337,7 +337,7 @@
  {
   "file": "src/sim/npcs.js",
   "identifier": "keycard",
-  "count": 3
+  "count": 2
  },
  {
   "file": "src/sim/npcs.js",

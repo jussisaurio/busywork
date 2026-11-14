@@ -45,3 +45,23 @@ export const HUNTS = [
     end: { says: [{ say: ['😤'] }] },
   },
 ];
+
+// Doors (level.doors): listed NPCs coming in from `zone` must open it, or they're shut out for the day.
+export const DOORS = [
+  { // The glass entrance: the boss badges in with the keycard from his jacket. Without it he bangs on the glass.
+    spot: 'door_out',
+    zone: 'outside',
+    npcs: ['boss'],
+    opens: (game, npc) => game.world.keycard === npc.id,
+    override: 'lockedOut',
+    plan: 'lockout',
+    label: 'locked out',
+    locked: { set: { bossLockedOut: true }, event: 'boss:lockedOut' },
+    bang: {
+      first: 0.8,
+      lines: [{ say: ['😠', '🚪', '🪪'], next: 2.5 }, { say: ['🪪', '❓'], next: 2.2 }, { say: ['👊', '🚪'], next: 2.8 }],
+      event: 'boss:bang',
+      shake: [0.12, 0.25],
+    },
+  },
+];

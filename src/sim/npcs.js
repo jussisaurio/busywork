@@ -14,12 +14,12 @@ import {
   SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT,
   GLANCE_EVERY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
-import { DIRS, angleDiff } from '../core/vision.js';
+import { angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
-import { say, shake } from '../core/fx.js';
-import { spotPos, inZone } from '../game/perception.js';
+import { say } from '../core/fx.js';
+import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
-import { setOverride, endOverride, npcSayLater, holdFor, spotLeg } from './override.js';
+import { setOverride, npcSayLater, spotLeg } from './override.js';
 import { mechanics, mechanicOf, startHunt } from './mechanics/index.js';
 
 export { npcSayLater };
@@ -34,9 +34,6 @@ const JACKET_TIME = 0.8; // s the boss spends at the coat rack
 const POUR_TIME = 1.0; // s Kev spends pouring the day's cup
 const EMPTY_POT_TIME = 1.6; // s Kev stares at the empty pot
 const SANDWICH_TIME = 0.6; // s Lin spends taking her sandwich out of the fridge
-const BANGS = [['😠', '🚪', '🪪'], ['🪪', '❓'], ['👊', '🚪']]; // cycled (deterministic)
-const BANG_EVERY = [2.5, 2.2, 2.8]; // s until the next bang, cycled alongside BANGS
-const FIRST_BANG = 0.8; // s after the door doesn't open
 // Walking to the meeting, NPCs speed up just enough to be seated by the meeting (level day.meetingAt) when the walk from where they
 // are at the gather is longer than the time left. Capped multiplier:
 const MEETING_HURRY_MAX = 1.3;
@@ -107,8 +104,8 @@ export function createNpc(game, def, now = 0) {
     _gathered: false, // the 3:54 gather has been processed for this NPC
     _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
     _reacted: false, // boss meeting reaction done
-    _bangT: 0,
-    _bangI: 0,
+    _bangT: 0, // a door's knocking: s to the next bang...
+    _bangI: 0, // ...and which line
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
@@ -124,7 +121,7 @@ export function updateNpcs(game, dt) {
     for (const n of npcs) {
       n._gathered = true;
       // A lure's job is finished first (endOverride sends him to the meeting afterwards).
-      if (n._gone || n.override === 'lockedOut' || mechanicOf(game, n)?.kind.keepsThroughMeeting) continue;
+      if (n._gone || mechanicOf(game, n)?.kind.keepsThroughMeeting) continue;
       setOverride(n, 'meeting');
     }
     game.events.emit('meeting:gather', {});
@@ -218,7 +215,6 @@ function planKey(game, npc, now) {
   if (m) return m.kind.key(m.data, npc);
   const seq = npc._ovSeq;
   switch (npc.override) {
-    case 'lockedOut': return 'lockout';
     case 'meeting': return `meeting#${seq}`;
     default: {
       const i = entryIndex(npc, now);
@@ -234,9 +230,9 @@ function buildPlan(game, npc, now, key) {
     key, label: key, legs: [], li: 0, path: null, wp: 0, done: false,
     pose: 'stand', vanish: null, loop: false, onDone: null, hurry: false,
   };
-  if (key === 'gone' || key === 'lockout') {
+  if (key === 'gone') {
     plan.done = true;
-    plan.label = key === 'gone' ? 'gone' : 'locked out';
+    plan.label = 'gone';
     return plan;
   }
   const kind = key.split('#')[0];
@@ -263,12 +259,9 @@ function buildPlan(game, npc, now, key) {
     plan.vanish = e.do === 'away' || e.do === 'leave' ? e.do : null;
     plan.label = `${e.do} ${e.spot ?? e.route}`;
   }
-  // 3. Lockout check: the boss coming in from the lobby must get through the glass door first.
-  // (Only when heading inside, so walking out through door_out never triggers it.)
-  const inLobby = npc.id === 'boss' && inZone(game, 'outside', npc.x, npc.y);
-  if (inLobby && plan.legs.length && !inZone(game, 'outside', plan.legs[0].x, plan.legs[0].y)) {
-    plan.legs.unshift(spotLeg(game, 'door_out', { arrive: bossDoorCheck }));
-  }
+  if (plan.done) return plan; // (a door's lockout)
+  // Doors: coming in from a door's zone, its NPCs go through the door first.
+  for (const d of mechanics(game.level)) d.kind.prelude?.(game, npc, plan, d.data);
   return plan;
 }
 
@@ -286,7 +279,6 @@ function stepPlan(game, npc, dt) {
   const plan = npc._plan;
   const m = mechanicOf(game, npc);
   if (m) m.kind.tick?.(game, npc, dt, m.data);
-  if (npc.override === 'lockedOut') tickBang(game, npc, dt);
   if (npc._look) npc._look.t += dt;
   if (npc._wait > 0) {
     npc._wait = Math.max(0, npc._wait - dt);
@@ -394,28 +386,6 @@ function bossJacket(game, npc) {
   if (w.keycard === 'rack') w.keycard = 'boss';
   npc._wait = Math.max(npc._wait, JACKET_TIME);
   game.events.emit('boss:jacket', {});
-}
-
-// 3. Boss reaches the glass door from outside.
-function bossDoorCheck(game, npc) {
-  const w = game.world;
-  if (w.keycard === 'boss') return; // badge in, carry on
-  setOverride(npc, 'lockedOut');
-  w.bossLockedOut = true;
-  npc._faceTarget = DIRS.N;
-  npc.pose = 'stand';
-  npc._bangT = FIRST_BANG;
-  game.events.emit('boss:lockedOut', {});
-}
-
-function tickBang(game, npc, dt) {
-  npc._bangT -= dt;
-  if (npc._bangT > 0) return;
-  const i = npc._bangI++ % BANGS.length;
-  say(game, npc.id, BANGS[i], { kind: 'speech', voice: npc.voice });
-  game.events.emit('boss:bang', {});
-  shake(game, 0.12, 0.25);
-  npc._bangT += BANG_EVERY[i];
 }
 
 // 4. Lin opens the fridge.
