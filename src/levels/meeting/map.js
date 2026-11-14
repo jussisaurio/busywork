@@ -24,11 +24,14 @@ export const MAP = [
   '##EE##########################', // 16
 ];
 
+// Each letter: { kind, solid, opaque, interactable?, npcPassable?, draw? } (core/map.js). draw: what the renderer
+// draws it as (render/world.js TILE_DRAWS); without one, its kind (coat_rack, coffee_machine, own_desk, entrance,
+// restroom and elevator are draws too).
 export const LEGEND = {
   K: { kind: 'coat_rack', solid: true, opaque: false, interactable: 'coat_rack' },
-  F: { kind: 'fridge', solid: true, opaque: true, interactable: 'fridge' },
+  F: { kind: 'fridge', solid: true, opaque: true, interactable: 'fridge', draw: 'refrigerator' },
   C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
-  J: { kind: 'projector', solid: true, opaque: false, interactable: 'projector' },
+  J: { kind: 'projector', solid: true, opaque: false, interactable: 'projector', draw: 'meeting_table' }, // the slideProjector prop on top
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
   R: { kind: 'restroom', solid: true, opaque: true },

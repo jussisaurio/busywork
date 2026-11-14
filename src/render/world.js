@@ -8,9 +8,51 @@ import { C } from './palette.js';
 import { WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
-const WALLISH = new Set(['#', 'R', 'E']);
-const STRUCT = new Set(['#', 'R', 'E', 'G', 'L', 'D']); // glass arms connect to these
-const DESKISH = new Set(['T', 'P', 'J', 'C']);
+
+// What a map tile draws as: its legend entry's `draw`, else its kind (core/map.js; off the map: 'wall'). The base
+// legend's kinds are draws already; a level's own letters say which one they look like. The draws:
+//   wall            a wall block                        floor      the floor of its room (decor.zoneSeeds)
+//   glass           a glass partition                   outside    the lobby's tiled floor
+//   entrance        a glass door in a glass wall, doormats either side
+//   door            a doorway in a wooden frame         restroom   a wall with a 🚻 door in it
+//   elevator        a wall with lift doors; they open as an active NPC nears decor.elevator.spot
+//   desk            a desk or table tile: touching desk tiles make one piece of furniture, drawn by what it holds
+//   own_desk        a desk tile that makes its piece the player's workstation
+//   meeting_table   a desk tile that makes its piece the meeting table (rug, notepads; a slideProjector prop on it)
+//   coffee_machine  a desk tile with a coffee machine on it: its piece is the kitchen counter
+//   plant           a potted plant                      coat_rack  a coat-rack stand (the coatRack prop hangs things)
+//   refrigerator    a tall fridge
+// Any other draw is plain floor (a decor prop can stand on it). The level validator (src/levels/validate.js)
+// rejects a legend `draw` not in TILE_DRAWS.
+export const TILE_DRAWS = [
+  'wall', 'glass', 'entrance', 'door', 'restroom', 'elevator', 'floor', 'outside', 'desk', 'own_desk',
+  'meeting_table', 'coffee_machine', 'plant', 'coat_rack', 'refrigerator',
+];
+const WALLISH = new Set(['wall', 'restroom', 'elevator']);
+const STRUCT = new Set([...WALLISH, 'glass', 'entrance', 'door']); // glass arms connect to these
+const DESKISH = new Set(['desk', 'own_desk', 'meeting_table', 'coffee_machine']);
+
+// The draw at tile (x, y), from a grid built once per map.
+const drawGrids = new WeakMap();
+function drawAt(map, x, y) {
+  if (x < 0 || y < 0 || x >= map.w || y >= map.h) return 'wall';
+  let grid = drawGrids.get(map);
+  if (!grid) {
+    grid = [];
+    for (let ty = 0; ty < map.h; ty++) for (let tx = 0; tx < map.w; tx++) {
+      const t = map.tile(tx, ty);
+      grid.push(t.draw ?? t.kind);
+    }
+    drawGrids.set(map, grid);
+  }
+  return grid[y * map.w + x];
+}
+// Every tile with draw `name`, in reading order.
+function findDraw(map, name) {
+  const out = [];
+  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (drawAt(map, x, y) === name) out.push({ x, y });
+  return out;
+}
 
 const FACE = { N: -Math.PI / 2, S: Math.PI / 2, E: 0, W: Math.PI };
 
@@ -33,14 +75,14 @@ function mapInfo(map, level) {
   const w = map.w;
   const h = map.h;
   const zone = new Array(w * h).fill(null);
-  const barrier = (c) => WALLISH.has(c) || c === 'G' || c === 'L' || c === 'D';
+  const barrier = (d) => STRUCT.has(d);
   const flood = (sx, sy, name) => {
     const stack = [[sx, sy]];
     while (stack.length) {
       const [x, y] = stack.pop();
       if (x < 0 || y < 0 || x >= w || y >= h) continue;
       const i = y * w + x;
-      if (zone[i] || barrier(map.char(x, y))) continue;
+      if (zone[i] || barrier(drawAt(map, x, y))) continue;
       zone[i] = name;
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
@@ -48,39 +90,39 @@ function mapInfo(map, level) {
   for (const s of decor.zoneSeeds || []) flood(s.x, s.y, s.zone);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const c = map.char(x, y);
-      if (c === ':') zone[y * w + x] = 'lobby';
-      else if (!zone[y * w + x] && !barrier(c)) zone[y * w + x] = 'carpet';
+      const d = drawAt(map, x, y);
+      if (d === 'outside') zone[y * w + x] = 'lobby';
+      else if (!zone[y * w + x] && !barrier(d)) zone[y * w + x] = 'carpet';
     }
   }
 
-  // Desk components (connected T/P/J/C tiles).
+  // Desk components (connected desk-like tiles: DESKISH).
   const seen = new Set();
   const desks = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (!DESKISH.has(map.char(x, y)) || seen.has(y * w + x)) continue;
-      const comp = { x0: x, y0: y, x1: x, y1: y, chars: new Set() };
+      if (!DESKISH.has(drawAt(map, x, y)) || seen.has(y * w + x)) continue;
+      const comp = { x0: x, y0: y, x1: x, y1: y, draws: new Set() };
       const stack = [[x, y]];
       seen.add(y * w + x);
       while (stack.length) {
         const [cx, cy] = stack.pop();
-        comp.chars.add(map.char(cx, cy));
+        comp.draws.add(drawAt(map, cx, cy));
         comp.x0 = Math.min(comp.x0, cx);
         comp.x1 = Math.max(comp.x1, cx);
         comp.y0 = Math.min(comp.y0, cy);
         comp.y1 = Math.max(comp.y1, cy);
         for (const [nx, ny] of [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]) {
           if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-          if (!DESKISH.has(map.char(nx, ny)) || seen.has(ny * w + nx)) continue;
+          if (!DESKISH.has(drawAt(map, nx, ny)) || seen.has(ny * w + nx)) continue;
           seen.add(ny * w + nx);
           stack.push([nx, ny]);
         }
       }
       const z = zone[comp.y0 * w + comp.x0];
-      if (comp.chars.has('P')) comp.kind = 'player';
-      else if (comp.chars.has('J')) comp.kind = 'meeting';
-      else if (comp.chars.has('C')) comp.kind = 'counter';
+      if (comp.draws.has('own_desk')) comp.kind = 'player';
+      else if (comp.draws.has('meeting_table')) comp.kind = 'meeting';
+      else if (comp.draws.has('coffee_machine')) comp.kind = 'counter';
       else if (z === 'kitchen') comp.kind = 'kitchenTable';
       else if (z === 'office') comp.kind = 'exec';
       else comp.kind = 'work';
@@ -101,8 +143,8 @@ function mapInfo(map, level) {
     desks,
     playerDesk: desks.find((d) => d.kind === 'player') || null,
     props: (decor.props || NONE).map((pr) => find1(pr.tile)), // decor.props' tiles, in order (null: not on the map)
-    entrance: find1('L'),
-    elevator: map.find('E'),
+    entrance: findDraw(map, 'entrance')[0] || null,
+    elevator: findDraw(map, 'elevator'),
     screen: sc ? { x: sc.x * T + 2, y: frontY(sc.y) - 1, w: sc.w * T - 6, h: 28 } : null,
   };
   infoCache.set(map, info);
@@ -126,23 +168,23 @@ export function drawStaticLayer(ctx, map, level) {
   // 3. soft shadow at the foot of walls
   for (let y = 1; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      if (WALLISH.has(map.char(x, y))) continue;
-      if (!WALLISH.has(map.char(x, y - 1))) continue;
+      if (WALLISH.has(drawAt(map, x, y))) continue;
+      if (!WALLISH.has(drawAt(map, x, y - 1))) continue;
       ctx.fillStyle = 'rgba(30,18,10,0.10)';
       ctx.fillRect(x * T, y * T, T, 7);
       ctx.fillRect(x * T, y * T, T, 3);
     }
   }
   // 4. walls
-  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (WALLISH.has(map.char(x, y))) drawWall(ctx, map, x, y);
+  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (WALLISH.has(drawAt(map, x, y))) drawWall(ctx, map, x, y);
   // 5. glass, doors, entrance, restroom, elevator
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      const c = map.char(x, y);
-      if (c === 'G') drawGlass(ctx, map, x, y, false);
-      else if (c === 'L') drawGlass(ctx, map, x, y, true);
-      else if (c === 'D') drawDoor(ctx, map, x, y);
-      else if (c === 'R') drawRestroom(ctx, x, y);
+      const d = drawAt(map, x, y);
+      if (d === 'glass') drawGlass(ctx, map, x, y, false);
+      else if (d === 'entrance') drawGlass(ctx, map, x, y, true);
+      else if (d === 'door') drawDoor(ctx, map, x, y);
+      else if (d === 'restroom') drawRestroom(ctx, x, y);
     }
   }
   if (info.elevator.length) drawElevator(ctx, info.elevator);
@@ -157,11 +199,11 @@ export function drawStaticLayer(ctx, map, level) {
   // 9. appliances and props
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      const c = map.char(x, y);
-      if (c === 'H') drawPlant(ctx, x * T + T / 2, y * T + T / 2);
-      else if (c === 'F') drawFridge(ctx, x * T, y * T);
-      else if (c === 'C') drawCoffeeMachine(ctx, x * T, y * T);
-      else if (c === 'K') drawRackBase(ctx, x * T + T / 2, y * T + T / 2);
+      const d = drawAt(map, x, y);
+      if (d === 'plant') drawPlant(ctx, x * T + T / 2, y * T + T / 2);
+      else if (d === 'refrigerator') drawFridge(ctx, x * T, y * T);
+      else if (d === 'coffee_machine') drawCoffeeMachine(ctx, x * T, y * T);
+      else if (d === 'coat_rack') drawRackBase(ctx, x * T + T / 2, y * T + T / 2);
     }
   }
   // ashtray on the tile east of a spot
@@ -182,11 +224,11 @@ function floorKindForGlassSide(info, x, y) {
 }
 
 function drawFloorTile(ctx, map, info, x, y) {
-  const c = map.char(x, y);
-  if (WALLISH.has(c)) return;
-  if (c === 'G' || c === 'L') {
+  const d = drawAt(map, x, y);
+  if (WALLISH.has(d)) return;
+  if (isGlass(d)) {
     // Split the tile between the floors on either side of the glass.
-    const horiz = STRUCT.has(map.char(x - 1, y)) || STRUCT.has(map.char(x + 1, y));
+    const horiz = STRUCT.has(drawAt(map, x - 1, y)) || STRUCT.has(drawAt(map, x + 1, y));
     if (horiz) {
       clipPaint(ctx, x, y, x * T, y * T, T, T / 2, floorKindForGlassSide(info, x, y - 1));
       clipPaint(ctx, x, y, x * T, y * T + T / 2, T, T / 2, floorKindForGlassSide(info, x, y + 1));
@@ -196,7 +238,7 @@ function drawFloorTile(ctx, map, info, x, y) {
     }
     return;
   }
-  const kind = c === 'D' ? 'carpet' : info.zoneAt(x, y) || 'carpet';
+  const kind = d === 'door' ? 'carpet' : info.zoneAt(x, y) || 'carpet';
   paintFloor(ctx, kind, x, y);
 }
 
@@ -318,7 +360,7 @@ function drawRugs(ctx, map, info) {
 function drawWall(ctx, map, x, y) {
   const px = x * T;
   const py = y * T;
-  const wall = (cx, cy) => WALLISH.has(map.char(cx, cy));
+  const wall = (cx, cy) => WALLISH.has(drawAt(map, cx, cy));
   const front = y + 1 < map.h && !wall(x, y + 1);
   const enclosed = wall(x - 1, y) && wall(x + 1, y) && wall(x, y - 1) && wall(x, y + 1) &&
     wall(x - 1, y - 1) && wall(x + 1, y + 1) && wall(x - 1, y + 1) && wall(x + 1, y - 1);
@@ -352,22 +394,23 @@ function drawWall(ctx, map, x, y) {
 }
 
 // --- glass -------------------------------------------------------------------
+const isGlass = (d) => d === 'glass' || d === 'entrance';
+
 // Glass partitions must read as windows at a glance: a tall translucent pane with the floor
 // showing through, thin frame rails, a mullion between panes and diagonal reflection streaks.
 // Horizontal runs show the pane's face (3/4 view); vertical runs are a wide framed strip.
 const GLASS_TOP = 4; // horizontal pane: top rail, px below the tile top
 const GLASS_BOT = 28; // horizontal pane: sill
 const GLASS_HW = 7; // vertical strip: half width
-const isGlass = (c) => c === 'G' || c === 'L';
 
 function drawGlass(ctx, map, x, y, entrance) {
   const px = x * T;
   const py = y * T;
   const cx = px + T / 2;
-  const n = STRUCT.has(map.char(x, y - 1));
-  const s = STRUCT.has(map.char(x, y + 1));
-  const w = STRUCT.has(map.char(x - 1, y));
-  const e = STRUCT.has(map.char(x + 1, y));
+  const n = STRUCT.has(drawAt(map, x, y - 1));
+  const s = STRUCT.has(drawAt(map, x, y + 1));
+  const w = STRUCT.has(drawAt(map, x - 1, y));
+  const e = STRUCT.has(drawAt(map, x + 1, y));
   const horiz = w || e || !(n || s);
   const vert = n || s;
   const frame = entrance ? C.entranceFrame : C.glassFrame;
@@ -385,7 +428,7 @@ function drawGlass(ctx, map, x, y, entrance) {
     ctx.fillStyle = C.glassFrameHi;
     ctx.fillRect(cx - GLASS_HW - 1, y0, 1, y1 - y0);
     ctx.fillStyle = C.glassPost;
-    if (n && isGlass(map.char(x, y - 1))) ctx.fillRect(cx - GLASS_HW - 1, py - 1, GLASS_HW * 2 + 2, 2); // mullion
+    if (n && isGlass(drawAt(map, x, y - 1))) ctx.fillRect(cx - GLASS_HW - 1, py - 1, GLASS_HW * 2 + 2, 2); // mullion
     else if (n) ctx.fillRect(cx - GLASS_HW - 1, py, GLASS_HW * 2 + 2, 3); // head rail against the wall
   }
 
@@ -404,9 +447,9 @@ function drawGlass(ctx, map, x, y, entrance) {
     ctx.fillRect(x0, bot - 2, x1 - x0, 1);
     // mullion between neighbouring panes; a heavier post where the run meets a wall or door
     ctx.fillStyle = C.glassPost;
-    if (w && isGlass(map.char(x - 1, y))) ctx.fillRect(px - 1, top, 2, bot - top);
+    if (w && isGlass(drawAt(map, x - 1, y))) ctx.fillRect(px - 1, top, 2, bot - top);
     else if (w) ctx.fillRect(px, top - 1, 3, bot - top + 3);
-    if (e && !isGlass(map.char(x + 1, y))) ctx.fillRect(px + T - 3, top - 1, 3, bot - top + 3);
+    if (e && !isGlass(drawAt(map, x + 1, y))) ctx.fillRect(px + T - 3, top - 1, 3, bot - top + 3);
   }
 
   if (horiz && vert) {
@@ -473,7 +516,7 @@ function streak(ctx, x0, y0, x1, y1, thick, color) {
 }
 
 function drawDoor(ctx, map, x, y) {
-  const horiz = STRUCT.has(map.char(x - 1, y)) || STRUCT.has(map.char(x + 1, y));
+  const horiz = STRUCT.has(drawAt(map, x - 1, y)) || STRUCT.has(drawAt(map, x + 1, y));
   const px = x * T;
   const py = y * T;
   if (horiz) {
@@ -484,16 +527,16 @@ function drawDoor(ctx, map, x, y) {
     ctx.fillStyle = 'rgba(255,255,255,0.25)';
     ctx.fillRect(px, py + T / 2 - 3, T, 1);
     ctx.fillStyle = C.walnutEdge;
-    if (map.char(x - 1, y) !== 'D') ctx.fillRect(px, py + 4, 3, T - 6);
-    if (map.char(x + 1, y) !== 'D') ctx.fillRect(px + T - 3, py + 4, 3, T - 6);
+    if (drawAt(map, x - 1, y) !== 'door') ctx.fillRect(px, py + 4, 3, T - 6);
+    if (drawAt(map, x + 1, y) !== 'door') ctx.fillRect(px + T - 3, py + 4, 3, T - 6);
   } else {
     ctx.fillStyle = C.oakEdge;
     ctx.fillRect(px + T / 2 - 3, py, 6, T);
     ctx.fillStyle = C.oak;
     ctx.fillRect(px + T / 2 - 3, py, 4, T);
     ctx.fillStyle = C.walnutEdge;
-    if (map.char(x, y - 1) !== 'D') ctx.fillRect(px + 4, py, T - 8, 3);
-    if (map.char(x, y + 1) !== 'D') ctx.fillRect(px + 4, py + T - 3, T - 8, 3);
+    if (drawAt(map, x, y - 1) !== 'door') ctx.fillRect(px + 4, py, T - 8, 3);
+    if (drawAt(map, x, y + 1) !== 'door') ctx.fillRect(px + 4, py + T - 3, T - 8, 3);
   }
 }
 
@@ -542,7 +585,7 @@ function frontY(y) {
 }
 
 function hasFront(map, x, y) {
-  return WALLISH.has(map.char(x, y)) && !WALLISH.has(map.char(x, y + 1));
+  return WALLISH.has(drawAt(map, x, y)) && !WALLISH.has(drawAt(map, x, y + 1));
 }
 
 function drawWindow(ctx, map, x0, x1, y) {
@@ -1018,10 +1061,11 @@ export function drawWorldDynamic(ctx, game, t) {
     if ((t + i * 0.7) % 2.4 < 0.25) sparkle(ctx, x + 6, y - 6, 3.5, '#fff');
   }
 
-  // Elevator doors open while someone is right in front of them.
-  if (info.elevator.length && SPOTS.elevator) {
-    const ex = SPOTS.elevator.x + 0.5;
-    const ey = SPOTS.elevator.y + 0.5;
+  // Elevator doors open while someone is right in front of them (at decor.elevator's spot).
+  const lift = decor.elevator && SPOTS[decor.elevator.spot];
+  if (info.elevator.length && lift) {
+    const ex = lift.x + 0.5;
+    const ey = lift.y + 0.5;
     let near = 99;
     for (const n of game.npcs || []) if (n.active) near = Math.min(near, Math.hypot(n.x - ex, n.y - ey));
     const open = clamp(1.6 - near, 0, 1);

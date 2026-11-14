@@ -10,7 +10,7 @@
 //   id          a string equal to the registry key
 //   title       { mission: [line, line], badge: [icon, overlay] }
 //   map         { rows, legend? }: parseMap accepts it (equal row lengths, every letter in the legend); each legend
-//               entry has a kind and boolean solid/opaque, and an optional render `draw` the renderer knows
+//               entry has a kind and boolean solid/opaque; its `draw` (optional) one of render/world.js TILE_DRAWS
 //   spots       each { x, y } inside the map on a tile an NPC can stand on, face (optional) N/E/S/W
 //   zones       each { x0, y0, x1, y1 } with x0 < x1, y0 < y1, inside the map
 //   patrols     optional; each a list of [x, y] inside the map
@@ -44,7 +44,7 @@
 import { parseMap } from '../core/map.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
-import { PROP_PAINTERS } from '../render/world.js';
+import { PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
@@ -103,6 +103,7 @@ export function levelProblems(level, key) {
       if (!isStr(d.kind)) bad(`${path}.kind`, 'missing');
       if (typeof d.solid !== 'boolean') bad(`${path}.solid`, 'not true or false');
       if (typeof d.opaque !== 'boolean') bad(`${path}.opaque`, 'not true or false');
+      if (d.draw !== undefined && !TILE_DRAWS.includes(d.draw)) bad(`${path}.draw`, `no tile draw ${q(d.draw)} (${TILE_DRAWS.join(', ')})`);
     }
     try {
       map = parseMap(level.map.rows, legend);
@@ -331,6 +332,7 @@ export function levelProblems(level, key) {
     }
     for (const [i, s] of (decor.deskOwners ?? []).entries()) spot(`decor.deskOwners[${i}]`, s);
     if (decor.ashtray !== undefined) spot('decor.ashtray.spot', decor.ashtray?.spot);
+    if (decor.elevator !== undefined) spot('decor.elevator.spot', decor.elevator?.spot);
     for (const [i, pr] of (decor.props ?? []).entries()) {
       const path = `decor.props[${i}]`;
       if (!Object.hasOwn(PROP_PAINTERS, pr?.draw)) bad(`${path}.draw`, `no painter ${q(pr?.draw)} (${Object.keys(PROP_PAINTERS).join(', ')})`);

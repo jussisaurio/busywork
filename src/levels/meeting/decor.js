@@ -82,6 +82,8 @@ export const DECOR = {
   },
   // Lobby ashtray, on the tile east of this spot.
   ashtray: { spot: 'smoke' },
+  // The lift doors (the map's elevator tiles) open as an active NPC comes within 1.6 tiles of this spot.
+  elevator: { spot: 'elevator' },
   // Floor zones flooded from one tile in each room (walls, glass and doors stop the flood).
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },

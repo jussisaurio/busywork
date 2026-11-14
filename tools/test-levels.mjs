@@ -49,6 +49,8 @@ const CASES = [
   ['outcomeOrder misses a route', { ...M, outcomeOrder: ['keycard'] }, 'meeting', /outcomeOrder: lists route 'projector' 0 times/],
   ['harness landmark', { ...M, harness: { ...M.harness, landmarks: { ...M.harness.landmarks, sofa: 'sofa' } } }, 'meeting', /harness\.landmarks\.sofa: no spot 'sofa'/],
   ['gate target', { ...M, gate: { ...M.gate, targets: [...M.gate.targets, 'sofa'] } }, 'meeting', /gate\.targets\[\d+\]: 'sofa' is no interactable id, landmark or x,y/],
+  ['legend draw', { ...M, map: { ...M.map, legend: { ...M.map.legend, F: { ...M.map.legend.F, draw: 'icebox' } } } }, 'meeting', /map\.legend\['F'\]\.draw: no tile draw 'icebox'/],
+  ['decor elevator spot', { ...M, decor: { ...M.decor, elevator: { spot: 'lift' } } }, 'meeting', /decor\.elevator\.spot: no spot 'lift'/],
   ['decor prop painter', { ...M, decor: { ...M.decor, props: [{ ...M.decor.props[0], draw: 'hologram' }] } }, 'meeting', /decor\.props\[0\]\.draw: no painter 'hologram'/],
   ['decor prop tile', { ...M, decor: { ...M.decor, props: [{ ...M.decor.props[0], tile: 'Q' }] } }, 'meeting', /decor\.props\[0\]\.tile: 'Q' is not on the map/],
   ['decor chair spot', { ...M, decor: { ...M.decor, chairs: [{ spot: 'throne', face: 'S', color: ['#000', '#000'] }] } }, 'meeting', /decor\.chairs\[0\]\.spot: no spot 'throne'/],
