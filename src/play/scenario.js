@@ -9,7 +9,7 @@ import { say, burst } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { stareAtEmptyChair } from '../sim/npcs.js';
 import { cancelAction } from './interactions.js';
-import { setBusy } from './player.js';
+import { setBusy, standUp } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome
 const CRICKETS_AT = 0.9; // fail beat: 🦗 sign appears at this point
@@ -78,10 +78,7 @@ function startMeeting(game, s) {
     p.y = spot.y;
     p.dir = spot.dir;
     p.moving = false;
-    if (p.seated) {
-      p.seated = false;
-      game.events.emit('player:stand', {});
-    }
+    standUp(game);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
     say(game, 'player', ['😅'], { kind: 'speech', ttl: END_BEAT });
   } else if (result === 'blamed') {
