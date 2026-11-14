@@ -17,36 +17,50 @@ import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 
 export const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
-// Emoji hints for the renderer (player.focus.icon).
-export const FOCUS_ICONS = {
-  brew_coffee: '☕',
-  spill_coffee: '💦',
-  take_keycard: '🪪',
-  take_sandwich: '🥪',
-  sit: '🪑',
-  eat_sandwich: '😋',
-  drop: '⬇️',
-  pick_up: '✋',
+// Every player action: the target that offers it (an interactable type, a floor 'item', or 'self' for what
+// is in hand), when it is possible, its ✋ hint icon (player.focus.icon) and the harness's words for it.
+// findFocus offers an action only while `can` holds, and a timed action is cancelled ('invalid') as soon as
+// it stops holding. For 'self', the first possible row wins.
+export const TARGET_ACTIONS = {
+  brew_coffee: {
+    on: 'coffee_machine', icon: '☕', text: 'pour a coffee',
+    can: (p, w) => !p.held && w.coffee === 'pot', // Kev may get there first
+  },
+  spill_coffee: {
+    on: 'projector', icon: '💦', text: 'spill coffee on it',
+    can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
+  },
+  take_keycard: {
+    on: 'coat_rack', icon: '🪪', text: 'take the keycard from the jacket',
+    can: (p, w) => !p.held && w.keycard === 'rack', // the boss may grab his jacket mid-steal
+  },
+  take_sandwich: {
+    on: 'fridge', icon: '🥪', text: 'take the sandwich',
+    can: (p, w) => !p.held && w.sandwich === 'fridge',
+  },
+  sit: {
+    on: 'own_desk', icon: '🪑', text: 'sit down',
+    can: (p) => !p.seated,
+  },
+  eat_sandwich: {
+    on: 'self', icon: '😋', text: 'eat the sandwich',
+    can: (p) => p.held === 'sandwich',
+  },
+  drop: {
+    on: 'self', icon: '⬇️', text: null, // the harness names what is dropped
+    can: (p) => !!p.held,
+  },
+  pick_up: {
+    on: 'item', icon: '✋', text: 'pick it up',
+    can: (p, w, item) => !p.held && w.items.includes(item),
+  },
 };
+const ROWS = Object.entries(TARGET_ACTIONS);
 
-// The action an interactable offers right now, or null.
-function verbFor(game, type) {
-  const p = game.player;
-  const w = game.world;
-  switch (type) {
-    case 'coffee_machine':
-      return !p.held && w.coffee === 'pot' ? 'brew_coffee' : null;
-    case 'projector':
-      return p.held === 'coffee' && w.projector === 'ok' ? 'spill_coffee' : null;
-    case 'coat_rack':
-      return !p.held && w.keycard === 'rack' ? 'take_keycard' : null;
-    case 'fridge':
-      return !p.held && w.sandwich === 'fridge' ? 'take_sandwich' : null;
-    case 'own_desk':
-      return !p.seated ? 'sit' : null;
-    default:
-      return null;
-  }
+// The action a target offers right now, or null. target: an interactable type, 'self', or 'item' (with the item).
+export function targetAction(game, target, item = null) {
+  for (const [verb, row] of ROWS) if (row.on === target && row.can(game.player, game.world, item)) return verb;
+  return null;
 }
 
 export function findFocus(game) {
@@ -54,26 +68,25 @@ export function findFocus(game) {
   let best = null;
   let bestD = Infinity;
   for (const it of game.map.interactables) {
-    const verb = verbFor(game, it.type);
+    const verb = targetAction(game, it.type);
     if (!verb) continue;
     const d = Math.hypot(it.cx - p.x, it.cy - p.y);
     if (d <= INTERACT_RADIUS && d < bestD) {
       bestD = d;
-      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: FOCUS_ICONS[verb], _action: verb };
+      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: TARGET_ACTIONS[verb].icon, action: verb };
     }
   }
-  if (!p.held) {
-    for (const item of game.world.items) {
-      const d = Math.hypot(item.x - p.x, item.y - p.y);
-      if (d <= ITEM_RADIUS && d < bestD) {
-        bestD = d;
-        best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: FOCUS_ICONS.pick_up, _action: 'pick_up', _item: item };
-      }
+  for (const item of game.world.items) {
+    if (!targetAction(game, 'item', item)) continue;
+    const d = Math.hypot(item.x - p.x, item.y - p.y);
+    if (d <= ITEM_RADIUS && d < bestD) {
+      bestD = d;
+      best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: TARGET_ACTIONS.pick_up.icon, action: 'pick_up', item };
     }
   }
-  if (!best && p.held) {
-    const verb = p.held === 'sandwich' ? 'eat_sandwich' : 'drop';
-    best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: FOCUS_ICONS[verb], _action: verb };
+  if (!best) {
+    const verb = targetAction(game, 'self');
+    if (verb) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: TARGET_ACTIONS[verb].icon, action: verb };
   }
   return best;
 }
@@ -106,7 +119,7 @@ export function updateInteractions(game, dt) {
 
 function startAction(game, focus) {
   const p = game.player;
-  const verb = focus._action;
+  const verb = focus.action;
   if (focus.kind !== 'self') p.dir = Math.atan2(focus.y - p.y, focus.x - p.x);
 
   if (verb === 'sit') {
@@ -132,32 +145,16 @@ function startAction(game, focus) {
     sneaky: def.sneaky,
     owner: def.owner ?? null,
     idle: !!def.idle,
-    _x: focus.x,
-    _y: focus.y,
-    _item: focus._item ?? null,
+    x: focus.x,
+    y: focus.y,
+    item: focus.item ?? null,
   };
   game.events.emit('action:start', { type: verb, targetId: focus.id });
 }
 
 function stillValid(game, a) {
-  const p = game.player;
-  const w = game.world;
-  switch (a.type) {
-    case 'brew_coffee':
-      return !p.held && game.world.coffee === 'pot'; // Kev may get there first
-    case 'spill_coffee':
-      return p.held === 'coffee' && w.projector === 'ok';
-    case 'take_keycard':
-      return !p.held && w.keycard === 'rack'; // the boss may grab his jacket mid-steal
-    case 'take_sandwich':
-      return !p.held && w.sandwich === 'fridge';
-    case 'eat_sandwich':
-      return p.held === 'sandwich';
-    case 'pick_up':
-      return !p.held && w.items.includes(a._item);
-    default:
-      return true;
-  }
+  const row = TARGET_ACTIONS[a.type];
+  return row ? row.can(game.player, game.world, a.item) : true;
 }
 
 function completeAction(game) {
@@ -172,13 +169,13 @@ function completeAction(game) {
       p.held = 'coffee';
       w.coffee = 'taken';
       game.events.emit('coffee:taken', { by: 'player' });
-      burst(game, 'smoke', a._x, a._y, 5, { speed: 0.4, lift: 0.8, ttl: 1.0 }); // steam
+      burst(game, 'smoke', a.x, a.y, 5, { speed: 0.4, lift: 0.8, ttl: 1.0 }); // steam
       break;
     case 'spill_coffee':
       p.held = null;
       w.projector = 'broken';
-      burst(game, 'sparks', a._x, a._y, 16, { speed: 2.5, ttl: 0.6 });
-      burst(game, 'smoke', a._x, a._y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
+      burst(game, 'sparks', a.x, a.y, 16, { speed: 2.5, ttl: 0.6 });
+      burst(game, 'smoke', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
       shake(game, 0.12, 0.25);
       say(game, 'player', ['😇'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('projector:broken', {});
@@ -202,7 +199,7 @@ function completeAction(game) {
       game.events.emit('sandwich:eaten', {});
       break;
     case 'pick_up': {
-      const item = a._item;
+      const item = a.item;
       w.items = w.items.filter((i) => i !== item);
       p.held = item.type;
       if (item.type === 'keycard') w.keycard = 'player';

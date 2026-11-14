@@ -11,6 +11,7 @@ import { createGame } from '../state.js';
 import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
+import { TARGET_ACTIONS } from '../play/interactions.js';
 import { SPOTS } from '../data/level.js';
 import { createScriptedInput } from './scripted-input.js';
 
@@ -343,14 +344,10 @@ function compass(rad) {
   return COMPASS8[i];
 }
 // The ✋ hint in words (a human sees the target highlighted plus an action icon).
-const VERBS = {
-  brew_coffee: 'pour a coffee', spill_coffee: 'spill coffee on it', take_keycard: 'take the keycard from the jacket',
-  take_sandwich: 'take the sandwich', eat_sandwich: 'eat the sandwich', sit: 'sit down', pick_up: 'pick it up',
-};
 export function focusText(game) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
-  const verb = f._action === 'drop' ? `drop the ${game.player.held}` : VERBS[f._action] ?? f._action ?? 'interact';
+  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : TARGET_ACTIONS[f.action]?.text ?? f.action ?? 'interact';
   return f.kind === 'self' ? `${f.icon ?? ''} ${verb}` : `${f.icon ?? ''} ${f.id}: ${verb}`;
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);

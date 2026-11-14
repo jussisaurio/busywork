@@ -212,27 +212,27 @@
  {
   "file": "src/play/interactions.js",
   "identifier": "sandwich",
-  "count": 13
+  "count": 11
  },
  {
   "file": "src/play/interactions.js",
   "identifier": "keycard",
-  "count": 9
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "projector",
-  "count": 5
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "coffee",
   "count": 8
  },
  {
   "file": "src/play/interactions.js",
-  "identifier": "fridge",
+  "identifier": "projector",
   "count": 4
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "coffee",
+  "count": 6
+ },
+ {
+  "file": "src/play/interactions.js",
+  "identifier": "fridge",
+  "count": 3
  },
  {
   "file": "src/play/interactions.js",

@@ -73,9 +73,9 @@ game = {
     busyPose: null,           // null | 'typing' | 'folder' | 'phone'
     seated: true,             // at own desk (snapped to SPOTS.player_desk)
     smeared: false,           // ate the sandwich: mustard down the sweater (drawn; hunting Lin recognizes it)
-    action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle }   (t counts up, seconds; owner/idle copied from ACTIONS)
+    action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle, x, y, item }   (t counts up, seconds; owner/idle copied from ACTIONS; x/y/item from the focus)
     locked: false,            // can't move or act (forced work, caught, end beat)
-    focus: null,              // null | { kind: 'interactable'|'item'|'self', id, x, y, icon }  (✋ hint target)
+    focus: null,              // null | { kind: 'interactable'|'item'|'self', id, x, y, icon, action, item }  (✋ hint target; item: the floor item)
   },
   npcs: [],                   // created by the sim's createNpcs(game). See NPC shape.
   world: {
@@ -160,7 +160,7 @@ game = {
   busy/pose logic, seated logic, sets `clock.ff`. Locked during forced work (seated, typing).
   Any movement input while seated stands you up.
 - `updateInteractions(game, dt)`: finds `player.focus`, starts, progresses and cancels timed actions (ACTIONS in config),
-  and applies their results to `world`. Interaction table:
+  and applies their results to `world`. Interaction table (`TARGET_ACTIONS`; an action is cancelled `'invalid'` once it stops being offered):
   - coffee_machine + empty hands, coffee 'pot' → brew_coffee → held 'coffee', coffee 'taken', emit 'coffee:taken' {by:'player'}
   - projector + coffee, projector 'ok' → spill_coffee (sneaky) → projector 'broken', held null, emit 'projector:broken', sparks/smoke burst
   - coat_rack + empty hands, keycard 'rack' → take_keycard (sneaky) → held 'keycard', keycard 'player', emit 'keycard:taken'
