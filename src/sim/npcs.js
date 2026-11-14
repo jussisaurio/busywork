@@ -11,7 +11,7 @@
 //   the glance is shown. So glance timing is a pure function of loop time per NPC: independent
 //   of the player and of the other NPCs (learnable across loops).
 import {
-  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT, at,
+  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT,
   GLANCE_EVERY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
 import { DIRS, angleDiff } from '../core/vision.js';
@@ -20,17 +20,16 @@ import { say, shake } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, endOverride, npcSayLater, holdFor, spotLeg } from './override.js';
-import { mechanics, mechanicOf } from './mechanics/index.js';
+import { mechanics, mechanicOf, startHunt } from './mechanics/index.js';
 
 export { npcSayLater };
 
 // --- Tunables ------------------------------------------------------------------
 const TURN_RATE = 9; // body turn speed (rad/s)
 const BODY_R = 0.3; // half-size of the body box kept clear of solid tiles when smoothing paths
-const HUNT_END = at('3:24'); // Lin gives up hunting for her sandwich (covers the boss's restroom walk)
-const HUNT_LOOK = 1.25; // rad: head sweep at each hunt waypoint (~72 deg each side)
-const HUNT_LOOK_TIME = 1.4; // s paused at each hunt waypoint (look right, look left, back)
-const HUNT_SHOCK_TIME = 1.8; // s standing at the empty fridge before the hunt starts
+const LOOK_RIGHT = 0.55; // s into a look-around (_look, a hunt's): head right until then, then left...
+const LOOK_LEFT = 1.1; // ...until then, then back to centre
+const LOOK_TURN = 0.2; // s to swing the head by the look angle
 const JACKET_TIME = 0.8; // s the boss spends at the coat rack
 const POUR_TIME = 1.0; // s Kev spends pouring the day's cup
 const EMPTY_POT_TIME = 1.6; // s Kev stares at the empty pot
@@ -102,7 +101,7 @@ export function createNpc(game, def, now = 0) {
     _wait: 0, // s to stand still before continuing the plan
     _sayQ: [], // delayed bubbles: { t, icons, kind }
     _faceTarget: p.dir,
-    _look: null, // hunt look-around: { t }
+    _look: null, // look-around (a hunt's): { t, angle }
     _gone: false, // left for the day
     _fridgeChecked: false,
     _gathered: false, // the 3:54 gather has been processed for this NPC
@@ -198,15 +197,9 @@ function tickSayQueue(game, npc, dt) {
   }
 }
 
+// Lures start and hunts end (polled from world state, so no event subscriptions leak across loops).
 function checkOverrides(game, npc, now) {
-  const w = game.world;
-  // 1. Lures (polled from world state, so no event subscriptions leak across loops).
   for (const m of mechanics(game.level)) m.kind.check?.(game, npc, m.data, now);
-  // 4. Lin stops hunting at 3:24, as soon as she has her sandwich back, or when she knows who ate it.
-  if (npc.override === 'hunting' && (now >= HUNT_END || w.sandwich === 'lin' || w.linKnows)) {
-    say(game, npc.id, ['😤'], { kind: 'speech', voice: npc.voice });
-    endOverride(npc);
-  }
 }
 
 // Special prelude legs for a schedule entry.
@@ -226,7 +219,6 @@ function planKey(game, npc, now) {
   const seq = npc._ovSeq;
   switch (npc.override) {
     case 'lockedOut': return 'lockout';
-    case 'hunting': return `hunt#${seq}`;
     case 'meeting': return `meeting#${seq}`;
     default: {
       const i = entryIndex(npc, now);
@@ -251,10 +243,6 @@ function buildPlan(game, npc, now, key) {
   const m = mechanicOf(game, npc);
   if (m) {
     m.kind.build(game, npc, plan, m.data);
-  } else if (kind === 'hunt') {
-    plan.legs = game.level.patrols.lin_hunt.map(([x, y]) => ({ x, y, arrive: huntLook }));
-    plan.loop = true; // back and forth until the override ends
-    plan.label = 'hunt sandwich';
   } else if (kind === 'meeting') {
     plan.legs.push(spotLeg(game, npc.meetingSpot));
     plan.pose = 'sit';
@@ -439,11 +427,7 @@ function linFridge(game, npc) {
     npc._wait = Math.max(npc._wait, SANDWICH_TIME);
     return;
   }
-  game.events.emit('sandwich:missing', {});
-  say(game, npc.id, ['🥪', '❓'], { kind: 'thought', voice: npc.voice, ttl: 1.4 });
-  npcSayLater(npc, 1.4, ['😠'], 'speech');
-  setOverride(npc, 'hunting');
-  npc._wait = Math.max(npc._wait, HUNT_SHOCK_TIME);
+  startHunt(game, npc);
 }
 
 // 6. The coffee pot holds one cup a day. Whoever gets there first has it.
@@ -481,11 +465,6 @@ export function stareAtEmptyChair(game) {
     say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
     npcSayLater(n, 1.0, ['😠', '👉'], 'speech');
   }
-}
-
-function huntLook(game, npc) {
-  npc._look = { t: 0 };
-  npc._wait = Math.max(npc._wait, HUNT_LOOK_TIME);
 }
 
 // 5. Arrival at the meeting seat.
@@ -533,9 +512,9 @@ function updateGlance(npc, dt) {
   let target = g.hold > 0 ? g.target : 0;
   let speed = g.speed || GLANCE_ANGLE[1] / GLANCE_TURN_TIME;
   if (npc._look) {
-    const t = npc._look.t;
-    target = t < 0.55 ? HUNT_LOOK : t < 1.1 ? -HUNT_LOOK : 0;
-    speed = HUNT_LOOK / 0.2;
+    const { t, angle } = npc._look;
+    target = t < LOOK_RIGHT ? angle : t < LOOK_LEFT ? -angle : 0;
+    speed = angle / LOOK_TURN;
   }
   if (npc.moving || !npc.active) target = 0;
   const o = npc.glance.offset;

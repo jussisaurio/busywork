@@ -39,7 +39,7 @@ everyone relies on**.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  `hunts`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -47,7 +47,9 @@ everyone relies on**.
   `evidence { by, while, mark, knows, icon }`, `scene { by, while, zone, door, radius?, fresh(world), icon }`; everyone else is a witness.
   NPC mechanics (`levels/meeting/mechanics.js`; the engine's `src/sim/mechanics/*` document each field), each a list in check order:
   `lures`: `[{ npc, when(world), override, plan, label, spot, react { wait, says?, event? }, work { override, minutes, progress,
-  start { set?, event?, says? }, done { set?, event?, says? } } }]`. Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
+  start { set?, event?, says? }, done { set?, event?, says? } } }]`. `hunts`: `[{ npc, override, plan, label, route,
+  look { angle, time }, start { event?, says?, wait? }, until?, found(game, npc), end { says? } }]` (started by a behaviour
+  hook through `startHunt(game, npc)`, `src/sim/mechanics/index.js`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
@@ -155,7 +157,7 @@ game = {
 3. **Lockout.** When the boss walks back from outside (3:48), if `world.keycard !== 'boss'` he stops at `SPOTS.door_out`, facing N:
    `override='lockedOut'`, `world.bossLockedOut=true`, emit `'boss:lockedOut'`. Then every ~2.5 s he `say`s one of 😠🚪🪪 / 🪪❓ / 👊🚪
    (kind 'speech'), emits `'boss:bang'` and does a small `shake`. He stays there for the rest of the day.
-4. **Lin's sandwich (stretch).** On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
+4. **Lin's sandwich** (a hunt, `level.hunts`). On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
    (`'lin'`) and eats at the kitchen table as scheduled. Otherwise: emit `'sandwich:missing'`, say 🥪❓ then 😠,
    `override='hunting'`. She walks `ROUTES.lin_hunt` back and forth (glancing often) until `at('3:24')` (or until she has it back, `world.sandwich === 'lin'`, or `world.linKnows`), then 😤, and resumes the schedule.
 5. **Meeting.** At `day.gatherAt` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its

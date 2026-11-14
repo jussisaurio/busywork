@@ -8,8 +8,9 @@
 //   prelude(game, npc, plan, data)  may add legs in front of any plan that isn't finished at birth
 //   keepsThroughMeeting        the gather doesn't send its NPC to the meeting
 import * as lure from './lure.js';
+import * as hunt from './hunt.js';
 
-const KINDS = [['lures', lure]];
+const KINDS = [['lures', lure], ['hunts', hunt]];
 const cache = new WeakMap();
 
 export function mechanics(level) {
@@ -26,4 +27,11 @@ export function mechanicOf(game, npc) {
   if (!npc.override) return null;
   for (const m of mechanics(game.level)) if (m.kind.owns(m.data, npc)) return m;
   return null;
+}
+
+// Start the NPC's hunt (the first in level.hunts for her). Called by level behaviour hooks.
+export function startHunt(game, npc) {
+  const h = (game.level.hunts ?? []).find((d) => d.npc === npc.id);
+  if (!h) throw new Error(`no hunt for '${npc.id}' in level.hunts`);
+  hunt.start(game, npc, h);
 }
