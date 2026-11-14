@@ -11,8 +11,8 @@
 //   the glance is shown. So glance timing is a pure function of loop time per NPC: independent
 //   of the player and of the other NPCs (learnable across loops).
 import {
-  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, at,
-  GLANCE_EVERY, GLANCE_EVERY_BY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
+  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION_DEFAULT, KEV_FIX_MIN, at,
+  GLANCE_EVERY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
 import { DIRS, angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
@@ -67,6 +67,7 @@ export function createNpc(game, def, now = 0) {
   const p = spotPos(game, first.spot);
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
   const fridgeIdx = sched.findIndex((e) => e.do !== 'say' && e.spot === 'fridge');
+  const glanceEvery = def.glanceEvery ?? GLANCE_EVERY;
   return {
     id: def.id,
     icon: def.icon,
@@ -77,7 +78,8 @@ export function createNpc(game, def, now = 0) {
     y: p.y,
     dir: p.dir,
     glance: { offset: 0 },
-    vision: { ...(VISION[def.id] ?? VISION.default) },
+    vision: { ...(def.vision ?? VISION_DEFAULT) },
+    coneTint: def.coneTint, // render only
     active: true,
     pose: first.do === 'sit' ? 'sit' : 'stand',
     moving: false,
@@ -106,7 +108,8 @@ export function createNpc(game, def, now = 0) {
     _bangT: 0,
     _bangI: 0,
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
-    _gl: { timer: rng.range(...glanceEvery(def.id)), target: 0, hold: 0, speed: 0 },
+    _glanceEvery: glanceEvery, // real s between glances (random range)
+    _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
   };
 }
 
@@ -548,8 +551,6 @@ function meetingArrive(game, npc) {
 
 // --- Facing and glances ---------------------------------------------------------------
 
-const glanceEvery = (id) => GLANCE_EVERY_BY[id] ?? GLANCE_EVERY;
-
 function updateFacing(npc, dt) {
   const d = angleDiff(npc._faceTarget, npc.dir);
   const step = TURN_RATE * dt;
@@ -565,7 +566,7 @@ function updateGlance(npc, dt) {
   if (g.timer <= 0) {
     const ang = npc.rng.range(GLANCE_ANGLE[0], GLANCE_ANGLE[1]);
     const side = npc.rng.chance(0.5) ? 1 : -1;
-    g.timer += npc.rng.range(...glanceEvery(npc.id));
+    g.timer += npc.rng.range(...npc._glanceEvery);
     if (can) {
       g.target = side * ang;
       g.hold = GLANCE_TURN_TIME + GLANCE_HOLD; // turn in, then fully turned for GLANCE_HOLD

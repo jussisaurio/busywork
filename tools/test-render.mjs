@@ -52,7 +52,7 @@ const { createGame, resetLoop } = await import('../src/state.js');
 const { say, burst, sightline } = await import('../src/core/fx.js');
 const { createRng } = await import('../src/core/rng.js');
 const { spotPos } = await import('../src/game/perception.js');
-const { VISION, at } = await import('../src/config.js');
+const { VISION_DEFAULT, at } = await import('../src/config.js');
 const { levels } = await import('../src/levels/index.js');
 const MEETING_AT = levels.meeting.day.meetingAt;
 const { DIRS } = await import('../src/core/vision.js');
@@ -81,8 +81,8 @@ function makeNpcs(game) {
     const s = spotPos(game, SPOT_FOR[d.id] || 'player_desk');
     return {
       id: d.id, icon: d.icon, color: d.color, voice: d.voice, meetingSpot: d.meetingSpot,
-      x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(VISION[d.id] || VISION.default) },
-      active: true, pose: 'sit', moving: false, override: null, carry: null,
+      x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(d.vision || VISION_DEFAULT) },
+      coneTint: d.coneTint, active: true, pose: 'sit', moving: false, override: null, carry: null,
       hasJacket: d.id === 'boss' ? game.world.jacket === 'boss' : false,
       label: d.id, rng: createRng(1000 + i),
     };

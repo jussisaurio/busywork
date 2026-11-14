@@ -48,18 +48,13 @@ export const ACTIONS = {
 };
 
 // --- Perception --------------------------------------------------------------
-const deg = (d) => (d * Math.PI) / 180;
-export const VISION = {
-  boss: { fov: deg(100), radius: 8 },
-  lin: { fov: deg(100), radius: 8.5 },
-  kev: { fov: deg(90), radius: 7 },
-  default: { fov: deg(90), radius: 7 },
-};
-// Seated NPCs glance around: every GLANCE_EVERY (real s, random range) they turn
-// their head by GLANCE_ANGLE (random range, random side) for GLANCE_HOLD seconds.
+export const deg = (d) => (d * Math.PI) / 180;
+// Vision for a cast member without its own `vision` (the level's cast sets each NPC's).
+export const VISION_DEFAULT = { fov: deg(90), radius: 7 };
+// Seated NPCs glance around: every GLANCE_EVERY (real s, random range; a cast member's
+// `glanceEvery` overrides it) they turn their head by GLANCE_ANGLE (random range, random side)
+// for GLANCE_HOLD seconds.
 export const GLANCE_EVERY = [5, 9];
-// Per-NPC override of GLANCE_EVERY. The boss is twitchy, so the 'Lin is away' windows still carry risk.
-export const GLANCE_EVERY_BY = { boss: [3, 5.5] };
 export const GLANCE_ANGLE = [deg(60), deg(125)];
 export const GLANCE_HOLD = 1.3;
 export const GLANCE_TURN_TIME = 0.25; // head turn tween, gives a tiny telegraph

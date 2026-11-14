@@ -38,12 +38,14 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`. Engine code reads it as `game.level`.
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`. Engine code reads it as `game.level`.
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
+  `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
+  rules.js measures `SCENE_RADIUS` from.
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
-- `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]).
+- `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, vision, glanceEvery?, coneTint, schedule[]).
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`, `inZone(game, name, x, y)`,
   `findNpc(game, id)`. spotPos and inZone read the level's spots and zones (`game.level`).
 - `src/state.js`: `createGame()` and `resetLoop(game)`. These hold the state shape below.
@@ -110,7 +112,8 @@ game = {
   id: 'boss'|'lin'|'kev', icon, color, voice, meetingSpot,   // copied from the level's cast (NPC_DEFS)
   x, y, dir,                 // dir = body facing (radians)
   glance: { offset: 0 },     // extra head angle in radians (added to dir for vision and head drawing)
-  vision: { fov, radius },   // from VISION[id] (config)
+  vision: { fov, radius },   // the cast entry's vision (config VISION_DEFAULT if it has none)
+  coneTint: [r, g, b],       // the cast entry's cone colour (render only; palette CONE_TINT_DEFAULT if absent)
   active: true,              // false = vanished (restroom/elevator): not drawn, sees nothing
   pose: 'sit',               // 'sit' | 'stand' | 'walk'
   moving: false,

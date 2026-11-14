@@ -16,8 +16,11 @@
 //     back in he is locked out at the entrance if he doesn't have the keycard.
 //   - Lin hunts for her sandwich if it's gone when she visits the fridge (stretch).
 //   - At 3:54 everyone still on the floor goes to their meeting seat.
+//
+// Per NPC: vision { fov, radius } (config VISION_DEFAULT if absent), glanceEvery (real s between seated
+// glances, random range; config GLANCE_EVERY if absent), coneTint (r,g,b of the drawn vision cone).
 
-import { at } from '../../config.js';
+import { at, deg } from '../../config.js';
 
 const s = (time, entry) => ({ at: at(time), ...entry });
 
@@ -28,6 +31,9 @@ export const NPC_DEFS = [
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'meeting_head',
+    vision: { fov: deg(100), radius: 8 },
+    glanceEvery: [3, 5.5], // twitchy, so the 'Lin is away' windows still carry risk
+    coneTint: [255, 160, 82],
     schedule: [
       s('2:30', { do: 'sit', spot: 'boss_desk' }),
       s('2:44', { do: 'patrol', route: 'boss_patrol' }),
@@ -45,6 +51,8 @@ export const NPC_DEFS = [
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'meeting_kev',
+    vision: { fov: deg(90), radius: 7 },
+    coneTint: [214, 230, 140],
     schedule: [
       s('2:30', { do: 'sit', spot: 'kev_desk' }),
       s('2:38', { do: 'visit', spot: 'coffee' }),
@@ -59,6 +67,8 @@ export const NPC_DEFS = [
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'meeting_lin',
+    vision: { fov: deg(100), radius: 8.5 },
+    coneTint: [150, 230, 214],
     schedule: [
       s('2:30', { do: 'sit', spot: 'lin_desk' }),
       s('2:58', { do: 'visit', spot: 'fridge' }), // away ~2:58–3:12, but the boss is at his desk

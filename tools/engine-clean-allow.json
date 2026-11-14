@@ -136,18 +136,8 @@
  },
  {
   "file": "src/config.js",
-  "identifier": "boss",
-  "count": 2
- },
- {
-  "file": "src/config.js",
-  "identifier": "kev",
-  "count": 1
- },
- {
-  "file": "src/config.js",
   "identifier": "lin",
-  "count": 3
+  "count": 2
  },
  {
   "file": "src/core/fx.js",
@@ -192,17 +182,17 @@
  {
   "file": "src/play/rules.js",
   "identifier": "kev",
-  "count": 3
+  "count": 2
  },
  {
   "file": "src/play/rules.js",
   "identifier": "lin",
-  "count": 3
+  "count": 2
  },
  {
   "file": "src/play/rules.js",
   "identifier": "sandwich",
-  "count": 4
+  "count": 3
  },
  {
   "file": "src/play/rules.js",
@@ -217,7 +207,7 @@
  {
   "file": "src/play/rules.js",
   "identifier": "coffee",
-  "count": 4
+  "count": 3
  },
  {
   "file": "src/play/rules.js",
@@ -313,21 +303,6 @@
   "file": "src/render/hud.js",
   "identifier": "mustard",
   "count": 4
- },
- {
-  "file": "src/render/palette.js",
-  "identifier": "boss",
-  "count": 1
- },
- {
-  "file": "src/render/palette.js",
-  "identifier": "kev",
-  "count": 1
- },
- {
-  "file": "src/render/palette.js",
-  "identifier": "lin",
-  "count": 1
  },
  {
   "file": "src/render/palette.js",

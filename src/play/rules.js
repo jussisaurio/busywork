@@ -23,13 +23,12 @@ const TELL_DELAY = 1.2; // seconds after the boss is back on the floor before a 
 // What a late tattle points at (the thing the witness saw you at).
 const SAW_ICON = { take_keycard: '🪪', take_sandwich: '🥪', eat_sandwich: '🥪', spill_coffee: '📽️', scene: '📽️', evidence: '🥪' };
 // Kev, once the projector breaks, blames whoever he sees at the scene: anywhere in the meeting
-// room, or within SCENE_RADIUS of its door (unless you're pretending: just someone on a call).
+// room, or within SCENE_RADIUS of its door, the level's sceneDoor (unless you're pretending: just
+// someone on a call).
 export const SCENE_RADIUS = 3.5;
-const SCENE_DOOR = { x: 14.5, y: 6.5 };
-// Who takes what back, and whether they know it's theirs right now.
-const OWNS = { lin: 'sandwich', kev: 'coffee' };
-function claims(npc, item) {
-  if (!item || OWNS[npc.id] !== item) return false;
+// Who takes what back (the level's owns), and whether they know it's theirs right now.
+function claims(game, npc, item) {
+  if (!item || game.level.owns[npc.id] !== item) return false;
   return npc.id !== 'kev' || npc.wants === 'coffee';
 }
 
@@ -49,7 +48,8 @@ function atScene(game, s, npc) {
   if (npc.id !== 'kev' || s.sceneTold) return false;
   if (npc.override !== 'alerted' && npc.override !== 'fixing') return false;
   if (inZone(game, 'meeting_room', p.x, p.y)) return true;
-  return !p.busy && Math.hypot(p.x - SCENE_DOOR.x, p.y - SCENE_DOOR.y) <= SCENE_RADIUS;
+  const door = game.level.sceneDoor;
+  return !p.busy && Math.hypot(p.x - door.x, p.y - door.y) <= SCENE_RADIUS;
 }
 
 // What this NPC would object to right now, if it saw the player:
@@ -66,7 +66,7 @@ function offenceFor(game, s, npc, boss) {
   if (npc.id === 'lin' && npc.override === 'hunting' && p.smeared && !game.world.linKnows) return 'evidence';
   if (p.busy) return null; // phone call / folder stride hides contraband
   if (npc.id === 'boss' && p.held === 'keycard' && bossEnforcing(boss)) return 'contraband';
-  if (claims(npc, p.held)) return 'contraband';
+  if (claims(game, npc, p.held)) return 'contraband';
   return null;
 }
 
@@ -171,8 +171,8 @@ function react(game, s, npc, offence) {
   sightline(game, npc.id, 'tattle', 1.2);
 
   // Owners take their things back, whatever else you were up to.
-  const own = OWNS[npc.id];
-  if (claims(npc, p.held)) {
+  const own = game.level.owns[npc.id];
+  if (claims(game, npc, p.held)) {
     p.held = null;
     if (own === 'sandwich') {
       // Before lunch she puts it back in the fridge; mid-hunt she has found it, and that's the end of the hunt.

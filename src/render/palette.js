@@ -88,10 +88,5 @@ export const C = {
   hudRed: '#ff5a43',
 };
 
-// Vision cone tints (r,g,b).
-export const CONE_TINT = {
-  boss: [255, 160, 82],
-  lin: [150, 230, 214],
-  kev: [214, 230, 140],
-  default: [255, 245, 210],
-};
+// Vision cone tint (r,g,b) for an NPC without its own (the cast sets each NPC's coneTint).
+export const CONE_TINT_DEFAULT = [255, 245, 210];

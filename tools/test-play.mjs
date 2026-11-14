@@ -5,7 +5,7 @@
 //
 //   node tools/test-play.mjs
 import {
-  FIXED_DT, GAME_MIN_PER_SEC, VISION, CAUGHT_DELAY, WORK_PENALTY_MIN,
+  FIXED_DT, GAME_MIN_PER_SEC, CAUGHT_DELAY, WORK_PENALTY_MIN,
   PLAYER_RADIUS, PLAYER_SPEED, PLAYER_BUSY_SPEED, SUSPICION_FILL_SEC,
 } from '../src/config.js';
 import { createGame, resetLoop } from '../src/state.js';
@@ -62,6 +62,7 @@ function createFakeInput() {
 const input = createFakeInput();
 const game = createGame({ input });
 const MEETING_AT = game.level.day.meetingAt;
+const VISION = Object.fromEntries(game.level.cast.map((d) => [d.id, d.vision])); // each cast member's own
 const log = [];
 game.events.on('*', (name, payload) => log.push({ name, payload, t: game.loopTime }));
 const evs = (name) => log.filter((e) => e.name === name);

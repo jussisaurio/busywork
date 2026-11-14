@@ -1,7 +1,7 @@
 // Vision cones: a soft translucent fan per active NPC, clipped by opaque tiles with a
 // DDA ray cast. Cones flash warmer/redder while that NPC is "noticing" the player.
 import { T, clamp, fin } from './util.js';
-import { CONE_TINT } from './palette.js';
+import { CONE_TINT_DEFAULT } from './palette.js';
 import { viewerOf, npcSees } from '../game/perception.js';
 
 const RAYS = 56;
@@ -66,7 +66,7 @@ export function drawCones(ctx, game, t) {
     const radius = Math.max(0.5, fin(v.radius, 6));
     const dir = fin(v.dir);
     const notice = noticeLevel(game, npc);
-    const tint = CONE_TINT[npc.id] || CONE_TINT.default;
+    const tint = npc.coneTint || CONE_TINT_DEFAULT;
     const pulse = notice > 0 ? 0.75 + 0.25 * Math.sin(t * (8 + notice * 10)) : 1;
     const mix = notice * (0.6 + 0.4 * pulse);
     const r = Math.round(tint[0] + (RED[0] - tint[0]) * mix);
