@@ -11,6 +11,7 @@
 import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
+import { actionNoise } from '../sim/mechanics/attention.js';
 
 const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
@@ -155,6 +156,7 @@ function startAction(game, focus) {
 
   if (row.instant) {
     row.done(game);
+    actionNoise(game, row, focus.x, focus.y); // the row's noise, if it makes one
     p.focus = findFocus(game);
     return;
   }
@@ -187,7 +189,9 @@ function completeAction(game) {
   const a = p.action;
   p.action = null;
   game.events.emit('action:done', { type: a.type, targetId: a.targetId });
-  actionRow(game, a.type)?.done?.(game, a);
+  const row = actionRow(game, a.type);
+  row?.done?.(game, a);
+  actionNoise(game, row, a.x, a.y); // the row's noise, if it makes one (sim/mechanics/attention.js)
 }
 
 function pickUp(game, a) {

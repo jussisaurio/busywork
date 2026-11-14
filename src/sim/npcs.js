@@ -21,6 +21,7 @@ import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
 import { mechanicsFor, mechanicOf, startHunt } from './mechanics/index.js';
+import { listenForNoises, heardFacing, heardHead, tickAttention } from './mechanics/attention.js';
 
 export { npcSayLater };
 
@@ -46,6 +47,7 @@ function hash(str) {
 
 export function createNpcs(game) {
   const now = game.clock ? game.clock.minute : 0;
+  listenForNoises(game); // level.noises (mechanics/attention.js): subscribes once per game
   return game.level.cast.map((def) => createNpc(game, def, now));
 }
 
@@ -89,6 +91,7 @@ export function createNpc(game, def, now = 0) {
     _sayQ: [], // delayed bubbles: { t, icons, kind }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
+    _heard: null, // a noise holding his attention (mechanics/attention.js)
     _gone: false, // left for the day
     _gathered: false, // the 3:54 gather has been processed for this NPC
     _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
@@ -134,6 +137,7 @@ function updateNpc(game, npc, dt, now) {
   if (npc.moving && !npc._plan.done) npc.pose = 'walk'; // (the arrival step keeps finishPlan's pose)
   updateFacing(npc, dt);
   updateGlance(npc, dt);
+  tickAttention(npc, dt);
   const m = mechanicOf(game, npc);
   npc.label = (m && m.kind.label?.(game, npc, m.data)) ?? npc._plan.label;
   npc.anim = npc._plan.anim;
@@ -421,14 +425,15 @@ export function stareAtEmptyChair(game) {
 // --- Facing and glances ---------------------------------------------------------------
 
 function updateFacing(npc, dt) {
-  const d = angleDiff(npc._faceTarget, npc.dir);
+  const want = heardFacing(npc) ?? npc._faceTarget; // a noise turns him (mechanics/attention.js)
+  const d = angleDiff(want, npc.dir);
   const step = TURN_RATE * dt;
-  npc.dir = angleDiff(Math.abs(d) <= step ? npc._faceTarget : npc.dir + Math.sign(d) * step, 0);
+  npc.dir = angleDiff(Math.abs(d) <= step ? want : npc.dir + Math.sign(d) * step, 0);
 }
 
 function updateGlance(npc, dt) {
   const g = npc._gl;
-  const can = npc.active && !npc.moving && !npc._look;
+  const can = npc.active && !npc.moving && !npc._look && !npc._heard;
 
   // Fixed timeline: the rng is drawn at every timer expiry whether or not the glance is shown.
   g.timer -= dt;
@@ -455,6 +460,8 @@ function updateGlance(npc, dt) {
     speed = angle / LOOK_TURN;
   }
   if (npc.moving || !npc.active) target = 0;
+  const heard = heardHead(npc); // a noise holds his head (mechanics/attention.js)
+  if (heard) ({ target, speed } = heard);
   const o = npc.glance.offset;
   const d = target - o;
   const step = speed * dt;

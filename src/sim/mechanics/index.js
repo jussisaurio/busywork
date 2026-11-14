@@ -9,7 +9,8 @@
 //   prelude(game, npc, plan, data)  may add legs in front of any plan that isn't finished at birth
 //   keepsThroughMeeting        the gather doesn't send its NPC to the meeting
 // A mechanic only ever acts on the NPCs its data names (`npc`, or the list `npcs`): the sim asks each NPC's own
-// list (mechanicsFor), so every hook above may assume the NPC is one of its own.
+// list (mechanicsFor), so every hook above may assume the NPC is one of its own. The exception is attention.js
+// (noises): not a kind here, it turns whoever is in earshot.
 import * as lure from './lure.js';
 import * as hunt from './hunt.js';
 import * as door from './door.js';

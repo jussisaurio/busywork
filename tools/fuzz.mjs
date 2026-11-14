@@ -40,6 +40,11 @@ import { getLevel, defaultLevel } from '../src/levels/index.js';
 // route ids (level.routes), the level's day (day.meetingAt ends every plan) and level.gate (mustUse lessons,
 // goto targets, milestones, bins, key actions; src/levels/meeting/gate.js documents the shape).
 export const DEFAULT_LEVEL = defaultLevel.id;
+// Milestones every level gets for the engine's own mechanics (the level's gate.milestones win on a clash):
+// attention's noises (src/sim/mechanics/attention.js). 'noise' is also a bin key. A level that never makes a
+// noise never sees either, so its results don't change.
+const ENGINE_MILESTONES = { noise: () => 'noise', 'npc:heard': (p) => `heard:${p.id}` };
+const ENGINE_BIN_KEYS = ['noise'];
 const data = {};
 export function levelData(id) {
   if (data[id]) return data[id];
@@ -47,7 +52,16 @@ export function levelData(id) {
   if (!level.gate) throw new Error(`level '${id}' has no gate data (level.gate, see src/levels/meeting/gate.js)`);
   const meetingAt = level.day.meetingAt;
   // lastMinute: the last minute a timed wait can end on (3:59 in level 1).
-  return (data[id] = { id, routes: level.routes.map((r) => r.id), ...level.gate, meetingAt, lastMinute: meetingAt - 1 });
+  const { milestones, binKeys } = level.gate;
+  return (data[id] = {
+    id,
+    routes: level.routes.map((r) => r.id),
+    ...level.gate,
+    milestones: { ...ENGINE_MILESTONES, ...milestones },
+    binKeys: [...binKeys, ...ENGINE_BIN_KEYS.filter((k) => !binKeys.includes(k))],
+    meetingAt,
+    lastMinute: meetingAt - 1,
+  });
 }
 // =================================================================================================
 

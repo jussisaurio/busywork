@@ -37,10 +37,10 @@ everyone relies on**.
   **Use `say()` for every speech, thought or alert bubble.** It also emits the `'say'` event for audio.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
-- `src/levels/index.js`: the level registry `levels` (`{ meeting }`), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
+- `src/levels/index.js`: the level registry `levels` (`meeting`, plus the `fixture-<mechanic>` test levels), `defaultLevel`, and `getLevel(id)` (throws on an unknown id,
   listing the registry). A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
+  `hunts`, `doors`, `noises`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`, plus presentation and tools fields `decor`, `looks`, `itemIcons`,
   `endScenes`, `sounds`, `harness` and `gate`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
@@ -53,7 +53,10 @@ everyone relies on**.
   look { angle, time }, start { event?, says?, wait? }, until?, found(game, npc), end { says? } }]` (started by a behaviour
   hook through `startHunt(game, npc)`, `src/sim/mechanics/index.js`). `doors`: `[{ spot, zone, npcs, opens(game, npc), override,
   plan, label, locked { set?, event? }, bang { first, lines [{ say, next }], event?, shake? } }]` (whether a door tile blocks
-  walking or sight is the map legend's `npcPassable`/`opaque`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
+  walking or sight is the map legend's `npcPassable`/`opaque`). Attention (`src/sim/mechanics/attention.js`, both
+  optional): an interaction row's `noise: { radius, at?, npcs? }` makes a noise when the action is done, at the spot `at`
+  or else where the action was aimed; `noises: { [eventName]: { at, radius, npcs? } }` makes one at the spot `at`
+  whenever that event fires (e.g. `'door:bang'`). Bubbles in level data are lines `{ say: icons, kind?, ttl?, after? }`.
   `behaviours` (`levels/meeting/behaviours.js`): level-only hooks keyed by name, `{ spot?, pending?(npc), arrive(game, npc, sim) }`.
   The cast names them: a schedule entry's `prelude` (a name or a list: a leg to the hook's `spot` before the entry's own, while
   `pending(npc)` holds; a prelude to the entry's own spot replaces its leg) and `arrive` (on reaching the entry's spot), and a cast
@@ -178,6 +181,13 @@ game = {
 5. **Meeting.** At `day.gatherAt` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
    `meetingSpot`. When the boss arrives (his `presenter` hook, `meetingArrive`): if the projector is broken, `say` 📽️💥🤷. Otherwise `say` 📊👀 (looks at the player's spot).
    Emit `'meeting:gather'` once.
+6. **Attention** (`src/sim/mechanics/attention.js`). A noise `{ x, y, radius, npcs? }` (tiles): every NPC within `radius`
+   (straight line, walls ignored) who is active and not gone faces it for 1.5 s; a second noise meanwhile retargets him
+   and restarts the 1.5 s. The authority hears nothing inside his `deafIn` zone; `npcs` (cast ids) limits who hears it
+   (default everyone: the one mechanic that acts on NPCs its data doesn't name). With no override he turns his body and
+   stands still (`holdFor`); in any override (the meeting, a hunt, a lure's job, ...) only his head turns (at most the
+   widest glance) and his plan goes on. The cone follows. Glances due meanwhile are drawn but not shown: no rng change.
+   Emits `'noise'` then one `'npc:heard'` per listener. Private state: `npc._heard`.
 - Kev's 2:38 coffee (his `pourCoffee` arrive hook): if `world.coffee==='pot'` he pours it (`'taken'`, `carry='coffee'`, emit
   `'coffee:taken' {by}`). Otherwise, empty-handed: ☕❓ then 😩, `want(npc, 'coffee')`, emit `'coffee:missing' {by}`.
 - `away` entries: walk to the spot, then `active=false` until the next entry starts (emit `'npc:vanish' {id}`). Reappear at that
@@ -271,6 +281,8 @@ game = {
 | `kev:left` | `{}` | sim (elevator ding) |
 | `npc:vanish` / `npc:appear` | `{id}` | sim |
 | `meeting:gather` | `{}` | sim |
+| `noise` | `{x, y, radius}` | sim (attention: an action row's `noise`, or a `level.noises` event) |
+| `npc:heard` | `{id}` | sim (attention: after `noise`, once per NPC who turns to it, cast order) |
 | `day:end` | `{outcome}` | scenario |
 
 ## Frame / step order (src/main.js + src/game/loop.js)
@@ -320,7 +332,8 @@ only on level, seed, budget and batch, not on the worker count or the machine. I
 pass/fail test. It is also a module (`fuzz()`, `evaluate(plan, L)`, `report()`, `levelData(id)`). What the tools know
 about a level comes from its folder: `levelData(id)` merges the route ids (`level.routes`), the day
 (`day.meetingAt` ends every plan) and `level.gate` (`src/levels/meeting/gate.js`: `mustUse` lessons, `targets` and
-`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name),
+`interactable` (the plan language's goto targets; order is behaviour), `milestones` (event -> milestone name; every
+level also gets the engine's `noise` -> 'noise' and `npc:heard` -> 'heard:<id>', and 'noise' as a bin key),
 `binKeys`, `keyActions`). Workers get the level id and build their own data; `evaluate()` builds
 `createHarness({ level: L.id })`. An unknown `--level` (on every tool below too) exits 2 with the registry's ids.
 `tools/gate.mjs [--level meeting]` is the pass/fail filter a level must pass before a human plays it. It fuzzes (default
