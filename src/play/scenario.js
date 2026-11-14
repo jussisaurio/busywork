@@ -3,7 +3,7 @@
 //
 // Attendance rule: stopping the meeting only counts if you're in the meeting room at 4:00.
 // Everyone else is there; the one empty chair is yours. Result 'blamed' (a fail).
-import { CAUGHT_DELAY, MEETING_AT } from '../config.js';
+import { CAUGHT_DELAY } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { stareAtEmptyChair } from '../sim/npcs.js';
@@ -39,7 +39,7 @@ export function updateScenario(game, dt) {
     return;
   }
 
-  if (game.clock.minute >= MEETING_AT) startMeeting(game, s);
+  if (game.clock.minute >= game.level.day.meetingAt) startMeeting(game, s);
 }
 
 function makeOutcome(game, result, routes, newRoutes) {

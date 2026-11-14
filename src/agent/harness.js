@@ -6,7 +6,7 @@
 // you (the vision cones), speech bubbles, the HUD. NPC schedules and intent are NOT exposed
 // (pass { debug: true } to observe() for that).
 
-import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock, MEETING_AT } from '../config.js';
+import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
 import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
@@ -361,7 +361,8 @@ export function observe(game, { map = true, debug = false } = {}) {
   const p = game.player;
   // Same as the HUD: one slot per route, blank until found.
   const routes = [['projector', '📽️'], ['keycard', '🪪']].map(([id, icon]) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
-  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute)} (meeting at 4:00 PM, ${Math.max(0, Math.ceil(MEETING_AT - game.clock.minute))} game min left) | route slots: ${routes}`);
+  const meetingAt = game.level.day.meetingAt;
+  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute)} (meeting at ${formatClock(meetingAt)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
 
   if (game.phase === 'end' && game.outcome) {
     const o = game.outcome;

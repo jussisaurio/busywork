@@ -69,5 +69,3 @@ export const NPC_DEFS = [
     ],
   },
 ];
-
-export const MEETING_GATHER_AT = at('3:54');

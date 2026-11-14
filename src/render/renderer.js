@@ -12,7 +12,6 @@ import {
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
-import { MEETING_AT } from '../config.js';
 import { findNpc } from '../game/perception.js';
 
 export function createRenderer(canvas, opts = {}) {
@@ -99,7 +98,7 @@ export function createRenderer(canvas, opts = {}) {
     if (game.phase === 'day' && (mem.dayPhase !== 'day' || minute < mem.lastMinute - 0.001)) mem.dayStart = t;
     mem.dayPhase = game.phase;
     mem.lastMinute = minute;
-    const beat = game.phase === 'day' && (!!game.caught || minute >= MEETING_AT);
+    const beat = game.phase === 'day' && (!!game.caught || minute >= game.level.day.meetingAt);
     if (beat && mem.beatStart < 0) mem.beatStart = t;
     else if (!beat) mem.beatStart = -1;
   }

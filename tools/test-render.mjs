@@ -52,7 +52,9 @@ const { createGame, resetLoop } = await import('../src/state.js');
 const { say, burst, sightline } = await import('../src/core/fx.js');
 const { createRng } = await import('../src/core/rng.js');
 const { spotPos } = await import('../src/game/perception.js');
-const { VISION, at, MEETING_AT } = await import('../src/config.js');
+const { VISION, at } = await import('../src/config.js');
+const { levels } = await import('../src/levels/index.js');
+const MEETING_AT = levels.meeting.day.meetingAt;
 const { DIRS } = await import('../src/core/vision.js');
 const { LEGEND_PLAY } = await import('../src/render/hud.js');
 

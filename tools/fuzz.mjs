@@ -31,7 +31,8 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../src/agent/harness.js';
 import { createRng } from '../src/core/rng.js';
-import { at, formatClock, MEETING_AT } from '../src/config.js';
+import { at, formatClock } from '../src/config.js';
+import { levels } from '../src/levels/index.js';
 
 // =================================================================================================
 // LEVEL DATA: everything tools/fuzz.mjs and tools/gate.mjs know about a specific level, in one table.
@@ -83,6 +84,7 @@ export const LEVELS = {
 const SELF = fileURLToPath(import.meta.url);
 export const EASY_STEPS = 3; // a win in this few steps is suspicious
 export const EASY_RATE = 0.01; // so is a random plan winning more than 1% of the time
+const MEETING_AT = levels[DEFAULT_LEVEL].day.meetingAt; // P5.1: the --level's day
 const LAST_MINUTE = MEETING_AT - 1; // the last minute a timed wait can end on (3:59)
 // Plans per MAP-Elites generation. A constant, not derived from the core count: the archive must not depend
 // on the machine. 288 = the 12 workers x 24 that design-jam/FUZZ.md was recorded with.

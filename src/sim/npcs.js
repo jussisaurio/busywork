@@ -11,10 +11,9 @@
 //   the glance is shown. So glance timing is a pure function of loop time per NPC: independent
 //   of the player and of the other NPCs (learnable across loops).
 import {
-  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, MEETING_AT, at,
+  SEED, NPC_SPEED, GAME_MIN_PER_SEC, VISION, KEV_FIX_MIN, at,
   GLANCE_EVERY, GLANCE_EVERY_BY, GLANCE_ANGLE, GLANCE_HOLD, GLANCE_TURN_TIME,
 } from '../config.js';
-import { MEETING_GATHER_AT } from '../levels/meeting/cast.js';
 import { DIRS, angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
 import { say, shake } from '../core/fx.js';
@@ -36,7 +35,7 @@ const SANDWICH_TIME = 0.6; // s Lin spends taking her sandwich out of the fridge
 const BANGS = [['😠', '🚪', '🪪'], ['🪪', '❓'], ['👊', '🚪']]; // cycled (deterministic)
 const BANG_EVERY = [2.5, 2.2, 2.8]; // s until the next bang, cycled alongside BANGS
 const FIRST_BANG = 0.8; // s after the door doesn't open
-// Walking to the meeting, NPCs speed up just enough to be seated by MEETING_AT when the walk from where they
+// Walking to the meeting, NPCs speed up just enough to be seated by the meeting (level day.meetingAt) when the walk from where they
 // are at the gather is longer than the time left. Capped multiplier:
 const MEETING_HURRY_MAX = 1.3;
 
@@ -121,7 +120,7 @@ export function updateNpcs(game, dt) {
   const npcs = game.npcs;
 
   // 5. Meeting gather, once per loop. The flag lives on the NPCs, so a new loop starts clean.
-  if (now >= MEETING_GATHER_AT && npcs.length && !npcs.some((n) => n._gathered)) {
+  if (now >= game.level.day.gatherAt && npcs.length && !npcs.some((n) => n._gathered)) {
     for (const n of npcs) {
       n._gathered = true;
       // Kev finishes a repair first (endOverride sends him to the meeting afterwards).
@@ -381,7 +380,7 @@ function stepPlan(game, npc, dt) {
   }
 }
 
-// Speed needed to finish the remaining legs by MEETING_AT, clamped to [1, MEETING_HURRY_MAX] x NPC_SPEED.
+// Speed needed to finish the remaining legs by day.meetingAt, clamped to [1, MEETING_HURRY_MAX] x NPC_SPEED.
 function hurrySpeed(game, npc, plan) {
   let dist = 0;
   let px = npc.x;
@@ -396,7 +395,7 @@ function hurrySpeed(game, npc, plan) {
     px = plan.legs[i].x + 0.5;
     py = plan.legs[i].y + 0.5;
   }
-  const realLeft = (MEETING_AT - game.clock.minute) / GAME_MIN_PER_SEC - 0.2; // small margin
+  const realLeft = (game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC - 0.2; // small margin
   const need = realLeft > 0 ? dist / realLeft : Infinity;
   return Math.min(NPC_SPEED * MEETING_HURRY_MAX, Math.max(NPC_SPEED, need));
 }

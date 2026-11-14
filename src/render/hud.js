@@ -9,10 +9,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { at, formatClock, MEETING_AT, WORK_PENALTY_MIN, DAY_START } from '../config.js';
-
-const RED_AT = at('3:50');
-const PULSE_AT = MEETING_AT - 2;
+import { formatClock, WORK_PENALTY_MIN, DAY_START } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -32,7 +29,7 @@ export function drawHud(ctx, game, t, mem) {
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
-  drawClock(ctx, fin(clock.minute), t);
+  drawClock(ctx, fin(clock.minute), t, game.level.day);
   drawGoal(ctx);
   drawHeld(ctx, game.player && game.player.held);
   // loop counter + found routes
@@ -143,9 +140,9 @@ export function clockDigits(minute) {
   return sp > 0 ? str.slice(0, sp) : str;
 }
 
-function drawClock(ctx, minute, t) {
-  const red = minute >= RED_AT;
-  const last = minute >= PULSE_AT;
+function drawClock(ctx, minute, t, day) {
+  const red = minute >= day.clockRedAt;
+  const last = minute >= day.meetingAt - 2;
   const pulse = last ? 0.5 + 0.5 * Math.sin(t * 8) : 0;
   panel(ctx, 10, 6, 168, 44);
   if (last) {

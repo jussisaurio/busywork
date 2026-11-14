@@ -9,7 +9,6 @@
 // One-shot sounds disconnect themselves when they end (see synth.js sound()). The only
 // long-lived nodes are the buses, the compressor and the music's tremolo chain.
 
-import { at, MEETING_AT } from '../config.js';
 import { spotPos, findNpc } from '../game/perception.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
 import { babble, hum, voiceOf } from './babble.js';
@@ -19,9 +18,6 @@ import { createMusic } from './music.js';
 const MASTER = 0.55;
 const BUS = { sfx: 0.9, voice: 0.32, music: 0.12 }; // babble is dense: ~9 dB under the sfx bus
 const MAP_W = 30; // fallback when game.map is missing
-const CLOCK_FROM = at('3:50'); // wall clock starts ticking
-const TOCK_FROM = at('3:55'); // tick-tock
-const HALF_FROM = at('3:57'); // every half minute
 const MAX_TALK = 3; // overlapping utterances
 
 // Looked up only inside unlock().
@@ -381,27 +377,30 @@ export function createAudio(opts = {}) {
     stepT = (p.busyPose === 'folder' ? 0.36 : 0.27) / speed;
   }
   // quiet: no ticks (meeting outcome or caught); the 4:00 chime still rings unless caught.
-  function clockTicks(minute, quiet, caught) {
+  // day: the level's times (meetingAt; clockTickAt: the wall clock starts ticking; tockAt: tick-tock;
+  // halfMinuteAt: a tick every half minute).
+  function clockTicks(minute, quiet, caught, day) {
+    const { meetingAt, clockTickAt, tockAt, halfMinuteAt } = day;
     const m = fin(minute, 0);
     if (prevMinute === null || m < prevMinute) {
       prevMinute = m;
       clockIdx = Math.floor(m * 2);
       return;
     }
-    if (prevMinute < MEETING_AT && m >= MEETING_AT && !caught) sfx.fourOClock(E, { t: now() });
+    if (prevMinute < meetingAt && m >= meetingAt && !caught) sfx.fourOClock(E, { t: now() });
     prevMinute = m;
     const idx = Math.floor(m * 2); // half-minute index
     if (idx <= clockIdx) return;
     clockIdx = idx;
     if (quiet) return;
     const mm = idx / 2; // the crossed mark
-    if (mm < CLOCK_FROM || mm >= MEETING_AT) return;
-    if (idx % 2 === 1 && mm < HALF_FROM) return; // half minutes only near the end
+    if (mm < clockTickAt || mm >= meetingAt) return;
+    if (idx % 2 === 1 && mm < halfMinuteAt) return; // half minutes only near the end
     const t = fin(E.ctx.currentTime, 0);
     if (t - lastTick < 0.12) return; // fast-forward: don't machine-gun
     lastTick = t;
-    const u = (mm - CLOCK_FROM) / (MEETING_AT - CLOCK_FROM);
-    sfx.clockTick(E, { t: now(), urgency: u, tock: mm >= TOCK_FROM && idx % 2 === 0 });
+    const u = (mm - clockTickAt) / (meetingAt - clockTickAt);
+    sfx.clockTick(E, { t: now(), urgency: u, tock: mm >= tockAt && idx % 2 === 0 });
   }
 
   function step(g, realDt) {
@@ -420,7 +419,7 @@ export function createAudio(opts = {}) {
         play: wantMusic && !muted && ctxOk && day && !g.outcome && !g.caught,
         duck: ducking,
         rate: fin(clock.forced, 0) > 0 ? 1.45 : clock.ff ? 1.3 : 1,
-        level: fin(clock.minute, 0) >= CLOCK_FROM ? 0.6 : 1, // make room for the clock
+        level: fin(clock.minute, 0) >= fin(g.level?.day?.clockTickAt, Infinity) ? 0.6 : 1, // make room for the clock
       });
     }
     if (muted || !ctxOk || !day) {
@@ -440,7 +439,7 @@ export function createAudio(opts = {}) {
         sfx.clank(E, atSpot('projector', { soft: true, gain: 0.7 }));
       }
     }
-    clockTicks(clock.minute, !!(g.outcome || g.caught), !!g.caught);
+    if (g.level?.day) clockTicks(clock.minute, !!(g.outcome || g.caught), !!g.caught, g.level.day);
   }
 
   return {

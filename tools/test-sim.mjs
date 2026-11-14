@@ -5,13 +5,13 @@ import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
-import { FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
+import { FIXED_DT, DAY_START, at, formatClock } from '../src/config.js';
 import { inZone } from '../src/game/perception.js';
 import { levels } from '../src/levels/index.js';
-import { MEETING_GATHER_AT } from '../src/levels/meeting/cast.js';
 
 const LEVEL = levels.meeting; // createGame()'s default level
 const { spots: SPOTS, patrols: ROUTES } = LEVEL;
+const { meetingAt: MEETING_AT, gatherAt: MEETING_GATHER_AT } = LEVEL.day;
 
 const VERBOSE = process.argv.includes('-v');
 let fails = 0;
@@ -121,6 +121,8 @@ const common = (R, tag) => {
   ok(bad.length === 0, `nav: all spots mutually reachable${bad.length ? ' — ' + bad.slice(0, 4).join(', ') : ''}`);
   const badRoute = Object.entries(ROUTES).flatMap(([r, pts]) => pts.filter(([x, y]) => !g.map.isWalkable(x, y)).map((q) => `${r}:${q}`));
   ok(badRoute.length === 0, 'nav: route points are floor');
+  // at() and formatClock() still count from config.js DAY_START: the level's day must agree.
+  ok(LEVEL.day.start === DAY_START, 'level day.start matches config DAY_START');
 }
 
 // ---------------------------------------------------------------- 1. untouched day

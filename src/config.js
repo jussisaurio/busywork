@@ -18,7 +18,6 @@ export function at(hhmm) {
   const hh = h < 12 ? h + 12 : h;
   return hh * 60 + m - DAY_START;
 }
-export const MEETING_AT = at('4:00');
 
 // minutes since DAY_START -> "3:12 PM"
 export function formatClock(minute) {

@@ -3,7 +3,7 @@
 // wall clock, coffee carafe, dropped items, elevator doors).
 import { T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
 import { C } from './palette.js';
-import { at, DAY_START, WORK_PENALTY_MIN } from '../config.js';
+import { DAY_START, WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
 const WALLISH = new Set(['#', 'R', 'E']);
@@ -997,7 +997,7 @@ export function drawWorldDynamic(ctx, game, t) {
 
   // Projector + screen.
   if (info.projector) {
-    const beam = world.projector === 'ok' && (minute >= at('3:55') || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail'));
+    const beam = world.projector === 'ok' && (minute >= game.level.day.beamAt || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail'));
     if (beam) drawBeam(ctx, info, t);
     drawProjector(ctx, info.projector.x * T + T / 2, info.projector.y * T + T / 2, world.projector || 'ok', world.fixProgress || 0, t);
   }

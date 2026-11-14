@@ -38,10 +38,12 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`. Engine code reads it as `game.level`.
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`. Engine code reads it as `game.level`.
+  `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
+  `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
 - `src/levels/meeting/map.js`: `MAP`, `LEGEND`, `SPOTS` (named tile positions + facing), `ROUTES` (the level's `patrols`), `ZONES`
   ('meeting_room': cols 9–18, rows 1–5; 'outside': the lobby, rows ≥ 14). `SPOTS.meeting_player` is your (empty, mustard) chair.
-- `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]) and `MEETING_GATHER_AT`.
+- `src/levels/meeting/cast.js`: `NPC_DEFS` (id, icon, color, voice, meetingSpot, schedule[]).
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`, `inZone(game, name, x, y)`,
   `findNpc(game, id)`. spotPos and inZone read the level's spots and zones (`game.level`).
 - `src/state.js`: `createGame()` and `resetLoop(game)`. These hold the state shape below.
@@ -142,7 +144,7 @@ game = {
 4. **Lin's sandwich (stretch).** On arrival at the fridge (3:00): if `world.sandwich==='fridge'`, she takes it
    (`'lin'`) and eats at the kitchen table as scheduled. Otherwise: emit `'sandwich:missing'`, say 🥪❓ then 😠,
    `override='hunting'`. She walks `ROUTES.lin_hunt` back and forth (glancing often) until `at('3:24')` (or until she has it back, `world.sandwich === 'lin'`, or `world.linKnows`), then 😤, and resumes the schedule.
-5. **Meeting.** At `MEETING_GATHER_AT` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
+5. **Meeting.** At `day.gatherAt` (3:54), every active NPC that isn't `lockedOut` gets `override='meeting'` and walks to its
    `meetingSpot`. When the boss arrives: if the projector is broken, `say` 📽️💥🤷. Otherwise `say` 📊👀 (looks at the player's spot).
    Emit `'meeting:gather'` once.
 - `away` entries: walk to the spot, then `active=false` until the next entry starts (emit `'npc:vanish' {id}`). Reappear at that
@@ -192,7 +194,7 @@ game = {
     (slurp), no tattle. While `wants === 'coffee'` Kev thinks 🥱☕ every 6 sim seconds (first after 4), skipped while fixing.
   Suspicion and contraband are ignored while the boss's override is 'lockedOut' or 'meeting'.
 - `updateScenario(game, dt)`: all phase transitions during a day. After a catch: after CAUGHT_DELAY, the outcome is 'caught'.
-  At MEETING_AT: the outcome is decided (see DESIGN.md), `persist.routesFound` is updated (wins only), there is a 2 s in-world beat
+  At `day.meetingAt`: the outcome is decided (see DESIGN.md), `persist.routesFound` is updated (wins only), there is a 2 s in-world beat
   (player locked), then `phase='end'` and emit `'day:end' {outcome}`. Attendance: a route achieved while the player is outside the
   'meeting_room' zone is 'blamed' (the room stares at your empty chair: 🪑❓ then 😠👉).
 
