@@ -175,7 +175,7 @@ export function drawParticles(ctx, game, t) {
     const ttl = Math.max(0.01, fin(p.ttl, 1));
     const age = Math.max(0, fin(p.age));
     const k = clamp(age / ttl, 0, 1);
-    const seed = hash(Math.floor(ttl * 100003), i);
+    const seed = hash(Math.floor(ttl * 100003)); // ttl is random per particle; an index would shift as others die
     const vx = fin(p.vx);
     const vy = fin(p.vy);
     ctx.globalAlpha = 1;
