@@ -9,6 +9,7 @@
 //                             until the next entry starts; reappear at that spot
 //   leave   { spot, gone? }   walk to spot and vanish for the rest of the day; gone: { set?, event? } applied then
 //   say     { icons, kind }   instant: pictogram bubble (does not change activity)
+// Any moving entry may carry `anim`: a name the renderer draws him with while he follows it (npc.anim; 'smoking': arms and 🚬).
 // Hooks (behaviours.js): an entry's `prelude` (a leg first) and `arrive` (on reaching its spot), and a cast
 // member's `meetingArrive` (on sitting down at the meeting).
 //
@@ -43,7 +44,7 @@ export const NPC_DEFS = [
       s('3:12', { do: 'away', spot: 'restroom' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
       s('3:22', { do: 'sit', spot: 'boss_desk' }),
       s('3:33', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
-      s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket' }),
+      s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket', anim: 'smoking' }),
       s('3:48', { do: 'sit', spot: 'boss_desk' }),
     ],
   },

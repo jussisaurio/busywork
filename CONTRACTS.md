@@ -57,7 +57,8 @@ everyone relies on**.
   `pending(npc)` holds; a prelude to the entry's own spot replaces its leg) and `arrive` (on reaching the entry's spot), and a cast
   member's `meetingArrive` (on sitting down at the meeting). `sim` is the sim's helpers for hooks: `holdFor(npc, s)`,
   `speak(game, npc, lines)`, `want(npc, item)`, `faceSpot(game, npc, spot)`, `startHunt(game, npc)`. An unknown name throws when the
-  NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes.
+  NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes. Any entry may
+  carry `anim` (copied to `npc.anim` while he follows it).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,
@@ -144,6 +145,8 @@ game = {
   wants: null,               // null | item type he knows is his and misses: Kev found the pot empty (☕❓😩). Every ~6 s
                              // he daydreams of it (🥱 + the item's icon) unless working a lure's job; cleared when he gets it
   label: 'sit boss_desk',    // debug string of the current activity
+  anim: null,                // null | the current schedule entry's `anim` (none under an override): how render draws him.
+                             // Level 1: 'smoking' (the boss's 3:35 smoke break, including the coat-rack walk: arms + 🚬)
   rng,                       // createRng(SEED ^ hash(id)): per-NPC, so glances don't depend on player actions
 }
 ```

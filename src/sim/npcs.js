@@ -79,6 +79,7 @@ export function createNpc(game, def, now = 0) {
     carry: null, // null | item type he carries (Kev's coffee, once he has the day's cup)
     wants: null, // null | item type he now knows is his and misses (Kev found the pot empty: someone has his cup)
     label: `${first.do} ${first.spot}`,
+    anim: first.anim ?? null, // render: the schedule entry's `anim` while he follows it (no override)
     rng,
     // --- private sim state ---
     _schedule: sched,
@@ -135,6 +136,7 @@ function updateNpc(game, npc, dt, now) {
   updateGlance(npc, dt);
   const m = mechanicOf(game, npc);
   npc.label = (m && m.kind.label?.(game, npc, m.data)) ?? npc._plan.label;
+  npc.anim = npc._plan.anim;
 }
 
 // --- Schedule ---------------------------------------------------------------------
@@ -248,7 +250,7 @@ function planKey(game, npc, now) {
 function buildPlan(game, npc, now, key) {
   const plan = {
     key, label: key, legs: [], li: 0, path: null, wp: 0, done: false,
-    pose: 'stand', vanish: null, loop: false, onDone: null, hurry: false,
+    pose: 'stand', vanish: null, loop: false, onDone: null, hurry: false, anim: null,
   };
   if (key === 'gone') {
     plan.done = true;
@@ -277,6 +279,7 @@ function buildPlan(game, npc, now, key) {
     plan.pose = e.do === 'sit' ? 'sit' : 'stand';
     plan.vanish = e.do === 'away' || e.do === 'leave' ? e.do : null;
     plan.gone = e.do === 'leave' ? e.gone ?? null : null;
+    plan.anim = e.anim ?? null;
     plan.label = `${e.do} ${e.spot ?? e.route}`;
   }
   if (plan.done) return plan; // (a door's lockout)
