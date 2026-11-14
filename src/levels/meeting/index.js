@@ -14,6 +14,7 @@
 //   hunts    ... an NPC searches for something until she finds it or gives up
 //   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
 //   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
+//   failSign    { spot, offset: [dx, dy] }: where a failed meeting's 🦗 sign appears (tiles from the spot's corner)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
 //   outcomeOrder  the order outcome.routes (and so persist.routesFound) lists achieved routes in
@@ -52,6 +53,7 @@ export default {
   hunts: HUNTS,
   doors: DOORS,
   behaviours: BEHAVIOURS,
+  failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
     { id: 'keycard', icon: '🪪', achieved: (w) => w.bossLockedOut },

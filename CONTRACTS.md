@@ -39,7 +39,7 @@ everyone relies on**.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
   holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `roles`, `lures`,
-  `hunts`, `doors`, `behaviours`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  `hunts`, `doors`, `behaviours`, `failSign`, `routes`, `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
   `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
   done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place?, edible?, contraband?, owner? }`
   (`place`: the world field that tracks where it is; `contraband`: the NPC who catches you with it; `owner: { id, when?(npc), says?,
@@ -59,6 +59,7 @@ everyone relies on**.
   `speak(game, npc, lines)`, `want(npc, item)`, `faceSpot(game, npc, spot)`, `startHunt(game, npc)`. An unknown name throws when the
   NPC is created. A `leave` entry may carry `gone: { set?, event? }`, applied to `world` when he vanishes. Any entry may
   carry `anim` (copied to `npc.anim` while he follows it).
+  `failSign` (optional): `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (scenario's end beat).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (📽️ projector,

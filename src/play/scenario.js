@@ -11,7 +11,7 @@ import { cancelAction } from './interactions.js';
 import { setBusy, standUp } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome
-const CRICKETS_AT = 0.9; // fail beat: 🦗 sign appears at this point
+const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
 
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
@@ -22,8 +22,11 @@ export function updateScenario(game, dt) {
     s.beatT += dt;
     if (game.outcome.result === 'fail' && !s.crickets && s.beatT >= CRICKETS_AT) {
       s.crickets = true;
-      const proj = game.level.spots.projector;
-      say(game, { x: proj.x + 0.5, y: proj.y + 1.5 }, ['🦗'], { kind: 'sign', ttl: 1.5 });
+      const sign = game.level.failSign;
+      if (sign) {
+        const p = game.level.spots[sign.spot];
+        say(game, { x: p.x + sign.offset[0], y: p.y + sign.offset[1] }, ['🦗'], { kind: 'sign', ttl: 1.5 });
+      }
     }
     if (s.beatT >= END_BEAT) endDay(game);
     return;
