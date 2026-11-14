@@ -281,7 +281,11 @@ action:cancel), `names`, `mapKey`, and text hooks `outcomeText(o)`, `playerText(
 `npcText(game, n)`, `worldText(game)` and `describe(event, memo)` (a line, `null` for silence, `undefined` for the
 harness's own text). All optional: without them the harness prints plain defaults. `helpText(level)` lists the goto
 targets (interactables, then landmarks); `describeEvents(events, { level })` defaults to the registry's default level,
-and a harness's own `h.describeEvents` uses its level.
+and a harness's own `h.describeEvents` uses its level. `createHarness({ level })` takes a level object or a registry
+id (default: the registry's default level). `node tools/play.mjs new <session> --level <id>` writes the level id as
+the first line of `.agent-sessions/<session>.jsonl`, and later calls replay that level (a log without that line plays
+the default level; a `--level` that differs from the session's is an error). `help --level <id>` prints that
+level's help.
 `tools/fuzz.mjs` searches over harness plans for surprising outcomes (MAP-Elites over outcome bins keyed by
 result, routes and milestones; winning plans are shrunk to a minimum; each timed wait of a minimal win is slid
 across the day to measure the real windows). `node tools/fuzz.mjs [--level meeting] [--budget 20000] [--seed N]
