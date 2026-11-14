@@ -492,6 +492,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
     if (s === undefined) switch (e.name) {
       case 'say': {
         const who = typeof p.owner === 'string' ? NAME[p.owner] ?? p.owner : 'a sign';
+        if (p.kind === 'sign' && typeof p.owner === 'string') { s = `a sign over ${who} says ${p.icons.join('')}`; break; } // an inspection's ✔️
         const you = p.owner === 'player';
         s = `${who} ${p.kind === 'thought' ? (you ? 'think' : 'thinks') : you ? 'say' : 'says'} ${p.icons.join('')}`;
         break;
