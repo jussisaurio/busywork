@@ -347,7 +347,7 @@
  {
   "file": "src/render/effects.js",
   "identifier": "boss",
-  "count": 4
+  "count": 2
  },
  {
   "file": "src/render/effects.js",
@@ -412,7 +412,7 @@
  {
   "file": "src/render/screens.js",
   "identifier": "mustard",
-  "count": 4
+  "count": 3
  },
  {
   "file": "src/render/util.js",
@@ -442,12 +442,12 @@
  {
   "file": "src/render/world.js",
   "identifier": "kev",
-  "count": 5
+  "count": 4
  },
  {
   "file": "src/render/world.js",
   "identifier": "lin",
-  "count": 5
+  "count": 4
  },
  {
   "file": "src/render/world.js",
@@ -457,17 +457,12 @@
  {
   "file": "src/render/world.js",
   "identifier": "projector",
-  "count": 8
+  "count": 7
  },
  {
   "file": "src/render/world.js",
   "identifier": "coffee",
   "count": 5
- },
- {
-  "file": "src/render/world.js",
-  "identifier": "fridge",
-  "count": 1
  },
  {
   "file": "src/render/world.js",
@@ -477,7 +472,7 @@
  {
   "file": "src/render/world.js",
   "identifier": "mustard",
-  "count": 10
+  "count": 5
  },
  {
   "file": "src/sim/npcs.js",
