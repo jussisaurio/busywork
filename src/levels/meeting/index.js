@@ -16,11 +16,13 @@
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
 //   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
 //   itemIcons  the emoji for each item type (looks.js; render)
+//   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
 import { DECOR } from './decor.js';
 import { LOOKS, ITEM_ICONS } from './looks.js';
+import { END_SCENES } from './end-scenes.js';
 
 export default {
   id: 'meeting',
@@ -62,4 +64,5 @@ export default {
   decor: DECOR,
   looks: LOOKS,
   itemIcons: ITEM_ICONS,
+  endScenes: END_SCENES,
 };

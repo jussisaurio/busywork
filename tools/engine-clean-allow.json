@@ -301,33 +301,8 @@
  },
  {
   "file": "src/render/screens.js",
-  "identifier": "boss",
-  "count": 7
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "kev",
-  "count": 2
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "lin",
-  "count": 3
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "keycard",
-  "count": 6
- },
- {
-  "file": "src/render/screens.js",
-  "identifier": "projector",
-  "count": 5
- },
- {
-  "file": "src/render/screens.js",
   "identifier": "mustard",
-  "count": 3
+  "count": 2
  },
  {
   "file": "src/render/world.js",
