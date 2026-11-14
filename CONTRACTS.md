@@ -38,8 +38,11 @@ everyone relies on**.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the level registry `levels` (`{ meeting }`) and `defaultLevel`. A level object (`src/levels/meeting/index.js`)
-  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `owns`, `sceneDoor`, `routes`, `outcomeOrder`,
-  `initialWorld()`. Engine code reads it as `game.level`.
+  holds `id`, `map: { rows, legend }`, `spots`, `zones`, `patrols`, `cast`, `day`, `interactions`, `items`, `owns`, `sceneDoor`, `routes`,
+  `outcomeOrder`, `initialWorld()`. Engine code reads it as `game.level`.
+  `interactions`: the player's actions, keyed by verb (`{ on, icon, text, duration, sneaky, owner?, idle?, saw?, can(p, w, item),
+  done(game, a) }`, field notes in `levels/meeting/interactions.js`). `items`: per item type `{ icon, place? }` (`place`: the world
+  field that tracks where it is).
   `day`: `start` (2:30 PM as minute-of-day), `gatherAt` (3:54), `meetingAt` (4:00), and the cosmetic cue times `clockRedAt`,
   `clockTickAt` (3:50), `tockAt`, `beamAt` (3:55), `halfMinuteAt` (3:57). Clock minutes count from config.js `DAY_START`.
   `owns`: who takes which item back (`{ lin: 'sandwich', kev: 'coffee' }`). `sceneDoor`: the meeting-room door point that
@@ -84,7 +87,7 @@ game = {
     busyPose: null,           // null | 'typing' | 'folder' | 'phone'
     seated: true,             // at own desk (snapped to SPOTS.player_desk)
     smeared: false,           // ate the sandwich: mustard down the sweater (drawn; hunting Lin recognizes it)
-    action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle, x, y, item }   (t counts up, seconds; owner/idle copied from ACTIONS; x/y/item from the focus)
+    action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle, x, y, item }   (t counts up, seconds; duration/sneaky/owner/idle from the action's row; x/y/item from the focus)
     locked: false,            // can't move or act (forced work, caught, end beat)
     focus: null,              // null | { kind: 'interactable'|'item'|'self', id, x, y, icon, action, item }  (✋ hint target; item: the floor item)
   },
@@ -171,15 +174,16 @@ game = {
 - `updatePlayer(game, dt)`: movement with tile collision (circle radius PLAYER_RADIUS vs solid tiles, sliding along walls),
   busy/pose logic, seated logic, sets `clock.ff`. Locked during forced work (seated, typing).
   Any movement input while seated stands you up.
-- `updateInteractions(game, dt)`: finds `player.focus`, starts, progresses and cancels timed actions (ACTIONS in config),
-  and applies their results to `world`. Interaction table (`TARGET_ACTIONS`; an action is cancelled `'invalid'` once it stops being offered):
+- `updateInteractions(game, dt)`: finds `player.focus`, starts, progresses and cancels timed actions, and applies their results
+  (`done`, right after `'action:done'`). The table is `level.interactions` then the generic sit, drop and pick_up (`actionRow(game, verb)`;
+  an action is cancelled `'invalid'` once it stops being offered). Level 1:
   - coffee_machine + empty hands, coffee 'pot' → brew_coffee → held 'coffee', coffee 'taken', emit 'coffee:taken' {by:'player'}
   - projector + coffee, projector 'ok' → spill_coffee (sneaky) → projector 'broken', held null, emit 'projector:broken', sparks/smoke burst
   - coat_rack + empty hands, keycard 'rack' → take_keycard (sneaky) → held 'keycard', keycard 'player', emit 'keycard:taken'
   - fridge + empty hands, sandwich 'fridge' → take_sandwich (sneaky) → held 'sandwich', sandwich 'player', emit 'sandwich:taken'
   - own_desk → sit (snap to SPOTS.player_desk, seated)
   - holding the sandwich with no other valid target → eat_sandwich (sneaky) → sandwich 'eaten', crumbs, emit 'sandwich:eaten'
-  - holding something else with no other valid target → drop it at the player's feet (keycard→'dropped', sandwich→'dropped')
+  - holding something else with no other valid target → drop it at the player's feet (an item with a `place`: `world[place]` → 'dropped')
   - empty hands near a dropped item (≤1.0 tiles) → pick_up
   The nearest valid target wins. Movement input during an action cancels it (`'action:cancel' {reason:'moved'}`).
 - `updateRules(game, dt)`: witnesses (NOTICE 0.3 s of continuous sight, ❓ at first sight), tattling, owners taking things back,

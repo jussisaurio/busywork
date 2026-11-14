@@ -7,6 +7,8 @@
 //   patrols  named point lists for { do: 'patrol', route } schedule entries
 //   cast     the NPC definitions, in order: the order is behaviour (update, witness and event order)
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
+//   interactions  the player's actions here (interactions.js; play/interactions.js adds sit, drop, pick_up)
+//   items    carryable item types and their flags (items.js)
 //   owns     who takes which item back on sight (play/rules.js)
 //   sceneDoor  the meeting-room door: Kev blames whoever is within rules.js SCENE_RADIUS of it
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
@@ -16,6 +18,8 @@
 import { at } from '../../config.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
+import { INTERACTIONS } from './interactions.js';
+import { ITEMS } from './items.js';
 
 export default {
   id: 'meeting',
@@ -35,6 +39,8 @@ export default {
     halfMinuteAt: at('3:57'), // audio: a tick every half minute
     beamAt: at('3:55'), // the projector beam lights the screen
   },
+  interactions: INTERACTIONS,
+  items: ITEMS,
   owns: { lin: 'sandwich', kev: 'coffee' },
   sceneDoor: { x: 14.5, y: 6.5 },
   routes: [

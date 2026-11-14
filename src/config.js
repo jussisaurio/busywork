@@ -35,17 +35,8 @@ export const PLAYER_RADIUS = 0.3; // collision circle
 export const NPC_SPEED = 2.6;
 export const INTERACT_RADIUS = 1.5; // from player centre to interactable tile centre
 
-// Timed actions (real seconds). sneaky: witnesses matter while in progress.
-// owner: only that NPC knows it's wrong (a sandwich is just a sandwich to everyone but Lin).
-// idle: the boss reads it as slacking (his ❓ meter fills while he watches).
-export const ACTIONS = {
-  brew_coffee: { duration: 1.0, sneaky: false }, // pours the day's only cup (Kev's, at 2:38)
-  spill_coffee: { duration: 1.2, sneaky: true },
-  take_keycard: { duration: 1.0, sneaky: true },
-  take_sandwich: { duration: 0.8, sneaky: true, owner: 'lin' },
-  eat_sandwich: { duration: 2.0, sneaky: true, owner: 'lin', idle: true },
-  pick_up: { duration: 0.3, sneaky: false },
-};
+// Picking a floor item up (real seconds). The level's own actions carry their timings (level.interactions).
+export const PICK_UP_TIME = 0.3;
 
 // --- Perception --------------------------------------------------------------
 export const deg = (d) => (d * Math.PI) / 180;

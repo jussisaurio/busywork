@@ -135,44 +135,9 @@
   "count": 5
  },
  {
-  "file": "src/config.js",
-  "identifier": "lin",
-  "count": 2
- },
- {
   "file": "src/core/fx.js",
   "identifier": "smoke",
   "count": 1
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "sandwich",
-  "count": 11
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "keycard",
-  "count": 8
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "projector",
-  "count": 4
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "coffee",
-  "count": 6
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "fridge",
-  "count": 3
- },
- {
-  "file": "src/play/interactions.js",
-  "identifier": "smoke",
-  "count": 2
  },
  {
   "file": "src/play/rules.js",
