@@ -1,6 +1,6 @@
 // Title and end screens. Both are drawn over the (dimmed) office.
 // The end card's picture and icon row come from the level (level.endScenes, e.g.
-// src/levels/meeting/end-scenes.js); the route slots take any number of routes.
+// src/levels/meeting/end-scenes.js), else DEFAULT_END_SCENES below; the route slots take any number of routes.
 import {
   VIEW_W, VIEW_H, clamp, fin, easeOutBack, easeOutCubic, emoji, text, font, textWidth,
   rrect, circle, loopIcon, keycap,
@@ -10,7 +10,7 @@ import { C } from './palette.js';
 import { lookFor, drawPerson } from './characters.js';
 import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { sparkle } from './world.js';
-import { TAB, person } from './tableau.js';
+import { TAB, person, bubble, floorCarpet, confetti, backWall } from './tableau.js';
 
 // Width of a row of n route slots.
 const rowSpan = (n, size, gap) => (n > 0 ? n * size + (n - 1) * gap : 0);
@@ -170,11 +170,41 @@ function cluster(ctx, x, y, keys) {
 const CARD = { x: 170, y: 74, w: 620, h: 452 };
 const NO_SCENE = { win: false, icons: [], draw() {} };
 
+// The end card of a level without endScenes: one plain scene per result. The picture is you in an empty office,
+// a thought over your head; a win throws confetti and you cheer.
+const plainScene = (win, icons, thought) => ({
+  win,
+  icons,
+  draw(ctx, game, t, e) {
+    backWall(ctx, 72);
+    floorCarpet(ctx, TAB.x, TAB.y + 72, TAB.w, TAB.h - 72);
+    if (win) confetti(ctx, TAB.x, TAB.w, TAB.y, TAB.h, e, 36);
+    const p = person(t);
+    p.head = p.dir + Math.sin(t * 2) * 0.15;
+    p.arms = win ? 'cheer' : 'idle';
+    p.smug = win;
+    p.scale = 2.3;
+    const x = TAB.x + TAB.w / 2;
+    const y = TAB.y + 190 - (win ? Math.abs(Math.sin(t * 6)) * 8 : 0);
+    drawPerson(ctx, lookFor(game.level.looks, 'player'), p, x, y);
+    bubble(ctx, thought, x + 58, TAB.y + 92, e, 'thought');
+  },
+});
+export const DEFAULT_END_SCENES = {
+  kindOf: (o) => (o && (o.result === 'win' || o.result === 'caught' || o.result === 'blamed') ? o.result : 'fail'),
+  scenes: {
+    win: plainScene(true, ['🎉', '😎'], ['😎']),
+    caught: plainScene(false, ['❗', '😠'], ['😳']),
+    blamed: plainScene(false, ['👉', '😠'], ['😰']),
+    fail: plainScene(false, ['📊', '😩'], ['😩']),
+  },
+};
+
 export function drawEnd(ctx, game, t, mem) {
   const o = game.outcome || { result: 'fail', routes: [], newRoutes: [], loop: 0, minute: 0 };
   const e = Math.max(0, t - fin(mem.endStart, t));
-  const ends = game.level.endScenes;
-  const scene = (ends && ends.scenes[ends.kindOf(o)]) || NO_SCENE;
+  const ends = game.level.endScenes || DEFAULT_END_SCENES;
+  const scene = ends.scenes[ends.kindOf(o)] || NO_SCENE;
   const newRoutes = Array.isArray(o.newRoutes) ? o.newRoutes : [];
   const stampAt = (j) => 0.7 + j * 0.35;
 

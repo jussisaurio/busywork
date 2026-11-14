@@ -61,7 +61,11 @@ const { LEGEND_PLAY } = await import('../src/render/hud.js');
 // --- 1. fake canvas ---------------------------------------------------------------
 const wordy = new Set();
 const LEGEND_WORDS = new Set(LEGEND_PLAY.flatMap((k) => [k.key, k.label]));
+const strokes = {}; // scene -> strokeStyles set
 const fake = createFakeCanvas({
+  onSet(label, key, value) {
+    if (key === 'strokeStyle') (strokes[fake.scene] ??= new Set()).add(value);
+  },
   onCall(label, key, [txt]) {
     if (key !== 'fillText' || (typeof txt !== 'string' && typeof txt !== 'number') || badStr(String(txt))) return;
     // "No text except the mission card": outside the title screen only digits, ':', '×', '.', emoji
@@ -498,6 +502,32 @@ for (const o of OUTCOMES) {
 }
 day((g) => { g.phase = 'end'; g.outcome = null; });
 draw('end without outcome');
+
+// A level without endScenes gets the engine's plain cards: a win wears the teal (win) border, the rest tomato.
+{
+  const { DEFAULT_END_SCENES } = await import('../src/render/screens.js');
+  const { C } = await import('../src/render/palette.js');
+  const level = game.level;
+  const { endScenes, ...bare } = level;
+  const kinds = {};
+  for (const result of ['win', 'caught', 'blamed', 'fail']) {
+    day((g) => {
+      g.level = bare;
+      g.persist.routesFound = [];
+      g.outcome = { result, routes: result === 'win' || result === 'blamed' ? [level.routes[0].id] : [], newRoutes: [], loop: 1, minute: MEETING_AT };
+      g.phase = 'end';
+    });
+    for (const dt of [0, 0.5, 2]) {
+      game.time += dt;
+      draw(`plain end ${result} +${dt}`);
+    }
+    kinds[result] = DEFAULT_END_SCENES.kindOf(game.outcome);
+    const st = strokes[`plain end ${result} +2`] ?? new Set();
+    ok(result === 'win' ? st.has(C.teal) && !st.has(C.tomato) : st.has(C.tomato), `no endScenes: a ${result} card has the ${result === 'win' ? 'teal' : 'tomato'} border`);
+  }
+  game.level = level;
+  ok(Object.entries(kinds).every(([r, k]) => r === k) && DEFAULT_END_SCENES.kindOf(null) === 'fail', 'default end scenes: one per result');
+}
 
 // Resize / DPR changes
 for (const [w, h, dpr] of [[1920, 1080, 1], [800, 1200, 3], [1, 1, 1], [3000, 600, 1.5], [1280, 800, 2]]) {

@@ -40,7 +40,8 @@
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
 //               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
-//   endScenes   optional; kindOf() maps every possible outcome to a scene in scenes, each { win, icons, draw() }
+//   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
+//               scene in scenes, each { win, icons, draw() }
 //   voices      optional; an object of voice objects
 import { parseMap } from '../core/map.js';
 import { DIRS } from '../core/vision.js';
