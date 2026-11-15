@@ -99,7 +99,7 @@ export default [
   {
     name: 'the-call-rings-out',
     cmds: [...RINGOUT, ...SEAT, ...CALL, 'wait 2s'],
-    intent: "3:30: Lin's empty desk phone rings red; Lin on hold at the kitchen phone, Kev on hold at his desk, the boss on hold at his window: nobody comes.",
+    intent: "3:30: Lin's empty desk phone rings red; Lin is on hold at the kitchen phone and the boss at his window, and Kev sits at his desk across the office: nobody comes.",
   },
   {
     name: 'end-answered',
@@ -119,7 +119,7 @@ export default [
   {
     name: 'end-ringout',
     cmds: [...RINGOUT, ...SEAT, ...END],
-    intent: "Win: Lin's desk phone rings red with nobody at it; the boss, Kev and Lin are each on hold at some other phone; you smug.",
+    intent: "Win: Lin's desk phone rings red with nobody at it; the boss, Kev and Lin each hold some other phone with the hold music; you smug.",
   },
   {
     name: 'end-fail',
