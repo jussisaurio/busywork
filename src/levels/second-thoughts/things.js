@@ -1,6 +1,6 @@
 // Second Thoughts' own objects, drawn as the real thing (no emoji on a tile or in a hand): the boss's in-tray, your
-// letter, a phone held up as a torch (end scenes only: on the floor, render/darkness.js draws it), and the smoke off
-// the coffee machine that blew the fuse. The tray and the smoke are decor.props painters (render/world.js calls them
+// letter, a phone held up as a torch (end scenes only: on the floor, render/darkness.js draws it), and the coffee
+// machine's water jug, lamp, smoke and short. The tray and the machine's are decor.props painters (render/world.js calls them
 // as (ctx, info, tile, shown, t)); the end scenes draw the tray, the letter and the phone bigger. Sizes are map
 // pixels at s = 1 (a tile is 32).
 import { T, rrect, fillCircle } from '../../render/util.js';
@@ -28,8 +28,57 @@ export function paintLetter(ctx, x, y, s = 1, rot = 0) {
 
 // The letter as an item's look (items.letter.draw; render/things.js calls it as (ctx, x, y, size, t)): in your hand,
 // in the boss's, on the floor and in the HUD slot. `size` is how big an emoji there would be.
-export function letter(ctx, x, y, size) {
-  paintLetter(ctx, x, y, size / 14); // as wide as an emoji of that size
+// Once it has come back up it is soggy: stained sick-green, sagging, dripping.
+export function letter(ctx, x, y, size, t, game) {
+  const s = size / 14; // as wide as an emoji of that size
+  if (game?.world?.soggy) return soggyLetter(ctx, x, y, s, t ?? 0);
+  paintLetter(ctx, x, y, s);
+}
+
+// The soggy letter: the envelope, a green-brown stain over it, its corner curled, drops falling off its bottom edge.
+export function soggyLetter(ctx, x, y, s = 1, t = 0, rot = 0) {
+  paintLetter(ctx, x, y, s, rot);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(s, s);
+  ctx.fillStyle = 'rgba(132,160,52,0.6)';
+  ctx.beginPath();
+  ctx.ellipse(-1, 0.5, 6.5, 4, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(96,120,30,0.55)';
+  ctx.beginPath();
+  ctx.ellipse(3, 2, 3, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (let i = 0; i < 3; i++) { // drips
+    const k = (t * 1.3 + i / 3) % 1;
+    fillCircle(ctx, -4 + i * 4, 4.5 + k * 6, 1.1 * (1 - k * 0.4), `rgba(150,180,60,${0.9 * (1 - k)})`);
+  }
+  ctx.restore();
+}
+
+// Where you threw up: a cartoon puddle, lumpy, sick-green, a shine on it. It spreads out over half a second.
+export function puddleProp(ctx, info, at, shown) {
+  if (!shown.at) return;
+  const k = Math.min(1, shown.k ?? 1);
+  const x = shown.at.x * T;
+  const y = shown.at.y * T;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(0.4 + 0.6 * k, 0.4 + 0.6 * k);
+  ctx.fillStyle = '#9dbb3c';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 15, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (const [dx, dy, r] of [[-12, -3, 5], [11, 3, 6], [4, -6, 5], [-5, 6, 4]]) fillCircle(ctx, dx, dy, r, '#9dbb3c');
+  fillCircle(ctx, -3, 1, 2, '#7d9a28'); // lumps
+  fillCircle(ctx, 5, -1, 1.6, '#7d9a28');
+  fillCircle(ctx, 9, 4, 1.3, '#c8a74a');
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; // shine
+  ctx.beginPath();
+  ctx.ellipse(-6, -3, 4, 1.4, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
 
 // The in-tray: a chrome wire basket, 22 x 12, centred on (x, y). The desk shows through its mesh, so an empty one
@@ -86,7 +135,92 @@ export function paintTray(ctx, x, y, letter, s = 1) {
 
 // decor.props painter: shown { letter } (is your letter in it).
 export function trayProp(ctx, info, at, shown) {
-  paintTray(ctx, at.x * T + T / 2, at.y * T + T / 2 - 1, shown.letter);
+  const k = shown.pull ?? 0; // dragged over toward his chair
+  paintTray(ctx, at.x * T + T / 2 - 11 * k, at.y * T + T / 2 - 1 - 4 * k, shown.letter);
+}
+
+// Your desk's drawer, on the side you sit at: slid open while you put the letter in (`open` 0..1), and once it's
+// shut, the letter's corner sticking out of it for the rest of the day.
+export function drawerProp(ctx, info, at, shown) {
+  if (!shown.stashed) return;
+  const k = shown.open ?? 0;
+  const x = at.x * T + T - 4; // right of your chair
+  const y = at.y * T + T - 7 + k * 7;
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fillRect(x, y + 1, 16, 7);
+  ctx.fillStyle = '#9a7246';
+  ctx.fillRect(x, y, 16, 6);
+  ctx.fillStyle = '#c9a86a';
+  ctx.fillRect(x + 6, y + 2, 4, 1.5);
+  paintLetter(ctx, x + 12, y - 1 + (k > 0 ? -2 : 1), 0.55, -0.35); // its corner
+}
+
+// The boss's desk clock, on the west end of his desk two tiles from the tray (keyed on the tray's tile: the first
+// desk tile on the map is the kitchen counter). A brass alarm clock, its hands on the real time. While he checks it,
+// a glint off its face; when it chimes 3:39, it rattles and rings.
+export function deskClockProp(ctx, info, at, shown, t) {
+  const ring = shown.ring ?? 0; // 0..1, fading
+  const x = (at.x - 2) * T + 24 + (ring > 0 ? Math.sin(t * 70) * 1.2 * ring : 0);
+  const y = at.y * T + 11;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.25)'; // its shadow
+  ctx.beginPath();
+  ctx.ellipse(x + 1, y + 6.5, 6, 1.8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#6b4a1c'; // the legs
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(x - 3, y + 3.5);
+  ctx.lineTo(x - 4.5, y + 6.5);
+  ctx.moveTo(x + 3, y + 3.5);
+  ctx.lineTo(x + 4.5, y + 6.5);
+  ctx.stroke();
+  fillCircle(ctx, x - 3.5, y - 5.5, 2, '#c9962e'); // the bells
+  fillCircle(ctx, x + 3.5, y - 5.5, 2, '#c9962e');
+  fillCircle(ctx, x, y, 5.6, '#b8862a'); // the brass case
+  fillCircle(ctx, x, y, 4.4, '#fbf6e6'); // the face
+  ctx.fillStyle = '#4a3a2a';
+  for (let i = 0; i < 12; i += 3) {
+    const a = (i / 12) * Math.PI * 2;
+    ctx.fillRect(x + Math.sin(a) * 3.5 - 0.35, y - Math.cos(a) * 3.5 - 0.35, 0.7, 0.7);
+  }
+  const min = shown.minute ?? 0; // since 3:00
+  const hand = (a, len, w) => {
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.sin(a) * len, y - Math.cos(a) * len);
+    ctx.stroke();
+  };
+  ctx.strokeStyle = '#2a211a';
+  ctx.lineCap = 'round';
+  hand(((3 + min / 60) / 12) * Math.PI * 2, 2.3, 1);
+  hand((min / 60) * Math.PI * 2, 3.5, 0.7);
+  if (shown.glint) { // light off the glass, sweeping
+    const g = (t * 1.3) % 1;
+    ctx.globalAlpha = Math.sin(g * Math.PI) * 0.9;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 2.5 + g * 3, y - 2.5);
+    ctx.lineTo(x - 0.5 + g * 3, y - 3.6);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  if (ring > 0) { // the ring, lines off both bells
+    ctx.globalAlpha = ring;
+    ctx.strokeStyle = '#3a2e22';
+    ctx.lineWidth = 0.9;
+    for (const sx of [-1, 1]) {
+      for (let i = 0; i < 2; i++) {
+        ctx.beginPath();
+        ctx.arc(x + sx * 3.5, y - 5.5, 4 + i * 2.5, sx < 0 ? Math.PI * 1.05 : -Math.PI * 0.45, sx < 0 ? Math.PI * 1.45 : -Math.PI * 0.05);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
 }
 
 // A phone held up as a torch, its back to you, centred on (x, y): a dark slab, the flash lit at its top while `lit`.
@@ -127,26 +261,179 @@ export function phoneThing(ctx, x, y, size) {
   paintPhone(ctx, x, y, size / 12);
 }
 
-// decor.props painter on the coffee machine: shown { smoke, brewing }. smoke: it blew the fuse and the power is still
-// out. Smoke curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the
-// floor down. brewing: the power is back and the machine has brewed what it was switched on for: its lamp glows green
-// (and the carafe is full: presentation.js).
-export function smokeProp(ctx, info, at, shown, t) {
-  const x = at.x * T + T / 2 + 6;
-  const y = at.y * T + 6;
-  if (shown.brewing) {
-    const g = ctx.createRadialGradient(x, y + 3, 0.2, x, y + 3, 5);
-    g.addColorStop(0, 'rgba(150,255,140,0.75)');
+// decor.props painters on the coffee machine's tile (presentation.js says what each is shown). They draw in map
+// pixels from the machine's tile: render/world.js draws the machine itself (its body x 6..26, y 1..23 of the tile, its
+// pot at x 14.5, a red dot at 23.5, 11) and the pot (the engine's 'carafe').
+
+// The glass water jug on the counter right of the machine. tipped: you tipped it over the machine: it lies on its
+// side, empty, its mouth on the machine's top; water runs down the machine's front and pools on the floor in front.
+const WATER = 'rgba(96,170,232,';
+export function jugProp(ctx, info, at, shown, t) {
+  const px = at.x * T;
+  const py = at.y * T;
+  if (!shown.tipped) {
+    const x = px + T + 12; // upright on the counter, full
+    const y = py + 6;
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    rrect(ctx, x - 5, y + 13, 12, 3, 1.5);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(214,236,246,0.55)'; // the glass
+    rrect(ctx, x - 5.5, y, 11, 15, 2.5);
+    ctx.fill();
+    ctx.fillStyle = `${WATER}0.95)`; // the water in it, most of the way up
+    rrect(ctx, x - 4.5, y + 4, 9, 10, 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(235,248,255,0.9)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); // the handle
+    ctx.arc(x + 6, y + 7, 3.2, -Math.PI / 2, Math.PI / 2);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillRect(x - 3.5, y + 2, 1.3, 10); // a glint down the glass
+    return;
+  }
+  // The puddle in front of the machine (on the floor tile below it), with a glint.
+  const fx = px + 15;
+  const fy = py + T + 9;
+  ctx.fillStyle = `${WATER}0.5)`;
+  ctx.beginPath();
+  ctx.ellipse(fx, fy, 12, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(fx + 8, fy + 2, 6, 3.5, 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(230,246,255,0.7)';
+  ctx.beginPath();
+  ctx.ellipse(fx - 4, fy - 1.5, 3.5, 1, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Water down the machine's front, drips running.
+  ctx.strokeStyle = `${WATER}0.85)`;
+  ctx.lineCap = 'round';
+  for (const [dx, w] of [[9, 2.2], [16, 1.6], [23, 2]]) {
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(px + dx, py + 2);
+    ctx.lineTo(px + dx + Math.sin(dx) * 1.2, py + 24);
+    ctx.stroke();
+  }
+  for (let i = 0; i < 3; i++) {
+    const k = (t * 1.3 + i / 3) % 1;
+    fillCircle(ctx, px + 9 + i * 7, py + 24 + k * 9, 1.4, `${WATER}${0.9 * (1 - k)})`);
+  }
+  ctx.lineCap = 'butt';
+  // The jug, on its side on the counter, empty, mouth on the machine's top.
+  ctx.save();
+  ctx.translate(px + T + 6, py + 6);
+  ctx.rotate(-Math.PI / 2 - 0.25);
+  ctx.fillStyle = 'rgba(214,236,246,0.6)';
+  rrect(ctx, -5.5, -1, 11, 15, 2.5);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(235,248,255,0.9)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.arc(6, 6, 3.2, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// The machine itself. lamp: 'brewing' (a small green lamp, blinking) | 'brewed' (a big green lamp, steady) | null.
+// steam: a full hot pot. scorch: it shorted: soot up its top and the wall behind it, for the rest of the day.
+// smoke: it shorted and the fuse it blew is still out: smoke off its back, its socket glowing orange, so in the
+// torchlight it is plain what took the floor down.
+export function machineProp(ctx, info, at, shown, t) {
+  const px = at.x * T;
+  const py = at.y * T;
+  if (shown.scorch) {
+    ctx.fillStyle = 'rgba(16,12,10,0.8)';
+    ctx.beginPath();
+    ctx.ellipse(px + 19, py + 4, 8, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(px + 15, py + 2, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(20,16,14,0.55)'; // soot licking up the wall behind it
+    for (const [dx, h, w] of [[12, 14, 3], [18, 20, 4], [24, 12, 3]]) {
+      ctx.beginPath();
+      ctx.moveTo(px + dx - w, py + 1);
+      ctx.quadraticCurveTo(px + dx + 2, py - h / 2, px + dx, py - h);
+      ctx.quadraticCurveTo(px + dx + 1, py - h / 2, px + dx + w, py + 1);
+      ctx.fill();
+    }
+  }
+  const lx = px + 23.5;
+  const ly = py + 11;
+  if (shown.lamp === 'brewed' || (shown.lamp === 'brewing' && Math.sin(t * 6) > 0)) {
+    const big = shown.lamp === 'brewed';
+    const r = big ? 13 : 5;
+    const g = ctx.createRadialGradient(lx, ly, 0.2, lx, ly, r);
+    g.addColorStop(0, 'rgba(150,255,140,0.9)');
     g.addColorStop(1, 'rgba(150,255,140,0)');
     ctx.fillStyle = g;
-    ctx.fillRect(x - 5, y - 2, 10, 10);
-    fillCircle(ctx, x, y + 3, 1.3, '#d8ffd0');
+    ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
+    if (big) fillCircle(ctx, lx, ly, 4, '#2f9a3c'); // a big round lamp, lit
+    fillCircle(ctx, lx, ly, big ? 3 : 1.6, '#e2ffd8');
+  }
+  if (shown.steam) {
+    for (let i = 0; i < 5; i++) { // a tall plume off the hot pot
+      const k = (t * 0.5 + i / 5) % 1;
+      fillCircle(ctx, px + 14.5 + Math.sin(t * 1.7 + i * 2.1) * 4 * k, py + 10 - k * 28, 2.5 + k * 6, `rgba(255,255,255,${(0.75 * (1 - k)).toFixed(3)})`);
+    }
   }
   if (!shown.smoke) return;
-  fillCircle(ctx, x, y + 3, 3 + 0.8 * Math.sin(t * 11), `rgba(255,140,50,${0.6 + 0.3 * Math.sin(t * 17)})`);
-  fillCircle(ctx, x, y + 3, 1.3, '#fff0b0');
+  fillCircle(ctx, px + 22, py + 9, 3 + 0.8 * Math.sin(t * 11), `rgba(255,140,50,${0.6 + 0.3 * Math.sin(t * 17)})`);
+  fillCircle(ctx, px + 22, py + 9, 1.3, '#fff0b0');
   for (let i = 0; i < 5; i++) {
     const k = (t * 0.45 + i / 5) % 1;
-    fillCircle(ctx, x + Math.sin(t * 1.3 + i * 2) * 4 * k, y - k * 22, 3 + k * 6, `rgba(150,147,150,${0.8 * (1 - k)})`);
+    fillCircle(ctx, px + 22 + Math.sin(t * 1.3 + i * 2) * 4 * k, py + 6 - k * 22, 3 + k * 6, `rgba(150,147,150,${0.8 * (1 - k)})`);
   }
+}
+
+// The short running down the wiring to the fuse box, `k` (0..1) of the way: a crackling spark with a trail, down from
+// the machine, out of the kitchen door and along the hallway's wall (tiles). Drawn while the lights are still on.
+const SURGE_PATH = [[21.6, 1.95], [21.6, 5.6], [22.5, 5.6], [22.5, 6.95], [1.7, 6.95]];
+const SURGE_LEN = SURGE_PATH.slice(1).reduce((n, p, i) => n + Math.hypot(p[0] - SURGE_PATH[i][0], p[1] - SURGE_PATH[i][1]), 0);
+function along(d) {
+  for (let i = 1; i < SURGE_PATH.length; i++) {
+    const [ax, ay] = SURGE_PATH[i - 1];
+    const [bx, by] = SURGE_PATH[i];
+    const l = Math.hypot(bx - ax, by - ay);
+    if (d <= l || i === SURGE_PATH.length - 1) {
+      const f = Math.max(0, Math.min(1, d / l));
+      return [(ax + (bx - ax) * f) * T, (ay + (by - ay) * f) * T];
+    }
+    d -= l;
+  }
+  return [0, 0];
+}
+export function surgeProp(ctx, info, at, shown, t) {
+  if (shown.k === null || shown.k === undefined) return;
+  const head = shown.k * SURGE_LEN;
+  const pts = [];
+  for (let d = Math.max(0, head - 3); d <= head; d += 0.3) pts.push(along(d));
+  pts.push(along(head));
+  ctx.save();
+  ctx.lineJoin = 'round';
+  for (const [w, c] of [[6, 'rgba(255,214,90,0.35)'], [2, '#fff4b8']]) {
+    ctx.strokeStyle = c;
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    pts.forEach(([x, y], i) => {
+      const j = i === pts.length - 1 ? 0 : Math.sin(t * 47 + i * 2.3) * 3;
+      if (i === 0) ctx.moveTo(x + j, y - j);
+      else ctx.lineTo(x + j, y - j);
+    });
+    ctx.stroke();
+  }
+  const [hx, hy] = along(head);
+  const g = ctx.createRadialGradient(hx, hy, 0.5, hx, hy, 12);
+  g.addColorStop(0, 'rgba(255,250,210,1)');
+  g.addColorStop(1, 'rgba(255,220,100,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(hx - 12, hy - 12, 24, 24);
+  ctx.strokeStyle = '#ffe680';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  for (let i = 0; i < 4; i++) {
+    const a = t * 31 + i * 1.7;
+    ctx.moveTo(hx, hy);
+    ctx.lineTo(hx + Math.cos(a) * 7, hy + Math.sin(a) * 7);
+  }
+  ctx.stroke();
+  ctx.restore();
 }

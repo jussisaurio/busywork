@@ -5,12 +5,12 @@ import { C } from '../../render/palette.js';
 import { LOOKS as L1 } from '../meeting/looks.js';
 import {
   pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,
-  broomStand, broomState, labelPrinter, labelPrinterState, drawer, drawerState,
+  broomStand, broomState, drawer, drawerState, brownBoxThing, postThing, staticThing, droppedThing,
 } from './painters.js';
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00. Don't be the one who gets it."],
+  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00, in front of everyone."],
   badge: ['@player', '😳'],
 };
 
@@ -28,14 +28,15 @@ export const DECOR = {
   paintings: [{ x: 3, y: 10, variant: 0 }, { x: 23, y: 10, variant: 1 }, { x: 23, y: 4, variant: 1 }],
   clock: { x: 6, y: 0 },
   props: [
-    { tile: 'Q', draw: pigeonholes, state: pigeonholesState }, // the pink box on the parcel shelf, or nothing
+    { tile: 'Q', draw: pigeonholes, state: pigeonholesState }, // Bob's brown box and your pink one on the shelf
     { tile: 'M', draw: monitor, state: monitorState }, // Bob's screen: the back office, one leaf, or static
     { tile: 'C', draw: wallCamera, state: wallCameraState }, // turned where it looks; askew in the plant once poked
     { tile: 'O', draw: socket, state: socketState }, // the monitor's plug in the power strip, or hanging out
-    { tile: 'B', draw: broomStand, state: broomState },
-    { tile: 'A', draw: labelPrinter, state: labelPrinterState }, // Bob's spare label in the tray until taken
-    { tile: 'P', draw: drawer, state: drawerState }, // your drawer, stuck open on a pink corner
+    { tile: 'B', draw: broomStand, state: broomState }, // and the mailroom's cobwebs and dust
+    { tile: 'P', draw: drawer, state: drawerState }, // your drawer: open only while you stuff the box in
   ],
+  // '#brownbox' Bob's parcel, '#post' both boxes in Lin's arms, '#static' a snowy screen, '#dropped' a fallen box
+  things: { brownbox: brownBoxThing, post: postThing, static: staticThing, dropped: droppedThing },
   deskOwners: ['lin_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
@@ -61,16 +62,26 @@ export const LOOKS = {
   },
 };
 
+const LIN = (n) => n.id === 'lin';
+const BOB = (n) => n.id === 'bob';
+
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'whacking', arms: 'bang' }, // a thump on the side of the camera
     { when: (n) => n.override === 'plugging', arms: 'reach' }, // pushing the plug back into the power strip
-    // Lin with your parcel at the mail call: up over her head for the whole office to see. On the way there, or
-    // with Bob's: carried in front of her.
-    { when: (n, w) => n.id === 'lin' && w.parcel === 'lin' && w.parcelFor !== 'bob' && n._atMail, arms: 'cheer', item: '#parcel' },
-    { when: (n, w) => n.id === 'lin' && w.parcel === 'lin', arms: 'carry', item: '#parcel' },
-    { when: (n, w) => n.id === 'bob' && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
-    { when: (n, w) => n.id === 'lin' && w.mailEmpty, arms: 'shrug' }, // nothing on the parcel shelf today
+    // Lin grabbing the pink box out of your hands
+    { when: (n, w, game) => LIN(n) && w.snatchT != null && game.loopTime - w.snatchT < 0.9, arms: 'reach', item: '#parcel' },
+    // Lin with your parcel at the mail call: up over her head for the whole office to see.
+    { when: (n, w) => LIN(n) && n._atMail && w.parcel === 'lin' && w.parcelFor !== 'bob', arms: 'cheer', item: '#parcel' },
+    // On the way back from the shelf: both boxes, or what was there.
+    { when: (n, w) => LIN(n) && w.parcel === 'lin' && w.brown === 'lin', arms: 'carry', item: '#post' },
+    { when: (n, w) => LIN(n) && w.parcel === 'lin', arms: 'carry', item: '#parcel' },
+    // Labels swapped: Bob has the pink box, and she holds the brown one out to you.
+    { when: (n, w) => LIN(n) && n._atMail && w.brown === 'lin' && w.parcel === 'bob', arms: 'reach', item: '#brownbox' },
+    { when: (n, w) => LIN(n) && w.brown === 'lin', arms: 'carry', item: '#brownbox' },
+    { when: (n, w) => BOB(n) && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
+    { when: (n, w) => BOB(n) && w.brown === 'bob', arms: 'carry', item: '#brownbox' },
+    { when: (n, w) => LIN(n) && w.mailEmpty && n._atMail, arms: 'shrug' }, // nothing for you on the shelf today
   ],
   marks: [
     { when: (n) => n.id === 'bob', badge: true },
@@ -84,7 +95,7 @@ export const SOUNDS = {
   actions: {
     start: {
       take_parcel: { sfx: 'rustle', spot: 'pigeonholes' },
-      relabel: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
+      swap_labels: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
     },
   },
   events: {
@@ -97,15 +108,14 @@ export const SOUNDS = {
     'camera:replugged': { sfx: 'fixed', spot: 'socket' },
     'broom:taken': { sfx: 'rustle', who: 'player' },
     'broom:returned': { sfx: 'swish', who: 'player' },
-    'label:printed': { sfx: 'machineBeep', spot: 'mailroom' },
-    'parcel:relabelled': { sfx: 'swish', spot: 'pigeonholes' },
+    'parcel:swapped': { sfx: 'swish', spot: 'pigeonholes' },
     'parcel:stashed': { sfx: 'creak', spot: 'player_desk' },
     'parcel:spotted': { sfx: 'tension' },
     'parcel:found': { sfx: 'notice' },
     'parcel:snatched': { sfx: 'notice' },
     'parcel:missing': { sfx: 'crickets' },
   },
-  drops: { parcel: 'soft', broom: 'card', label: 'card' },
+  drops: { parcel: 'soft', broom: 'card' },
 };
 
 // How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.

@@ -1,13 +1,12 @@
 // The layoff list: who is on it, as the boss's screen shows it.
 //   NAMES          left to right: three people from other floors (nobody you meet today) and you, second
-//   listShown      decor.props state for the boss's computer: { glitch, you, strike, out, looks }
+//   listShown      decor.props state for the boss's computer: { glitch, locked, you, strike, out, looks, pop... }
 //   drawListScreen the level's painter for it (presentation.js DECOR.props): a flat screen on his desk, facing the
-//                  floor, with the list on it as a row of faces, yours framed in red. Static while it acts up; a
-//                  red line goes through your face while you edit it, then your face drops out and the others
-//                  close up; at 3:45 the sheet flies off the screen, sent. The sheet pops out of the screen, big,
-//                  for a beat (POP_SECS): when it first comes up (3:06, Kev fixed it: your frame throbs), when your
-//                  face comes off (struck through, it falls out of the row), and when the boss puts you back on
-//                  (w.listBackAt: he saw Kev's hoodie come off you, index.js unmask; your frame throbs again).
+//                  floor, with the list on it as a row of faces, yours framed in red. Static while his cable is
+//                  loose; a padlock while he's in the restroom; at 3:45 the sheet flies off the screen, sent. The
+//                  sheet pops out of the screen, big, beside it: when it comes up (Kev or you plugged the cable back
+//                  in: your frame throbs), and all the while you edit it (a red line crosses your face, which then
+//                  drops out of the row), so anyone looking at his screen sees what you are doing to it.
 //   drawList       the same list as a big screen of faces on an end card (end-scenes.js)
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { drawPerson, personState } from '../../render/characters.js';
@@ -26,18 +25,9 @@ const YOU = 1; // your place on the list
 const OUT_DELAY = 0.6; // once the edit is done, your struck face stays this long (seconds) ...
 const OUT_SECS = 0.8; // ... then drops off the list over this long
 
-// How far your face is on the list right now: 1 on it, 0 gone (the others close up in between). Blamed (your
-// chair was empty at 3:45), he puts you back on before he sends it. Unmasked, he puts you back at w.listBackAt,
-// once the pop is out (BACK_DELAY).
-const BACK_SECS = 0.6;
-const BACK_DELAY = 0.3;
+// How far your face is on the list right now: 1 on it, 0 gone (the others close up in between).
 export function youOnList(w, game) {
-  if (w.list === 'on') {
-    if (w.listBackAt == null) return 1;
-    const secs = ((game.clock?.minute ?? 0) - w.listBackAt) / GAME_MIN_PER_SEC - BACK_DELAY;
-    return easeOutCubic(clamp(secs / BACK_SECS, 0, 1));
-  }
-  if (game.outcome?.result === 'blamed') return easeOutCubic(clamp((game.scenario?.beatT ?? 0) / BACK_SECS, 0, 1));
+  if (w.list === 'on') return 1;
   const secs = ((game.clock?.minute ?? 0) - (w.listOffAt ?? 0)) / GAME_MIN_PER_SEC - OUT_DELAY;
   return 1 - easeOutCubic(clamp(secs / OUT_SECS, 0, 1));
 }
@@ -46,15 +36,14 @@ export function youOnList(w, game) {
 export function sending(game) {
   const o = game.outcome;
   if (!o || o.result === 'caught') return 0;
-  const from = o.result === 'blamed' && game.world.list === 'off' ? BACK_SECS + 0.1 : 0; // back on first
-  return clamp(((game.scenario?.beatT ?? 0) - from) / 1.2, 0, 1);
+  return clamp((game.scenario?.beatT ?? 0) / 1.2, 0, 1);
 }
 
 // --- in the world: the boss's screen ---------------------------------------------------------------------------
 
-// The sheet popping out of his screen: 'up' when it first comes up (w.listUpAt, cast.js pcFixed), 'off' when your
-// face comes off (w.listOffAt), 'back' when he puts it back (w.listBackAt). k: 0 in the screen .. 1 out at full
-// size; age: seconds into the pop.
+// The sheet popping out of his screen: 'up' when it first comes up (w.listUpAt: cast.js pcFixed, or you fixed it),
+// 'edit' while you edit it (it grows out over POP_IN), 'off' once your face is off (w.listOffAt: it is already out,
+// so it stays out, then goes back in). k: 0 in the screen .. 1 out at full size; age: seconds into the pop.
 const POP_SECS = 2.8;
 const POP_IN = 0.25;
 const POP_BACK = 0.35;
@@ -62,13 +51,18 @@ function popOf(w, game, into) {
   into.pop = null;
   into.popK = 0;
   into.popAge = 0;
-  if (w.glitch || game.outcome) return;
+  if (w.glitch || w.locked || game.outcome) return;
+  const a = game.player?.action;
+  if (a?.type === 'strike_name') {
+    into.pop = 'edit';
+    into.popAge = a.t;
+    into.popK = a.t < POP_IN ? easeOutBack(a.t / POP_IN) : 1;
+    return;
+  }
   const now = game.clock?.minute ?? 0;
-  const from = w.list === 'off' ? ['off', w.listOffAt]
-    : w.listBackAt != null ? ['back', w.listBackAt]
-    : w.listUpAt != null ? ['up', w.listUpAt] : null;
+  const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
   if (!from) return;
-  const age = (now - from[1]) / GAME_MIN_PER_SEC;
+  const age = (now - from[1]) / GAME_MIN_PER_SEC + (from[0] === 'off' ? POP_IN : 0);
   if (!(age >= 0 && age < POP_SECS)) return;
   into.pop = from[0];
   into.popAge = age;
@@ -76,9 +70,10 @@ function popOf(w, game, into) {
 }
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
-const SHOWN = { glitch: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
+const SHOWN = { glitch: false, locked: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
+  SHOWN.locked = !!w.locked && !w.glitch;
   popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
   const a = game.player?.action;
@@ -145,6 +140,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
       ctx.stroke();
     }
   }
+  if (shown.locked) drawLock(ctx, sx, sy, sw, sh);
   ctx.fillStyle = 'rgba(255,255,255,0.10)'; // glare
   ctx.beginPath();
   ctx.moveTo(sx, sy);
@@ -155,6 +151,26 @@ export function drawListScreen(ctx, info, at, shown, t) {
   ctx.restore();
   fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#c0392b' : '#7be08a');
   if (shown.pop && shown.popK > 0) drawPop(ctx, sx, sy, sw, sh, shown, t);
+}
+
+// Locked: the sheet hidden behind a dark lock screen with a padlock in the middle.
+function drawLock(ctx, sx, sy, sw, sh) {
+  ctx.fillStyle = '#1d2a36';
+  ctx.fillRect(sx, sy, sw, sh);
+  const cx = sx + sw / 2;
+  const cy = sy + sh / 2 + 2;
+  ctx.strokeStyle = '#d8d2c4';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); // the shackle
+  ctx.arc(cx, cy - 3, 4, Math.PI, 0);
+  ctx.lineTo(cx + 4, cy);
+  ctx.moveTo(cx - 4, cy - 3);
+  ctx.lineTo(cx - 4, cy);
+  ctx.stroke();
+  ctx.fillStyle = '#e3c25a'; // the body
+  rrect(ctx, cx - 6, cy - 1, 12, 9, 1.5);
+  ctx.fill();
+  fillCircle(ctx, cx, cy + 3, 1.3, '#5a4a1c');
 }
 
 // The sheet out of his screen, big: it grows out of the screen (sx, sy, sw, sh) to POP_ZOOM times its size, beside
@@ -191,7 +207,7 @@ function drawPop(ctx, sx, sy, sw, sh, shown, t) {
   ctx.clip();
   ctx.fillStyle = '#2d5a78';
   ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
-  const throbs = shown.pop === 'up' || (shown.pop === 'back' && shown.you > 0.98);
+  const throbs = shown.pop === 'up';
   drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t, throbs ? 0.5 + 0.5 * Math.sin(shown.popAge * 9) : 0);
   ctx.restore();
 }

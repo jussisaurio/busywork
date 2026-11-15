@@ -1,4 +1,4 @@
-// Early Bus's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
+// The Last Bus's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
 import { clockArg } from '../../config.js';
 import { START } from './cast.js';
 
@@ -74,16 +74,18 @@ export default {
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'clock:pushed': return `you pushed ${CLOCK_NAME[p.clock]} forward: it runs ${p.off} minutes fast 🕐`;
       case 'clock:look': return `${name(p.id)} looks up at ${CLOCK_NAME[p.clock]}`;
-      case 'clock:jump': return `${name(p.id)} believes it: ❗ (${p.ahead ? 'later' : 'earlier'} than he thought; he now runs ${p.off} minutes fast)`;
+      case 'clock:jump': return `${name(p.id)} believes it 😮 (${p.ahead ? 'later' : 'earlier'} than he thought; he now runs ${p.off} minutes fast)`;
       case 'clock:reset': return `the boss sets ${CLOCK_NAME[p.clock]} right 😠`;
       case 'boss:desk': return `the boss glances at your desk${p.empty ? ': your chair is empty' : ''}`;
       case 'boss:hunt': return 'the boss gets up to look for you ❓';
-      case 'boss:frown': return `the boss turns to ${name(p.at)}'s empty desk: where is ${name(p.at)}? ❓${p.gone ? ' (gone home)' : ''}`;
+      case 'boss:suspect': return 'the boss turns from his jumped clock to you, in his office 🤨: he will set it right';
+      case 'caretaker:battery': return 'the caretaker swaps the battery in the boss\'s clock 🔋, leaving the stepladders out';
+      case 'caretaker:left': return 'the caretaker goes';
       case 'coffee:taken': return `${name(p.by)} pours a coffee from the pot ☕`;
-      case 'boss:herd': return `the boss, walking under the open-plan clock, reads ${clockArg(p.shown, START)} ❗`;
+      case 'boss:herd': return `the boss, walking under the open-plan clock, reads ${clockArg(p.shown, START)} 😮: home time`;
       case 'boss:shrug': return `the boss, walking under the open-plan clock, reads ${clockArg(p.shown, START)} and shrugs`;
       case 'boss:coat': return 'the boss takes his coat off the rack 👋';
-      case 'coat:seen': return `${name(p.by)} stands up and looks at the coat rack${p.coat ? ": the boss's coat is still there 😬, back to the desk" : ': empty'}`;
+      case 'coat:seen': return `${name(p.by)} ${p.early ? 'picks up his laptop to go and ' : 'stands up and '}looks at the coat rack${p.coat ? ": the boss's coat is still there 🧥😬, back to the desk" : ': empty'}`;
       case 'boss:left': return 'the boss goes home over the zebra crossing';
       case 'lin:left': return 'Lin goes home over the zebra crossing';
       case 'kev:left': return 'Kev goes home over the zebra crossing';

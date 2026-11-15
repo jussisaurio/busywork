@@ -2,51 +2,52 @@
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
-const WORN = { hoodie: "Kev's hoodie, hood up", jacket: "the boss's suit jacket" };
-
 export default {
-  mission: "MISSION: 3:00 PM. At 3:45 the boss emails HR the layoff list. You're on it. Get your name off it.",
+  mission: "MISSION: Friday, 3:00 PM. You're on the layoff list. At 3:45 it goes to HR.",
 
   landmarks: {
     boss_desk: 'boss_desk',
+    his_chair: 'boss_desk',
+    behind_his_desk: 'cable', // where the floor socket is: the cable is reached from here
+    his_screen: 'screen', // in front of it: it faces the floor
     lin_desk: 'lin_desk',
     kev_desk: 'kev_desk',
     boss_office_door: 'boss_door',
+    coffee: 'coffee',
     entrance: 'door_in',
     restroom_door: 'restroom',
   },
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'boss:stepsAside', 'boss:impatient'],
+    soft: ['boss:suspicious', 'boss:coffee'],
   },
 
   names: NAME,
 
   mapKey: [
-    "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance, K coat rack,",
-    "     Q the boss's computer, V Kev's desk, C coffee machine (no pot), P your desk, R restroom, E elevator,",
-    '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
+    "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance,",
+    "     Q the boss's screen (it faces the floor), W the end of his desk his cable runs down from, F his desk phone,",
+    "     M Lin's desk with her mobile, V Kev's desk with his desk phone, C coffee machine, P your desk, R restroom,",
+    '     E elevator, @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (the list went to HR without you, via: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired on the spot: you leave with a box 📦)'
-    : o.result === 'blamed' && o.why === 'seen' ? 'BLAMED 👀 (the boss saw Kev\'s hoodie come off you after "Kev" took your name off: he put you back on, and it went out with you)'
-    : o.result === 'blamed' && o.why === 'kev' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but at 3:45 "Kev" sat at your desk in his hoodie: to the boss your chair was empty, so he put you back on)`
-    : o.result === 'blamed' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but your chair was empty at 3:45, so he put you back on)`
     : 'FAIL: the boss sent the list to HR with you on it 📧; you leave with a box 📦'),
 
-  playerText: (game) => (WORN[game.player.held] ? [`wearing ${WORN[game.player.held]}`] : []),
+  playerText: () => [],
 
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),
 
   npcText(game, n) {
+    const w = game.world;
     const bits = [];
-    if (n.id === 'kev' && game.world.hoodie !== 'kev') bits.push('in a T-shirt, no hoodie');
-    if (n.id === 'kev' && game.world.kevUp) bits.push('carrying his bag');
-    if (n.id === 'boss') bits.push('in shirtsleeves');
-    if (n.override === 'stepAside' || n.override === 'watching') bits.push("standing beside his desk, watching \"Kev\" at his computer");
-    if (n.id === 'kev' && game.world.pc === 'kev') bits.push("typing at the boss's computer while the boss watches");
+    if (n.id === 'kev' && w.kevCall) bits.push('on the phone');
+    if (n.id === 'kev' && w.pc === 'kev') bits.push("kneeling behind the boss's desk at the plug");
+    if (n.id === 'kev' && w.kevUp) bits.push('carrying his bag');
+    if (n.id === 'boss' && w.coffee === 'done') bits.push('holding a coffee');
+    if (n.id === 'lin' && w.linPhone === 'hand') bits.push('reading her mobile, turned away');
     return bits;
   },
 
@@ -54,11 +55,12 @@ export default {
   worldText(game) {
     const w = game.world;
     const people = w.list === 'on' ? 'a row of four faces, yours framed in red' : 'three faces; yours is gone';
-    const screen = w.glitch ? 'static (it is acting up)' : `the layoff list: ${people}`;
-    const rack = w.jacket === 'rack' ? "the boss's suit jacket" : 'nothing';
-    const chair = w.hoodie === 'chair' ? "; Kev's hoodie hangs over his chair" : '';
-    const kev = w.kevGone ? "; Kev's screen is off" : '';
-    return `WORLD: the boss's screen shows ${screen}; coat rack holds ${rack}${chair}${kev}`;
+    const screen = w.glitch ? 'static; behind his desk, a plug hangs half out of the floor socket'
+      : w.locked ? 'a lock screen with a padlock' : `the layoff list: ${people}`;
+    const bits = [`WORLD: the boss's screen shows ${screen}`];
+    if (w.ringing) bits.push("Kev's desk phone is ringing");
+    if (w.kevGone) bits.push("Kev's screen is off");
+    return bits.join('; ');
   },
 
   describe(e) {
@@ -67,28 +69,27 @@ export default {
       case 'witness:tattle': return p.late
         ? `${name(p.by)} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
         : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the boss heard)' : ''}`;
-      case 'meeting:gather': return 'the boss sits down at his computer to send the list 📧';
+      case 'meeting:gather': return 'the boss turns round in his chair and counts the list against the floor 📧';
+      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and you at your desk ✔️' : 'the boss shrugs: the list matches 🤷';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
-      case 'boss:stepsAside': return 'the boss gets up and lets "Kev" at his computer';
-      case 'boss:impatient': return 'the boss has waited long enough and takes his chair back';
-      case 'jacket:taken': return "you put on the boss's suit jacket 👔";
-      case 'jacket:hung': return 'you hang his jacket back on the rack';
-      case 'pc:asked': return 'you offer to fix his computer';
-      case 'list:edited': return p.as === 'kev' ? 'you take your name off the list (to the boss, "Kev" is fixing it)'
-        : p.as === 'boss' ? 'you take your name off the list (to anyone looking in, the boss is at his own computer)'
-        : 'you take your name off the list';
-      case 'kev:fixing': return "the boss's screen is static; he waves Kev over, and Kev fixes it 🔧 while the boss stands aside and watches";
-      case 'pc:fixed': return "Kev fixed it: the boss's screen shows the list again, and he takes his chair back 😊";
-      case 'pc:actsUp': return "the boss's screen goes to static again; he waves for Kev 👋";
-      case 'pc:thumped': return 'nobody came: the boss thumps his monitor and it works again 😠';
-      case 'kev:hoodieOff': return 'Kev, hot 🥵, takes off his hoodie and hangs it over his chair';
+      case 'boss:wavesOff': return "the boss waves you off his cable: that's Kev's job 🙅";
+      case 'boss:coffee': return "the boss leaves you to it and goes for a coffee ☕👉";
+      case 'boss:hasCoffee': return 'the boss has his coffee and heads back';
+      case 'phone:ring': return "Kev's desk phone rings ☎️";
+      case 'phone:called': return "you call Kev's desk from the boss's phone";
+      case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
+      case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
+      case 'pc:selfFixed': return 'the boss kneels and pushes the plug home himself 🔌';
+      case 'pc:actsUp': return "the boss's screen goes to static again 😠";
+      case 'pc:locked': return 'the boss locks his screen and leaves for the restroom';
+      case 'kev:fixing': return "Kev kneels behind the boss's desk at the plug, the boss standing over him";
       case 'kev:up': return 'Kev picks up his bag';
-      case 'hoodie:taken': return "you put on Kev's hoodie, hood up";
-      case 'hoodie:left': return "you leave Kev's hoodie back on his chair";
-      case 'boss:unmasked': return 'the boss saw Kev\'s hoodie come off you ❗😠: "Kev" at his computer was you, and he puts your face back on his list';
       case 'kev:left': return 'Kev has gone home';
-      case 'disguise:fooled': case 'disguise:knows': case 'kev:bye': case 'pc:free': return null; // the lines people say show it
+      case 'lin:buzz': return "Lin's mobile buzzes on her desk";
+      case 'lin:reads': return 'Lin picks up her mobile and turns away to read it';
+      case 'list:edited': return 'you take your face off the list';
+      case 'kev:bye': case 'lin:looksAtYou': return null; // the lines people say show it
       default: return undefined;
     }
   },

@@ -4,10 +4,11 @@ import { isDark } from '../../game/darkness.js';
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
-const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
+const MACHINE = { brewing: ' is brewing (its green lamp blinking)', brewed: ' has brewed (green lamp, the pot full and steaming)', shorted: ' is scorched (it shorted)', cold: ' is off' };
+const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten (in your stomach)', drawer: 'in your desk drawer', lin: "held at arm's length by Lin" };
 
 export default {
-  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through it at 3:40.",
+  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through his tray at 3:40.",
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -22,7 +23,7 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'fuse:tripped', 'boss:dark', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered'],
+    soft: ['boss:suspicious', 'coffee:flicker', 'coffee:shorted', 'fuse:tripped', 'boss:dark', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered'],
   },
 
   names: NAME,
@@ -43,7 +44,9 @@ export default {
     const bits = [];
     if (game.level.darkness && isDark(game, p.x, p.y)) bits.push('standing in the dark');
     if (p.switched) bits.push('you flipped his light switch');
-    if (p.smeared) bits.push('ink on your chin');
+    const w = game.world;
+    if (w.queasy && !w.sick) bits.push('your face has gone green 🤢');
+    else if (w.sick) bits.push('you threw up 🤢');
     return bits;
   },
 
@@ -53,6 +56,10 @@ export default {
     const bits = [];
     const w = game.world;
     if (game.level.darkness.torch.when(n, w)) bits.push('holding up a phone torch 📱');
+    if (n.id === 'boss' && w.bossAct === 'sigh') bits.push('looking at his tray and sighing 😮‍💨');
+    if (n.id === 'boss' && w.bossAct === 'drum') bits.push('drumming his fingers on his desk');
+    if (n.id === 'boss' && w.bossAct === 'clock') bits.push('checking his desk clock');
+    if (n.id === 'boss' && w.pullAt !== null && !w.trayRead) bits.push('dragging his tray over');
     if (n.override === 'dark') bits.push('walking his torch over to the light switch');
     if (n.override === 'switching') bits.push(`at the light switch, the tubes blinking ${Math.round(w.switchProgress * 100)}%`);
     if (n.override === 'fuse') bits.push('on his way to the fuse box');
@@ -66,7 +73,11 @@ export default {
       : w.officeLight === 'starting' ? "the boss's office tubes are blinking back on; the rest of the floor is lit"
       : w.officeLight !== 'on' ? "the boss's office is dark; the rest of the floor is lit" : 'all the lights are on';
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
-    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}`;
+    const machine = MACHINE[w.coffee] ?? '';
+    const jug = w.rigged ? 'the water jug lies tipped over it, water down its front and a puddle in front' : 'a full water jug stands beside it';
+    const soggy = w.soggy ? ' (soggy: it came back up)' : '';
+    const puddle = w.puddle ? '; a green puddle of sick on the floor where you threw up' : '';
+    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${soggy}${floor}${puddle}; the coffee machine${machine}: ${jug}`;
   },
 
   describe(e) {
@@ -83,14 +94,27 @@ export default {
       case 'boss:dark': return 'the boss: ❓ He holds up his phone torch 📱 and gets up for the switch';
       case 'switch:starting': return 'the boss flips his switch back on: the tubes blink';
       case 'switch:fixed': return "the boss's office tubes catch: his light is back on 💡 (😠)";
-      case 'fuse:tripped': return "Lin switches on the coffee machine: sparks fly, the fuse trips and the whole floor goes dark. The fuse box's door flies open. Out come the phone torches 📱";
+      case 'coffee:rigged': return 'you tip the water jug over the coffee machine 💦: water runs down its front onto the floor';
+      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😳), Kev glances down the hall at the fuse box, and the lights steady. It brews';
+      case 'coffee:shorted': return 'Lin switches on the soaked coffee machine: it shorts, sparks and smoke (😳), and a spark runs down the wiring toward the fuse box';
+      case 'fuse:tripped': return "the spark reaches the fuse box: its door flies open and the whole floor goes dark. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
       case 'kev:fuse': return 'Kev: ❓ He heads for the fuse box with his phone torch';
       case 'fuse:fixing': return 'Kev is at the fuse box';
       case 'fuse:fixed': return 'Kev resets the fuse: the lights are back on 💡';
+      case 'boss:sigh': return null;
+      case 'boss:checksClock': return null;
+      case 'boss:chime': return "the boss's desk clock chimes 3:39 🔔";
+      case 'boss:pullsTray': return 'the boss sighs 😮‍💨 and drags his tray over';
       case 'letter:taken': return 'you took your letter back ✉️';
       case 'letter:snatched': return null;
       case 'letter:eaten': return 'you ate your resignation letter';
+      case 'player:queasy': return 'your face goes green 🤢';
+      case 'player:sick': return 'you throw up: a green puddle at your feet, your letter soggy in it; everyone turns';
+      case 'lin:sees': return 'Lin sees the puddle 🤢 and comes over';
+      case 'lin:pinches': return "Lin picks your soggy letter out of the puddle between two fingers and holds it at arm's length";
+      case 'lin:files': return "Lin drops your soggy letter in the boss's tray";
+      case 'letter:stashed': return 'you put your letter in your desk drawer and sit down';
       case 'letter:recovered': return 'the boss picks your letter up off the floor ✉️❗';
       default: return undefined;
     }

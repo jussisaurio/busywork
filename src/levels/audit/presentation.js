@@ -3,10 +3,11 @@
 // read-only; the auditor is new.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
-import { COUNTED_STICKERS } from './things.js';
+import { DESK_MARKS, penShake, penScribble } from './things.js';
 
+// The card names the trouble, the time first, and never the way out.
 export const TITLE = {
-  mission: ['3:00 PM. A laptop audit at 3:30. There should be four.', 'You sold yours. Make him count four.'],
+  mission: ['3:00 PM. Laptop audit at 3:30.', 'You sold yours.'],
   badge: ['📋', '💻'], // his clipboard, a laptop
 };
 
@@ -34,9 +35,11 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
+    // Both pots full all afternoon, and both pour (index.js LEGEND, meeting/coffee.js).
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
+    { tile: 'M', draw: 'carafe', state: () => ({ full: true }) },
     { tile: 'K', draw: 'coatRack', state: () => ({ coat: false, tag: false }) },
-    COUNTED_STICKERS, // a green sticker on each desk he has counted (things.js)
+    DESK_MARKS, // the cable on an empty desk, his sticker on a counted one, Lin's paper pile (things.js)
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -53,23 +56,44 @@ export const DECOR = {
     { zone: 'lobby', x: 4, y: 14 },
   ],
   legendAt: { x: 20, y: 15.5 },
+  things: { penShake, penScribble }, // his dry pen at your desk (POSES)
 };
 
 export const LOOKS = {
   ...OFFICE_LOOKS,
+  // A man from outside: short salt-and-pepper hair, a mustache, glasses, a blue tie, the badge on a lanyard (POSES
+  // marks), clipboard and coffee cup in hand (POSES arms). Built square, taller than the rest.
   auditor: {
-    body: '#6b6f78', bodyDark: '#4d5058', torso: 'suit', shirt: '#f1f1ee', shirtDark: '#c9c9c4', tie: '#2d2d33',
-    skin: '#e3b48f', skinDark: '#c4926c', hair: '#2b2622', hairStyle: 'tuft', glasses: true,
-    legs: '#33353b', wide: 0.95, tall: 1.14, head: 6.6, bubbleDy: 34, eyeDy: 13,
+    body: '#6b6f78', bodyDark: '#4d5058', torso: 'suit', shirt: '#f1f1ee', shirtDark: '#c9c9c4', tie: '#2f4f8f',
+    skin: '#e3b48f', skinDark: '#c4926c', hair: '#4a4641', hairStyle: 'cap', glasses: true, mustache: true,
+    legs: '#33353b', wide: 1.05, tall: 1.12, head: 6.6, bubbleDy: 34, eyeDy: 13,
   },
 };
 
+// At Lin's desk he goes through her paper pile (things.js) before he writes: why her desk takes him longer.
+const atLinsPile = (n) => n.override === 'audit' && n._insp?.i === 2 && !n.moving && n._wait > 1.25;
+
+// At your desk his pen runs dry, every loop: why he stands there so long (index.js INSPECTIONS, look PEN_LOOK s).
+// Seconds into the stay: he writes and nothing comes, shakes the pen, scribbles on the clipboard's corner, shakes it
+// again, and writes. Head down over the clipboard, facing your desk: Kev slips home behind his back (cast.js).
+export const PEN_LOOK = 4.2;
+const PEN_BEATS = [[0.5, null], [1.4, 'shake'], [2.6, 'scribble'], [3.4, 'shake']];
+export function penBeat(n) {
+  if (n.override !== 'audit' || n._insp?.i !== 3 || n.moving || !(n._wait > 0)) return null;
+  const into = PEN_LOOK - n._wait;
+  return PEN_BEATS.find(([until]) => into < until)?.[1] ?? null;
+}
+
 export const POSES = {
   arms: [
-    { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '☕' }, // the auditor, before 3:30
-    // The auditor's clipboard: held up while he ticks a desk, at his side while he walks.
-    { when: (n) => n.id === 'auditor', arms: (n) => (n.moving ? 'mug' : 'carry'), item: '📋' },
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
+    // A coffee, standing: the auditor before 3:30, Kev and Lin in the kitchen.
+    { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '#cup' },
+    { when: (n) => n.id === 'auditor' && atLinsPile(n), arms: 'reach' },
+    { when: (n) => n.id === 'auditor' && penBeat(n) === 'shake', arms: 'type', item: '#penShake' },
+    { when: (n) => n.id === 'auditor' && penBeat(n) === 'scribble', arms: 'type', item: '#penScribble' },
+    // The auditor's clipboard: at his side while he walks, written on while he stands at a desk.
+    { when: (n) => n.id === 'auditor', arms: (n) => (n.moving ? 'mug' : 'type'), item: '#clipboard' },
+    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '#cigarette' },
   ],
   marks: [
     { when: (n) => n.id === 'auditor', badge: true },
@@ -111,7 +135,7 @@ export const VOICES = {
 
 export const SOUNDS = {
   actions: {
-    start: { pick_up: { sfx: 'rustle', who: 'player', opts: { gain: 0.6 } } }, // unplugging
+    start: { pick_up: { sfx: 'rustle', who: 'player', opts: { gain: 0.6 } }, pour_coffee: { sfx: 'pour', who: 'player' } },
     done: {},
   },
   events: {
@@ -122,6 +146,7 @@ export const SOUNDS = {
     'audit:passed': { sfx: 'relief' },
     'laptop:reclaimed': { sfx: 'swish' },
     'kev:fetched': { sfx: 'swish' },
+    'kev:forgot': { sfx: 'rustle', who: 'kev', opts: { gain: 0.5 } }, // his laptop down on your desk
   },
   signs: {},
   contraband: {},

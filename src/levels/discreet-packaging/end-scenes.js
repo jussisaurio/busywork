@@ -1,14 +1,14 @@
 // Discreet Packaging's end cards: a drawn scene per outcome (contract:
 // src/levels/meeting/end-scenes.js). Each shows the day as it ended at the 4:00 mail call: where Lin and Bob are,
 // who has the pink box and whose face is on its label, and what you hold. The icon row retells the picture.
-// Every object is drawn (painters.js: the parcel, the broom, the label, Bob's monitor picture); only bubbles speak.
+// Every object is drawn (painters.js: the two parcels, the broom, Bob's monitor picture); only bubbles speak.
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson, itemGlyph } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
-import { drawParcel, drawPicture, caughtPicture, PINK, PINK_TOP, heart } from './painters.js';
+import { drawParcel, drawBrownBox, brownFace, drawPicture, caughtPicture } from './painters.js';
 
 const WALL_Y = 196; // the back wall's foot
 const WOOD = '#7a4a2a';
@@ -44,11 +44,42 @@ function backRoom(ctx) {
   backWall(ctx, WALL_Y - TAB.y);
 }
 
-// Where something happened, as a backdrop: your office's carpet, or the lino everywhere else.
+// The corridor: a long plain wall with doors off it, no window, no clock.
+function corridor(ctx) {
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
+  backWall(ctx, WALL_Y - TAB.y);
+  for (const dx of [250, 520, 700]) {
+    ctx.fillStyle = WOOD_DARK;
+    ctx.fillRect(dx - 2, 118, 54, WALL_Y - 118);
+    ctx.fillStyle = WOOD;
+    ctx.fillRect(dx + 2, 122, 46, WALL_Y - 122);
+    fillCircle(ctx, dx + 40, 162, 2.6, C.steel);
+  }
+}
+
+// Where something happened, as a backdrop: your office, the corridor, or the lino everywhere else.
 function backdropAt(ctx, game, x, y) {
-  // The corridor has the office's cream floor and windows; the back office and the mailroom have the tiles.
-  if (inZone(game, x, y, 'office') || inZone(game, x, y, 'corridor')) office(ctx);
+  if (inZone(game, x, y, 'office')) office(ctx);
+  else if (inZone(game, x, y, 'corridor')) corridor(ctx);
   else backRoom(ctx);
+}
+
+// Where a box hit the floor: a scuff mark and a little cloud of dust, centred on (x, y).
+function scuff(ctx, x, y, t) {
+  ctx.strokeStyle = 'rgba(70,55,45,0.45)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x - 26, y + 3);
+  ctx.quadraticCurveTo(x, y - 3, x + 24, y + 2);
+  ctx.moveTo(x - 18, y + 8);
+  ctx.lineTo(x + 12, y + 7);
+  ctx.stroke();
+  const k = (t * 0.6) % 1;
+  for (const [dx, r] of [[-30, 7], [-18, 5], [24, 7], [34, 4.5]]) {
+    ctx.globalAlpha = 0.6 * (1 - k * 0.6);
+    fillCircle(ctx, x + dx * (1 + k * 0.3), y - 3 - k * 6, r * (1 + k * 0.4), '#cfc6b8');
+  }
+  ctx.globalAlpha = 1;
 }
 
 function window_(ctx, x, y, w, h) {
@@ -62,9 +93,8 @@ function window_(ctx, x, y, w, h) {
   ctx.fillRect(x + w / 2 - 2, y, 4, h);
 }
 
-// Your desk from the front: top slab at y, front panel below. drawer: your parcel jammed in the right-hand drawer,
-// which won't shut (as on the map).
-function desk(ctx, cx, y, w, drawer = false) {
+// Your desk from the front: top slab at y, front panel below, its drawers shut (whatever is in them).
+function desk(ctx, cx, y, w) {
   const h = 46;
   ctx.fillStyle = 'rgba(0,0,0,0.22)';
   ctx.fillRect(cx - w / 2 + 6, y + h - 2, w, 8);
@@ -93,27 +123,6 @@ function desk(ctx, cx, y, w, drawer = false) {
     ctx.fillRect(dx, y + 14 + i * 15, 36, 12);
     ctx.fillStyle = C.steel;
     ctx.fillRect(dx + 13, y + 19 + i * 15, 10, 2);
-  }
-  if (drawer) {
-    // the top drawer pulled out at us, the pink box bulging out of it, a heart on its corner
-    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-    ctx.fillRect(dx - 4, y + 26, 46, 6);
-    ctx.fillStyle = PINK;
-    ctx.beginPath();
-    ctx.moveTo(dx - 1, y + 14);
-    ctx.lineTo(dx + 3, y - 2);
-    ctx.lineTo(dx + 35, y - 1);
-    ctx.lineTo(dx + 39, y + 14);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = PINK_TOP;
-    ctx.fillRect(dx + 3, y - 2, 32, 4);
-    heart(ctx, dx + 12, y + 6, 3.4);
-    heart(ctx, dx + 27, y + 4, 2.6);
-    ctx.fillStyle = WOOD;
-    ctx.fillRect(dx - 3, y + 13, 42, 15);
-    ctx.fillStyle = C.steel;
-    ctx.fillRect(dx + 13, y + 19, 12, 2.2);
   }
 }
 
@@ -205,12 +214,13 @@ function boxHugged(ctx, look, x, y, sc, who, t) {
   arms(ctx, look, x, y, sc, [[11, 0], [9, 4], [4.5, 4.5]]);
 }
 
-// The pink box held out at the waist, label to the person holding it.
-function boxHeldOut(ctx, look, x, y, sc, who) {
+// A box held out at the waist, label to the person holding it: the pink one, or (brown) Bob's.
+function boxHeldOut(ctx, look, x, y, sc, who, brown = false) {
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(sc, sc);
-  drawParcel(ctx, 0, 8, 20, who, false);
+  if (brown) drawBrownBox(ctx, 0, 8, 22, who, false);
+  else drawParcel(ctx, 0, 8, 20, who, false);
   ctx.restore();
   arms(ctx, look, x, y, sc, [[11, 1], [10.5, 3]]);
 }
@@ -233,9 +243,9 @@ function tears(ctx, look, x, y, sc, t) {
   ctx.globalAlpha = 1;
 }
 
-// Lin, standing; with the parcel if she has it (carried, or held overhead for the whole office), shrugging if the
-// parcel shelf was empty.
-function lin(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, smug = false, overhead = false } = {}) {
+// Lin, standing, with what she has left: your parcel (carried, or held overhead for the whole office), Bob's brown
+// box held out (to you, once you swapped the labels), or nothing and a shrug (no pink box for you today).
+function lin(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, smug = false, overhead = false, arms: a = null } = {}) {
   const w = game.world;
   const p = person(t);
   p.dir = dir;
@@ -243,14 +253,18 @@ function lin(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, smug = false, 
   p.smug = smug;
   p.scale = 2.3;
   const has = w.parcel === 'lin';
-  if (has && overhead) p.arms = 'cheer';
-  else if (has) { p.arms = 'carry'; p.item = '#parcel'; } else if (w.mailEmpty) p.arms = 'shrug';
+  const brown = w.brown === 'lin';
+  if (a) p.arms = a;
+  else if (has && overhead) p.arms = 'cheer';
+  else if (has) { p.arms = 'carry'; p.item = '#parcel'; } else if (brown) p.arms = 'reach';
+  else if (w.mailEmpty) p.arms = 'shrug';
   drawPerson(ctx, looks(game).lin, p, x, y);
-  if (has && overhead) boxOverhead(ctx, looks(game).lin, x, y, p.scale, w.parcelFor, t);
+  if (!a && has && overhead) boxOverhead(ctx, looks(game).lin, x, y, p.scale, w.parcelFor, t);
+  if (!a && !has && brown) boxHeldOut(ctx, looks(game).lin, x, y, p.scale, brownFace(w), true);
   return p;
 }
 
-// Bob in his navy uniform and cap; hugging the parcel once it's his.
+// Bob in his navy uniform and cap; hugging the pink parcel once it's his, or holding his own brown one.
 function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false, arms: a = 'idle', sc = 2.5 } = {}) {
   const w = game.world;
   const p = person(t);
@@ -262,36 +276,68 @@ function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false,
   p.scale = sc;
   const hugs = w.parcel === 'bob' && a === 'idle';
   if (hugs) p.arms = 'reach';
+  else if (w.brown === 'bob' && a === 'idle') { p.arms = 'carry'; p.item = '#brownbox'; }
   drawPerson(ctx, looks(game).bob, p, x, y);
   if (hugs) boxHugged(ctx, looks(game).bob, x, y, sc, w.parcelFor, t);
   return p;
 }
 
-// --- Scenes ------------------------------------------------------------------------------------------------------
-
-// bob: Lin has handed big, stern Bob a pink box covered in hearts with his face on the label. He hugs it, in tears.
-// You stand by, smug.
-function bobScene(ctx, game, t, e) {
-  office(ctx, 560);
-  confetti(ctx, TAB.x + 360, 220, TAB.y, TAB.h, e, 22);
-  lin(ctx, game, t, 300, 292, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.7, smug: true });
-  bob(ctx, game, t, 450, 300 - Math.abs(Math.sin(t * 2)) * 1.5, { sc: 2.6 });
-  if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 450, 300, 2.6, t);
-  bubble(ctx, ['🥹'], 450, 196, e, 'thought');
-  you(ctx, game, t, 650, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
+// Your chair, pulled out from your desk and empty, feet at (x, y). spot: in a spotlight (the losses: where are
+// you?); the away win leaves it unlit, since nobody is looking for you.
+function emptyChair(ctx, x, y, spot = true) {
+  if (spot) spotlight(ctx, x, y);
+  ctx.save();
+  ctx.translate(x, y - 20);
+  ctx.scale(2.6, 2.6);
+  drawChair(ctx, 0, 0, Math.PI / 2 + 0.5, '#d6a23a', '#a97b22');
+  ctx.restore();
 }
 
-// hidden: nothing on the parcel shelf today. Lin shrugs at the mail call, Bob beside her; you stand at your desk
-// whistling, the drawer jammed open on a pink corner (or the box in your arms, or under your desk).
+function spotlight(ctx, x, y) {
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  fillEllipse(ctx, x, y + 6, 70, 18, '#fff7d0');
+  ctx.globalAlpha = 0.12;
+  ctx.fillStyle = '#fff7d0';
+  ctx.beginPath();
+  ctx.moveTo(x - 30, TAB.y);
+  ctx.lineTo(x + 30, TAB.y);
+  ctx.lineTo(x + 70, y + 6);
+  ctx.lineTo(x - 70, y + 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+// --- Scenes ------------------------------------------------------------------------------------------------------
+
+// bob: Lin has handed big, stern Bob the pink box covered in hearts, his face on the label. He hugs it, in tears.
+// She holds his dull brown box out to you (your face on it now); you stand by, smug. Away at 4:00: she holds it out
+// to your empty chair, and nobody minds.
+function bobScene(ctx, game, t, e) {
+  const away = game.outcome?.why === 'away';
+  office(ctx, 560);
+  confetti(ctx, TAB.x + 360, 220, TAB.y, TAB.h, e, 22);
+  bob(ctx, game, t, 300, 300 - Math.abs(Math.sin(t * 2)) * 1.5, { sc: 2.6 });
+  if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 300, 300, 2.6, t);
+  bubble(ctx, ['🥹'], 300, 196, e, 'thought');
+  if (away) emptyChair(ctx, 650, 320, false);
+  lin(ctx, game, t, 470, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6 });
+  bubble(ctx, ['#brownbox', '@player'], 470, 196, e - 0.2);
+  if (!away) you(ctx, game, t, 650, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
+}
+
+// hidden: no pink box on the parcel shelf today. Lin shrugs at you, nothing for you; Bob has his brown box; you
+// stand at your desk whistling, its drawers shut (or the box in your arms, or under your desk).
 function hiddenScene(ctx, game, t, e) {
   const w = game.world;
   office(ctx, 420);
   const loose = w.items.find((it) => it.type === 'parcel' && !it.spot);
   const looseHere = loose && inZone(game, loose.x, loose.y, 'office');
   if (looseHere) drawParcel(ctx, 640, 318, 40, w.parcelFor);
-  desk(ctx, 600, 262, 190, w.parcel === 'drawer');
+  desk(ctx, 600, 262, 190);
   lin(ctx, game, t, 290, 296, { head: Math.PI / 2 + Math.sin(t * 1.5) * 0.2 });
-  bubble(ctx, ['📭', '🤷'], 290, 204, e);
+  bubble(ctx, ['📭', '@player'], 290, 204, e);
   bob(ctx, game, t, 390, 300, { dir: Math.PI / 2 - 0.2, sc: 2.5 });
   you(ctx, game, t, 470, 324, { smug: true, head: Math.PI / 2 - 0.4 + Math.sin(t * 1.1) * 0.2 });
   bubble(ctx, ['🎵'], 470, 232, e - 0.3, 'thought');
@@ -308,6 +354,16 @@ function mailScene(ctx, game, t, e) {
   bubble(ctx, ['😳'], 650, 226, e - 0.4, 'thought');
 }
 
+// noshow: you weren't there, but your parcel was. Lin holds it up over your empty chair, your face on the label.
+function noshowScene(ctx, game, t, e) {
+  office(ctx, 330);
+  desk(ctx, 640, 270, 170);
+  emptyChair(ctx, 560, 322);
+  bob(ctx, game, t, 270, 300, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6, sc: 2.5 });
+  lin(ctx, game, t, 420, 296, { head: Math.PI / 2 - 0.5, overhead: true });
+  bubble(ctx, ['💝', '@player'], 420, 140, e);
+}
+
 // Who found your parcel: whoever caught you with it, or is holding it, or went for it.
 function finderOf(game) {
   if (game.caught?.reason === 'found' && game.caught.by) return game.caught.by;
@@ -317,12 +373,15 @@ function finderOf(game) {
 
 // found: someone picked up the pink box (off the floor, or off you) and read the label: your face. They hold it
 // out and look at you; you go red.
+// Off the floor: the icon row opens on the dropped box, and the floor shows where it landed.
 let foundIcons = ['@lin', '💝', '@player', '😳'];
 function foundScene(ctx, game, t, e) {
   const id = finderOf(game);
-  foundIcons = ['@' + id, '💝', '@player', '😳'];
+  const dropped = game.world.parcel === 'found';
+  foundIcons = dropped ? ['#dropped', '@' + id, '@player', '😳'] : ['@' + id, '💝', '@player', '😳'];
   const n = npcAt(game, id);
   backdropAt(ctx, game, n?.x ?? 4, n?.y ?? 4);
+  if (dropped) scuff(ctx, 250, 312, t);
   const look = looks(game)[id] ?? looks(game).lin;
   const sc = id === 'bob' ? 2.5 : 2.3;
   const p = person(t);
@@ -401,28 +460,22 @@ function caughtScene(ctx, game, t, e) {
   bubble(ctx, ['😠', '👉'], 340, 196, e);
 }
 
-// blamed: the mail call went to plan, but you weren't in the office for it. Lin and Bob look at your empty chair.
+// blamed: no pink box at the mail call, and no you either. Your chair stands pulled out from your desk, empty in a
+// spotlight; Lin and Bob point at it. The drawers stay shut: nothing pink anywhere.
 function blamedScene(ctx, game, t, e) {
   office(ctx, 380);
-  ctx.save();
-  ctx.globalAlpha = 0.25;
-  fillEllipse(ctx, 610, 290, 90, 26, '#fff7d0');
-  ctx.restore();
-  ctx.save();
-  ctx.translate(610, 270);
-  ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, Math.PI / 2, '#d6a23a', '#a97b22');
-  ctx.restore();
-  desk(ctx, 610, 290, 170, game.world.parcel === 'drawer');
-  lin(ctx, game, t, 300, 300, { dir: Math.PI / 2 - 0.8, head: -0.1 });
-  bob(ctx, game, t, 430, 304, { dir: Math.PI / 2 - 0.25, head: -0.15, sc: 2.5 });
-  bubble(ctx, ['@player', '❓'], 360, 196, e);
+  desk(ctx, 640, 262, 170);
+  emptyChair(ctx, 560, 322);
+  lin(ctx, game, t, 290, 300, { dir: 0.15, head: 0.1, arms: 'point' });
+  bob(ctx, game, t, 410, 304, { dir: 0.25, head: 0.15, arms: 'point', sc: 2.5 });
+  bubble(ctx, ['📭', '@player', '❓'], 350, 196, e);
 }
 
 function kindOf(o) {
   if (!o) return 'mail';
   const routes = Array.isArray(o.routes) ? o.routes : [];
   if (o.result === 'caught') return 'caught';
+  if (o.why === 'noshow') return 'noshow';
   if (o.result === 'blamed') return 'blamed';
   if (o.result === 'win') return routes.includes('bob') ? 'bob' : 'hidden';
   return o.why === 'found' ? 'found' : 'mail';
@@ -431,12 +484,13 @@ function kindOf(o) {
 export const END_SCENES = {
   kindOf,
   scenes: {
-    bob: { win: true, icons: ['💝', '@bob', '🥹'], draw: bobScene },
-    hidden: { win: true, icons: ['@lin', '🤷', '@player', '🎵'], draw: hiddenScene },
+    bob: { win: true, icons: ['💝', '@bob', '🥹', '#brownbox', '@player'], draw: bobScene },
+    hidden: { win: true, icons: ['@lin', '📭', '@player', '🎵'], draw: hiddenScene },
     mail: { win: false, icons: ['💝', '@player', '😳'], draw: mailScene },
+    noshow: { win: false, icons: ['💝', '@player', '🪑'], draw: noshowScene },
     // found and caught: whose face leads the row is decided by the picture (draw runs before the row is read)
     found: { win: false, get icons() { return foundIcons; }, draw: foundScene },
     caught: { win: false, get icons() { return caughtIcons; }, draw: caughtScene },
-    blamed: { win: false, icons: ['🪑', '❓'], draw: blamedScene },
+    blamed: { win: false, icons: ['📭', '🪑', '@player', '❓'], draw: blamedScene },
   },
 };
