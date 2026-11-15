@@ -17,6 +17,7 @@
 //   - Kev repairs a broken projector whenever he is on the floor (a lure).
 //   - On the way back in from his smoke the boss is locked out at the entrance if he doesn't have the keycard (a door).
 //   - Lin hunts for her sandwich if it's gone when she checks the fridge (a hunt).
+//   - The boss hunts for the coffee cup once he has seen the projector dead (a hunt; behaviours.js peek).
 //   - At 3:54 everyone still on the floor goes to their meeting seat.
 //
 // Per NPC: vision { fov, radius } (config VISION_DEFAULT if absent), glanceEvery (real s between seated
@@ -41,8 +42,8 @@ export const NPC_DEFS = [
       s('2:30', { do: 'sit', spot: 'boss_desk' }),
       s('2:44', { do: 'patrol', route: 'boss_patrol' }),
       s('2:56', { do: 'sit', spot: 'boss_desk' }),
-      s('3:12', { do: 'away', spot: 'restroom' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
-      s('3:22', { do: 'sit', spot: 'boss_desk' }),
+      s('3:12', { do: 'away', spot: 'restroom', prelude: 'peekOut' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
+      s('3:22', { do: 'sit', spot: 'boss_desk', prelude: 'peekBack' }), // both walks look in on the meeting room
       s('3:33', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
       s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket', anim: 'smoking' }),
       s('3:48', { do: 'sit', spot: 'boss_desk' }),
