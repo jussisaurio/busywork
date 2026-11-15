@@ -1,462 +1,380 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a864132","hash":"463973422a5d3ccac1bc5e306a3a0e864f41ab4e3e1d79b9392c31887bc11fc1","parts":{"card":"bcd8da4442cdc1bec486c22381ba8a48078066eb3f7cd42564b319fd130a8858","premise":"4e8c6e0dfa2769484b869272c6e3d034041628f2474d366b5445655345614663","prompts":"c2886f589c84ff30cad9e05d737f4d22d2f634d9aba125f62e9ac2a88edc579e"},"model":"default"} -->
+<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"ce498d6","hash":"37a116766a877f3bb2bcfd6145d146d125dd6261cd8afa2117d0a602a99e7f7a","parts":{"card":"12cd9b06c0e80425053b9a559213be241018f2e6ec2bcf8929d4fb6a9c05fabb","premise":"ce1ee358ca3daeb85fb78598f4b0d2c09ce7d237d1a5b029c93101bf5175da47","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
-Recorded 2026-11-15 at commit a864132, by claude -p (model: default). Inputs 463973422a5d: the card, premise.md, the stage's prompts.
+Recorded 2026-11-15 at commit ce498d6, by claude -p (model: default). Inputs 37a116766a87: the card, premise.md, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-card | first-read.md | 12 s | $0.02 |
-| 2-review | report.md | 83 s | $0.40 |
-| all | | 96 s (the steps add up to 96 s) | $0.42 |
+| 1-card | first-read.md | 13 s | $0.02 |
+| 2-review | report.md | 132 s | $0.50 |
+| all | | 145 s (the steps add up to 145 s) | $0.52 |
 
 ### 1-card: first-read.md
 
-**Situation:** It's 3:00 PM. I wrote an angry resignation letter and put it in my boss's tray. Now I regret it.
+**Situation:** It's 3:00 PM. I wrote an angry resignation letter and it's already in the boss's tray. He goes through his tray at 3:40, so I have 40 minutes.
 
-**What I must do:** Take the letter out of the tray before 3:40, when the boss empties it.
+**My goal:** Get the letter back before 3:40, or destroy it, or swap it for something else. The card never says this. I'm guessing it from the name.
 
-**If I fail:** He reads it, and I've either quit or been fired. Another reading: "empties" might mean the tray gets dumped into a bin or shredder. In that case it's unclear how I lose at all.
+**If I fail:** The boss reads it. Maybe I'm out of a job, or maybe there's a nasty scene.
 
 **Questions:**
-- Does "empties" mean he reads the tray, files it, or throws it out?
-- Where is the tray? On his desk, in his office, or by the door? Is he sitting there?
-- Can I spot my letter among the others? Is it in an envelope?
-- Do I have to destroy it, or is holding it enough? Could I swap in a fake?
-- Does "first" mean before 3:40, or before he gets to it, if he might come early?
-- What do the icons "✉️ @boss" mean? That the letter is at the boss, or that it's addressed to him?
-- The name "Second Thoughts" clearly means regret. Could it also hint at a second letter, or at the second loop?
+- What does "goes through it" refer to? It could mean the tray (he sorts the whole pile) or my letter (he reads it carefully). Those make for different deadlines and risks.
+- The name could mean I regret writing the letter, or the boss has doubts, or it's simply my second try.
+- What do the icons mean? "✉️ @boss" reads like "send the letter to the boss," which is the opposite of the goal.
+- Is just removing it enough, or do I need to put something else in its place?
+- Is the tray in his office? Is he there?
+- Is 3:40 fixed, or can I make him start earlier or later?
+- Is the letter easy to spot, like the only envelope or a giveaway colour?
 
 ### 2-review: report.md
 
 Verdict: fixable
 
-**1. In the switch route, the boss watches you turn off his light.** His cone is 150° and 8 tiles, facing south (`cast.js:18`). The switch spot (1,4) is about 56° off his facing and 3.6 tiles away, so he sees you walk in and hear the clack. Then the rules have him blame only whoever he bumps into in the dark. A player who flips it and walks off unpunished will feel the game is fudging. He also feels his way along the wall for minutes, although he holds up a phone torch in the other blackout (`index.js:218`, torch only when the fuse is out). And his office has glass walls onto a fully lit floor, so it should barely be dark. **Fix:** put the switch outside his office, on the hallway wall by his door and out of his cone. Have him reach for his phone, find it dead or on charge, and grope instead. Show this as a ❓ over the phone.
+**1. The blackout hands you the win on loop one, so the other two routes have no purpose.** At 3:10 Lin's coffee machine blows the fuse in every loop, even if you do nothing (`cast.js:34`). The dark lasts about 8 game minutes. A first-time player sees the lights go out, walks to the side of the desk (`desk_side`) and takes the letter. The light switch and the breaker do nothing the free blackout doesn't already do. The level's idea, that the dark shrinks sight, gets handed over instead of found. *Fix:* when Lin switches the machine on, the lights should only flicker for a second while Kev glances at the fuse box. That shows the link but doesn't give you 8 minutes of dark. The player then has to cause the blackout.
 
-**2. The switch win picture shows the loss.** `sceneSwitch` has the light back on and him angry with his hand on the switch, facing you while you hold the envelope in plain view. The premise says exactly that gets you caught. **Fix:** draw him squinting at the switch with his back to you, with the empty tray between you, and you at your own desk.
+**2. The boss stares at the tray for 40 minutes and never reads the only envelope in it.** He does nothing else all afternoon (`cast.js:21`). His habit of living by the clock is never shown on screen. A player's first question is "why doesn't he read it now?" *Fix:* give him something to do in his chair, like typing or a phone call, with the tray beside him. Mark 3:40 with a visible ritual, such as a desk-clock chime, so the deadline reads as his habit.
 
-**3. The card says "empties", and the first reader guessed shredder.** If he dumps the tray, why is that a loss? The fail picture (he reads it, you hold a box) answers that only after you lose. **Fix:** "He goes through it at 3:40." That names the threat without hinting at a way out.
+**3. In the blackout, his torch guards the tray for no reason the player can see.** He keeps his beam on the front of his desk. That creates a blind spot beside the tray only because the puzzle needs one. It also contradicts `premise.md` ("he never knew it existed"), and the joke relies on him guarding the tray anyway. The joke also isn't in the end picture: the blackout win card shows 3:40 with the lights on, the boss holding an empty tray and you at your desk (`end-scenes.js:269`), which is the obvious version. *Fix:* have him point the torch at the door, looking for whoever did it. Then the dark beside him is a natural blind spot. Make the win card show the tray swept by his torch, empty, with the envelope in your hand just outside the beam.
 
-**4. The boss stares at a fresh envelope for 40 minutes and doesn't read it.** The premise says "nothing on his desk escapes him" (`premise.md:20`) but also has him wait until 3:40. Sitting still facing the tray is the puzzle's need, not an everyday reason. Watching him teaches the player nothing either. **Fix:** give him a visible task, like a long phone call with ☎️ and 💬 bubbles, facing the desk. At 3:40 he hangs up and reaches for the tray. That also makes his torch pointing at the front of the desk read as "back to the paperwork."
+**4. Taking the letter makes a rustle right next to him, and he never reacts.** `take_letter` plays a rustle at `desk_side`, two tiles from his chair (`presentation.js:83`), but it has no `noise`. Meanwhile, the switch's quieter clack is a noise. Players who have learned that noises turn heads will expect to be caught and will stop trying this. *Fix:* make the take silent, or give it a noise radius smaller than his distance and show it with a small sound icon he doesn't hear.
 
-**5. The blackout route needs no scheme.** At 3:10 the dark just happens, on loop one, with no input. The level's one idea is handed over before the player has used it. The breaker and switch routes are the actual deductions. The breaker route works: at 3:10 the box's door flies open, Kev walks to it, and the player sees him arrive. **Fix:** keep the blackout but make it partial. Lin's machine trips only the kitchen circuit, so the player has to see why it matters, or move it to her desk circuit.
+**5. The card and badge leave the second reader guessing.** "He goes through it" could mean the tray or the letter. The badge "✉️ @boss" reads as "send the letter to the boss", the opposite of the goal. The reader also didn't know whether removing the letter is enough. Nothing on the card points to a route, so the card itself is fine. *Fix:* write "He goes through his tray at 3:40." For the badge, use something like ✉️ @boss 📦, which names the trouble.
 
-**Card and badge:** "Second Thoughts" with ✉️ @boss names the trouble and hints at no tool or route. Nothing to fix there, apart from "empties" in #3.
+Checked and sound: the losses each have a visible cause. The breaker stays out of the boss's sight because the south-west wall blocks it. The win doesn't depend on where you stand, which matches "nobody knew."
 
-**Joke:** The blackout picture works on screen. The boss sweeps his torch over a desk with an empty tray, you stand smug just outside the beam, and Lin's coffee machine sparks in the background. It's a little better than the obvious "sneak in the dark" version. It would get funnier if his beam visibly passes over the empty tray and he doesn't notice.
-
-**Best thing:** the wire tray you can see through. From the first frame, the player sees their own white envelope sitting there, and the win is that same mesh, empty.
+**Best thing:** the office goes dark, the boss raises his phone torch, and you lift your envelope from the dark at arm's length from him.
 
 <!-- /cold-read:premise -->
 
-<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"a864132","hash":"a959bb2e89df9d482a67a594a763045a1a5531c367fe2f4dcc17f5c909239c7e","parts":{"card":"bcd8da4442cdc1bec486c22381ba8a48078066eb3f7cd42564b319fd130a8858","shots":"65c222bcf4a985b0ba7ef995d6302270b308317508782c287233d7ce9734cfc9","pictures":"b76a10b1bde9afd25fd62508d8004d9e291a5290059a07d8e704d6fc575f4ea6","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
+<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"ce498d6","hash":"700784577ab304c48b0b83deb86024b33145f98dd7413496447c2706f1f604d5","parts":{"card":"12cd9b06c0e80425053b9a559213be241018f2e6ec2bcf8929d4fb6a9c05fabb","shots":"6190981fa3f36516ac578155ec7ac0377435b75b31410647e314712a6c148b78","pictures":"87c60749e0e847afd2715dc960737e81ffb6b77be0ba30d25f9350108067e05f","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
 ## pictures: fixable
-Recorded 2026-11-15 at commit a864132, by claude -p (model: default). Inputs a959bb2e89df: the card, shots.js, the rendered shots, the stage's prompts.
+Recorded 2026-11-15 at commit ce498d6, by claude -p (model: default). Inputs 700784577ab3: the card, shots.js, the rendered shots, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 72 s | $0.39 |
-| 2-compare | report.md | 103 s | $0.49 |
-| all | | 175 s (the steps add up to 175 s) | $0.87 |
+| 1-read | reading.md | 78 s | $0.43 |
+| 2-compare | report.md | 137 s | $0.60 |
+| all | | 215 s (the steps add up to 215 s) | $1.03 |
 
 ### 1-read: reading.md
 
-I've looked at the card and all 20 shots. Here is the reading.
+I've looked at all 23 shots. Here is the reading.
 
-# Reading: Second Thoughts
+---
 
-**Card:** It's 3:00. My angry resignation letter is in the boss's tray, he empties it at 3:40, and I have to get it back first. Clear, and funny.
+# Second Thoughts: cold read
 
-**01 (3:00):** A bald boss in a suit sits behind a desk in the top-left office. A pink envelope is on the desk. I'm the red shirt with a red ring at a desk in the middle. A teal coworker sits on the left and a green, spiky-haired one on the right. There's a kitchen at top right. The top of the screen shows a clock, a clock + envelope + boss face, an empty slot with a hand, a loop counter and three empty slots. *I can't tell what the three slots are for yet.*
+**01** (3:00): Red-haired woman (me, red ring) sits at the centre desk. A bald boss in a suit sits in the glass office at top-left, with an envelope in his desk tray. A woman in teal and a spiky-haired man in green work at desks. *I'm being told where the letter is and who's watching it.* The HUD shows a clock, an envelope with a face, an empty hand slot and three empty boxes.
 
-**02 (3:02):** I'm right beside the boss's desk with an envelope bubble. His cone has turned red and covers me. Above him is a black vertical bar with a red "?". *I think the bar is his suspicion. Grabbing the letter in front of him won't work.*
+**02** (3:02): I'm next to the boss's desk with the tray highlighted and an E prompt, inside his red cone. A tiny "?" floats over a dark bar on the top wall. *Grabbing it right in front of him looks like a bad idea.* I can't read that bar.
 
-**03 (3:03):** I'm at a small white box on the left wall with a lightbulb bubble. *It looks like a light switch.*
+**03** (3:04): I'm in the office's top-left corner, at a small highlighted wall plate. The teal woman has motion lines on her head. *The plate is probably a light switch.* I can't tell what the motion lines mean: sneeze? head turn?
 
-**04 (3:01):** I'm at a grey box with a yellow warning triangle in the hallway, and a lightning bubble is showing. The boss's bar is partly orange. *A fuse box, so maybe all the power?*
+**04** (3:03): I'm at a yellow hazard box on the corridor wall, with an E prompt. *Something electrical I can use.*
 
-**05 (3:08):** The teal coworker walks the hallway with a clock bubble, and her seat is empty. *A routine, maybe a coffee break.*
+**05** (3:08): The teal woman leaves her desk and walks up, with a clock bubble. *She has a routine.* The clock bubble could mean "break time" or "late."
 
-**06 (3:04):** The boss's office is dark blue. He has a "?" thought cloud, and I'm by the switch. *Turning off the lights confuses him.*
+**06** (3:04): The boss's office is dark except a desk-lamp cone. The boss has a big "?" bubble, and I'm a red silhouette by the switch. *Darkness narrows his sight. Good.*
 
-**07 (3:05):** The boss has moved to the top-left corner with a faint grey cloud I can't read. I'm at his desk with the envelope bubble. The green coworker has shake lines. *He's going to fix the light, which leaves the desk open.*
+**07** (3:05): I'm creeping along the dark office's left wall while the boss stays puzzled under his lamp.
 
-**08 (3:06):** The hand slot now holds the envelope, and I have a smiley thought bubble. The boss is at the switch. *Got it.*
+**08** (3:05): The boss turns and sweeps a phone light to the right, with a "?" over a small face. *The dark isn't safe forever.*
 
-**09 (3:06):** Another dark office. The boss has "?" and a red "?" bar, and I'm back at the switch. A red cone reaches through the glass door. *He's coming to the switch, and I'm standing at it.*
+**09** (3:07): **The hand slot now shows the envelope.** The boss has walked to the switch, and I'm at his desk. A white bubble with a yellow centre sits over the desk. *His trip to the switch gave me the opening.* The bubble looks like a fried egg or a flower. I can't read it.
 
-**10 (3:10):** The whole office is dark. Flashlight cones come from the boss at his desk, from the teal coworker at the smoking coffee machine, and from the green coworker, who has a "?". The fuse box glows red. *Power cut. I can't tell if I caused it at the fuse box or the coffee machine did.*
+**10** (3:05): The boss reaches the switch first, and his red cone catches me there. *Timing loss.*
 
-**11 (3:14):** It's dark and I'm next to the boss with a white-and-yellow bubble. *It looks like a fried egg, and I can't read it.* I'm holding the envelope. A dark figure with a flashlight is near the fuse box, and someone with a beard is in the kitchen. *Who is that? It's a new person or a coworker I can't recognise.*
+**11** (3:10): The whole floor is dark, and the hazard box became a red-lit panel. The teal woman is at a steaming coffee machine, the green man has a "?", and the boss uses his phone light. *Killing the power affects everyone.*
 
-**12 (3:04):** It's dark and I'm at the fuse box. The teal coworker is beside me with shake lines, and green has a "?". *Again, the shake lines could be startled or could be noticing me.*
+**12** (3:12): Still dark. The boss is back under his lamp, and the green man wanders with a light toward me.
 
-**13 (3:09):** It's dark, and I'm reaching across the boss's desk while he sits there with his flashlight. Green is at the fuse box. *Apparently the dark lets me take it right under his nose. That's funny if true, but it's confusing.*
+**13** (3:14): I have the envelope and I'm beside the boss in the dark, with the egg bubble again. The green man is at the panel with a flashlight. *Power is about to return.*
 
-**14 (3:07):** It's dark and I'm at the fuse box. A figure at the glass door has a "?" and a red cone on me. *Spotted.*
+**14** (3:04): Power is out. I'm at the panel, the teal woman holds up a phone light, and the green man has a "?".
 
-**15 (win, 3:41):** The boss slaps the light switch with an angry burst while I grin holding the envelope. The icons are bulb, boss, angry, envelope. Slot 1 fills with a bulb. *Solution 1 is the light switch.*
+**15** (3:09): The tray is prompted and the boss's lamp points down. The green man is heading to the panel. *The window is closing.*
 
-**16 (win):** The teal coworker's coffee machine sparks while she holds a flashlight. The boss is lit by his own flashlight, and I have the envelope. The icons are teal, coffee, explosion, envelope, and slot 2 is coffee. *The coffee machine blows the power.*
+**16** (3:07): I'm at the panel, glowing red. The green man's cone turns the glass doors red, with a "?". *Nearly spotted.*
 
-**17 (win):** The green coworker fixes the red fuse box. The icons are lightning, green guy, wrench, envelope, and slot 3 is lightning. *Solution 3 is the fuse box. The three slots are three solutions.*
+**17** (3:41, teal frame = win): The boss is puzzled under his lamp while I sit at my desk holding the envelope. Icons: bulb, boss, ?, envelope. The first box gets a bulb. *Lights-off route.*
 
-**18 (loss, 3:41, red border):** The boss holds up my letter with an angry burst showing my face. I leave carrying a box with a plant. *Too late, I've resigned. It's the best gag in the set.*
+**18** (win): Coffee machine. Icons: teal woman, coffee, burst, envelope. The second box gets an **hourglass**. *Coffee route.* The burst and hourglass don't add up for me. Spill? Delay?
 
-**19 (loss, 3:04):** The boss points at me while I sweat holding the envelope. *Caught red-handed.*
+**19** (win): Breaker box. Icons: lightning, green man, wrench, envelope. The third box gets lightning. *Power-cut route; he fixes it.*
 
-**20 (loss, 3:07):** In a dark office the boss grabs me at the switch. The envelope is still on the desk. *Caught before I got it.*
+**20** (3:41, red frame = loss): The boss reads the letter, fuming, with my face in his burst. I'm walking away sweating. Icons: boss, envelope, angry face, cardboard box. *I'm out. Is the box "fired" or "I quit"? Either way, funny.*
 
-**What confused me:**
-- The wins show 3:41 on the clock, but the card says 3:40.
-- I can't tell whether the slot icons match what I did or just name the method.
-- In 16 and 17 the boss sits there with a flashlight while I take the letter. "The dark shrinks sight" needs one clear shot of his cone not reaching the tray.
-- I can't tell what the "pretend" key does.
+**21** (3:04, loss): The boss catches my hand in the tray with an "!". Icons: boss 👉 me.
 
-## The story
-I quit in a rage and regret it. The boss sits guarding the tray, so I have to make him look away. Darkness is the tool: flip his office light, overload the coffee machine, or trip the fuse box. Each one sends someone off to fix it while I sneak through the gloom. If I'm slow, I walk out with a box of my stuff and a plant.
+**22** (3:06, loss): Same icons, but in the dark: his phone light lands on me.
+
+**23** (3:23): I'm holding a coffee cup (hand slot) with E pointed at the teal woman by the machine. *Setting up the coffee route*, but it's unclear what I'm meant to do with her.
+
+---
+
+**Story:** I fired off an angry resignation letter and now regret it. The boss reads his tray at 3:40, so I have to get the letter back unseen. Darkness is my friend: flip his switch, cut the floor's power, or use the coffee somehow. Each trick pulls a different coworker into the scene. Fail, and I'm caught red-handed, or I walk out carrying a cardboard box.
+
+**Editor's flags:** The egg bubble and the hourglass/burst on the coffee win card are unreadable. The coffee route is the only one I couldn't piece together from the shots.
 
 ### 2-compare: report.md
 
 Verdict: fixable
 
-I checked every shot against the images. One shot that matters is misread: 04 tells the player the fuse box is in the boss's view, which works against the whole breaker route. Several more get the gist but miss the one idea this level teaches: the dark shrinks sight, so a torch beam that doesn't reach you means you're safe. Shots 16 and 17 come closest to showing it, but the player says outright that it didn't land.
+The switch route and the breaker route mostly come through. The coffee route doesn't. The player sees the coffee machine and the blackout at 11 but never links the two. The 18 win card can't explain it after the fact, and 23 adds a prompt that points nowhere. Separately, the "caught at the fuse box" loss (16) reads as a near miss. Two shots that matter to a route are misread, so the verdict is fixable, not works. It isn't broken: two of the three routes read from these pictures.
 
-## Shots
+---
 
-**01 (start): partly (cosmetic)**
-- Reading: "A pink envelope is on the desk."
-- Intent: your white envelope sits in the wire tray right in front of him.
-- Cause: the boss's sight cone tints the envelope pink, and the tray is a small grey rectangle that reads as desk clutter. "Tray" is a word on the mission card, so the picture should show a tray.
-- Fix: draw a raised wire tray with a visible rim. Keep the envelope white by drawing it above the cone tint, or give it a slight glow.
+**01 — reads.** The player finds the letter, the boss and the clock. The boss facing his desk comes through.
 
-**02 (tray): reads.** The red cone, the "?" bar and the reading "Grabbing the letter in front of him won't work" all match.
+**02 — reads.** "Grabbing it right in front of him looks like a bad idea" is the whole point. One cosmetic problem: the red "?" over the dark bar on the top wall. That bar is unexplained, and it shows up again in 10 and 22. Cut it, or make it a ceiling tube.
 
-**03 (switch): reads.**
+**03 — reads.** "The plate is probably a light switch" is right, and the player is behind his chair and outside his cone. The motion lines on Lin's head are noise that the intent doesn't call for. The player asks "sneeze? head turn?" and the shots never answer.
 
-**04 (fuse box): misread**
-- Reading: "The boss's bar is partly orange." The player concludes he can half-see you there.
-- Intent: the fuse box is around the corner where the boss cannot see it, with its door shut and a green lamp on.
-- Cause: a missing cue, plus a cue that contradicts the intent. The boss's cone runs through his glass wall into the hallway and covers the player at the box, and his suspicion bar rises. There is no green lamp. A yellow warning triangle stands in for the box's state.
-- Fix: block his cone at the wall, or move the box so it is clearly outside the cone, and leave his bar empty in this shot. Put a lit green lamp on the closed box door so it can later flip to a red, blinking one.
+**04 — partly.**
+- Reading: "a yellow hazard box on the corridor wall… Something electrical I can use."
+- Intent: a grey fuse box with its door shut and a green lamp lit, around a corner where the boss can't see it.
+- Cause: a glyph used as a prop. The ⚠ sticker stands in for "fuse box", and there's no green lamp to set up the later change to red. The box also sits right under the boss's glass office, next to the spill of his cone, so "out of his sight" never comes across.
+- Fix: draw a grey box with a visible door seam and a bright green lamp. Move it, or the cone, so the box is clearly outside the boss's sight.
 
-**05 (Lin to the coffee machine): partly**
-- Reading: "A routine, maybe a coffee break."
-- Intent: Lin leaves her desk for the old coffee machine in the kitchen.
-- Cause: the shot catches her mid-hallway with a clock bubble, so the cause (it's 3:08) shows but the destination doesn't. The kitchen is off to the side, too far from her to connect.
-- Fix: give her a coffee-cup bubble, or a clock-plus-cup pair, or take the shot as she reaches the machine.
+**05 — partly.**
+- Reading: "She has a routine. The clock bubble could mean 'break time' or 'late.'"
+- Intent: Lin leaves her desk *for the old coffee machine in the kitchen*.
+- Cause: a missing cue. The ⏰ bubble says "it's time" but not "time for what", and the frame catches her in the corridor, far from the machine.
+- Fix: give her a ☕ bubble instead of the clock, and frame her heading through the kitchen doorway toward the machine.
 
-**06 (switch flipped): reads.**
+**06 — partly.**
+- Reading: "dark except a desk-lamp cone… Darkness narrows his sight."
+- Intent: he holds up his phone, and its beam starts at the glow in his hand.
+- Cause: the beam is a wide cone pointing down at the desk and the phone is a speck, so it reads as a desk lamp. That matters later: in 07, 12 and 17 the player keeps calling it "his lamp", which hides the fact that the light moves with him. The switch's amber lamp isn't mentioned either.
+- Fix: draw a bright white phone held up in a raised hand, with a narrower beam starting at the phone. Give the switch a clear amber dot.
 
-**07 (boss gropes): reads.** The player got "He's going to fix the light, which leaves the desk open."
-- His grey thought cloud can't be read, and the green coworker's shake lines are noise.
-- He also stands at the top wall rather than visibly moving along it. A trail of hand-on-wall marks pointing toward the switch would help.
+**07 — reads.** The player gets the idea of hiding in the dark outside the beam. One gap: the intent says "as he gets up", but he's still seated in the shot. The "lamp" problem is covered under 06.
 
-**08 (switch take): reads.**
+**08 — partly.**
+- Reading: "The boss turns and sweeps a phone light to the right… The dark isn't safe forever."
+- Intent: he gets up and turns *for the switch*, and his beam swings east, *away from you*.
+- Cause: the cause and effect are too far apart. The beam points east while the switch is in the west corner, so nothing says where he's going. The player reads a threat, not an opening.
+- Fix: have him take a step toward the switch with the beam trailing behind in a swing arc. Or give him a bubble with a small switch icon.
 
-**09 (boss bumps): partly**
-- Reading: "He's coming to the switch, and I'm standing at it."
-- Intent: he walks right into you. In the dark, whoever is at the switch must have flipped it.
-- Cause: the cause and the effect are too far apart. The shot is taken before the bump, and the boss is still a tile away. A stray red cone coming through the glass door pulls the eye to the wrong place.
-- Fix: take the shot at the moment of contact. Show his outstretched hand on your shoulder and a small impact star, with the switch's amber lamp between you.
+**09 — partly.**
+- Reading: "His trip to the switch gave me the opening. The bubble looks like a fried egg or a flower."
+- Intent: the tray is empty, the letter is in your hand, he's at the switch with his beam on it, and the tubes blink.
+- Cause: the take reads. The white-and-yellow bubble over the desk doesn't. It's an unreadable glyph, and the tube blink doesn't come through at all.
+- Fix: remove the egg bubble. Show the blink on the actual ceiling tubes (a flicker flash on the strip lights), and draw the empty wire tray clearly.
 
-**10 (blackout): partly. It matters to the coffee route.**
-- Reading: "I can't tell if I caused it at the fuse box or the coffee machine did."
-- Intent: Lin switches on the coffee machine, it sparks, and the whole floor goes dark. As a result, the fuse box hangs open.
-- Cause: the cause and the effect sit at opposite ends of the map. The machine only smokes faintly, while the red fuse box is the brightest thing on screen, so the effect looks like the cause.
-- Fix: put a bright spark burst and a lightning bubble on the machine, plus a thin flicker line or wire running from the kitchen to the box. Or play it as two frames: the spark first, then the lights go out.
+**10 — reads.** "His red cone catches me there" is right. "Reaches the switch first" suggests the player thought they were racing him, but the lesson lands.
 
-**11 (blackout take): partly**
-- Reading: "It looks like a fried egg, and I can't read it." Also: "someone with a beard is in the kitchen… a new person or a coworker I can't recognise."
-- Intent: you take the letter from the dark end of his desk while his phone beam lies on the front of the desk, not on you.
-- Cause:
-  - A muddled bubble glyph.
-  - In the dark, people are drawn as small faces. Lin's darkened face reads as a stranger with a beard.
-  - The boss's beam points up-left, away from the desk front, so the safe gap between beam and tray isn't shown.
-- Fix:
-  - Use the plain envelope bubble.
-  - Keep each person's shirt colour visible in the dark, for example with a coloured rim light.
-  - Aim his beam down across the front of the desk, so the dark tray end beside it is obvious.
+**11 — misread.**
+- Reading: "The teal woman is at a steaming coffee machine… *Killing the power affects everyone.*"
+- Intent: Lin switches on the coffee machine, it sparks and smokes, and that blows the fuse for the whole floor.
+- Cause: the cause and effect are too far apart, and the cue is wrong. The smoke reads as normal coffee steam, there's no spark, and the machine (far top-right) and the fuse box (far left) are at opposite ends of the screen. The player sees a blackout with no cause. This is the setup for the whole coffee route.
+- Fix: put a big ⚡ spark burst and a dark grey puff on the machine, and give Lin a startled bubble (😳⚡). Run a beat of flicker from the machine toward the fuse box as the lights die.
 
-**12 (breaker pulled): partly**
-- Reading: "the shake lines could be startled or could be noticing me."
-- Intent: you pulled the breaker yourself. The door hangs open, its red lamp blinks, and the whole floor goes dark.
-- Cause:
-  - The open door isn't legible as open.
-  - Lin, standing right next to you, has shake lines and her torch puts you in a pool of light. That reads as being caught, not as a clean sabotage.
-- Fix: draw the box door swung open with a red lamp, and have Lin's shake lines and torch point toward her own desk, away from you.
+**12 — partly.**
+- Reading: "the green man wanders with a light toward me."
+- Intent: Kev walks his torch to the fuse box. The boss stays in his chair.
+- Cause: a missing cue. Nothing shows where Kev is going, and his beam sweeps toward the player. The player only works it out at 13.
+- Fix: give Kev a 🔧 bubble, or one showing the fuse box, and point his beam down the corridor toward the box.
 
-**13 (Kev comes): partly**
-- Reading: "Apparently the dark lets me take it right under his nose… it's confusing."
-- Intent: Kev walks his torch down the hallway to the open fuse box, and you're already at the boss's desk, out of Kev's way.
-- Cause:
-  - Kev is already standing at the box, so his trip down the hallway isn't shown.
-  - The boss's beam points down, and the player standing just outside it at the desk end isn't read as safe.
-- Fix: take the shot with Kev partway down the hallway, his beam pointing toward the box. Mark the edge of the boss's beam clearly against the desk, with the player in visible shadow.
+**13 — reads.** The take in the dark, out of the beam, with power about to come back. The egg bubble appears again (see 09).
 
-**14 (Kev finds you): reads.** "Spotted" matches.
-- He's only "a figure" to the player. In the dark, Kev should keep his green shirt and spiky hair.
-- Nothing hints that he will tell the boss. A bubble pairing the boss's face with a pointing finger would.
+**14 — reads.**
 
-**15 (win by switch): reads.**
-- The HUD shows 3:41 while the card shows 3:40. Freeze the HUD clock at 3:40 on the end card.
+**15 — reads.** "The window is closing" is right.
 
-**16 (win by blackout): partly**
-- Reading: "the boss sits there with a flashlight while I take the letter. 'The dark shrinks sight' needs one clear shot of his cone not reaching the tray."
-- Intent: his torch lights the front of the desk, and you hold the envelope just outside the beam.
-- Cause: a missing cue. The beam stops short of you, but nothing points that out, so the gap reads as luck.
-- Fix: run the beam's edge right up against your feet, with a hard shadow line on your side. Show the empty tray inside the dark half of the desk.
+**16 — misread.**
+- Reading: "The green man's cone turns the glass doors red, with a '?'. *Nearly spotted.*"
+- Intent: Kev arrives and *finds you* at the fuse box, and he will tell the boss you pulled it.
+- Cause: a missing cue. The red "seen" tint lands on the glass doors, not on the player. The bubble is "?" not "!", and nothing connects Kev to the boss. A loss reads as a near miss.
+- Fix: put the red tint and a "!" on the player, and give Kev a 👉 bubble pointing at the boss's office.
 
-**17 (win by breaker): partly.** Same as 16. The player got the route ("Solution 3 is the fuse box"), but the reason it's safe doesn't come across. Same fix as 16.
+**17 — reads.** The player names the lights-off route. Nobody mentions the empty tray, but the joke lands.
 
-**18 (loss at 3:40): reads.** The player called it "It's the best gag in the set." Agreed.
+**18 — partly.**
+- Reading: "Coffee route. The burst and hourglass don't add up for me. Spill? Delay?"
+- Intent: the blackout win, with the coffee machine that blew the fuse behind you.
+- Cause: glyphs used as props. 💥 doesn't say "short circuit", and the ⌛ slot icon has nothing to do with this route. Because 11 already failed, this card is the last chance to explain the route, and it doesn't.
+- Fix: change the icon row to Lin ☕ ⚡ ✉️, using the same ⚡ the breaker route uses. Make the slot icon ☕⚡, and add a scorch mark on the machine in the picture.
 
-**19 (caught): reads.**
+**19 — reads.**
 
-**20 (bumped): reads.**
-- This end card uses the same icon row as 19 (boss, pointing finger, you). A bump or hand icon would separate the two ways to lose.
+**20 — reads.** "Is the box 'fired' or 'I quit'? Either way, funny." Leave it ambiguous.
 
-## Other notes
-- The three empty slots and the "pretend" key mean nothing to the player until the end cards. Slot 3 only made sense once 17 showed it.
-- The HUD's clock, envelope and boss-face goal icon read fine.
+**21 — reads.**
+
+**22 — reads.**
+
+**23 — partly.**
+- Reading: "Setting up the coffee route, but it's unclear what I'm meant to do with her."
+- Intent: power is back and the machine works (green lamp, full pot), and you've just poured a cup.
+- Cause: a missing cue plus a misleading prompt. The E prompt hangs over Lin, so the player expects to do something with her. The green lamp and full pot are too small to notice.
+- Fix: drop the E prompt from Lin, or move it to the machine. Make the brew lamp a big green dot with steam rising from a full pot.
+
+---
+
+**Editor's note:** the player made up a better premise than the cards needed: "I fired off an angry resignation letter and now regret it." The three routes are clear in principle, and the loss jokes (the cardboard box, being caught red-handed) land. The fixes that matter most are 11 and 16. After those, 06 (draw the phone as a phone) and the stray glyphs (the egg bubble, the hourglass, the dark bar) are cheap clean-ups.
 
 <!-- /cold-read:pictures -->
 
-<!-- cold-read:replay {"verdict":"broken","date":"2026-11-15","commit":"a864132","hash":"ed0107392619089ff5c56805eb5e45d4cd1d2b2c4287f4c592fcfe4ae1af8754","parts":{"card":"bcd8da4442cdc1bec486c22381ba8a48078066eb3f7cd42564b319fd130a8858","checks":"eb88df5a683525135aae13bd0644a07460c2326977284979b0d0afa9f19723de","ways":"48d4fc8ac2f525a1bd8b783801996aae038fa29c785bb7c7e1413e615a83eb17","frames":"30e70bf33d0eb19940cd52f008692e52c8aae438b6532f5b2e73c36cddcd2a0a","prompts":"667b5b463b93916700d4d0057e9b03a51bc8a6e8c76023b597de4e97eb66e589"},"model":"default"} -->
-## replay: broken
-Recorded 2026-11-15 at commit a864132, by claude -p (model: default). Inputs ed0107392619: the card, route-checks.js, premise.md's ways to win and lose, the replay strips, the stage's prompts.
+<!-- cold-read:replay {"verdict":"fixable","date":"2026-11-15","commit":"ce498d6","hash":"f091db7afb387c6fa1ae24edb9e8d3e5af455b8fe350e8f82b92705586f8e672","parts":{"card":"12cd9b06c0e80425053b9a559213be241018f2e6ec2bcf8929d4fb6a9c05fabb","checks":"c8beb5ad3e5c254618bd46c6d25b52e35298d3a3895af68939483f54cff785d1","ways":"4a13a3c2427e93d7e9666f19db8911c6889bcf8779c369b521aeef7d3595d9ec","frames":"44df214d81a7e70c9b76689991c4ffeeb1ba684052137a01ee610e298fc765a9","prompts":"667b5b463b93916700d4d0057e9b03a51bc8a6e8c76023b597de4e97eb66e589"},"model":"default"} -->
+## replay: fixable
+Recorded 2026-11-15 at commit ce498d6, by claude -p (model: default). Inputs f091db7afb38: the card, route-checks.js, premise.md's ways to win and lose, the replay strips, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read-1 | reading.md | 165 s | $0.73 |
-| 2-compare | report.md | 81 s | $0.27 |
-| all | | 246 s (the steps add up to 246 s) | $0.99 |
+| 1-read-1 | reading.md | 159 s | $0.70 |
+| 2-compare | report.md | 89 s | $0.31 |
+| all | | 248 s (the steps add up to 248 s) | $1.01 |
 
 ### 1-read-1: reading.md
 
-# Reading: Second Thoughts
+# Second Thoughts: cold read
 
-**The card says:** at 3:00 your angry resignation letter is in the boss's tray. He empties the tray at 3:40, so get the letter back before then.
-
----
-
-## Run 1: loss
-
-- **3:10** The whole office goes dark. A coworker at a right-hand desk shows a "?" bubble. The boss works by a desk lamp. A woman at the smoking coffee machine shows 😩.
-- **3:38** The lights are back on. The boss shows ✉️😠. The player is still at their own desk.
-- **3:40** The player is standing by the boss's desk, showing 😅. Crumpled paper lies on the floor by the player's desk.
-- **3:41** End picture: the boss waves the letter and is furious. The player leaves holding a box. Icons: boss, ✉️, 😠, 📦.
-
-**Why it ended:** The boss read the letter.
-
-**What the player did that caused it:** The player did nothing. No action is marked.
-
-**Might not be a reaction to the player:** The blackout, the "?", and the 😩 all happen with the player sitting still, so they're scheduled. I can't tell who threw the crumpled paper, or whether the player walked to the boss at 3:40 or the game moved them there.
+**Patterns seen across runs (these happen whatever the player does):**
+- At 3:10 the coffee machine smokes and the whole office goes dark. The kitchen woman shows a 😳 bubble and the man in green shows a "?". This happens even in Run 1, where the player does nothing.
+- Some time after a blackout, the man in green walks to the fuse box on the left wall and the lights come back.
+- At 3:38 the boss shows a ✉️😠 bubble if the letter is still in his tray.
+- At 3:40 in the losing runs, the player is suddenly standing at the boss's desk without having used anything there, and a crumpled paper is lying by the player's desk. I can't tell what that paper is.
 
 ---
 
-## Run 2: win
+## Run 1: Loss
+- 3:10 Dark office. The man in green has a "?" bubble.
+- 3:10 The kitchen woman shows 😳. The boss's desk lamp is on.
+- 3:38 Lights are back. The boss shows ✉️😠. The player is at their desk.
+- 3:40 The player is at the boss's desk and the boss shows 😅. A crumpled paper is on the floor.
+- 3:41 End picture: the boss holds the letter, angry. Icons: boss, ✉️, 😠, 📦.
 
-- **3:04** The player uses a switch on the left wall, and a sound plays. The boss's office goes dark and the boss shows "?".
-- **3:06** The player is at the boss's desk. A letter appears in the hand slot, and the player shows 😊. The boss has walked to the wall in the dark.
-- **3:09** The player is back at their own desk. The office lights are on again. The boss stands in the corner showing 😠.
-- **3:10** The scheduled blackout happens.
-- **3:40** Confetti, and the player shows 🎉. A 💡 icon is earned.
-- **End picture:** the boss is angry at the light switch, and the player holds the letter.
+**Why:** the letter was still in the tray at 3:40, so the boss read it.
+**Cause:** the player did nothing. No action is marked in this run.
+**Might not be a reaction:** every bubble here is routine. The walk to the boss at 3:40 looks automatic.
 
-**Why it ended:** The player had the letter at 3:40.
+## Run 2: Win
+- 3:04 The player uses the switch in the boss's office. That room goes dark, there's a sound, and the boss shows "?".
+- 3:08 The boss has walked to the switch and shows 😠, and his light is back on. The player is by his desk holding an envelope (it's in the hand slot) and shows 😊.
+- 3:10 The player uses their own desk. The office goes dark.
+- 3:10 The kitchen woman shows 😳.
+- 3:40 Confetti for the player, and a lightbulb icon is earned.
+- 3:41 End picture: the boss has nothing to read and shows "?". The player holds the letter.
 
-**What the player did that caused it:** Flipping the switch drew the boss away from his desk, then the player took the letter.
+**Why:** the letter was gone from the tray.
+**Cause:** turning off his light sent the boss to the switch, and while he was there the player took the letter.
+**Might not be a reaction:** the 3:10 blackout came right as the player used their desk, but Run 1 shows it's scheduled. I can't tell what using the desk did. Also at 3:08, a woman with a clock bubble walks the corridor. That looks like her routine.
 
-**Unclear:** I can't tell what the player did at their desk at 3:09. The letter stayed in the hand slot.
+## Run 3: Loss
+- 3:04 The player turns off the boss's light and makes a sound. The boss shows "?".
+- 3:05 The boss walks to the switch carrying a phone light. The player is still standing there.
+- 3:05 The boss shows "!😠".
+- 3:06 End picture: the boss's phone light is on the player. Icons: boss 👉 player.
 
----
+**Why:** caught standing at the switch.
+**Cause:** the player stayed at the switch instead of leaving.
+**Might not be a reaction:** the woman walking the corridor is probably on her routine.
 
-## Run 3: loss (3:07)
+## Run 4: Win
+- 3:10 Routine blackout. The player is at their desk.
+- 3:15 The player takes the letter in the dark (envelope in hand) and shows 😊. The boss's phone light points away to the left. The man in green walks past with a flashlight.
+- 3:17 The player uses their desk. The man in green is at the fuse box.
+- 3:40 Confetti and an hourglass icon.
+- 3:41 End picture: the boss shows "?". Icons: kitchen woman, ☕, 💥, ✉️.
 
-- **3:04** The player flips the switch and stays next to it. The boss shows "?".
-- **3:06** The boss walks to the switch and runs into the player. The boss shows "!😠".
-- **End picture:** the boss grabs the player at the switch. Icons: boss 👉 player.
+**Why:** the letter was gone.
+**Cause:** taking it at 3:15, while the boss faced away.
+**Might not be a reaction:** the end icons credit the coffee blackout, not the player. Run 5 shows the 3:17 desk action wasn't needed.
 
-**Why it ended:** The boss caught the player at the switch.
+## Run 5: Win
+- 3:10 Routine blackout.
+- 3:15 The player takes the letter. Same setup as Run 4.
+- 3:40 The player is at a desk in the kitchen, with confetti and an hourglass icon.
+- 3:41 The end picture is the same as in Run 4.
 
-**What the player did that caused it:** The player stayed where the boss was always going to walk.
+**Why/cause:** taking the letter at 3:15. Where the player ends up doesn't seem to matter.
 
-**Might not be a reaction to the player:** At 3:06, a red sight cone points from the office door toward a walking coworker. I can't tell whose cone it is or whether it mattered.
+## Run 6: Loss
+- 3:10 Routine blackout.
+- 3:13 The player reaches the boss's desk. The boss's phone light is pointing at the desk and he shows "?". A red sight line runs from him to the player.
+- 3:13 The boss shows "!😠".
+- 3:14 End picture: caught at the tray.
 
----
+**Why:** seen by the boss.
+**Cause:** arriving at 3:13 instead of 3:15. In Run 4 his phone light had swung away by 3:15, so the timing seems to matter. No action is marked in this run.
 
-## Run 4: win
+## Run 7: Win
+- 3:03 The player uses the fuse box. Everything goes dark.
+- 3:07 The player takes the letter (envelope in hand) and shows 😊. The boss is right there with his phone light pointing down, but he doesn't react. The man in green and the woman walk the corridor with flashlights.
+- 3:10 The player uses their desk. The man in green is at the fuse box. The coffee machine doesn't smoke this time, and the kitchen woman shows "?".
+- 3:40 Confetti and a ⚡ icon.
+- 3:41 End picture: the boss shows "?". Icons: ⚡, man in green, 🔧, ✉️.
 
-- **3:10** The blackout happens. The player shows a 🪑 bubble. The coffee machine is smoking.
-- **3:15** The player is at the boss's desk in the dark and takes the letter (😊). The boss is out by the door with a flashlight.
-- **3:17** The player is back at their own desk. The boss is at a panel on the left wall.
-- **3:40** Confetti, and a ☕ icon is earned.
-- **End picture:** the woman at the sparking coffee machine, the boss with his flashlight, and the player holding the letter. Icons: woman, ☕, 💥, ✉️.
+**Why:** the letter was gone.
+**Cause:** cutting the power at the fuse box, then taking the letter.
+**Can't tell:** why the boss didn't see the player at 3:07, when they were so close to him.
 
-**Why it ended:** The player had the letter.
+## Run 8: Loss
+- 3:03 The player uses the fuse box. Everything goes dark.
+- 3:07 The player is still at the fuse box. The man in green walks toward them with a flashlight and shows "?".
+- 3:08 The player is near their desk. The man in green shows "!👉player", with a red line from him to the player. A paper is on the floor at the fuse box, and a red meter appears at the top right. The boss shows 📄📄👉🖥️.
+- 3:10 The man in green restores the power. The kitchen woman shows "?".
+- 3:38 The boss shows ✉️😠.
+- 3:40 The player is at the boss's desk.
+- 3:41 End picture: the same as Run 1.
 
-**What the player did that caused it:** Taking the letter while the boss was away fixing the power.
+**Why:** the letter was never taken.
+**Cause:** the player didn't go for the letter. Being spotted didn't visibly change the ending, which is identical to Run 1. I can't tell what the boss's bubble, the paper or the meter mean.
 
-**Might not be a reaction to the player:** The blackout comes from the coffee machine, not the player, even though the end picture gives the player a ☕ icon as if they caused it.
+## Run 9: Loss
+- 3:03 Lights are on and the player walks up to the tray. The boss and the teal woman both show "?", and red sight cones cover the player.
+- 3:03 The boss shows "!😠".
+- 3:04 End picture: caught reaching for the tray.
 
----
-
-## Run 5: win
-
-- **3:10** The blackout happens, the same as in run 4.
-- **3:15** The player takes the letter from the boss's desk.
-- **3:40** The player celebrates in the kitchen (🎉). A ☕ icon is earned.
-- **End picture:** the same as in run 4.
-
-**Why it ended:** The player had the letter.
-
-**What the player did that caused it:** Taking the letter at 3:15.
-
-**What this shows:** Going back to your own desk, as in runs 2 and 4, isn't needed.
-
----
-
-## Run 6: loss (3:14)
-
-- **3:10** The blackout happens.
-- **3:13** The player is in the boss's office while the boss is still at his desk, inside the lamp's light. The boss shows "?" and then "!😠", and a red line runs from him to the player. The "E" key is highlighted, but no action is marked. The hand slot is empty.
-- **End picture:** the boss points at the player, who is holding the letter. Icons: boss 👉 player.
-
-**Why it ended:** The boss saw the player.
-
-**What the player did that caused it:** Going in before the boss left, which he did by 3:15 in runs 4 and 5.
-
-**Odd:** The end picture shows the letter in the player's hand, but the hand slot was empty.
-
----
-
-## Run 7: win
-
-- **3:03** The player uses a red-lit box on the left wall. The whole office goes dark.
-- **3:07** The player takes the letter (😊) while the boss is still sitting at his desk. The player is beside the desk, outside the lamp's light. Two coworkers walk around with flashlights.
-- **3:10** The player is back at their own desk. A spiky-haired coworker is at the box on the wall. The woman at the coffee machine shows "?".
-- **3:40** Confetti, and a ⚡ icon is earned.
-- **End picture:** the spiky-haired coworker fixing the box with a wrench. Icons: ⚡, spiky-haired coworker, 🔧, ✉️.
-
-**Why it ended:** The player had the letter.
-
-**What the player did that caused it:** Cutting the power and then taking the letter.
-
-**Puzzle:** The boss was at his desk here and didn't react, unlike run 6. My guess is that standing outside his lamp's light is what mattered, but I can't confirm it.
-
-**Might not be a reaction to the player:** The woman's "?" at the coffee machine is probably about the dead machine, not about the player.
-
----
-
-## Run 8: loss
-
-- **3:03** The player cuts the power at the box.
-- **3:07** The player waits by the box. The spiky-haired coworker approaches with a flashlight, showing "?".
-- **3:08** The player is at their own desk. The spiky-haired coworker shows "!👉" with a red dashed line to the player. A paper icon with a red bar appears in the top right. The boss shows 📄📄👉🖥️.
-- **3:10** The spiky-haired coworker fixes the box.
-- **3:38** The boss shows ✉️😠.
-- **3:40** The player is by the boss showing 😅, with crumpled paper on the floor again.
-- **End picture:** the same as in run 1.
-
-**Why it ended:** The player never took the letter.
-
-**What the player did that caused it:** Leaving the letter in the tray.
-
-**Might not be a reaction to the player:** Getting spotted at 3:08 had no visible effect on how the loop ended. I can't tell what the red bar or the boss's bubble mean.
-
----
-
-## Run 9: loss (3:04)
-
-- **3:03** The lights are on. The player walks to the tray while the boss sits at his desk. The boss shows "?", and so does the woman in the open office. Both of their red sight cones cover the player.
-- **3:03** The boss shows "!😠".
-- **End picture:** the boss points at the player, who is holding the letter. The hand slot was empty.
-
-**Why it ended:** The boss saw the player.
-
-**What the player did that caused it:** Walking in with the lights on.
-
-**Might not be a reaction to the player:** The woman's "?" may also be a reaction to the player, but she has no effect on how the loop ends.
-
----
-
-## Editor's notes
-
-- **3:10 blackout:** It happens on its own every run, and that isn't obvious the first time. The ☕ win icon claims credit the player didn't earn.
-- **"Caught" end pictures:** They show the letter in the player's hand even when they never took it (runs 6 and 9).
-- **Rules that conflict:** The boss is blind at his desk in run 7 but sharp-eyed in run 6. It reads as a contradiction unless the edge of the lamp light is clearer.
+**Why/cause:** taking the letter in full light, in front of the boss. No action is marked.
+**Might not be a reaction:** the teal woman's "?" could be a reaction to the player, but I can't confirm it.
 
 ### 2-compare: report.md
 
-Verdict: broken
+I've read all three files and checked the run 6, 7 and 8 pictures and the 3:40 frame from run 1. Here is the report.
+
+Verdict: fixable
 
 ## Runs
 
-- **Run 1, do nothing: loss.** `explained`. The reader says "The boss read the letter" and "The player did nothing." That matches the run.
-- **Run 2, switch: win.** `explained`. The reader says "Flipping the switch drew the boss away from his desk, then the player took the letter." That matches the run.
-- **Run 3, switch and stay by it: caught.** `explained`. The reader says "The player stayed where the boss was always going to walk." That matches the run.
-- **Run 4, blackout, take it from beside the desk: win.** `unexplained`. This is a win with the wrong cause.
-  - **Reading:** "Taking the letter while the boss was away fixing the power." Also: "The boss is out by the door with a flashlight… The boss is at a panel on the left wall."
-  - **What happened:** The boss never left his desk. I checked `run-04/03.png` and `04.png`: at 3:15 and 3:17 he is seated at his desk with his phone beam on the floor. The flashlight figure by the door, later at the fuse box, is Kev. The win came from taking the letter in the dark, at the east end of the desk, outside his beam.
-  - **Visual cause:** In the dark, the boss and Kev look the same. Both are dark silhouettes holding a phone light, so Kev reads as the boss. Nothing marks the boss in the blackout, and nothing shows that the dark plus his narrow beam is what protected the player.
-  - **Fix:** Give the boss something that stays visible in the dark, such as a lit tie, a bald-head highlight or his name-plate colour on his torch beam. Keep his chair visibly occupied. In the 3:15 frame, the player should be clearly standing in shadow right beside the beam's edge. That shows "he's here, he just can't see me."
-- **Run 5, blackout, then the kitchen: win.** `partly`.
-  - **Reading:** "Taking the letter at 3:15." The reader rightly worked out that going back to your desk isn't needed.
-  - **What happened:** Same as run 4. The darkness and staying out of the beam won it. The reader still believes the boss had left, so they know what the player did but not why it worked.
-  - **Visual cause and fix:** Same as run 4.
-- **Run 6, blackout, take it from in front of the desk: caught.** `partly`.
-  - **Reading:** "Going in before the boss left, which he did by 3:15 in runs 4 and 5."
-  - **What happened:** The reader is right that the boss saw the player and that the player was in his light. The player's mistake was where they stood, not when they went in. They walked into the front of the desk, where his phone beam points. The boss stays seated in every blackout run.
-  - **Visual cause:** The run 4 mix-up carries over and becomes a false timing rule. The reader also calls the beam "the lamp's light", which makes it seem fixed. In fact it is a hand-held phone beam that swings.
-  - **Fix:** Draw the beam starting at a small phone glow in the boss's raised hand, and let it visibly sweep. On the catch frame, put the player's feet inside the beam's edge with a brief white flash. That makes "you stepped into his beam" the readable cause.
-- **Run 7, breaker, take it from beside the desk: win.** `explained`. The reader names the action, "Cutting the power and then taking the letter." They also guess the right rule: "standing outside his lamp's light is what mattered." That guess holds, but it rests on a hedge the reader can't confirm, and it fights their model from runs 4 to 6.
-- **Run 8, breaker and linger at the box: loss.** `partly`.
-  - **Reading:** "The player never took the letter… Getting spotted at 3:08 had no visible effect on how the loop ended. I can't tell what the red bar or the boss's bubble mean."
-  - **What happened:** Kev found the player at the fuse box and told the boss. The boss sent the player to their desk for assigned work (📄📄👉🖥️, plus the paper-and-bar meter). That used up the dark, so the letter stayed in the tray. Being spotted *was* the cause.
-  - **Visual cause:** The cause and effect are in the wrong order and too far apart. In `run-08/03.png` the player is *already* at their desk when Kev's "!👉" appears, so the punishment shows up before the catch is understood. The top-right meter has no link to anything on screen. The blackout keeps going after the player is stuck, but nothing shows the player being locked out of it.
-  - **Fix:** At the box, hold one frame where Kev's beam lands on the player with the "!". Then show the boss's 📄📄👉🖥️ bubble pointing at the player. Then show the player trudging to their desk with a paper stack in their arms. Anchor the work meter over the player's head, not in the HUD corner, and have it fill as the lights come back.
-- **Run 9, take it in the light: caught.** `explained`. The reader says "Walking in with the lights on," and that the boss saw the player. That matches the run.
+- **Run 1: do nothing → fail.** `explained`. The reader says the letter was still in the tray at 3:40 and the player did nothing. That is the real cause and the player's part. (The 3:40 frame still misled them; see beat 4.)
+- **Run 2: switch → win.** `explained`. "Turning off his light sent the boss to the switch, and while he was there the player took the letter." That is the route as designed.
+- **Run 3: switch, stay by it → caught.** `explained`. "The player stayed at the switch instead of leaving."
+- **Run 4: blackout, take it beside his desk → win.** `explained`. "Taking it at 3:15, while the boss faced away." The reader linked the theft to where the phone beam pointed, which is the real rule.
+- **Run 5: blackout, then the kitchen at 3:40 → win.** `explained`. "Where the player ends up doesn't seem to matter." That matches "nobody knew the letter was there."
+- **Run 6: blackout, take it from in front of his desk → caught.** `partly`.
+  - Reading: "Cause: arriving at 3:13 instead of 3:15. In Run 4 his phone light had swung away by 3:15, so the timing seems to matter."
+  - What happened: the time didn't decide it. Where the player stood did. In 06/03.png the player stands at the front of the desk (≈175,195), right where his beam rests. In run 4 (04/03.png) they stand at the east end by the tray (≈208,172), which his beam doesn't reach.
+  - Visual cause: two things changed between the runs, the beam's direction and the player's position. The reader picked the wrong one. Nothing shows that the front of the desk is always lit and the tray end is always dark.
+  - Fix: keep the boss's beam fixed on the front of the desk during the blackout, with only a rare, clearly drawn glance to the east end. That way "front = lit, side = dark" looks the same every loop. Also make run 6's end picture show the beam pooled on the player at the front edge of the desk.
+- **Run 7: breaker → win.** `partly`.
+  - Reading: "Can't tell: why the boss didn't see the player at 3:07, when they were so close to him."
+  - What happened: in the dark his sight shrinks to arm's length plus his beam. The player was at the dark east end, off the beam (07/02.png). The reader named the steps (breaker, then take the letter) but not why the theft went unseen. That rule is the whole point of the level.
+  - Visual cause: missing cue. His shrunken sight in the dark isn't drawn. Only the beam is, so a player a step away looks like they should be seen.
+  - Fix: when the lights go out, draw a small dim ring at arm's length around each person and fade out their daylight sight cone, so the player watches the cone shrink.
+- **Run 8: breaker, hang about at the fuse box → desk work → fail.** `unexplained`.
+  - Reading: "Cause: the player didn't go for the letter. Being spotted didn't visibly change the ending … I can't tell what the boss's bubble, the paper or the meter mean."
+  - What happened: Kev found the player at the fuse box and told the boss. The boss assigned paperwork (📄📄👉🖥️), and the player was sent to their desk with a work meter. They were stuck there until the dark had passed, so they couldn't take the letter. Being spotted is the cause, and the reader explicitly rules it out.
+  - Visual cause: cause and effect are too far apart. The catch is at 3:08 and the result at 3:41, and the end picture is identical to run 1's. The 📄📄👉🖥️ bubble is above the boss's desk, away from Kev and the player. Nothing ties it to Kev's "!👉" (both are in 08/03.png). The meter at the top right has no clear owner or meaning.
+  - Fix: show the result on the player and in the end picture. Pin a paper stack to the player's desk with the meter above the player's head, draining. Give this loss its own end picture: the player buried in paperwork at their desk while the boss reads the letter, with Kev and 🔧 in the icon row.
+- **Run 9: take it in full light → caught.** `explained`. "Taking the letter in full light, in front of the boss."
 
-## Misleading beats
+## Beats that misled the reader
 
-1. **Kev taken for the boss in runs 4 and 5.** This is the core failure.
-   - **Reading:** "The boss is out by the door with a flashlight." Also: "The boss is at a panel on the left wall."
-   - **What happened:** That figure is Kev going to the fuse box. The boss sat still the whole time.
-   - **Visual cause:** In the dark, every character is the same silhouette with a phone torch.
-   - **Fix:** Give characters looks that still read in the dark. Kev's spiky hair should catch the light (the reader *did* spot "spiky-haired" in the lit run 7). The boss gets a lit marker that stays on.
-2. **The ☕ win icon reads as false credit.**
-   - **Reading:** "The ☕ win icon claims credit the player didn't earn."
-   - **What happened:** The icon names the route, not something the player caused. The reader took it as the game praising an action the player never did.
-   - **Visual cause:** The icon claims to be a reaction to the player, but it isn't one.
-   - **Fix:** Show the coffee-machine icon dimmed, or with a 🕒 clock badge, as the "lucky moment" the player used. Make the earned icon the player's own move: a 🌑 or a 👣-beside-the-beam icon.
-3. **The "caught" end picture shows the letter in the player's hand when it was never taken (runs 6 and 9).**
-   - **Reading:** "The end picture shows the letter in the player's hand, but the hand slot was empty."
-   - **What happened:** The HUD is correct. The end picture contradicts it, so the reader starts to distrust the end pictures.
-   - **Fix:** Draw the end picture from the actual state. If the player wasn't holding it, show the player's hand reaching toward the tray with the envelope still in it.
-4. **The 3:10 blackout isn't clearly scheduled on first sight (run 1).**
-   - The reader worked it out ("they're scheduled"), but only because the player sat still. In run 4, the player's 🪑 bubble at 3:10 is a waiting idle bubble. It can read as the player doing something.
-   - **Fix:** Before 3:10, show Lin's 3:05 walk to the coffee machine and a ☕💦 bubble from the machine. In the blackout, add a spark-to-fuse-box flash so the cause is on screen. Drop the 🪑 idle bubble during scripted events.
-5. **The ending pose in run 1 and run 8.**
-   - **Reading:** "I can't tell who threw the crumpled paper, or whether the player walked to the boss at 3:40 or the game moved them there."
-   - **What happened:** This is the scripted end pose.
-   - **Visual cause:** The player gets moved with no transition. It didn't mislead the reader about the cause, but it adds noise.
-   - **Fix:** Show the boss's 👉 summoning bubble, then the player walking in.
-6. **Background beats the reader flagged and rightly set aside.** They don't affect any ending, so they need no fix.
-   - The run 3 sight cone toward a coworker.
-   - The woman's "?" in runs 7 and 9.
-
-## Summary
-
-Nine runs:
-
-- **Explained (5):** runs 1, 2, 3, 7 and 9.
-- **Partly (3):** runs 5, 6 and 8.
-- **Unexplained (1):** run 4.
-
-The verdict is `broken` because of run 4. The reader thinks they know why they won, but their reason is wrong ("the boss left"). That same wrong idea gives run 6 a false lesson and makes run 7 feel like the rules contradict each other. The game's central idea, "the dark shrinks sight to the beam", is never learned. Instead the reader believes "wait for the boss to leave."
-
-It is one root problem, telling the boss and Kev apart in the dark. Fixing it, plus the run 8 order of events, would likely bring this up to `fixable` or better.
+1. **Run 6: "the timing seems to matter."** The real variable was position: front of desk vs. the east end. See Run 6 for the visual cause (two things changed between the runs, and the reader picked the wrong one) and the fix (fix the beam on the desk front so position is the only thing that changes).
+2. **Run 7: "the boss is right there … but he doesn't react."** This is a real rule (sight shrinks in the dark) that the reader never sees. It's a missing cue. Fix: draw a shrinking arm's-length ring at the blackout, as above.
+3. **Run 8: Kev's catch → paperwork.** A real reaction the reader missed. The reader writes "Being spotted didn't visibly change the ending." The cause is 30 minutes away from its effect, and the boss's bubble reads as his own routine, not a response to Kev. Fix: draw a brief line or speech bubble from Kev to the boss, then the boss's 📄👉 aimed straight at the player, and the paper stack landing on the player's desk.
+4. **All losses at 3:40: "the boss shows 😅" / "the player is suddenly standing at the boss's desk" / "a crumpled paper … I can't tell what that paper is."**
+   - What happened: the 😅 belongs to the player standing at the tray, sweating as the design says. In 01/04.png its tail points down at the player, not at the boss. The jump to his desk is the player being called in, but there's no walk or summons, so it reads as a glitch. The crumpled paper by the player's desk isn't explained anywhere in ways.md. It's noise that reads like a clue.
+   - Visual cause: the emoji's owner is unclear, and a cue is missing (no summons).
+   - Fix: at 3:38 show a 👉 bubble from the boss aimed at the player, then show the player walking over. Anchor the 😅 tail clearly on the player. Remove the crumpled paper or make it mean something.
+5. **Runs 2, 4, 7: "The player uses their desk … I can't tell what using the desk did."** A player action with no visible result.
+   - What happened: this is the "keep it out of his sight" step. In run 5 the letter stayed hidden without it, and the reader rightly called it unneeded there, so the action looks meaningless.
+   - Visual cause: missing cue.
+   - Fix: when the player uses their desk while holding the letter, show the envelope going into a drawer: the hand slot empties and a drawer icon appears.
+6. **Run 9: "the teal woman's '?' could be a reaction to the player."** This is minor and didn't mislead them about the cause. Still, a witness who seems to react and then has no effect is a loose thread. Fix: either keep her routine bubbles away from the theft moment, or give her a visible part, such as turning toward the boss.
 
 <!-- /cold-read:replay -->
