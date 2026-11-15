@@ -385,7 +385,7 @@ Render and audio read these; the sim never does. All optional except `title`.
 - `title` (required): `{ mission: [line1, line2], badge: [icon, overlay] }`, the typed mission lines and the emoji
   under 🕓. Example: `fixture/presentation.js` `TITLE`.
 - `decor`: set dressing (`chairs`, `windows`, `paintings`, `clock`, `screen`, `props`, `desks`, `deskOwners`,
-  `zoneSeeds`, `elevator`, `legendAt`, ...), documented in `meeting/decor.js`. `props: [{ tile, draw,
+  `zoneSeeds`, `elevator`, `legendAt` (where the pause screen shows the keys), ...), documented in `meeting/decor.js`. `props: [{ tile, draw,
   state(world, game) }]` draws on the first tile whose map letter is `tile` (the letter, not a draw or kind name);
   `draw` is a `render/world.js` `PROP_PAINTERS` name or the level's painter `(ctx, info, at, shown, t)` in map
   pixels (`at`: the tile; `shown`: what `state` returned). Draw the state that decides the outcome on the object.

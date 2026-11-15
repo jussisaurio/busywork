@@ -43,8 +43,10 @@ export function drawHud(ctx, game, t, mem) {
   drawStatus(ctx, game, clock, t);
   if (game.phase === 'day') {
     drawPauseButton(ctx, !!game.paused);
-    if (game.paused) drawPaused(ctx, t); // under the legend, so "Esc pause" stays readable
-    drawKeyLegend(ctx, game);
+    if (game.paused) { // the only words in play: the controls, on the pause screen (the map stays wordless)
+      drawPaused(ctx, t);
+      drawKeyLegend(ctx, game);
+    }
   }
 }
 
@@ -127,7 +129,7 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
+// On the pause screen, centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
   const at = game.level.decor && game.level.decor.legendAt;

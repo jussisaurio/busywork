@@ -173,6 +173,8 @@ their desk.
   is decided it stops at the minute the end card shows. The mission badge's clock face shows the deadline.
 - Mission badge icons only. **No route status chips.** Objects show their state in the world.
 - Held item, loop number (⟳ 3) and ⏩ while fast-forwarding.
+- No words on the map: the only words in play are the mission card's. The key legend shows on the title and the
+  pause screen. Your marker is a steady ring (rings that spread are sounds); a loop opens with a chevron over you.
 - The authority's ❓ suspicion meter shows above his head when it is above 0.
 
 ## Lessons that hold for every level

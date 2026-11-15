@@ -876,32 +876,36 @@ export function drawCharacters(ctx, game, t, mem) {
   }
 }
 
-// "You are here": a ring under the player's feet (under every character), and a ping of
-// expanding rings at the start of each loop.
+// "You are here", under every character. You: a steady ring at your feet, never pulsing or spreading (spreading rings are a noise: effects.js ripples).
+// At the loop's start a chevron bobs over your head: no rings at all, so nothing about you reads as a sound.
 function drawPlayerRing(ctx, game, t, mem) {
   const p = game.player;
   if (!p || game.phase !== 'day') return;
   const x = fin(p.x) * T;
   const y = fin(p.y) * T + 7;
   const since = t - fin(mem && mem.dayStart, -10);
-  if (since >= 0 && since < 2.2) {
-    ctx.strokeStyle = C.tomato;
-    for (let i = 0; i < 3; i++) {
-      const q = (since - i * 0.35) / 1.1;
-      if (q <= 0 || q >= 1) continue;
-      ctx.globalAlpha = 0.9 * (1 - q);
-      ctx.lineWidth = 1 + 3 * (1 - q);
-      ellipse(ctx, x, y, 14 + q * 46, 6 + q * 20);
-      ctx.stroke();
-    }
+  if (since >= 0 && since < 2.4) {
+    const a = clamp((2.4 - since) / 0.4, 0, 1);
+    const bob = Math.abs(Math.sin(since * Math.PI * 2.2)) * 5;
+    const cy = fin(p.y) * T - 34 - bob;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = C.tomato;
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - 7, cy - 5);
+    ctx.lineTo(x + 7, cy - 5);
+    ctx.lineTo(x, cy + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   }
-  const pulse = 0.5 + 0.5 * Math.sin(t * 3);
   ctx.globalAlpha = 1;
   fillEllipse(ctx, x, y, 14, 6, 'rgba(255,90,67,0.16)');
-  ctx.globalAlpha = 0.7 + 0.3 * pulse;
+  ctx.globalAlpha = 0.85;
   ctx.strokeStyle = C.tomato;
   ctx.lineWidth = 2;
-  ellipse(ctx, x, y, 14 + pulse, 6 + pulse * 0.4);
+  ellipse(ctx, x, y, 14, 6);
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
