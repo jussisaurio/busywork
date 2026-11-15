@@ -234,9 +234,9 @@ export function phoneThing(ctx, x, y, size) {
 // pixels from the machine's tile: render/world.js draws the machine itself (its body x 6..26, y 1..23 of the tile, its
 // pot at x 14.5, a red dot at 23.5, 11) and the pot (the engine's 'carafe').
 
-// The glass water jug on the counter right of the machine, upright. empty: you poured it down the back of the
-// machine, onto its wall socket, and stood it back: nothing at the front gives it away, only a dark wet streak down
-// the wall in the gap behind the machine's right shoulder, a drip still running.
+// The glass water jug on the counter right of the machine, upright. empty: you poured it into the vent on the back
+// of the machine and stood it back: nothing at the front gives it away, only a dark wet streak dripping out of it
+// down the wall in the gap behind the machine's right shoulder, a drip still running.
 const WATER = 'rgba(96,170,232,';
 export function jugProp(ctx, info, at, shown, t) {
   const px = at.x * T;
@@ -276,7 +276,7 @@ export function jugProp(ctx, info, at, shown, t) {
 
 // The machine itself. lamp: 'brewing' (a small green lamp, blinking) | 'brewed' (a big green lamp, steady) | null.
 // steam: a full hot pot. scorch: it shorted: soot up its top and the wall behind it, for the rest of the day.
-// smoke: it shorted and the fuse it blew is still out: smoke off its back, its socket glowing orange, so in the
+// smoke: it shorted and the fuse it blew is still out: smoke off its back, its back glowing orange, so in the
 // torchlight it is plain what took the floor down.
 export function machineProp(ctx, info, at, shown, t) {
   const px = at.x * T;

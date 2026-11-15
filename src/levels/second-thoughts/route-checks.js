@@ -70,11 +70,11 @@ export default [
     },
   },
   {
-    name: 'blackout: pour the jug down the back of the coffee machine, Lin shorts it at 3:10, take it from beside his desk (off his torch) → win',
+    name: 'blackout: pour the jug into the back vent of the coffee machine, Lin shorts it at 3:10, take it from beside his desk (off his torch) → win',
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
       run('goto 20,2 pretend'); // by the fridge, beside the machine: out of Kev's sight through the kitchen door
-      run('interact'); // pour the jug down its back, onto the socket
+      run('interact'); // pour the jug into its back vent
       if (!g.world.rigged) throw new Error('never rigged the machine');
       run('goto my_seat');
       run('pretend until 3:11'); // stops when it shorts
@@ -92,7 +92,7 @@ export default [
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
       run('goto 20,2 pretend'); // by the fridge, beside the machine: out of Kev's sight through the kitchen door
-      run('interact'); // pour the jug down its back, onto the socket
+      run('interact'); // pour the jug into its back vent
       if (!g.world.rigged) throw new Error('never rigged the machine');
       run('goto my_seat');
       run('pretend until 3:11'); // stops when it shorts

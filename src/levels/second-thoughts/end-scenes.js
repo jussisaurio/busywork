@@ -221,7 +221,7 @@ function coffeeMachine(ctx, x, t, w) {
     ctx.fillRect(x + 7, y - 39, 18, 18);
   }
   fillCircle(ctx, x + 16, y - 30, 2.6, brewed ? '#d8ffd0' : shorted ? '#161212' : '#6b2a22');
-  if (w.rigged) { // the water went down its back onto the socket: a wet streak behind its shoulder, the jug empty
+  if (w.rigged) { // the water went into its back vent: it drips out, a wet streak behind its shoulder, the jug empty
     ctx.fillStyle = 'rgba(96,140,184,0.6)';
     rrect(ctx, x + 22, y - 44, 7, 44, 3);
     ctx.fill();

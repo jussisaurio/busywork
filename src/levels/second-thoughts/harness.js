@@ -77,7 +77,7 @@ export default {
       : w.officeLight !== 'on' ? "the boss's office is dark; the rest of the floor is lit" : 'all the lights are on';
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
     const machine = MACHINE[w.coffee] ?? '';
-    const jug = w.rigged ? 'the empty water jug stands beside it; its wall socket behind it is wet' : 'a full water jug stands beside it';
+    const jug = w.rigged ? 'the empty water jug stands beside it; water drips from the vent on its back' : 'a full water jug stands beside it';
     const wad = w.wad ? '; a spat-out wad of chewed paper on the floor by your desk' : '';
     return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}${wad}; the coffee machine${machine}: ${jug}`;
   },
@@ -97,9 +97,9 @@ export default {
       case 'boss:dark': return 'the boss: ❓ He holds up his phone torch 📱 and gets up to go and see why';
       case 'switch:starting': return 'the boss tries the unlabelled switches on the panel one by one: his office tubes blink';
       case 'switch:fixed': return "the boss finds his switch: his office light is back on 💡 (😠)";
-      case 'coffee:rigged': return "you pour the water jug down the back of the coffee machine, onto its wall socket 💦. Nothing shows from the front";
-      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😳), Kev glances down the hall at the fuse box, and the lights steady. It brews';
-      case 'coffee:shorted': return 'Lin switches on the coffee machine: its wet socket shorts, sparks and smoke (😳), and a spark runs down the wiring toward the fuse box';
+      case 'coffee:rigged': return "you pour the water jug into the vent on the back of the coffee machine 💦. It's switched off, so nothing happens yet, and nothing shows from the front";
+      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😳), Kev glances up from his desk (❓), and the lights steady. It brews';
+      case 'coffee:shorted': return 'Lin switches on the coffee machine: the water inside it shorts it, sparks and smoke (😳), and a spark runs down the wiring toward the fuse box';
       case 'fuse:tripped': return "the spark reaches the fuse box: its door flies open and the whole floor goes dark. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
       case 'kev:smoke': return 'Kev: ❓ He heads for the smoking coffee machine with his phone torch';

@@ -49,7 +49,7 @@ export const DECOR = {
   clock: { x: 17, y: 6 },
   // The in-tray on his desk, your letter lying in it while it's there (dragged over to him from 3:39), and his
   // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it (full, or
-  // empty once you poured it down the back: a dark wet streak on the wall behind, nothing at the front), its lamp
+  // empty once you poured it into its back vent: a dark wet streak dripping out behind it, nothing at the front), its lamp
   // blinking green while it brews and glowing green with the pot full and steaming once it has (a full pot pours a
   // cup: index.js pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse
   // is out till Kev unplugs it, and a scorch mark for the rest of the day. (The lighting panel and the fuse box: darkness.controls.)

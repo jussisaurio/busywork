@@ -4,7 +4,7 @@
 const FLIP = ['goto office_switch pretend', 'interact'];
 const OUT = [...FLIP, 'goto boss_office_door', 'wait 4s'];
 const TAKE_SWITCH = [...OUT, 'goto tray', 'goto tray', 'interact'];
-// The blackout: pour the jug down the back of the machine from beside it (by the fridge, out of Kev's sight), back to
+// The blackout: pour the jug into the machine's back vent from beside it (by the fridge, out of Kev's sight), back to
 // your seat;
 // at 3:10 Lin switches it on, it shorts (a stop), and its spark trips the fuse (another stop).
 const RIG = ['goto 20,2 pretend', 'interact', 'goto my_seat'];
@@ -37,9 +37,9 @@ export default [
   { name: 'stash', cmds: [...TAKE_SWITCH, 'goto my_seat', 'goto my_seat', 'interact', 'wait 0.3s'], intent: 'Back at your own desk with the envelope, you slide it into your desk drawer and sit down: the drawer is open, the envelope going in.' },
   { name: 'stashed', cmds: [...TAKE_SWITCH, 'goto my_seat', 'goto my_seat', 'interact', 'wait 2s'], intent: 'The drawer is shut, a corner of your envelope sticking out of it; your hands are empty.' },
   { name: 'panel-finds-you', cmds: [...FLIP, 'wait 30s'], intent: 'If you stay at the panel, the boss comes out of his office to it and finds you standing there: he points at you (❗👉), a line from him to you.' },
-  { name: 'flicker', cmds: ['pretend until 3:11', 'wait 0.4s'], intent: '3:10, nobody touched it: Lin switches on the old coffee machine and the lights all over the floor flicker; Lin startled, Kev at his desk turns to look down the hall at the fuse box. The lights steady and it brews, its green lamp blinking.' },
-  { name: 'rig', cmds: [...RIG.slice(0, 2), 'wait 0.3s'], intent: 'Before 3:10 you stand beside the coffee machine, by the fridge, and pour the water jug down its back onto its wall socket: the jug stands empty, a dark wet streak shows behind the machine and nothing shows on its front. From his desk, Kev sees the front of the machine through the kitchen door, but not you here.' },
-  { name: 'rig-seen', cmds: ['goto 21,2 pretend', 'interact'], intent: 'Try it from in front of the machine and Kev, at his desk, sees you through the kitchen door: he points you out to the boss, who sends you to your desk with a pile of work.' },
+  { name: 'flicker', cmds: ['pretend until 3:11', 'wait 0.4s'], intent: '3:10, nobody touched it: Lin switches on the old coffee machine and the lights all over the floor flicker; Lin startled, Kev at his desk glances up (❓). The lights steady and it brews, its green lamp blinking.' },
+  { name: 'rig', cmds: [...RIG.slice(0, 2), 'wait 0.3s'], intent: 'While the kitchen is empty (Lin walks in just after 3:09) you stand beside the coffee machine, by the fridge, and pour the water jug into the vent on its back: the jug stands empty, a dark wet streak shows behind the machine and nothing shows on its front. From his desk, Kev sees the front of the machine through the kitchen door, but not you here.' },
+  { name: 'rig-seen', cmds: ['goto 21,2 pretend', 'interact'], intent: 'Try it from in front of the machine and Kev, at his desk, sees you through the kitchen door tipping the jug into the back of the machine: he shouts mid-pour, points you out to the boss, who sends you to your desk with a pile of work.' },
   { name: 'surge', cmds: [...SHORT, 'wait 0.6s'], intent: '3:10, after you soaked it: Lin switches the coffee machine on and it shorts with a burst of sparks and grey smoke; a spark runs out of the kitchen and along the wiring toward the fuse box at the end of the hallway.' },
   { name: 'blackout', cmds: [...TRIP, 'wait 0.3s'], intent: 'The spark reaches the fuse box: its door flies open with a blinking red lamp and the whole floor goes dark; everyone holds up a phone as a torch (the boss at his desk, Kev at his).' },
   { name: 'boss-goes-out', cmds: [...TRIP, 'wait 3s'], intent: 'In the blackout the boss gets up from his desk and walks out of his office with his phone torch, heading for the fuse box down the hallway; his desk and the tray are left behind in the dark.' },

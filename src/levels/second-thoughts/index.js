@@ -6,10 +6,10 @@
 //             and goes out to the panel to find out why; there he tries its unlabelled switches one by one (his tubes
 //             blink) before he finds his. His desk is empty for minutes: in by the meeting room's side door, out the
 //             same way. Whoever he finds at the panel, or in his dark office, switched it off.
-//   blackout  pour the water jug down the back of the coffee machine, onto its wall socket, before Lin switches it on
-//             at 3:10 (from beside it, by the fridge: from in front of it, Kev sees you from his desk through the
-//             kitchen door). Nothing shows from the front. Left alone the old machine only makes the lights flicker;
-//             with a wet socket it shorts, and the short trips the fuse for the whole floor. Everyone holds up a phone
+//   blackout  pour the water jug into the vent on the back of the coffee machine while the kitchen is empty (Lin
+//             gets up at 3:05 and walks in just after 3:09 to switch it on at 3:10). Do it from beside it, by the
+//             fridge: in front of it, Kev sees you from his desk through the kitchen door. Nothing shows from the front. Left alone the old machine only makes the lights flicker;
+//             with water in its back it shorts, and the short trips the fuse for the whole floor. Everyone holds up a phone
 //             as a torch. Kev first unplugs the smoking machine, then walks his torch down the hallway to the fuse box
 //             (its door hangs open, its red lamp blinking) and finds the breaker that's down by phone light.
 //   breaker   pull the breaker yourself, and get away from the box.
@@ -155,10 +155,12 @@ const INTERACTIONS = {
       game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
     },
   },
-  // The water jug beside the coffee machine, poured down the back of it onto its wall socket: when Lin switches it
-  // on, it shorts and blows the fuse. Nothing shows from the front (the jug goes back empty). Only before she does.
+  // The water jug beside the coffee machine, poured into the vent on its back: the machine is off, so nothing happens
+  // till Lin switches it on; then its wet insides short and blow the fuse. Nothing shows from the front (the jug goes
+  // back empty). A witness who sees it (Kev through the door, Lin walking in) sees you tipping water into the back of
+  // a coffee machine, and shouts mid-pour.
   rig_coffee: {
-    on: 'coffee_machine', text: 'pour the water jug down the back of the machine, onto its socket', duration: 1.5, sneaky: true, saw: '💦',
+    on: 'coffee_machine', text: 'pour the water jug into the vent on the back of the machine', duration: 1.5, sneaky: true, saw: '💦',
     can: (p, w) => !p.held && !w.rigged && w.coffee === 'none',
     done(game) {
       game.world.rigged = true;
@@ -470,7 +472,7 @@ export default {
     bossOut: null, // what last got him up from his desk: 'switch' | 'blackout' | 'breaker'
     bossKnows: false,
     coffee: 'none', // Lin's: 'none' | 'brewing' | 'brewed' (the pot full) | 'shorted' (soaked, it blew) | 'cold' (no power)
-    rigged: false, // you poured the water jug down the back of the machine, onto its socket
+    rigged: false, // you poured the water jug into the vent on the back of the machine
     flickerAt: null, // loop seconds when it started and the lights flickered
     shortAt: null, // loop seconds when it shorted
     surge: null, // how far the short has run down the wiring to the fuse box (0..1), while it runs

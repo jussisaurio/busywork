@@ -1,46 +1,45 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"c0ce724","hash":"97fd4db0835ee761dca12906b853b521c339a426042d8f2166c2752e85bb18c9","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"41186815f9d97e739b87c025f49a3211cd7cd881bdc8deae85bb66fe64c3c359","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":2,"nonsense":2},"problems":{"blocker":2,"should":1,"nit":2}} -->
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"29961d8","hash":"37fdb16430ca63329cd6f7b48117e680f55ff0597b7c2c4a2863c5a2d56260d7","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"a85adf5631f78951a03a1d72897c89ff049fab8a9676ca7d3c33df69b4ab2d86","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":1,"nonsense":1},"problems":{"blocker":1,"should":3,"nit":1}} -->
 ## sense: fixable
-Recorded 2026-11-15 at commit c0ce724, by claude -p (model: default). Inputs 97fd4db0835e: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 7 sensible, 2 stretch, 2 nonsense.
-Problems: 2 blocker, 1 should, 2 nit.
+Recorded 2026-11-15 at commit 29961d8, by claude -p (model: default). Inputs 37fdb16430ca: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 1 stretch, 1 nonsense.
+Problems: 1 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 64 s | $0.14 |
-| all | | 64 s (the steps add up to 64 s) | $0.14 |
+| 1-judge | report.md | 53 s | $0.13 |
+| all | | 53 s (the steps add up to 53 s) | $0.13 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The eating lose route depends on a chewed envelope coming back up "stained but whole, his name still on it," which is physically absurd. The same text says you chew it and pieces fly. Throwing up paper reliably after ten minutes is also a puzzle-piece timer, not something a body does. — Fix: what a real person does is gag on the first mouthful and spit the wad out at once. Make the evidence a soggy wad in your bin or on the floor, with the scrap that has his name on it showing. If he walks over and sees the scrap, you're caught.
-- E2 [blocker] In the late-eating win, someone retches loudly enough that the whole floor turns, and the boss ignores it because he's busy with his tray. A real boss would at least stand up and look. — Fix: make it plausible he stays put. For example, Lin is already beside you with paper towels and calls "I've got it!", so he stays at his desk. Or he does come over, but by then the wad is only pulp with no name on it.
-- E3 [should] In "Seen soaking the machine," Kev sees you pour the water, yet "the machine stays dry." The water is already in. — Fix: Kev shouts, unplugs the machine and mops up before 3:10, so it never shorts. You're still sent back to your desk.
+- E1 [blocker] Kev shouts and reports you the moment you lift the jug, "before any water goes in." A real coworker who sees someone pick up the water jug at the coffee machine assumes they're filling it. He only reacts to something odd. — Kev reacts only when he sees you pour water down the back of the machine onto the wall socket: "Whoa, what are you doing?" Change the end card so the jug is part-poured, with the streak just starting.
+- E2 [should] In the blackout steps, water poured onto a live socket shorts straight away, whether or not the machine is switched on. As written, it waits until Lin switches the machine on at 3:10. Anyone who has seen a plug fizz will find that odd. — Pour the water into the machine's own back vent or cord inlet, so it only shorts when the machine runs. Or let the short happen at once when you pour, and drop the wait for Lin.
+- E3 [should] Step 1 of the blackout says to pour "before 3:10," but Lin is at the machine from 3:05. A real Lin standing at the counter would watch you pour water down the back of the machine she's about to use. — Make the deadline "before 3:05, before Lin comes in." Or say that Lin sees you if you pour after she arrives.
+- E4 [should] At 3:10, when the lights flicker, Kev looks "down the hall at the fuse box," so he can see it from his desk. In the breaker route, though, nobody notices you pulling the main breaker in full light. Also, Kev "walks down the whole hallway from the far end of the floor," which doesn't fit with him watching the box from his desk. — Pick one. Either Kev can't see the box from his desk (he only turns toward the hallway), or Kev sees and reports anyone who opens the box while the lights are on.
 
 ### 1-judge: report.md
 
 Verdict: fixable
 
-- Eat it, comes up late (win): stretch: retching is "heard all over the floor" and everyone turns, but the boss stays at his tray and never even looks over.
-- Eat it, comes up early (lose): nonsense: you chew the envelope and pieces fly, yet ten minutes later it comes back up whole with his name still readable.
-- The switch (win): sensible: a boss whose office alone goes dark would go to the panel to find out why.
-- The blackout (win): sensible: the wet socket shorts when Lin switches the machine on, the boss goes to the fuse box, and Kev unplugs the machine before resetting the power.
-- The breaker (win): sensible: the floor goes dark, the boss goes to the box, and the office handyman finds the breaker that's down.
-- Letter still in tray at 3:40 (lose): sensible: a boss reads an angry resignation letter he finds in his tray.
-- Caught with it (lose): sensible: he knows what you took from his own tray.
-- Found at the panel (lose): sensible: whoever stands at the switch is the one who flipped it.
-- Found at the fuse box (lose): sensible: whoever stands at the open box is the one who pulled it.
-- Letter came back up (lose): nonsense: same problem as above. A chewed envelope can't come back up whole.
-- Seen soaking the machine (lose): stretch: once Kev sees the water go in, the socket is already wet, but "the machine stays dry."
+- The switch (win): sensible. A boss whose own office lights go out walks to the panel to fix them, and his desk sits empty while he's gone.
+- The blackout (win): stretch. Kev unplugging the machine and the boss holding the torch are both real. But a socket that's already live shorts the moment water hits it, not when Lin switches the machine on five minutes later. And Lin is standing right at the machine from 3:05.
+- The breaker (win): sensible. The lights go out, the boss goes to the box, and Kev finds the breaker that's down.
+- Eat it (win, last step): sensible. Chewing up and spitting out paper is gross but anyone could do it, and the result is unreadable.
+- 3:40, letter still in tray (lose): sensible. A boss reads an angry resignation letter in his tray.
+- Caught with it (lose): sensible. A boss who watches you take something from his own tray knows what you took.
+- Found at the panel (lose): sensible. The person standing at the switch is the one who flipped it.
+- Found at the fuse box (lose): sensible. Same reasoning as the panel.
+- Seen soaking the coffee machine (lose): nonsense. Lifting a water jug at a coffee machine is how people fill coffee machines. Nobody shouts at that.
 
 ## Problems
-- blocker: The eating lose route depends on a chewed envelope coming back up "stained but whole, his name still on it," which is physically absurd. The same text says you chew it and pieces fly. Throwing up paper reliably after ten minutes is also a puzzle-piece timer, not something a body does. — Fix: what a real person does is gag on the first mouthful and spit the wad out at once. Make the evidence a soggy wad in your bin or on the floor, with the scrap that has his name on it showing. If he walks over and sees the scrap, you're caught.
-- blocker: In the late-eating win, someone retches loudly enough that the whole floor turns, and the boss ignores it because he's busy with his tray. A real boss would at least stand up and look. — Fix: make it plausible he stays put. For example, Lin is already beside you with paper towels and calls "I've got it!", so he stays at his desk. Or he does come over, but by then the wad is only pulp with no name on it.
-- should: In "Seen soaking the machine," Kev sees you pour the water, yet "the machine stays dry." The water is already in. — Fix: Kev shouts, unplugs the machine and mops up before 3:10, so it never shorts. You're still sent back to your desk.
-- nit: In the switch route the boss uses his phone flash even though the rest of the floor is lit. — Fix: drop the flash. He just walks out looking annoyed.
-- nit: Wins say a white envelope out on the floor is "just an envelope," but the 3:40 lose has him picking up one you dropped. — Fix: say he picks it up because it has his name on it, so both rules hold.
+- blocker: Kev shouts and reports you the moment you lift the jug, "before any water goes in." A real coworker who sees someone pick up the water jug at the coffee machine assumes they're filling it. He only reacts to something odd. — Kev reacts only when he sees you pour water down the back of the machine onto the wall socket: "Whoa, what are you doing?" Change the end card so the jug is part-poured, with the streak just starting.
+- should: In the blackout steps, water poured onto a live socket shorts straight away, whether or not the machine is switched on. As written, it waits until Lin switches the machine on at 3:10. Anyone who has seen a plug fizz will find that odd. — Pour the water into the machine's own back vent or cord inlet, so it only shorts when the machine runs. Or let the short happen at once when you pour, and drop the wait for Lin.
+- should: Step 1 of the blackout says to pour "before 3:10," but Lin is at the machine from 3:05. A real Lin standing at the counter would watch you pour water down the back of the machine she's about to use. — Make the deadline "before 3:05, before Lin comes in." Or say that Lin sees you if you pour after she arrives.
+- should: At 3:10, when the lights flicker, Kev looks "down the hall at the fuse box," so he can see it from his desk. In the breaker route, though, nobody notices you pulling the main breaker in full light. Also, Kev "walks down the whole hallway from the far end of the floor," which doesn't fit with him watching the box from his desk. — Pick one. Either Kev can't see the box from his desk (he only turns toward the hallway), or Kev sees and reports anyone who opens the box while the lights are on.
+- nit: In the switch route, the boss pulls out his phone flash in a glass office surrounded by a lit floor at 3 PM. He wouldn't need it. — Drop the flash. A puzzled look and getting up is enough.
 
 <!-- /cold-read:sense -->
 
