@@ -30,6 +30,6 @@ export default {
     // The ding, written twice: Kev's face on the board, his groan at the reading, and his Saturday.
     ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'interact', 'pretend until 5:00', 'wait 3s'],
     // Several loops: restart mid-day, a full day, continue into the next one.
-    ['goto copier pretend', 'interact', 'restart', 'pretend until 4:31', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00', 'continue', 'move S 1s', 'wait 2s'],
+    ['goto copier pretend', 'interact', 'restart', 'pretend until 4:31', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00', 'continue', 'move S 1s', 'wait 2s'],
   ],
 };

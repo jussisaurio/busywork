@@ -6,9 +6,10 @@
 //   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s
 //     (long enough to notice it while fast-forwarding at your pretend, let go, and still finish writing).
 //     The board is on the west side: be there when it dings.
-//   - your desk phone (its own tile on your desk) rings the boss's, on a side table in the corner of his office: he
-//     answers it standing there, facing the window, his back to the office, for 5 minutes. Lin still watches the
-//     board, except while she heats her fish at the microwave (4:30-4:37): ring then.
+//   - your desk phone (at the far end of your desk: stand up and step to it) rings the boss's, on a side table in
+//     the corner of his office: he answers it standing there, facing the window, his back to the office, for 5
+//     minutes. Lin still watches the board, except while she heats her fish at the microwave (4:30-4:37): ring then.
+// Nothing is in reach of your seat (DESIGN.md): you start with nothing lit.
 //   - the trap: a paper clip jams the copier, and it beeps until Kev fixes it. Every head turns toward it, and
 //     the board stands between the copier and both watchers: at the beeping, it's in plain view.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
@@ -25,7 +26,7 @@ const DING_S = 10; // s from starting the microwave to the ding (6 game minutes 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier   R the Saturday roster (a whiteboard on a stand)
 //   M microwave   C coffee machine   S sink   F fridge   P your desk   Q your desk phone   H plant   T desk/table
-//   B the boss's phone, on a side table   G glass   D door
+//   L Lin's desk, where her lunch box sits   B the boss's phone, on a side table   G glass   D door
 const MAP = [
   '##############################', // 0
   '#.....#............B#........#', // 1
@@ -40,7 +41,7 @@ const MAP = [
   '#...........................S#', // 10
   '#...........................F#', // 11
   '#............................#', // 12
-  '#...TPQ...TTT....TTT.........#', // 13
+  '#...TPTQ..TTL....TTT.........#', // 13
   '#H..........................H#', // 14
   '#............................#', // 15
   '##############################', // 16
@@ -54,8 +55,10 @@ const LEGEND = {
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // the counter and sink: props.js draws them
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  // the phone on your desk (props.js draws it): the call lights it, not your seat
+  // the phone at the far end of your desk (props.js draws it), out of reach of your seat: you stand up for it
   Q: { kind: 'desk_phone', solid: true, opaque: false, draw: 'desk', interactable: 'desk_phone' },
+  // the end of Lin's desk, where her lunch box sits until 4:30 (props.js draws it)
+  L: { kind: 'desk', solid: true, opaque: false },
   // the boss's phone, on a side table in his corner (props.js draws both): he takes calls standing beside it
   B: { kind: 'phone_table', solid: true, opaque: false },
 };
@@ -83,7 +86,7 @@ const ZONES = {
 
 const INTERACTIONS = {
   start_microwave: {
-    on: 'microwave', icon: '🍜', text: 'microwave your noodles', duration: 1.0, sneaky: false,
+    on: 'microwave', text: 'microwave your noodles', duration: 1.0, sneaky: false,
     can: (p, w) => w.noodles === 'cold',
     noise: { at: 'microwave', radius: 20, delay: DING_S, turn: 6, ripple: true, sfx: 'elevatorDing' }, // DING
     done(game) {
@@ -94,18 +97,19 @@ const INTERACTIONS = {
     },
   },
   jam_copier: {
-    on: 'copier', icon: '📎', text: 'jam a paper clip in the copier', duration: 1.0, sneaky: true, saw: '📎',
+    on: 'copier', text: 'jam a paper clip in the copier', duration: 1.0, sneaky: true, saw: '📎',
     can: (p, w) => w.copier === 'ok' || w.copier === 'fixed',
     done(game, a) {
       game.world.copier = 'jammed';
+      game.world.jamAt = game.clock.minute; // its beacon flashes in time with the beeps (presentation.js)
       burst(game, 'puff', a.x, a.y, 6, { speed: 0.4, lift: 0.6, ttl: 1.0 });
       say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.2 }); // whistling, innocent
       game.events.emit('copier:jammed', {});
     },
   },
   call_boss: {
-    on: 'desk_phone', icon: '📞', text: "ring the boss's phone", duration: 1.0, sneaky: false,
-    can: (p, w) => w.phone === 'idle', // in reach from your seat, too: ringing at 4:00 is the obvious first try
+    on: 'desk_phone', text: "ring the boss's phone", duration: 1.0, sneaky: false,
+    can: (p, w) => w.phone === 'idle',
     done(game) {
       game.world.phone = 'ringing';
       game.events.emit('phone:ringing', {});
@@ -113,13 +117,13 @@ const INTERACTIONS = {
   },
   // The board's Saturday slot: the boss's face, then (write again) Kev's, then the boss's again...
   write_boss: {
-    on: 'roster', icon: '✏️', text: "write the boss's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
+    on: 'roster', text: "write the boss's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
     saw: '🗓️', // the roster (its week strip, Saturday ringed); longer than any glance away
     can: (p, w) => w.roster !== 'boss' && !w.rosterLocked,
     done: (game) => write(game, 'boss'),
   },
   write_kev: {
-    on: 'roster', icon: '✏️', text: "write Kev's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
+    on: 'roster', text: "write Kev's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
     saw: '🗓️',
     can: (p, w) => w.roster === 'boss' && !w.rosterLocked,
     done: (game) => write(game, 'kev'),
@@ -166,12 +170,13 @@ const LURES = [
     plan: 'copier',
     label: 'fix copier',
     spot: 'copier',
-    react: { wait: 1.5, says: [{ say: ['🖨️', '❗'], kind: 'alert' }], event: 'kev:alerted' },
+    react: { wait: 1.5, says: [{ say: ['❗'] }], event: 'kev:alerted' }, // the beeping is his to fix: a small ❗
     work: {
       override: 'fixing',
       minutes: 4,
       progress: 'fixProgress',
-      start: { set: { copier: 'fixing' }, event: 'copier:fixing' }, // the spanner is in his hand (presentation.js)
+      pose: 'sit', // down on the floor at it, as if kneeling
+      start: { set: { copier: 'fixing' }, event: 'copier:fixing' }, // a spanner in his hand (presentation.js)
       done: { set: { copier: 'fixed' }, event: 'copier:fixed', says: [{ say: ['😊'] }] },
     },
   },
@@ -220,18 +225,23 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  // verdict: the engine's rule stands; it only records whose face the board showed (the end scenes draw them at the desk)
+  // verdict: the engine's rule stands; it records whose face the board showed (the end scenes draw them). Blamed:
+  // whoever isn't here gets Saturday. Every head turns to your empty place (outlined on the floor: presentation.js),
+  // wonders where you are, and points it out.
   meeting: {
     override: 'meeting',
     room: 'roster_area',
     chair: 'meeting_player',
     presenter: 'meeting_presenter',
-    verdict: (game) => ({ why: game.world.roster }),
+    verdict: (game, { result }) => ({
+      why: game.world.roster,
+      ...(result === 'blamed' ? { stare: { think: ['@player', '❓'], say: ['👉', '@player'] } } : {}),
+    }),
   },
   // How you got a name onto the board unseen (the end card shows whose: world.roster).
   routes: [
-    { id: 'ding', icon: '🍜', achieved: (w) => w.roster !== 'player' && w.wrote === 'ding' },
-    { id: 'phone', icon: '📞', achieved: (w) => w.roster !== 'player' && w.wrote === 'phone' },
+    { id: 'ding', icon: '#microwave', achieved: (w) => w.roster !== 'player' && w.wrote === 'ding' },
+    { id: 'phone', icon: '#deskphone', achieved: (w) => w.roster !== 'player' && w.wrote === 'phone' },
   ],
   outcomeOrder: ['ding', 'phone'],
   initialWorld: () => ({
@@ -240,6 +250,7 @@ export default {
     wroteAt: null, // game minute of the last write
     rosterLocked: false, // the boss is at the board (from about 4:51): no more writing on it
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
+    jamAt: null, // game minute of the last jam
     fixProgress: 0,
     phone: 'idle', // the boss's phone (B): 'idle' | 'ringing' | 'talking' (in his hand) | 'done'
     callProgress: 0,

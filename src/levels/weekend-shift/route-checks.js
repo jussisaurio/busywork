@@ -57,7 +57,7 @@ export default [
   {
     name: "ring the boss's phone while Lin heats her fish, write on the board → win",
     expect: { result: 'win', routes: ['phone'] },
-    play: play(['pretend until 4:31', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log, w) => {
+    play: play(['pretend until 4:31', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log, w) => {
       must(saw(log, 'phone:answered'), 'the boss never took the call');
       must(w.roster === 'boss', "the board doesn't show the boss");
     }),
@@ -65,7 +65,7 @@ export default [
   {
     name: 'ring the phone with Lin at her desk → Lin ❗👉, the boss hears',
     expect: { result: 'fail' },
-    play: play(['pretend 0.5s', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log) => {
+    play: play(['goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log) => {
       must(saw(log, 'phone:answered'), 'the boss never took the call');
       must(saw(log, 'witness:tattle', (p) => p.by === 'lin'), 'Lin never pointed');
       must(saw(log, 'boss:workAssigned'), 'the boss never heard her');

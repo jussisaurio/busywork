@@ -8,7 +8,7 @@ const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is 
 const NOISE = { elevatorDing: 'DING! the microwave', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
 
 export default {
-  mission: "MISSION: 5:00 PM. Someone works this Saturday. Make sure it isn't you.",
+  mission: "MISSION: Friday, 4:00 PM. At 5:00 the boss picks who works Saturday. Make sure it isn't you.",
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -27,14 +27,15 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday roster (whiteboard),",
-    '     M microwave, C counter, F fridge, P your desk, Q your desk phone, B the boss\'s phone (side table), i item,',
+    '     M microwave, C counter, F fridge, P your desk, Q your desk phone (the far end of your desk), L Lin\'s desk (her',
+    '     lunch box sits on it), B the boss\'s phone (side table), i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
   outcomeText: (o) => (o.result === 'win'
     ? `WIN 🎉 (someone else's face is on the roster for Saturday; you wrote it during ${o.routes.includes('ding') ? 'the DING' : "the boss's phone call"})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (you work every Saturday now)'
-    : o.result === 'blamed' ? "BLAMED 🪑👉 (the roster was changed, but you weren't at it when it was read out)"
+    : o.result === 'blamed' ? "BLAMED 👉 (you weren't round the roster when it was read out: the boss pointed at your empty place, and the Saturday went to you)"
     : 'FAIL: the boss read out your face on the roster. See you Saturday 👉😩'),
 
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),
@@ -43,7 +44,7 @@ export default {
     const bits = [];
     if (n.override === 'fixing') bits.push(`fixing the copier ${Math.round(game.world.fixProgress * 100)}%`);
     if (n.override === 'onPhone') bits.push(`on the phone ${Math.round(game.world.callProgress * 100)}%`);
-    if (n.id === 'lin' && n.anim === 'fishIn' && !n.override) bits.push(n.moving ? 'off to heat her fish' : 'heating her fish in the microwave 🐟');
+    if (n.id === 'lin' && n.anim === 'fishIn' && !n.override) bits.push(n.moving ? 'carrying her lunch box to the microwave' : 'heating her fish in the microwave 🐟');
     if (n.id === 'lin' && n.anim === 'fish' && !n.override) bits.push('with a plate of microwaved fish 🐟');
     return bits;
   },
