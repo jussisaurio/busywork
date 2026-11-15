@@ -54,13 +54,16 @@ change in order changes the digest. These are the usual ways to break it:
 | level author | one folder `src/levels/<id>/` (its goldens are written by the tools), plus one line in `src/levels/index.js` |
 
 ## Engine modules (read these, don't edit)
-- `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion), `SEED`,
+- `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion, the witness's
+  `NOTICE` and `DOUBLE_TAKE`), `SEED`,
   `DAY_START`, `at()`, `formatClock()`, `clockArg()`, `dayCue()`, `DAY_CUES`, `deg()`.
 - `src/core/map.js`: `parseMap(rows, legend)` returns `{ w, h, rows, defs, char(x,y), tile(x,y), isSolid, isOpaque,
   isWalkable(x,y,who), interactables[], find(c) }`. `isWalkable(x,y,'npc')` also passes `npcPassable` tiles.
 - `src/core/vision.js`: `canSee(map, viewer, tx, ty)`, `inCone`, `hasLineOfSight`, `angleDiff`, `DIRS`.
 - `src/core/fx.js`: `say(game, owner, icons, {kind, ttl, voice})`, `burst(game, kind, x, y, n, opts)`, `shake(game, amount, t)`,
-  `sightline(game, from, kind='notice', ttl=0.8)` (a dashed line from an NPC to the player: 'notice' ❓ | 'tattle' ❗👉 | 'caught').
+  `sightline(game, from, kind='notice', ttl=0.8, via, to='player')` (a dashed line from an NPC to the player, or to
+  the NPC `to`: 'notice' ❓ | 'tattle' ❗👉 | 'caught' | 'relay', a witness's shout reaching the authority),
+  `ripple(game, x, y, radius, opts)` (rings out to `radius`; ttl default `max(1, radius / 12)` s).
   **Use `say()` for every speech, thought or alert bubble.** It also emits `'say'` for audio. Without a `voice`
   it uses the owner's id as the voice name.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
@@ -70,7 +73,8 @@ change in order changes the digest. These are the usual ways to break it:
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`
   (throws on an unknown spot), `inZone(game, name, x, y)` (false for an unknown zone), `findNpc(game, id)`.
 - `src/state.js`: `createGame({ events, input, level })` and `resetLoop(game)`. They build the state below.
-- `src/game/loop.js`: `startLoop(game)`, `tick(game, dt)`, `advanceClock`, `frameMult`. The sim step order; the
+- `src/game/loop.js`: `startLoop(game)`, `tick(game, dt)`, `advanceClock`, `frameMult`, `runFrame(game, dt)` (one
+  real-time frame: `frameMult` ticks, ending early when the day or the forced work ends). The sim step order; the
   harness uses it too.
 - `src/sim/override.js`: override plumbing shared by the sim, its mechanics and level hooks (`setOverride`,
   `endOverride`, `holdFor`, `speak`, `applyEffect`, `spotLeg`).
@@ -263,8 +267,11 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
 - `authority`: `{ id, offDuty?, helpless?, deafIn? }`. His sighting of a sneaky action, or of his contraband in
   your hands, means caught. He owns the suspicion meter (`game.suspicion[id]`) and assigns work. `offDuty`: his
   overrides during which he enforces nothing. `helpless`: overrides during which he can't act even on what he
-  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `roles` and `authority` are optional. Without
-  an authority nobody assigns work and only an inspection can catch you.
+  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `tattle`: what a tattle he hears costs:
+  `'work'` (default: he sends you to your desk), `'caught'` (reason: the witness's), or a hook
+  `(game, { by, reason })` (he walks over and checks, say). The witness's shout runs to him first in every case
+  (a `'relay'` line). `roles` and `authority` are optional. Without an authority nobody assigns work and only an
+  inspection can catch you.
 - `evidence`: `{ by, while, mark, knows, icon }`. A player field (`mark`) that pretending doesn't hide. The witness
   `by`, in override `while` (one value), reads it as guilt; telling sets `world[knows]`. Reason `'evidence'`.
 - `scene`: `{ by, while, zone, door, radius?, fresh(world), icon }`. While `by` is in one of the `while`
@@ -316,6 +323,8 @@ the gather; once a loop. A lure drops it; the gather lets him finish. Example: f
 npcs? }` (at spot `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
 (whenever that event fires; not `noise` or `npc:heard`). Everyone within `radius` (straight line; walls don't
 stop sound), active and not gone, faces it for 1.5 s; a second noise retargets him. `npcs` limits who hears it.
+`ripple` (true or `ripple()` opts) draws it; at a spot named after a machine (an interactable whose type or id is
+`at`, within 1.6 tiles) the rings start on the machine (`makeNoise`'s `from`).
 The authority hears nothing in his `deafIn` zone. With no override he turns his body and waits; in any
 override only his head turns and his plan goes on. Glances due meanwhile still draw from the rng. Events
 `noise {x, y, radius}`, then `npc:heard {id}` per listener in cast order. Example: fixture-attention (the printer).
@@ -429,7 +438,7 @@ game = {
   input,                      // set by main.js (see Input)
 
   // --- per loop (rebuilt by resetLoop) ---
-  fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player', kind, age, ttl }]
+  fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]
   loopTime: 0,                // real (sim) seconds since loop start
   paused: false,              // main.js only: nothing ticks while true
   clock: { minute: 0, ff: false, forced: 0 },
@@ -458,8 +467,12 @@ game = {
                               // caught, after the outcome and during assigned work.
   caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection', t }
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute }
-  rules: { seen, lastNotice, working, sceneTold, grudge },   // private to rules.js
-  scenario: { beatT, crickets },                              // private to scenario.js (the end beat)
+  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, workFrom },   // rules.js and player.js; render reads
+      // sent: null | { t, by, auth, look, said, walk, stackAt }: sent to your desk and not there yet (look: whom the
+      //   authority faces, null | witness id | 'player'; stackAt: loopTime the paper stack landed on your desk).
+      // workFrom: clock.forced when you sat down (the stack's full height).
+  scenario: { beatT, crickets, walk, arrivedAt, endAt },      // private to scenario.js (the end beat; walk: where it
+                                                              // makes you go, to the front or your desk)
 }
 ```
 
@@ -519,19 +532,28 @@ game = {
   - Evidence and scene (roles): the same shout and tattle, with reason `'evidence'` or `'scene'`.
   - Owners take their thing back on sight (unless you pretend), while `when` holds. Carrying it is reason
     `'contraband'`: his `says`, no tattle.
-  - Work: `clock.forced = WORK_PENALTY_MIN` (20), you are snapped to your desk typing, held items drop, events
+  - Work: `clock.forced = WORK_PENALTY_MIN` (20) from the order, held items drop, events
     `<authority>:workAssigned {reason}` and later `work:done`. A running action is cancelled `'idle'` (sent for
-    slacking) or `'witnessed'` (a tattle).
+    slacking) or `'witnessed'` (a tattle). Then `player.js` plays it out (`rules.sent`): told on, he looks at the
+    witness, then at you, and gives the order; you walk to your desk (the walk counts against the 20 minutes), sit
+    and type. Time runs ×8 (`FORCED_MULT`) only while you type. What a heard tattle costs: `roles.authority.tattle`.
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
-  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you stand at
-  `meeting.presenter`, and the 🦗 sign shows at `failSign`.
+  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you walk to
+  `meeting.presenter`, and the 🦗 sign shows at `failSign`. Sent to your desk and not there yet: you walk there. The
+  outcome is decided at `meetingAt`; the beat waits for the walk.
 
 ### Render (`src/render/*`)
 - `createRenderer(canvas)` returns `{ render(game) }`. It owns canvas sizing (fit the window, crisp on HiDPI) and
   draws title / day / end screens from `game.phase` and `game.outcome`. It never mutates gameplay state.
 - Level painters may import `render/things.js` (`box`, `THINGS`, `drawThing`) and the drawing helpers of
   `render/util.js`, `render/characters.js` and `render/tableau.js`.
+- The view: `effects.js` `FULL_VIEW` `{ x0, y0, x1, y1 }` (map px). While the end beat zooms in, the renderer passes
+  the smaller rect to `drawBubbles`, `drawSuspicion`, `drawWitnesses` and `drawFocusHint` (last param), and they
+  keep inside it; with no room above a head, a bubble goes beside it with its tail on the speaker.
+- Assigned work shows at your desk (`world.js` `drawWorkStack`: the stack lands at `rules.sent.stackAt`, shrinks with
+  `clock.forced / rules.workFrom`), not in the HUD. A witness's eye (`drawWitnesses`) reads `game.watch`,
+  `rules.seen` (against `NOTICE`, `DOUBLE_TAKE`) and `rules.grudge`.
 
 ### Audio (`src/audio/*`)
 - `createAudio()` returns `{ attach(game), unlock(), update(game, realDt), setMuted(bool), setPaused(bool) }`.
@@ -579,8 +601,9 @@ per animation frame (realDt capped at 0.1):
   game.time += realDt
   title: input start → startLoop
   day:   accumulate realDt; per FIXED_DT step:
-           mult = frameMult(game) = (clock.forced>0 ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
-           repeat mult times: tick(game, FIXED_DT)
+           runFrame(game, FIXED_DT): mult = frameMult(game) =
+             (clock.forced>0 && !rules.sent ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
+           repeat mult times: tick(game, FIXED_DT), stopping after the tick that ends the day or the forced work
          R → startLoop
          Esc / ⏸ click (PAUSE_BTN in render/hud.js) / window blur → game.paused = true: no ticks, the
            accumulator is dropped, fx frozen (updateFx dt 0), audio.setPaused(true) suspends the

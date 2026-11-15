@@ -115,12 +115,18 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   learnable.
 - **Suspicion.** If the authority can see you and you are not looking busy (pretending, or doing an action; an idle
   action like eating doesn't count), his ❓ meter fills over 1.6 s. Otherwise it drains over 3 s. Full, he assigns
-  you work: you are sent to your desk and type for 20 game minutes, and time runs ×8 while you suffer.
+  you work: he points, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
+  time ×8. The work is 20 game minutes from his order, the walk included. Progress shows only in the stack.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
+- **Who saw you.** A coworker who sees you do something reportable opens an eye beside her head, its pupil on you.
+  The eye widens while she keeps looking. Wide open, she tells, with a hop. A grudge (below) keeps the eye red until
+  she has told.
 - **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
-  authority is on the floor, he hears it and assigns you work. If he is away, the witness keeps a grudge and points
-  you out 👉 and your face (plus what they saw) as soon as he is back. An authority gone for good never hears it.
+  authority is on the floor, he hears it: a red line runs from her to him, he turns to her, then to you, and assigns
+  you work. A level may set another cost for a heard tattle (you are caught, or its own). If he is away, the
+  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
+  authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
   slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
@@ -128,16 +134,21 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   and pretending doesn't hide it.
 - **The scene.** After some events, one witness blames whoever he sees at the scene (a room, or near its door unless
   you pretend), once per event.
-- **Noise.** Some actions and events make a noise. Everyone in earshot turns to look for a moment. Walls don't stop
-  sound.
+- **Noise.** Some actions and events make a noise. A machine's noise ripples out from the machine. Everyone in
+  earshot turns toward it for a moment. Walls don't stop sound.
+- **On screen.** Bubbles, signs and meters stay inside the view. With no room above a head, the bubble goes beside
+  it, and its tail points at the speaker.
 
 ## Outcomes
 At the deadline the game picks the first result that applies:
 1. **Caught** earlier: you were fired. (The day ends a moment after the catch.)
-2. **Fail**: no route achieved. You stand at the front of the room with nothing to show. 🦗
+2. **Fail**: no route achieved. You walk to the front of the room with nothing to show. 🦗
 3. **Blamed**: a route achieved, but you are not in the room. Everyone stares at your empty chair 🪑❓ and points
    😠👉 and your face. The loop doesn't count and no route is recorded.
 4. **Win**: every route achieved this loop is recorded.
+
+The result is decided at the deadline. If it moves you (to the front, or to your desk if you were sent there), you
+walk there; the picture never cuts.
 
 Attendance is a rule in every level: being in the right place at the deadline is part of winning, so nobody wins from
 their desk.
