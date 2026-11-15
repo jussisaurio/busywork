@@ -1,12 +1,16 @@
-// The dark (level.darkness: src/game/darkness.js), drawn over the people and under the bubbles: a navy
-// veil on every dark room, cut open where a torch beam falls, the torch (a phone) in its holder's hand, and eyes for
-// whoever stands in the dark (you also get a red outline, so you can find yourself). Lit rooms and levels without darkness draw nothing here, except the
-// light controls (darkness.controls): a wall switch or a breaker panel on its wall tile, on the face that looks into
-// the room, and the little lamp that glows on it while it is off.
+// The dark (level.darkness: src/game/darkness.js), drawn over the people and under the bubbles: a navy veil on
+// every dark room, cut open where a torch beam falls. Everyone in the dark is drawn again over the veil in their own
+// colours mixed toward the night, so you know who is who, with eyes looking where they look (you also get a red
+// outline, so you can find yourself). A torch lights its holder (a small pool of light: him, his chair) and is drawn
+// in his hand: his arm out along the beam, the phone, its LED; the beam washes out from the phone with a crisp
+// edge on each side. Pose torch holders with free hands (level.poses: not 'reach'): the torch arm is drawn here.
+// Lit rooms and levels without darkness draw nothing here, except the light controls (darkness.controls): a wall
+// switch or a breaker panel on its wall tile, on the face that looks into the room, and the little lamp that glows
+// on it while it is off.
 import { T, fin, clamp, fillCircle, ellipse, circle } from './util.js';
 import { C } from './palette.js';
 import { castRay } from './cones.js';
-import { headY } from './characters.js';
+import { headY, lookFor, drawCharacters } from './characters.js';
 import { viewerOf } from '../game/perception.js';
 import { darkZones, isDark, torchViewer } from '../game/darkness.js';
 
@@ -210,37 +214,124 @@ export function paintLamp(ctx, lamp, dark, t) {
   fillCircle(ctx, lamp.x, lamp.y, lamp.r, `rgb(${r},${g},${b})`);
 }
 
-// A phone held out as a torch, in the right hand of someone standing at (x, y) (px) facing `dir`: where
-// render/characters.js puts that hand for arms 'reach' (pose torch holders so: level.poses), its lit end to the
-// front. Drawn over the veil, so it shows in the dark. Facing away, his body hides it: nothing is drawn.
-export function paintTorchLight(ctx, x, y, dir, t) {
-  const fx = Math.cos(dir);
-  const sd = Math.sin(dir);
-  if (sd < -0.25) return;
-  const fy = sd * 0.6;
-  const rx = -sd;
-  const ry = fx * 0.6;
-  const reach = 12 - Math.sin(fin(t) * 9) * 1.5; // the reach pose's wobble
-  const hx = x + fx * (reach + 2.5) + rx * 3;
-  const hy = y - 3 + fy * (reach + 2.5) + ry * 3;
-  const a = Math.atan2(fy, fx);
+// ---- People in the dark ----------------------------------------------------------------------------------------
+
+// Whoever stands in the dark is drawn again over the veil in their own colours, mixed this far toward the night:
+// you still know who it is (shirt, hair, build), and that they stand in the dark. Torch holders get a small pool of
+// their own light instead (POOL px), so a torch lights its holder and his chair.
+const NIGHT = 0.5;
+const NIGHT_RGB = [14, 20, 46];
+const POOL = 21;
+
+const nightColors = new Map();
+function parseColor(c) {
+  let m = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(c);
+  if (m) return [...m.slice(1, 4).map((h) => parseInt(h + h, 16)), 1];
+  m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i.exec(c);
+  if (m) return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16), m[4] ? parseInt(m[4], 16) / 255 : 1];
+  m = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)$/i.exec(c);
+  if (m) return [Number(m[1]), Number(m[2]), Number(m[3]), m[4] === undefined ? 1 : Number(m[4])];
+  return null;
+}
+// A colour as it shows in the dark (exported for tests). Anything but a hex or rgb() colour is left alone.
+export function nightColor(c) {
+  if (typeof c !== 'string') return c;
+  let v = nightColors.get(c);
+  if (v === undefined) {
+    const p = parseColor(c);
+    const mix = (i) => Math.round(clamp(p[i] + (NIGHT_RGB[i] - p[i]) * NIGHT, 0, 255));
+    v = p ? `rgba(${mix(0)},${mix(1)},${mix(2)},${clamp(p[3], 0, 1)})` : c;
+    nightColors.set(c, v);
+  }
+  return v;
+}
+
+// The same context, but every colour set on it is its night colour.
+const nightCtxs = new WeakMap();
+function nightCtx(ctx) {
+  let p = nightCtxs.get(ctx);
+  if (p) return p;
+  const bound = new Map();
+  p = new Proxy(ctx, {
+    get(target, key) {
+      const v = target[key];
+      if (typeof v !== 'function') return v;
+      let f = bound.get(key);
+      if (!f) bound.set(key, (f = v.bind(target)));
+      return f;
+    },
+    set(target, key, value) {
+      target[key] = key === 'fillStyle' || key === 'strokeStyle' ? nightColor(value) : value;
+      return true;
+    },
+  });
+  nightCtxs.set(ctx, p);
+  return p;
+}
+
+// Where a torch holder's phone is: in the hand on the side his beam leans to, held out along the beam (so it
+// sweeps with his glance), at the height render/characters.js puts a hand for someone sitting or standing.
+// Returns px { sx, sy (shoulder), hx, hy (hand), lx, ly (the LED), a (screen angle), hidden (beam points away from
+// the screen: his body hides the phone) }.
+const TORCH_REACH = 12;
+function torchHand(game, n, beamDir, t) {
+  const look = lookFor(game.level.looks, n.id, n.color);
+  const x = fin(n.x) * T;
+  const y = fin(n.y) * T;
+  const d = fin(n.dir);
+  const sit = n.pose === 'sit';
+  const walking = !sit && (n.pose === 'walk' || !!n.moving);
+  const bob = walking ? Math.abs(Math.sin(t * 10 + (n.id ? n.id.length * 1.3 : 0))) * 1.6 : 0;
+  const bodyY = (sit ? 1 : -2) - bob;
+  const rx = -Math.sin(d);
+  const ry = Math.cos(d) * 0.6;
+  const side = Math.sin(beamDir - d) < -0.3 ? -1 : 1; // the beam leaning to his left: his left hand
+  const sl = (9 - 2.5 * Math.abs(Math.cos(d))) * (look.wide || 1) * 0.85;
+  const bfx = Math.cos(beamDir);
+  const bfy = Math.sin(beamDir) * 0.6;
+  const reach = TORCH_REACH + Math.sin(fin(t) * 5) * 0.4;
+  const hx = x + side * rx * 3 + bfx * reach;
+  const hy = y + bodyY - 1 + side * ry * 3 + bfy * reach;
+  return {
+    look,
+    sx: x + side * rx * sl,
+    sy: y + bodyY - 2 + side * ry * sl,
+    hx, hy,
+    lx: hx + bfx * 6.1,
+    ly: hy + bfy * 6.1,
+    a: Math.atan2(bfy, bfx),
+    hidden: Math.sin(beamDir) < -0.25 && Math.abs(hx - x) < 8, // up the screen, behind his back
+  };
+}
+
+// The torch: his arm out along the beam, the phone in his fist, its LED and a glow. Drawn over the veil (he is in
+// his own light). Facing away from the screen, his body hides it: nothing is drawn.
+function paintTorch(ctx, h) {
+  if (h.hidden) return;
+  ctx.strokeStyle = h.look.bodyDark || '#333333';
+  ctx.lineWidth = 3.6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(h.sx, h.sy);
+  ctx.lineTo(h.hx, h.hy);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
   ctx.save();
-  ctx.translate(hx, hy);
-  ctx.rotate(a);
+  ctx.translate(h.hx + Math.cos(h.a) * 2.5, h.hy + Math.sin(h.a) * 2.5);
+  ctx.rotate(h.a);
   ctx.fillStyle = '#16181d';
   ctx.fillRect(-3.5, -2.2, 7, 4.4); // the phone, end-on along his arm
   ctx.fillStyle = '#3a3f48';
   ctx.fillRect(-3.5, -2.2, 7, 1);
   ctx.restore();
-  const lx = hx + fx * 3.6;
-  const ly = hy + fy * 3.6;
-  const glow = ctx.createRadialGradient(lx, ly, 0.5, lx, ly, 8);
+  fillCircle(ctx, h.hx, h.hy, 2.3, h.look.skin || '#e2b58d');
+  const glow = ctx.createRadialGradient(h.lx, h.ly, 0.5, h.lx, h.ly, 9);
   glow.addColorStop(0, 'rgba(255,250,225,0.95)');
-  glow.addColorStop(0.3, 'rgba(255,240,190,0.45)');
+  glow.addColorStop(0.3, 'rgba(255,240,190,0.5)');
   glow.addColorStop(1, 'rgba(255,240,190,0)');
   ctx.fillStyle = glow;
-  ctx.fillRect(lx - 8, ly - 8, 16, 16);
-  fillCircle(ctx, lx, ly, 1.3, '#fffdf0'); // the LED
+  ctx.fillRect(h.lx - 9, h.ly - 9, 18, 18);
+  fillCircle(ctx, h.lx, h.ly, 1.4, '#fffdf0'); // the LED
 }
 
 // ---- The dark -----------------------------------------------------------------------------------------------
@@ -255,6 +346,20 @@ export function drawDarkness(ctx, game, t) {
   controls.forEach((k, i) => paintLamp(ctx, lamps[i], !!k.room && isDark(game, k.room.x, k.room.y), t));
 }
 
+// The fan's two edge rays' far ends (px), for a crisp beam edge.
+function fanEdges(map, v) {
+  const ox = fin(v.x);
+  const oy = fin(v.y);
+  const fov = clamp(fin(v.fov, 0.5), 0.05, Math.PI * 2);
+  return [-1, 1].map((s) => {
+    const ang = fin(v.dir) + (s * fov) / 2;
+    const dx = Math.cos(ang);
+    const dy = Math.sin(ang);
+    const d = castRay(map, ox, oy, dx, dy, Math.max(0.5, fin(v.radius, 1)));
+    return { x: (ox + dx * d) * T, y: (oy + dy * d) * T };
+  });
+}
+
 function drawVeil(ctx, game, map, zones, t) {
   const mw = map.w * T;
   const mh = map.h * T;
@@ -267,43 +372,94 @@ function drawVeil(ctx, game, map, zones, t) {
       if (b) { beams.push(b); holders.push(n); }
     }
   }
+  const pools = holders.map((n) => ({ x: fin(n.x) * T, y: fin(n.y) * T - 5 }));
+  const hands = holders.map((n, i) => torchHand(game, n, fin(beams[i].dir), t));
+  // The dark rects, minus every beam (one clip per beam: the clips intersect, so all are cut out).
+  const clipDark = () => {
+    darkPath(ctx, zones);
+    ctx.clip();
+    for (const b of beams) {
+      ctx.beginPath();
+      ctx.rect(0, 0, mw, mh);
+      fanPath(ctx, map, b, BEAM_RAYS);
+      ctx.clip('evenodd');
+    }
+  };
 
-  // The veil: the dark rects, minus every beam (one clip per beam: the clips intersect, so all are cut out).
+  // The veil, and everyone under it drawn again in their night colours.
   ctx.save();
-  darkPath(ctx, zones);
-  ctx.clip();
-  for (const b of beams) {
-    ctx.beginPath();
-    ctx.rect(0, 0, mw, mh);
-    fanPath(ctx, map, b, BEAM_RAYS);
-    ctx.clip('evenodd');
-  }
+  clipDark();
   ctx.fillStyle = VEIL;
   ctx.fillRect(0, 0, mw, mh);
+  drawCharacters(nightCtx(ctx), game, t, null);
   ctx.restore();
 
-  // The beams themselves: a warm wash, brightest at the phone.
+  // A torch lights its holder: within its pool he is drawn in his own colours, in a soft warm glow.
+  if (pools.length) {
+    ctx.save();
+    darkPath(ctx, zones);
+    ctx.clip();
+    ctx.beginPath();
+    for (const p of pools) {
+      ctx.moveTo(p.x + POOL, p.y);
+      ctx.arc(p.x, p.y, POOL, 0, Math.PI * 2);
+    }
+    ctx.clip();
+    drawCharacters(ctx, game, t, null);
+    for (const p of pools) {
+      const g = ctx.createRadialGradient(p.x, p.y, 4, p.x, p.y, POOL);
+      g.addColorStop(0, 'rgba(255,240,190,0.22)');
+      g.addColorStop(1, 'rgba(255,240,190,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(p.x - POOL, p.y - POOL, POOL * 2, POOL * 2);
+    }
+    ctx.restore();
+  }
+
+  // The beams: a warm wash out from the phone, with a crisp edge on each side (inside it you are seen; a
+  // step outside, you are in the dark).
   if (beams.length) {
     ctx.save();
     darkPath(ctx, zones);
     ctx.clip();
-    for (const b of beams) {
+    beams.forEach((b) => {
+      // clear over the holder himself (his pool lights him), brightest just past his hand
       const cx = fin(b.x) * T;
       const cy = fin(b.y) * T;
-      const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, Math.max(4, fin(b.radius, 1) * T));
-      grad.addColorStop(0, 'rgba(255,240,190,0.34)');
-      grad.addColorStop(1, 'rgba(255,240,190,0)');
+      const r = Math.max(POOL * 2, fin(b.radius, 1) * T);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      grad.addColorStop(0, 'rgba(255,240,190,0)');
+      grad.addColorStop((POOL * 0.6) / r, 'rgba(255,240,190,0)');
+      grad.addColorStop((POOL * 1.1) / r, 'rgba(255,240,190,0.4)');
+      grad.addColorStop(1, 'rgba(255,240,190,0.05)');
       ctx.beginPath();
       fanPath(ctx, map, b, BEAM_RAYS);
       ctx.fillStyle = grad;
       ctx.fill();
+    });
+    // the edges, from where his own light ends
+    for (const p of pools) {
+      ctx.beginPath();
+      ctx.rect(0, 0, mw, mh);
+      ctx.arc(p.x, p.y + 5, POOL * 0.75, 0, Math.PI * 2);
+      ctx.clip('evenodd');
     }
+    ctx.strokeStyle = 'rgba(255,236,170,0.6)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (const b of beams) {
+      for (const e of fanEdges(map, b)) {
+        ctx.moveTo(fin(b.x) * T, fin(b.y) * T);
+        ctx.lineTo(e.x, e.y);
+      }
+    }
+    ctx.stroke();
     ctx.restore();
   }
   // The torch itself, in the holder's hand (the beam is not a glow from nowhere).
-  holders.forEach((n) => paintTorchLight(ctx, fin(n.x) * T, fin(n.y) * T, fin(n.dir), t));
+  hands.forEach((h) => paintTorch(ctx, h));
 
-  // Eyes in the dark (nobody's eyes while a beam is on him: he's lit).
+  // Eyes in the dark (nobody's eyes while a beam or his own torch lights him).
   const lit = (x, y) => beams.some((b) => {
     const d = Math.hypot(x - b.x, y - b.y);
     if (d > b.radius) return false;
@@ -311,7 +467,7 @@ function drawVeil(ctx, game, map, zones, t) {
     return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= b.fov / 2;
   });
   for (const n of game.npcs || []) {
-    if (!n || !n.active || !isDark(game, n.x, n.y) || lit(n.x, n.y)) continue;
+    if (!n || !n.active || holders.includes(n) || !isDark(game, n.x, n.y) || lit(n.x, n.y)) continue;
     eyes(ctx, game, n, fin(n.dir) + (n.glance ? fin(n.glance.offset) : 0));
   }
   const p = game.player;
