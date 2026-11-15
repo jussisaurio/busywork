@@ -46,9 +46,10 @@ export function mechanicsFor(level, id) {
 }
 
 // The mechanic that owns the NPC's current override, or null (none, the meeting, or a level hook's).
+// npc._mechanics: his mechanicsFor list, which createNpc keeps on him (this runs several times a step).
 export function mechanicOf(game, npc) {
   if (!npc.override) return null;
-  for (const m of mechanicsFor(game.level, npc.id)) if (m.kind.owns(m.data, npc)) return m;
+  for (const m of npc._mechanics) if (m.kind.owns(m.data, npc)) return m;
   return null;
 }
 

@@ -363,7 +363,7 @@ export function drawPerson(ctx, look, s, x, y) {
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
   }
 
-  if (look.hood) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.bodyDark);
+  if (look.hood && !noJacket) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.hoodColor ?? look.bodyDark);
   if (!north) drawArms(ctx, look, s, G, bodyDark);
 
   drawHead(ctx, look, s, h, 0, headY, hr);
@@ -551,7 +551,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
     }
     return;
   }
-  if (look.torso === 'hoodie' && south) {
+  if (look.torso === 'hoodie' && south && !noJacket) {
     ctx.fillStyle = look.bodyDark;
     rrect(ctx, cx - 4.5, bodyY + 1, 9, 4, 1.5); // hoodie pocket
     ctx.fill();
@@ -816,25 +816,34 @@ export function itemIcon(items, held) {
   return (items && items[held]?.icon) || '❔';
 }
 
+// The player's look in a disguise she wears (level.items[type].disguise.look over her own; play/disguise.js).
+const wornLooks = new WeakMap();
+function wornLook(looks, disguise) {
+  let look = wornLooks.get(disguise);
+  if (!look) wornLooks.set(disguise, (look = { ...lookFor(looks, 'player'), ...disguise.look }));
+  return look;
+}
+
 function drawPlayer(ctx, game, t) {
   const p = game.player;
   const s = S;
   resetState(s, t);
+  const worn = p.held ? game.level.items?.[p.held]?.disguise : null; // worn, not carried: not in her hand
   s.dir = fin(p.dir, -Math.PI / 2);
   s.head = s.dir;
   s.pose = p.seated ? 'sit' : p.moving ? 'walk' : 'stand';
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
-  s.item = itemIcon(game.level.items, p.held);
+  s.item = worn ? null : itemIcon(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
-    : p.action ? 'reach' : p.seated ? 'desk' : p.held ? 'carry' : p.moving ? 'walk' : 'idle';
+    : p.action ? 'reach' : p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle';
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
   s.stain = !!p.smeared;
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
-  drawPerson(ctx, lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
+  drawPerson(ctx, worn ? wornLook(game.level.looks, worn) : lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
 }
 
 function drawNpc(ctx, game, n, t) {

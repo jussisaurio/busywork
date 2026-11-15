@@ -3,6 +3,22 @@
 // Order is behaviour: the sim checks each list in this order.
 
 import { at } from '../../config.js';
+import { npcSees } from '../../game/perception.js';
+import { speak } from '../../sim/override.js';
+
+const SEES_CUP = 3.5; // tiles: how close the hunting boss must be to spot the cup on a desk or the machine
+
+// The hunting boss spots the cup where it lies (not in your hand: that's the rules' business, items.js; not on your
+// desk: that's put down's, and he catches you). On Kev's desk: Kev did it. On the machine: back where it belongs.
+function cupFound(game, npc) {
+  const it = game.world.items.find((i) => i.type === 'mug');
+  if (!it || it.spot === 'my_desk') return false;
+  if (Math.hypot(it.x - npc.x, it.y - npc.y) > SEES_CUP || !npcSees(game, npc, it.x, it.y)) return false;
+  const kev = it.spot === 'kev_desk';
+  speak(game, npc, kev ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', '🔧'], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
+  game.events.emit('mug:found', { spot: it.spot });
+  return true;
+}
 
 // Lures (level.lures): a world condition pulls an NPC over to deal with it.
 export const LURES = [
@@ -25,7 +41,7 @@ export const LURES = [
 ];
 
 // Hunts (level.hunts): an NPC searches for something until she finds it or gives up. Started by a behaviour hook
-// (behaviours.js: Lin finding the fridge empty).
+// (behaviours.js: Lin finding the fridge empty; the boss looking in on a dead projector).
 export const HUNTS = [
   { // Lin walks the kitchen and the open office looking for her sandwich.
     npc: 'lin',
@@ -43,6 +59,21 @@ export const HUNTS = [
     // She has it back, or she saw the mustard on you and knows who ate it.
     found: (game) => game.world.sandwich === 'lin' || game.world.linKnows,
     end: { says: [{ say: ['😤'] }] },
+  },
+  { // The boss, having seen the projector (behaviours.js peek), looks for the cup the coffee came from.
+    npc: 'boss',
+    override: 'hunting',
+    plan: 'mughunt',
+    label: 'hunt mug',
+    route: 'mug_hunt',
+    look: { angle: 1.1, time: 1.2 },
+    start: {
+      event: 'boss:mugHunt',
+      says: [{ say: ['📽️', '💥'], kind: 'thought', ttl: 1.3 }, { say: ['☕', '❓'], kind: 'thought', after: 1.3, ttl: 1.4 }],
+      wait: 2.4, // staring in at the sparks
+    },
+    until: at('3:34'), // gives up in time for his smoke (and the lockout)
+    found: cupFound,
   },
 ];
 

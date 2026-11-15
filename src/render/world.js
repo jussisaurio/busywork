@@ -1154,7 +1154,94 @@ export const PROP_PAINTERS = {
     clockHands(ctx, 0, 0, shown.minute, 3, 1.4, 4.6, 0.9, C.tomatoDark, shown.start);
     ctx.restore();
   },
+  // A camera's screen on the tile: shown is game/perception.js cameraFeed(game, id) (feed 'static' | 'wall' |
+  // 'live', blips). The picture is what the watcher sees: you are the tiny red sweater.
+  monitor(ctx, info, at, shown, t) {
+    drawMonitor(ctx, at.x * T + T / 2, at.y * T + T / 2 - 5, shown, t);
+  },
+  // The camera itself, at its lens (shown.x, shown.y, tile units; the tile is only where it is listed), turned to
+  // shown.dir, its red light blinking while the feed is live. shown: cameraFeed(game, id).
+  cctv(ctx, info, at, shown, t) {
+    drawCctv(ctx, shown.x * T, shown.y * T, shown.dir, shown.live, t);
+  },
 };
+
+// A little CRT: 24 x 18 px body, 18 x 12 picture, centred on (cx, cy).
+function drawMonitor(ctx, cx, cy, shown, t) {
+  const bw = 24;
+  const bh = 18;
+  const x = Math.round(cx - bw / 2);
+  const y = Math.round(cy - bh / 2);
+  fillEllipse(ctx, cx, y + bh + 2, 11, 2.5, 'rgba(0,0,0,0.25)');
+  ctx.fillStyle = '#3d3a3a';
+  rrect(ctx, x, y, bw, bh, 3);
+  ctx.fill();
+  ctx.fillStyle = '#2b2828';
+  ctx.fillRect(cx - 4, y + bh, 8, 2);
+  const sx = x + 3;
+  const sy = y + 3;
+  const sw = 18;
+  const sh = 12;
+  if (shown.feed === 'static') {
+    const f = Math.floor(t * 14);
+    for (let j = 0; j < sh; j += 2) {
+      for (let i = 0; i < sw; i += 2) {
+        const g = Math.round(70 + 150 * hash(i, j, f));
+        ctx.fillStyle = `rgb(${g},${g},${g})`;
+        ctx.fillRect(sx + i, sy + j, 2, 2);
+      }
+    }
+  } else if (shown.feed === 'wall') {
+    ctx.fillStyle = '#6d6a66';
+    ctx.fillRect(sx, sy, sw, sh);
+    ctx.fillStyle = '#55524f';
+    for (let j = 0; j < sh; j += 3) {
+      ctx.fillRect(sx, sy + j, sw, 1);
+      for (let i = (j / 3) % 2 ? 2 : 6; i < sw; i += 8) ctx.fillRect(sx + i, sy + j, 1, 3);
+    }
+  } else {
+    ctx.fillStyle = '#1d3a33';
+    ctx.fillRect(sx, sy, sw, sh);
+    ctx.fillStyle = 'rgba(160,230,200,0.10)';
+    ctx.fillRect(sx, sy + sh - 4, sw, 4); // the floor
+    for (const b of shown.blips || []) {
+      const bx = Math.round(sx + sw / 2 + b.u * (sw / 2 - 2));
+      const by = Math.round(sy + sh - 3 - b.v * (sh - 6));
+      if (b.id === 'player') {
+        // the tiny red sweater: body and two sleeves
+        ctx.fillStyle = C.tomato;
+        ctx.fillRect(bx - 1, by - 2, 3, 4);
+        ctx.fillRect(bx - 2, by - 2, 5, 1);
+        ctx.fillStyle = C.tomatoDark;
+        ctx.fillRect(bx - 2, by - 1, 1, 2);
+        ctx.fillRect(bx + 2, by - 1, 1, 2);
+      } else {
+        ctx.fillStyle = b.color || '#c8d8d0';
+        ctx.fillRect(bx - 1, by - 2, 2, 4);
+      }
+    }
+  }
+  ctx.fillStyle = `rgba(255,255,255,${(0.05 + 0.04 * Math.sin(t * 9)).toFixed(3)})`;
+  ctx.fillRect(sx, sy + ((t * 20) % sh), sw, 1);
+  fillCircle(ctx, x + bw - 3, y + bh - 2, 1, shown.feed === 'static' ? '#5a2a22' : '#7be08a');
+}
+
+// A wall camera: a mount, a box turned to `dir`, a lens and its light.
+function drawCctv(ctx, lx, ly, dir, live, t) {
+  ctx.save();
+  ctx.translate(lx, ly);
+  ctx.rotate(dir);
+  ctx.fillStyle = '#5b5755';
+  ctx.fillRect(-9, -1.5, 6, 3); // the arm, back toward the wall
+  ctx.fillStyle = '#d9d4cb';
+  rrect(ctx, -5, -3.5, 10, 7, 2);
+  ctx.fill();
+  ctx.fillStyle = '#2a2726';
+  ctx.fillRect(4, -2.5, 2.5, 5); // the lens hood
+  ctx.restore();
+  const on = live && Math.floor(t * 2) % 2 === 0;
+  fillCircle(ctx, lx - Math.cos(dir) * 2, ly - Math.sin(dir) * 2 - 1, 1.2, on ? '#ff3b2a' : '#5a2a22');
+}
 
 export function sparkle(ctx, x, y, r, color) {
   ctx.fillStyle = color;
