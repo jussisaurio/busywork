@@ -93,10 +93,11 @@ export const BEAT_WAIT = 2;
 // false), beatT (seconds into the beat drawn, or null), clock, at }: clock is the
 // game minute of the drawn moment (for an end card, the minute the commands ended on, before it plays on), at the same
 // as a wall clock reads it ('3:12 PM').
-export function renderShot(level, shot, lib = loadCanvas()) {
+// harness: extra createHarness options (tools/press-stops.mjs draws a shot with and without pressStops).
+export function renderShot(level, shot, lib = loadCanvas(), harness = {}) {
   return withDom(lib, shot.name, () => {
     let view = null;
-    const h = createHarness({ level, onFrame: () => view.note() });
+    const h = createHarness({ level, onFrame: () => view.note(), ...harness });
     const g = h.game;
     view = playerView(g); // bubbles as at normal speed, not as long as pretending stretches them
     const canvas = lib.createCanvas(W, H);

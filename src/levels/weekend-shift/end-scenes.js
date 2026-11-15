@@ -1,7 +1,7 @@
 // Weekend Shift's end cards (level 1's end-scenes.js documents the fields). Most are the same picture: the office
 // on Saturday, sun in the window, the desks empty but one, and the roster board beside it. What changes is who sits
-// at that desk, working, with their face on the board: the boss or Kev (a win), or you (a loss). Caught: the boss
-// came in too, to point at you. Blamed is the day as it ended instead: Friday, 5:00, everyone in their chairs round
+// at that desk, working, with their face on the board: Kev (a win), or you (a loss). Caught, or his own face on the
+// board: the boss came in too, to glare at you. Blamed is the day as it ended instead: Friday, 5:00, everyone in their chairs round
 // the board. The board still shows the face you wrote, but you weren't there: the boss points at your empty chair,
 // and Lin and Kev have turned to look at it. Whoever isn't here gets Saturday.
 // The row under it is the punchline: cause, effect, you.
@@ -17,7 +17,7 @@ const SOUTH = Math.PI / 2;
 const WALL_H = 112;
 const looks = (game) => game.level.looks;
 // whose face the board showed when it was read (the meeting's verdict puts it in o.why; index.js)
-const written = (game, o) => (o?.why === 'boss' || o?.why === 'kev' ? o.why : game.world?.roster === 'kev' ? 'kev' : 'boss');
+const written = (game, o) => (o?.why === 'kev' || game.world?.roster === 'kev' ? 'kev' : 'player');
 
 // The big window in the back wall: blue sky, the sun, a cloud drifting by. Its light falls across the floor.
 function sunnyWindow(ctx, t) {
@@ -166,14 +166,13 @@ const DESK_Y = TAB.y + 196;
 const BUBBLE_Y = DESK_Y - 82; // over the worker's head
 const SEAT = { boss: ['#6b2f24', '#4e2019'], kev: ['#5f6b3a', '#47512a'], player: ['#d6a23a', '#a97b22'], lin: ['#2f8f83', '#22675f'] };
 
-// Win: the boss, or Kev, works Saturday (Kev: sad about it). Their face on the board, them at the desk, the sun outside.
+// Win: Kev works Saturday, sad about it. His face on the board, him at the desk, the sun outside.
 function sceneWin(ctx, game, t, e, o) {
   const who = written(game, o);
   room(ctx, t);
   board(ctx, looks(game)[who], t);
-  workDesk(ctx, looks(game)[who], DESK_X, DESK_Y, t, { seat: SEAT[who], red: who === 'boss', sweat: who === 'kev' });
-  // the boss is cross; Kev, who did nothing, is sad (the cost of framing him)
-  bubble(ctx, [who === 'kev' ? '😢' : '😩'], DESK_X, BUBBLE_Y, e, 'speech', 1.3);
+  workDesk(ctx, looks(game)[who], DESK_X, DESK_Y, t, { seat: SEAT[who], sweat: true });
+  bubble(ctx, ['😢'], DESK_X, BUBBLE_Y, e, 'speech', 1.3); // Kev, who did nothing, is sad (the cost of framing him)
 }
 
 // Fail: your face stayed on the board; you're the one at the desk.
@@ -185,10 +184,11 @@ function sceneFail(ctx, game, t, e) {
 }
 
 // Caught: you at the desk, and the boss, in on his Saturday to make sure, at the board pointing at you. Caught
-// writing, the board still has the face you were halfway through drawing over yours.
+// writing, the board still has the face you were halfway through drawing over yours. His own face on the board (a
+// fail): the same, a clean board with your face redrawn on it.
 function sceneCaught(ctx, game, t, e) {
   room(ctx, t);
-  const sc = scribbleOf(game);
+  const sc = game.outcome?.result === 'caught' ? scribbleOf(game) : null;
   board(ctx, looks(game).player, t, sc ? { scribble: sc, tray: false } : {});
   workDesk(ctx, looks(game).player, DESK_X, DESK_Y, t, { seat: SEAT.player, sweat: true, noMug: true }); // (nothing by his hand)
   const b = person(t);
@@ -295,17 +295,18 @@ function sceneBlamed(ctx, game, t, e, o) {
 }
 
 function kindOf(o) {
-  if (o?.result === 'win') return o.why === 'kev' ? 'winKev' : 'winBoss';
+  if (o?.result === 'win') return 'winKev';
+  if (o?.result === 'fail' && o.why === 'boss') return 'failOwn';
   return o?.result === 'caught' || o?.result === 'blamed' ? o.result : 'fail';
 }
 
 export const END_SCENES = {
   kindOf,
   scenes: {
-    winBoss: { win: true, icons: ['✏️', '@boss', '@player', '🏖️'], draw: sceneWin }, // his Saturday; your weekend
     winKev: { win: true, icons: ['✏️', '@kev', '😢'], draw: sceneWin }, // his Saturday, and he did nothing
     fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
     caught: { win: false, icons: ['✏️', '😠', '@player'], draw: sceneCaught },
+    failOwn: { win: false, icons: ['✏️', '@boss', '😠', '@player'], draw: sceneCaught }, // he never put himself down
     blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },
   },
 };

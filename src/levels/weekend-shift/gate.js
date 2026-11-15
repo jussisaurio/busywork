@@ -11,13 +11,14 @@ export default {
     'copier:fixed': () => 'fixed',
     'phone:ringing': () => 'rang',
     'phone:answered': () => 'answered',
-    'roster:changed': (p) => (p.to === 'kev' ? 'kev' : 'roster'),
+    'roster:changed': (p) => (p.to === 'kev' ? 'kev' : p.to === 'boss' ? 'boss' : 'reset'), // reset: the boss's check
+    'board:checked': () => 'checked',
     'witness:tattle': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['noodles', 'jammed', 'fixed', 'rang', 'answered', 'roster', 'kev', 'tattle', 'work', 'caught'],
-  keyActions: ['noodles', 'jammed', 'rang', 'roster', 'kev'],
+  binKeys: ['noodles', 'jammed', 'fixed', 'rang', 'answered', 'kev', 'boss', 'tattle', 'work', 'checked', 'reset', 'caught'],
+  keyActions: ['noodles', 'jammed', 'rang', 'kev', 'boss'],
   goldenPlans: [
     // Raw movement, idling in the boss's view, then the board in plain sight.
     ['move E 1.5s', 'move N 2s pretend', 'wait 3s', 'goto roster', 'interact', 'wait until 5:00'],
@@ -27,8 +28,12 @@ export default {
     ['goto microwave pretend', 'interact', 'pretend until 4:38', 'goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 5:00'],
     // The mirror fail: the board while the copier beeps.
     ['goto copier pretend', 'interact', 'goto roster pretend', 'interact', 'pretend until 5:00'],
-    // The ding, written twice: Kev's face on the board, his groan at the reading, and his Saturday.
+    // The ding, written once: Kev's face on the board, his protest at the reading, waved off, and his Saturday.
+    ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'pretend until 5:00', 'wait 3s'],
+    // The ding, written twice: the boss's own face, which he knows is wrong: he wipes it, draws yours, glares.
     ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'interact', 'pretend until 5:00', 'wait 3s'],
+    // Kev's face at the ding, then a write Lin sees: told on, the boss checks the board and puts your face back.
+    ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 4:45'],
     // Several loops: restart mid-day, a full day, continue into the next one.
     ['goto copier pretend', 'interact', 'restart', 'pretend until 4:31', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00', 'continue', 'move S 1s', 'wait 2s'],
   ],

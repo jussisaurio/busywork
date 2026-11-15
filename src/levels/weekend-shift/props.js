@@ -884,7 +884,7 @@ export function paintRoster(ctx, info, at, shown, t) {
 
 // A write in progress ({ look, k }), or null: the next face going into Saturday's slot, k of the way drawn. Caught at
 // it, it stays half drawn: the caught frame and the end card (end-scenes.js) show it.
-const NEXT_FACE = { player: 'boss', kev: 'boss', boss: 'kev' };
+const NEXT_FACE = { player: 'kev', kev: 'boss', boss: 'kev' };
 export function scribbleOf(game) {
   const w = game?.world;
   const looks = game?.level?.looks;
