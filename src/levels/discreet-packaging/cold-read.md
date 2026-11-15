@@ -1,55 +1,112 @@
 # Cold reads: discreet-packaging
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"860437740047ccee1533c86cd3463548ea48b04f39cdc792c4fefca188be5479","parts":{"card":"8ee819e35f5bd7f15f8bd57893d30ee49e32f20f5b4f4ef55fa08d1861622e83","ways":"1213694a934cbd837c0c19dc9120ade034662941a4818e5869d65a78f1874145","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":8,"stretch":4,"nonsense":2},"problems":{"blocker":3,"should":4,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 860437740047: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 8 sensible, 4 stretch, 2 nonsense.
-Problems: 3 blocker, 4 should, 1 nit.
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"ed5d617","hash":"c7a08c2ab2bc3ee39b1c19b7f490d0c9b336fe63a9f2e731802b7ddcb36c92d9","parts":{"card":"0f72f49484f12e3a66f1e4bcbd3a390eafc25540e5d28773447dc323d666ee91","ways":"29edd1f1b864f0abcf5d82810671de146e085d5addab10d55f423943c9ecd045","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":3,"near":2,"leak":0},"problems":{"blocker":0,"should":1,"nit":2}} -->
+## title: works
+Recorded 2026-11-15 at commit ed5d617, by claude -p (model: default). Inputs c7a08c2ab2bc: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 miss, 2 near, 0 leak.
+Problems: 0 blocker, 1 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 58 s | $0.13 |
-| all | | 58 s (the steps add up to 58 s) | $0.13 |
+| 1-guess | guesses.md | 13 s | $0.02 |
+| 2-judge | report.md | 26 s | $0.08 |
+| all | | 39 s (the steps add up to 39 s) | $0.10 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme.
-- E2 [blocker] In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office.
-- E3 [blocker] After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real.
-- E4 [should] Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter.
-- E5 [should] Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on.
-- E6 [should] "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00.
-- E7 [should] Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter.
+- E1 [should] "hands out the mail" makes it sound like a private delivery to your desk. What actually goes wrong is Lin holding the box up for the room to see, and the card doesn't say so. The danger is weaker than it should be. — Change "Lin hands out the mail at 4:00." to "Lin calls out the post at 4:00."
+
+### 1-guess: guesses.md
+
+1. **Rewrap it in plain packaging.** You hide the pink and the hearts by covering or swapping the box for something dull. Suggested by "**Discreet Packaging**" and "**pink, covered in hearts**".
+2. **Get the parcel before Lin does.** You have 40 minutes to take it from the mail pile or mailroom before the round starts. Suggested by "**3:20 PM**" and "**Lin hands out the mail at 4:00**".
+3. **Do the mail round yourself, or keep Lin away from it.** You offer to hand out the mail or distract Lin so they never walk it across the office. Suggested by "**Lin hands out the mail**".
+4. **Hide it once you have it.** You put it in a drawer, bag or bin so no one catches sight of it. Suggested by "**Don't let anyone see it**".
+5. **Time the delivery for when nobody's around.** You get it handed to you while the office is empty or everyone is busy elsewhere. Suggested by "**anyone**" and "**at 4:00**".
+
+Stake: Coworkers see the pink heart parcel from your mum and you're embarrassed. The card only implies this through "Don't let anyone see it" and the 😳 icon. It doesn't say whether anything worse happens, like teasing or a nickname that sticks.
+
+### 2-judge: report.md
+
+Verdict: works
+- Stake: clear — a pink, heart-covered parcel from Mum is about to be seen by the whole office (😳). The first reader understood this. What's missing is how public the handover is: "hands out" could mean Lin drops it quietly on your desk, but in the game she holds it up in front of everyone.
+- Rewrap it in plain packaging: miss — no route covers or swaps the box. The level name "Discreet Packaging" points you to a dead end, which costs the player nothing.
+- Get the parcel before Lin does: near — this is the area of route 2 (take the box from the pigeonholes), led by "Lin hands out the mail at 4:00". It misses the key step: blinding Bob's camera.
+- Do the mail round yourself, or keep Lin away from it: miss — no route does this.
+- Hide it once you have it: near — this is route 2's drawer or store-room step, led by "Don't let anyone see it". It doesn't touch the camera or the label swap.
+- Time the delivery for when nobody's around: miss.
+
+Neither the name nor the card mentions the camera, the plug, the broom or the label swap, so the method stays hidden.
+
+## Problems
+- should: "hands out the mail" makes it sound like a private delivery to your desk. What actually goes wrong is Lin holding the box up for the room to see, and the card doesn't say so. The danger is weaker than it should be. — Change "Lin hands out the mail at 4:00." to "Lin calls out the post at 4:00."
+- nit: "Mum" and "parcel" are British, but "mail" is American. A British office worker would say "post", so the line reads like it was written by two different people. — Use "post" (this is covered by the fix above).
+- nit: the level name is a pun on how embarrassing online orders get shipped, and it nudges players to look for wrapping paper that doesn't exist. That's harmless misdirection and it's funny, so keep it. If you'd rather not send players looking, "Return to Sender" is an alternative that hints at route 1 without giving it away.
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"ed5d617","hash":"8c6007da61fc88fa7ce242cca2530f3b8095675f2cbf95586d951dc846d0ba8c","parts":{"card":"0f72f49484f12e3a66f1e4bcbd3a390eafc25540e5d28773447dc323d666ee91","ways":"29edd1f1b864f0abcf5d82810671de146e085d5addab10d55f423943c9ecd045","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":9,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":2,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit ed5d617, by claude -p (model: default). Inputs 8c6007da61fc: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 9 sensible, 2 stretch, 0 nonsense.
+Problems: 1 blocker, 2 should, 1 nit.
+Earlier problems: 7 fixed, 0 still there, 0 no longer applies.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 57 s | $0.14 |
+| all | | 57 s (the steps add up to 57 s) | $0.14 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme. (Lin now asks about the box out loud. She doesn't take it.)
+- E2 fixed: In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office. (if you're away and the box is hidden, Lin just shrugs at your empty chair. That's a win.)
+- E3 fixed: After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real. (Bob is cross, tugs at the camera, can't free it and leaves it for facilities.)
+- E4 fixed: Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter. (Bob is now plainly the boss and manager.)
+- E5 fixed: Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on. (Bob faces the lobby, and easing a plug out makes no sound.)
+- E6 fixed: "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00. (the broom is in a store room that nobody opens before 6.)
+- E7 fixed: Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter. (Lin now calls out in surprise and Bob overhears. She no longer goes and tells on you.)
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] When the monitor's plug is pulled, it goes dark. A dark screen says "monitor", and the plug is right by Bob's counter, so no real boss walks to the back office to thump the camera first. — Make the plug the camera's: its power runs from the strip by the counter. The monitor then shows "no signal"/static, and blaming the camera is the natural guess. Also cut the thumping to about a minute. Three and a half minutes is longer than anyone keeps hitting a camera.
+- E2 [should] In "Bob gets it", Bob was expecting his brown box. At the mail call he'd see Lin hand it to you and say "that's mine". — Have Lin call Bob's name first, so he's lost in the hearts box while she hands the brown one to you. Or have him expecting nothing today, so the brown box is an unplanned delivery.
+- E3 [should] Lin's `empty-pigeonhole` shot (pink box, ?) shows she knew about the parcel. But the route's reasoning is "nobody misses a parcel they never knew about". A post person who knew about it would at most think "must have collected it". — Show her thinking that (box, tick), not a question mark. Or drop the thought bubble so she never knew.
 
 ### 1-judge: report.md
 
 Verdict: fixable
-- Blind the camera: pull the plug (win step): stretch — kneeling at a power strip right behind Bob's chair without him noticing is thin, but the static-then-thump, then check the plug, order is real.
-- Blind the camera: poke it into the plant (win step): stretch — cameras do get knocked askew, but a watcher who *likes* his feed turning into one leaf is a puzzle piece.
-- Bob gets it (win): sensible — clerks go by the label, and stern Bob crying over "Mum's" hearts is a fine absurd result.
-- Bob gets it, you're away (win): sensible — the brown box held out to an empty chair is nothing anyone would remark on.
-- No parcel today, drawer (win): sensible — taking your own parcel quietly is normal, and a clerk with nothing for you shrugs.
-- No parcel today, mailroom floor (win): stretch — "nobody ever goes into the mailroom" doesn't fit a mail clerk.
-- The mail call (lose): sensible — this is the dread the card sets up.
-- The mail call, you're not there (lose): sensible — everyone sees the pink box for you anyway.
-- Caught on camera (lose): sensible — Bob sees you with the pink box, or with the broom.
+
+- Pull the plug (blind, both routes) (win): stretch — a monitor with its plug pulled goes black, not static, and the plug is at Bob's own feet, so a real boss checks there first.
+- Poke the camera into the plant (blind, both routes) (win): sensible — a knocked camera stuck near the ceiling that the manager can't free gets left for facilities.
+- 1. Bob gets it (win): stretch — swapping labels is just paperwork, but Bob is waiting for his own brown box and would see it handed to you.
+- 2. No parcel today (win): sensible — you quietly take your own parcel. The post person has nothing for you and shrugs.
+- The mail call (lose): sensible — Lin holds up a pink heart box with your name on it. That's exactly what she'd do.
+- The mail call, and you're not there (lose): sensible — she holds it up by your empty chair and the whole office looks.
+- Caught on camera (lose): sensible — the boss sees you on his monitor with the hearts box, or with a broom aimed at his camera.
 - Caught in person (lose): sensible.
-- Found, off the corridor floor (lose): sensible — Lin picks it up, reads it and holds it out.
-- Found, Lin takes it off you (lose): nonsense — no mail clerk takes a person's own parcel out of their hands.
-- Hidden, and you're not there (lose): nonsense — a parcel gone and its owner gone means "they collected it," not a mystery worth pointing at.
-- Twenty minutes of work (setback): stretch — Bob is called "a real guard," and a guard can't hand you work. A mail clerk telling on you is also odd.
+- Found (lose): sensible — a box in the corridor gets picked up and its label read.
+- Spotted (lose): sensible — a coworker who sees a pink heart parcel says something out loud.
+- Twenty minutes of work (lose): sensible — a boss gives work to someone hanging about doing nothing.
+
+## Earlier problems
+- E1: fixed — Lin now asks about the box out loud. She doesn't take it.
+- E2: fixed — if you're away and the box is hidden, Lin just shrugs at your empty chair. That's a win.
+- E3: fixed — Bob is cross, tugs at the camera, can't free it and leaves it for facilities.
+- E4: fixed — Bob is now plainly the boss and manager.
+- E5: fixed — Bob faces the lobby, and easing a plug out makes no sound.
+- E6: fixed — the broom is in a store room that nobody opens before 6.
+- E7: fixed — Lin now calls out in surprise and Bob overhears. She no longer goes and tells on you.
 
 ## Problems
-- blocker: Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme.
-- blocker: In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office.
-- blocker: After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real.
-- should: Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter.
-- should: Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on.
-- should: "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00.
-- should: Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter.
-- nit: Lin collecting parcels *from* the pigeonholes to hand them out is backwards for most offices. — Call it the parcel shelf.
+- blocker: When the monitor's plug is pulled, it goes dark. A dark screen says "monitor", and the plug is right by Bob's counter, so no real boss walks to the back office to thump the camera first. — Make the plug the camera's: its power runs from the strip by the counter. The monitor then shows "no signal"/static, and blaming the camera is the natural guess. Also cut the thumping to about a minute. Three and a half minutes is longer than anyone keeps hitting a camera.
+- should: In "Bob gets it", Bob was expecting his brown box. At the mail call he'd see Lin hand it to you and say "that's mine". — Have Lin call Bob's name first, so he's lost in the hearts box while she hands the brown one to you. Or have him expecting nothing today, so the brown box is an unplanned delivery.
+- should: Lin's `empty-pigeonhole` shot (pink box, ?) shows she knew about the parcel. But the route's reasoning is "nobody misses a parcel they never knew about". A post person who knew about it would at most think "must have collected it". — Show her thinking that (box, tick), not a question mark. Or drop the thought bubble so she never knew.
+- nit: In the start shot, Bob smiles when the plant drifts into his picture. That's an odd thing for a real boss to like, and it clashes with how cross he gets after the poke. — Give him a neutral glance, or have him nod at the plant he waters.
 
 <!-- /cold-read:sense -->
 

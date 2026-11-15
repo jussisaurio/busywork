@@ -70,9 +70,10 @@ its own, not part of `common.md`, because the text passes never get `common.md`.
   its verdict line or its `## Problems` is `unreadable`.
 - **The ledger.** When the pass already has a record, its open problems (every blocker and should, not the nits) go
   to the last step as `earlier.md`, numbered E1, E2, .... The reader marks each `fixed`, `still there` or `no longer
-  applies` under `## Earlier problems`, before listing new ones. One still there (or not marked) is promoted to a
-  blocker and tagged "recurring: premise-level?": a problem that survives a round of fixes is often in the premise,
-  not the pixels. A record from before the grades has no open list; its last report goes in `earlier.md`, and the
+  applies` under `## Earlier problems`, before listing new ones. One still there (or not marked) is carried and tagged
+  "recurring: premise-level?" (a problem that survives a round of fixes is often in the premise, not the pixels), at
+  the grade the reader gives it now (`still there (should)`), else at its earlier grade. The reader judges it again
+  with the newer level in front of them; the tool doesn't bump it. A record from before the grades has no open list; its last report goes in `earlier.md`, and the
   reader numbers its problems. The ledger is not an input: it does not make a pass stale.
 - **Calibration.** `--calibrate` runs passes on a reference level (one the user is happy with), with no ledger, and
   records them in `tools/.shots/<id>/calibrate.md`, never the level's record. If that level can't get `works`, the

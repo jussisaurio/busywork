@@ -1,50 +1,114 @@
 # Cold reads: interview
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"d593bbabeb9964580b246f01c56a238932a5f36c805b29f77b9bf76033648ff5","parts":{"card":"8d60a62ec622de59463bcbeb9eafadbe14372b3dbb4bc563616da391d906590f","ways":"c225e1c225002f6ee5a8efe326f4487014051039f4d5ad973a63ca1c0c3d0be6","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":3,"nonsense":3},"problems":{"blocker":2,"should":4,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs d593bbabeb99: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 4 sensible, 3 stretch, 3 nonsense.
-Problems: 2 blocker, 4 should, 1 nit.
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"12dde73","hash":"3fd9fd9b209b9fcad163f82ac31bb098dc8d97622ff0cdd8e4f3fedf2d88ee2c","parts":{"card":"0923c45658db812c1d408f0e311cab1304f797a55530e5ff20dc774e353a0735","ways":"8f7d65e8a1525e9cff9f05801c61633c8abdf43243309bfd3cdc07cc3cc46a18","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":1,"near":4,"leak":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
+## title: works
+Recorded 2026-11-15 at commit 12dde73, by claude -p (model: default). Inputs 3fd9fd9b209b: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 1 miss, 4 near, 0 leak.
+Problems: 0 blocker, 2 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 44 s | $0.11 |
-| all | | 44 s (the steps add up to 44 s) | $0.11 |
+| 1-guess | guesses.md | 12 s | $0.02 |
+| 2-judge | report.md | 31 s | $0.10 |
+| all | | 43 s (the steps add up to 43 s) | $0.12 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In routes 1, 4 and the variant, Lin answers a kitchen call around 3:15 and stays on hold past 3:30. Someone waiting for an interview call would hang up as 3:30 gets close and go back to her desk. She would also hear her own phone ringing from the kitchen, since the boss hears it from his office. In the route 2 teaching fail she slams hold music down at once, so the two don't fit together. — Keep her away for a reason she would accept, such as the kitchen caller saying "please hold for HR" or a real person talking to her. She can't hang up on that without seeming rude.
-- E2 [blocker] In route 2 the boss answers Lin's ringing phone, hears hold music and stays on for nine minutes. With nobody on the line, a real boss hangs up within seconds. When Lin comes back at 3:26 with her interview four minutes away, she would say "I'm expecting a call" and he would hand the phone back. — Put a real caller on the line who keeps the boss talking, such as his golf buddy or a supplier who won't stop. Lin then hovers, too scared to interrupt the boss.
-- E3 [should] In route 1 the boss shrugs and hangs up on an interviewer while Lin is ten steps away in the kitchen. A real boss would shout "Lin, phone!" or take a message. — Have him say "she's not at her desk" and hang up without looking.
-- E4 [should] Across all wins, the interview is lost because one call fails. A real interviewer redials or tries her mobile. — Give a reason they won't, such as one scheduled slot, or the card saying "the interviewer only tries once."
-- E5 [should] In route 3 Lin's desk phone needs a mains plug in a socket that Kev also uses for his charger. Desk phones use a phone jack. — Make it the phone's power adapter, or a phone and power wall plate shared with Kev.
-- E6 [should] Under "Told on", Lin or Kev reports you just for standing at the switchboard. A coworker there isn't suspicious. — Only the socket counts as telling, or they report you only if they see you plug into Lin's own line.
+- E1 [should] Three of the near guesses quote "They only ring once" and #call. Together they point the player at the phone itself as the thing to beat. The #call icon adds nothing a stranger needs, since "phone interview" already says there's a call. — Drop #call and use #interview alone, or swap in an icon for the stake, such as a #box for your desk things.
+- E2 [should] The stake has to be worked out. A stranger can't tell whether Lin is going for a promotion or for your seat. — Change "Lin wants your job." to "Head office wants to replace you, and Lin's up for it."
+
+### 1-guess: guesses.md
+
+1. **Get Lin away from her desk when the call comes.** Send her to the boss, a meeting or the kitchen right at 3:30. Suggested by "at 3:30" and "They only ring once."
+2. **Silence, hide or "borrow" her phone** so she never hears it ring. Suggested by "phone interview" and "ring once."
+3. **Answer the call yourself, or get someone else to pick it up first,** and brush the caller off. Suggested by "They only ring once" and #call.
+4. **Keep her line busy.** Call her yourself just before 3:30, or keep her stuck on another call. Suggested by #call and "ring once."
+5. **Change her sense of time** by moving a clock or her calendar reminder so she thinks the call is at a different time. Suggested by "3:00 PM" and "3:30."
+
+Stake: Lin gets your job. "Lin wants your job" says this, but the card never says outright that you're fired or replaced if she makes the call. I'm reading it in.
+
+### 2-judge: report.md
+
+Verdict: works
+- Stake: clear — "Lin wants your job" plus "phone interview" tells a stranger that if Lin's call goes well, she replaces you. That matches the loss card (Lin at your desk, you holding a box). The first reader got there but said "I'm reading it in", so the line is slightly soft.
+- Get Lin away from her desk at 3:30: near — this is the area of routes 1 and 4 (Lin on hold in the kitchen). It doesn't name the key step: ringing Kev's phone and then the kitchen phone from the switchboard. It came from "at 3:30" and "They only ring once".
+- Silence, hide or borrow her phone: near — this is route 3's area (her phone). It doesn't name pulling the adapter while the boss is on the phone to Gary. It came from "phone interview" and "ring once".
+- Answer it yourself, or get someone else to pick up first: near — this is route 1's result (the boss answers). It misses the key step, which is getting Lin into the kitchen so the boss takes her phone. It came from "They only ring once" and #call.
+- Keep her line busy: near — this is route 2's area. It doesn't spot the key step: ring her line while she's away so the boss picks up and chats with Gary. Calling her while she sits at her desk is a teaching fail. It came from #call and "ring once".
+- Change her sense of time: miss — there's no clock or calendar route.
+
+None of these guesses gets past the obvious ways to stop a phone call. The name "The Interview" gives nothing away.
+
+## Problems
+- should: Three of the near guesses quote "They only ring once" and #call. Together they point the player at the phone itself as the thing to beat. The #call icon adds nothing a stranger needs, since "phone interview" already says there's a call. — Drop #call and use #interview alone, or swap in an icon for the stake, such as a #box for your desk things.
+- should: The stake has to be worked out. A stranger can't tell whether Lin is going for a promotion or for your seat. — Change "Lin wants your job." to "Head office wants to replace you, and Lin's up for it."
+- nit: "They only ring once" is a little off. "They" has no clear owner, and nobody in an office talks about how many times someone rings. — Change it to "They won't call back."
+- nit: "3:00 PM." is stiff for an office afternoon. — Use "3 o'clock."
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"12dde73","hash":"58702c093afb3d9cdb53048f07e74a270da8812ea4720cba4c5cf463a0416716","parts":{"card":"0923c45658db812c1d408f0e311cab1304f797a55530e5ff20dc774e353a0735","ways":"8f7d65e8a1525e9cff9f05801c61633c8abdf43243309bfd3cdc07cc3cc46a18","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":11,"stretch":2,"nonsense":0},"problems":{"blocker":0,"should":3,"nit":2}} -->
+## sense: works
+Recorded 2026-11-15 at commit 12dde73, by claude -p (model: default). Inputs 58702c093afb: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 11 sensible, 2 stretch, 0 nonsense.
+Problems: 0 blocker, 3 should, 2 nit.
+Earlier problems: 6 fixed, 0 still there, 0 no longer applies.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 53 s | $0.14 |
+| all | | 53 s (the steps add up to 53 s) | $0.14 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: In routes 1, 4 and the variant, Lin answers a kitchen call around 3:15 and stays on hold past 3:30. Someone waiting for an interview call would hang up as 3:30 gets close and go back to her desk. She would also hear her own phone ringing from the kitchen, since the boss hears it from his office. In the route 2 teaching fail she slams hold music down at once, so the two don't fit together. — Keep her away for a reason she would accept, such as the kitchen caller saying "please hold for HR" or a real person talking to her. She can't hang up on that without seeming rude. ("Please hold for HR" from head office, with the briefcase and crossed fingers, gives her a reason to stay on that she would accept.)
+- E2 fixed: In route 2 the boss answers Lin's ringing phone, hears hold music and stays on for nine minutes. With nobody on the line, a real boss hangs up within seconds. When Lin comes back at 3:26 with her interview four minutes away, she would say "I'm expecting a call" and he would hand the phone back. — Put a real caller on the line who keeps the boss talking, such as his golf buddy or a supplier who won't stop. Lin then hovers, too scared to interrupt the boss. (The caller is now Gary, who keeps the boss talking, and Lin hovers instead of claiming her phone.)
+- E3 fixed: In route 1 the boss shrugs and hangs up on an interviewer while Lin is ten steps away in the kitchen. A real boss would shout "Lin, phone!" or take a message. — Have him say "she's not at her desk" and hang up without looking. (The boss says "she's not at her desk" and hangs up.)
+- E4 fixed: Across all wins, the interview is lost because one call fails. A real interviewer redials or tries her mobile. — Give a reason they won't, such as one scheduled slot, or the card saying "the interviewer only tries once." (The card says "They only ring once.")
+- E5 fixed: In route 3 Lin's desk phone needs a mains plug in a socket that Kev also uses for his charger. Desk phones use a phone jack. — Make it the phone's power adapter, or a phone and power wall plate shared with Kev. (The plug is now the phone's power adapter, which can share a socket with Kev's charger.)
+- E6 fixed: Under "Told on", Lin or Kev reports you just for standing at the switchboard. A coworker there isn't suspicious. — Only the socket counts as telling, or they report you only if they see you plug into Lin's own line. (You only get told on for patching into Lin's own line or being at the socket.)
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [should] In route 4 Kev is "too far away to hear" Lin's phone ringing for two minutes. In route 1 he hears his own phone from the coffee machine, and a phone ringing that long carries across any open office. **Fix:** Kev hears it, glances over and goes back to his screen ("not my phone"). That is how real coworkers treat someone else's phone.
+- E2 [should] In the route 2 teaching fail, Lin slams the receiver down on Gary when he asks for the boss. Nobody hangs up on the boss's friend. **Fix:** she says "he's on his own line, try that" and hangs up quickly. Her line is still free, and she still has a reason to keep it free.
+- E3 [should] In routes 1 and 4, Lin only stays on hold past 3:30 because she believes this is her interview coming through on another phone. That belief is shown only by icons. If it reads as her own company's HR, nobody would hold through a call they've been waiting for. **Fix:** make the hold voice say "head office HR, connecting you," so it is clearly her interview she is holding for.
 
 ### 1-judge: report.md
 
-Verdict: fixable
+Verdict: works
+- 1. Someone else answers (win): sensible. Lin thinks head office HR is putting her interview through, so she holds. The boss picks up a phone ringing at an empty desk and gives the usual "not at her desk."
+- 1 variant, Kev away (win): sensible. She is alone in the kitchen with the phone ringing, so of course she answers it.
+- 2. Her line is busy (win): sensible. The boss chatting golf with a friend and a junior too scared to interrupt him are both believable.
+- 3. Her phone is dead (win): sensible. Kev's taped-off socket explains why he is there, the boss has his back turned, and nobody checks an adapter.
+- 4. Nobody answers (win): stretch. The boss waving at the phone is believable. Kev being "too far to hear" doesn't fit, because he heard his own phone from the coffee machine.
+- Lin takes her call (lose): sensible. The ending is absurd, but the cause is ordinary.
+- Caught (lose): sensible. The boss sees you unplug someone's phone.
+- Away from your desk (lose): sensible. Bosses notice an empty chair.
+- Told on (lose): sensible. Seeing someone patch into your own line or crouch at your socket is worth reporting.
+- Teaching fail, Kev takes the kitchen phone (lose): sensible.
+- Teaching fail, Lin hangs up on Gary (lose): stretch. Slamming the phone down on the boss's friend is not what an employee does.
+- Teaching fail, Kev plugs it back (lose): sensible.
+- Teaching fail, only the boss rung (lose): sensible.
 
-- 1. Someone else answers (win): nonsense — Lin is waiting for a 3:30 interview, yet she stays on hold on an unknown kitchen call for over ten minutes and lets the time pass.
-- 1 variant, Kev away by timing (win): nonsense — Lin makes the same choice as in route 1.
-- 2. Her line is busy (win): nonsense — the boss sits on hold on someone else's phone with nobody to talk to, and Lin, back at 3:26, never asks for her phone.
-- 3. Her phone is dead (win): stretch — the boss turning his back and Kev re-plugging are real; a desk phone running off a mains socket is not.
-- 4. Nobody answers (win): stretch — a boss on his own call ignoring another phone is real, but it rests on route 1's kitchen hold.
-- Lin takes her call (lose): sensible — the jump straight to your desk is an absurd result, not an absurd method.
-- Caught (lose): sensible — the boss sees you crouched at a coworker's socket.
-- Away from your desk (lose): sensible — the boss blames whoever is missing when something goes wrong.
-- Told on (lose): stretch — a coworker standing at the switchboard is nothing Lin or Kev would report.
-- Teaching fails (lose): sensible — each one shows a real person's reaction.
+## Earlier problems
+- E1: fixed. "Please hold for HR" from head office, with the briefcase and crossed fingers, gives her a reason to stay on that she would accept.
+- E2: fixed. The caller is now Gary, who keeps the boss talking, and Lin hovers instead of claiming her phone.
+- E3: fixed. The boss says "she's not at her desk" and hangs up.
+- E4: fixed. The card says "They only ring once."
+- E5: fixed. The plug is now the phone's power adapter, which can share a socket with Kev's charger.
+- E6: fixed. You only get told on for patching into Lin's own line or being at the socket.
 
 ## Problems
-- blocker: In routes 1, 4 and the variant, Lin answers a kitchen call around 3:15 and stays on hold past 3:30. Someone waiting for an interview call would hang up as 3:30 gets close and go back to her desk. She would also hear her own phone ringing from the kitchen, since the boss hears it from his office. In the route 2 teaching fail she slams hold music down at once, so the two don't fit together. — Keep her away for a reason she would accept, such as the kitchen caller saying "please hold for HR" or a real person talking to her. She can't hang up on that without seeming rude.
-- blocker: In route 2 the boss answers Lin's ringing phone, hears hold music and stays on for nine minutes. With nobody on the line, a real boss hangs up within seconds. When Lin comes back at 3:26 with her interview four minutes away, she would say "I'm expecting a call" and he would hand the phone back. — Put a real caller on the line who keeps the boss talking, such as his golf buddy or a supplier who won't stop. Lin then hovers, too scared to interrupt the boss.
-- should: In route 1 the boss shrugs and hangs up on an interviewer while Lin is ten steps away in the kitchen. A real boss would shout "Lin, phone!" or take a message. — Have him say "she's not at her desk" and hang up without looking.
-- should: Across all wins, the interview is lost because one call fails. A real interviewer redials or tries her mobile. — Give a reason they won't, such as one scheduled slot, or the card saying "the interviewer only tries once."
-- should: In route 3 Lin's desk phone needs a mains plug in a socket that Kev also uses for his charger. Desk phones use a phone jack. — Make it the phone's power adapter, or a phone and power wall plate shared with Kev.
-- should: Under "Told on", Lin or Kev reports you just for standing at the switchboard. A coworker there isn't suspicious. — Only the socket counts as telling, or they report you only if they see you plug into Lin's own line.
-- nit: The premise has Lin interviewing for your job by an outside call, in front of a boss who doesn't seem to know about it. — Make it clear the interview is with head office or HR, not him.
+- should: In route 4 Kev is "too far away to hear" Lin's phone ringing for two minutes. In route 1 he hears his own phone from the coffee machine, and a phone ringing that long carries across any open office. **Fix:** Kev hears it, glances over and goes back to his screen ("not my phone"). That is how real coworkers treat someone else's phone.
+- should: In the route 2 teaching fail, Lin slams the receiver down on Gary when he asks for the boss. Nobody hangs up on the boss's friend. **Fix:** she says "he's on his own line, try that" and hangs up quickly. Her line is still free, and she still has a reason to keep it free.
+- should: In routes 1 and 4, Lin only stays on hold past 3:30 because she believes this is her interview coming through on another phone. That belief is shown only by icons. If it reads as her own company's HR, nobody would hold through a call they've been waiting for. **Fix:** make the hold voice say "head office HR, connecting you," so it is clearly her interview she is holding for.
+- nit: Gary calls Kev's desk and talks golf at him for minutes, but Gary is the boss's friend, not Kev's. **Fix:** Gary asks for the boss, and Kev is stuck being polite while Gary goes on about his round.
+- nit: In route 3, after nothing comes at 3:30, Lin just sits and wonders. A real candidate would ring head office from her mobile at about 3:32. **Fix:** at 3:33 she starts to dig out her mobile, so the round ends on that and stays clean.
 
 <!-- /cold-read:sense -->
 

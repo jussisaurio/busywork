@@ -1,121 +1,116 @@
 # Cold reads: weekend-shift
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"f951d89","hash":"79c0b52ff54941ef1941ce71ccb46a2dac90c966aaee13f145fa2334dfcd9588","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"f94f71fca0abba05ab5e134721c75933bc54c34471ad0c9b89e5e55109bd3638","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":2,"near":3,"leak":0},"problems":{"blocker":0,"should":3,"nit":1}} -->
-## title: works
-Recorded 2026-11-15 at commit f951d89, by claude -p (model: default). Inputs 79c0b52ff549: the card, premise.md's ways to win and lose, the pass's prompts.
+<!-- cold-read:title {"verdict":"fixable","date":"2026-11-15","commit":"1781ba1","hash":"f505bb2d0c83aa612d289a92255f084c8556d4deae3ba9b46c09dd0ba23b893e","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"ef57b2561ab7506b9523fb7cffd181c351027d489472f24b5755d04180268eb4","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":2,"near":3,"leak":0},"problems":{"blocker":3,"should":0,"nit":0}} -->
+## title: fixable
+Recorded 2026-11-15 at commit 1781ba1, by claude -p (model: default). Inputs f505bb2d0c83: the card, premise.md's ways to win and lose, the pass's prompts.
 Items: 2 miss, 3 near, 0 leak.
-Problems: 0 blocker, 3 should, 1 nit.
-Earlier problems: 1 fixed, 0 still there, 2 no longer applies.
+Problems: 3 blocker, 0 should, 0 nit.
+Earlier problems: 0 fixed, 3 still there, 0 no longer applies (now blockers).
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-guess | guesses.md | 9 s | $0.02 |
-| 2-judge | report.md | 36 s | $0.12 |
-| all | | 45 s (the steps add up to 45 s) | $0.14 |
+| 1-guess | guesses.md | 11 s | $0.02 |
+| 2-judge | report.md | 22 s | $0.08 |
+| all | | 33 s (the steps add up to 33 s) | $0.10 |
 
 ### Ledger
 The earlier record's open problems, as this run's reader marked them.
 
-- E1 fixed: The card shows the board as a picture board with faces on it ("Your face is on…"). From there, drawing someone else's face over yours is one step away, so guess 2 lands on the shared ending. Fix: change "Your face is on Saturday's board." to "You're down for Saturday." ("Your face is on Saturday's board" is now "You're stuck working Saturday," so the card no longer mentions faces.)
-- E2 no longer applies: "the boss reads it out" makes the boss the one to deal with, which points guess 3 at distracting him. The 5:00 reading is the real trouble, so the line can stay. Fix: if you want it further from the boss, change "At 5:00 the boss reads it out." to "At 5:00 it's read out." (the line was rewritten, the earlier reader said it could stay, and the boss making it official really is the trouble. Guess 1 only gets near.)
-- E3 no longer applies: Guess 1 lands on the board, the right area, only by undoing the trouble. That's allowed. No change needed beyond the first fix above. (guess 3 now gets to the board, and it still only does so by undoing the trouble.)
+- E1 still there: The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (The card still shows "🗓️ @player", and guesses 1 and 3 quote it to get to the board.)
+- E2 still there: Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (Guess 1 (now "put someone else's name") still gets from the stake to the board, and the ☀️ swap that was meant to weaken it hasn't been made.)
+- E3 still there: "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional. ("The boss makes it official" is unchanged, and guess 2 still lands on keeping the boss busy. That's close to the phone route but not its key step.)
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [should] The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change.
-- E2 [should] Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board.
-- E3 [should] "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional.
+- E1 [blocker] The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (recurring: premise-level?)
+- E2 [blocker] Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (recurring: premise-level?)
+- E3 [blocker] "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional. (recurring: premise-level?)
 
 ### 1-guess: guesses.md
 
-1. **Make sure the boss can't make it official by 5:00.** Keep them busy, or get them out the door before then. Hinted by "The boss makes it official at 5:00." Nothing is final until 5:00.
-2. **Get the Saturday shift moved to a coworker.** Volunteer someone else, or let the boss "notice" that another person is free. Hinted by "You're stuck working Saturday" and the "@player" tag. Only you are assigned so far.
-3. **Change the schedule before the boss sees it.** Edit the shared calendar or the rota so your name isn't there, or so Saturday isn't a workday. Hinted by the 🗓️ icon and "official."
-4. **Look like you already have a prior commitment.** A sick note, a family event, or a calendar block the boss has to respect. Hinted by "Get out of it" and 🗓️.
-5. **Finish Saturday's work today.** That leaves nothing to come in for. Hinted by "Friday, 4:00 PM" and "working Saturday." You have an hour.
+# Guesses
 
-Stake: you lose your weekend and spend Saturday at the office.
+1. **Put someone else's name on the Saturday shift.** The card says "You're stuck working Saturday", and the icons show "🗓️ @player". That looks like a calendar slot with your name in it, so the trick may be to swap in a coworker before the boss announces it.
+2. **Stop the boss from making it official.** The line "The boss makes it official at 5:00" means nothing is final until 5:00. You might distract or delay the boss, or keep the announcement from happening at all.
+3. **Change the schedule yourself.** The "🗓️" icon and "official" suggest a written schedule. You could edit it or quietly remove your name before 5:00.
+4. **Be gone before 5:00.** "Get out of it" could be literal. If you leave the office before the boss announces it, maybe it can't be assigned to you.
+5. **Get a prior commitment on record.** "Get out of it" also sounds like finding an excuse the boss will accept, such as a claimed appointment or approved time off, before "5:00".
+
+Stake: if the boss announces it at 5:00, I have to come in and work on Saturday. The card says this directly: "stuck working Saturday".
 
 ### 2-judge: report.md
 
-Verdict: works
-- Stake: clear — you lose your Saturday. "You're stuck working Saturday" is the threat, "makes it official at 5:00" is the deadline, and "Get out of it" is the goal. Nobody shrugs at losing a weekend.
-- Make sure the boss can't make it official by 5:00: near — the phone route does keep the boss busy, but only for a few seconds. The real step is writing on the board while Lin is at the microwave. It came from "The boss makes it official at 5:00."
-- Get the Saturday shift moved to a coworker: near — both routes end with Kev on Saturday, but the guess has no way past the people watching the board. It came from "stuck working Saturday" and @player.
-- Change the schedule before the boss sees it: near — this points at the board, which is the shared ending, but it doesn't say how to write while nobody's looking. It came from 🗓️ and "official."
-- Look like you already have a prior commitment: miss — no route does this.
-- Finish Saturday's work today: miss — no route does this.
+Verdict: fixable
+- Stake: clear. If the boss announces it at 5:00, you spend your Saturday at work. "You're stuck working Saturday" says so directly, and the first reader's Stake line repeats it. A stranger knows what they could lose (their weekend), what they want (to get out of it), and how long they have (one hour).
+- Put someone else's name on the Saturday shift: near. This is the ending both routes share (Kev's face goes into the box), but not the key step of either route (the ding or the phone call that clears the room's eyes). The reader got there from "stuck working Saturday" and the "🗓️ @player" icon.
+- Stop the boss from making it official: near. It points at the phone route's area (keep the boss busy), but not at ringing his phone from the supply room. The reader got there from "The boss makes it official at 5:00".
+- Change the schedule yourself: near. Again the shared ending (writing on the board), not how to do it unseen. The reader got there from "🗓️" and "official".
+- Be gone before 5:00: miss. Not being there at 5:00 is a loss ("Blamed"), not a win.
+- Get a prior commitment on record: miss. No route uses an excuse.
 
 ## Earlier problems
-- E1: fixed — "Your face is on Saturday's board" is now "You're stuck working Saturday," so the card no longer mentions faces.
-- E2: no longer applies — the line was rewritten, the earlier reader said it could stay, and the boss making it official really is the trouble. Guess 1 only gets near.
-- E3: no longer applies — guess 3 now gets to the board, and it still only does so by undoing the trouble.
+- E1: still there. The card still shows "🗓️ @player", and guesses 1 and 3 quote it to get to the board.
+- E2: still there. Guess 1 (now "put someone else's name") still gets from the stake to the board, and the ☀️ swap that was meant to weaken it hasn't been made.
+- E3: still there. "The boss makes it official" is unchanged, and guess 2 still lands on keeping the boss busy. That's close to the phone route but not its key step.
+
+Read aloud, the card sounds like a person talking. "Stuck working Saturday", "makes it official" and "Get out of it" are all things a coworker would actually say. Nothing is stiff or made-up, and no guess names a route's key step.
 
 ## Problems
-- should: The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change.
-- should: Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board.
-- should: "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional.
-- nit: "4:00 PM" reads like a form. Fix: "Friday, 4pm."
-
-Read aloud, the card sounds like a coworker talking. "Stuck working Saturday" and "Get out of it" are what people actually say, and none of the wording sounds made up. The name "Saturday" gives nothing away.
+- none
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"f951d89","hash":"7fa4cf4993c5b37d3a1c648d21698629844c40c26fc23a02c58cecabb42c6a96","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"f94f71fca0abba05ab5e134721c75933bc54c34471ad0c9b89e5e55109bd3638","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":7,"stretch":1,"nonsense":0},"problems":{"blocker":1,"should":1,"nit":2}} -->
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"1781ba1","hash":"fe3bc6e8e3ccafa0d03905eb1a20f49977eaebe223dbdb487d3214931e2874c9","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"ef57b2561ab7506b9523fb7cffd181c351027d489472f24b5755d04180268eb4","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":6,"stretch":3,"nonsense":0},"problems":{"blocker":4,"should":1,"nit":1}} -->
 ## sense: fixable
-Recorded 2026-11-15 at commit f951d89, by claude -p (model: default). Inputs 7fa4cf4993c5: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 7 sensible, 1 stretch, 0 nonsense.
-Problems: 1 blocker, 1 should, 2 nit.
-Earlier problems: 6 fixed, 0 still there, 0 no longer applies.
+Recorded 2026-11-15 at commit 1781ba1, by claude -p (model: default). Inputs fe3bc6e8e3cc: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 6 sensible, 3 stretch, 0 nonsense.
+Problems: 4 blocker, 1 should, 1 nit.
+Earlier problems: 0 fixed, 2 still there, 0 no longer applies (now blockers).
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 59 s | $0.14 |
-| all | | 59 s (the steps add up to 59 s) | $0.14 |
+| 1-judge | report.md | 56 s | $0.13 |
+| all | | 56 s (the steps add up to 56 s) | $0.13 |
 
 ### Ledger
 The earlier record's open problems, as this run's reader marked them.
 
-- E1 fixed: The ending's own reasoning works against it. "He's reading out what he expects" means he would read out *your* name, and "he knows what it says" means a different face would surprise him. On top of that, his sight cone "lies on the board" all afternoon, yet he "hasn't looked at it since 4:00." — Fix: he filled the board in on Monday, and on a Friday afternoon he honestly doesn't remember who he put down, so he reads whatever face is in the box. Make it clear his cone is watching for *people* at the board, not reading what's on it. (he filled the board in on Monday, doesn't remember it, and watches for people, not for what it says.)
-- E2 fixed: The boss reading out his own face as a win. A real boss looks at his own face, says "Very funny. Who did this?" and puts yours back. — Fix: make the boss's face a loss (he wipes it, draws yours back and glares). Or drop it, and make the second write land on Kev. (his own face is now a loss: he wipes it and glares at you.)
-- E3 fixed: The six-second look at the ding has no real reason behind it. — Fix: give it one people actually have. Nobody comes for the noodles, so heads stay turned, wondering whose they are ("Whose is that? Lin?"). An unclaimed ding holds attention. A ding someone is answering doesn't. (the noodles go unclaimed and everyone wonders whose they are, which really does hold people's attention.)
-- E4 fixed: "Stay near the board until 5:00". After a ding at 4:05, that means standing at the board for nearly an hour. A real boss whose cone is on the board would say "Don't you have work?" — Fix: only require being in the empty chair between Lin and Kev when everyone sits down at 4:55. Hanging around near the board should draw the boss's attention. (you only need to be in the empty chair at 4:55, and standing about idle gets you sent to your desk.)
-- E5 fixed: Kev at 5:00. A real Kev hears his name and says "I wasn't on it." — Fix: show the protest and have the boss wave it off ("The board says Kev"), which fits "the board decides". (Kev protests and the boss points at the board.)
-- E6 fixed: Told on. Once Lin reports someone tampering with the Saturday board, a real boss checks the board and keeps an eye on it. Here he lets you try again with nothing changed. — Fix: after a tell, his cone stays on the board for the rest of the level, or Lin keeps a closer watch on it. (after a tell, the boss walks out, checks the board and puts your face back. His cone already watches the board, so he doesn't need to watch it more closely.)
+- E1 still there: In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using. (You no longer loiter at the board, which is fixed. But you're now the one person up and walking away from the kitchen when everyone wonders "whose noodles?" Everyone just watched you go past.)
+- E2 still there: You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style. (The new face is still "scribbled over yours line by line", so the old face shows through on the boss's own board.)
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using.
-- E2 [should] You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style.
+- E1 [blocker] In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using. (recurring: premise-level?)
+- E2 [blocker] You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style. (recurring: premise-level?)
+- E3 [blocker] The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other.
+- E4 [blocker] Office workers glance at a microwave ding for about a second. Nobody turns their head and holds it for six seconds over a cup of noodles. — Fix: give them something a real person keeps watching, e.g. the noodle cup boils over and steam or smoke pours out. People keep watching that until someone deals with it, and your walking away from it (not toward it) is your own risk.
+- E5 [should] Office desk phones show the calling extension. A silent call from "Supply Room" at 4:30 on a Friday is something the boss remembers when Kev protests at 5:00. — Fix: make it a real call that needs no explanation, e.g. you call the boss's outside line from your mobile, or the phone has no display. Or have him shrug it off as "probably the copier guy" if he mentions it at all.
 
 ### 1-judge: report.md
 
 Verdict: fixable
-- The ding (win): stretch — the head-turn is believable, but you stand at the board in the boss's view just before it, and that is exactly what he watches for.
-- The phone (win): sensible — anyone answers their ringing phone, says hello twice and hangs up, and Lin is away at the microwave.
-- The trap (not a win): sensible — you look at the noise and see whoever stands between you and it.
-- Fail (lose): sensible — the boss reads out the rota as written.
-- Caught (lose): sensible — he sees you writing on his rota.
-- His own face (lose): sensible — nobody believes the boss put himself on the weekend rota.
-- Told on (lose): sensible — a coworker reports you, and the boss goes and checks the rota.
-- Blamed (lose): sensible — whoever misses the meeting gets the job nobody wants.
+- The ding (win): stretch — nobody stares at a microwave for six seconds, and the person whose noodles they are just walked past them.
+- The phone (win): stretch — a silent call is ordinary, but an internal phone shows which extension is calling.
+- The trap (not a win): sensible — you look at a noise and see whoever is between you and it.
+- Shared ending (win): stretch — the boss trusting his own board is real, but Kev and Lin know whose face was up there all week.
+- Fail (lose): sensible — the boss reads out the schedule he wrote.
+- Caught (lose): sensible — you're seen writing on his board.
+- His own face (lose): sensible — nobody believes he put himself on the weekend, and coworkers remember whose face was there.
+- Told on (lose): sensible — a manager who hears someone was messing with the board goes and looks at it.
+- Blamed (lose): sensible — whoever skips the meeting gets the job nobody wants.
 
 ## Earlier problems
-- E1: fixed — he filled the board in on Monday, doesn't remember it, and watches for people, not for what it says.
-- E2: fixed — his own face is now a loss: he wipes it and glares at you.
-- E3: fixed — the noodles go unclaimed and everyone wonders whose they are, which really does hold people's attention.
-- E4: fixed — you only need to be in the empty chair at 4:55, and standing about idle gets you sent to your desk.
-- E5: fixed — Kev protests and the boss points at the board.
-- E6: fixed — after a tell, the boss walks out, checks the board and puts your face back. His cone already watches the board, so he doesn't need to watch it more closely.
+- E1: still there — You no longer loiter at the board, which is fixed. But you're now the one person up and walking away from the kitchen when everyone wonders "whose noodles?" Everyone just watched you go past.
+- E2: still there — The new face is still "scribbled over yours line by line", so the old face shows through on the boss's own board.
 
 ## Problems
-- blocker: In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using.
-- should: You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style.
-- nit: In the ding route, you walk away from your own steaming noodles and leave them on the counter until 5:00. A real person goes back for their lunch, and coworkers would notice who finally collects it. — Fix: let you pick the noodles up again after the meeting, or have Kev wander over and eat them, which also gives him a reason to protest.
-- nit: The boss's phone sits on a table in the corner, not on his desk. That's an odd place for a manager's own phone, and an internal call from the supply room would usually show its extension. — Fix: say it's an old shared corded line with no display, kept by the window because that's where the socket is.
+- blocker: The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other.
+- blocker: Office workers glance at a microwave ding for about a second. Nobody turns their head and holds it for six seconds over a cup of noodles. — Fix: give them something a real person keeps watching, e.g. the noodle cup boils over and steam or smoke pours out. People keep watching that until someone deals with it, and your walking away from it (not toward it) is your own risk.
+- should: Office desk phones show the calling extension. A silent call from "Supply Room" at 4:30 on a Friday is something the boss remembers when Kev protests at 5:00. — Fix: make it a real call that needs no explanation, e.g. you call the boss's outside line from your mobile, or the phone has no display. Or have him shrug it off as "probably the copier guy" if he mentions it at all.
+- nit: Lin heating fish for five minutes while standing with her back to the room is believable. But "she thinks of her fish" at exactly 4:30 reads like a cue. — Fix: give her a reason anyone would recognise, e.g. she always eats late on Fridays, or she's heating it up to take home.
 
 <!-- /cold-read:sense -->
 

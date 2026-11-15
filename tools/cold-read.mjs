@@ -428,7 +428,7 @@ export function parseItems(text, answers) {
 // --- grades and the ledger ---
 // Every report ends with its problems, each graded (grades.md): there is no quota, and the verdict counts blockers
 // only. When the pass has an earlier record, the reader first marks that record's open problems (the ledger); one
-// still there is promoted to a blocker, as recurring.
+// still there is carried, tagged recurring, at the grade the reader gives it now (else its earlier grade).
 export const GRADES = ['blocker', 'should', 'nit'];
 export const MARKS = ['fixed', 'still there', 'no longer applies'];
 export const RECURRING = 'recurring: premise-level?';
@@ -466,7 +466,10 @@ export function parseLedger(text) {
   const out = {};
   for (const l of sectionLines(text, 'Earlier problems') ?? []) {
     const m = /^\s*[-*]\s+[*_`]*(E\d+)[*_`]*\s*[:—–-]?\s*[*_`]*(fixed|still there|no longer applies)[*_`]*[\s.,;:—–-]*(.*)$/i.exec(l);
-    if (m) out[m[1].toUpperCase()] = { mark: m[2].toLowerCase(), why: m[3].trim() };
+    if (!m) continue;
+    // "still there (should)": the reader's grade for it now; without one it keeps its earlier grade.
+    const g = /^\(\s*(blocker|should|nit)\s*\)[\s.,;:—–-]*(.*)$/i.exec(m[3].trim());
+    out[m[1].toUpperCase()] = { mark: m[2].toLowerCase(), why: (g ? g[2] : m[3]).trim(), ...(g && { grade: g[1].toLowerCase() }) };
   }
   return out;
 }
@@ -500,7 +503,7 @@ export function ledgerText(earlier) {
 // ledger ([{ id, text, mark, why }] or null), open ([{ id, grade, text }]: carried to the next run), note }.
 // - The reader's verdict line must be there (else unreadable). `broken` stands.
 // - Otherwise the verdict counts blockers: `works` with none, `fixable` with any, whatever the reader said. The
-//   blockers are the '## Problems' blockers, every earlier problem still there (promoted, as recurring), and, in a
+//   blockers are the '## Problems' blockers, every earlier problem still there and still graded blocker (as recurring), and, in a
 //   narrow pass, every item with a bad answer (nonsense, leak...).
 // - A report with no '## Problems' section, or a narrow one with no item lines, is unreadable.
 // - The open list is every blocker and should (not nits), renumbered E1...; it is what the next run's reader marks.
@@ -512,9 +515,9 @@ export function passVerdict(pass, text, earlier = null) {
   const marks = parseLedger(text);
   let ledger = null;
   if (earlier?.raw) ledger = Object.entries(marks).map(([id, m]) => ({ id, text: m.why || id, ...m }));
-  else if (earlier?.items?.length) ledger = earlier.items.map((e) => ({ id: e.id, text: e.text, ...(marks[e.id] ?? { mark: 'still there', why: 'not marked by the reader' }) }));
+  else if (earlier?.items?.length) ledger = earlier.items.map((e) => ({ id: e.id, text: e.text, grade: e.grade, ...(marks[e.id] ?? { mark: 'still there', why: 'not marked by the reader' }) }));
   const still = (ledger ?? []).filter((e) => e.mark === 'still there');
-  const recurring = still.map((e) => ({ grade: 'blocker', text: `${e.text.replace(` (${RECURRING})`, '')} (${RECURRING})` }));
+  const recurring = still.map((e) => ({ grade: e.grade ?? 'blocker', text: `${e.text.replace(` (${RECURRING})`, '')} (${RECURRING})` }));
   const listed = problems ?? [];
   const bad = items ? items.filter((i) => pass.answers.bad.includes(i.answer)) : [];
   // A bad item is a blocker; it joins the list only when the reader listed no blocker for it.
@@ -532,7 +535,8 @@ export function passVerdict(pass, text, earlier = null) {
     const why = [];
     if (listed.some((p) => p.grade === 'blocker')) why.push(`listed ${listed.filter((p) => p.grade === 'blocker').length} blocker(s)`);
     if (fromItems.length) why.push(`marked ${bad.map((b) => `"${b.item}" ${b.answer}`).join(', ')}: a ${pass.answers.bad.join(' or ')} item is a blocker`);
-    if (recurring.length) why.push(`${recurring.length} earlier problem(s) still there, promoted to blockers`);
+    const stillBlock = recurring.filter((p) => p.grade === 'blocker').length;
+    if (stillBlock) why.push(`${stillBlock} earlier blocker(s) still there`);
     out.note = verdict === 'works' ? `the reader said ${said}, but listed no blocker: the verdict counts blockers only` : `the reader said ${said}, but ${why.join('; ')}`;
   }
   return { ...out, verdict };
@@ -613,7 +617,7 @@ export async function runStage(id, stage, opts = {}) {
   const inp = await stageInputs(id, stage, opts);
   // skipFresh (the CLI's default): a pass whose inputs are unchanged since its record is not read again. A second
   // read of the same inputs is not a new round: the ledger would find every open problem "still there" (nothing
-  // could have changed) and promote them all to blockers.
+  // could have changed) and carry them all again.
   if (opts.skipFresh) {
     const meta = readRecord(inp.root)[stage]?.meta;
     if (meta?.hash === inp.hash) return { stage, verdict: meta.verdict, skipped: true, commit: meta.commit, steps: [] };
@@ -707,7 +711,7 @@ export function renderSection(rec) {
     `Recorded ${rec.date} at commit ${rec.commit}, by ${rec.by} (model: ${rec.model}). Inputs ${rec.hash.slice(0, 12)}: ${inputs}.`,
     ...(rec.tally ? [`Items: ${Object.entries(rec.tally).map(([w, n]) => `${n} ${w}`).join(', ')}.`] : []),
     ...(rec.problems ? [`Problems: ${GRADES.map((g) => `${rec.problems[g]} ${g}`).join(', ')}.`] : []),
-    ...(rec.ledger ? [`Earlier problems: ${MARKS.map((m) => `${rec.ledger.filter((e) => e.mark === m).length} ${m}`).join(', ')}${rec.ledger.some((e) => e.mark === 'still there') ? ' (now blockers)' : ''}.`] : []),
+    ...(rec.ledger ? [`Earlier problems: ${MARKS.map((m) => `${rec.ledger.filter((e) => e.mark === m).length} ${m}`).join(', ')}.`] : []),
     ...(rec.note ? [`Recorded ${rec.verdict}: ${rec.note}.`] : []),
     '',
     '| Step | Reply | Time | Cost |',

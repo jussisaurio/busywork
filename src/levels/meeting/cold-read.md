@@ -1,57 +1,122 @@
 # Cold reads: meeting
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"f1d6d61bcbdf24b15074e7811471984bfc240215a2826306345965f23c6fcb52","parts":{"card":"000299b29daba06cd706b8d529d379098e6ed736d3aecff62f2ac4462b2b7ce3","ways":"480c6172b8156147b3265d4b18ecae7182d606220e36c3bdf7ac796254868f35","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":6,"stretch":4,"nonsense":1},"problems":{"blocker":6,"should":3,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs f1d6d61bcbdf: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 6 sensible, 4 stretch, 1 nonsense.
-Problems: 6 blocker, 3 should, 1 nit.
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"3d6c490","hash":"4b3748037655809d6a8ec36447f6382702ab8de52c9f18c5be63fc56e347fff9","parts":{"card":"000299b29daba06cd706b8d529d379098e6ed736d3aecff62f2ac4462b2b7ce3","ways":"26674eaa161b39d5595e3ead48f998c7daaa361a94df06e0a0d8d4e76a7d04eb","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":3,"near":2,"leak":0},"problems":{"blocker":0,"should":3,"nit":1}} -->
+## title: works
+Recorded 2026-11-15 at commit 3d6c490, by claude -p (model: default). Inputs 4b3748037655: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 miss, 2 near, 0 leak.
+Problems: 0 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 50 s | $0.11 |
-| all | | 50 s (the steps add up to 50 s) | $0.11 |
+| 1-guess | guesses.md | 12 s | $0.02 |
+| 2-judge | report.md | 28 s | $0.08 |
+| all | | 40 s (the steps add up to 40 s) | $0.10 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] Locked out, the boss stays outside and the meeting dies. In a real office someone hears the banging and lets him in, or he phones someone, or he follows a coworker in. — Leave his phone visibly on his desk. Have the team wait at 4:00, then shrug "he's not coming" and go home.
-- E2 [blocker] Kev doesn't notice that a cup held to your ear is coffee. — Drop the disguise. You just keep the cup out of his line of sight, behind a pillar or in the meeting room.
-- E3 [blocker] Kev snatches the coffee out of a coworker's hand. — Have him ask "is that the last of it? Can I…?" with a 🥺, and give the player a short window to walk away before he takes it.
-- E4 [blocker] An empty pot means no coffee for the rest of the day. A real person just makes more. — Show the machine out of beans with a "no coffee till Monday" note, visible from 2:30.
-- E5 [blocker] A broken projector cancels the meeting. A real boss says "just show it on your laptop." — Make the absurd result the meeting falling apart into "who broke the projector?", not "no screen, no meeting." Or: you have no laptop and the projector is the only screen in the room.
-- E6 [blocker] Lin told → the boss sends you to your desk for 20 minutes. — A real boss takes his card back, angrily, and keeps an eye on you (lose). For the sandwich, Lin confronts you herself and follows you around, which keeps you away from the rack.
-- E7 [should] Kev runs to the projector without being told. — Have the spill make a pop and a smell, or have the boss shout for "Kev!" while Kev is still there.
-- E8 [should] One empty mug counts as evidence, but every desk in an office has a mug. — Make it a distinctive office mug (the boss's own "#1 Boss" mug) or the coffee-pot cup itself.
-- E9 [should] The card says "the meeting never happens", but in route 1 everyone sits down at 4:00. — Reword it to "Make sure there's no presentation" or something similar.
+- E1 [should] The card opens with "4:00 PM." on its own line. That reads as "it's 4 PM now", but the game starts at 2:30. The player is told the wrong time, and the 90 minutes of afternoon they actually have are hidden. — Change "4:00 PM." to "The meeting's at 4."
+- E2 [should] The 📊 icon repeats "slides" and points the player at the projector before they've looked around the room. It's mild, because "slides" alone already hints at it. — Swap 📊 for 😬, which shows the trouble you're in rather than the equipment.
+- E3 [should] "Never happens" is open enough that it hints at keeping the boss away. Players would guess this anyway, so it costs little. — Change "Make sure the meeting never happens" to "Get the meeting called off."
+
+### 1-guess: guesses.md
+
+# Guesses
+
+1. **Cancel or move it on the shared calendar** so it drops off everyone's schedule. Suggested by "Make sure the meeting never happens" and the clock time "4:00 PM", which hints at a scheduled slot you could edit.
+2. **Break the presentation setup**, such as the projector, screen or laptop, so there's nothing to present on. Suggested by "slides" and the 📊 icon.
+3. **Keep the boss or the organizer busy** until 4:00 passes, or get them to leave early. Suggested by "4:00 PM" and "never happens". It's a race against the clock.
+4. **Get the meeting room booked or occupied** by someone else first. Suggested by "the meeting never happens", but only loosely.
+5. **Get everyone else to skip it** so nobody shows up. Suggested by "never happens" and the ❌ icon.
+
+Nothing on the card points to making the slides as a way to win. "You made none" reads like a fixed fact you have to work around.
+
+Stake: the meeting goes ahead and everyone sees that you promised slides and have nothing. The card only implies this. It never says what actually happens to you afterward, such as getting scolded or fired, or whether the game simply ends.
+
+### 2-judge: report.md
+
+Verdict: works
+- Stake: clear. You promised slides and have none, so at 4 you'll be standing there with nothing to show. The card doesn't say who you promised them to or what happens to you after, but any office worker can fill that in.
+- Cancel or move it on the calendar: miss. No route edits a calendar.
+- Break the presentation setup: near. It points at route 1's target, the projector, because of "slides" and 📊. The real puzzle is getting the coffee, keeping it from Kev and waiting until he's gone, and the guess has none of that.
+- Keep the boss busy, or get him to leave early: near. It points at route 2, where the boss goes out and can't get back in, because of "4:00 PM" and "never happens". It doesn't touch the keycard, which is the key step.
+- Get the room booked first: miss.
+- Get everyone else to skip it: miss.
+
+## Problems
+- should: The card opens with "4:00 PM." on its own line. That reads as "it's 4 PM now", but the game starts at 2:30. The player is told the wrong time, and the 90 minutes of afternoon they actually have are hidden. — Change "4:00 PM." to "The meeting's at 4."
+- should: The 📊 icon repeats "slides" and points the player at the projector before they've looked around the room. It's mild, because "slides" alone already hints at it. — Swap 📊 for 😬, which shows the trouble you're in rather than the equipment.
+- should: "Never happens" is open enough that it hints at keeping the boss away. Players would guess this anyway, so it costs little. — Change "Make sure the meeting never happens" to "Get the meeting called off."
+- nit: "You made none" sounds written, not spoken. — Use "You haven't made any." The whole card could read: "The meeting's at 4. You promised slides. You haven't made any. Get it called off."
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"3d6c490","hash":"695f3eeaefd9b2bdb29c5e06086dbe7944733f7747ffcfd7ffe2dabc48ba4bdc","parts":{"card":"000299b29daba06cd706b8d529d379098e6ed736d3aecff62f2ac4462b2b7ce3","ways":"26674eaa161b39d5595e3ead48f998c7daaa361a94df06e0a0d8d4e76a7d04eb","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":6,"stretch":4,"nonsense":0},"problems":{"blocker":3,"should":3,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit 3d6c490, by claude -p (model: default). Inputs 695f3eeaefd9: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 6 sensible, 4 stretch, 0 nonsense.
+Problems: 3 blocker, 3 should, 1 nit.
+Earlier problems: 5 fixed, 3 still there, 1 no longer applies (now blockers).
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 53 s | $0.12 |
+| all | | 53 s (the steps add up to 53 s) | $0.12 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 still there: Locked out, the boss stays outside and the meeting dies. In a real office someone hears the banging and lets him in, or he phones someone, or he follows a coworker in. — Leave his phone visibly on his desk. Have the team wait at 4:00, then shrug "he's not coming" and go home. (the boss is still stuck outside with no phone, no buzzer and no colleague to let him in. "Nobody upstairs knows" doesn't hold for 25 minutes.)
+- E2 fixed: Kev doesn't notice that a cup held to your ear is coffee. — Drop the disguise. You just keep the cup out of his line of sight, behind a pillar or in the meeting room. (the disguise is gone. Kev asks for the cup and lets you keep it.)
+- E3 fixed: Kev snatches the coffee out of a coworker's hand. — Have him ask "is that the last of it? Can I…?" with a 🥺, and give the player a short window to walk away before he takes it. (Kev asks (☕🥺❓) and doesn't take a cup from your hand.)
+- E4 fixed: An empty pot means no coffee for the rest of the day. A real person just makes more. — Show the machine out of beans with a "no coffee till Monday" note, visible from 2:30. (the empty coffee bag by the machine is visible.)
+- E5 still there: A broken projector cancels the meeting. A real boss says "just show it on your laptop." — Make the absurd result the meeting falling apart into "who broke the projector?", not "no screen, no meeting." Or: you have no laptop and the projector is the only screen in the room. ("a boss with a dead projector cancels". There's still no reason why a laptop or another room won't do.)
+- E6 fixed: Lin told → the boss sends you to your desk for 20 minutes. — A real boss takes his card back, angrily, and keeps an eye on you (lose). For the sandwich, Lin confronts you herself and follows you around, which keeps you away from the rack. (the boss takes his card back angrily, and you lose.)
+- E7 still there: Kev runs to the projector without being told. — Have the spill make a pop and a smell, or have the boss shout for "Kev!" while Kev is still there. (Kev still runs to the projector (🔧❗) without being called and without any noise.)
+- E8 fixed: One empty mug counts as evidence, but every desk in an office has a mug. — Make it a distinctive office mug (the boss's own "#1 Boss" mug) or the coffee-pot cup itself. (there's only one cup of coffee in the office this afternoon, so the freshly emptied mug is the guilty one.)
+- E9 no longer applies: The card says "the meeting never happens", but in route 1 everyone sits down at 4:00. — Reword it to "Make sure there's no presentation" or something similar. (the boss waves everyone out before anyone presents, so the meeting is cancelled. In plain speech, it never happens.)
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] Locked out, the boss stays outside and the meeting dies. In a real office someone hears the banging and lets him in, or he phones someone, or he follows a coworker in. — Leave his phone visibly on his desk. Have the team wait at 4:00, then shrug "he's not coming" and go home. (recurring: premise-level?)
+- E2 [blocker] A broken projector cancels the meeting. A real boss says "just show it on your laptop." — Make the absurd result the meeting falling apart into "who broke the projector?", not "no screen, no meeting." Or: you have no laptop and the projector is the only screen in the room. (recurring: premise-level?)
+- E3 [blocker] Kev runs to the projector without being told. — Have the spill make a pop and a smell, or have the boss shout for "Kev!" while Kev is still there. (recurring: premise-level?)
+- E4 [should] The boss sees the dead projector at 3:12, but waits until everyone sits down at 4:00 to call the meeting off. A real boss sends "meeting's off" or rebooks right away. — Have him only spot the damage at 4:00 when he switches it on. Or, on his 3:12 walk, have him mutter and pin a "meeting cancelled — projector" note to the door.
+- E5 [should] Lin searches the open plan for her sandwich until 3:24. A real person checks the fridge, asks once or twice, sulks and goes to buy lunch. — Have her go down to the shop for a new sandwich from about 3:00 to 3:24. That gets her away from her desk just as well.
+- E6 [should] You get fired for having mustard on your sweater. Real people get an angry Lin and an awkward talk, not a box. — Make the mustard catch a loss in its own right: Lin follows you around angrily and blocks you from the rack.
 
 ### 1-judge: report.md
 
 Verdict: fixable
+- Break the projector (win): stretch — Kev, the cup and the mug all act like real people, but a real boss with a dead projector moves rooms or says "use your laptop". He doesn't cancel.
+- Lock the boss out (win): stretch — a boss stuck at the gate phones someone or follows a colleague in. He doesn't stay outside past 4:00.
+- Sandwich combo (win): stretch — nobody searches the whole office for a missing sandwich for 25 minutes.
+- The meeting happens (lose): sensible — nothing stopped it.
+- Caught (lose): sensible — being caught at the boss's jacket, holding his card or holding the mug gets you in trouble.
+- Blamed: the mug (lose): sensible — you're holding the only coffee mug of the afternoon.
+- Blamed: your empty chair (lose): sensible — the person who promised slides and didn't turn up is the obvious suspect.
+- Kev fixed it (lose): stretch — nobody tells Kev the projector is broken, yet he runs to it.
+- Kev drank the coffee (lose): sensible — the bag is empty and he got the last cup.
+- The keycard went back (lose): sensible — the boss sees his card on the floor and picks it up.
 
-- Break the projector (win): stretch — the spill and the blame are fine, but a dead projector doesn't kill a meeting, and Kev's coffee behaviour is puzzle-piece behaviour.
-- Lock the boss out (win): nonsense — a boss banging on a glass door gets let in within a minute.
-- Sandwich combo (win): sensible — a hungry coworker hunting for a stolen lunch, and mustard giving the thief away, is very real.
-- The meeting happens (lose): sensible — the default afternoon.
-- Caught (lose): sensible — taking the boss's keycard or holding the evidence gets you fired.
-- Blamed: the mug (lose): sensible — the boss was looking for a mug, and you're holding one.
-- Blamed: your empty chair (lose): sensible — whoever skips the meeting gets blamed.
-- Kev fixed it (lose): stretch — nothing tells Kev the projector broke, and a coffee-soaked projector isn't fixed in 5 minutes.
-- Kev drank the coffee (lose): stretch — an office with an empty pot brews another one.
-- Lin told (lose): stretch — being "sent to your desk" for 20 minutes is something a teacher does, not a boss.
-- Keycard went back (lose): sensible — he sees his card and pockets it.
+## Earlier problems
+- E1: still there — the boss is still stuck outside with no phone, no buzzer and no colleague to let him in. "Nobody upstairs knows" doesn't hold for 25 minutes.
+- E2: fixed — the disguise is gone. Kev asks for the cup and lets you keep it.
+- E3: fixed — Kev asks (☕🥺❓) and doesn't take a cup from your hand.
+- E4: fixed — the empty coffee bag by the machine is visible.
+- E5: still there — "a boss with a dead projector cancels". There's still no reason why a laptop or another room won't do.
+- E6: fixed — the boss takes his card back angrily, and you lose.
+- E7: still there — Kev still runs to the projector (🔧❗) without being called and without any noise.
+- E8: fixed — there's only one cup of coffee in the office this afternoon, so the freshly emptied mug is the guilty one.
+- E9: no longer applies — the boss waves everyone out before anyone presents, so the meeting is cancelled. In plain speech, it never happens.
 
 ## Problems
-- blocker: Locked out, the boss stays outside and the meeting dies. In a real office someone hears the banging and lets him in, or he phones someone, or he follows a coworker in. — Leave his phone visibly on his desk. Have the team wait at 4:00, then shrug "he's not coming" and go home.
-- blocker: Kev doesn't notice that a cup held to your ear is coffee. — Drop the disguise. You just keep the cup out of his line of sight, behind a pillar or in the meeting room.
-- blocker: Kev snatches the coffee out of a coworker's hand. — Have him ask "is that the last of it? Can I…?" with a 🥺, and give the player a short window to walk away before he takes it.
-- blocker: An empty pot means no coffee for the rest of the day. A real person just makes more. — Show the machine out of beans with a "no coffee till Monday" note, visible from 2:30.
-- blocker: A broken projector cancels the meeting. A real boss says "just show it on your laptop." — Make the absurd result the meeting falling apart into "who broke the projector?", not "no screen, no meeting." Or: you have no laptop and the projector is the only screen in the room.
-- blocker: Lin told → the boss sends you to your desk for 20 minutes. — A real boss takes his card back, angrily, and keeps an eye on you (lose). For the sandwich, Lin confronts you herself and follows you around, which keeps you away from the rack.
-- should: Kev runs to the projector without being told. — Have the spill make a pop and a smell, or have the boss shout for "Kev!" while Kev is still there.
-- should: One empty mug counts as evidence, but every desk in an office has a mug. — Make it a distinctive office mug (the boss's own "#1 Boss" mug) or the coffee-pot cup itself.
-- should: The card says "the meeting never happens", but in route 1 everyone sits down at 4:00. — Reword it to "Make sure there's no presentation" or something similar.
-- nit: At 3:12 the boss both heads to the restroom and searches four desks for a mug. — Make the mug hunt happen on his way back, at 3:22.
+- should: The boss sees the dead projector at 3:12, but waits until everyone sits down at 4:00 to call the meeting off. A real boss sends "meeting's off" or rebooks right away. — Have him only spot the damage at 4:00 when he switches it on. Or, on his 3:12 walk, have him mutter and pin a "meeting cancelled — projector" note to the door.
+- should: Lin searches the open plan for her sandwich until 3:24. A real person checks the fridge, asks once or twice, sulks and goes to buy lunch. — Have her go down to the shop for a new sandwich from about 3:00 to 3:24. That gets her away from her desk just as well.
+- should: You get fired for having mustard on your sweater. Real people get an angry Lin and an awkward talk, not a box. — Make the mustard catch a loss in its own right: Lin follows you around angrily and blocks you from the rack.
+- nit: Only coffee can break the projector. A real office worker would also think of a water bottle or the flower vase. — Show a "no drinks" sticker, and either give coffee one plain reason to be the only drink at hand (e.g. the water cooler is empty) or say nothing.
 
 <!-- /cold-read:sense -->
 

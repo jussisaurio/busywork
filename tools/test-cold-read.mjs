@@ -217,16 +217,16 @@ try {
   ok(md.includes('- E1 [blocker] B-ONE, the boss reads his own clock wrongly — fix it\n- E2 [should] S-ONE — fix it\n\n') && !/E\d \[nit\]/.test(md),
     'the record: the open problems, numbered, a wrapped line joined; nits are not carried');
 
-  // --- the ledger: the next run marks the earlier problems; one still there is a blocker ---
-  fr = fakeRunner({ '1-card': 'third read', '2-review': 'Verdict: works\n\n## Earlier problems\n- E1: fixed — the boss looks now\n- **E2**: still there — same\n\n## Problems\n- should: S-NEW — fix it' });
+  // --- the ledger: the next run marks the earlier problems; one still there is carried at the grade the reader gives it ---
+  fr = fakeRunner({ '1-card': 'third read', '2-review': 'Verdict: works\n\n## Earlier problems\n- E1: fixed — the boss looks now\n- **E2**: still there (blocker) — worse now\n\n## Problems\n- should: S-NEW — fix it' });
   rec = await runStage('meeting', 'premise', { runner: fr.runner, root, log: silent, ...fixed });
   const [l1, l2] = fr.calls;
   ok(!files(l1).includes('earlier.md') && files(l2).includes('earlier.md') && /- E1 \[blocker\] B-ONE[^\n]*\n- E2 \[should\] S-ONE/.test(text(l2, 'earlier.md')),
     'ledger: the last step (only) gets the earlier record\'s open problems as earlier.md');
-  ok(rec.verdict === 'fixable' && /the reader said works, but 1 earlier problem\(s\) still there, promoted to blockers/.test(rec.note) && rec.problems.blocker === 1 && rec.problems.should === 1,
-    `ledger: a should still there is promoted to a blocker, and the verdict follows (${rec.note})`);
+  ok(rec.verdict === 'fixable' && /the reader said works, but 1 earlier blocker\(s\) still there/.test(rec.note) && rec.problems.blocker === 1 && rec.problems.should === 1,
+    `ledger: a should the reader re-grades as a blocker is one, and the verdict follows (${rec.note})`);
   md = readFileSync(recordFile(root), 'utf8');
-  ok(md.includes('Earlier problems: 1 fixed, 1 still there, 0 no longer applies (now blockers).') && md.includes('### Ledger') && md.includes('- E1 fixed: B-ONE')
+  ok(md.includes('Earlier problems: 1 fixed, 1 still there, 0 no longer applies.') && md.includes('### Ledger') && md.includes('- E1 fixed: B-ONE')
     && md.includes('- E1 [blocker] S-ONE — fix it (recurring: premise-level?)\n- E2 [should] S-NEW — fix it'), 'ledger: recorded, and the recurring problem is tagged and carried first');
   ok((await stageStatus('meeting', 'premise', { root })).fresh, 'ledger: not an input; the pass stays fresh across rounds');
   {
@@ -241,6 +241,7 @@ try {
   ok(rec.verdict === 'fixable' && rec.ledger.find((e) => e.id === 'E2').mark === 'still there' && /not marked/.test(rec.ledger.find((e) => e.id === 'E2').why)
     && rec.open.filter((p) => /recurring: premise-level\?\)$/.test(p.text)).length === 2 && !rec.open.some((p) => /\(recurring.*\(recurring/.test(p.text)),
     'ledger: an earlier problem the reader did not mark counts as still there; the tag is not doubled');
+  ok(rec.problems.blocker === 1 && rec.problems.should === 1, 'ledger: a still-there problem with no new grade keeps its earlier one (a should stays a should)');
   fr = fakeRunner({ '1-card': 'fifth read', '2-review': 'Verdict: fixable\n\n## Earlier problems\n- E1: fixed — ok\n- E2: no longer applies — the boss is gone\n\n## Problems\n- nit: N — n' });
   rec = await runStage('meeting', 'premise', { runner: fr.runner, root, log: silent, ...fixed });
   ok(rec.verdict === 'works' && /said fixable, but listed no blocker/.test(rec.note), 'grades: no blocker is works, whatever the reader said (the verdict counts blockers only)');
