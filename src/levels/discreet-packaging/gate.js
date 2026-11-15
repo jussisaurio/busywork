@@ -6,12 +6,12 @@ export default {
   mustUse: [{ id: 'camera', event: 'camera:blind' }],
   targets: [
     'socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk',
-    'bob_desk', 'lin_desk', 'corridor', 'mailroom', 'lobby', 'mail_call',
+    'bob_desk', 'lin_desk', 'corridor', 'store_room', 'lobby', 'mail_call',
   ],
   interactable: ['socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk'],
   renderEvents: [
-    'camera:unplugged', 'camera:pushed', 'bob:static', 'bob:whacking', 'camera:replugged',
-    'parcel:collected', 'parcel:missing', 'parcel:spotted', 'parcel:found', 'parcel:snatched', 'parcel:handed',
+    'camera:unplugged', 'camera:pushed', 'bob:static', 'bob:whacking', 'bob:leaf', 'bob:tugging', 'bob:gave_up', 'camera:replugged',
+    'parcel:collected', 'parcel:missing', 'parcel:spotted', 'parcel:found', 'parcel:spotted_on_you', 'parcel:handed',
   ],
   milestones: {
     'camera:unplugged': () => 'unplugged',
@@ -22,14 +22,14 @@ export default {
     'parcel:stashed': () => 'stashed',
     'camera:replugged': () => 'replugged',
     'parcel:found': (p) => `found@${p.by}`,
-    'parcel:snatched': () => 'snatched',
+    'parcel:spotted_on_you': () => 'exclaimed',
     'parcel:missing': () => 'missing',
     'parcel:handed': () => 'handed',
     'witness:tattle': () => 'tattle',
     'bob:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['unplugged', 'pushed', 'parcel', 'swapped', 'stashed', 'replugged', 'found@lin', 'found@bob', 'snatched',
+  binKeys: ['unplugged', 'pushed', 'parcel', 'swapped', 'stashed', 'replugged', 'found@lin', 'found@bob', 'exclaimed',
     'missing', 'work', 'caught'],
   keyActions: ['unplugged', 'pushed', 'parcel', 'swapped', 'stashed'],
   goldenPlans: [

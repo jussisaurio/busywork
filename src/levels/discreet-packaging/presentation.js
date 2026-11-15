@@ -32,7 +32,7 @@ export const DECOR = {
     { tile: 'M', draw: monitor, state: monitorState }, // Bob's screen: the back office, one leaf, or static
     { tile: 'C', draw: wallCamera, state: wallCameraState }, // turned where it looks; askew in the plant once poked
     { tile: 'O', draw: socket, state: socketState }, // the monitor's plug in the power strip, or hanging out
-    { tile: 'B', draw: broomStand, state: broomState }, // and the mailroom's cobwebs and dust
+    { tile: 'B', draw: broomStand, state: broomState }, // and the store room's cobwebs and dust
     { tile: 'P', draw: drawer, state: drawerState }, // your drawer: open only while you stuff the box in
   ],
   // '#brownbox' Bob's parcel, '#post' both boxes in Lin's arms, '#static' a snowy screen, '#dropped' a fallen box
@@ -44,7 +44,7 @@ export const DECOR = {
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },
     { zone: 'kitchen', x: 16, y: 7 }, // the back office: lino, strip light
-    { zone: 'kitchen', x: 25, y: 7 }, // the mailroom
+    { zone: 'kitchen', x: 25, y: 7 }, // the store room (cleaning things; nobody opens it before the cleaner at 6)
     { zone: 'meeting', x: 20, y: 2 }, // the corridor
     { zone: 'lobby', x: 9, y: 13 },
   ],
@@ -54,10 +54,10 @@ export const DECOR = {
 export const LOOKS = {
   player: L1.player,
   lin: L1.lin,
-  // Bob: security. Big, navy uniform, cap, moustache, a badge.
+  // Bob: the office manager, in charge of the floor; the pigeonhole monitor sits on his counter. Big, navy suit, tie, moustache, going bald.
   bob: {
     body: C.navy, bodyDark: C.navyDark, torso: 'suit', shirt: '#c9d6e6', shirtDark: '#9fb0c6', tie: '#1c2639',
-    skin: '#e3ad86', skinDark: '#c68e66', hair: '#1c2639', hairStyle: 'cap', mustache: true,
+    skin: '#e3ad86', skinDark: '#c68e66', hair: '#1c2639', hairStyle: 'horseshoe', mustache: true,
     legs: '#1c2232', wide: 1.2, tall: 1.06, head: 7.2, bubbleDy: 34, eyeDy: 13,
   },
 };
@@ -68,9 +68,10 @@ const BOB = (n) => n.id === 'bob';
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'whacking', arms: 'bang' }, // a thump on the side of the camera
-    { when: (n) => n.override === 'plugging', arms: 'reach' }, // pushing the plug back into the power strip
-    // Lin grabbing the pink box out of your hands
-    { when: (n, w, game) => LIN(n) && w.snatchT != null && game.loopTime - w.snatchT < 0.9, arms: 'reach', item: '#parcel' },
+    { when: (n) => n.override === 'plugging', arms: 'reach' },
+    { when: (n) => n.override === 'tugging', arms: 'reach' }, // tugging at the camera jammed in the plant // pushing the plug back into the power strip
+    // Lin, seeing the pink box in your arms: hands up, delighted
+    { when: (n, w) => LIN(n) && w.spotT != null, arms: 'cheer' },
     // Lin with your parcel at the mail call: up over her head for the whole office to see.
     { when: (n, w) => LIN(n) && n._atMail && w.parcel === 'lin' && w.parcelFor !== 'bob', arms: 'cheer', item: '#parcel' },
     // On the way back from the shelf: both boxes, or what was there.
@@ -105,6 +106,7 @@ export const SOUNDS = {
     'camera:pushed': { sfx: 'bang', spot: 'camera' }, // the clunk of it swivelling into the plant
     'bob:static': { sfx: 'notice', who: 'bob' },
     'bob:whacking': { sfx: 'bang', who: 'bob' },
+    'bob:gave_up': { sfx: 'notice', who: 'bob' },
     'camera:replugged': { sfx: 'fixed', spot: 'socket' },
     'broom:taken': { sfx: 'rustle', who: 'player' },
     'broom:returned': { sfx: 'swish', who: 'player' },
@@ -112,7 +114,7 @@ export const SOUNDS = {
     'parcel:stashed': { sfx: 'creak', spot: 'player_desk' },
     'parcel:spotted': { sfx: 'tension' },
     'parcel:found': { sfx: 'notice' },
-    'parcel:snatched': { sfx: 'notice' },
+    'parcel:spotted_on_you': { sfx: 'notice' },
     'parcel:missing': { sfx: 'crickets' },
   },
   drops: { parcel: 'soft', broom: 'card' },
