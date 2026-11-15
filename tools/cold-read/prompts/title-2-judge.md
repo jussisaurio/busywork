@@ -11,6 +11,9 @@ Two questions:
 2. **Does the name or the card give the method away?** A guess that names a real route's key step, quoting the name
    or the card for it, takes the puzzle from the player. Knowing the goal is fine; that is what the card is for.
 
+3. **Does it sound like a person talking?** Read it aloud. Stiff or made-up phrasing ("reads out the rota") makes
+   the game sound written by a machine. Say which words a real office worker would use instead.
+
 Use your judgment on how much each problem would hurt a real player, and grade it by that.
 
 Reply with your report. Your reply is saved as report.md.

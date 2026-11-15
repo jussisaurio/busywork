@@ -21,9 +21,9 @@ else is pictures, motion and sound.
 
 **A good card tells a stranger three things: when it is, what's about to go wrong for them, and what to do.**
 - **Now:** the loop's start time ("Friday, 4:00 PM."). The first time on the card is read as the current time.
-- **The trouble and what it costs you,** in plain words: "You're down to work Saturday." "You're on the layoff list."
-  The deadline comes with it: "The boss reads out the rota at 5:00."
-- **The order:** one imperative, the goal: "Keep your weekend." "Catch the bus." "Make her miss it." It says what to
+- **The trouble and what it costs you,** in plain words: "You're stuck working Saturday." "You're on the layoff list."
+  The deadline comes with it: "The boss makes it official at 5:00."
+- **The order:** one imperative, the goal: "Get out of it." "Catch the bus." "Make her miss it." It says what to
   achieve, and the player works out how. That is why it names the goal, not a method or a tool.
 - Test: a stranger who reads only the card can say where they are, what they stand to lose and what they're trying to
   do.

@@ -4,8 +4,8 @@
 
 ## Card
 
-Friday, 4:00 PM. You're down to work Saturday.
-The boss reads out the rota at 5:00. Keep your weekend.
+Friday, 4:00 PM. You're stuck working Saturday.
+The boss makes it official at 5:00. Get out of it.
 
 ## Name
 
