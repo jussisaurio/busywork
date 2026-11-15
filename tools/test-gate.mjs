@@ -1,6 +1,6 @@
 // Tests for tools/gate.mjs: the verdict logic on synthetic fuzz results (no fuzzing), plus how a day's
 // mustUse lessons are matched (two real days through the harness).
-import { checkGate, gateReport } from './gate.mjs';
+import { checkGate, gateReport, gateBudget, DEFAULT_BUDGET } from './gate.mjs';
 import { STAGES } from './cold-read.mjs';
 import { getLevel } from '../src/levels/index.js';
 import { validateLevel } from '../src/levels/validate.js';
@@ -116,6 +116,22 @@ ok(checkGate(rr, RL, { coldRead: coldOk() }).find((c) => c.name === 'put')?.text
   let msg = '';
   try { validateLevel({ ...M, gate: { ...M.gate, mustUse: [{ id: 'put', event: 'item:put', routes: ['nope'] }] } }, 'bad-routes'); } catch (e) { msg = e.message; }
   ok(/gate\.mustUse\[0\]\.routes\[0\]: no route 'nope'/.test(msg), 'validator: a lesson\'s routes name level routes');
+  for (const budget of [0, 2.5, '30000']) {
+    msg = '';
+    try { validateLevel({ ...M, gate: { ...M.gate, budget } }, 'bad-budget'); } catch (e) { msg = e.message; }
+    ok(/gate\.budget: not a whole number/.test(msg), `validator: gate.budget ${JSON.stringify(budget)} is refused`);
+  }
+  let fine = true;
+  try { validateLevel({ ...M, gate: { ...M.gate, budget: 60000 } }, 'meeting'); } catch (e) { fine = e.message; }
+  ok(fine === true, `validator: gate.budget 60000 is fine (${fine})`);
+}
+
+// The gate's budget: --budget, else the level's gate.budget, else the default.
+{
+  const own = { ...levelData('meeting'), budget: 60000 };
+  ok(gateBudget('meeting', undefined, own).budget === 60000 && gateBudget('meeting', undefined, own).from === 'level', 'budget: the level\'s gate.budget without --budget');
+  ok(gateBudget('meeting', '500', own).budget === 500 && gateBudget('meeting', '500', own).from === 'flag', 'budget: --budget beats the level\'s');
+  ok(gateBudget('meeting', undefined, { ...own, budget: undefined }).budget === DEFAULT_BUDGET, 'budget: the default when the level names none');
 }
 
 // Two real days (level 1, design-jam/FUZZ.md's minimal keycard win, with and without pretend).

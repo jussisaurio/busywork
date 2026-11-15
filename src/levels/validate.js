@@ -58,7 +58,8 @@
 //   harness     optional; landmarks name spots (my_seat is built in: ENGINE_LANDMARKS)
 //   gate        optional; targets are interactable ids, landmarks (the level's or the engine's) or "x,y";
 //               interactable targets; mustUse (routes: route ids)
-//               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
+//               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names;
+//               budget (optional) a whole number of days of 1 or more: what tools/gate.mjs fuzzes without --budget
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
 //               (render/world.js PROP_PAINTERS) or a painter function of the level's, on a legend letter
@@ -494,6 +495,7 @@ export function levelProblems(level, key) {
     }
     for (const [name, f] of Object.entries(gate.milestones ?? {})) if (!isFn(f)) bad(`gate.milestones[${q(name)}]`, 'not a function');
     if (gate.renderEvents !== undefined && !(Array.isArray(gate.renderEvents) && gate.renderEvents.every(isStr))) bad('gate.renderEvents', 'not a list of event names');
+    if (gate.budget !== undefined && !(Number.isInteger(gate.budget) && gate.budget >= 1)) bad('gate.budget', 'not a whole number of days of 1 or more');
   }
 
   // --- presentation -----------------------------------------------------------------------------

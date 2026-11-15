@@ -20,6 +20,7 @@
 // and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
 //
 //   node tools/gate.mjs [--level meeting] [--budget 30000] [--seed 1] [--batch 288] [--workers N]
+// --budget defaults to the level's gate.budget (a level whose rarest win needs more days says so), else 30000.
 //
 // Level data (route ids, mustUse lessons, goto targets) comes from the level's folder: fuzz.mjs levelData(id)
 // reads level.routes and level.gate (src/levels/meeting/gate.js).
@@ -32,6 +33,14 @@ import { strayPictures, strayText } from './lib/stray.mjs';
 
 // Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
+
+// The days to fuzz level `id`: the --budget given on the command line (a string, or undefined), else the level's
+// gate.budget, else DEFAULT_BUDGET. Returns { budget, from } (from: 'flag', 'level' or 'default'). L: levelData(id).
+export function gateBudget(id, flag, L = levelData(id)) {
+  if (flag !== undefined) return { budget: Number(flag), from: 'flag' };
+  const own = L.budget;
+  return own !== undefined ? { budget: own, from: 'level' } : { budget: DEFAULT_BUDGET, from: 'default' };
+}
 
 const pct = (x) => `${(100 * x).toFixed(2)}%`;
 
@@ -123,14 +132,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error(`gate: ${e.message}`);
     process.exit(2);
   }
+  const days = gateBudget(level, arg('budget'));
   const opts = {
     level,
-    budget: Number(arg('budget', DEFAULT_BUDGET)),
+    budget: days.budget,
     seed: Number(arg('seed', 1)),
     batch: Number(arg('batch', BATCH)),
     workers: Number(arg('workers', defaultWorkers())),
   };
-  console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
+  const from = { flag: '--budget', level: "the level's gate.budget", default: 'the default' }[days.from];
+  console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}: ${from}, ${opts.workers} workers)...`);
   try {
     const r = await fuzz(opts);
     const plans = combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level)));

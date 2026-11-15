@@ -9,6 +9,8 @@ import {
   PLAYER_RADIUS, PLAYER_SPEED, PLAYER_BUSY_SPEED, SUSPICION_FILL_SEC, HOLD_TIME, MARKS,
 } from '../src/config.js';
 import { createHarness, observe } from '../src/agent/harness.js';
+import { fixShot } from './press-stops.mjs';
+import { getLevel } from '../src/levels/index.js';
 import { createGame, resetLoop } from '../src/state.js';
 import { createRng } from '../src/core/rng.js';
 import { DIRS } from '../src/core/vision.js';
@@ -1017,6 +1019,27 @@ section('input module (createInput on a fake EventTarget)');
   inp.destroy();
   key('keydown', 'KeyW');
   ok(!inp.isDown('up'), 'destroy() removes listeners');
+}
+
+// The harness's interact watches for stop events from the key press's own frame: Layoffs, the boss's coffee
+// (boss:coffee, a soft stop) fires the moment you start on his cable, and the command pauses on it.
+{
+  const press = (pressStops) => {
+    const h = createHarness({ level: 'layoffs', pressStops });
+    h.begin();
+    for (const c of ['pretend until 3:25.5', 'goto behind_his_desk pretend']) h.run(c);
+    return [h.run('interact').text, h];
+  };
+  const [r, h] = press(true);
+  ok(/^paused at 0% .*\(boss:coffee\)/.test(r), `pressStops: a stop on the press frame pauses interact (${r})`);
+  const again = h.run('interact').text;
+  ok(/^did /.test(again), `pressStops: a second interact finishes the act (the press is swallowed mid-act) (${again})`);
+  const [old] = press(false);
+  ok(/^did /.test(old), `without pressStops the press frame's stop is missed (${old})`);
+  // tools/press-stops.mjs: the extra interact that brings the old command results back.
+  const fix = fixShot(getLevel('layoffs'), ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact', 'goto boss_phone']);
+  ok(fix.adds.length === 1 && fix.adds[0].i === 2 && fix.cmds.join() === 'pretend until 3:25.5,goto behind_his_desk pretend,interact,interact,goto boss_phone' && fix.same,
+    `press-stops: one interact after the paused one, and every old result comes back (${fix.cmds.join(' ; ')})`);
 }
 
 console.log(`\n${passes} passed, ${fails} failed`);
