@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Early Bus (src/levels/meeting/gate.js documents the fields).
+// What the fuzzer and the gate know about The Last Bus (src/levels/meeting/gate.js documents the fields).
 export default {
   // The lesson: a clock you pushed. Every win must push one.
   mustUse: [{ id: 'clock', event: 'clock:pushed' }],
@@ -7,13 +7,14 @@ export default {
     'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'kitchen', 'entrance', 'restroom_door', 'bus_stop',
   ],
   interactable: ['boss_clock', 'open_clock'],
-  renderEvents: ['clock:pushed', 'clock:jump', 'clock:reset', 'boss:desk', 'boss:hunt', 'boss:frown', 'boss:herd', 'boss:shrug',
+  renderEvents: ['clock:pushed', 'clock:jump', 'clock:reset', 'boss:desk', 'boss:hunt', 'boss:suspect', 'boss:herd', 'boss:shrug',
     'boss:coat', 'coat:seen', 'boss:left', 'kev:left', 'boss:workAssigned'],
   milestones: {
     'clock:pushed': (p) => `${p.clock}${p.off}`,
     'clock:jump': (p) => `jump:${p.id}`,
     'clock:reset': (p) => `reset:${p.clock}`,
     'boss:hunt': () => 'hunt',
+    'boss:suspect': () => 'suspect',
     'boss:shrug': () => 'shrug',
     'boss:coat': () => 'coat',
     'boss:herd': () => 'herd',
