@@ -46,7 +46,8 @@
 //               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
-//               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
+//               (render/world.js PROP_PAINTERS) or a painter function of the level's, on a legend letter
+//               that is on the map
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
 //               scene in scenes, each { win, icons, draw() }
@@ -404,7 +405,9 @@ export function levelProblems(level, key) {
     if (decor.elevator !== undefined) spot('decor.elevator.spot', decor.elevator?.spot);
     for (const [i, pr] of (decor.props ?? []).entries()) {
       const path = `decor.props[${i}]`;
-      if (!Object.hasOwn(PROP_PAINTERS, pr?.draw)) bad(`${path}.draw`, `no painter ${q(pr?.draw)} (${Object.keys(PROP_PAINTERS).join(', ')})`);
+      if (!isFn(pr?.draw) && !Object.hasOwn(PROP_PAINTERS, pr?.draw)) {
+        bad(`${path}.draw`, `no painter ${q(pr?.draw)} (a function, or one of ${Object.keys(PROP_PAINTERS).join(', ')})`);
+      }
       if (map && !(level.map.rows.some((r) => r.includes(pr?.tile)) && typeof pr?.tile === 'string' && pr.tile.length === 1)) {
         bad(`${path}.tile`, `${q(pr?.tile)} is not on the map`);
       }

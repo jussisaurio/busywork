@@ -1060,11 +1060,13 @@ export function drawWorldDynamic(ctx, game, t) {
   const decor = decorOf(game.level);
   drawWallClock(ctx, map, minute, decor.clock, game.level.day.start);
 
-  // Furniture with moving parts (decor.props), in order, each showing what its state(world, game) says.
+  // Furniture with moving parts (decor.props), in order, each showing what its state(world, game) says. Its draw
+  // names a painter below, or is the level's own painter function, called the same way.
   const props = decor.props || NONE;
   for (let i = 0; i < props.length; i++) {
     const at = info.props[i];
-    const paint = at && PROP_PAINTERS[props[i].draw];
+    const draw = props[i].draw;
+    const paint = at && (typeof draw === 'function' ? draw : PROP_PAINTERS[draw]);
     if (paint) paint(ctx, info, at, props[i].state(world, game), t);
   }
 
@@ -1120,7 +1122,8 @@ export function drawWorldDynamic(ctx, game, t) {
 }
 
 // The decor.props painters, by name: (ctx, info, tile, shown, t). `shown` is the prop's state(world, game).
-// Exported for the level validator (src/levels/validate.js): a prop must name one of these.
+// Exported for the level validator (src/levels/validate.js): a prop names one of these, or brings its own function
+// with the same signature (tile: the prop's legend letter on the map, in tile units; draw in map pixels, T a tile).
 export const PROP_PAINTERS = {
   // { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }: a beam lights decor.screen.
   slideProjector(ctx, info, at, shown, t) {
