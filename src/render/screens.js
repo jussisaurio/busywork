@@ -15,8 +15,13 @@ import { TAB, person, bubble, floorCarpet, confetti, backWall } from './tableau.
 // Width of a row of n route slots.
 const rowSpan = (n, size, gap) => (n > 0 ? n * size + (n - 1) * gap : 0);
 
+// Where the ▶ key cap was last drawn, in view coordinates, so a click on it starts the day like E/Space/Enter
+// (main.js). null while no card shows it. Recording it changes no pixels.
+export const playButton = { rect: null };
+
 // Wide key cap with a procedural ▶ glyph.
 function playKey(ctx, cx, cy, w, h, t) {
+  playButton.rect = { x: cx - w / 2, y: cy - h / 2, w, h };
   const s = 1 + 0.06 * Math.sin(t * 5);
   ctx.save();
   ctx.translate(cx, cy);
@@ -39,6 +44,7 @@ const TITLE = 'BUSYWORK';
 const NO_TITLE = { mission: ['', ''], badge: [] };
 
 export function drawTitle(ctx, game, t, mem) {
+  playButton.rect = null; // set again below once the ▶ shows
   const e = Math.max(0, t - fin(mem.titleStart, t));
   ctx.fillStyle = 'rgba(22,16,12,0.76)';
   ctx.fillRect(0, 0, VIEW_W, VIEW_H);
@@ -201,6 +207,7 @@ export const DEFAULT_END_SCENES = {
 };
 
 export function drawEnd(ctx, game, t, mem) {
+  playButton.rect = null; // set again below once the ▶ shows
   const o = game.outcome || { result: 'fail', routes: [], newRoutes: [], loop: 0, minute: 0 };
   const e = Math.max(0, t - fin(mem.endStart, t));
   const ends = game.level.endScenes || DEFAULT_END_SCENES;
