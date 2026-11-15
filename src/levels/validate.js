@@ -25,7 +25,7 @@
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
-//               noise.at (optional) a spot; no `icon` (*: the target lights up with the E key cap instead)
+//               noise.at (optional) a spot or an { x, y } on the map; no `icon` (*: the target lights up with the E key cap instead)
 //   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
 //               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
@@ -168,6 +168,11 @@ export function levelProblems(level, key) {
     }
   }
   const inMap = (x, y) => !map || (x >= 0 && y >= 0 && x < map.w && y < map.h);
+  // A noise's `at`: a spot, or a point { x, y } (tile units) anywhere on the map (sim/mechanics/attention.js).
+  const noiseAt = (path, at) => {
+    if (!isObj(at)) spot(path, at);
+    else if (!isNum(at.x) || !isNum(at.y) || !inMap(at.x, at.y)) bad(path, 'not a spot or an { x, y } on the map');
+  };
   const interTypes = new Set((map?.interactables ?? []).map((i) => i.type));
   const interIds = new Set((map?.interactables ?? []).map((i) => i.id));
 
@@ -274,7 +279,7 @@ export function levelProblems(level, key) {
       const path = `interactions.${verb}`;
       if (!isObj(row)) { bad(path, 'not an object'); continue; }
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
-      if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
+      if (row.noise?.at !== undefined) noiseAt(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
       if (drawn && row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
     }
@@ -382,7 +387,7 @@ export function levelProblems(level, key) {
     for (const [name, n] of Object.entries(level.noises)) {
       const path = `noises[${q(name)}]`;
       if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
-      spot(`${path}.at`, n?.at);
+      noiseAt(`${path}.at`, n?.at);
       for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
       noiseTiming(path, n);
     }

@@ -383,6 +383,27 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   ok(game.fx.ripples.at(-1).y === it.cy + 3, 'the machine too far from the spot: the ripple starts at the noise');
 }
 
+// 13c. A noise `at` a point: anywhere on the map, a solid tile too (a phone on a desk rings from the phone). Heads
+// turn to the point, the ripple starts on it; the validator wants it on the map.
+{
+  const { game } = day(BASE);
+  const M = game.map;
+  const desk = [...M.rows.join('')].findIndex((c, i) => M.isSolid(i % M.w, Math.floor(i / M.w)) && i % M.w > 0 && Math.floor(i / M.w) > 0 && !M.isSolid((i % M.w) + 1, Math.floor(i / M.w)));
+  const pt = { x: (desk % M.w) + 0.3, y: Math.floor(desk / M.w) + 0.6 }; // a solid tile next to floor (a desk, a wall)
+  const level = { ...BASE, noises: { 'test:ring': { at: pt, radius: 30, ripple: true } } };
+  const g = day(level);
+  step(g.game, 1);
+  g.game.events.emit('test:ring', {});
+  const e = g.log.filter((q) => q.name === 'noise').at(-1)?.payload;
+  const r = g.game.fx.ripples.at(-1);
+  ok(e && e.x === pt.x && e.y === pt.y && r.x === pt.x && r.y === pt.y, `a noise at a point on a solid tile (${pt.x}, ${pt.y}): there, and its ripple too`);
+  const n = g.game.npcs.find((m) => m._heard);
+  ok(!!n && n._heard.x === pt.x && n._heard.y === pt.y, `heads turn to the point (${n?.id})`);
+  ok(!levelProblems(level, 'meeting').length, 'validator: an { x, y } on the map is fine');
+  const off = levelProblems({ ...BASE, noises: { 'test:x': { at: { x: -1, y: 2 }, radius: 3 } } }, 'meeting');
+  ok(off.some((p) => p.includes(`noises['test:x'].at`)), 'validator: off the map is not');
+}
+
 // 14. sfx: the noise event names its sound only when the noise has one (audio plays it: tools/test-audio.mjs).
 {
   const { game, log } = day(BASE);
