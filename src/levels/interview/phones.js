@@ -17,7 +17,7 @@
 //                                         else the nearest free NPC: 💼❓ 🤷, hangs up   'other'  route 'answered'
 //   nobody answers by RING_OUT minutes    'rangOut'                                       route 'ringout'
 // A ring of yours on Lin's phone is let finish before the call.
-import { at } from '../../config.js';
+import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { spotPos, inZone } from '../../game/perception.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -32,7 +32,7 @@ const GLANCE_EVERY = 1.7; // game minutes between her glances at the clock after
 export const BACK_AT = at('3:21', START); // from here on Lin is back from her tea (cast.js: 3:22) with her notes
 export const NOTES_AFTER = 0.6; // game minutes from picking up to the hold tune
 export const TUNE_ENDS = 0.9; // hold progress where the tune stops; he hangs up when it reaches 1
-export const SLAM = 0.6; // Lin on her own phone: the hold progress where she slams it down (😠)
+export const SLAM = 0.68; // Lin on her own phone: the hold progress where she slams it down (😠)
 
 // tile: the map letter the phone is drawn on; at: the spot its noise comes from (heads turn to it); bell: where the
 // phone itself is (tiles): earshot and the rings; lamp: its colour on the switchboard, its handset and its rings.
@@ -62,6 +62,8 @@ export function initialPhones() {
     glanceAt: 0, // her next glance at the clock, rehearsing
     linFix: false, // she found her line dead: she is going to push the plug back in
     kevAt: 0, // Kev crouched at the socket at this minute (cast.js plugIn)
+    kevLift: 0, // he picks Lin's loose plug up at this minute, and holds it up at her chair until kevJamAt
+    kevLooked: false, // ... turned to her chair with it
     kevJamAt: 0, // he jams Lin's loose plug back in at this minute (0: not going to)
     kevJam: 0, // ... and is at it (the jam pose) until this minute
     kevReach: 0, // he reaches into the socket with his charger until this minute
@@ -143,7 +145,7 @@ export function phoneTick(game, sim) {
       w.interview = 'busy';
       w.busyAt = m;
       game.events.emit('interview:busy', { by: w.line_lin });
-      if (lin && lin.active && !onPhone(lin)) sim.speak(game, lin, [{ say: [`@${w.line_lin}`, '😠'], after: 1.2 }]);
+      if (lin && lin.active && !onPhone(lin)) sim.speak(game, lin, [{ say: ['#handset_lin', `@${w.line_lin}`, '😠'], after: 1.2, face: 'lin_side' }]);
     } else if (!w.ring_lin && !w.line_lin) { // (a ring of yours on her phone is let finish first)
       w.interview = 'ringing';
       w.ring_lin = 'job';
@@ -170,8 +172,7 @@ export function phoneTick(game, sim) {
       const h = holdOf(n);
       if (!h || h[1] !== 'on' || w.heardJob.includes(n.id) || dist(n, PHONES.lin.bell) > RING_RADIUS) continue;
       w.heardJob += ` ${n.id}`;
-      sim.lookAt(game, n, 'lin_side', 1.2);
-      sim.speak(game, n, [{ say: ['❗'], ttl: 1.1 }]);
+      sim.speak(game, n, [{ say: ['🔔', '✋'], ttl: 1.3 }, { say: ['😌'], after: 1.4, ttl: 1.2 }]); // not now: the tune
     }
   }
   // Lin's stare at a dead phone: a moment after 3:30, once she is at her desk.
@@ -215,14 +216,19 @@ export function phoneTick(game, sim) {
     } else if (seated && m >= BACK_AT && m >= w.glanceAt) {
       w.glanceAt = m + GLANCE_EVERY;
       sim.lookAt(game, lin, 'clock_view', 1.1);
-      sim.speak(game, lin, [{ say: ['🕞'], kind: 'thought', ttl: 1.1 }]);
+      sim.speak(game, lin, [{ say: ['🕞'], kind: 'thought', ttl: 1.1 }, { say: ['📝'], after: 1.5, ttl: 1.0 }]);
     }
   }
 
-  // Kev at the socket: Lin's loose plug in his way gets jammed back in, with a spark; his mobile charges there
-  // while he stands by it. He takes it with him when he goes (or is called away).
+  // Kev at the socket: Lin's loose plug in his way is picked up, held up at her chair (he turns to it, and back
+  // just before the jam) and jammed back in, with a spark; his mobile charges there while he stands by it. He
+  // takes it with him when he goes (or is called away).
   const kev = byId('kev');
   const kevThere = kev && !kev.override && nearSpot(game, kev, 'socket_lin', 0.5);
+  if (w.kevJamAt && !w.kevLooked && m >= w.kevLift && kevThere && w.cord === 'out') {
+    w.kevLooked = true;
+    sim.lookAt(game, kev, 'lin_desk', Math.max(0.2, (w.kevJamAt - m - 0.15) / GAME_MIN_PER_SEC));
+  }
   if (w.kevJamAt && m >= w.kevJamAt) {
     w.kevJamAt = 0;
     if (kevThere && w.cord === 'out') {
@@ -303,9 +309,9 @@ export const NOISES = {
 //   gives it a while. Lin holds on the outside line (the kitchen), hoping; an internal line is not her call: on her
 //   own phone she hears the tune and slams it down (SLAM), on another she hangs up at once.
 const BOSS_HOLD = 9;
-const HOLD = {
+export const HOLD = {
   boss: { boss: BOSS_HOLD, lin: BOSS_HOLD, kev: BOSS_HOLD, kitchen: BOSS_HOLD },
-  lin: { lin: 1.3, boss: 0.55, kev: 0.55, kitchen: 10 },
+  lin: { lin: 1.6, boss: 0.55, kev: 0.55, kitchen: 10 },
   kev: { kev: 4, lin: 4, boss: 4, kitchen: 4 },
 };
 // Where each stares while on hold at each phone (a spot straight ahead of where he stands).
@@ -322,12 +328,12 @@ export const STAND = { // where each answers each phone
 // His first words on picking up, and on hanging up. Lin on the outside line hopes it is her interviewer (💼❓)
 // before the tune starts; on her own phone she slams it down (presentation.js POSES), on another internal one
 // she shrugs.
-const SUMMONED = [{ say: ['❗'], ttl: 1.4 }];
+const SUMMONED = (p) => [{ say: [`#handset_${p}`, '❗'], ttl: 1.4 }]; // which phone he heard, and off he goes
 const PICK_UP = (npc, p) => {
   if (npc === 'boss') return [{ say: ['❓'], ttl: 0.9 }, { say: ['😌'], after: 1.1, ttl: 1.4 }];
   if (npc === 'kev') return [{ say: ['❓'], ttl: 0.9 }, { say: ['😑'], after: 1.1, ttl: 1.2 }];
   if (p === 'kitchen') return [{ say: ['💼', '❓'], ttl: 1.2 }];
-  if (p === 'lin') return [{ say: ['❓'], ttl: 0.8 }, { say: ['😠'], after: 1.25, ttl: 1.3 }];
+  if (p === 'lin') return [{ say: ['❓'], ttl: 0.8 }, { say: ['😠'], after: 1.8, ttl: 1.3 }];
   return [{ say: ['❓'], ttl: 0.8 }];
 };
 const HUNG_UP = (npc, p) => {
@@ -379,7 +385,7 @@ for (const npc of CAST_IDS) {
     plan: 'job',
     label: 'answer the interview call',
     spot: mine ? 'lin_desk' : 'lin_side',
-    react: { wait: mine ? 0.2 : 0.5, says: SUMMONED },
+    react: { wait: mine ? 0.2 : 0.5, says: SUMMONED('lin') },
     work: {
       override: 'on_job',
       minutes: mine ? 99 : 1.4,
@@ -389,7 +395,7 @@ for (const npc of CAST_IDS) {
         event: mine ? 'interview:lin' : 'interview:other',
         says: mine
           ? [{ say: ['💼', '😊'], ttl: 1.6 }, { say: ['😊', '👍'], after: 1.8, ttl: 1.6 }]
-          : [{ say: ['💼', '❓'], ttl: 1.2 }, { say: ['@lin', '❓'], after: 1.3, ttl: 1.1 }, { say: ['🤷'], after: 2.2, ttl: 1.2 }],
+          : [{ say: ['💼', '❓'], ttl: 1.2 }, { say: ['@lin', '❓'], after: 1.3, ttl: 1.1, face: 'kitchen_door' }, { say: ['🤷'], after: 2.4, ttl: 1.2 }],
       },
       done: { set: { jobBy: null, line_lin: null }, event: 'interview:hungUp' },
     },
@@ -402,7 +408,7 @@ for (const npc of CAST_IDS) {
       plan: `phone_${p}`,
       label: `answer ${WHOSE[p]}`,
       spot: STAND[npc][p],
-      react: { wait: 0.4, says: SUMMONED, event: `${npc}:answering` },
+      react: { wait: 0.4, says: SUMMONED(p), event: `${npc}:answering` },
       work: {
         override: `on_${p}_phone`,
         minutes: HOLD[npc][p],

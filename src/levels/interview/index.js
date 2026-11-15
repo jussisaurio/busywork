@@ -68,11 +68,13 @@ const SPOTS = {
   boss_window_view: { x: 2, y: 1 }, // what he stares at meanwhile: the window
   boss_front: { x: 2, y: 4, face: 'N' }, // anyone else at the boss's phone
   lin_desk: { x: 2, y: 7, face: 'N' },
+  lin_notes: { x: 2, y: 7, face: 'E' }, // Lin back from her tea, rehearsing from her notes, her back to the socket
   lin_side: { x: 1, y: 7, face: 'N' }, // anyone else at Lin's phone
   socket_lin: { x: 1, y: 7, face: 'W' }, // Kev at the socket
   kev_desk: { x: 23, y: 8, face: 'N' },
   kev_side: { x: 25, y: 7, face: 'W' }, // anyone else at Kev's phone
   kitchen_phone: { x: 20, y: 1, face: 'N' },
+  kitchen_door: { x: 16, y: 5 }, // the kitchen doorway (the boss looks that way for Lin)
   kitchen_lin: { x: 18, y: 4, face: 'N' }, // her tea, at the kitchen table
   kitchen_kev: { x: 23, y: 2, face: 'N' }, // the coffee machine
   clock_view: { x: 7, y: 6, face: 'N' }, // under the wall clock (Lin glances at it)

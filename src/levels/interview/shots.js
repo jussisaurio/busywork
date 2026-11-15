@@ -5,7 +5,7 @@ const END = ['pretend until 3:34', 'pretend until 3:34', 'wait 5s']; // 3:30 sto
 const KEV = ['pretend until 3:18', 'goto ring_kev', 'interact']; // ring Kev's phone while he is at the coffee
 const ANSWERED = [...KEV, 'goto ring_kitchen', 'interact']; // then the kitchen phone: Lin is the one free
 const BUSY = ['pretend until 3:20', 'goto ring_lin', 'interact']; // Lin's phone, while she is at her tea
-const BOSS = ['pretend until 3:12', 'goto ring_boss', 'interact']; // the boss's phone, after Kev's charging stop
+const BOSS = ['pretend until 3:14', 'goto ring_boss', 'interact']; // the boss's phone, as Kev's charging stop ends
 const UNPLUG = [...BOSS, 'goto lin_socket', 'interact'];
 const RINGOUT = [...ANSWERED, 'pretend until 3:25', 'goto ring_boss', 'interact'];
 const CALL = ['pretend until 3:30', 'wait 0.2s']; // to the 3:30 call (it stops one of the two)
@@ -14,7 +14,7 @@ export default [
   {
     name: 'start',
     cmds: ['wait 1.5s'],
-    intent: "3:00: you at your desk (big red mug); the boss behind the glass of his office, top left, a bright window behind him, facing the open plan; Lin at the desk below it, the receiver of her teal desk phone at her ear, listening; the coiled cable of her phone running down to a wall socket beside her; Kev at the coffee machine in the kitchen, top right, by a small red wall phone; a switchboard in the nook above your desk, patch cables hanging, a dark red lamp over one jack.",
+    intent: "3:00: you at your desk (big red mug); the boss behind the glass of his office, top left, in a high-backed chair, a bright window behind him, facing the open plan; Lin at the desk below it, the receiver of her teal desk phone at her ear, a teal wavy tone line beside her head: she is listening on the phone; the coiled cable of her phone running down to a wall socket beside her; Kev at the coffee machine in the kitchen, top right, by a small red wall phone; a switchboard in the nook above your desk, patch cables hanging, a dark red lamp over one jack.",
   },
   {
     name: 'lin-checks-the-clock',
@@ -28,53 +28,53 @@ export default [
   },
   {
     name: 'lin-at-her-tea',
-    cmds: ['pretend until 3:09'],
-    intent: "Lin has left her desk for a tea at the kitchen table; her teal phone sits on her empty desk. Kev ambles across the office towards her desk with his mobile.",
+    cmds: ['pretend until 3:08'],
+    intent: "Lin has left her desk for a tea at the kitchen table; her teal phone sits on her empty desk. Kev ambles across the office towards her desk, his mobile held out in front of him, big, its screen lit with a red low-battery sliver.",
   },
   {
     name: 'kev-at-the-socket',
-    cmds: ['pretend until 3:12', 'wait 1s'],
-    intent: "Kev crouches at the wall socket beside Lin's empty desk, her phone's plug seated in it, and plugs his mobile's charger in below it (battery thought): her socket is his charging spot.",
+    cmds: ['pretend until 3:11', 'wait 1s'],
+    intent: "Kev stands at the wall socket beside Lin's empty desk, scrolling on his mobile; a white charger cable runs from his mobile into the socket's bottom outlet, under her phone's plug in the top one: her socket is his charging spot. (His own wall socket, by his desk on the far right, is taped off with a yellow-and-black cross and sparks.)",
   },
   {
     name: 'kev-phone-rings',
     cmds: [...KEV, 'wait 0.4s'],
-    intent: "You plugged into Kev's jack: his lamp on the switchboard is lit olive, his olive desk phone rings in olive rings, and Kev, at the coffee machine, hears it and starts (!).",
+    intent: "You plugged into Kev's jack: the patch plug is seated in it and his lamp on the switchboard is lit olive; his olive desk phone rings, its handset hopping, in tight olive rings, and Kev, at the coffee machine, hears it and starts (his olive handset, !).",
   },
   {
     name: 'kev-on-hold',
-    cmds: [...KEV, 'pretend until 3:23', 'wait 1s'],
-    intent: 'Kev stands at his desk with the olive receiver at his ear, hold music coming out of it (notes), staring ahead.',
+    cmds: [...KEV, 'pretend until 3:24', 'wait 1s'],
+    intent: 'Kev stands at his desk with the olive receiver at his ear, big white notes rising from it (hold music), no rings: staring ahead.',
   },
   {
     name: 'lin-takes-the-kitchen-phone',
-    cmds: [...ANSWERED, 'wait 3s'],
-    intent: "Kev is on his way to his own ringing phone, so when the red kitchen wall phone rings (red rings round it), Lin, the one free person in earshot, gets up from her tea and answers it, hoping it is her interviewer (briefcase, ?).",
+    cmds: [...ANSWERED, 'wait 0.8s'],
+    intent: "Kev is walking off to his own ringing olive phone, so when the red kitchen wall phone rings (tight red rings round it), Lin, the one free person in earshot, gets up from her tea to answer it (the red handset, !).",
   },
   {
     name: 'boss-on-hold',
     cmds: [...BOSS, 'wait 3s'],
-    intent: "You rang the boss's phone: he stands at his window with the blue receiver, his back to the room, happy with the hold music (notes); his sight cone points out of the window, not at the office.",
+    intent: "You rang the boss's phone: he stands at his window with the blue receiver, his back to the room, happy with the hold music (white notes); his empty high-backed chair has turned to the window too; his sight cone points out of the window, not at the office.",
   },
   {
     name: 'cord-pulled',
     cmds: [...UNPLUG, 'goto my_seat'],
-    intent: "You pulled the plug and walked off: Lin's coiled phone cable lies on the floor by her empty desk, its plug out, the wall socket beside it empty; the boss is still on hold at his window with his back to the room.",
+    intent: "You pulled the plug and walked off: Lin's phone plug lies on the floor well clear of the wall, big, its brass prongs bare; the socket's top outlet shows two dark holes; Lin's lamp on the switchboard has gone black; the boss is still on hold at his window with his back to the room.",
   },
   {
     name: 'kev-plugs-it-back',
-    cmds: ['pretend until 3:02', 'goto ring_boss', 'interact', 'goto lin_socket', 'wait until 3:06', 'interact', ...SEAT, 'pretend until 3:12', 'wait 0.4s'],
-    intent: "Too early: Kev, come to charge his mobile at the socket, finds Lin's plug lying on the floor in his way (!) and jams it back into the wall with a spark, cross.",
+    cmds: ['pretend until 3:02', 'goto ring_boss', 'interact', 'goto lin_socket', 'wait until 3:06', 'interact', ...SEAT, 'pretend until 3:09', 'wait until 3:10', 'wait 0.7s'],
+    intent: "Too early: Kev, come to charge his mobile at the socket, has picked Lin's loose plug up off the floor and holds it up at arm's length towards her empty chair, cross (angry), its cable hanging down to the coil; the socket's top outlet is empty. (A moment later he jams it back in with a spark.)",
   },
   {
     name: 'lin-hangs-up-on-her-own-phone',
-    cmds: ['pretend until 3:01', 'goto ring_lin', 'interact', 'wait 2.6s'],
-    intent: "You rang Lin's phone while she sits at it (its lamp lit teal on the switchboard): she picked up, got hold music, and slams the receiver down (angry).",
+    cmds: ['pretend until 3:01', 'goto ring_lin', 'interact', 'wait 3.1s'],
+    intent: "You rang Lin's phone while she sits at it: she picked up, got hold music, and has just slammed the receiver down: it rattles on the cradle, the last white notes tumbling off it, and she is angry.",
   },
   {
     name: 'boss-on-lins-phone',
     cmds: [...BUSY, 'wait 3.05s'],
-    intent: "Lin is at her tea and her teal phone rings on her empty desk (teal rings), so the boss comes out of his office door to answer it (!).",
+    intent: "Lin is at her tea and her teal phone rings on her empty desk (tight teal rings, its handset hopping), so the boss comes out of his office door to answer it (Lin's teal handset, !).",
   },
   {
     name: 'the-call',
@@ -84,7 +84,7 @@ export default [
   {
     name: 'the-call-answered',
     cmds: [...ANSWERED, ...SEAT, ...CALL, 'wait 0.5s'],
-    intent: "3:30: Lin's empty desk phone rings red while Lin is on hold at the red kitchen wall phone; the boss, the one free person in earshot, starts (!) and gets up to answer it.",
+    intent: "3:30: Lin's empty desk phone rings, tight red rings round it, its teal handset hopping; Lin is on hold at the red kitchen wall phone (white notes); the boss, the one free person in earshot, starts (Lin's teal handset, !) and gets up to answer it.",
   },
   {
     name: 'the-call-dead',
@@ -94,12 +94,12 @@ export default [
   {
     name: 'the-call-busy',
     cmds: [...BUSY, ...SEAT, ...CALL, 'wait 1.5s'],
-    intent: "3:30: the boss is still on Lin's phone at her desk with the hold music; Lin, back from tea, glares at him (his face, angry): her line is busy.",
+    intent: "3:30: the boss is still on Lin's phone at her desk, white notes rising from the receiver; Lin, back from tea with her notes, has turned to him: her teal handset, his face, angry: her line is busy.",
   },
   {
     name: 'the-call-rings-out',
     cmds: [...RINGOUT, ...SEAT, ...CALL, 'wait 0.5s'],
-    intent: "3:30: Lin's empty desk phone rings red; Lin is on hold at the kitchen phone; the boss, on hold at his window, turns to the ring (!) but stays with his tune (notes); Kev sits at his desk across the office: nobody comes.",
+    intent: "3:30: Lin's empty desk phone rings red; Lin is on hold at the kitchen phone (white notes); the boss, on hold at his window with his back to the room, holds up a hand at the ring (bell, hand: not now) and stays with his tune; Kev sits at his desk across the office, far off: nobody comes.",
   },
   {
     name: 'end-answered',
@@ -109,7 +109,7 @@ export default [
   {
     name: 'end-busy',
     cmds: [...BUSY, ...SEAT, ...END],
-    intent: "Win: at Lin's desk (her chair, plant, mug and nameplate) the boss is on her teal handset, blissful with the hold music (notes); Lin beside him, furious; you smug.",
+    intent: "Win: at Lin's desk (her chair, plant, mug and nameplate) the boss is on her teal handset, blissful with the hold music (white notes); Lin beside him, furious; you smug.",
   },
   {
     name: 'end-unplugged',
@@ -119,12 +119,12 @@ export default [
   {
     name: 'end-ringout',
     cmds: [...RINGOUT, ...SEAT, ...END],
-    intent: "Win: Lin's desk phone rings red with nobody at it; the boss at his window and Lin at the kitchen wall phone are each on hold (notes); Kev sits at his desk, too far off; you smug.",
+    intent: "Win: front and centre, Lin's desk phone rings red and her teal chair stands empty; at the back the boss at his window and Lin at the kitchen wall phone are each on hold (white notes); you smug. Icons: bell, empty chair.",
   },
   {
     name: 'end-fail',
     cmds: [...END],
-    intent: "Lost: Lin sits at your desk (your nameplate, your red mug) on the phone, beaming: she got your job; her own desk stands empty behind; you stand by with your things in a box.",
+    intent: "Lost: Lin sits at your desk on the phone, beaming, your big nameplate and big red mug at her elbows: she got your job; her own desk stands empty behind; you stand beside her holding a cardboard box at your chest, your plant sticking out of it.",
   },
   {
     name: 'end-caught',

@@ -5,9 +5,12 @@
 // lamps and jacks; Lin's power cord coiled on the floor, its plug in the wall socket or lying loose.
 import { T, rrect, circle, fillCircle, fillEllipse, emoji, clamp, starPath } from '../../render/util.js';
 import { box } from '../../render/things.js';
+import { drawChair } from '../../render/world.js';
 import { C } from '../../render/palette.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
-import { PHONES, PHONE_IDS, OUTSIDE, RING_RADIUS, RING_EVERY, JOB_EVERY, SLAM } from './phones.js';
+import { PHONES, PHONE_IDS, OUTSIDE, RING_RADIUS, RING_EVERY, JOB_EVERY, SLAM, HOLD } from './phones.js';
+
+const HOLD_LIN = HOLD.lin.lin; // game minutes Lin holds her own phone (the slam is at SLAM of it)
 
 const IVORY = '#e8dfc8';
 const IVORY_DARK = '#b5a888';
@@ -18,6 +21,7 @@ const WOOD_TOP = '#93603a';
 const BRASS = '#c9a24a';
 const CABLE = '#2a2522';
 const CABLE_HI = '#57504a';
+export const NOTE = '#f6f2e8'; // the hold tune's notes: one neutral white on every line (red is the outside call's)
 
 // Where each phone sits (px): over the desk's built-in phone, the kitchen one on the wall's front face.
 const SEAT = {
@@ -181,10 +185,46 @@ function deskPhone(ctx, game, w, p, x, y, t) {
     fillCircle(ctx, x - 6, y - 6, 1.6, IVORY_DARK);
     fillCircle(ctx, x + 6, y - 6, 1.6, IVORY_DARK);
     curlyCord(ctx, x - 7, y + 3, holder.x * T + 2, holder.y * T - 12, PHONES[p].lamp);
+    // Lin checking her line: the dialling tone at her ear, a little wave in her line's colour
+    if (p === 'lin' && w.linCheck && holder.id === 'lin' && w.cord !== 'out') listening(ctx, holder.x * T, holder.y * T, PHONES.lin.lamp, t);
   } else {
-    handset(ctx, x, y - 6, PHONES[p].lamp);
+    handset(ctx, x, y - 6 - (ringing ? Math.abs(Math.sin(t * 26)) * 2.4 : 0), PHONES[p].lamp);
   }
+  if (p === 'lin' && slammed(w)) tumble(ctx, x, y - 10, sinceMin(game, w.lineAt_lin + SLAM * HOLD_LIN), t);
   if (ringing) arcs(ctx, x, y - 3, colour, t);
+}
+
+// A wavy tone line beside the head of someone at (px, py) listening to a receiver.
+function listening(ctx, px, py, colour, t) {
+  ctx.strokeStyle = colour;
+  ctx.lineWidth = 1.6;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 2; i++) {
+    const ox = px - 10 - i * 5;
+    const oy = py - 19;
+    ctx.globalAlpha = 0.95 - i * 0.35;
+    ctx.beginPath();
+    for (let k = 0; k <= 8; k++) {
+      const yy = oy - 5 + k * 1.25;
+      const xx = ox + Math.sin(k * 1.4 - t * 9 + i) * 1.6;
+      if (k === 0) ctx.moveTo(xx, yy);
+      else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.lineCap = 'butt';
+}
+
+// The tune cut off by a slam: its last notes tumble off the cradle for half a second (age: sim s since the slam).
+function tumble(ctx, x, y, age, t) {
+  if (!(age >= 0) || age > 0.6) return;
+  const q = age / 0.6;
+  for (let i = 0; i < 3; i++) {
+    ctx.globalAlpha = 1 - q;
+    note(ctx, x + (i - 1) * 7 + (i - 1) * q * 6, y - 4 + q * q * 14 + i * 2, NOTE, i === 1, 1.1);
+  }
+  ctx.globalAlpha = 1;
 }
 
 const DESK = (p) => (ctx, info, at, { w, game }, t) => deskPhone(ctx, game, w, p, SEAT[p].x, SEAT[p].y, t);
@@ -246,13 +286,22 @@ function rings(ctx, info, at, { w, game }) {
     const by = PHONES[p].bell.y * T;
     const R = RING_RADIUS * T;
     ctx.strokeStyle = ringColour(w, p);
+    // the bell: tight bright rings close round the phone itself
+    for (let k = 0; k < 3; k++) {
+      const q = (age * 2.2 + k / 3) % 1;
+      ctx.globalAlpha = 0.95 * (1 - q);
+      ctx.lineWidth = 2.6 - q;
+      circle(ctx, bx, by, 9 + q * 15);
+      ctx.stroke();
+    }
+    // how far it carries: faint rings out to its earshot, once a bell
     for (let k = 0; k < RINGS; k++) {
       const q = (ph - k * RING_GAP) / RING_SPAN;
       if (q <= 0 || q >= 1) continue;
       const e = 1 - (1 - q) * (1 - q);
-      ctx.globalAlpha = 0.75 * (1 - q);
-      ctx.lineWidth = 1 + 2.5 * (1 - q);
-      circle(ctx, bx, by, 6 + e * (R - 6));
+      ctx.globalAlpha = 0.32 * (1 - q * 0.6);
+      ctx.lineWidth = 1.2;
+      circle(ctx, bx, by, 24 + e * (R - 24));
       ctx.stroke();
     }
   }
@@ -321,7 +370,7 @@ function holdNotes(ctx, info, at, { w, game }, t) {
     if (!w[`tune_${p}`]) continue;
     const n = npcById(game, w[`line_${p}`]);
     if (!n) continue;
-    notesFrom(ctx, n.x * T + 4, n.y * T - 20, PHONES[p].lamp, t);
+    notesFrom(ctx, n.x * T + 4, n.y * T - 22, NOTE, t, 1.35);
   }
 }
 
@@ -370,7 +419,9 @@ function dim(hex, k) {
 function lamp(ctx, x, y, colour, on) {
   fillCircle(ctx, x, y, 5, '#1b1410');
   fillCircle(ctx, x, y, 4.2, BRASS);
-  if (on) {
+  if (on === 'dead') {
+    fillCircle(ctx, x, y, 3.4, '#0c0a09'); // its phone unplugged: the glass goes black
+  } else if (on) {
     glow(ctx, x, y, 13, colour, 0.85);
     fillCircle(ctx, x, y, 3.4, colour);
     fillCircle(ctx, x - 1.1, y - 1.1, 1.2, 'rgba(255,255,255,0.75)');
@@ -452,8 +503,9 @@ function switchboard(ctx, info, at, { w, game }, t) {
     if (p === 'out') on = (w.interview === 'ringing' && blink) || job || (busyFlash && blink);
     else if (p === 'lin' && w.interview === 'ringing') on = blink;
     else if (p === 'lin' && job) on = true;
-    else if (w[`ring_${p}`] === 'you') on = blink;
+    else if (w[`ring_${p}`] === 'you') on = sinceMin(game, w[`ringAt_${p}`]) < 1.2 || blink; // lit at once, then blinking
     else if (w[`line_${p}`]) on = true;
+    else if (p === 'lin' && w.cord === 'out') on = 'dead';
     lamp(ctx, x, LAMP_Y, colour, on);
     // jack: lit in its line's colour while your hand is at it, and while its cord is in
     const patched = p !== 'out' && (w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`]);
@@ -470,12 +522,13 @@ function switchboard(ctx, info, at, { w, game }, t) {
     }
   }
   // patch cords: each plug rests on the shelf's front edge, its cord hanging in a loop below; or it is up in its
-  // jack (rising over 0.3 s from the ring), the cord running up to it from the edge
+  // jack (rising with your hand at it), the cord running up to it from the edge
   for (let i = 1; i < COLS.length; i++) {
     const p = COLS[i];
     const x = colX(i);
     const patched = w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`];
-    const k = patched ? clamp(sinceMin(game, w[`ringAt_${p}`]) / 0.3, 0, 1) : 0;
+    // the plug goes up into the jack as your hand does it (the action's progress), and stays
+    const k = patched ? 1 : pressing === p ? clamp(act.t / act.duration, 0, 1) : 0;
     const restX = x + 7;
     // the hanging loop below the shelf (a weight keeps it taut)
     cord(ctx, restX, FRONT_Y - 1, x - 5, FRONT_Y - 1, CABLE, 14 - k * 6);
@@ -504,7 +557,7 @@ function switchboard(ctx, info, at, { w, game }, t) {
 const SOCKET = { x: 29, y: 238 };
 const TOP = { x: SOCKET.x + 1, y: SOCKET.y - 5 };
 const BOTTOM = { x: SOCKET.x + 1, y: SOCKET.y + 5 };
-const LOOSE = { x: 58, y: 251 };
+const LOOSE = { x: 64, y: 252 };
 
 function cable(ctx, path, width = 3.2) {
   ctx.lineCap = 'round';
@@ -554,13 +607,29 @@ function linCord(ctx, info, at, { w, game }, t) {
   ctx.fill();
   for (const o of [TOP, BOTTOM]) {
     ctx.fillStyle = '#3b302a';
+    if (o === TOP && w.cord === 'out') {
+      // her outlet empty: two dark holes, plain to see
+      ctx.fillStyle = '#120d0a';
+      ctx.fillRect(o.x - 2.3, o.y - 3.2, 2, 2.4);
+      ctx.fillRect(o.x - 2.3, o.y + 0.8, 2, 2.4);
+      continue;
+    }
     ctx.fillRect(o.x - 1.5, o.y - 2.2, 1.2, 1.6);
     ctx.fillRect(o.x - 1.5, o.y + 0.6, 1.2, 1.6);
   }
   // her cord: off the desk, down to the floor, two coils there
   const from = { x: SEAT.lin.x - 9, y: SEAT.lin.y + 2 };
   const coil = { x: 44, y: 250 };
-  const end = w.cord === 'in' ? { x: TOP.x + 6, y: TOP.y } : { x: LOOSE.x + 5, y: LOOSE.y };
+  // Kev holding her loose plug up, between picking it up and jamming it in: the cable runs up to his hand
+  const kev = npcById(game, 'kev');
+  const held = w.cord === 'out' && kev && w.kevJamAt && minute >= w.kevLift && minute < w.kevJamAt;
+  let end = w.cord === 'in' ? { x: TOP.x + 6, y: TOP.y } : { x: LOOSE.x + 5, y: LOOSE.y };
+  if (held) {
+    const o = Math.sin(t * 9) * 1.5;
+    const d = kev.dir;
+    const fx = Math.cos(d), fy = Math.sin(d) * 0.6, rx = -Math.sin(d), ry = Math.cos(d) * 0.6;
+    end = { x: kev.x * T + fx * (12 - o) + rx * 3, y: kev.y * T - 3 + fy * (12 - o) + ry * 3 };
+  }
   cable(ctx, () => {
     ctx.moveTo(from.x, from.y);
     ctx.quadraticCurveTo(33, from.y, 34, 222);
@@ -571,10 +640,18 @@ function linCord(ctx, info, at, { w, game }, t) {
       ctx.bezierCurveTo(cx + 6, coil.y + 5, cx - 4, coil.y + 5, cx - 1, coil.y + 1);
     }
     if (w.cord === 'in') ctx.bezierCurveTo(coil.x + 2, coil.y - 2, end.x + 4, end.y + 10, end.x + 3, end.y);
+    else if (held) ctx.bezierCurveTo(coil.x + 10, coil.y + 6, end.x, end.y + 16, end.x, end.y);
     else ctx.bezierCurveTo(coil.x + 12, coil.y + 4, end.x + 6, end.y + 3, end.x + 3, end.y);
   });
   if (w.cord === 'in') mainsPlug(ctx, TOP.x + 4, TOP.y, Math.PI);
-  else mainsPlug(ctx, LOOSE.x, LOOSE.y, Math.PI - 0.25, true);
+  else if (!held) {
+    // out: the plug lies well clear of the wall, big, its brass prongs bare
+    ctx.save();
+    ctx.translate(LOOSE.x, LOOSE.y);
+    ctx.scale(1.45, 1.45);
+    mainsPlug(ctx, 0, 0, Math.PI - 0.25, true);
+    ctx.restore();
+  }
   // the spark of her plug jammed back in
   const sp = sinceMin(game, w.sparkAt);
   if (sp >= 0 && sp < 0.7) {
@@ -585,7 +662,6 @@ function linCord(ctx, info, at, { w, game }, t) {
     fillCircle(ctx, TOP.x + 2, TOP.y, 2 + 1.5 * k, '#ffffff');
   }
   // Kev's charger in the bottom outlet, its white cable up to his hand
-  const kev = npcById(game, 'kev');
   if (w.kevCharge && minute >= w.kevCharge && kev) {
     ctx.fillStyle = '#f4f1e8';
     rrect(ctx, BOTTOM.x, BOTTOM.y - 3, 7, 6, 1.5);
@@ -603,6 +679,64 @@ function linCord(ctx, info, at, { w, game }, t) {
     ctx.bezierCurveTo(BOTTOM.x + 14, BOTTOM.y + 12, hx - 4, hy + 10, hx, hy);
     ctx.stroke();
   }
+}
+
+// --- Kev's own socket: taped off, scorched, sparking (why he charges at Lin's) ---------------------------
+const KEV_SOCKET = { x: 690, y: 183 };
+function kevSocket(ctx, info, at, shown, t) {
+  const { x, y } = KEV_SOCKET;
+  ctx.fillStyle = 'rgba(40,25,15,0.35)'; // scorch
+  fillEllipse(ctx, x + 1, y - 3, 8, 7, 'rgba(40,25,15,0.3)');
+  ctx.fillStyle = IVORY_DARK;
+  rrect(ctx, x - 5, y - 6, 10, 12, 1.6);
+  ctx.fill();
+  ctx.fillStyle = IVORY;
+  rrect(ctx, x - 4.5, y - 5.5, 9, 11, 1.6);
+  ctx.fill();
+  ctx.fillStyle = '#3b302a';
+  ctx.fillRect(x - 2.5, y - 2, 1.4, 2.4);
+  ctx.fillRect(x + 1.1, y - 2, 1.4, 2.4);
+  // hazard tape in a cross over it
+  for (const s of [1, -1]) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(s * 0.7);
+    ctx.fillStyle = '#f2c230';
+    ctx.fillRect(-8, -1.6, 16, 3.2);
+    ctx.fillStyle = '#26211d';
+    for (let i = -7; i < 8; i += 4) ctx.fillRect(i, -1.6, 1.6, 3.2);
+    ctx.restore();
+  }
+  // a spark now and then
+  const ph = (t * 0.9) % 1;
+  if (ph < 0.12) {
+    const k = 1 - ph / 0.12;
+    ctx.fillStyle = '#fff3a0';
+    starPath(ctx, x + 4, y - 5, 2.5 + 4 * k, 1.2 + k, 5, t * 13);
+    ctx.fill();
+    fillCircle(ctx, x + 4, y - 5, 1.4, '#ffffff');
+  }
+}
+
+// --- The boss's chair: a high-backed one, turned to the window when he has gone to it -------------------
+const OXBLOOD = ['#6b2f24', '#4e2019'];
+function bossChair(ctx, info, at, { game }) {
+  const boss = npcById(game, 'boss');
+  const cx = 3 * T + T / 2;
+  const cy = 2 * T + T / 2;
+  const atDesk = !boss || (Math.abs(boss.x - 3.5) < 1.2 && Math.abs(boss.y - 2.5) < 0.7 && boss.override !== 'on_boss_phone');
+  const dir = atDesk ? Math.PI / 2 : -Math.PI / 2;
+  drawChair(ctx, cx, cy, dir, OXBLOOD[0], OXBLOOD[1]);
+  // the high back
+  const by = cy - Math.sin(dir) * 9 - 4;
+  ctx.fillStyle = OXBLOOD[1];
+  rrect(ctx, cx - 8, by - 9, 16, 12, 4);
+  ctx.fill();
+  ctx.fillStyle = OXBLOOD[0];
+  rrect(ctx, cx - 6.5, by - 8, 13, 9, 3);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.16)';
+  ctx.fillRect(cx - 5, by - 7, 10, 1.2);
 }
 
 // --- The boss's window ---------------------------------------------------------------------------------
@@ -688,6 +822,8 @@ function yourDesk(ctx, info, at, shown, t) {
 const state = (w, game) => ({ w, game });
 export const PHONE_PROPS = [
   { tile: 'B', draw: bossWindow, state },
+  { tile: 'B', draw: bossChair, state },
+  { tile: 'V', draw: kevSocket, state },
   { tile: '5', draw: switchboard, state },
   { tile: 'O', draw: linCord, state },
   { tile: 'L', draw: DESK('lin'), state },
@@ -705,20 +841,83 @@ const handsetThing = (p) => (ctx, x, y, size) => {
   uprightHandset(ctx, 0, 0, PHONES[p].lamp, 15);
 };
 export const THINGS = {
-  // Kev's mobile: a dark slab, its screen lit.
-  mobile(ctx, x, y, size) {
+  // Kev's mobile, big: a dark slab, its lit screen scrolling, a red low-battery sliver (green while it charges).
+  mobile(ctx, x, y, size, t, game) {
     box(ctx, x, y, size);
+    const w = game && game.world;
+    const m = game && game.clock ? game.clock.minute : 0;
+    const charging = !!(w && w.kevCharge && m >= w.kevCharge);
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    rrect(ctx, -3.2, -6, 7.4, 13, 1.8);
+    rrect(ctx, -4.4, -7.4, 10, 17, 2.2);
     ctx.fill();
-    ctx.fillStyle = '#26282c';
-    rrect(ctx, -3.8, -6.8, 7.4, 13, 1.8);
+    ctx.fillStyle = '#1d1f23';
+    rrect(ctx, -5.2, -8.4, 10, 17, 2.2);
     ctx.fill();
-    ctx.fillStyle = '#86d3ea';
-    ctx.fillRect(-2.8, -5.2, 5.4, 8.6);
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.fillRect(-2.8, -5.2, 5.4, 1.4);
-    fillCircle(ctx, -0.1, 4.6, 0.8, '#55585e');
+    ctx.fillStyle = '#9fe0f2';
+    ctx.fillRect(-3.9, -6.4, 7.4, 12.4);
+    // the feed scrolling up
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(-3.9, -4.4, 7.4, 10.4);
+    ctx.clip();
+    const off = ((t || 0) * 6) % 4;
+    for (let r = 0; r < 4; r++) {
+      const yy = -4 + r * 4 - off;
+      ctx.fillStyle = 'rgba(30,60,80,0.55)';
+      ctx.fillRect(-3, yy, r % 2 ? 4 : 5.6, 1.3);
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillRect(-3, yy + 1.8, 3, 0.9);
+    }
+    ctx.restore();
+    // the battery: top right of the screen
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(-0.4, -6, 3.6, 1.6);
+    ctx.fillStyle = charging ? '#4fd36a' : '#ff3b30';
+    ctx.fillRect(-0.1, -5.7, charging ? 1 + ((t * 1.5) % 1) * 2 : 1, 1);
+  },
+  // Lin's loose phone plug, held up: a black plug, brass prongs up, its cable hanging below.
+  plug(ctx, x, y, size) {
+    box(ctx, x, y, size);
+    ctx.fillStyle = BRASS;
+    ctx.fillRect(-3, -9, 1.8, 5);
+    ctx.fillRect(1.2, -9, 1.8, 5);
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    rrect(ctx, -4.2, -4.2, 9.4, 9, 2);
+    ctx.fill();
+    ctx.fillStyle = '#3a3330';
+    rrect(ctx, -4.7, -5, 9.4, 9, 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.fillRect(-3.7, -4.2, 7.4, 1.2);
+    ctx.fillStyle = CABLE;
+    ctx.fillRect(-1, 4, 2, 5);
+  },
+  // Lin's interview notes: a white sheet of handwriting.
+  notes(ctx, x, y, size) {
+    box(ctx, x, y, size);
+    ctx.rotate(-0.12);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(-5, -6.4, 11, 14);
+    ctx.fillStyle = '#fbfaf5';
+    ctx.fillRect(-5.8, -7.2, 11, 14);
+    ctx.fillStyle = '#5a6b8a';
+    for (let r = 0; r < 5; r++) ctx.fillRect(-4.2, -5 + r * 2.5, r % 2 ? 6 : 8, 0.9);
+    ctx.fillStyle = C.teal;
+    ctx.fillRect(-4.2, -5.9, 3, 0.9);
+  },
+  // The call (the title card's badge): a red receiver, ringing.
+  call(ctx, x, y, size, t) {
+    box(ctx, x, y, size);
+    uprightHandset(ctx, 0, 0, OUTSIDE, 15);
+    ctx.strokeStyle = OUTSIDE;
+    ctx.lineWidth = 1.4;
+    ctx.lineCap = 'round';
+    for (const d of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(0, -1, 9, d > 0 ? -0.5 : Math.PI - 0.5, d > 0 ? 0.5 : Math.PI + 0.5);
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
   },
   handset_lin: handsetThing('lin'),
   handset_boss: handsetThing('boss'),
