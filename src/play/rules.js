@@ -62,7 +62,7 @@ function claims(game, npc, item) {
 }
 
 // Does this NPC (the authority) currently enforce suspicion/contraband?
-function enforcing(game, npc) {
+export function enforcing(game, npc) {
   return !!npc && npc.active && !(roles(game).authority?.offDuty ?? []).includes(npc.override);
 }
 

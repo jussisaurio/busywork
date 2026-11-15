@@ -692,6 +692,8 @@ exits 2 and lists the registry.
   - `<lesson id>`: a win that skips a `mustUse` lesson.
   - `drawn`: the level is on the legacy list (`src/levels/legacy.js`), or its winning plans draw an emoji as an
     object in the world (`tools/lib/drawn.mjs`; DESIGN.md "Visual language").
+  - `contraband`: on the do-nothing day or a winning plan, a coworker carries an item marked `contraband` for the
+    authority where the authority, enforcing, sees him (`tools/lib/contraband.mjs`): the rule would be one-sided.
   - `cold-read:<stage>` (every level but the fixtures): a cold read stage (`premise`, `pictures`, `replay`) not
     recorded `works` in `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and
     never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
