@@ -90,6 +90,7 @@ const on = (w, spot) => w.items.find((i) => i.spot === spot);
 // Kev's stop at your desk on his way back to his own (once per return: flag names the return).
 const stopBy = (flag) => ({
   spot: 'hallway_mid',
+  state: { [flag]: false },
   pending: (npc) => !npc[flag],
   arrive(game, npc, sim) {
     npc[flag] = true;
@@ -142,6 +143,7 @@ export const BEHAVIOURS = {
   },
   // At your desk for the sign-off: a nod if the audit passed.
   signOff: {
+    state: { _signed: false },
     arrive(game, npc, sim) {
       if (npc._signed) return;
       npc._signed = true;

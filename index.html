@@ -8,6 +8,14 @@
     html, body { margin: 0; height: 100%; background: #1d1a17; overflow: hidden; }
     body { display: flex; align-items: center; justify-content: center; }
     canvas { display: block; image-rendering: auto; outline: none; }
+    #level-picker { position: fixed; left: 8px; bottom: 8px; max-width: 420px; max-height: 80vh; overflow-y: auto;
+      font: 12px/1.3 system-ui, sans-serif; color: #f3e6c8; background: rgba(29, 26, 23, 0.92); border-radius: 6px; opacity: 0.45; }
+    #level-picker:hover, #level-picker[open] { opacity: 1; }
+    #level-picker summary { cursor: pointer; padding: 4px 10px; user-select: none; }
+    #level-picker a { display: block; padding: 5px 10px; color: inherit; text-decoration: none; }
+    #level-picker a:hover { background: rgba(243, 230, 200, 0.12); }
+    #level-picker a.current { font-weight: bold; box-shadow: inset 3px 0 #e8553e; }
+    #level-picker small { display: block; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body>

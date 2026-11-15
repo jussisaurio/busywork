@@ -2,7 +2,7 @@
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
 import {
-  T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+  T, clamp, fin, emoji, setFacePainter, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
 
@@ -363,7 +363,7 @@ export function drawPerson(ctx, look, s, x, y) {
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
   }
 
-  if (look.hood) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.bodyDark);
+  if (look.hood && !noJacket) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.hoodColor ?? look.bodyDark);
   if (!north) drawArms(ctx, look, s, G, bodyDark);
 
   drawHead(ctx, look, s, h, 0, headY, hr);
@@ -551,7 +551,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
     }
     return;
   }
-  if (look.torso === 'hoodie' && south) {
+  if (look.torso === 'hoodie' && south && !noJacket) {
     ctx.fillStyle = look.bodyDark;
     rrect(ctx, cx - 4.5, bodyY + 1, 9, 4, 1.5); // hoodie pocket
     ctx.fill();
@@ -705,6 +705,53 @@ function drawHead(ctx, look, s, h, hx, hy, hr) {
 }
 
 // ---------------------------------------------------------------------------
+// Faces as icons: emoji(ctx, '@<castId>', ...) anywhere (bubbles, end-card rows, props) draws that person's head
+// and shoulders facing you, in an icon-sized box. The renderer calls useFaces(game) every frame so the painter
+// can find the level's looks; '@player' is you.
+const FACE = personState();
+let faceGame = null;
+export function useFaces(game) {
+  faceGame = game || null;
+}
+
+function faceLook(game, id) {
+  const level = game && game.level;
+  if (!level) return null;
+  if (level.looks && level.looks[id]) return level.looks[id];
+  const who = id === 'player' ? game.player : (game.npcs || []).find((n) => n && n.id === id)
+    || (level.cast || []).find((d) => d && d.id === id);
+  return who ? lookFor(level.looks, id, who.color) : null;
+}
+
+// Head and shoulders of `look` centred on (x, y), about `size` px tall, like an emoji of that size.
+export function drawFace(ctx, look, x, y, size) {
+  const hr = look.head || 6.6;
+  const k = fin(size, 16) / (2.55 * hr);
+  ctx.save();
+  ctx.translate(fin(x), fin(y) - 0.1 * hr * k);
+  ctx.scale(k, k);
+  // shoulders, cut off flat like a portrait
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(-2 * hr, 0, 4 * hr, hr * 1.3);
+  ctx.clip();
+  fillEllipse(ctx, 0, hr * 1.6, hr * 1.32, hr * 0.95, look.bodyDark || look.body);
+  fillEllipse(ctx, 0, hr * 1.7, hr * 1.2, hr * 0.88, look.body);
+  ctx.restore();
+  if (look.hood) fillEllipse(ctx, 0, hr * 0.75, hr * 1.12, hr * 0.62, look.bodyDark);
+  FACE.t = faceGame ? fin(faceGame.time) : 0;
+  drawHead(ctx, look, FACE, Math.PI / 2, 0, 0, hr);
+  ctx.restore();
+}
+
+setFacePainter((ctx, id, x, y, size) => {
+  const look = faceLook(faceGame, id);
+  if (!look) return false;
+  drawFace(ctx, look, x, y, size);
+  return true;
+});
+
+// ---------------------------------------------------------------------------
 // In-world characters for a day.
 const S = personState();
 const order = [];
@@ -769,25 +816,34 @@ export function itemIcon(items, held) {
   return (items && items[held]?.icon) || '❔';
 }
 
+// The player's look in a disguise she wears (level.items[type].disguise.look over her own; play/disguise.js).
+const wornLooks = new WeakMap();
+function wornLook(looks, disguise) {
+  let look = wornLooks.get(disguise);
+  if (!look) wornLooks.set(disguise, (look = { ...lookFor(looks, 'player'), ...disguise.look }));
+  return look;
+}
+
 function drawPlayer(ctx, game, t) {
   const p = game.player;
   const s = S;
   resetState(s, t);
+  const worn = p.held ? game.level.items?.[p.held]?.disguise : null; // worn, not carried: not in her hand
   s.dir = fin(p.dir, -Math.PI / 2);
   s.head = s.dir;
   s.pose = p.seated ? 'sit' : p.moving ? 'walk' : 'stand';
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
-  s.item = itemIcon(game.level.items, p.held);
+  s.item = worn ? null : itemIcon(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
-    : p.action ? 'reach' : p.seated ? 'desk' : p.held ? 'carry' : p.moving ? 'walk' : 'idle';
+    : p.action ? 'reach' : p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle';
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
   s.stain = !!p.smeared;
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
-  drawPerson(ctx, lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
+  drawPerson(ctx, worn ? wornLook(game.level.looks, worn) : lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
 }
 
 function drawNpc(ctx, game, n, t) {

@@ -8,7 +8,8 @@ import { createRenderer } from './render/renderer.js';
 import { PAUSE_BTN } from './render/hud.js';
 import { VIEW_W, VIEW_H } from './render/util.js';
 import { createAudio } from './audio/audio.js';
-import { getLevel } from './levels/index.js';
+import { getLevel, levels, defaultLevel } from './levels/index.js';
+import { mountLevelPicker } from './play/level-picker.js';
 
 const SPEEDS = [1, 2, 4, 8];
 
@@ -29,6 +30,9 @@ function pickLevel() {
     throw err;
   }
 }
+
+const levelParam = new URLSearchParams(location.search).get('level');
+mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k] === defaultLevel));
 
 const input = createInput(window);
 const game = createGame({ input, level: pickLevel() });

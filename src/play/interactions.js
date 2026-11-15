@@ -5,9 +5,9 @@
 // row fields), then one per edible item, then the generic ones every level has:
 //   holding an edible item                       -> eat_<type> (sneaky to its owner; leaves player.smeared)
 //   own_desk (not seated)                        -> sit (instant)
-//   holding anything, no level 'self' row valid  -> drop (instant)
+//   holding anything, no level 'self' row valid  -> drop (instant; not an item with `keep`)
 //   empty hands, dropped item within ITEM_RADIUS -> pick_up (an item on a spot: within INTERACT_RADIUS)
-//   holding what a free spot takes               -> put (instant; mechanics/putdown.js)
+//   holding what a free spot takes               -> put (instant, or timed for an item with `put`; putdown.js)
 // The nearest valid target wins; 'self' targets only apply when nothing else is valid.
 import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
 import { say, burst } from '../core/fx.js';
@@ -57,7 +57,10 @@ function actionsOf(level) {
     table = { ...level.interactions };
     const add = (verb, row) => { if (!(verb in table)) table[verb] = row; };
     for (const [type, item] of Object.entries(level.items ?? {})) if (item.edible) add(`eat_${type}`, eatRow(type, item));
-    for (const [verb, row] of Object.entries(GENERIC)) add(verb, row);
+    // An item with `keep` never leaves your hand but by a put: no drop row for it.
+    const kept = Object.entries(level.items ?? {}).filter(([, item]) => item.keep).map(([type]) => type);
+    const drop = kept.length ? { ...GENERIC.drop, can: (p) => !!p.held && !kept.includes(p.held) } : GENERIC.drop;
+    for (const [verb, row] of Object.entries(GENERIC)) add(verb, verb === 'drop' ? drop : row);
     tables.set(level, table);
   }
   return table;
@@ -68,55 +71,58 @@ export function actionRow(game, verb) {
   return actionsOf(game.level)[verb] ?? null;
 }
 
-// A level's rows grouped by target, each list in table order (built once per level: findFocus runs every tick).
+// A level's rows grouped by target ({ verb, row } lists in table order), its 'self' list and its put row (built
+// once per level: findFocus runs every tick, and looks them up once).
 const byTarget = new WeakMap();
-function rowsFor(level, target) {
-  let groups = byTarget.get(level);
-  if (!groups) {
-    groups = new Map();
+function rowsOf(level) {
+  let rows = byTarget.get(level);
+  if (!rows) {
+    const groups = new Map();
     for (const [verb, row] of Object.entries(actionsOf(level))) {
       if (!groups.has(row.on)) groups.set(row.on, []);
-      groups.get(row.on).push([verb, row]);
+      groups.get(row.on).push({ verb, row });
     }
-    byTarget.set(level, groups);
+    rows = { groups, self: groups.get('self') ?? NONE, put: actionsOf(level).put ?? null };
+    byTarget.set(level, rows);
   }
-  return groups.get(target) ?? NONE;
+  return rows;
 }
 const NONE = [];
 
-// The action a target offers right now, or null. target: an interactable type, 'self', or 'item' (with the item).
-function targetAction(game, target, item = null) {
-  for (const [verb, row] of rowsFor(game.level, target)) {
-    if (row.can(game.player, game.world, item)) return verb;
-  }
+// The first of a target's rows ({ verb, row }) possible right now, or null. item: the floor item, for 'item' rows.
+function possibleRow(game, list, item = null) {
+  for (const e of list) if (e.row.can(game.player, game.world, item)) return e;
   return null;
 }
 
 function findFocus(game) {
   const p = game.player;
+  const rows = rowsOf(game.level);
   let best = null;
   let bestD = Infinity;
   for (const it of game.map.interactables) {
+    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
+    if (Math.abs(it.cx - p.x) > INTERACT_RADIUS || Math.abs(it.cy - p.y) > INTERACT_RADIUS) continue;
     const d = Math.hypot(it.cx - p.x, it.cy - p.y);
     if (!(d <= INTERACT_RADIUS && d < bestD)) continue; // can() is pure, so test reach first
-    const verb = targetAction(game, it.type);
-    if (verb) {
+    const e = possibleRow(game, rows.groups.get(it.type) ?? NONE);
+    if (e) {
       bestD = d;
-      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: actionRow(game, verb).icon, action: verb };
+      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: e.row.icon, action: e.verb };
     }
   }
   for (const item of game.world.items) {
     const d = Math.hypot(item.x - p.x, item.y - p.y);
     if (!(d <= (item.spot ? INTERACT_RADIUS : ITEM_RADIUS) && d < bestD)) continue; // (a spot's: on a desk)
-    if (targetAction(game, 'item', item)) {
+    if (possibleRow(game, rows.groups.get('item') ?? NONE, item)) {
       bestD = d;
       best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: actionRow(game, 'pick_up').icon, action: 'pick_up', item };
     }
   }
-  best = putFocus(game, bestD, actionRow(game, 'put')) ?? best;
+  best = putFocus(game, bestD, rows.put) ?? best;
   if (!best) {
-    const verb = targetAction(game, 'self');
-    if (verb) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: actionRow(game, verb).icon, action: verb };
+    const e = possibleRow(game, rows.self);
+    if (e) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: e.row.icon, action: e.verb };
   }
   return best;
 }
@@ -153,7 +159,10 @@ function startAction(game, focus) {
   const row = actionRow(game, verb);
   if (focus.kind !== 'self') p.dir = Math.atan2(focus.y - p.y, focus.x - p.x);
 
-  if (row.instant) {
+  // A target can make its row a timed action of its own: { duration, sneaky, owner, saw } (putting down an item
+  // with `put`: mechanics/putdown.js).
+  const timed = focus.timed ?? null;
+  if (row.instant && !timed) {
     row.done(game, focus);
     actionNoise(game, row, focus.x, focus.y); // the row's noise, if it makes one
     p.focus = findFocus(game);
@@ -163,14 +172,16 @@ function startAction(game, focus) {
   // The action replaces the busy pose for its duration.
   setBusy(game, false, null);
   game.clock.ff = false;
+  const r = timed ?? row;
   p.action = {
     type: verb,
     targetId: focus.id,
     t: 0,
-    duration: row.duration,
-    sneaky: !!row.sneaky,
-    owner: row.owner ?? null,
-    idle: !!row.idle,
+    duration: r.duration,
+    sneaky: !!r.sneaky,
+    owner: r.owner ?? null,
+    idle: !!r.idle,
+    saw: r.saw ?? null, // what a late tattle points at (rules.js)
     x: focus.x,
     y: focus.y,
     item: focus.item ?? null,

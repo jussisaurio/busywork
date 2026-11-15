@@ -1,12 +1,12 @@
 // Shared visual-effect state helpers. Gameplay/sim code calls these; the renderer
 // draws game.fx; audio listens to the 'say' event.
 //
-// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [] }
+// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [] }
 
 let bubbleSeq = 0;
 
 export function createFx() {
-  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [] };
+  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [] };
 }
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
@@ -51,9 +51,20 @@ export function burst(game, kind, x, y, n = 8, opts = {}) {
 // A sightline flash: "this NPC is looking at you, from there". Drawn from the NPC's eyes to
 // the player (both live positions), fading out over ttl.
 // kind: 'notice' (first sight, faint) | 'tattle' (a witness shouts) | 'caught' (the boss)
-export function sightline(game, from, kind = 'notice', ttl = 0.8) {
+// via: { screen: {x, y}, lens: {x, y} } (tile units) when he saw you on a camera's screen: the line runs from his
+// eyes to the screen, then from the camera's lens to you (play/rules.js; sim/mechanics/camera.js).
+export function sightline(game, from, kind = 'notice', ttl = 0.8, via) {
   game.fx.lines = game.fx.lines.filter((l) => l.from !== from);
-  game.fx.lines.push({ from, to: 'player', kind, age: 0, ttl });
+  const line = { from, to: 'player', kind, age: 0, ttl };
+  if (via) line.via = via;
+  game.fx.lines.push(line);
+}
+
+// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl.
+// opts.color: a CSS colour (default the renderer's).
+export function ripple(game, x, y, radius, opts = {}) {
+  const list = game.fx.ripples ?? (game.fx.ripples = []);
+  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? 1 });
 }
 
 export function shake(game, amount = 0.15, t = 0.3) {
@@ -75,6 +86,10 @@ export function updateFx(game, dt) {
   fx.particles = fx.particles.filter((p) => p.age < p.ttl);
   for (const l of fx.lines) l.age += dt;
   fx.lines = fx.lines.filter((l) => l.age < l.ttl);
+  if (fx.ripples?.length) {
+    for (const r of fx.ripples) r.age += dt;
+    fx.ripples = fx.ripples.filter((r) => r.age < r.ttl);
+  }
   if (fx.shake.t > 0) fx.shake.t = Math.max(0, fx.shake.t - dt);
   else fx.shake.amount = 0;
 }
