@@ -61,43 +61,41 @@ The card reads aloud like a coworker talking: "makes it official" and "get out o
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"4926f53","hash":"33194333ec7e5d971ccbd7d7d1ed636c7c963bee4b4000c959201d188ab0dad4","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"b23b72bf56c6d499c15b76aa9d5885c57c4ad71211d6e88698b4a06b3cfa5074","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":8,"stretch":1,"nonsense":0},"problems":{"blocker":1,"should":2,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit 4926f53, by claude -p (model: default). Inputs 33194333ec7e: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 8 sensible, 1 stretch, 0 nonsense.
-Problems: 1 blocker, 2 should, 1 nit.
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"995a3cc","hash":"e2452c98bb65ab74bb5c3bde8a90f9a5b55a8f7a88c4cdae12fb24d050ebb01a","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"f3020a30329cbc3c48e43c84d4ce54912272129e4f4c5a994c816893f772a60f","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":1,"nonsense":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
+## sense: works
+Recorded 2026-11-15 at commit 995a3cc, by claude -p (model: default). Inputs e2452c98bb65: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 1 stretch, 0 nonsense.
+Problems: 0 blocker, 2 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 58 s | $0.14 |
-| all | | 58 s (the steps add up to 58 s) | $0.14 |
+| 1-judge | report.md | 42 s | $0.11 |
+| all | | 42 s (the steps add up to 42 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In "His own face", Lin and Kev agree on you only because each can't point at themselves. Neither saw anything; if they had, they would already have told on you. Real coworkers with no evidence shrug, or Kev points at Lin and Lin at Kev. Agreeing on the third person is the logic of a puzzle piece, not of people. — Give them a reason they really have: Lin, whose desk faces the board, says "they were hanging round the board earlier," and Kev nods because he wants it settled. Or let the boss reason it out himself: "Who was on it before? …It was you, wasn't it."
-- E2 [should] In the ding route, the first thing a real office does when the steam thins is say "whose is that?" and look round for the owner. The owner has just walked away from their own mess, so eyes go looking for you, possibly at the board. The text admits this risk but waves it off. — Make sure the write is finished and you're visibly heading to your desk (or back to the kitchen) before the steam thins, and have someone call out "whose noodles?" so you answer from your desk.
-- E3 [should] Lin's cone lies on the board all afternoon, and she is the one who can catch you writing on it. Yet she never notices that the Saturday face changed from yours to Kev's. "She notices people, not the board" covers this, but only just. — Spell it out: Lin watches who walks up to the board, not what's written on it. Give her one line or emote at the reading ("huh, thought it was…" then a shrug) so it reads as half-awake, not blind.
+- E1 [should] Lin's desk faces the board all afternoon, and the board shows a drawn face, not small text. A real person looking at a board in front of her desk would notice when the face in the Saturday box changes from yours to Kev's, especially just after she turned back from the steam. "Nobody reads the weekend schedule" covers reading, not glancing at a picture. Fix: give Lin a reason not to look at the board after a write, such as her monitor or a stack of folders blocking her view of the Saturday box. Or let her notice and shrug, because she's not on it and it's none of her business. A real coworker would do that.
+- E2 [should] In "His own face", Kev points at you (👉 you), but the win section says he was "too far off to see the board… never saw anyone at it." A real person doesn't accuse someone of something they didn't see. Fix: have Kev go along for his own sake instead. He's afraid the slot will land on him, so he nods along ("yeah, must've been") rather than acting as a second witness. Or leave him out.
 
 ### 1-judge: report.md
 
-Verdict: fixable
+Verdict: works
 
-- Ding (win): sensible — everyone stares at a boiling-over microwave and waits for someone else to deal with it. Six seconds is enough to rewrite a box behind their backs.
-- Phone (win): sensible — the boss answers his own ringing phone, says hello twice to a silent line and hangs up. At the same time Lin is at the microwave with her back to the room, waiting for her Friday fish.
-- Copier trap (not a win): sensible — you look toward a noise and see whatever is in the way.
-- Ending, Kev named (win): sensible — the boss reads out a schedule he wrote on Monday, and "again?!" Kev takes it.
-- Fail (lose): sensible — your name is read out and you work Saturday.
-- Caught (lose): sensible — the boss is looking and sees you with the marker in your hand.
-- His own face (lose): stretch — the boss's reaction is right, but Lin and Kev both landing on you has no reason behind it.
-- Told on (lose): sensible — a coworker reports someone messing with the schedule, and the manager checks the board and corrects it.
-- Blamed (lose): sensible — whoever misses the meeting gets the job nobody wants.
+- The ding (win): sensible. When food boils over in the microwave, everyone stares at the steam and nobody gets up. A boss who filled in the schedule on Monday reads out whatever face is there, and Kev groans and takes it.
+- The phone (win): sensible. People answer their own ringing phone, say hello twice to nobody and hang up. Lin standing with her back to the room while her fish heats is ordinary office behaviour.
+- The trap (lose, not a win): sensible. You look at a noise and see whatever is between you and it.
+- Fail (lose): sensible. The boss reads out the face he finds on the board.
+- Caught (lose): sensible. A boss who sees you erasing the weekend schedule stops you.
+- His own face (lose): stretch. The boss's reaction is right: nobody believes he put himself down. But Kev backs Lin up even though the text says he saw nothing.
+- Told on (lose): sensible. A coworker who sees someone rewriting the schedule tells the boss, and he goes to check.
+- Blamed (lose): sensible. "Whoever's not at the meeting gets the job nobody wants" is something real bosses do. Overruling his own board to do it is an absurd result, not an absurd method.
 
 ## Problems
-- blocker: In "His own face", Lin and Kev agree on you only because each can't point at themselves. Neither saw anything; if they had, they would already have told on you. Real coworkers with no evidence shrug, or Kev points at Lin and Lin at Kev. Agreeing on the third person is the logic of a puzzle piece, not of people. — Give them a reason they really have: Lin, whose desk faces the board, says "they were hanging round the board earlier," and Kev nods because he wants it settled. Or let the boss reason it out himself: "Who was on it before? …It was you, wasn't it."
-- should: In the ding route, the first thing a real office does when the steam thins is say "whose is that?" and look round for the owner. The owner has just walked away from their own mess, so eyes go looking for you, possibly at the board. The text admits this risk but waves it off. — Make sure the write is finished and you're visibly heading to your desk (or back to the kitchen) before the steam thins, and have someone call out "whose noodles?" so you answer from your desk.
-- should: Lin's cone lies on the board all afternoon, and she is the one who can catch you writing on it. Yet she never notices that the Saturday face changed from yours to Kev's. "She notices people, not the board" covers this, but only just. — Spell it out: Lin watches who walks up to the board, not what's written on it. Give her one line or emote at the reading ("huh, thought it was…" then a shrug) so it reads as half-awake, not blind.
-- nit: The boss slams the phone down in anger after a silent call. Real people hang up mildly annoyed. — Use a shrug-and-hang-up (🙄), not 😠.
+- should: Lin's desk faces the board all afternoon, and the board shows a drawn face, not small text. A real person looking at a board in front of her desk would notice when the face in the Saturday box changes from yours to Kev's, especially just after she turned back from the steam. "Nobody reads the weekend schedule" covers reading, not glancing at a picture. Fix: give Lin a reason not to look at the board after a write, such as her monitor or a stack of folders blocking her view of the Saturday box. Or let her notice and shrug, because she's not on it and it's none of her business. A real coworker would do that.
+- should: In "His own face", Kev points at you (👉 you), but the win section says he was "too far off to see the board… never saw anyone at it." A real person doesn't accuse someone of something they didn't see. Fix: have Kev go along for his own sake instead. He's afraid the slot will land on him, so he nods along ("yeah, must've been") rather than acting as a second witness. Or leave him out.
+- nit: When Kev says "again?!", a real coworker would usually add "I did last Saturday!", and even a half-awake boss would pause at that. Fix: make it clear Kev is the office's usual weekend patsy and always gets it. Then "again?!" is a resigned groan, not an objection.
+- nit: In the ding route, after the steam "the noodles are back on the counter, open and steaming," but nobody got up to take them out. Fix: leave them in the microwave until you come back for them, or have them still sitting in the fogged window.
 
 <!-- /cold-read:sense -->
 
