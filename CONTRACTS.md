@@ -32,8 +32,10 @@ change in order changes the digest. These are the usual ways to break it:
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
 - Units: positions are floats in **tile units**. Tile (x,y) covers [x,x+1)×[y,y+1); its centre is (x+0.5, y+0.5).
   Angles are radians: 0 = east, π/2 = south (canvas convention). `dt` is **real seconds per sim step** (1/60).
-  Game time is `game.clock.minute`, minutes since 2:30 PM (config.js `DAY_START`; every level starts then).
-  Use `at('3:10')` from config.js to write a time.
+  Game time is `game.clock.minute`, minutes since the level's `day.start`.
+  Write a time with config.js `at()`. `at('3:10')` counts from 2:30 PM (`DAY_START`). A day that starts at
+  another time passes its start, and writes times after noon in 24-hour form: `at('9:30', START)`,
+  `at('13:15', START)`.
 - **Engine code names no level.** Every `src/` file outside `src/levels/` reads level things from `game.level`.
   `node tools/test-engine-clean.mjs` fails on a level-1 name in engine code.
 - **Only edit files you own.** If you need a contract change, implement against the contract as written, work
@@ -44,7 +46,7 @@ change in order changes the digest. These are the usual ways to break it:
 ## File ownership
 | Owner | Files |
 |---|---|
-| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/levels/index.js`, `src/agent/*`, `tools/test-core.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/gate.mjs`, `tools/test-gate.mjs`, `tools/golden.mjs`, `tools/golden-render.mjs`, `tools/test-engine-clean.mjs`, `tools/lib/*`, `*.md` |
+| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/levels/index.js`, `src/levels/validate.js`, `src/agent/*`, `tools/test-core.mjs`, `tools/test-levels.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/gate.mjs`, `tools/test-gate.mjs`, `tools/golden.mjs`, `tools/golden-render.mjs`, `tools/test-engine-clean.mjs`, `tools/lib/*`, `*.md` |
 | sim agent | `src/sim/nav.js`, `src/sim/npcs.js`, `src/sim/override.js`, `src/sim/mechanics/*`, `tools/test-sim.mjs`, `tools/test-attention.mjs` |
 | gameplay agent | `src/play/*`, `tools/test-play.mjs` |
 | render agent | `src/render/*`, `tools/test-render.mjs` |
@@ -53,7 +55,7 @@ change in order changes the digest. These are the usual ways to break it:
 
 ## Engine modules (read these, don't edit)
 - `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion), `SEED`,
-  `DAY_START`, `at()`, `formatClock()`, `deg()`.
+  `DAY_START`, `at()`, `formatClock()`, `clockArg()`, `dayCue()`, `DAY_CUES`, `deg()`.
 - `src/core/map.js`: `parseMap(rows, legend)` returns `{ w, h, rows, defs, char(x,y), tile(x,y), isSolid, isOpaque,
   isWalkable(x,y,who), interactables[], find(c) }`. `isWalkable(x,y,'npc')` also passes `npcPassable` tiles.
 - `src/core/vision.js`: `canSee(map, viewer, tx, ty)`, `inCone`, `hasLineOfSight`, `angleDiff`, `DIRS`.
@@ -64,7 +66,7 @@ change in order changes the digest. These are the usual ways to break it:
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` (`'*'` gets every event) and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the registry `levels`, `defaultLevel` (level 1, `meeting`) and `getLevel(id)` (throws on an
-  unknown id and lists the registry).
+  unknown id and lists the registry). It validates every level as it loads (`src/levels/validate.js`, see "Errors").
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`
   (throws on an unknown spot), `inZone(game, name, x, y)` (false for an unknown zone), `findNpc(game, id)`.
 - `src/state.js`: `createGame({ events, input, level })` and `resetLoop(game)`. They build the state below.
@@ -78,7 +80,8 @@ change in order changes the digest. These are the usual ways to break it:
 ## The level object
 A level is one folder, `src/levels/<id>/`, whose `index.js` default-exports one object. Engine code reads it as
 `game.level` and never imports level files. The folder name must equal `id`: the tools find the goldens at
-`src/levels/<id>/golden.json` and `golden-render.json`. Register the level with one line in `src/levels/index.js`.
+`src/levels/<id>/golden.json` and `golden-render.json`, and the route checks at `route-checks.js` (see Tools).
+Register the level with one line in `src/levels/index.js`.
 
 Examples used below:
 - `fixture`: `src/levels/fixture/` ("Happy Birthday to Nobody"): one room, an authority, an owner, one lure.
@@ -90,57 +93,67 @@ Examples used below:
 | Field | Needed | Read by | Example |
 |---|---|---|---|
 | `id` | yes | registry, tools | every level |
+| `title` | yes | render (title card) | `fixture/presentation.js` `TITLE` |
 | `map: { rows, legend }` | yes | `core/map.js`, render | fixture `MAP`, `LEGEND` |
 | `spots` | yes | everything | fixture `SPOTS` |
 | `zones` | yes | rules, scenario, mechanics | fixture `ZONES` |
 | `patrols` | for `patrol` entries and hunts | sim | meeting `map.js` `ROUTES` |
 | `cast` | yes | sim, rules, render | `fixture/cast.js` |
-| `day` | yes | sim, scenario, HUD, audio | fixture `day` |
+| `day` | yes | sim, scenario, HUD, audio, tools | fixture `day` |
 | `meeting` | yes | sim, scenario | fixture `meeting` |
 | `routes`, `outcomeOrder` | yes | scenario, HUD, tools | fixture `routes` |
 | `initialWorld()` | yes | `state.js` | fixture `initialWorld` |
-| `interactions` | no | `play/interactions.js` | fixture `INTERACTIONS` |
-| `items` | no | interactions, rules | fixture `ITEMS` |
-| `roles` | `authority` in practice | rules | fixture `ROLES` |
+| `interactions` | yes (`{}` is fine) | `play/interactions.js` | fixture `INTERACTIONS` |
+| `items` | no | interactions, rules, render | fixture `ITEMS` |
+| `roles` | no | rules | fixture `ROLES` |
 | `lures`, `hunts`, `doors`, `inspections` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection |
 | `noises` | no | `mechanics/attention.js` | (none yet) |
 | `behaviours` | if the cast names a hook | sim | `fixture/cast.js` `BEHAVIOURS` |
 | `failSign` | no | scenario | meeting `index.js` |
-| `title`, `decor`, `looks`, `poses`, `cones`, `itemIcons`, `endScenes` | no | render | `fixture/presentation.js` |
+| `decor`, `looks`, `poses`, `cones`, `endScenes` | no | render | `fixture/presentation.js` |
 | `sounds`, `voices` | no | audio | `meeting/sounds.js`, `meeting/voices.js` |
-| `harness` | `my_seat` in practice | `src/agent/harness.js` | `fixture/harness.js` |
-| `gate` | for fuzz, gate and golden | `tools/fuzz.mjs` | `fixture/gate.js` |
+| `harness` | no | `src/agent/harness.js` | `fixture/harness.js` |
+| `gate` | for fuzz, gate and golden | `tools/fuzz.mjs`, `tools/golden-render.mjs` | `fixture/gate.js` |
 
-"Needed" means the game or the tools fail without it. Nothing checks the object as a whole: see "Errors" below.
+"Needed" means the level fails to load without it (or, for `gate`, the tools fail). The validator checks the
+whole object at load: see "Errors" below.
 
 ### Map and legend
-- `map.rows`: equal-length strings, one char per tile. A row of the wrong length, or a char the legend lacks,
-  throws when the game is created. There is no camera: the screen shows 30×17 tiles (`render/util.js` `PLAY_W`,
-  `PLAY_H`). A smaller map draws in the top-left corner; a larger one is cut off.
-- `map.legend`: `{ [char]: { kind, solid, opaque, interactable?, npcPassable? } }`, merged over the base legend:
-  `#` wall, `G` glass, `.` floor, `:` outside, `D` door, `T` desk, `H` plant. `solid` blocks walking, `opaque`
-  blocks sight, `npcPassable` lets NPCs (not the player) through a solid tile. `interactable: '<type>'` makes each
-  tile of that char an interactable of that type (ids `<type>`, or `<type>_0`, `<type>_1`, ... when the char
-  repeats). `kind` is a label for readers; no code reads it.
+- `map.rows`: equal-length strings, one char per tile. A row of the wrong length, or a char the legend lacks, is a
+  load error. There is no camera: the screen shows 30×17 tiles (`render/util.js` `PLAY_W`, `PLAY_H`). A smaller
+  map draws in the top-left corner; a larger one is cut off.
+- `map.legend`: `{ [char]: { kind, solid, opaque, interactable?, npcPassable?, draw? } }`, merged over the base
+  legend: `#` wall, `G` glass, `.` floor, `:` outside, `D` door, `T` desk, `H` plant. `solid` blocks walking,
+  `opaque` blocks sight, `npcPassable` lets NPCs (not the player) through a solid tile. `interactable: '<type>'`
+  makes each tile of that char an interactable of that type (ids `<type>`, or `<type>_0`, `<type>_1`, ... when the
+  char repeats). `draw` is what the tile looks like (below); without it, the renderer uses `kind`.
 - The generic `sit` row targets the interactable type `own_desk`. A level without one never lets you sit back down.
-- Example: fixture `LEGEND` (calendar, microwave, cake stand, `own_desk`).
+- Example: fixture `LEGEND` (calendar, microwave, cake stand, `own_desk`, and `F` with `draw: 'refrigerator'`).
 
-As it is now, the renderer draws by char, not by legend. `#`, `R`, `E` are walls (`R` with a restroom door, `E`
-an elevator); `G` glass; `L` glass with an entrance; `D` a door. `T`, `P`, `J`, `C` are desk tiles: a group with
-a `P` is your desk, with a `J` the meeting table, with a `C` a counter; other groups are desks by floor zone.
-On top: `H` plant, `F` fridge, `C` coffee machine, `K` coat-rack base; `:` is lobby floor. Any other char draws
-only floor. To show something there, add a `decor.props` entry with `draw: 'icon'` (fixture: `B`, `M`, `W`).
+The renderer draws a tile as its legend `draw`, else its `kind`. The draws are `render/world.js` `TILE_DRAWS`:
+`wall`, `glass`, `entrance` (a glass door), `door`, `restroom` (a wall with a 🚻 door), `elevator` (a wall with
+lift doors), `floor`, `outside` (lobby floor), `desk`, `own_desk`, `meeting_table`, `coffee_machine`, `plant`,
+`coat_rack`, `refrigerator`. The base letters' kinds are draws already. A `draw` not in the list is a load error.
+Any other kind draws only floor. To show something there, add a `decor.props` entry with `draw: 'icon'`
+(fixture: `B`, `M`, `W`).
+- Desk tiles (`desk`, `own_desk`, `meeting_table`, `coffee_machine`) that touch make one piece. A piece with
+  `own_desk` is your desk, with `meeting_table` the meeting table, with `coffee_machine` the kitchen counter.
+  Any other piece is drawn by the floor zone at its top-left tile: `kitchen` a kitchen table, `office` an
+  executive desk, anything else a work desk. Floor zones are the names in `decor.zoneSeeds`, not `level.zones`.
+- A piece faces the `decor.deskOwners` spot that faces into it (your desk: `player_desk`). A piece with no such
+  spot is drawn for a sitter south of it (face `'N'`). Each `deskOwners` spot must face a desk tile.
+- The lift doors open as an active NPC comes within 1.6 tiles of `decor.elevator.spot`.
 
 ### Spots and zones
-- `spots`: `{ [name]: { x, y, face, accepts?, owner?, found? } }`. Tile coords; `face` is `'N'|'E'|'S'|'W'`.
-  `spotPos(game, name)` gives the tile centre and the facing angle. `accepts`, `owner` and `found` make a
-  put-down spot (see Mechanics).
+- `spots`: `{ [name]: { x, y, face, accepts?, owner?, found? } }`. Whole tile coords, on the map, on a tile an NPC
+  can stand on; `face` is `'N'|'E'|'S'|'W'`. `spotPos(game, name)` gives the tile centre and the facing angle.
+  `accepts`, `owner` and `found` make a put-down spot (see Mechanics).
 - Spots the engine needs: `player_desk` (you start there, and `sit` and assigned work snap you there), each
   cast member's `meetingSpot`, `meeting.chair`, `meeting.presenter`, and every spot a schedule entry, mechanic,
-  hook, `noises` entry or `failSign` names. An unknown spot throws when it is first used (some at load, most
-  mid-day).
-- `zones`: `{ [name]: { x0, y0, x1, y1 } }`, half-open (`x0 <= x < x1`, `y0 <= y < y1`), in tile units. An unknown
-  zone name is silently empty.
+  `noises` entry, `failSign` or `decor` names. An unknown one is a load error. A spot a hook names in its own code
+  throws only when the hook runs.
+- `zones`: `{ [name]: { x0, y0, x1, y1 } }`, half-open (`x0 <= x < x1`, `y0 <= y < y1`), in tile units, inside the
+  map. A zone the level data names but `zones` lacks is a load error.
 - `patrols`: `{ [name]: [[x, y], ...] }`, tile points walked in order (a `patrol` entry, a hunt's `route`).
 - Example: fixture `SPOTS` and `ZONES`; meeting `map.js` has all three.
 
@@ -168,18 +181,19 @@ only floor. To show something there, add a `decor.props` entry with `draw: 'icon
 - Example: `fixture/cast.js` (Gus goes `away` for candles, then `arrive: 'checkCake'`).
 
 ### Day and meeting frame
-- `day`: game minutes.
-  - `gatherAt`: every NPC still on the floor gets the meeting override and walks to his `meetingSpot`
-    (event `meeting:gather`). The gather skips an NPC gone for the day, and one whose mechanic keeps him (a lure
-    job, a door, an inspection). Those still go when the mechanic ends, except a door. A hunt is interrupted.
-    Away NPCs are included.
+- `day`: game minutes, except `start`.
+  - `start`: the minute of the day the clock starts at (`14 * 60 + 30` is 2:30 PM). The HUD, the wall clock, the
+    end card and the tools show times from it. Write the other times with `at(hhmm, start)`.
+  - `gatherAt` (at most `meetingAt`): every NPC still on the floor gets the meeting override and walks to his
+    `meetingSpot` (event `meeting:gather`). The gather skips an NPC gone for the day, and one whose mechanic keeps
+    him (a lure job, a door, an inspection). Those still go when the mechanic ends, except a door. A hunt is
+    interrupted. Away NPCs are included.
   - `meetingAt`: the outcome (`play/scenario.js`): no route achieved is `'fail'`; a route and you in zone
     `meeting.room` is `'win'`; a route and you elsewhere is `'blamed'`. A catch before this ends the day `'caught'`.
-  - Cosmetic cues, all optional, none with a default: `clockRedAt` (HUD clock turns red; absent: never),
-    `clockTickAt` (wall clock starts ticking; **absent: it ticks all day**), `tockAt` (tick-tock; absent: never),
-    `halfMinuteAt` (a tick every half minute from then; absent: from the start).
-  - `day.start` is not read by the engine (`tools/test-sim.mjs` checks it equals `DAY_START`). Level 1's `beamAt`
-    is read only by its own `decor.js`.
+  - Cosmetic cues, all optional. Each defaults to a few minutes before `meetingAt` (config.js `dayCue`):
+    `clockRedAt` (HUD clock turns red; −5), `clockTickAt` (wall clock starts ticking; with `clockRedAt`),
+    `tockAt` (tick-tock; −2), `halfMinuteAt` (a tick every half minute; −1), `beamAt` (the projector beam in
+    level 1's `decor.js`; −5). Read a cue with `dayCue(day, name)`, not `day[name]`.
 - `meeting`: `{ override, room, chair, presenter }`. `override` is the NPCs' override name at the meeting;
   `room` the zone you must be in at `meetingAt`; `chair` the spot the room stares at when you are blamed;
   `presenter` the spot a failed meeting puts you at. The event `meeting:gather` and the cancel reason `'meeting'`
@@ -188,20 +202,21 @@ only floor. To show something there, add a `decor.props` entry with `draw: 'icon
   spot's corner). Absent: no sign.
 - `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (HUD, title, end card). `achieved` is checked at
   `meetingAt`.
-- `outcomeOrder`: the order `outcome.routes` lists achieved routes in. **It must list every route id**: one it
-  leaves out is never counted, and an id not in `routes` crashes the meeting.
+- `outcomeOrder`: the order `outcome.routes` lists achieved routes in. It lists every route id exactly once, and
+  no other id.
 - `initialWorld()`: a fresh `world` for each loop. Must include `items: []` (floor items). Every other field is
   the level's own.
 - Example: fixture `day`, `meeting`, `routes`, `outcomeOrder`, `initialWorld`.
 
 ### Interactions and items
-- `interactions`: the player's actions, `{ [verb]: row }`. The engine appends `eat_<type>` for each edible item,
-  then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's. For one target the
-  first row whose `can` holds wins; the nearest target wins; `'self'` rows apply only when nothing else does.
+- `interactions`: the player's actions, `{ [verb]: row }` (`{}` for none). The engine appends `eat_<type>` for each
+  edible item, then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's. For one
+  target the first row whose `can` holds wins; the nearest target wins; `'self'` rows apply only when nothing else
+  does.
 
 | Row field | Meaning |
 |---|---|
-| `on` | what offers it: an interactable type, `'self'` (what you hold), `'item'` (a floor item) |
+| `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
 | `icon`, `text` | the ✋ hint, and the harness's words for it |
 | `duration` | real seconds; `instant: true` instead does it at once (never seen in progress) |
 | `sneaky` | witnesses matter while it runs |
@@ -213,6 +228,7 @@ only floor. To show something there, add a `decor.props` entry with `draw: 'icon
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
 - `items`: `{ [type]: { icon, place?, edible?, contraband?, owner? } }`.
+  - `icon` (required): the emoji it draws as, held, carried or on the floor.
   - `place`: the `world` field that says where it is: `'player'` held, `'dropped'`, `'eaten'`, a spot name, or a
     cast id.
   - `edible`: the engine offers `eat_<type>` (sneaky to its owner, `idle`, sets `player.smeared`, event
@@ -220,19 +236,18 @@ only floor. To show something there, add a `decor.props` entry with `draw: 'icon
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
     sees it on the floor (`<type>:recovered`). Needs a `place`.
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
-    `says`: his lines on catching you carrying it. `reclaim`: what taking it back does (default: he carries it,
-    `<type>:confiscated {by}`).
+    `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
+    (default: he carries it, `<type>:confiscated {by}`).
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
 
 ### Roles
 `roles` says who plays which part in the office rules (`play/rules.js`). Every cast member who is not the
 authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
-- `authority`: `{ id, offDuty?, helpless, deafIn? }`. His sighting of a sneaky action, or of his contraband in
+- `authority`: `{ id, offDuty?, helpless?, deafIn? }`. His sighting of a sneaky action, or of his contraband in
   your hands, means caught. He owns the suspicion meter (`game.suspicion[id]`) and assigns work. `offDuty`: his
   overrides during which he enforces nothing. `helpless`: overrides during which he can't act even on what he
-  sees; **required** (use `[]`), the rules read it with no default. `deafIn`: a zone where he can't hear a shout
-  (or a noise). Without an authority nobody assigns work and only an inspection can catch you, and
-  `tools/golden.mjs` crashes (it snapshots `suspicion[authority.id]`).
+  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `roles` and `authority` are optional. Without
+  an authority nobody assigns work and only an inspection can catch you.
 - `evidence`: `{ by, while, mark, knows, icon }`. A player field (`mark`) that pretending doesn't hide. The witness
   `by`, in override `while` (one value), reads it as guilt; telling sets `world[knows]`. Reason `'evidence'`.
 - `scene`: `{ by, while, zone, door, radius?, fresh(world), icon }`. While `by` is in one of the `while`
@@ -243,7 +258,8 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
 ### Mechanics
 A mechanic is data that gives one NPC a scripted moment. Each acts **only on the NPCs its data names**
 (`npc`, or the list `npcs`); attention is the exception. Each file in `src/sim/mechanics/` documents its fields
-in full. Lines in level data are `{ say: icons, kind?, ttl?, after? }`. Effects are `{ set?: { field: value },
+in full. Lines in level data are `{ say: icons, kind?, ttl?, after? }`: `after` delays the line by that many
+seconds, and `kind` and `ttl` apply to a delayed line too. Effects are `{ set?: { field: value },
 event? }`: fields go into `world` first, then the event fires with `{}`.
 
 **Lure** (`level.lures`, `lure.js`): a world condition pulls one NPC to a spot to deal with it.
@@ -298,27 +314,27 @@ the cast and the mechanics name.
 - `sim` (the sim's `HOOK_API`): `holdFor(npc, s)`, `speak(game, npc, lines)`, `want(npc, item)` (he knows it's his
   and daydreams of it), `faceSpot(game, npc, spot)`, `startHunt(game, npc)`.
 - A hook keeps its state on the NPC with a leading underscore (`npc._checked`); a new loop builds new NPCs.
-- A cast hook name the level lacks throws when the NPC is created.
+- A hook name the level lacks is a load error.
 - Example: `fixture/cast.js` `BEHAVIOURS`; meeting `behaviours.js` (preludes with `pending`).
 
 ### Presentation
-Render and audio read these; the sim never does. All optional.
-- `title`: `{ mission: [line1, line2], badge: [icon, overlay] }`, the typed mission lines and the emoji under 🕓.
-  Absent: blank lines. Example: `fixture/presentation.js` `TITLE`.
+Render and audio read these; the sim never does. All optional except `title`.
+- `title` (required): `{ mission: [line1, line2], badge: [icon, overlay] }`, the typed mission lines and the emoji
+  under 🕓. Example: `fixture/presentation.js` `TITLE`.
 - `decor`: set dressing (`chairs`, `windows`, `paintings`, `clock`, `screen`, `props`, `desks`, `deskOwners`,
-  `zoneSeeds`, `legendAt`, ...), documented in `meeting/decor.js`. `props: [{ tile, draw, state(world, game) }]`
-  draws on the first tile with char `tile`; `draw: 'icon'` with state `{ icon, size? }` works in any level.
-  Example: fixture `DECOR`.
+  `zoneSeeds`, `elevator`, `legendAt`, ...), documented in `meeting/decor.js`. `props: [{ tile, draw,
+  state(world, game) }]` draws on the first tile whose map letter is `tile` (the letter, not a draw or kind name);
+  `draw: 'icon'` with state `{ icon, size? }` works in any level. Example: fixture `DECOR`.
 - `looks`: `{ [id]: look }` per person and `player` (fields in `meeting/looks.js`); anyone without one gets a
   generic look in his `color`.
 - `poses`: `{ arms: [{ when(npc, world, game), arms, item?, angry?, crank? }], marks: [{ when, angry?, badge?,
   jacket? }] }`. The first `arms` rule that holds wins; every `marks` rule that holds applies.
-- `cones`: `{ alert: [override], eyesOn: { [npcId]: itemType } }`: when a cone flares red.
-- `itemIcons`: `{ [type]: emoji }` for held, carried and floor items. It repeats `items[type].icon`, but
-  without it every item draws as ❔.
-- `endScenes`: `{ kindOf(outcome), scenes: { [kind]: { win, icons, draw(ctx, game, t, e, outcome) } } }`. As it is
-  now, there is no default: without `endScenes` (or for a kind it lacks) the end card has no picture and no
-  icons. Example: fixture `END_SCENES` (one big emoji per outcome).
+- `cones`: `{ alert: [override] }`: overrides during which a cone glows red. A cone also glows while its NPC sees
+  something the rules react to (`game.watch`) and when he catches you; the authority's also while his suspicion
+  is above 0.
+- `endScenes`: `{ kindOf(outcome), scenes: { [kind]: { win, icons, draw(ctx, game, t, e, outcome) } } }`.
+  `kindOf` must map every outcome to a scene. Absent: `render/screens.js` `DEFAULT_END_SCENES`, a plain scene per
+  result. Example: fixture `END_SCENES` (one big emoji per outcome).
 - `sounds`: what actions, events, signs, drops and repeats sound like (`meeting/sounds.js`). Absent: engine sounds
   only.
 - `voices`: `{ [name]: params }` (fields: `audio/babble.js` `VOICES`), added to the engine's `player` and `generic`.
@@ -330,10 +346,12 @@ Render and audio read these; the sim never does. All optional.
   → spot names), `stops: { hard, soft }` (level events that end a command early), `names`, `mapKey`, and text
   hooks `outcomeText(o)`, `playerText(game)`, `statusText(game)`, `npcText(game, n)`, `worldText(game)`,
   `describe(event, memo)` (a line; `null` for silence; `undefined` for the harness's own text). All optional.
-  **`sit` runs `goto my_seat`**, so the level needs a landmark, spot or interactable named `my_seat`, or every
-  fuzz plan with a `sit` step crashes. Example: `fixture/harness.js`.
-  As it is now, the harness's own line for `meeting:gather` is "everyone heads to the meeting room". A level whose
-  gather is not a meeting overrides it in `describe` (the fixture: "everyone gathers round the cake").
+  `sit` runs `goto my_seat`. `my_seat` is built in (`validate.js` `ENGINE_LANDMARKS`: your `player_desk`).
+  Example: `fixture/harness.js`.
+  The harness's own line for `meeting:gather` is "everyone gathers for the meeting". A level names the place in
+  `describe` (level 1: "everyone heads to the meeting room"; the fixture: "everyone gathers round the cake").
+  The harness's ASCII map prints the map letters as written. It marks floor someone sees (`*`) only on `.`, `:`
+  and `D`, and its default key names only the base letters. Explain your own letters in `mapKey`.
 - `gate` (`tools/fuzz.mjs` `levelData`; fields in `meeting/gate.js`). The fuzzer throws without it.
   - `mustUse`: lessons a win must use: `{ id, cmd }` (a command that ran contains the word) or `{ id, event }`.
   - `targets`: `goto` targets for fuzz plans; `interactable`: the ones a plan may `interact` at. Order is
@@ -341,10 +359,15 @@ Render and audio read these; the sim never does. All optional.
   - `milestones`: `{ [event]: (payload) => name | null }`; `binKeys`: milestones that define an outcome bin;
     `keyActions`: milestones whose time span the report lists.
   - `goldenPlans`: hand-written harness plans for the golden corpus (raw movement, several loops).
+  - `renderEvents`: events `tools/golden-render.mjs` also draws at (and 20 frames after), besides the engine's
+    own (`caught`, `work:done`, `item:drop`, `item:pickup`, `witness:tattle`, `meeting:gather`, `day:end`,
+    `loop:start`, `player:sit`). List the level's visible beats. Nothing adds the templated events
+    (`<authority>:workAssigned`, `<type>:eaten`, `<type>:recovered`, `<type>:confiscated`): list them by hand.
   - A level with put-down spots also gets `put <spot>` fuzz steps.
-  As it is now, the engine adds only `noise` → `'noise'` and `npc:heard` → `'heard:<id>'` (and `'noise'` as a bin
-  key). Put-down and inspection levels list their own `item:put` and `inspect:*` milestones (fixture-putdown,
-  fixture-inspection).
+  The engine adds milestones for its own events (`tools/fuzz.mjs` `ENGINE_MILESTONES`): `noise` → `'noise'`,
+  `npc:heard` → `'heard:<id>'`, `item:put` → `'put@<spot>'`, `inspect:pass` / `inspect:fail` → `'tick<i>'` /
+  `'cross<i>'`, `inspect:done` → `'inspected'` or `'flunked'`, `inspect:moved` → `'moved'`. Only `'noise'` is a
+  bin key; add the others to `binKeys` to bin on them. A level's own milestone for the same event wins.
 - Example: `fixture/gate.js`.
 
 ### Goldens
@@ -354,15 +377,17 @@ each command. `golden-render.json` digests drawn frames. A new level records the
 `src/levels/README.md`); after that, re-record only for an intended change, and say so in the commit.
 
 ### Errors
-As it is now, nothing validates a level as a whole. Mistakes surface at different times:
-- When the game is created: a bad map row or unknown char (`parseMap`); no `player_desk` spot.
-- When the first day starts (NPCs and mechanics are built): a cast's first schedule spot unknown; an unknown
-  cast hook name (`createNpc`); a put-down spot whose `found` hook is unknown; an inspection that names an
-  unknown spot, zone or hook.
-- Mid-day: most unknown spots (`spotPos` throws); `startHunt` with no hunt for that NPC; an `outcomeOrder` id
-  not in `routes` (at the meeting).
-- Never: a misspelt optional field, an unknown zone, a route missing from `outcomeOrder`, an unsorted schedule.
-  Run the gate: it plays thousands of days.
+`src/levels/index.js` runs `validateLevel(level, key)` (`src/levels/validate.js`) on every registered level at
+load. A broken level throws one error, `level '<key>' is broken:`, with one line per problem, each starting with
+the field path (`cast[1] (kev).meetingSpot: no spot 'x'`). The header of `validate.js` lists every rule: required
+fields and shapes, and every spot, zone, patrol, cast id, item type, hook, voice, tile draw and prop painter the
+data names. `node tools/test-levels.mjs` checks every registered level, and a set of broken ones.
+
+The validator checks names and shapes, not play. These still surface late:
+- Mid-day: a bad name inside a hook's own code (`spotPos` throws on an unknown spot); `startHunt` from a hook
+  when the level has no hunt for that NPC; a rule function (`can`, `achieved`, `when`) that throws.
+- Never: a misspelt optional field (the validator skips fields it doesn't know); a route no plan can win. Run
+  the gate: it plays thousands of days. Run `tools/routes.mjs`: it plays your scripted wins.
 
 ## Game state (`game`)
 ```js
@@ -385,6 +410,7 @@ game = {
   loopTime: 0,                // real (sim) seconds since loop start
   paused: false,              // main.js only: nothing ticks while true
   clock: { minute: 0, ff: false, forced: 0 },
+      // minute: game minutes since level.day.start.
       // ff: true while fast-forwarding (pretending in place at the desk). Set by player.js.
       // forced: game minutes of assigned work left. Set by rules.js; advanceClock decrements it.
   player: {
@@ -404,6 +430,9 @@ game = {
     items: [],                // floor items: { type, x, y, spot? } (spot: lying on a put-down spot)
   },
   suspicion: { [authorityId]: 0 },   // 0..1; {} without an authority
+  watch: {},                  // { [npcId]: 'action'|'scene'|'evidence'|'contraband' }: what each NPC sees that the
+                              // rules react to, after each step (rules.js; render/cones.js reads it). Empty while
+                              // caught, after the outcome and during assigned work.
   caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection', t }
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute }
   rules: { seen, lastNotice, working, sceneTold, grudge },   // private to rules.js
@@ -468,7 +497,8 @@ game = {
   - Owners take their thing back on sight (unless you pretend), while `when` holds. Carrying it is reason
     `'contraband'`: his `says`, no tattle.
   - Work: `clock.forced = WORK_PENALTY_MIN` (20), you are snapped to your desk typing, held items drop, events
-    `<authority>:workAssigned {reason}` and later `work:done`.
+    `<authority>:workAssigned {reason}` and later `work:done`. A running action is cancelled `'idle'` (sent for
+    slacking) or `'witnessed'` (a tattle).
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
   and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉). Fail: you stand at
@@ -493,7 +523,7 @@ These are the engine's events. A level adds its own through data (`react.event`,
 | `loop:start` | `{loop}` | loop.js |
 | `say` | `{owner, icons, kind, voice}` | fx.say (anyone) |
 | `action:start` / `action:done` | `{type, targetId}` | interactions |
-| `action:cancel` | `{type, targetId, reason: 'moved'\|'invalid'\|'locked'\|'witnessed'\|'caught'\|'meeting'}` | interactions / rules / scenario |
+| `action:cancel` | `{type, targetId, reason: 'moved'\|'invalid'\|'locked'\|'witnessed'\|'idle'\|'caught'\|'meeting'}` | interactions / rules / scenario |
 | `item:drop` / `item:pickup` | `{type}` | interactions |
 | `item:put` | `{type, spot}` | put down |
 | `item:found` | `{type, spot, by}` | put down (a spot's cast owner found it) |
@@ -538,14 +568,18 @@ tick(game, dt):  updatePlayer → updateInteractions → updateNpcs → updateRu
 ```
 
 ## Tools
-Every tool takes `--level <id>` (default `meeting`); an unknown id exits 2 and lists the registry.
+The level tools take `--level <id>` (default `meeting`; `routes.mjs` without it checks every level); an unknown id
+exits 2 and lists the registry.
+- **Levels** (`tools/test-levels.mjs`): runs the validator on every registered level, and checks that a set of
+  broken levels fail with the right line. It takes no `--level`.
 - **Harness** (`src/agent/harness.js`, `tools/play.mjs`): an LLM agent or a script plays the real game headlessly.
   `createHarness({ level })` (a level object or id) builds a game with a scripted Input. `run('<command>')` runs
   human-level commands (`look`, `goto`, `move`, `interact`, `put [spot] [pretend]`, `sit`, `pretend`, `wait`,
   `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
   events. `observe()` returns only what a human can see. `node tools/play.mjs new <session> --level <id>` starts a
   session (the level id is the first line of `.agent-sessions/<session>.jsonl`); later calls replay the log.
-  `help --level <id>` prints the commands and that level's `goto` targets.
+  `help --level <id>` prints the commands and that level's `goto` targets (with the built-in `my_seat`). Times in
+  commands (`wait until 3:00`) are read with `at(hhmm, day.start)`.
 - **Fuzz** (`tools/fuzz.mjs`): searches harness plans for surprising outcomes (MAP-Elites over bins of result,
   routes and milestones; wins shrunk to a minimum, with timing windows). `[--budget 6000] [--seed 1]
   [--batch 288] [--workers N] [--verbose] [--json out.json]`. The output depends only on level, seed, budget and
@@ -563,8 +597,11 @@ Every tool takes `--level <id>` (default `meeting`); an unknown id exits 2 and l
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.
 - **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--write`
   re-records (plans from the file, or picked from the golden corpus).
-- **Routes** (`tools/routes.mjs`): scripted speedruns that must end with the expected outcome. As it is now, it is
-  level 1 only and takes no `--level`; for other levels the gate's `routes` check is the route check.
+- **Routes** (`tools/routes.mjs`): scripted speedruns that must end with the expected outcome, from each level's
+  `route-checks.js` (the format is in `meeting/route-checks.js`). A check is `{ name, expect: { result, routes? },
+  cmds: [...] }` (harness commands) or the same with `play(ctx)` in place of `cmds`. `expect.routes` lists routes the
+  outcome must include. `[--level <id>] [--verbose]`; without `--level` it checks every registered level, and a
+  level with no `route-checks.js` fails.
 - **Engine clean** (`tools/test-engine-clean.mjs`): engine code names no level-1 thing.
 
 A refactor must leave both golden tools passing. Re-record only for an intended behaviour change, and say so in
