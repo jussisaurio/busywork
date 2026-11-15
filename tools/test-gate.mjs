@@ -1,6 +1,7 @@
 // Tests for tools/gate.mjs: the verdict logic on synthetic fuzz results (no fuzzing), plus how a day's
 // mustUse lessons are matched (two real days through the harness).
 import { checkGate, gateReport } from './gate.mjs';
+import { STAGES } from './cold-read.mjs';
 import { getLevel } from '../src/levels/index.js';
 import { validateLevel } from '../src/levels/validate.js';
 import { evaluate, usedLessons, skippedLessons, levelData } from './fuzz.mjs';
@@ -17,8 +18,7 @@ const healthy = () => ({
   wins: { keycard: win(4), projector: win(5), 'keycard+projector': win(8) },
   randomWins: 4, randomEvaluated: 3000, crashes: [], crashCount: 0,
 });
-// Cold reads (tools/cold-read.mjs coldReadChecks): every stage works and is fresh.
-const STAGES = ['premise', 'pictures', 'replay'];
+// Cold reads (tools/cold-read.mjs coldReadChecks): every pass works and is fresh.
 const coldOk = () => STAGES.map((s) => ({ name: `cold-read:${s}`, ok: true, text: 'works (2026-11-15, abc1234), fresh', detail: [] }));
 const failed = (r, coldRead = coldOk()) => checkGate(r, L, { coldRead }).filter((c) => !c.ok).map((c) => c.name).join(',');
 
@@ -67,21 +67,32 @@ ok(/verdict: FAIL \(easy, crash, pretend\)/.test(report), 'the report names ever
 ok(/verdict: PASS: level meeting is ready for a human playtest/.test(gateReport(healthy(), checkGate(healthy(), L, { coldRead: coldOk() }))),
   'the report says PASS for a healthy level whose cold reads all work');
 
-// Cold reads: a level that is not a fixture is not ready for a human until every stage works and is fresh.
+// Cold reads: a level that is not a fixture is not ready for a human until every pass works and is fresh.
 r = healthy();
 ok(failed(r, null) === 'cold-read', 'a level whose cold reads were not checked fails "cold-read"');
 ok(!/ready for a human playtest/.test(gateReport(r, checkGate(r, L))), 'without cold reads the report never says "ready for a human playtest"');
 const cold = coldOk();
-cold[1] = { name: 'cold-read:pictures', ok: false, text: 'no cold read yet', detail: ['run: node tools/cold-read.mjs --level meeting --stage pictures'] };
-cold[2] = { name: 'cold-read:replay', ok: false, text: 'works (2026-11-01, abc1234), but stale: the replay strips changed since', detail: ['run: node tools/cold-read.mjs --level meeting --stage replay'] };
-ok(failed(r, cold) === 'cold-read:pictures,cold-read:replay', 'a missing stage and a stale stage each fail');
+const PIC = STAGES.indexOf('pictures'), REP = STAGES.indexOf('replay');
+ok(STAGES[0] === 'title' && STAGES.includes('sense') && STAGES.length >= 12, 'the gate checks every cold-read pass, the narrow text passes first');
+cold[PIC] = { name: 'cold-read:pictures', ok: false, text: 'no cold read yet', detail: ['run: node tools/cold-read.mjs --level meeting --pass pictures'] };
+cold[REP] = { name: 'cold-read:replay', ok: false, text: 'works (2026-11-01, abc1234), but stale: the replay strips changed since', detail: ['run: node tools/cold-read.mjs --level meeting --pass replay'] };
+ok(failed(r, cold) === 'cold-read:pictures,cold-read:replay', 'a missing pass and a stale pass each fail');
 const coldReport = gateReport(r, checkGate(r, L, { coldRead: cold }));
 ok(/verdict: FAIL \(cold-read:pictures, cold-read:replay\)/.test(coldReport) && !/ready for a human playtest/.test(coldReport),
-  'the verdict names the stages that are missing or stale');
-ok(coldReport.includes('stale: the replay strips changed since') && coldReport.includes('node tools/cold-read.mjs --level meeting --stage pictures'),
+  'the verdict names the passes that are missing or stale');
+ok(coldReport.includes('stale: the replay strips changed since') && coldReport.includes('node tools/cold-read.mjs --level meeting --pass pictures'),
   'the report says what is stale and the command to run');
-cold[1] = { ...cold[1], text: 'fixable (2026-11-15, abc1234): fix the problems src/levels/meeting/cold-read.md lists, then run the stage again' };
-ok(failed(r, cold.slice(0, 2)) === 'cold-read:pictures', 'a stage recorded fixable fails');
+cold[PIC] = { ...cold[PIC], text: 'fixable (2026-11-15, abc1234): fix the problems src/levels/meeting/cold-read.md lists, then run the pass again' };
+ok(failed(r, cold.slice(0, PIC + 1)) === 'cold-read:pictures', 'a pass recorded fixable fails');
+const sense = coldOk();
+sense[STAGES.indexOf('sense')] = { name: 'cold-read:sense', ok: false, text: 'no cold read yet', detail: [] };
+ok(failed(r, sense) === 'cold-read:sense', 'a level without a sense pass fails "cold-read:sense"');
+
+// Stray pictures at the repo root fail the gate (tools/lib/stray.mjs).
+const gs = (stray) => checkGate(r, L, { coldRead: coldOk(), stray }).find((c) => c.name === 'stray');
+ok(gs([]).ok && !gs(undefined), 'no stray pictures passes; without the option there is no stray check');
+const bad = gs([{ file: '/repo/280', kind: 'PNG' }]);
+ok(!bad.ok && /\/repo\/280 is a PNG picture at the repo root/.test(bad.detail[0]) && /tools\/crop\.mjs/.test(bad.detail[0]), 'a stray picture fails the gate, named, with the safe crop tool');
 const fx = { ...healthy(), level: 'fixture' };
 ok(failed(fx, null) === '', 'a fixture level needs no cold reads');
 ok(/verdict: PASS: level fixture is ready/.test(gateReport(fx, checkGate(fx, L))), 'a fixture can still pass');

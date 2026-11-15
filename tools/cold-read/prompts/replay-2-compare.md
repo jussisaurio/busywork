@@ -13,8 +13,8 @@ reaction, a missing cue, an emoji standing in for a person. Suggest one concrete
 
 Reply with the report. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.
-  - `works`: every run is explained, or at worst a loss is partly.
-  - `fixable`: a loss is unexplained, a win is partly, or a beat misled the reader about a cause.
   - `broken`: the reader can't explain why the player won a run, or can't explain most of the losses. A run where
     the reader can't explain why the player won is `broken`, however pretty the pictures are.
 - Then the list of runs.
+- Then the problems, graded as below. An unexplained loss, a partly explained win, and a beat that misled the reader
+  about a cause are blockers.
