@@ -67,9 +67,11 @@ export function enforcing(game, npc) {
 }
 
 // The authority hears a witness shout if he's on the floor (not away, not in the zone he's deaf in).
-function authorityHears(game, boss) {
-  const deafIn = roles(game).authority?.deafIn;
-  return enforcing(game, boss) && !(deafIn && inZone(game, deafIn, boss.x, boss.y));
+// `from`: the shouting witness. With `authority.earshot` (tiles) he hears her only that close; default the whole floor.
+function authorityHears(game, boss, from) {
+  const { deafIn, earshot } = roles(game).authority ?? {};
+  if (!enforcing(game, boss) || (deafIn && inZone(game, deafIn, boss.x, boss.y))) return false;
+  return earshot == null || !from || Math.hypot(from.x - boss.x, from.y - boss.y) <= earshot;
 }
 
 // The scene's investigator is on it and the player is where the culprit would be.
@@ -156,7 +158,7 @@ function rulesStep(game, dt) {
   // A witness who shouted at an empty office tells the authority once he's back within earshot.
   if (s.grudge) {
     const w = findNpc(game, s.grudge.by);
-    if (w && w.active && authorityHears(game, boss)) {
+    if (w && w.active && authorityHears(game, boss, w)) {
       s.grudge.t += dt;
       if (s.grudge.t >= TELL_DELAY) {
         tellLate(game, s, w);
@@ -284,7 +286,7 @@ function react(game, s, npc, offence) {
   // Caught in the act (or at the scene): they shout and point at you (your face: whom they mean). The authority
   // hears it if he's around.
   say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉', '@player'] : ['❗', '👉', '@player']), { kind: 'alert', ttl: 1.6 });
-  const heard = authorityHears(game, authorityNpc(game));
+  const heard = authorityHears(game, authorityNpc(game), npc);
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
   if (heard) tattleHeard(game, npc.id, offence);
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };

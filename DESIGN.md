@@ -137,7 +137,7 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 - **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
   authority is on the floor, he hears it: after her shout's own beat a red line runs from her to him, he turns to her, then to you, and assigns
   you work. A level may set another cost for a heard tattle (you are caught, or its own). If he is away, the
-  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
+  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. A level may give him an earshot: then a shout from farther off is a grudge too, told when he comes near. An
   authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
   slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle. An owner who sees his thing on the floor walks over and picks it up.

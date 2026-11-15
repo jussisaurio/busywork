@@ -294,10 +294,10 @@ An emoji a painter or a scene draws in the world is recorded by the runtime chec
 ### Roles
 `roles` says who plays which part in the office rules (`play/rules.js`). Every cast member who is not the
 authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
-- `authority`: `{ id, offDuty?, helpless?, deafIn? }`. His sighting of a sneaky action, or of his contraband in
+- `authority`: `{ id, offDuty?, helpless?, deafIn?, earshot? }`. His sighting of a sneaky action, or of his contraband in
   your hands, means caught. He owns the suspicion meter (`game.suspicion[id]`) and assigns work. `offDuty`: his
   overrides during which he enforces nothing. `helpless`: overrides during which he can't act even on what he
-  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `tattle`: what a tattle he hears costs:
+  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `earshot`: tiles; he hears a shout only from that close (default: the whole floor). Out of earshot the witness keeps a grudge and tells him when he comes near. `tattle`: what a tattle he hears costs:
   `'work'` (default: he sends you to your desk), `'caught'` (reason: the witness's), or a hook
   `(game, { by, reason })` (he walks over and checks, say). The witness's shout runs to him first in every case
   (a `'relay'` line). `roles` and `authority` are optional. Without an authority nobody assigns work and only an

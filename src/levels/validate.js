@@ -36,7 +36,7 @@
 //               cast ids; put seconds; keep and bulky booleans; edible { leaves, icon?, burst? } with leaves a config.js MARKS name
 //               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
-//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
+//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones; authority.earshot > 0;
 //               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
 //   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
@@ -330,6 +330,8 @@ export function levelProblems(level, key) {
       if (roles.authority) {
         npc('roles.authority.id', roles.authority.id);
         if (roles.authority.deafIn != null) zone('roles.authority.deafIn', roles.authority.deafIn);
+        const es = roles.authority.earshot;
+        if (es != null && !(typeof es === 'number' && es > 0)) bad('roles.authority.earshot', 'not a positive number of tiles');
         const tt = roles.authority.tattle;
         if (tt !== undefined && tt !== 'work' && tt !== 'caught' && !isFn(tt)) bad('roles.authority.tattle', "not 'work', 'caught' or a function (what a heard tattle costs)");
       }

@@ -168,6 +168,22 @@ const sneaky = { type: 'fix_calendar', targetId: 'calendar', t: 0, duration: 99,
   ok(late.length === 1 && late[0].payload.icon === '🎭', 'Doreen is back: Gus points her out, 👉🎭');
 }
 
+// 5b. authority.earshot: a shout from farther than that is a grudge, told once he is within earshot of the witness.
+{
+  const lv = { ...LEVEL, roles: { ...LEVEL.roles, authority: { ...LEVEL.roles.authority, earshot: 4 } } };
+  const { game, log, doreen, gus, p } = day(lv);
+  place(gus, 10.5, 8.5, Math.PI);
+  place(doreen, 3.5, 1.5, -Math.PI / 2); // on the floor, but about 10 tiles from Gus
+  wearUnseen(game, p, { x: 13.5, y: 8.5 });
+  gus.dir = 0;
+  rules(game, 3);
+  const t = named(log, 'witness:tattle');
+  ok(t.length === 1 && t[0].payload.heard === false && game.rules.grudge?.by === 'gus', 'out of earshot: not heard, a grudge');
+  place(doreen, 11.5, 6.5, -Math.PI / 2);
+  rules(game, 1.5);
+  ok(named(log, 'witness:tattle').filter((e) => e.payload.late).length === 1, 'within 4 tiles of Gus: he tells her');
+}
+
 // 6. leaving() in the real sim: level 1's Kev walks out at 3:00.
 {
   const game = createGame({ level: levels.meeting });
