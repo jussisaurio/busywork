@@ -96,7 +96,32 @@ const tablet = { tablet: { icon: '📱' } };
   eq(r.signs, ['✔️', '❌'], 'absent who: fails when you are in (mark-only)');
 }
 
-// 6. The validator knows the new fields.
+// 6. count: at least n items of the type(s) on the listed spots (or in a zone); one icon per item counted.
+{
+  const desks = ['player_desk', 'dave_desk'];
+  const two = { item: 'laptop', count: 2, spots: desks, from: 'check_mine' };
+  let r = play(variant({ insp: { sign: 'item', checks: [two] } }), STAY);
+  eq(r.signs, ['💻❌'], 'count: one laptop of two → 💻❌');
+  eq([r.insp, r.result], [['fail0', 'done0'], 'caught'], 'count: fails into caught');
+  const both = () => ({ items: [itemOn(SPOTS, 'player_desk', 'laptop'), itemOn(SPOTS, 'dave_desk', 'tablet')] });
+  r = play(variant({ insp: { sign: 'item', checks: [{ ...two, item: ['laptop', 'tablet'] }] }, items: tablet, world: both }), STAY);
+  eq(r.signs, ['💻📱✔️'], 'count: a laptop and a tablet make two');
+  eq(r.insp, ['pass0', 'done'], 'count: passes');
+  r = play(variant({ insp: { checks: [{ item: 'laptop', count: 1, spots: ['dave_desk', 'player_desk'] }] } }), STAY);
+  eq(r.signs, ['✔️'], 'count: from defaults to the first spot (mark-only)');
+  const room = { item: 'laptop', count: 1, zone: 'room_a', from: 'check_mine' };
+  r = play(variant({ insp: { sign: 'item', checks: [room, { ...room, count: 2 }] } }), STAY);
+  eq(r.signs, ['💻✔️', '💻❌'], 'count in a zone: one laptop in room A');
+  const none = () => ({ items: [] });
+  r = play(variant({ insp: { sign: 'item', checks: [{ ...room, count: 3 }] }, world: none }), STAY);
+  eq(r.signs, ['💻❌'], 'count: none at all shows the item, crossed');
+  // A count ticks off what it counted: taking one away is one inspect:moved for the check.
+  const later = [{ ...two, item: ['laptop', 'tablet'] }, { who: 'player', zone: 'room_a', from: 'check_dave' }];
+  r = play(variant({ insp: { checks: later }, items: tablet, world: both }), ['pretend until 2:43', 'interact', 'pretend until 2:52']);
+  eq(r.insp.filter((e) => e === 'moved0').length, 1, 'count: inspect:moved once for the check');
+}
+
+// 7. The validator knows the new fields.
 {
   const broken = (insp, re, what) => {
     let msg = '';
@@ -108,6 +133,11 @@ const tablet = { tablet: { icon: '📱' } };
   broken({ checks: [{ item: [], spot: 'dave_desk' }] }, /inspections\[0\]\.checks\[0\]\.item: empty/, 'empty item list');
   broken({ checks: [{ item: 'laptop', spot: 'dave_desk', icon: 7 }] }, /inspections\[0\]\.checks\[0\]\.icon: not an icon or a list of icons/, 'icon type');
   broken({ checks: [{ item: 'laptop', spot: 'dave_desk', absent: 'yes' }] }, /inspections\[0\]\.checks\[0\]\.absent: not true or false/, 'absent type');
+  broken({ checks: [{ item: 'laptop', count: 0, spots: ['dave_desk'] }] }, /inspections\[0\]\.checks\[0\]\.count: not a whole number of 1 or more/, 'count value');
+  broken({ checks: [{ item: 'laptop', count: 2, spots: [] }] }, /inspections\[0\]\.checks\[0\]\.spots: empty/, 'count: empty spots');
+  broken({ checks: [{ item: 'laptop', count: 2, spots: ['dave_desk', 'davedesk'] }] }, /inspections\[0\]\.checks\[0\]\.spots\[1\]: no spot 'davedesk'/, 'count: a spot');
+  broken({ checks: [{ item: 'laptop', count: 2, zone: 'room_a' }] }, /inspections\[0\]\.checks\[0\]\.from: no spot 'undefined'/, 'count in a zone needs from');
+  broken({ checks: [{ item: 'laptop', count: 2, spots: ['dave_desk'], absent: true }] }, /inspections\[0\]\.checks\[0\]\.absent: a count is never absent/, 'count: absent');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

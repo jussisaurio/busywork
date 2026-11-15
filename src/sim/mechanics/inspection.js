@@ -16,8 +16,14 @@
 //                                      initialWorld; putdown.js). `item` may be a list of types: any of them
 //                                      counts. He stands at `from` (default: the spot itself).
 //               { who, zone, from }    `who` ('player' or a cast id, active) is in zone `zone`. He stands at `from`.
+//               { item, count, spots, from? } or { item, count, zone, from }
+//                                      at least `count` items of type(s) `item` lie on those spots (or anywhere in
+//                                      the zone). He stands at `from` (default: the first spot); the sign goes
+//                                      over the middle of the spots (or the zone) and shows one icon per item he
+//                                      counted, up to `count` (💻💻💻❌: three of four).
 //             and optionally:
-//               absent: true           turned round: it passes when no such item lies there (who: she isn't there)
+//               absent: true           turned round: it passes when no such item lies there (who: she isn't there;
+//                                      not on a count)
 //               icon                   what the sign shows before the mark (an icon or a list), whatever `sign` says
 //             On arrival: a sign over what he checked (the item's place, the person, or the zone if she isn't
 //             there), then he stands `look` s.
@@ -59,7 +65,7 @@ export const key = (insp, npc) => `${insp.plan}#${npc._ovSeq}`;
 
 export function build(game, npc, plan, insp) {
   const from = npc._insp.i;
-  plan.legs = insp.checks.slice(from).map((c, k) => spotLeg(game, c.from ?? c.spot, { arrive: (g, n) => arrive(g, n, insp, from + k) }));
+  plan.legs = insp.checks.slice(from).map((c, k) => spotLeg(game, c.from ?? c.spot ?? c.spots[0], { arrive: (g, n) => arrive(g, n, insp, from + k) }));
   plan.label = insp.label;
 }
 
@@ -69,8 +75,18 @@ export const label = (game, npc, insp) => `${insp.label} ${npc._insp.i}/${insp.c
 const typesOf = (c) => [c.item].flat();
 const PLAYER_ICON = '🧍'; // a who check's sign, for the player
 
-// The check at a glance: { ok, at (where the sign goes), found (the items he sees there) }.
+const middle = (pts) => ({ x: pts.reduce((a, p) => a + p.x, 0) / pts.length, y: pts.reduce((a, p) => a + p.y, 0) / pts.length });
+const zoneMid = (z) => ({ x: (z.x0 + z.x1) / 2, y: (z.y0 + z.y1) / 2 });
+
+// The check at a glance: { ok, at (where the sign goes), found (the items he ticks off there) }.
 function inspect(game, c) {
+  if (c.count !== undefined) {
+    const types = typesOf(c);
+    const on = c.zone !== undefined ? (i) => inZone(game, c.zone, i.x, i.y) : (i) => c.spots.includes(i.spot);
+    const found = game.world.items.filter((i) => types.includes(i.type) && on(i)).slice(0, c.count);
+    const at = c.zone !== undefined ? zoneMid(game.level.zones[c.zone]) : middle(c.spots.map((n) => restOf(game.level.spots[n])));
+    return { ok: found.length >= c.count, at, found };
+  }
   if (c.item !== undefined) {
     const types = typesOf(c);
     const item = game.world.items.find((i) => types.includes(i.type) && i.spot === c.spot);
@@ -79,8 +95,7 @@ function inspect(game, c) {
   const p = c.who === 'player' ? game.player : findNpc(game, c.who);
   const here = !!p && (c.who === 'player' || p.active) && inZone(game, c.zone, p.x, p.y);
   if (here) return { ok: !c.absent, at: c.who, found: [] };
-  const z = game.level.zones[c.zone];
-  return { ok: !!c.absent, at: { x: (z.x0 + z.x1) / 2, y: (z.y0 + z.y1) / 2 }, found: [] };
+  return { ok: !!c.absent, at: zoneMid(game.level.zones[c.zone]), found: [] };
 }
 
 // The sign over a check: what it shows (the check's `icon`, else with sign: 'item' what he checked), then the mark.
@@ -147,7 +162,7 @@ export function tick(game, npc, dt, insp) {
   if (st.caught) return;
   for (const rec of st.passed) {
     if (rec.moved || (rec.item.spot === rec.spot && game.world.items.includes(rec.item))) continue;
-    rec.moved = true;
+    for (const r of st.passed) if (r.index === rec.index) r.moved = true; // once per check (a count ticks several)
     game.events.emit('inspect:moved', { by: npc.id, index: rec.index });
   }
 }

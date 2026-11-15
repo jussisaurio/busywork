@@ -31,7 +31,8 @@
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
-//               icon or a list, its absent true or false; a noise is not 'noise' or 'npc:heard'
+//               icon or a list, its absent true or false; a count check a whole count >= 1 with a non-empty spots
+//               list or a zone (then a from); a noise is not 'noise' or 'npc:heard'
 //   failSign    optional; spot a spot
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
@@ -277,14 +278,25 @@ export function levelProblems(level, key) {
     npc(`${path}.npc`, insp?.npc);
     for (const [k, c] of list(`${path}.checks`, insp?.checks).entries()) {
       const cp = `${path}.checks[${k}]`;
-      if (c?.item !== undefined) {
+      if (c?.count !== undefined) {
+        itemTypes(`${cp}.item`, c.item);
+        if (!Number.isInteger(c.count) || c.count < 1) bad(`${cp}.count`, 'not a whole number of 1 or more');
+        if (c.zone !== undefined) zone(`${cp}.zone`, c.zone);
+        else {
+          const ss = list(`${cp}.spots`, c.spots);
+          if (Array.isArray(c.spots) && !ss.length) bad(`${cp}.spots`, 'empty');
+          for (const [j, n] of ss.entries()) spot(`${cp}.spots[${j}]`, n);
+        }
+        if (c.absent !== undefined) bad(`${cp}.absent`, 'a count is never absent');
+      } else if (c?.item !== undefined) {
         itemTypes(`${cp}.item`, c.item);
         spot(`${cp}.spot`, c.spot);
       } else {
         if (c?.who !== 'player') npc(`${cp}.who`, c?.who);
         zone(`${cp}.zone`, c?.zone);
       }
-      if (c?.from !== undefined || c?.item === undefined) spot(`${cp}.from`, c?.from);
+      // He stands at `from`: needed where nothing else says where (a who check, a count over a zone).
+      if (c?.from !== undefined || c?.item === undefined || (c?.count !== undefined && c.zone !== undefined)) spot(`${cp}.from`, c?.from);
       if (c?.icon !== undefined) icons(`${cp}.icon`, c.icon);
       if (c?.absent !== undefined && typeof c.absent !== 'boolean') bad(`${cp}.absent`, 'not true or false');
     }
