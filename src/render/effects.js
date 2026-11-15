@@ -1,8 +1,8 @@
 // game.fx drawing (bubbles, particles, ripples, sightlines) plus small in-world overlays: interaction hint,
 // action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
-  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
-  starPath, loopIcon, drawDrop, drawPaper, text, font, MONO_FAMILY,
+  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, strictGlyphs, glyphScope, rrect, circle, ellipse, fillCircle,
+  starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { headY, lookFor } from './characters.js';
@@ -36,14 +36,49 @@ function anchorOf(game, owner) {
 export function drawBubbles(ctx, game) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
+  const strict = strictGlyphs();
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y);
+    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y) : null;
+    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place);
   }
 }
 
-export function drawBubble(ctx, b, ax, ay) {
+// Where a sign over a point (an inspection's tick or cross, sim/mechanics/inspection.js) stands so it covers
+// nobody: above the point, else below it, else to its right or left; its post leans to the point. (A migrated
+// level only; the legacy ones keep it above.) Returns the board's centre, or null for the default.
+const SIGN_AT = { x: 0, y: 0 };
+function signPlace(game, b, ax, ay) {
+  const icons = Array.isArray(b.icons) ? b.icons : [];
+  const n = Math.max(1, icons.length);
+  const w = n * 15 + (n - 1) * 3 + 12 + 4;
+  const h = 25 + 4;
+  const tries = [[0, -14 - h / 2], [0, 22 + h / 2], [w / 2 + 18, -h / 2], [-w / 2 - 18, -h / 2]];
+  const people = [];
+  const add = (e) => {
+    if (!e || !Number.isFinite(e.x) || !Number.isFinite(e.y)) return;
+    const top = headY(game.level.looks, e, 'bubbleDy') - 6;
+    people.push([e.x * T - 13, top, e.x * T + 13, e.y * T + 9]);
+  };
+  for (const e of game.npcs || []) if (e && e.active) add(e);
+  add(game.player);
+  for (let i = 0; i < tries.length; i++) {
+    const x = clamp(ax + tries[i][0], w / 2 + 4, PLAY_W - w / 2 - 4);
+    const y = clamp(ay + tries[i][1], h / 2 + 4, PLAY_H - h / 2 - 4);
+    const hit = people.some((r) => x + w / 2 > r[0] && x - w / 2 < r[2] && y + h / 2 > r[1] && y - h / 2 < r[3]);
+    if (!hit) {
+      if (i === 0) return null;
+      SIGN_AT.x = x;
+      SIGN_AT.y = y;
+      return SIGN_AT;
+    }
+  }
+  return null;
+}
+
+// place: { x, y } the bubble's centre instead of above the anchor (a sign moved aside: signPlace).
+export function drawBubble(ctx, b, ax, ay, place = null) {
   const icons = Array.isArray(b.icons) ? b.icons : b.icons != null ? [String(b.icons)] : [];
   const age = Math.max(0, fin(b.age));
   const ttl = fin(b.ttl, 2.5);
@@ -60,8 +95,8 @@ export function drawBubble(ctx, b, ax, ay) {
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
   // bubble centre, clamped inside the play area
-  const bx = clamp(ax, w / 2 + 4, PLAY_W - w / 2 - 4);
-  const by = clamp(ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
+  const bx = clamp(place ? place.x : ax, w / 2 + 4, PLAY_W - w / 2 - 4);
+  const by = clamp(place ? place.y : ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
 
   ctx.save();
   ctx.globalAlpha = alpha;
@@ -100,8 +135,18 @@ export function drawBubble(ctx, b, ax, ay) {
       ctx.stroke();
     }
   } else if (kind === 'sign') {
-    ctx.fillStyle = C.walnutEdge;
-    ctx.fillRect(-1.5, h / 2 - 2, 3, Math.max(0, tailY - h / 2 + 4));
+    if (place) { // the post leans from the board to the point it judges
+      ctx.strokeStyle = C.walnutEdge;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(ax - bx, ay - by);
+      ctx.stroke();
+      fillCircle(ctx, ax - bx, ay - by, 2.2, C.walnutEdge);
+    } else {
+      ctx.fillStyle = C.walnutEdge;
+      ctx.fillRect(-1.5, h / 2 - 2, 3, Math.max(0, tailY - h / 2 + 4));
+    }
     ctx.fillStyle = C.ochre;
     rrect(ctx, -w / 2 - 2, -h / 2 - 2, w + 4, h + 4, 4);
     ctx.fill();
@@ -130,12 +175,14 @@ export function drawBubble(ctx, b, ax, ay) {
     ctx.stroke();
   }
   let x = -cw / 2 + isz / 2;
+  const was = glyphScope('speech'); // any emoji may be said (DESIGN.md "Visual language" rule 1)
   for (let i = 0; i < icons.length; i++) {
     const ic = icons[i] == null ? '' : String(icons[i]);
     const hop = kind === 'speech' && age < 0.6 ? Math.sin(clamp((age - i * 0.06) / 0.25, 0, 1) * Math.PI) * -2 : 0;
     emoji(ctx, ic, x, 1 + hop, isz);
     x += isz + gap;
   }
+  glyphScope(was);
   ctx.restore();
 }
 
@@ -212,7 +259,9 @@ export function drawParticles(ctx, game, t) {
       }
       case 'zzz': {
         ctx.globalAlpha = 1 - k;
+        const was = glyphScope('speech'); // a sleeper's Zs are a sound, not a thing
         emoji(ctx, '💤', x + Math.sin(age * 4 + seed * 6) * 3, y - k * 14, 8 + k * 8);
+        glyphScope(was);
         break;
       }
       case 'sweat': {
@@ -383,11 +432,17 @@ function drawLineMark(ctx, x, y, age, a, color) {
 }
 
 // --- overlays --------------------------------------------------------------------
+// What E would do now (player.focus, play/interactions.js). A migrated level lights the target up (drawLitTarget);
+// a legacy one (src/levels/legacy.js) floats the row's icon over it.
 export function drawFocusHint(ctx, game, t) {
   const p = game.player;
   if (!p || !p.focus || p.action || p.locked || game.phase !== 'day') return;
   const f = p.focus;
   if (!Number.isFinite(f.x) || !Number.isFinite(f.y)) return;
+  if (strictGlyphs()) {
+    drawLitTarget(ctx, f, p, t);
+    return;
+  }
   const self = f.kind === 'self';
   const x = f.x * T;
   const y = f.y * T - (self ? 44 : 24) + Math.sin(t * 5) * 2.5;
@@ -410,6 +465,46 @@ export function drawFocusHint(ctx, game, t) {
   emoji(ctx, f.icon || '✋', x, y + 1, 14);
 }
 
+// DESIGN.md "Visual language" rule 4: the object itself lights up, with the E key cap over it, and no icon (an icon
+// over a tile reads as the object). The glow traces the target: the interactable's tile, the item or the free spot
+// on a desk; an action on yourself (eating what you hold) shows the key cap over your head alone. The key cap sits
+// on the target's far side from you, so your body never hides it.
+function drawLitTarget(ctx, f, p, t) {
+  const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+  const x = f.x * T;
+  const y = f.y * T;
+  const self = f.kind === 'self';
+  if (!self) {
+    ctx.save();
+    const shape = () => {
+      if (f.kind === 'interactable') rrect(ctx, x - T / 2 - 1.5, y - T / 2 - 1.5, T + 3, T + 3, 6);
+      else ellipse(ctx, x, y + 1, 12 + pulse, 9 + pulse * 0.6);
+    };
+    ctx.fillStyle = `rgba(255,226,122,${(0.1 + 0.12 * pulse).toFixed(3)})`;
+    shape();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,20,14,0.35)';
+    ctx.lineWidth = 4.5;
+    shape();
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(255,214,90,${(0.65 + 0.35 * pulse).toFixed(3)})`;
+    ctx.lineWidth = 2.2;
+    shape();
+    ctx.stroke();
+    ctx.restore();
+  }
+  const bob = Math.sin(t * 5) * 2;
+  if (self) {
+    keycap(ctx, x - 9, y - 50 + bob, 18, 15, 'E', 11);
+    return;
+  }
+  const r = f.kind === 'interactable' ? T / 2 + 3 : 14; // the glow's half size
+  const dx = f.x - fin(p.x, f.x);
+  const dy = f.y - fin(p.y, f.y);
+  if (Math.abs(dy) >= Math.abs(dx)) keycap(ctx, x - 9, (dy > 0 ? y + r + 1 : y - r - 16) + bob, 18, 15, 'E', 11);
+  else keycap(ctx, (dx > 0 ? x + r + 1 : x - r - 19) + bob, y - 7.5, 18, 15, 'E', 11);
+}
+
 export function drawActionRing(ctx, game, t) {
   const p = game.player;
   const a = p && p.action;
@@ -430,7 +525,7 @@ export function drawActionRing(ctx, game, t) {
   ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
   ctx.stroke();
   ctx.lineCap = 'butt';
-  if (p.focus && p.focus.icon) {
+  if (p.focus && p.focus.icon && !strictGlyphs()) { // legacy: drop with the legacy list
     fillCircle(ctx, x + r * 0.75, y - r * 0.75, 7.5, C.white);
     emoji(ctx, p.focus.icon, x + r * 0.75, y - r * 0.75 + 0.5, 10);
   }
@@ -457,7 +552,9 @@ export function drawSuspicion(ctx, game, t) {
   rrect(ctx, x, y + h * (1 - lvl), 5, h * lvl, 2);
   ctx.fill();
   const sz = 13 + lvl * 5 + (lvl > 0.75 ? Math.abs(Math.sin(t * 10)) * 2 : 0);
+  const was = glyphScope('speech'); // his reaction, not a thing
   emoji(ctx, lvl > 0.75 ? '❗' : '❓', x + 3 + jit * 0.5, y - 9, sz);
+  glyphScope(was);
 }
 
 export function drawLoopStamp(ctx, game, cx, cy) {

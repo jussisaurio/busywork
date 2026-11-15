@@ -11,12 +11,14 @@
 //   node tools/golden-render.mjs [--level meeting]  check; exit 1 and name the first render that differs
 //   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else pick() below)
 //
-// Re-record only when a visual change is intended, and say so in the commit.
+// Re-record only when a visual change is intended, and say so in the commit. Either way it fails a level not on the
+// legacy list (src/levels/legacy.js) that draws an emoji as an object in the world (render/util.js worldEmoji).
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRenderer } from '../src/render/renderer.js';
 import { createHarness } from '../src/agent/harness.js';
 import { updateFx } from '../src/core/fx.js';
+import { worldEmoji } from '../src/render/util.js';
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
 import { levelArg, levelFile } from './lib/level-arg.mjs';
 
@@ -154,6 +156,11 @@ function renderTrace(cmds, seed) {
 }
 
 function finish() {
+  // The runtime check of the visual language (DESIGN.md): a migrated level draws no emoji as an object in the world.
+  if (worldEmoji.length) {
+    console.log(`golden-render: ${LEVEL.id} draws emoji as objects in the world (draw them: render/things.js): ${worldEmoji.map((v) => v.glyph).join(' ')}`);
+    process.exit(1);
+  }
   if (!fake.errors.length) return;
   console.log(`golden-render: the fake canvas saw ${fake.errors.length} bad draw calls:`);
   for (const e of fake.errors.slice(0, 20)) console.log(`  ${e}`);

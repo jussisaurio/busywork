@@ -26,6 +26,12 @@ export function paintLetter(ctx, x, y, s = 1, rot = 0) {
   ctx.restore();
 }
 
+// The letter as an item's look (items.letter.draw; render/things.js calls it as (ctx, x, y, size, t)): in your hand,
+// in the boss's, on the floor and in the HUD slot. `size` is how big an emoji there would be.
+export function letter(ctx, x, y, size) {
+  paintLetter(ctx, x, y, size / 14); // as wide as an emoji of that size
+}
+
 // The in-tray: a chrome wire basket, 22 x 12, centred on (x, y). The desk shows through its mesh, so an empty one
 // reads empty; your letter lies in it while it's there.
 const WIRE = '#dfe4e8';

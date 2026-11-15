@@ -58,7 +58,7 @@ export default {
   day: { start: 14 * 60 + 30, gatherAt: at('2:56'), meetingAt: at('3:00'), clockRedAt: at('2:55') },
   interactions: {
     write_note: {
-      on: 'own_desk', icon: '📝', text: 'write "cancel the meeting" on a note', duration: 1.5, sneaky: true, saw: '📝',
+      on: 'own_desk', text: 'write "cancel the meeting" on a note', duration: 1.5, sneaky: true, saw: '📝',
       can: (p, w) => !p.held && w.note === 'pad',
       done(game) {
         game.player.held = 'note';
@@ -67,7 +67,7 @@ export default {
       },
     },
   },
-  items: { note: { icon: '📝', place: 'note', contraband: 'boss' } },
+  items: { note: { icon: '📝', draw: 'note', place: 'note', contraband: 'boss' } },
   roles: { authority: { id: 'boss', offDuty: ['meeting'], helpless: [] } },
   behaviours: {
     // Whatever is in the box, he does. Today it says to cancel the meeting.

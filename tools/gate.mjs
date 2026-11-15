@@ -7,6 +7,7 @@
 //   crash     any crash or harness error (a command threw, or a day never ended)
 //   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend; a lesson with `routes`
 //             binds only the wins that include one of them)
+//   drawn     a level on the legacy list, or an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
 //   cold-read:<stage>  for every level but the fixtures: a cold read stage (premise, pictures, replay) that has not
 //             been recorded `works` in src/levels/<id>/cold-read.md for the level as it is now (docs/COLD-READ.md).
 //             The gate reads the record; it never runs the readers. Checking freshness draws the shots and replay
@@ -20,6 +21,7 @@
 // reads level.routes and level.gate (src/levels/meeting/gate.js).
 import { fileURLToPath } from 'node:url';
 import { fuzz, winLines, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
+import { drawnCheck, worldGlyphs } from './lib/drawn.mjs';
 import { coldReadChecks, isFixture } from './cold-read.mjs';
 
 // Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
@@ -63,6 +65,8 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
     check(id, !skips.length, skips.length ? `a ${which} without ${id}: ${skips.join(', ')}` : `every ${which} uses ${id}`,
       skips.map((wk) => `${wk}: ${oneLine(r.wins[wk].without[id])}`));
   }
+  const d = drawnCheck(r);
+  check(d.name, d.ok, d.text, d.detail);
 
   if (!isFixture(r.level)) {
     if (coldRead) checks.push(...coldRead);
@@ -114,6 +118,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
   try {
     const r = await fuzz(opts);
+    r.glyphs = worldGlyphs(opts.level, combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level))));
     const coldRead = isFixture(level) ? undefined : await coldReadChecks(level);
     const checks = checkGate(r, levelData(opts.level), { coldRead });
     console.log(gateReport(r, checks));

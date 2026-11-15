@@ -43,13 +43,41 @@ In the spirit of Jonathan Blow's games, the game explains nothing beyond the mis
 - Speech is pictograms in bubbles plus Sims-style gibberish babble. Each NPC has a voice.
 - Every ending gets a short in-world beat and an end card with a picture, never a paragraph.
 
+## Visual language: people speak emoji, the world is drawn
+**Characters can speak emoji, but emoji are never objects in the level.** A glyph on a tile makes the player guess
+what it is: a playtester won a level on "a heat emoji" without knowing it was a microwave. Speech never had that
+problem: when Kev says 🔧, he means he will fix something.
+1. **Speech is free.** Speech bubbles, thought bubbles and the end card's icon row may use any emoji.
+   - When a character means a person, they show that person's face (`'@<castId>'`, `'@player'`), never a stand-in
+     (👔 read as a shirt, not as the boss). The engine's bubbles do too: a tattle is ❗👉 and your face, a double
+     take is the face of whom you pass for, an inspection's who-check sign is the face it checked.
+   - A reaction shows what it is about: the bubble names it, or the speaker faces it at that moment.
+   - Speech never carries a fact on its own. The world or a body shows the fact; speech comments on it.
+2. **The world is drawn.** Every object on the map or in a hand is drawn as the real object: furniture, devices,
+   documents, what people carry. No emoji stands on a tile or in a hand. Level painters
+   (`src/levels/<id>/painters.js`) make this cheap.
+3. **The state that decides the outcome is drawn on the object.** Every world fact a win or a loss depends on changes
+   how something looks on the map (the calendar shows whose face is circled; the burning microwave glows and smokes).
+4. **To show you can use something, the object lights up, with the E key cap on its far side from you.** No icon
+   hovers over it: an icon over a tile reads as the object.
+5. **End cards are drawn scenes.** The icon row under the scene is the punchline, in speech emoji and faces.
+
+How it is held:
+- The validator (`src/levels/validate.js`) refuses emoji in the fields that draw the world: an item without a `draw`,
+  a prop drawn as `'icon'`, an emoji in a hand (`poses`), an icon on an interaction.
+- A runtime check (`render/util.js` `worldEmoji`) records any emoji drawn on the map, in a hand or in an end card's
+  scene. `tools/golden-render.mjs` and the gate's `drawn` check fail on it.
+- Speech is not checked. (`'#<thing>'` draws the object in a bubble too, but people speak emoji: no level uses it.)
+- Levels not yet migrated are on the legacy list (`src/levels/legacy.js`, with the migration steps). They draw as
+  before, and the gate fails them.
+
 ## Camera and controls
 There is no camera: the whole office is on screen (30×17 tiles), with the HUD band above it.
 
 | Key | Verb |
 |---|---|
 | WASD / arrows | walk |
-| E | interact (the nearest valid target shows a ✋ hint) |
+| E | interact (the nearest valid target lights up, with the E key cap beside it) |
 | E, Space or Enter | move past the mission card and the end card |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |
@@ -83,9 +111,9 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   you work: you are sent to your desk and type for 20 game minutes, and time runs ×8 while you suffer.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
-- **Tattling.** A witness shouts and points ❗👉 with a dashed sightline. If the authority is on the floor, he hears
-  it and assigns you work. If he is away, the witness keeps a grudge and points you out 👉 (plus what they saw) as
-  soon as he is back. An authority gone for good never hears it.
+- **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
+  authority is on the floor, he hears it and assigns you work. If he is away, the witness keeps a grudge and points
+  you out 👉 and your face (plus what they saw) as soon as he is back. An authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
   slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
@@ -101,7 +129,7 @@ At the deadline the game picks the first result that applies:
 1. **Caught** earlier: you were fired. (The day ends a moment after the catch.)
 2. **Fail**: no route achieved. You stand at the front of the room with nothing to show. 🦗
 3. **Blamed**: a route achieved, but you are not in the room. Everyone stares at your empty chair 🪑❓ and points
-   😠👉. The loop doesn't count and no route is recorded.
+   😠👉 and your face. The loop doesn't count and no route is recorded.
 4. **Win**: every route achieved this loop is recorded.
 
 Attendance is a rule in every level: being in the right place at the deadline is part of winning, so nobody wins from

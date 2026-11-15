@@ -2,10 +2,11 @@
 // Owns canvas sizing (fit-to-window, HiDPI), caches the static office in an offscreen
 // canvas and composes world, HUD and screens. Never mutates game state: the only memory
 // it keeps (screen start times, the end-beat zoom, the day-start ping) lives in this closure.
-import { T, HUD_H, PLAY_W, PLAY_H, VIEW_W, VIEW_H, clamp, fin, easeOutCubic } from './util.js';
+import { T, HUD_H, PLAY_W, PLAY_H, VIEW_W, VIEW_H, clamp, fin, easeOutCubic, useGlyphs, glyphScope } from './util.js';
 import { C } from './palette.js';
 import { drawStaticLayer, drawWorldDynamic } from './world.js';
 import { drawCharacters, useFaces } from './characters.js';
+import { useThings } from './things.js';
 import { drawCones } from './cones.js';
 import { drawDarkness } from './darkness.js';
 import {
@@ -14,6 +15,7 @@ import {
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
 import { findNpc } from '../game/perception.js';
+import { isLegacyLevel } from '../levels/legacy.js';
 
 export function createRenderer(canvas, opts = {}) {
   const strict = !!opts.strict;
@@ -75,7 +77,9 @@ export function createRenderer(canvas, opts = {}) {
     layer.height = Math.max(1, Math.round(mh * ky));
     const lc = layer.getContext('2d');
     lc.setTransform(layer.width / mw, 0, 0, layer.height / mh, 0, 0);
+    const was = glyphScope('world');
     drawStaticLayer(lc, map, level);
+    glyphScope(was);
     layerK = k;
     layerMap = map;
   }
@@ -104,7 +108,10 @@ export function createRenderer(canvas, opts = {}) {
     else if (!beat) mem.beatStart = -1;
   }
 
+  // Everything on the map is the 'world' glyph scope (render/util.js): no emoji there in a migrated level. The
+  // speech drawn over it (bubbles, the suspicion mark, a sleeper's Zs) marks itself 'speech'.
   function drawWorld(game, t, title) {
+    const was = glyphScope('world');
     const map = game.map;
     const mw = map ? map.w * T : PLAY_W;
     const mh = map ? map.h * T : PLAY_H;
@@ -156,6 +163,7 @@ export function createRenderer(canvas, opts = {}) {
       drawBubbles(ctx, game);
     }
     ctx.restore();
+    glyphScope(was);
     if (beatK > 0) drawVignette(ctx, beatK, 0, HUD_H, PLAY_W, PLAY_H);
   }
 
@@ -164,6 +172,8 @@ export function createRenderer(canvas, opts = {}) {
     const t = fin(game.time);
     track(game, t);
     useFaces(game);
+    useThings(game);
+    useGlyphs(!isLegacyLevel(game.level), game.level?.id ?? null);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
@@ -193,6 +203,7 @@ export function createRenderer(canvas, opts = {}) {
       // A throw here would stop main.js's requestAnimationFrame chain: log once, unwind, keep going.
       if (mem.errors++ === 0 && typeof console !== 'undefined') console.error('[render]', err);
       for (let i = 0; i < 32; i++) ctx.restore();
+      glyphScope(null);
     }
   }
 

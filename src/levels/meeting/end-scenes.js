@@ -3,24 +3,28 @@
 //   kindOf(outcome)  -> a key of scenes (outcome may be null, outcome.routes may not be an array)
 //   scenes[kind]     -> { win, icons, draw }
 //     win            -> card border: teal when true, tomato when false
-//     icons          -> emoji row under the picture, centred (any count)
+//     icons          -> emoji row under the picture, centred (any count): the punchline, speech
 //     draw(ctx, game, t, e, outcome) -> paints the picture inside TAB (screen space, already clipped);
-//                       e = seconds since the card came up
-import { clamp, easeOutBack, easeOutCubic, emoji, rrect, fillEllipse, drawScreen } from '../../render/util.js';
+//                       e = seconds since the card came up. Objects in it are drawn (drawThing, painters.js), never
+//                       emoji; only bubbles speak emoji (DESIGN.md "Visual language" rule 5)
+import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, drawScreen } from '../../render/util.js';
+import { drawThing } from '../../render/things.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawProjector, drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
 import { findNpc } from '../../game/perception.js';
+import { popper, cricket } from './painters.js';
 
 const B_ANGRY = ['😠'];
-const B_POINT = ['👉'];
+const B_POINT_YOU = ['👉', '@player'];
 const B_WHAT = ['❓'];
-const B_BLAME = ['😠', '👉'];
+const B_BLAME_YOU = ['😠', '👉', '@player'];
+const B_BLAME_KEV = ['😠', '👉', '@kev'];
 const B_PROJ = ['📽️', '💥', '🤷'];
 const B_DOTS = ['📊', '❓'];
-const B_MUG = ['☕', '😠', '👉'];
-const B_KEV = ['☕', '🔧'];
+const B_MUG = ['☕', '😠', '👉', '@player'];
+const B_KEV = ['☕', '@kev'];
 
 function endKind(o) {
   if (!o) return 'fail';
@@ -85,7 +89,7 @@ function tableauKeycard(ctx, game, t, e) {
     ctx.translate(250, 140);
     ctx.scale(easeOutBack(pe), easeOutBack(pe));
     ctx.rotate(Math.sin(t * 3) * 0.12);
-    emoji(ctx, '🎉', 0, 0, 44);
+    popper(ctx, 0, 0, 44, t);
     ctx.restore();
   }
 }
@@ -169,7 +173,7 @@ function tableauFail(ctx, game, t, e) {
   bubble(ctx, B_DOTS, 676, 186, e, 'thought');
   // the lone cricket
   const hop = Math.abs(Math.sin(e * 5));
-  emoji(ctx, '🦗', 480 + Math.sin(e * 0.9) * 80, 322 - hop * 14, 22);
+  cricket(ctx, 480 + Math.sin(e * 0.9) * 80, 322 - hop * 14, 22);
 }
 
 // Fired: you shuffle off to the elevator with your desk in a box; the boss points the way.
@@ -199,7 +203,6 @@ function tableauCaught(ctx, game, t, e) {
   b.dir = 0.08;
   b.head = 0.08 + Math.sin(t * 2.4) * 0.08;
   b.arms = 'point';
-  b.item = '👉';
   b.angry = true;
   b.jacket = bossJacket(game);
   b.scale = 2.6;
@@ -277,7 +280,6 @@ function tableauBlamed(ctx, game, t, e, o) {
   l.dir = 0.42;
   l.head = 0.42;
   l.arms = 'point';
-  l.item = '👉';
   l.angry = true;
   l.scale = 2.4;
   drawPerson(ctx, game.level.looks.lin, l, 272, 262);
@@ -296,7 +298,7 @@ function tableauBlamed(ctx, game, t, e, o) {
   drawChair(ctx, 0, 0, -Math.PI / 2, C.ochre, C.ochreDark);
   ctx.restore();
   // what they're saying
-  bubble(ctx, lockedOut && !kev ? B_BLAME : B_POINT, 272, 206, e, 'speech', 1.4);
+  bubble(ctx, lockedOut && !kev ? B_BLAME_YOU : B_POINT_YOU, 272, 206, e, 'speech', 1.4);
   if (!lockedOut) bubble(ctx, B_ANGRY, 476, 168, e, 'alert');
   if (kev) bubble(ctx, B_WHAT, 680, 206, e, 'thought', 1.4);
 }
@@ -352,13 +354,12 @@ function tableauMug(ctx, game, t, e, o) {
   smokingProjector(ctx, t, 380);
   if (!inHand) {
     poolOfLight(ctx, 560, 252);
-    emoji(ctx, '☕', 560, 248, 26);
+    drawThing(ctx, game, 'mug', 560, 248, 26);
   }
   const l = person(t);
   l.dir = 0.42;
   l.head = 0.42;
   l.arms = 'point';
-  l.item = '👉';
   l.angry = true;
   l.scale = 2.4;
   drawPerson(ctx, game.level.looks.lin, l, 272, 262);
@@ -367,7 +368,6 @@ function tableauMug(ctx, game, t, e, o) {
     k.dir = Math.PI - 0.42;
     k.head = Math.PI - 0.42;
     k.arms = 'point';
-    k.item = '👉';
     k.scale = 2.4;
     drawPerson(ctx, game.level.looks.kev, k, 680, 262);
   }
@@ -380,11 +380,11 @@ function tableauMug(ctx, game, t, e, o) {
   p.scale = 2.4;
   if (inHand) {
     p.arms = 'mug';
-    p.item = '☕';
+    p.item = '#mug';
   }
   drawPerson(ctx, game.level.looks.player, p, 476, 312);
   bubble(ctx, B_MUG, 476, 150, e, 'alert');
-  bubble(ctx, B_POINT, 272, 206, e, 'speech', 1.4);
+  bubble(ctx, B_POINT_YOU, 272, 206, e, 'speech', 1.4);
 }
 
 // The win the mug buys (verdict.js why 'kev'): the boss found it on Kev's desk. Kev went home at 3:00, so the whole
@@ -396,7 +396,6 @@ function tableauKev(ctx, game, t, e) {
   b.dir = 0.35;
   b.head = 0.35;
   b.arms = 'point';
-  b.item = '👉';
   b.angry = true;
   b.jacket = bossJacket(game);
   b.scale = 2.5;
@@ -415,14 +414,13 @@ function tableauKev(ctx, game, t, e) {
     ctx.save();
     ctx.translate(620, 246);
     ctx.scale(easeOutBack(pe), easeOutBack(pe));
-    emoji(ctx, '☕', 0, 0, 26);
+    drawThing(ctx, game, 'mug', 0, 0, 26);
     ctx.restore();
   }
   const l = person(t);
   l.dir = 0;
   l.head = 0;
   l.arms = 'point';
-  l.item = '👉';
   l.angry = true;
   l.scale = 2.4;
   drawPerson(ctx, game.level.looks.lin, l, 272, 262);
@@ -433,7 +431,7 @@ function tableauKev(ctx, game, t, e) {
   p.smug = true;
   p.scale = 2.4;
   drawPerson(ctx, game.level.looks.player, p, 476, 312);
-  bubble(ctx, B_BLAME, 476, 150, e, 'alert');
+  bubble(ctx, B_BLAME_KEV, 476, 150, e, 'alert');
   bubble(ctx, B_KEV, 272, 206, e, 'thought', 1.4);
 }
 

@@ -15,7 +15,7 @@ function cupFound(game, npc) {
   if (!it || it.spot === 'my_desk') return false;
   if (Math.hypot(it.x - npc.x, it.y - npc.y) > SEES_CUP || !npcSees(game, npc, it.x, it.y)) return false;
   const kev = it.spot === 'kev_desk';
-  speak(game, npc, kev ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', '🔧'], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
+  speak(game, npc, kev ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', '@kev'], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
   game.events.emit('mug:found', { spot: it.spot });
   return true;
 }

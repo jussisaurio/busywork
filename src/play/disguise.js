@@ -61,10 +61,10 @@ export function disguiseView(game, npc) {
   return npc._unmasked ? null : 'unmask';
 }
 
-// The double take, before the offence: the NPC she passes for, then ❓.
+// The double take, before the offence: the face of the NPC she passes for, then ❓.
 export function doubleTakeIcons(game) {
   const as = wornDisguise(game)?.as;
-  return [findNpc(game, as)?.icon ?? '❓', '❓'];
+  return [findNpc(game, as) ? `@${as}` : '❓', '❓'];
 }
 
 // The NPC objected (rules.js react): from now on he sees her as herself.

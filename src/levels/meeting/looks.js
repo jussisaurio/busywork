@@ -36,7 +36,8 @@ export const LOOKS = {
 // level.poses: what render/characters.js draws the cast doing, beyond sitting, walking and standing.
 //   arms   the first rule whose when(npc, world, game) holds sets the arms: { when, arms, item?, angry?, crank? }
 //          arms: a characters.js computeHands pose ('bang' fists on glass, 'reach', 'shrug', 'puff' hand to mouth,
-//          'carry' in both hands, ...) or a function of the npc; item: an emoji in hand; crank: a wrench turning.
+//          'carry' in both hands, ...) or a function of the npc; item: a '#<thing>' in hand (an item type with a
+//          draw, or an engine thing, render/things.js: never an emoji); crank: a wrench turning.
 //          No rule holds: 'desk' sitting, 'walk' walking, else idle. What an NPC carries (npc.carry) is drawn in
 //          hand while his hands are free, else set down beside him.
 //   marks  every rule that holds sets its flags: angry (a scowl), badge (a tag on a 'suit' torso),
@@ -44,11 +45,11 @@ export const LOOKS = {
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'lockedOut', arms: 'bang', angry: true },
-    { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
+    { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
     // No projector, no slides: the boss shrugs at the head of the table.
     { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'shrug' },
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
-    { when: (n, w) => n.id === 'lin' && w.sandwich === 'lin', arms: 'carry', item: '🥪' },
+    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '#cigarette' },
+    { when: (n, w) => n.id === 'lin' && w.sandwich === 'lin', arms: 'carry', item: '#sandwich' },
   ],
   marks: [
     { when: (n) => n.override === 'hunting' || (n.id === 'boss' && n.override === 'alerted'), angry: true },

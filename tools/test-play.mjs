@@ -157,7 +157,7 @@ section('walking + collision');
   ok(violations === 0, 'never overlaps a solid tile on the way');
   ok(!p().seated && evs('player:stand').length === 1, 'movement stood the player up (player:stand once)');
   step();
-  ok(p().focus?.id === 'coffee_machine' && p().focus.icon === '☕', 'focus = coffee machine ☕');
+  ok(p().focus?.id === 'coffee_machine' && p().focus.action === 'brew_coffee' && p().focus.icon === undefined, 'focus = coffee machine: brew_coffee (no icon: it lights up)');
 
   // Glass wall of the boss office (row 6).
   place(3.5, 7.5);
@@ -213,7 +213,7 @@ section('brew -> carry -> spill');
   ok(walk(COFFEE_TO_PROJECTOR), 'carries coffee to the projector');
   ok(violations === 0, 'no wall overlap on the way');
   step();
-  ok(p().focus?.id === 'projector' && p().focus.icon === '💦', 'focus = projector 💦');
+  ok(p().focus?.id === 'projector' && p().focus.action === 'spill_coffee', 'focus = projector: spill_coffee');
   input.press('interact');
   step();
   ok(p().action?.type === 'spill_coffee' && p().action.sneaky, 'spill is a sneaky action');
@@ -277,7 +277,7 @@ section('keycard: steal behind the boss (facing S)');
   ok(walk(DESK_TO_RACK, { busy: true }), 'folder-stride into the boss office');
   ok(game.suspicion.boss === 0 && evs('boss:suspicious').length === 0, 'busy stride: no suspicion');
   step();
-  ok(p().focus?.id === 'coat_rack' && p().focus.icon === '🪪', 'focus = coat rack 🪪');
+  ok(p().focus?.id === 'coat_rack' && p().focus.action === 'take_keycard', 'focus = coat rack: take_keycard');
   input.press('interact');
   run(1.1);
   ok(p().held === 'keycard' && game.world.keycard === 'player', 'keycard taken');
@@ -342,7 +342,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   const t = evs('witness:tattle');
   ok(t.length === 3 && t.every((e) => e.payload.by === 'lin' && e.payload.reason === 'action' && e.payload.heard === false), "witness:tattle {by:'lin', reason:'action', heard:false} x3");
   ok(evs('action:cancel').filter((e) => e.payload.reason === 'witnessed').length === 3, "action:cancel {reason:'witnessed'} x3");
-  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.kind === 'alert' && e.payload.icons.join('') === '❗👉'), 'Lin shouts ❗👉 (alert)');
+  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.kind === 'alert' && e.payload.icons.join('') === '❗👉@player'), 'Lin shouts ❗👉 and your face (alert)');
   ok(game.fx.lines.some((l) => l.from === 'lin' && l.kind === 'tattle'), "tattle sightline from Lin");
   ok(evs('boss:workAssigned').length === 0 && !p().locked && game.clock.forced === 0, 'nobody heard: no work, not locked');
 
@@ -359,7 +359,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   run(0.4);
   const late = evs('witness:tattle').filter((e) => e.payload.late);
   ok(late.length === 1 && late[0].payload.by === 'lin' && late[0].payload.heard && late[0].payload.icon === '🪪', "late tattle {by:'lin', heard, late, icon:'🪪'} (once, for 3 attempts)");
-  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '👉🪪'), 'Lin says 👉🪪 (what she saw)');
+  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '👉@player🪪'), 'Lin says 👉, your face, 🪪 (what she saw)');
   ok(evs('boss:workAssigned')[0]?.payload.reason === 'tattle' && p().locked, 'sent to work, even though you are pretending at your desk now');
   input.release('busy');
 
@@ -602,7 +602,7 @@ section('contraband');
     const t = evs('witness:tattle');
     ok(t.length === 1 && t[0].payload.reason === 'evidence' && t[0].payload.heard === true && evs('boss:workAssigned')[0]?.payload.reason === 'tattle', 'hunting Lin sees the mustard (even pretending): 🥪❗👉, boss hears -> work');
     ok(game.world.linKnows === true, 'world.linKnows (ends her hunt)');
-    ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '🥪❗👉'), 'Lin says 🥪❗👉');
+    ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '🥪❗👉@player'), 'Lin says 🥪❗👉 and your face');
   }
   { // boss away: she remembers, tells him 👉🥪 when he's back; only once
     const away = fakeNpc('boss', 'boss_desk', { active: false });
@@ -736,7 +736,7 @@ section('sandwich: take + eat');
   newDay();
   ok(walk(DESK_TO_FRIDGE), 'walks to the fridge');
   step();
-  ok(p().focus?.id === 'fridge' && p().focus.icon === '🥪', 'focus = fridge 🥪');
+  ok(p().focus?.id === 'fridge' && p().focus.action === 'take_sandwich', 'focus = fridge: take_sandwich');
   input.press('interact');
   run(0.9);
   ok(p().held === 'sandwich' && game.world.sandwich === 'player' && evs('sandwich:taken').length === 1, 'sandwich taken');

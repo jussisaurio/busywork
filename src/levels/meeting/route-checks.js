@@ -70,7 +70,7 @@ export default [
   },
   {
     // The teaching fail: the act is over, the evidence isn't. The boss looks in on his 3:12 walk.
-    name: 'pour before Kev\'s coffee run, hide it, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 blamed',
+    name: 'pour before Kev\'s coffee run, hide it, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 at you, blamed',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');
@@ -107,7 +107,7 @@ export default [
     },
   },
   {
-    name: 'same, but plant the mug on Kev\'s desk → ☕❗😠🔧, and at 4:00 the table stares at Kev\'s empty chair → win',
+    name: 'same, but plant the mug on Kev\'s desk → ☕❗, 😠 at Kev, and at 4:00 the table stares at Kev\'s empty chair → win',
     expect: { result: 'win', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');

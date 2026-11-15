@@ -2,10 +2,10 @@
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
 import {
-  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, clamp, clockHands, drawScreen,
+  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, strictGlyphs, clamp, clockHands, drawScreen,
 } from './util.js';
 import { C } from './palette.js';
-import { itemIcon } from './characters.js';
+import { itemGlyph } from './characters.js';
 import { WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
@@ -572,7 +572,34 @@ function drawRestroom(ctx, x, y) {
   ctx.fillStyle = C.white;
   rrect(ctx, px + 8, py + 4, 16, 12, 2);
   ctx.fill();
-  emoji(ctx, '🚻', px + 16, py + 10.5, 10);
+  if (strictGlyphs()) restroomFigures(ctx, px + 16, py + 10.5);
+  else emoji(ctx, '🚻', px + 16, py + 10.5, 10); // legacy: drop with the legacy list
+}
+
+// The pictogram on the restroom door: a man in blue and a woman in red, side by side, centred on (x, y).
+function restroomFigures(ctx, x, y) {
+  for (const [dx, col, skirt] of [[-3.4, '#2f6fb0', false], [3.4, '#c8453a', true]]) {
+    const cx = x + dx;
+    fillCircle(ctx, cx, y - 3.2, 1.4, col);
+    ctx.fillStyle = col;
+    if (skirt) {
+      ctx.beginPath();
+      ctx.moveTo(cx - 1.1, y - 1.4);
+      ctx.lineTo(cx + 1.1, y - 1.4);
+      ctx.lineTo(cx + 2.2, y + 2.2);
+      ctx.lineTo(cx - 2.2, y + 2.2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillRect(cx - 1, y + 2.2, 0.8, 2.2);
+      ctx.fillRect(cx + 0.2, y + 2.2, 0.8, 2.2);
+    } else {
+      ctx.fillRect(cx - 1.5, y - 1.4, 3, 3.8);
+      ctx.fillRect(cx - 1.4, y + 2.4, 1.1, 2.4);
+      ctx.fillRect(cx + 0.3, y + 2.4, 1.1, 2.4);
+    }
+  }
+  ctx.fillStyle = 'rgba(42,33,27,0.5)';
+  ctx.fillRect(x - 0.3, y - 4.5, 0.6, 9);
 }
 
 function drawElevator(ctx, tiles) {
@@ -1096,7 +1123,7 @@ export function drawWorldDynamic(ctx, game, t) {
     const y = it.y * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     fillEllipse(ctx, x, y + 6, 7, 2.5, 'rgba(0,0,0,0.22)');
-    emoji(ctx, itemIcon(game.level.items, it.type), x, y + Math.sin(t * 3 + i) * 1, 14);
+    emoji(ctx, itemGlyph(game.level.items, it.type), x, y + Math.sin(t * 3 + i) * 1, 14);
     if ((t + i * 0.7) % 2.4 < 0.25) sparkle(ctx, x + 6, y - 6, 3.5, '#fff');
   }
 
@@ -1121,6 +1148,25 @@ export function drawWorldDynamic(ctx, game, t) {
   }
 }
 
+// A tiny cup under a red circle and slash, centred on (x, y): the projector's "no coffee" sticker.
+function noCoffeeSticker(ctx, x, y) {
+  ctx.fillStyle = '#6b3f1d';
+  ctx.fillRect(x - 1.3, y - 1, 2.4, 2.4);
+  ctx.strokeStyle = '#6b3f1d';
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.arc(x + 1.3, y + 0.2, 0.8, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+  ctx.strokeStyle = '#d23a2a'; // (not C.tomato: that red is the end card's losing border)
+  ctx.lineWidth = 0.8;
+  circle(ctx, x, y, 2.5);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - 1.8, y - 1.8);
+  ctx.lineTo(x + 1.8, y + 1.8);
+  ctx.stroke();
+}
+
 // The decor.props painters, by name: (ctx, info, tile, shown, t). `shown` is the prop's state(world, game).
 // Exported for the level validator (src/levels/validate.js): a prop names one of these, or brings its own function
 // with the same signature (tile: the prop's legend letter on the map, in tile units; draw in map pixels, T a tile).
@@ -1138,7 +1184,8 @@ export const PROP_PAINTERS = {
   coatRack(ctx, info, at, shown, t) {
     drawRackItems(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.coat, shown.tag, t);
   },
-  // { icon, size? }: any level's stand-in, one emoji on the tile (nothing when icon is empty).
+  // { icon, size? }: one emoji on the tile (nothing when icon is empty). Legacy levels only (src/levels/legacy.js):
+  // the validator refuses it in a migrated level, where the world is drawn (DESIGN.md "Visual language").
   icon(ctx, info, at, shown) {
     if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
   },
@@ -1310,12 +1357,15 @@ export function drawProjector(ctx, cx, cy, state, fix, t) {
   // lens toward the screen
   fillCircle(ctx, cx + 5, cy - 7, 3.4, '#2b2826');
   fillCircle(ctx, cx + 5, cy - 7, 2, broken ? '#3a2a20' : '#7fb3c8');
-  // ☕🚫 sticker
+  // "no coffee" sticker
   ctx.fillStyle = C.white;
   rrect(ctx, cx - 9, cy, 9, 6, 1);
   ctx.fill();
-  emoji(ctx, '☕', cx - 4.5, cy + 3.2, 6);
-  emoji(ctx, '🚫', cx - 4.5, cy + 3.2, 7);
+  if (strictGlyphs()) noCoffeeSticker(ctx, cx - 4.5, cy + 3);
+  else { // legacy: drop with the legacy list
+    emoji(ctx, '☕', cx - 4.5, cy + 3.2, 6);
+    emoji(ctx, '🚫', cx - 4.5, cy + 3.2, 7);
+  }
   if (fixing) {
     // lid propped open
     ctx.save();
