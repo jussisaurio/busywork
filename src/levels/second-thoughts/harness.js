@@ -7,7 +7,7 @@ const name = (id) => NAME[id] ?? id;
 const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
 
 export default {
-  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He empties it at 3:40. Get it back first.",
+  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through it at 3:40.",
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -33,10 +33,10 @@ export default {
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
-  outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (he emptied his tray and your letter wasn't in it: ${o.routes.join(' + ')})`
+  outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (he went through his tray and your letter wasn't in it: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠'
     : o.result === 'blamed' ? `BLAMED 🪑👉 (you have the letter, via ${o.routes.join(' + ')}, but you weren't at your desk when he looked up)`
-    : 'FAIL: the boss emptied his tray and read your letter ✉️😠'),
+    : 'FAIL: the boss went through his tray and read your letter ✉️😠'),
 
   playerText(game) {
     const p = game.player;
@@ -52,9 +52,9 @@ export default {
   npcText(game, n) {
     const bits = [];
     const w = game.world;
-    if (w.fuse !== 'on') bits.push('holding up a phone torch 📱');
-    if (n.override === 'dark') bits.push('feeling his way to the light switch');
-    if (n.override === 'groping') bits.push(`groping for the light switch ${Math.round(w.gropeProgress * 100)}%`);
+    if (game.level.darkness.torch.when(n, w)) bits.push('holding up a phone torch 📱');
+    if (n.override === 'dark') bits.push('walking his torch over to the light switch');
+    if (n.override === 'switching') bits.push(`at the light switch, the tubes blinking ${Math.round(w.switchProgress * 100)}%`);
     if (n.override === 'fuse') bits.push('on his way to the fuse box');
     if (n.override === 'fixing') bits.push(`resetting the fuse ${Math.round(w.fixProgress * 100)}%`);
     return bits;
@@ -63,6 +63,7 @@ export default {
   worldText(game) {
     const w = game.world;
     const lights = w.fuse !== 'on' ? 'the whole floor is dark (the fuse is out) except near the glass entrance'
+      : w.officeLight === 'starting' ? "the boss's office tubes are blinking back on; the rest of the floor is lit"
       : w.officeLight !== 'on' ? "the boss's office is dark; the rest of the floor is lit" : 'all the lights are on';
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
     return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}`;
@@ -74,14 +75,14 @@ export default {
       case 'witness:tattle': return p.late
         ? `${name(p.by)} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
         : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the boss heard)' : ''}`;
-      case 'meeting:gather': return 'the boss sits down to empty his tray 📥';
+      case 'meeting:gather': return 'the boss sits down to go through his tray 📥';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switch:off': return "clack: the boss's office goes dark 💡";
       case 'switch:on': return "clack: the boss's office light is back on 💡";
-      case 'boss:dark': return 'the boss: ❓ He gets up to find the switch';
-      case 'switch:groping': return 'the boss gropes along the wall for the switch';
-      case 'switch:fixed': return "the boss finds the switch: his office light is back on 💡 (😠)";
+      case 'boss:dark': return 'the boss: ❓ He holds up his phone torch 📱 and gets up for the switch';
+      case 'switch:starting': return 'the boss flips his switch back on: the tubes blink';
+      case 'switch:fixed': return "the boss's office tubes catch: his light is back on 💡 (😠)";
       case 'fuse:tripped': return "Lin switches on the coffee machine: sparks fly, the fuse trips and the whole floor goes dark. The fuse box's door flies open. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
       case 'kev:fuse': return 'Kev: ❓ He heads for the fuse box with his phone torch';

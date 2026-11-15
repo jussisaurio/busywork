@@ -1,8 +1,11 @@
-// "Second Thoughts": your angry resignation letter is in the boss's tray, and at 3:40 he empties it. Get it back.
-// He sits facing his tray all afternoon, so you can't take it in the light. In the dark, every view shrinks to
-// arm's length, except along a phone torch (src/game/darkness.js). Three ways to make it dark:
-//   switch    flip his office light switch (a loud clack). He says ❓ and gropes along the wall to it: be
-//             anywhere but in his way, because whoever he bumps into in the dark flipped it.
+// "Second Thoughts": your angry resignation letter is in the boss's tray, and at 3:40 he goes through it. Get it
+// back. He sits facing his tray all afternoon, so you can't take it in the light. In the dark, every view shrinks to
+// arm's length, except along a phone torch (src/game/darkness.js): anyone in a dark room holds up a phone. Three
+// ways to make it dark:
+//   switch    flip his office light switch (in the corner behind his back). He says ❓, holds up his phone, and as he
+//             gets up his beam swings across the east half of the office; then he walks it over to the switch. Be
+//             anywhere but in that beam, because whoever he finds in his dark office flipped it. He flips it back and
+//             the tubes blink a few times before they catch.
 //   blackout  3:10: Lin switches on the coffee machine, it sparks, and it trips the fuse for the whole floor.
 //             Everyone holds up a phone as a torch, and he sweeps his across the front of his desk. Kev walks his torch
 //             down the hallway to the fuse box (its door hangs open, its red lamp blinking) and resets it.
@@ -20,17 +23,17 @@ import { letter } from './things.js';
 const t = (hhmm) => at(hhmm, START);
 
 // Level 1's floor (src/levels/meeting/map.js), rewired:
-//   Y the boss's in-tray (on his desk)   S his office light switch (on the wall)
+//   Y the boss's in-tray (on his desk)   S his office light switch (in the north-west corner, behind his back)
 //   X the fuse box (on the hallway's end wall, facing the hallway)   M the coffee machine   F fridge   P your desk
 // The switch and the fuse box are drawn by darkness.controls (render/darkness.js), the coffee machine by the map.
 // His chair is boxed in by plants and his desk (the tray on its east end): he gets out behind it. The office's south-west wall is solid,
 // so from his chair he can't see down the hallway to the fuse box.
 const MAP = [
-  '##############################', // 0
+  '#S############################', // 0
   '#.......G..........#FTMT.....#', // 1
   '#..H.HH.G..........#.........#', // 2
   '#..TTY..G..TTTTTT..#....TTT..#', // 3
-  'S.......G..TTTTTT..#.........#', // 4
+  '#.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
   '#X##GGDGG#####D#######DD######', // 6
   '#............................#', // 7
@@ -62,7 +65,7 @@ const SPOTS = {
   boss_desk: { x: 4, y: 2, face: 'S' }, // facing his tray, all afternoon
   lin_desk: { x: 4, y: 9, face: 'N' },
   kev_desk: { x: 22, y: 9, face: 'N' },
-  office_switch: { x: 1, y: 4, face: 'W' }, // stand here to reach S
+  office_switch: { x: 1, y: 1, face: 'N' }, // stand here to reach S: behind him, out of his view and his reach
   fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
   coffee_machine: { x: 22, y: 2, face: 'N' },
   desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, off his gaze: his torch only gets here when he glances
@@ -92,6 +95,13 @@ function howDark(game, x, y) {
   return 'switch';
 }
 
+// His office tubes, switched back on, blink a few times before they catch (the switch work's progress, 0 -> 1).
+const BLINKS = [[0.2, 0.24], [0.42, 0.45], [0.6, 0.66], [0.76, 0.79], [0.86, 0.94]];
+const tubesLit = (w) => w.officeLight === 'on'
+  || (w.officeLight === 'starting' && BLINKS.some(([a, b]) => w.switchProgress >= a && w.switchProgress < b));
+// Anyone in a dark room holds up a phone: in the blackout everyone, in his switched-off office whoever is in it.
+const inOffice = (n) => n.x >= ZONES.office.x0 && n.x < ZONES.office.x1 && n.y >= ZONES.office.y0 && n.y < ZONES.office.y1;
+
 const INTERACTIONS = {
   take_letter: {
     on: 'tray', text: 'take your letter back', duration: 2.5, sneaky: true, saw: '✉️', // longer than any glance
@@ -100,7 +110,7 @@ const INTERACTIONS = {
       const w = game.world;
       game.player.held = 'letter';
       w.letter = 'player';
-      w.snatched = howDark(game, a.x, a.y) ?? 'light';
+      w.snatched = howDark(game, a.x, a.y) ?? (w.officeLight === 'starting' ? 'switch' : 'light'); // a blink is still his dark
       say(game, 'player', ['😊'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('letter:taken', { how: w.snatched });
       if (w.snatched !== 'light') game.events.emit('letter:snatched', { how: w.snatched });
@@ -108,11 +118,11 @@ const INTERACTIONS = {
   },
   flip_switch: {
     on: 'office_switch', text: 'flip the light switch', duration: 0.5, sneaky: false,
-    noise: { radius: 7 }, // the clack
+    noise: { radius: 2 }, // the clack: too far from his chair to turn him, but the office goes dark
     can: () => true,
     done(game) {
       const w = game.world;
-      w.officeLight = w.officeLight === 'on' ? 'off' : 'on';
+      w.officeLight = w.officeLight === 'off' ? 'on' : 'off';
       if (w.officeLight === 'off') game.player.switched = true; // it was you, if he finds you in the dark
       shake(game, 0.04, 0.12);
       game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
@@ -143,7 +153,7 @@ const ITEMS = {
 
 const ROLES = {
   authority: { id: 'boss', offDuty: ['meeting'], helpless: [], deafIn: null },
-  // He gropes his way to the switch: whoever he walks into in the dark flipped it (pretending doesn't help).
+  // He walks his torch to the switch: whoever it finds in his dark office flipped it (pretending doesn't help).
   evidence: { by: 'boss', while: 'dark', mark: 'switched', knows: 'bossKnows', icon: '💡' },
   // Kev at the fuse box: whoever he finds standing at it pulled the breaker.
   scene: {
@@ -153,7 +163,7 @@ const ROLES = {
 };
 
 const LURES = [
-  { // His office goes dark (the switch, not the fuse): he gets up and gropes along the wall to the switch.
+  { // His office goes dark (the switch, not the fuse): he holds up his phone and walks his torch to the switch.
     npc: 'boss',
     when: (w) => w.fuse === 'on' && w.officeLight === 'off',
     override: 'dark',
@@ -162,10 +172,10 @@ const LURES = [
     spot: 'office_switch',
     react: { wait: 0.8, says: [{ say: ['❓'], kind: 'thought' }], event: 'boss:dark' },
     work: {
-      override: 'groping',
+      override: 'switching',
       minutes: 2,
-      progress: 'gropeProgress',
-      start: { set: { officeLight: 'off' }, event: 'switch:groping' },
+      progress: 'switchProgress',
+      start: { set: { officeLight: 'starting' }, event: 'switch:starting' }, // flipped back: the tubes blink
       done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['😠'] }] },
     },
   },
@@ -199,7 +209,7 @@ export default {
   day: {
     start: START,
     gatherAt: t('3:38'), // he sits down to his tray
-    meetingAt: t('3:40'), // and empties it
+    meetingAt: t('3:40'), // and goes through it
     clockRedAt: t('3:35'),
     clockTickAt: t('3:35'),
     tockAt: t('3:38'),
@@ -214,16 +224,16 @@ export default {
   behaviours: BEHAVIOURS,
   darkness: {
     rooms: [
-      { zone: 'office', lit: (w) => w.fuse === 'on' && w.officeLight === 'on' },
+      { zone: 'office', lit: (w) => w.fuse === 'on' && tubesLit(w) },
       { zone: ['floor_dark', 'floor_back', 'meeting_room', 'kitchen'], lit: (w) => w.fuse === 'on' },
     ],
-    torch: { when: (n, w) => w.fuse !== 'on', fov: deg(60), radius: 7 }, // everyone's phone, once the fuse is out
+    torch: { when: (n, w) => w.fuse !== 'on' || (w.officeLight !== 'on' && inOffice(n)), fov: deg(60), radius: 7 },
     controls: [
-      { tile: 'S', kind: 'switch', on: (w) => w.officeLight === 'on' }, // its amber lamp lights while it's off
+      { tile: 'S', kind: 'switch', on: (w) => w.officeLight !== 'off' }, // its amber lamp lights while it's off
       { tile: 'X', kind: 'breaker', on: (w) => w.fuse === 'on' }, // off: its door hangs open, its red lamp blinks
     ],
   },
-  // 3:40 is no meeting: he empties his tray at his desk. Nobody knows the letter ever existed, so wherever you are
+  // 3:40 is no meeting: he goes through his tray at his desk. Nobody knows the letter ever existed, so wherever you are
   // with it, you got away with it (never 'blamed').
   meeting: {
     override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
@@ -240,8 +250,8 @@ export default {
     snatched: null, // how dark it was when you took it: 'switch' | 'blackout' | 'breaker' | 'light'
     fuse: 'on', // 'on' | 'off'
     fuseBy: null, // who tripped it: 'lin' (the coffee machine) | 'player' (the breaker)
-    officeLight: 'on', // his office switch: 'on' | 'off'
-    gropeProgress: 0,
+    officeLight: 'on', // his office switch: 'on' | 'off' | 'starting' (flipped back on, the tubes blinking)
+    switchProgress: 0,
     fixProgress: 0,
     bossKnows: false,
     coffee: 'none', // Lin's: 'none' | 'tripped' (switching it on tripped the fuse; brewed once it's back) | 'cold'

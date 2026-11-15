@@ -73,7 +73,7 @@ export const BEHAVIOURS = {
       sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
     },
   },
-  // 3:40: he empties his tray. If your letter is still in it, he reads it.
+  // 3:40: he goes through his tray. If your letter is still in it, he reads it.
   emptyTray: {
     arrive(game, npc, sim) {
       if (npc._emptied) return;

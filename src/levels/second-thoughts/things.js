@@ -117,12 +117,21 @@ export function paintPhone(ctx, x, y, s = 1, lit = true) {
   return { x, y: y - 3 * s };
 }
 
-// decor.props painter on the coffee machine: shown { smoke } (it blew the fuse and the power is still out). Smoke
-// curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the floor down.
+// decor.props painter on the coffee machine: shown { smoke, brewing }. smoke: it blew the fuse and the power is still
+// out. Smoke curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the
+// floor down. brewing: the power is back and the machine runs what it was switched on for: its brew lamp glows green.
 export function smokeProp(ctx, info, at, shown, t) {
-  if (!shown.smoke) return;
   const x = at.x * T + T / 2 + 6;
   const y = at.y * T + 6;
+  if (shown.brewing) {
+    const g = ctx.createRadialGradient(x, y + 3, 0.2, x, y + 3, 5);
+    g.addColorStop(0, 'rgba(150,255,140,0.75)');
+    g.addColorStop(1, 'rgba(150,255,140,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x - 5, y - 2, 10, 10);
+    fillCircle(ctx, x, y + 3, 1.3, '#d8ffd0');
+  }
+  if (!shown.smoke) return;
   fillCircle(ctx, x, y + 3, 3 + 0.8 * Math.sin(t * 11), `rgba(255,140,50,${0.6 + 0.3 * Math.sin(t * 17)})`);
   fillCircle(ctx, x, y + 3, 1.3, '#fff0b0');
   for (let i = 0; i < 5; i++) {
