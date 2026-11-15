@@ -2,6 +2,7 @@
 // Drives the sim directly (no player, interactions, rules or scenario): updateNpcs + updateFx + advanceClock per step.
 import { createGame, resetLoop } from '../src/state.js';
 import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
+import { speak } from '../src/sim/override.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
@@ -326,6 +327,18 @@ let projRun = null;
   ok(!said(base, 'kev', '🥱☕').length, 'untouched day: no craving');
   ok(arr(R, 'kev', 'kev_desk', at('2:44'), at('2:50')) != null, 'pot taken earlier: Kev still back at his desk on time');
   common(R, 'empty pot');
+}
+
+// ---------------------------------------------------------------- speak: an `after` line keeps its kind and ttl
+{
+  let seen = null;
+  const lines = [{ say: ['🧪'], kind: 'thought', ttl: 1.1 }, { say: ['🧫'], kind: 'thought', after: 0.5, ttl: 7 }];
+  runDay({
+    hooks: [{ at: at('2:33'), fn: (g) => speak(g, g.npcs.find((n) => n.id === 'kev'), lines) }],
+    until: at('2:35'),
+    onStep: (g) => { seen ??= g.fx.bubbles.find((b) => b.owner === 'kev' && b.icons.join('') === '🧫') ?? null; },
+  });
+  ok(seen && seen.ttl === 7 && seen.kind === 'thought', `speak: the after line shows with its own ttl and kind (${seen ? `${seen.ttl}, ${seen.kind}` : 'never shown'})`);
 }
 
 // ---------------------------------------------------------------- away window too short

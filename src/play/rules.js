@@ -241,8 +241,8 @@ function react(game, s, npc, offence) {
   // Just carrying their thing: they take it and that's the end of it, with a word (the owner's `says`).
   if (offence === 'contraband') {
     for (const line of owner?.says ?? []) {
-      if (line.after) npcSayLater(npc, line.after, line.say, 'speech');
-      else say(game, npc.id, line.say, { kind: 'speech' });
+      if (line.after) npcSayLater(npc, line.after, line.say, line.kind ?? 'speech', line.ttl);
+      else say(game, npc.id, line.say, { kind: line.kind ?? 'speech', ttl: line.ttl });
     }
     game.events.emit('witness:tattle', { by: npc.id, reason: offence, heard: false });
     return;

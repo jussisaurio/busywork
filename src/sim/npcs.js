@@ -87,7 +87,7 @@ export function createNpc(game, def, now = 0) {
     _said: sched.map((e) => e.do === 'say' && e.at < now), // schedule 'say' entries fire once
     _plan: null,
     _wait: 0, // s to stand still before continuing the plan
-    _sayQ: [], // delayed bubbles: { t, icons, kind }
+    _sayQ: [], // delayed bubbles: { t, icons, kind, ttl }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
     _heard: null, // a noise holding his attention (mechanics/attention.js)
@@ -227,7 +227,7 @@ function tickSayQueue(game, npc, dt) {
   for (const q of npc._sayQ) q.t -= dt;
   while (npc._sayQ.length && npc._sayQ[0].t <= 0) {
     const q = npc._sayQ.shift();
-    if (npc.active) say(game, npc.id, q.icons, { kind: q.kind, voice: npc.voice });
+    if (npc.active) say(game, npc.id, q.icons, { kind: q.kind, voice: npc.voice, ttl: q.ttl });
   }
 }
 
