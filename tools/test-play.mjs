@@ -788,7 +788,9 @@ section('4:00 meeting outcomes + persist.routesFound');
     run(END_BEAT - 0.3);
     const phaseMid = game.phase;
     run(0.3);
-    return { o, locked, phaseAtDecision, phaseMid };
+    const beatEnd = game.phase;
+    for (let i = 0; i < 600 && game.phase === 'day'; i++) step(); // a fail walks you to the front first
+    return { o, locked, phaseAtDecision, phaseMid, beatEnd };
   }
 
   let r = meeting(() => {});
@@ -838,7 +840,7 @@ section('4:00 meeting outcomes + persist.routesFound');
   place(4.5, 5.5);
   run(SUSPICION_FILL_SEC + 0.1);
   ok(game.clock.forced > 0, 'work assigned near 4:00');
-  run(4); // meeting at ~3.3 s + 2 s beat (the harness has no FORCED_MULT)
+  run(7); // meeting at ~3.3 s + the walk to the front + 2 s beat (the harness has no FORCED_MULT)
   ok(game.phase === 'end' && game.outcome?.result === 'fail' && evs('work:done').length === 0, 'meeting ends forced work cleanly (fail, no work:done)');
 }
 
