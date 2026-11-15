@@ -28,9 +28,9 @@ export const CAST = [
       s('3:10', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // he locks his screen: the list is on it
       s('3:15', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
       s('3:19', { do: 'sit', spot: 'boss_desk', arrive: 'actsUp' }), // static again; he calls Kev, who went home,
-      // then gives up and goes for a coffee (index.js clockFor, the coffee lure). Back from it: still dead, he kneels
-      // at the plug himself on the way to his chair.
-      s('3:35', { do: 'sit', spot: 'boss_desk', prelude: 'selfFix', arrive: 'atDesk' }),
+      // then gives up and goes for a coffee (index.js clockFor, the coffee lure). Back from it to a dead screen, he
+      // sits it out; at 3:42 he sends the email from his mobile (sendList).
+      s('3:35', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
     ],
   },
   {
@@ -164,22 +164,6 @@ export const BEHAVIOURS = {
       game.events.emit('pc:actsUp', {});
     },
   },
-  // Back from coffee to a dead screen: he kneels at his cable himself and pushes the plug home.
-  selfFix: {
-    spot: 'cable',
-    pending: (npc) => !!npc._lay?.dead, // index.js bossClock: the screen is dead
-    arrive(game, npc, sim) {
-      const w = game.world;
-      if (!w.glitch) return;
-      w.glitch = false;
-      w.pc = 'boss'; // he is at it: it's his again, whether or not he reaches his chair before 3:42
-      w.locked = false;
-      w.listUpAt = game.clock.minute;
-      sim.speak(game, npc, [{ say: ['🔌'] }]);
-      sim.holdFor(npc, 1.0);
-      game.events.emit('pc:selfFixed', {});
-    },
-  },
   // About 3:14.5: he gets up with his bag (presentation.js POSES).
   grabBag: {
     spot: 'kev_desk',
@@ -209,16 +193,17 @@ export const BEHAVIOURS = {
   },
   // 3:42: he packs up for the weekend at his desk, coat on (🧥), and at 3:45 clicks send on the email he left open,
   // without opening the attachment (the list flies off his screen: list.js sending). Nobody reads the list again.
+  // His screen still dead (nobody plugged it in): he sends the same email from his mobile (📱📧), the screen static.
   sendList: {
     arrive(game, npc, sim) {
       const w = game.world;
       w.pc = 'boss';
-      w.glitch = false;
+      const dead = !!w.glitch;
       if (w.check !== 'done') w.locked = false; // told: he locked it after putting you back, and sends it locked
       // Lin named you: he glares across the floor at your desk (whatever he says, it waits for Monday).
       sim.lookAt(game, npc, game.player.named ? 'player_desk' : 'screen', 2.6);
       if (game.player.named) sim.speak(game, npc, [{ say: ['👉', '@player', '😠'], after: 0.9 }]);
-      else sim.speak(game, npc, [{ say: ['🧥', '📧'], after: 0.9 }]);
+      else sim.speak(game, npc, [{ say: dead ? ['🧥', '📱', '📧'] : ['🧥', '📧'], after: 0.9 }]);
       game.events.emit('boss:packsUp', {});
     },
   },

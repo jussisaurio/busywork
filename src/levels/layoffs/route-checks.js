@@ -13,7 +13,7 @@ const FIX = ['pretend until 3:28.8', 'goto behind_his_desk', 'interact'];
 
 export default [
   {
-    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), nobody answers at his desk (❓), he goes for a coffee (😮‍💨☕) and fixes it himself when back (🔌) → 🧥📧 → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), nobody answers at his desk (❓), he goes for a coffee (😮‍💨☕), back to a dead screen he sends it from his mobile → 🧥📱📧 → fail',
     expect: { result: 'fail' },
     play({ run, log, g }) {
       run('pretend until 3:45');
@@ -25,10 +25,8 @@ export default [
       mustSay(log, 'boss', ['@kev', '❓']); // he rang Kev's desk, and nobody picked up
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
       mustSay(log, 'boss', ['😮‍💨', '☕']); // he gives up and goes for a coffee
-      mustSay(log, 'boss', ['🔌']); // back to a dead screen: down to the cable himself
-      const fixed = log.find((e) => e.name === 'pc:selfFixed');
-      if (!fixed || fixed.minute >= g.level.day.gatherAt) throw new Error('he was not back from coffee to fix it before 3:42');
-      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
+      if (!g.world.glitch) throw new Error('his screen came back with nobody at the plug');
+      mustSay(log, 'boss', ['🧥', '📱', '📧']); // coat on, he sends it from his mobile
     },
   },
   {

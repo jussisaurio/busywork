@@ -196,12 +196,13 @@ function drawEmail(ctx, x, y, w, h) {
 
 // Locked: the sheet hidden behind a dark lock screen with a padlock in the middle.
 function drawLock(ctx, sx, sy, sw, sh, jolt = 0) {
-  ctx.fillStyle = jolt > 0 ? `rgb(${29 + Math.round(120 * jolt)},42,54)` : '#1d2a36'; // tried: a red flash
+  ctx.fillStyle = '#1d2a36'; // stays dark when you try it: a lit screen would read as unlocked
   ctx.fillRect(sx, sy, sw, sh);
-  const cx = sx + sw / 2 + (jolt > 0 ? Math.sin(jolt * 40) * 2.5 * jolt : 0); // and the padlock shakes
+  const cx = sx + sw / 2 + (jolt > 0 ? Math.sin(jolt * 40) * 2.5 * jolt : 0); // tried: the padlock shakes
 
   const cy = sy + sh / 2 + 2;
-  ctx.strokeStyle = '#d8d2c4';
+  const red = jolt > 0.15; // and flashes red
+  ctx.strokeStyle = red ? '#ff5a4a' : '#d8d2c4';
   ctx.lineWidth = 2;
   ctx.beginPath(); // the shackle
   ctx.arc(cx, cy - 3, 4, Math.PI, 0);
@@ -209,7 +210,7 @@ function drawLock(ctx, sx, sy, sw, sh, jolt = 0) {
   ctx.moveTo(cx - 4, cy - 3);
   ctx.lineTo(cx - 4, cy);
   ctx.stroke();
-  ctx.fillStyle = '#e3c25a'; // the body
+  ctx.fillStyle = red ? '#e8392b' : '#e3c25a'; // the body
   rrect(ctx, cx - 6, cy - 1, 12, 9, 1.5);
   ctx.fill();
   fillCircle(ctx, cx, cy + 3, 1.3, '#5a4a1c');

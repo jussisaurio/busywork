@@ -11,7 +11,7 @@
 //     (❓). He gives up (😮‍💨☕) and goes for a coffee, his screen dead: there is nothing to lock. He walks the length
 //     of the floor to the kitchen and is out of sight from about 3:28.
 //   - Then kneel at the socket behind his desk and push the plug home: the list comes back on, unlocked.
-//     Left alone, he comes back with his coffee to a dead screen and plugs it in himself (🔌) about 3:42.
+//     Left alone, he comes back with his coffee to a dead screen and at 3:42 sends the email from his mobile (📱📧).
 //   - Before he is back on the floor (about 3:36), make Lin look away for the 3 s the edit takes: ring Kev's empty
 //     desk from the boss's desk phone (she turns round to it, 👀☎️: the ring route), or wait for her mobile to
 //     buzz (she picks it up and turns away, 📱: the phone route). When the edit ends the sheet closes, saved, back
@@ -286,7 +286,6 @@ function bossClock(game, npc, sim) {
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
-  st.dead = !!w.glitch; // cast.js selfFix: back from coffee to a dead screen, he kneels at the plug himself
   // About 3:23 (cast.js actsUp): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
   if (st.callAt != null && now >= st.callAt) {
     st.callAt = null;

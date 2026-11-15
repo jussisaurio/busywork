@@ -59,129 +59,126 @@ Read aloud, the card sounds like a person talking. "You're on the layoff list. I
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"3392902","hash":"c75b10f5606c75ca2d71e78ab298532264e9e9180b5037d713488915a3f47dde","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"c4d895c4e3faf0bc0ecec65f48dd49e8bde16f8e2e95a311078493e7edc46695","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":6,"stretch":1,"nonsense":0},"problems":{"blocker":0,"should":3,"nit":1}} -->
-## sense: works
-Recorded 2026-11-15 at commit 3392902, by claude -p (model: default). Inputs c75b10f5606c: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 6 sensible, 1 stretch, 0 nonsense.
-Problems: 0 blocker, 3 should, 1 nit.
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"928798f","hash":"fc1a3e82d15e162c6db7f46991ac7b38e47e1b9184e9e56c226b47de17705334","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"86e015389a6da3b2a97c25dba10d76a56506b6ce2572aec1184c1a36d9a8c5df","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":3,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit 928798f, by claude -p (model: default). Inputs fc1a3e82d15e: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 sensible, 2 stretch, 0 nonsense.
+Problems: 1 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 49 s | $0.11 |
-| all | | 49 s (the steps add up to 49 s) | $0.11 |
+| 1-judge | report.md | 35 s | $0.09 |
+| all | | 35 s (the steps add up to 35 s) | $0.09 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [should] The boss locks the list when he leaves a working screen. Then he leaves the person who is on that list kneeling at his computer. A half-awake boss could miss this because the screen is dead, but nothing shows he thought about it at all. — Have him hesitate and glance at the dead screen before he goes, then shrug it off (😩☕). It reads as a lazy Friday decision, not a gap in the plan.
-- E2 [should] Lin watches the boss's office and knows you're on the list. She sees you sit down in his chair at his unlocked computer and does nothing until you actually cross yourself out. A real coworker would at least keep staring, and would hardly turn to her phone casually. — Let her notice you sitting down: a 🤨 and a longer look. She still waits for proof before she tells anyone, and her attention drifts back to her desk after a moment, so Route 1 still works.
-- E3 [should] The coffee takes about 9 minutes, from about 3:27 until he leaves the kitchen around 3:36. That's long for one coffee. — Give him a reason to linger: the machine is empty and he has to refill it, or a coworker stops him to chat on a Friday afternoon (shown once in the kitchen).
+- E1 [blocker] Lin "watches his office all day," but she only reacts if she sees the edit itself. A real coworker who knows you're on the list doesn't need to read the screen. Seeing you kneel behind the boss's desk, then sit in his chair at his computer while he's out, is enough to send her to the kitchen. From her desk she couldn't read the edit anyway; the big red X is only a visual for the player. — Make her trigger "you at his desk or computer," not "the edit." Both routes then have to hide the whole visit (getting in, plugging in, editing), not just the 3 seconds of editing.
+- E2 [should] If the boss finds you standing in his office, he just sends you back to your desk. A boss who finds someone from his layoff list in his office, with the list unlocked on his screen, would check the list. — If he finds you there after you've edited, have him look at the screen and see the gap. Or let "sent back to your desk" happen only if you haven't touched the list yet.
+- E3 [should] He watched Kev fix the static with the plug at 3:05 and smiled, and at 3:42 he plugs it in himself. So why does he call Kev, bang on the screen and go for coffee at 3:20 instead? — Give him a reason. For example, at 3:05 he was on the phone and only saw that Kev fixed it, not how. Then at 3:42, desperate, he goes looking behind the desk and finds it.
+- E4 [should] In Route 2, the call to Kev's desk comes from the boss's phone, and Lin knows Kev went home and the boss is in the kitchen. A real person might wonder who is calling from that office. — Make her look brief and incurious, or have a ringing desk phone be normal there and not tied to the boss's line.
 
 ### 1-judge: report.md
 
-Verdict: works
+Verdict: fixable
 
-- Do nothing (lose): sensible — nothing changed, so the boss sends the list as he wrote it.
-- Seen by Lin (lose): sensible — Lin has just escaped the list and fears she could take your place, so she tells the boss; he comes back, puts the list right, locks his screen and sends it.
-- Caught by the boss (lose): sensible — a boss who finds you crossing yourself off his layoff list throws you out on the spot.
-- Shared way in (both wins): stretch — Kev has gone home and the boss is fed up with a dead screen, so walking off to get coffee is believable. But he locked this same list at 3:11, and now he leaves the person he's about to lay off alone with his computer.
-- Route 1, wait for Lin's phone (win): sensible — someone reading a buzzing phone isn't watching the boss's office for those few seconds.
-- Route 2, ring Kev's phone (win): sensible — a phone ringing at an empty desk behind you makes you turn round, and it has already rung there twice today.
-- Sending the edited file (all wins): sensible — at 3:45 on a Friday, with his coat on, a boss sends the email he has open without checking a list he already looked over at 3:08. That HR now has a list without you is the joke, and that's allowed.
+- Do nothing (lose): sensible — nothing changed, so a boss who is rushing out on a Friday sends the list as he wrote it.
+- Route 1, wait for Lin's phone (win): stretch — a buzzing phone turning her away is real, but she could still see you go into his empty office and sit in his chair.
+- Route 2, ring Kev's desk (win): stretch — people do glance at a phone ringing behind them, but she would also see you sitting at the boss's desk.
+- Seen by Lin (lose): sensible — someone who just got off the list and fears she'll take your place would tell the boss, and he'd come back, put it right, lock it and send it.
+- Caught by the boss (lose): sensible — a boss who catches you crossing yourself off his list fires you on the spot.
 
 ## Problems
-- should: The boss locks the list when he leaves a working screen. Then he leaves the person who is on that list kneeling at his computer. A half-awake boss could miss this because the screen is dead, but nothing shows he thought about it at all. — Have him hesitate and glance at the dead screen before he goes, then shrug it off (😩☕). It reads as a lazy Friday decision, not a gap in the plan.
-- should: Lin watches the boss's office and knows you're on the list. She sees you sit down in his chair at his unlocked computer and does nothing until you actually cross yourself out. A real coworker would at least keep staring, and would hardly turn to her phone casually. — Let her notice you sitting down: a 🤨 and a longer look. She still waits for proof before she tells anyone, and her attention drifts back to her desk after a moment, so Route 1 still works.
-- should: The coffee takes about 9 minutes, from about 3:27 until he leaves the kitchen around 3:36. That's long for one coffee. — Give him a reason to linger: the machine is empty and he has to refill it, or a coworker stops him to chat on a Friday afternoon (shown once in the kitchen).
-- nit: He tells you "plug it in and get out", so sitting in his chair breaks a direct order. That fits the comedy, but the rule "if he finds you standing around in his office, he sends you back to your desk" says nothing about this order. — Reword it as "if he finds you still in his office", so it plainly follows from what he told you.
+- blocker: Lin "watches his office all day," but she only reacts if she sees the edit itself. A real coworker who knows you're on the list doesn't need to read the screen. Seeing you kneel behind the boss's desk, then sit in his chair at his computer while he's out, is enough to send her to the kitchen. From her desk she couldn't read the edit anyway; the big red X is only a visual for the player. — Make her trigger "you at his desk or computer," not "the edit." Both routes then have to hide the whole visit (getting in, plugging in, editing), not just the 3 seconds of editing.
+- should: If the boss finds you standing in his office, he just sends you back to your desk. A boss who finds someone from his layoff list in his office, with the list unlocked on his screen, would check the list. — If he finds you there after you've edited, have him look at the screen and see the gap. Or let "sent back to your desk" happen only if you haven't touched the list yet.
+- should: He watched Kev fix the static with the plug at 3:05 and smiled, and at 3:42 he plugs it in himself. So why does he call Kev, bang on the screen and go for coffee at 3:20 instead? — Give him a reason. For example, at 3:05 he was on the phone and only saw that Kev fixed it, not how. Then at 3:42, desperate, he goes looking behind the desk and finds it.
+- should: In Route 2, the call to Kev's desk comes from the boss's phone, and Lin knows Kev went home and the boss is in the kitchen. A real person might wonder who is calling from that office. — Make her look brief and incurious, or have a ringing desk phone be normal there and not tied to the boss's line.
+- nit: When the boss gets back, the static he left is gone and the list is open. Even a half-awake boss might pause at that. — Give him a quick shrug (🤷) to show he assumes the plug came back by itself.
 
 <!-- /cold-read:sense -->
 
-<!-- cold-read:motives {"verdict":"fixable","date":"2026-11-15","commit":"500ae5a","hash":"63d6eb3d105353b42563b15e468176618a030c679847c5857639028719a24a39","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","who":"88b67903778d1ec008248e88d15855edf145281fa45aca8a4d70357305d02bc8","prompts":"aa0481bd7d2903c1741f536b834919fec681febf17e0865d79a523b4af6bf462"},"model":"default","tally":{"motivated":0,"binds":1,"thin":1,"unmotivated":0,"contradicts":2,"only-you":0},"problems":{"blocker":2,"should":5,"nit":1}} -->
+<!-- cold-read:motives {"verdict":"fixable","date":"2026-11-15","commit":"928798f","hash":"b984e9b25562c2c036ccc386385e3296cabfd02e0bcf7fa0580dcf72fa21b9f1","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","who":"cc96dad64d7a66582c00d19ac2cc8d61c02489ce441fbc00ed5412b448e4b5e7","prompts":"aa0481bd7d2903c1741f536b834919fec681febf17e0865d79a523b4af6bf462"},"model":"default","tally":{"motivated":0,"binds":1,"thin":2,"unmotivated":1,"contradicts":0,"only-you":0},"problems":{"blocker":2,"should":2,"nit":1}} -->
 ## motives: fixable
-Recorded 2026-11-15 at commit 500ae5a, by claude -p (model: default). Inputs 63d6eb3d1053: the card, premise.md's who does what, the pass's prompts.
-Items: 0 motivated, 1 binds, 1 thin, 0 unmotivated, 2 contradicts, 0 only-you.
-Problems: 2 blocker, 5 should, 1 nit.
+Recorded 2026-11-15 at commit 928798f, by claude -p (model: default). Inputs b984e9b25562: the card, premise.md's who does what, the pass's prompts.
+Items: 0 motivated, 1 binds, 2 thin, 1 unmotivated, 0 contradicts, 0 only-you.
+Problems: 2 blocker, 2 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 37 s | $0.08 |
-| all | | 37 s (the steps add up to 37 s) | $0.08 |
+| 1-judge | report.md | 39 s | $0.08 |
+| all | | 39 s (the steps add up to 39 s) | $0.08 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The coffee beat breaks the boss's one shown habit. He guards the open list so closely that he locks it for a restroom trip, then leaves a listed employee alone with it for minutes. Nothing shown earlier explains the coffee either, and the main route depends on this beat. — Keep his caution: have him lock the screen before he goes ("plug it in, I'll be back"), and make you work around the lock. Or show the coffee need first: he heads for the kitchen at 3:00 and gets cut off by the dead screen.
-- E2 [blocker] Lin's 3:08 shoulder-read contradicts her being at her desk all day, and has no reason. It is the cause of her telling the boss later, which a route depends on. — Give her a job errand: she drops a folder on his desk at 3:08 and glances at the screen. Then remove "at her desk all day."
-- E3 [should] The boss sends at 3:45 without looking at the list. He checks it carefully elsewhere, and does check it when Lin warns him. — Have him glance at it, coat on, and make the edit pass a glance (for example, a name swapped, not a gap).
-- E4 [should] The screen dying again at 3:26 has no cause on screen. A cable Kev just plugged in falls out by itself. — Show a cause: the boss's chair rolls back over the cable as he sits down after the restroom.
-- E5 [should] The 3:11 restroom walk goes "the long way round" with no reason, and Kev's escape window depends on it. — Give it a reason, such as a chat at the water cooler on the way, or a wet-floor sign on the short way.
-- E6 [should] Kev's wish to go home is only stated. — Show it: bag packed by 3:00, coat on his chair, checking the clock.
-- E7 [should] Lin waved Kev goodbye, then hears the boss ringing Kev's empty desk and says nothing. A real coworker would call out "he's gone home." — Give her a reason to keep quiet. She's on her phone with her back turned at that moment, or she covers for Kev on purpose (they're friends, shown by the wave).
+- E1 [blocker] Lin reads the layoff list over the boss's shoulder for no shown reason, and a real boss would cover it. Her tip-off route rests on this beat. — Give her an errand that puts her in his office, such as dropping off a signature folder at 3:08. While she's there, the boss gets up to take a call or answer the door and she sees the open list. Then show "Headcount: cut 1" on the screen so the player knows one name has to replace another.
+- E2 [blocker] The boss's "long way round" has no reason, yet Kev's unseen exit depends on it. — Put a visible cause on the short path before 3:10: a wet-floor sign, a cleaner's cart, or the boss stopping at the water cooler every time.
+- E3 [should] The boss locks his screen because the list is open, then leaves the same list on a dead screen at 3:20 without locking it. — Show him jab the keyboard at the dead screen and shrug, or have him lock it blind with a muttered "can't even lock it". Either keeps his habit consistent.
+- E4 [should] Kev's wish to go home and his reason for waiting until the boss is out are never shown. — Before 3:10, show his coat on his chair and him checking the clock. Have him glance at the boss's door, or shrink down when the boss looks up, so sneaking out early is visible.
 
 ### 1-judge: report.md
 
 Verdict: fixable
-- The boss: contradicts — he locks his screen at 3:11 because the list is open on it. At 3:26 he leaves you, a person on that list, alone at his desk with the list still open, and goes for a coffee nobody has seen him want.
-- Kev: thin — "wants to go home" is told, not shown. Waiting for the boss to leave before slipping out is a real habit, but nothing on screen sets up why he wants to go, or that he is dodging the boss.
-- Lin: contradicts — "at her desk all day" doesn't fit reading the list over the boss's shoulder at 3:08, and no reason is given for that walk. Her phone-buzz and ring-behind-her habits are everyday and kept.
-- The card's rule: binds — the card sets no rule (only a deadline). The unspoken "don't leave before the boss" is kept by Kev, who sneaks out, and isn't asked of you.
+- The boss: thin — Most of what he does has an everyday cause the player sees first: lunch, a dead screen, calling IT, the restroom, coffee, his coat at 3:42. He locks his screen at 3:10 "because the list is open on it", and he fixes the cable himself only after he watched Kev do it. Two beats don't hold up. First, nothing explains "the long way round" to the restroom, yet that walk is why he never sees Kev leave. Second, at 3:20 he leaves the same open list on a dead screen and walks off without locking it, a habit the player has just watched him keep.
+- Kev: thin — Calling him, the cable fix and going home on a Friday all have a reason. But "wants to go home" is only stated in the prose and never shown on screen. Nothing shows why he waits for the boss to leave before slipping out. With no glance at the clock and no packed bag, it looks like a scripted exit.
+- Lin: unmotivated — Her phone and turning-round habits are ordinary and set up before they matter. The 3:08 beat isn't. She is "at her desk all day", yet she walks into the boss's office and reads a layoff list over his shoulder. No reason is given, and no real boss lets a staff member read that list. Her tip-off depends on this beat. It is also never shown that the list has a fixed number of names, so the player doesn't know her face fills your gap until she acts on it.
+- The card's rule: binds — The card sets no rule of conduct, only a deadline.
 
 ## Problems
-- blocker: The coffee beat breaks the boss's one shown habit. He guards the open list so closely that he locks it for a restroom trip, then leaves a listed employee alone with it for minutes. Nothing shown earlier explains the coffee either, and the main route depends on this beat. — Keep his caution: have him lock the screen before he goes ("plug it in, I'll be back"), and make you work around the lock. Or show the coffee need first: he heads for the kitchen at 3:00 and gets cut off by the dead screen.
-- blocker: Lin's 3:08 shoulder-read contradicts her being at her desk all day, and has no reason. It is the cause of her telling the boss later, which a route depends on. — Give her a job errand: she drops a folder on his desk at 3:08 and glances at the screen. Then remove "at her desk all day."
-- should: The boss sends at 3:45 without looking at the list. He checks it carefully elsewhere, and does check it when Lin warns him. — Have him glance at it, coat on, and make the edit pass a glance (for example, a name swapped, not a gap).
-- should: The screen dying again at 3:26 has no cause on screen. A cable Kev just plugged in falls out by itself. — Show a cause: the boss's chair rolls back over the cable as he sits down after the restroom.
-- should: The 3:11 restroom walk goes "the long way round" with no reason, and Kev's escape window depends on it. — Give it a reason, such as a chat at the water cooler on the way, or a wet-floor sign on the short way.
-- should: Kev's wish to go home is only stated. — Show it: bag packed by 3:00, coat on his chair, checking the clock.
-- should: Lin waved Kev goodbye, then hears the boss ringing Kev's empty desk and says nothing. A real coworker would call out "he's gone home." — Give her a reason to keep quiet. She's on her phone with her back turned at that moment, or she covers for Kev on purpose (they're friends, shown by the wave).
-- nit: "She sees her own face filling your gap" is a thought. — Show it: she leans over, sees the list renumber, and her face moves up.
+- blocker: Lin reads the layoff list over the boss's shoulder for no shown reason, and a real boss would cover it. Her tip-off route rests on this beat. — Give her an errand that puts her in his office, such as dropping off a signature folder at 3:08. While she's there, the boss gets up to take a call or answer the door and she sees the open list. Then show "Headcount: cut 1" on the screen so the player knows one name has to replace another.
+- blocker: The boss's "long way round" has no reason, yet Kev's unseen exit depends on it. — Put a visible cause on the short path before 3:10: a wet-floor sign, a cleaner's cart, or the boss stopping at the water cooler every time.
+- should: The boss locks his screen because the list is open, then leaves the same list on a dead screen at 3:20 without locking it. — Show him jab the keyboard at the dead screen and shrug, or have him lock it blind with a muttered "can't even lock it". Either keeps his habit consistent.
+- should: Kev's wish to go home and his reason for waiting until the boss is out are never shown. — Before 3:10, show his coat on his chair and him checking the clock. Have him glance at the boss's door, or shrink down when the boss looks up, so sneaking out early is visible.
+- nit: Nothing on screen explains why the monitor dies again at 3:20. — Have Kev seat the cable halfway and walk off in a hurry at 3:01, so the second failure is set up.
 
 <!-- /cold-read:motives -->
 
-<!-- cold-read:props {"verdict":"fixable","date":"2026-11-15","commit":"500ae5a","hash":"bea26a197c168879656a5866872394d1e8ba255b590004c3001b02ad17abc49b","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","things":"2ee4e8a66bbc2d3ba732eef7ce45c5e8b342a72d77e142e3dae702ca3f319a9b","prompts":"e4a62e7d4c56bb76d5cc46d69b3c0fd96478427c533f15affaaa5f43d93d7558"},"model":"default","tally":{"fits":12,"odd":0,"pointless":1,"misleading":1},"problems":{"blocker":2,"should":1,"nit":3}} -->
+<!-- cold-read:props {"verdict":"fixable","date":"2026-11-15","commit":"928798f","hash":"23f0ec23cb4e1f22a5df1fcbb029436439957ed414c49049c715edb920958da0","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","things":"3696ca1c4e6c5d22519a37819057b09b79072d2b72667721213bbc3863ee5f9f","prompts":"e4a62e7d4c56bb76d5cc46d69b3c0fd96478427c533f15affaaa5f43d93d7558"},"model":"default","tally":{"fits":9,"odd":4,"pointless":0,"misleading":1},"problems":{"blocker":2,"should":3,"nit":1}} -->
 ## props: fixable
-Recorded 2026-11-15 at commit 500ae5a, by claude -p (model: default). Inputs bea26a197c16: the card, premise.md's things in the office, the pass's prompts.
-Items: 12 fits, 0 odd, 1 pointless, 1 misleading.
-Problems: 2 blocker, 1 should, 3 nit.
+Recorded 2026-11-15 at commit 928798f, by claude -p (model: default). Inputs 23f0ec23cb4e: the card, premise.md's things in the office, the pass's prompts.
+Items: 9 fits, 4 odd, 0 pointless, 1 misleading.
+Problems: 2 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 34 s | $0.07 |
-| all | | 34 s (the steps add up to 34 s) | $0.07 |
+| 1-judge | report.md | 41 s | $0.09 |
+| all | | 41 s (the steps add up to 41 s) | $0.09 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The boss's screen faces out through the glass so the whole floor can read the layoff list. No boss would show a confidential list to the staff, and the setup exists only for the puzzle. — Make it his ordinary desk monitor facing his chair. The player sees the list by walking behind the desk or sitting in the chair. The static and padlock stay the same.
-- E2 [blocker] The coffee machine looks usable, but the player can't use it. — Let the player pour a cup that does nothing (a short "you're not thirsty, you're panicking" beat), or keep the machine out of view in the kitchen so it reads as scenery.
-- E3 [should] Kev's screen shows code and looks just as usable as the boss's screen, so players may try to edit the list from it. — Show Kev's screen as off or locked, or as a screensaver after he leaves.
+- E1 [blocker] The boss's screen faces the open floor and shows the layoff list. No boss shows a confidential list to the people on it. The room has been arranged so the player can read the screen. — Turn the screen toward his chair. The player sees the list only by walking into his office or looking over his shoulder from behind his desk.
+- E2 [blocker] The coffee machine looks usable and isn't; it's exactly the "coffee machine you can't use" case. — Either let the player pour a cup (which costs time and does nothing else), or put an "Out of order — boss's pods only" note on it that the player can see.
+- E3 [should] The card's icons 📧 📦 suggest an email and a box, and neither exists in the room. Players will hunt for an email program or a cardboard box to use. — Change the icons to things in the room (🖥️ 📞), or add the email and the box as plain scenery that is clearly not usable.
+- E4 [should] Kev's desk phone looks just as usable as the boss's phone, and the player is never told it isn't. — Make it usable (a call to the boss's desk could do something), or make it clearly not usable, for example by showing Kev's headset plugged in and the handset missing.
+- E5 [should] Your desk has no phone or computer, so the boss's kit is the only working equipment on the floor, which points straight at the solution. — Put a phone and a computer on your desk. If they can't change the list, have them show something like "no access."
 
 ### 1-judge: report.md
 
 Verdict: fixable
-- The boss's screen: pointless — a monitor on a boss's desk is normal, but a big screen turned out through the glass "so the floor can read it" has no everyday reason. It only exists so the player can see the list. No real boss would show the layoff list to the open floor.
-- The loose cable: fits — plugs work loose, and a boss kneeling to fix one is believable. But a power plug that is half out turns the screen off; it doesn't make static.
-- The boss's desk phone: fits — every boss's desk has one.
-- Kev's desk phone: fits — normal desk phone, and the ringing reads well.
-- Lin's mobile: fits — people check their phones on a Friday afternoon.
-- The boss's chair: fits — ordinary, and sitting in it reads as usable.
-- The coffee machine: misleading — every office has one, and it's a thing players will try to use. Nothing says the player can. This is exactly the "coffee machine you can't use" case.
-- The kitchen door: fits — ordinary.
-- The restroom: fits — ordinary, and clearly a place, not a tool.
-- The elevator: fits — every office lobby has one; it sits behind glass, so it reads as scenery.
-- Kev's bag: fits — on a Friday afternoon, going home with your bag is normal.
-- Your desk: fits — where an office worker starts.
-- The wall clock: fits — though a real clock doesn't turn red at 3:40.
-- Set dressing: fits — mugs, plant, earbuds and a meeting room are ordinary. But Kev's lit screen with code on it looks as usable as the boss's screen.
+
+- The boss's screen: odd — a computer on the boss's desk is normal. But he has it turned outward, through the glass, showing the layoff list to the whole floor, and no real boss would do that. His chair is at the other end of the desk, so the screen isn't even turned toward him.
+- The loose cable: odd — a plug that has worked loose is ordinary. A socket that sparks would get someone to call facilities or clear the floor, not sit there on a Friday afternoon. It does look like something you can touch.
+- The boss's desk phone: fits — every boss has one, and it looks usable because it is.
+- Kev's desk phone: odd — it belongs there, but a desk phone looks usable, and nothing says whether the player can make a call from it.
+- Lin's mobile: fits — it's a personal phone that buzzes on her desk, and nobody expects to use a coworker's mobile.
+- The boss's chair: fits.
+- The coffee machine: misleading — it belongs in the kitchen, but players expect to use a coffee machine, and here only the boss can.
+- The kitchen door: fits.
+- The restroom: fits.
+- The elevator: fits — the way out of the building. Nobody expects to leave mid-mission.
+- Kev's bag: fits — leaving early on a Friday, with his bag.
+- Your desk: odd — it has no computer or phone of its own, though every real desk has both. That makes it look like the boss's equipment is the only kit in the office.
+- The wall clock: fits.
+- Set dressing: fits — mugs, a plant and earbuds look like scenery and are scenery. Kev's screen with code on it is fine to look at.
 
 ## Problems
-- blocker: The boss's screen faces out through the glass so the whole floor can read the layoff list. No boss would show a confidential list to the staff, and the setup exists only for the puzzle. — Make it his ordinary desk monitor facing his chair. The player sees the list by walking behind the desk or sitting in the chair. The static and padlock stay the same.
-- blocker: The coffee machine looks usable, but the player can't use it. — Let the player pour a cup that does nothing (a short "you're not thirsty, you're panicking" beat), or keep the machine out of view in the kitchen so it reads as scenery.
-- should: Kev's screen shows code and looks just as usable as the boss's screen, so players may try to edit the list from it. — Show Kev's screen as off or locked, or as a screensaver after he leaves.
-- nit: A half-pulled power plug turns a screen off; it doesn't make static. — Show a black screen with a "no power" flicker, or make it the video cable, which really does cause a broken picture.
-- nit: The wall clock turning red is a game marker, not something an office clock does. — Keep the clock plain and put the red on the HUD timer, or have Lin glance at the clock instead.
-- nit: The card icons 📧 📦 point to an email and a box, and neither is in the room. Players will look for them. — Change the icons to things that exist (📞, 🖥️) or drop them.
+- blocker: The boss's screen faces the open floor and shows the layoff list. No boss shows a confidential list to the people on it. The room has been arranged so the player can read the screen. — Turn the screen toward his chair. The player sees the list only by walking into his office or looking over his shoulder from behind his desk.
+- blocker: The coffee machine looks usable and isn't; it's exactly the "coffee machine you can't use" case. — Either let the player pour a cup (which costs time and does nothing else), or put an "Out of order — boss's pods only" note on it that the player can see.
+- should: The card's icons 📧 📦 suggest an email and a box, and neither exists in the room. Players will hunt for an email program or a cardboard box to use. — Change the icons to things in the room (🖥️ 📞), or add the email and the box as plain scenery that is clearly not usable.
+- should: Kev's desk phone looks just as usable as the boss's phone, and the player is never told it isn't. — Make it usable (a call to the boss's desk could do something), or make it clearly not usable, for example by showing Kev's headset plugged in and the handset missing.
+- should: Your desk has no phone or computer, so the boss's kit is the only working equipment on the floor, which points straight at the solution. — Put a phone and a computer on your desk. If they can't change the list, have them show something like "no access."
+- nit: The cable "sparks." That is a hazard, not an everyday fault. — Make it a plug that has slipped half out of the socket, with the screen flickering instead of sparks.
 
 <!-- /cold-read:props -->
 
@@ -223,78 +220,64 @@ Verdict: works
 
 <!-- /cold-read:joke -->
 
-<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"500ae5a","hash":"f57dd2aeceed92348d77db3c666e2b8637e312c4581d5d9cdc042559da6c6958","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","premise":"b9ba6f6ea575f143d3b313bc893a6cdfd22bca67b388c6745f80a52c724f7cdc","prompts":"f5883160f1d3858e02431a0eee883b8939a1a09664f6e614e9f267258968625e"},"model":"default","problems":{"blocker":1,"should":3,"nit":3}} -->
+<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"928798f","hash":"061a107cf422ec517173acff85492e40264ea2748e7d0eaaba92a61f11da3fa6","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","premise":"092590ab3ffeba8b786bd0d67a281be27ac200435049552e69565fd055d21668","prompts":"f5883160f1d3858e02431a0eee883b8939a1a09664f6e614e9f267258968625e"},"model":"default","problems":{"blocker":1,"should":5,"nit":2}} -->
 ## premise: fixable
-Recorded 2026-11-15 at commit 500ae5a, by claude -p (model: default). Inputs f57dd2aeceed: the card, premise.md, the pass's prompts.
-Problems: 1 blocker, 3 should, 3 nit.
-Earlier problems: 1 fixed, 1 still there, 3 no longer applies.
+Recorded 2026-11-15 at commit 928798f, by claude -p (model: default). Inputs 061a107cf422: the card, premise.md, the pass's prompts.
+Problems: 1 blocker, 5 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-card | first-read.md | 13 s | $0.02 |
-| 2-review | report.md | 136 s | $0.57 |
-| all | | 150 s (the steps add up to 150 s) | $0.59 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 no longer applies: The jacket and hoodie routes are gone, and so is the disguise.
-- E2 no longer applies: The "room" is now the whole floor, and the boss no longer counts heads at desks.
-- E3 still there: Banging is now shown failing at 3:00, which helps, and the window is now 3:26–3:31, about 8 real seconds. But Kev pushed the plug home on screen, and at 3:26 it is loose again with nothing to cause it. The level needs it, so it happens.
-- E4 no longer applies: There is no hoodie any more.
-- E5 fixed: The card now says "You're on the layoff list… Get off it", which fits both a list of faces and a list of names.
+| 1-card | first-read.md | 14 s | $0.02 |
+| 2-review | report.md | 94 s | $0.57 |
+| all | | 108 s (the steps add up to 108 s) | $0.59 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [should] Banging is now shown failing at 3:00, which helps, and the window is now 3:26–3:31, about 8 real seconds. But Kev pushed the plug home on screen, and at 3:26 it is loose again with nothing to cause it. The level needs it, so it happens. (recurring: premise-level?)
-- E2 [blocker] **The boss leaves the one person on his list alone at his computer.** The player hits this at 3:26–3:31, when they start on the cable and get "☕ 👉 you, 🔌 🚪". At 3:11 the player watched him lock the list for a restroom trip, so they have seen that he guards it. Now he walks off for 15 minutes and leaves you, a man he is about to fire, to bring that same list back up on his screen. No real boss does that, and it goes against the one thing the player has seen drive him. It is also trial and error. The only fix the player has seen (Kev's, at 3:08) left him sitting happily at his desk. Nothing on screen shows him wanting coffee or suggests that fixing the cable gets rid of him. Players will try it only because the prompt appears. — Have him give up after Kev's phone rings out (about 3:28): a thought of ☕, and he walks to the kitchen and leaves the screen dead. In the default loop he comes back and kneels at the cable himself. Now he never knowingly leaves you alone with it, and the player can work out the plan: dead screen plus empty office means plug it in yourself.
-- E3 [should] **Lin watches you dial, then turns to the empty desk anyway.** This happens on the ring route. She is facing the glass office and sees you pick up the boss's handset. A second later Kev's desk rings, and she stares for 3 seconds at a desk she saw Kev leave. At 3:26 she turned only to shrug. — Make it what people really do: after two rings she leans back to answer the phone for Kev, and her back is to the glass for as long as she holds it. It reads better and it is funnier: she says "hello?" to you.
-- E4 [should] **The punchline happens off-screen.** The edit happens about ten minutes before the payoff, and at 3:45 the boss sends the email without a look. That beat is just an absence. The joke is the obvious version: distract the watcher, edit the file. — Give the send a picture. For example, he glances at the attached sheet, which now shows three faces, nods (👍), and sends it.
+- E1 [blocker] The boss knows how to fix his screen, but only uses that knowledge when the puzzle no longer needs it.** At 3:05 he stands over Kev and watches him push the plug in. At 3:20 the same static comes back. He bangs on the screen, phones Kev, gives up and goes for coffee (`index.js:290-316`). Then at 3:36 he kneels and fixes it himself in one second (`cast.js` selfFix). The player watching the do-nothing loop sees him fix it, and the coffee trip turns into a pretext: the route exists only because he forgets something for 16 minutes. **Fix:** cut selfFix. In the do-nothing loop, at 3:42 he gives up on the dead screen and sends the email from his mobile (📱📧). It's the same file, so the stakes are unchanged, and he never shows a skill he should have used at 3:20.
+- E2 [should] The screen dies again at about 3:19 for no visible reason.** Nobody touches the plug (`cast.js` actsUp just sets `glitch = true`). This is the beat that sets up the whole way in, and on screen it is pure bad luck. **Fix:** show him sitting back down from the restroom and his chair or foot catching the cable: a jolt, the plug popping half out with sparks, then the static.
+- E3 [should] Lin's 🤷 at 3:23 doesn't fit her.** Later she will walk the length of the floor to report you, yet here she watches her boss phone the missing Kev again and again and keeps quiet about something she saw herself. A real coworker would call out "he went home." The shrug also reads as "I don't know," not "not my business." **Fix:** let her try to tell him, e.g. a 👋🏠 speech bubble aimed at the glass that he can't hear through it while on the phone. Or give her a reason to stay quiet that the player can see, such as Kev giving her a 🤫 as he leaves.
+- E4 [should] First-read option 3, "stop it reaching HR", has no answer in the world.** A player at the dead screen will try to keep it dead (yank the plug again, hide the cable, steal the handset) and nothing happens. Nothing visible tells them why that can't work. **Fix:** make one attempt fail on screen. For example, if you pull the plug after the edit, he plugs it straight back in on his return. Or show early on that the email is what gets sent, not the screen.
+- E5 [should] The win card leaves out the joke.** It shows the boss sending and you looking smug, the same win any route would get. Lin turned round to Kev's empty, ringing desk (or turned away to her mobile) is the picture that tells the story. **Fix:** draw Lin in the background of each win card, facing the way your route turned her.
+- E6 [should] Lin's reason for telling is hard to read.** The 📋 + her face + 😨 bubble lasts 1.8 s, and it shows while the player is watching the X on the screen. Most players will read her as a plain snitch, which goes against her sympathetic glance at 3:10. **Fix:** hold the thought longer and show it in the big list pop-out: her face slides into your empty slot, then the pop-out closes.
 
 ### 1-card: first-read.md
 
-**Situation:** It's Friday at 3:00 PM. My name is on a list of people being laid off, and the list reaches HR at 3:45. So each loop is probably 45 minutes.
+**Situation:** It's Friday, 3:00 PM. Someone has made a layoff list and my name is on it. The list reaches HR at 3:45, so I probably have about 45 minutes per loop.
 
-**What I must do:** Get my name off the list. There are a few ways to read that:
-- erase my name;
-- swap in someone else's name;
-- stop the list from reaching HR;
-- make myself look too valuable to fire.
+**What I must do:** Get my name off the list. I can read that several ways:
+1. Delete or erase my name.
+2. Put someone else's name in place of mine.
+3. Destroy the list or stop it reaching HR. That isn't strictly "getting off it," but it might count.
+4. Change someone's mind so they take me off.
 
-**If I fail:** HR gets the list with my name on it and I'm fired. The 📦 is probably the cardboard box of desk belongings in the loss picture.
+**If I fail:** HR gets the list with my name on it and I'm fired. My guess is the 📦 is me carrying my desk box out.
 
 **Questions:**
-- Is the list an email (📧) or a printout? Do the two icons mean two copies, or two routes it could take?
-- Is 📦 the failure, a tool or a delivery? Are the icons hints or goals?
-- Does a late delivery count as a win, or just a stall?
-- Is framing a coworker allowed, or is it the intended solution?
-- Who wrote the list? Can they be persuaded?
-- Does "it" in "get off it" mean the list or the delivery?
-- The title "The Layoff List" just restates the card. Is that meant to be the joke?
+- Is the list a paper or an email (📧)? Is there one copy or several?
+- Who has it now, and who takes it to HR? A person, the mail, or a scheduled send?
+- Is 📦 the losing outcome, a tool or a delivery, or the mailroom?
+- Is swapping in a coworker's name allowed, or even the intended solution? That's darker. Is it funnier?
+- If the list never arrives, have I won or just bought time?
+- "The Layoff List": is it one physical object I can steal? Are other people on it, and should I care about them?
 
 ### 2-review: report.md
 
 Verdict: fixable
 
-**Best thing:** Lin turns round to stare at Kev's empty desk as it rings. Behind her, through the glass, the boss's layoff list blows up to billboard size and a red line crosses out your face.
-
-## Earlier problems
-- E1: no longer applies. The jacket and hoodie routes are gone, and so is the disguise.
-- E2: no longer applies. The "room" is now the whole floor, and the boss no longer counts heads at desks.
-- E3: still there (should). Banging is now shown failing at 3:00, which helps, and the window is now 3:26–3:31, about 8 real seconds. But Kev pushed the plug home on screen, and at 3:26 it is loose again with nothing to cause it. The level needs it, so it happens.
-- E4: no longer applies. There is no hoodie any more.
-- E5: fixed. The card now says "You're on the layoff list… Get off it", which fits both a list of faces and a list of names.
+**Best thing:** You pick up the boss's phone and ring the empty desk of the man who went home. The one person watching turns round to it, and meanwhile a huge red X is drawn across your face on the boss's screen.
 
 ## Problems
-- blocker: **The boss leaves the one person on his list alone at his computer.** The player hits this at 3:26–3:31, when they start on the cable and get "☕ 👉 you, 🔌 🚪". At 3:11 the player watched him lock the list for a restroom trip, so they have seen that he guards it. Now he walks off for 15 minutes and leaves you, a man he is about to fire, to bring that same list back up on his screen. No real boss does that, and it goes against the one thing the player has seen drive him. It is also trial and error. The only fix the player has seen (Kev's, at 3:08) left him sitting happily at his desk. Nothing on screen shows him wanting coffee or suggests that fixing the cable gets rid of him. Players will try it only because the prompt appears. — Have him give up after Kev's phone rings out (about 3:28): a thought of ☕, and he walks to the kitchen and leaves the screen dead. In the default loop he comes back and kneels at the cable himself. Now he never knowingly leaves you alone with it, and the player can work out the plan: dead screen plus empty office means plug it in yourself.
-- should: **Lin watches you dial, then turns to the empty desk anyway.** This happens on the ring route. She is facing the glass office and sees you pick up the boss's handset. A second later Kev's desk rings, and she stares for 3 seconds at a desk she saw Kev leave. At 3:26 she turned only to shrug. — Make it what people really do: after two rings she leans back to answer the phone for Kev, and her back is to the glass for as long as she holds it. It reads better and it is funnier: she says "hello?" to you.
-- should: **The punchline happens off-screen.** The edit happens about ten minutes before the payoff, and at 3:45 the boss sends the email without a look. That beat is just an absence. The joke is the obvious version: distract the watcher, edit the file. — Give the send a picture. For example, he glances at the attached sheet, which now shows three faces, nods (👍), and sends it.
-- nit: **The ring window doesn't match the premise.** premise.md says Lin looks round for "about 4 seconds", but the code gives 3.2 s (`RING_LOOK`). The edit takes 3.0 s and she notices after 0.4 s, so you have about half a second to get from the phone to the screen. — Make RING_LOOK about 4 s, as the premise says.
-- nit: **The story says the gap gets filled, but nobody fills it.** Lin's 📋 + her face + 😨 tells the player that a list with a gap gets filled. The win then shows a three-face list going to HR, and nobody fills the gap. — Accept it as comic logic, or show a fourth "?" face in the win card for Monday.
-- nit: **first-read expects things the game doesn't allow.** The reader guessed at swapping in another name, stopping the email, or making yourself look valuable. None of these is possible. They also asked whether "it" means the list or the email. The card names only the trouble, so this costs some exploring and misleads nobody. — No change needed. If you want, "Get your face off it" would rule out the idea of stopping the email.
+- **blocker: The boss knows how to fix his screen, but only uses that knowledge when the puzzle no longer needs it.** At 3:05 he stands over Kev and watches him push the plug in. At 3:20 the same static comes back. He bangs on the screen, phones Kev, gives up and goes for coffee (`index.js:290-316`). Then at 3:36 he kneels and fixes it himself in one second (`cast.js` selfFix). The player watching the do-nothing loop sees him fix it, and the coffee trip turns into a pretext: the route exists only because he forgets something for 16 minutes. **Fix:** cut selfFix. In the do-nothing loop, at 3:42 he gives up on the dead screen and sends the email from his mobile (📱📧). It's the same file, so the stakes are unchanged, and he never shows a skill he should have used at 3:20.
+- **should: The screen dies again at about 3:19 for no visible reason.** Nobody touches the plug (`cast.js` actsUp just sets `glitch = true`). This is the beat that sets up the whole way in, and on screen it is pure bad luck. **Fix:** show him sitting back down from the restroom and his chair or foot catching the cable: a jolt, the plug popping half out with sparks, then the static.
+- **should: Lin's 🤷 at 3:23 doesn't fit her.** Later she will walk the length of the floor to report you, yet here she watches her boss phone the missing Kev again and again and keeps quiet about something she saw herself. A real coworker would call out "he went home." The shrug also reads as "I don't know," not "not my business." **Fix:** let her try to tell him, e.g. a 👋🏠 speech bubble aimed at the glass that he can't hear through it while on the phone. Or give her a reason to stay quiet that the player can see, such as Kev giving her a 🤫 as he leaves.
+- **should: First-read option 3, "stop it reaching HR", has no answer in the world.** A player at the dead screen will try to keep it dead (yank the plug again, hide the cable, steal the handset) and nothing happens. Nothing visible tells them why that can't work. **Fix:** make one attempt fail on screen. For example, if you pull the plug after the edit, he plugs it straight back in on his return. Or show early on that the email is what gets sent, not the screen.
+- **should: The win card leaves out the joke.** It shows the boss sending and you looking smug, the same win any route would get. Lin turned round to Kev's empty, ringing desk (or turned away to her mobile) is the picture that tells the story. **Fix:** draw Lin in the background of each win card, facing the way your route turned her.
+- **should: Lin's reason for telling is hard to read.** The 📋 + her face + 😨 bubble lasts 1.8 s, and it shows while the player is watching the X on the screen. Most players will read her as a plain snitch, which goes against her sympathetic glance at 3:10. **Fix:** hold the thought longer and show it in the big list pop-out: her face slides into your empty slot, then the pop-out closes.
+- **nit: The puzzle's edit window is shorter than it looks.** Her 4.2 s ring look, minus the 0.4 s she needs to notice, against a 3 s edit, leaves under a second of slack once the player has walked from the phone to the screen. It is deducible but feels like twitch. **Fix:** make RING_LOOK 5 s, or let the player call Kev's desk while already standing at the screen.
+- **nit: The 3:42 self-fix (if it stays) teaches "the plug is the fix" only after the last moment you could use it.** **Fix:** the blocker's fix removes this.
 
-The name, the card and the badge (📧 📦) give nothing away: they name the trouble, not the way out. Everything else the routes need is shown before the player needs it: Kev's plug fix, the padlock, Kev going home, the boss's phone ringing Kev's desk, Lin turning to that ring, and Lin's phone buzzing at uneven times.
+Name, card and badge: "The Layoff List", "Get off it." and 📧📦 all name the trouble without giving away the way out. First-read guessed 📦 and the email correctly. The other gap is that first-read pictured a piece of paper. The list is on a screen, but the 3:08 pop-out shows that before the player needs it, so I've graded that as fine.
 
 <!-- /cold-read:premise -->
 
@@ -422,61 +405,63 @@ Verdict: fixable
 
 <!-- /cold-read:faces -->
 
-<!-- cold-read:tells {"verdict":"fixable","date":"2026-11-15","commit":"500ae5a","hash":"b4e5ca3504bd0edddbdd4409172ec20d87e0621c995618317b8bdc552f3132db","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","checks":"6731fc3e728d4b08d3098c512bb3e3ffa4d83facb473d08bf8d56d99772dfcac","tells":"69209e288bf8441f602ac45d19f5f0503f4c11f144c5a2a24b05d0f8acbffe41","prompts":"f1d914aecdc56ea365960569f2587c9563e9f9a055deb88f13ba995eb473a219"},"model":"default","tally":{"visible":1,"faint":2,"invisible":1},"problems":{"blocker":3,"should":3,"nit":1}} -->
+<!-- cold-read:tells {"verdict":"fixable","date":"2026-11-15","commit":"928798f","hash":"d0ef3b1c877b9fd1715621f7c55106a8191d6756b46cff0381a59b13a74ce1dc","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","checks":"ce2074cf2ffd9b7c396b69e64aba568c50cce58906f3b7943eced6f9c7582930","tells":"b63079b6b7653a76c3eebc870145fc12faa863364c855668a8e8d5d0b4d929e0","prompts":"f1d914aecdc56ea365960569f2587c9563e9f9a055deb88f13ba995eb473a219"},"model":"default","tally":{"visible":2,"faint":1,"invisible":1},"problems":{"blocker":1,"should":2,"nit":1}} -->
 ## tells: fixable
-Recorded 2026-11-15 at commit 500ae5a, by claude -p (model: default). Inputs b4e5ca3504bd: the card, route-checks.js, the before and after pictures, the pass's prompts.
-Items: 1 visible, 2 faint, 1 invisible.
-Problems: 3 blocker, 3 should, 1 nit.
+Recorded 2026-11-15 at commit 928798f, by claude -p (model: default). Inputs d0ef3b1c877b: the card, route-checks.js, the before and after pictures, the pass's prompts.
+Items: 2 visible, 1 faint, 1 invisible.
+Problems: 1 blocker, 2 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 36 s | $0.12 |
-| 2-judge | report.md | 55 s | $0.17 |
-| all | | 90 s (the steps add up to 90 s) | $0.29 |
+| 1-read | reading.md | 28 s | $0.11 |
+| 2-judge | report.md | 38 s | $0.14 |
+| all | | 66 s (the steps add up to 66 s) | $0.24 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In 01, plugging the cable in changes nothing on screen. The only feedback is an unreadable bubble on the boss, so the player can't learn that the cable causes the Kev branch. **Fix:** draw a visible cable that goes from hanging loose to plugged in, with a spark. Make the monitor flicker on, and enlarge the boss's 🙅 bubble.
-- E2 [blocker] In 04, Lin getting up to face the ringing desk was read as a fired worker leaving, so the reader got the cause of the distraction wrong. **Fix:** in 03 AFTER, give Lin a 👀 or ☎️ bubble and turn her head toward Kev's desk right away. Give her a different walk and pose from anyone being sent out (no box of belongings, no path to the exit).
-- E3 [blocker] The edit in 04 was read as "firing the highlighted person". If that portrait is the player, they will completely misunderstand why they won. **Fix:** make the highlighted portrait an obvious match for the player's sprite (same hair and shirt). On strike, slide the card off the list, draw a thick red line through it, and show a 😮‍💨 bubble over the player.
-- E4 [should] In 02, the boss leaves without the ☕👉 bubble the route depends on, so his exit looks unrelated to the cable. **Fix:** have the boss show a big ☕👉 bubble pointing at the player before he leaves.
-- E5 [should] The ring circle in 03 is tiny and already appears in 02's BEFORE frame. **Fix:** show the call only when the player dials. Add a phone-shake animation, a ☎️ bubble over the desk, and a brief line from the player's phone to Kev's phone.
-- E6 [should] The strike in 04 is too subtle to notice at play size, and the panel gives no feedback. **Fix:** stamp a large ❌ over the portrait, grey the card out, and make the panel flash.
+- E1 [blocker] In 01, a failed attempt on a locked PC looks like success. The padlock gives way to a lit red/pink screen with an icon, which reads as "unlocked". A player who sees this will think the restroom route worked, then not understand why they can't edit. **Fix:** keep the padlock on screen in AFTER and make the jolt obvious: shake it sideways, flash a red ✖ over the padlock, keep the screen dark. Don't swap the padlock for a lit screen.
+- E2 [should] In 02, nothing shows that the cable was unplugged and then plugged in. Only the effect (static turning into the lineup) can be seen. The step this route depends on is "plug his cable in", so before acting a player has to notice that the cable is out. **Fix:** in BEFORE, draw the plug loose on the floor with a small gap and a spark/✖ next to the socket. In AFTER, seat the plug in the socket, add a brief green flash, and make the cable a clean line.
+- E3 [should] In 03, Lin doesn't visibly turn toward the ringing phone. Her view cone points the same way in both halves, and her bubble is tiny (the reader saw only "a red item"). The route says the call works *because* Lin turns round, so her turn is what tells the player the distraction worked. **Fix:** have Lin swing her body and cone sharply toward Kev's desk as it rings, and pop a full-size 👀☎️ bubble at once (the size it is in 04), not a small one a beat later.
 
 ### 1-read: reading.md
 
-# reading.md
+# What changed in each image
 
-The held-item box (the hand slot in the top bar) is **empty in every BEFORE and every AFTER**. None of these actions picked up or used up an item.
+**01.png:** The screen on the boss's desk, just above the player, changed from a padlock icon to a lit red/pink screen with a small round icon on it. **I think the player unlocked the boss's computer.** The box in the top bar (what they hold) looks the same. One watcher changed too: the teal-shirted woman at the upper-left open-plan desk now has small tick marks over her head. That probably means she noticed something, and it's the only reaction in the room.
 
-**01 (3:03 → 3:03):** The player is the red-haired woman in the corner office. In BEFORE, the boxy machine on her desk (left end, roughly at 110,165) has a yellow outline and an "E" prompt. In AFTER the outline is gone, and a small white bubble has appeared just above the bald man in the suit, who is standing below her desk. The monitor still shows static and nothing else moved. **My guess:** she used that desk machine and the man reacted. I can't make out the bubble's emoji, so I can't tell what she actually did.
+**02.png:** The monitor on the boss's desk changed from TV static to a row of four faces. A faded, larger copy of that row pops up next to the desk. The **E** prompt moved from the "…" box on the left wall to the desk itself. **I think the player used something at the boss desk (probably the "…" box or the computer), and that brought up a staff lineup of four people.** The bald man in the kitchen also changed: in BEFORE his view cone points down into the room, and in AFTER it points up at the coffee machine. That reads as him turning back to the machine, but I can't tell if the player caused it. The woman at the upper-left desk still has her phone thought-bubble, unchanged. The held box is unchanged.
 
-**02 (3:29 → 3:31):** The player is in the same spot and uses the same outlined machine. In AFTER, the static on her monitor is replaced by four faces, and a larger see-through copy of those faces floats next to the desk. The bald man has left the office and is standing in the hallway with a yellow vision cone. The teal worker at the upper-left desk has stood up and is walking. A teal cone now covers the lower-left desk and the lobby, and that desk's monitor looks greyed out. The prompt moved to the next item on the desk. **My guess:** she switched on a staff lineup (a "who goes" screen), and the boss and the teal worker started moving because of it. This is the biggest change of the four.
+**03.png:** The big four-face lineup (second face, the red-haired one, highlighted red) is open in both halves and doesn't change. Two things do change:
+- The phone on the lower-left desk shows a burst of lines, so it's ringing.
+- The teal woman at the upper-left desk has a new small speech bubble with a red item in it.
 
-**03 (3:32 → 3:32):** The player is one step to the right, with the outlined item in the middle of the desk (it looks like a phone). The big four-face panel is open in both halves, with the second face highlighted red. In AFTER the outline and "E" are gone, and the phone on the lower-left desk now has a ringing circle around it. The boss and the teal worker haven't moved. **My guess:** she phoned that desk. Its owner may be the red-highlighted face, but nothing in the picture confirms that.
+**I think the player used the boss's desk phone to call the lower-left desk phone.** The held box is unchanged.
 
-**04 (3:32 → 3:34):** The player is now in front of the desk (about 179,200), using the monitor (outlined, "E" above it). In BEFORE, a dotted line runs from the teal worker, who is sitting at the upper-left desk, down to the lower-left corner near the lobby door. In AFTER, the player is turned with her back to us, facing the desk. The red-highlighted second face on the big panel looks marked or slashed, but at this size I'm not certain. The teal worker is up and walking again. The bald man has gone to the far right of the hallway. The phone on the lower-left desk is still ringing. **My guess:** she confirmed or "fired" the highlighted person on the computer, and that worker started their walk out. The dotted line in BEFORE looks like a preview of that route. The changes on the panel itself are subtle. If that mark is what's meant to tell me "you just did it," I nearly missed it.
+**04.png:** Several things changed:
+- The second face in the lineup (the red-haired one, who looks like the player) is now **crossed out with a big red X**.
+- The ringing burst on the lower-left phone has faded to a faint ring.
+- The teal woman's "👀 ☎️" bubble is gone.
+- The bald man has left the coffee machine. In BEFORE a dashed line ran from him to a corner icon; in AFTER he's standing in the kitchen with his view cone pointed down toward the desks.
 
-**Overall, as a first-time player:** you can see that something happens in every image, but in 01 and 03 the only clue is a tiny bubble or a ring far from the player. In 02 and 04 people walk away, but nothing clearly links that to what the player pressed.
+**I think the player used the computer to cross someone off the layoff list. That someone is probably the red-haired face, possibly the player themselves.** Meanwhile the phone call drew the woman's attention and ended. The held box is unchanged.
+
+**Overall:** In all four images the box in the top bar never changes, so whatever the player used, they didn't pick anything up or use anything up.
 
 ### 2-judge: report.md
 
 Verdict: fixable
 
-- 01.png: invisible. The player plugged the boss's cable back in while Kev was still in the office, which starts the "🙅 Kev's job" route. The reader saw the outline disappear and a small bubble above the boss, but couldn't read the emoji or tell what she did. The cable looks the same in both halves and the monitor stays static, so nothing shows that the cable is now plugged in.
-- 02.png: visible. The player plugged the cable in again. The static became four faces, and the reader correctly read that as the screen being switched on. The boss then walked out into the hallway, but there's no ☕👉 bubble anywhere, so the reader could only guess why he left.
-- 03.png: faint. The player called Kev's empty desk. The reader did spot the ringing circle on the lower-left phone and guessed it was a call. But the circle is small and far from the player, nobody reacts to it in AFTER, and a similar circle is already on that phone in 02's BEFORE frame, which weakens it as a sign.
-- 04.png: faint, and read as something else. The player struck a name on the boss's PC. The reader wasn't sure the slash on the second portrait was there at all. They took the teal worker getting up as "the fired worker walking out", when it's most likely Lin turning toward the ringing desk. They also read the edit as firing someone. The highlighted portrait has red hair, so it may be the player's own name, which would make the edit a self-rescue, not a firing.
+- 01.png: invisible — The player tried the boss's PC while it was locked. The padlock jolted and nothing happened. The reader saw the padlock replaced by a lit red/pink screen and concluded the player **unlocked** the computer. That is the opposite of what happened.
+- 02.png: faint — The player plugged in the boss's monitor cable at the wall socket. The reader saw the result (static turned into the four-face lineup) but not the cause. They guessed "the '…' box or the computer". In both halves the cable runs from the socket to the desk the same way, so nothing shows that it was ever unplugged.
+- 03.png: visible — The player rang Kev's empty desk from the boss phone. The reader read the ringing burst correctly and caught Lin's small bubble. They did not see her turn toward the phone, which is the part this route relies on. Her cone points down-left in both halves.
+- 04.png: visible — The player struck a name on the boss PC. The reader saw the red X over the red-haired face and guessed that face is the player's own. Correct.
 
 ## Problems
-- blocker: In 01, plugging the cable in changes nothing on screen. The only feedback is an unreadable bubble on the boss, so the player can't learn that the cable causes the Kev branch. **Fix:** draw a visible cable that goes from hanging loose to plugged in, with a spark. Make the monitor flicker on, and enlarge the boss's 🙅 bubble.
-- blocker: In 04, Lin getting up to face the ringing desk was read as a fired worker leaving, so the reader got the cause of the distraction wrong. **Fix:** in 03 AFTER, give Lin a 👀 or ☎️ bubble and turn her head toward Kev's desk right away. Give her a different walk and pose from anyone being sent out (no box of belongings, no path to the exit).
-- blocker: The edit in 04 was read as "firing the highlighted person". If that portrait is the player, they will completely misunderstand why they won. **Fix:** make the highlighted portrait an obvious match for the player's sprite (same hair and shirt). On strike, slide the card off the list, draw a thick red line through it, and show a 😮‍💨 bubble over the player.
-- should: In 02, the boss leaves without the ☕👉 bubble the route depends on, so his exit looks unrelated to the cable. **Fix:** have the boss show a big ☕👉 bubble pointing at the player before he leaves.
-- should: The ring circle in 03 is tiny and already appears in 02's BEFORE frame. **Fix:** show the call only when the player dials. Add a phone-shake animation, a ☎️ bubble over the desk, and a brief line from the player's phone to Kev's phone.
-- should: The strike in 04 is too subtle to notice at play size, and the panel gives no feedback. **Fix:** stamp a large ❌ over the portrait, grey the card out, and make the panel flash.
-- nit: In 04, the dotted path from Lin's desk to the lobby door looks like a planned exit route, which feeds the "walk-out" misreading. **Fix:** remove it, or point it at Kev's desk.
+- blocker: In 01, a failed attempt on a locked PC looks like success. The padlock gives way to a lit red/pink screen with an icon, which reads as "unlocked". A player who sees this will think the restroom route worked, then not understand why they can't edit. **Fix:** keep the padlock on screen in AFTER and make the jolt obvious: shake it sideways, flash a red ✖ over the padlock, keep the screen dark. Don't swap the padlock for a lit screen.
+- should: In 02, nothing shows that the cable was unplugged and then plugged in. Only the effect (static turning into the lineup) can be seen. The step this route depends on is "plug his cable in", so before acting a player has to notice that the cable is out. **Fix:** in BEFORE, draw the plug loose on the floor with a small gap and a spark/✖ next to the socket. In AFTER, seat the plug in the socket, add a brief green flash, and make the cable a clean line.
+- should: In 03, Lin doesn't visibly turn toward the ringing phone. Her view cone points the same way in both halves, and her bubble is tiny (the reader saw only "a red item"). The route says the call works *because* Lin turns round, so her turn is what tells the player the distraction worked. **Fix:** have Lin swing her body and cone sharply toward Kev's desk as it rings, and pop a full-size 👀☎️ bubble at once (the size it is in 04), not a small one a beat later.
+- nit: In 01, the reader noticed tick marks over Lin's head and read them as Lin noticing something. That is a reaction to a step where "nothing happens", so a player may think they've been spotted. **Fix:** if she isn't reacting to the player, drop the marks for this beat. If she is, show it with a clear glance toward the boss office.
 
 <!-- /cold-read:tells -->
 

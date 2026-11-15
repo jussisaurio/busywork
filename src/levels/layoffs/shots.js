@@ -152,6 +152,11 @@ export default [
     intent: "3:44: the boss is back at his desk, packing up for the weekend: a coat and an email over his head. He doesn't look at the list again.",
   },
   {
+    name: 'sends-from-mobile',
+    cmds: ['pretend until 3:43'],
+    intent: "Nobody plugged his screen in: 3:43, the boss at his desk, coat on, his screen still static. Over his head: a coat, a mobile phone and an email. He sends it from his phone.",
+  },
+  {
     name: 'end-win-ring',
     cmds: [...RING_EDIT, ...END],
     intent: "Win. The boss sends the list without your face on it; a ringing phone and an email in the card. You sit at your desk, smug.",

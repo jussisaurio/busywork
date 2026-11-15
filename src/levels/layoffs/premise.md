@@ -37,9 +37,9 @@ anything.
   - About 3:23: he sighs and thinks of coffee (😮‍💨☕). He gives up on Kev and walks out to the kitchen, the length
     of the floor, his screen still static. A dead screen has nothing on it to lock. He is out of sight of his
     office from about 3:28 and waits at the coffee machine until about 3:35.
-  - About 3:36 he is back on the floor with his coffee. If his screen is still dead, he kneels behind his desk
-    himself (🔌) and it clears, about 3:42.
-  - 3:42: at his desk, he packs up for the weekend: coat on (🧥), the email to HR open (📧).
+  - About 3:36 he is back on the floor with his coffee, and sits back down at his desk.
+  - 3:42: at his desk, he packs up for the weekend: coat on (🧥), the email to HR open (📧). If his screen is still
+    dead, he sends the same email from his mobile (🧥📱📧); the screen stays static.
   - 3:45: he clicks send on the open email and goes. He does not open the attachment again.
 - **Kev**: young, spiky hair, olive hoodie. The office's computer person. His desk is behind Lin's, by the
   entrance, and his desk phone is on it.
@@ -123,7 +123,7 @@ twice today when the boss called it. You look long enough to see nobody is there
 | The boss wants Kev, and nobody comes | 3:20 to 3:23 | Static, the banging, ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
 | He gives up and goes for coffee, the screen dead | about 3:23 | 😮‍💨☕, and he walks the length of the floor to the kitchen. His screen shows static, no padlock |
 | The plug is the fix | 3:05, and while he is away | The socket behind his desk: the plug hanging out of it, sparking, until it is pushed home |
-| The static does not last | about 3:42 | Back with his coffee, he kneels behind his desk himself, 🔌, and it clears |
+| A dead screen does not stop the email | 3:42 | Still static, he sends it from his mobile: 🧥📱📧 |
 | Lin watches his office | all day | Her view cone covers the office |
 | Lin's phone turns her away | all day, at uneven times | The phone shakes on her desk, she picks it up and her cone swings off the office for about 4 s |
 | A ring at Kev's desk turns Lin round | 3:01, and 3:20 | The ringing phone (rings spread from it), and Lin turned round to it (👀☎️ when you call) |
@@ -158,8 +158,8 @@ she meets him. As a real person she would think "if he's off it, I'm on it, and 
 edit, the sheet comes up big and a red line goes through your face, in plain view of her desk.
 
 ## Ways to lose
-- **Do nothing.** Back with his coffee, he fixes it himself (🔌, about 3:42). At 3:42 he puts his coat on (🧥📧). At 3:45 the sheet flies off with
-  your face on it. Card: the sheet with your face in a red frame flies off, and you walk out with your desk in a
+- **Do nothing.** Back with his coffee to a dead screen, at 3:42 he puts his coat on and sends the email from his
+  mobile (🧥📱📧). At 3:45 the list goes with your face on it. Card: the sheet with your face in a red frame flies off, and you walk out with your desk in a
   box. In a real office: nothing changed, so the list goes as he wrote it.
 - **Seen by Lin.** She sees you take your face off. She thinks of the list with her own face in your place (📋,
   her face, 😨), gets up and walks toward the kitchen; where she meets the boss, at the latest from the kitchen
@@ -185,9 +185,9 @@ over him. Once the list is up he is happy, sits down, and works on it with his b
 the restroom; he locks his screen as he gets up, because the list is open on it. He walks the long way round the
 floor to the restroom and back, and while he is away from his office he never sees Kev leave. About 3:20 the screen
 dies again. He bangs on it, phones Kev's desk, and waits for Kev, who has gone home. Then he gives up and goes for
-a coffee, leaving the dead screen as it is. He waits at the machine and walks back. If the screen is still dead,
-he kneels and fixes it himself. At 3:42 he is at his desk with his coat on, and at 3:45 he clicks send on the open
-email and goes. If Lin tells him you are editing his list, he leaves the coffee, comes back, checks his screen,
+a coffee, leaving the dead screen as it is. He waits at the machine and walks back. At 3:42 he is at his desk with
+his coat on, and at 3:45 he clicks send on the open email and goes; if the screen is still dead, he sends it from
+his mobile. He never fixes the plug himself: he watched Kev do something behind the desk, not what. If Lin tells him you are editing his list, he leaves the coffee, comes back, checks his screen,
 puts your face back, locks the screen, and at 3:45 sends it with you on it.
 
 **Kev** is the office's computer person and wants to go home. At 3:01 his desk phone rings; it is the boss. He goes
@@ -205,8 +205,8 @@ sees you crossing yourself off, she sees her own face filling your gap, and she 
   static while the cable is loose, the list when it works, a padlock while he is in the restroom, and the edit
   when you make it. If Lin tells him, he comes back, puts your face back and locks it. It is the level.
 - **The loose cable** (the socket on the floor behind his desk, at its west end): a power plug hanging out of its
-  socket, sparking, while the screen shows static, pushed home when it works. Kev kneels at it, the boss kneels at
-  it, and you kneel at it. It is why the screen dies.
+  socket, sparking, while the screen shows static, pushed home when it works. Kev kneels at it, and you kneel at
+  it. It is why the screen dies.
 - **The boss's desk phone** (his desk, between the cable and the screen): he calls Kev's desk on it at 3:01 and 3:20, and you can
   call Kev's desk on it too. It is route 2.
 - **Kev's desk phone** (Kev's desk, behind Lin): it rings when anyone calls it, with rings spreading out, and Lin
@@ -234,7 +234,9 @@ day. Lin's trip to the restroom is gone, because a watcher who leaves would make
 The coat rack is gone with the jacket. The boss no longer shows you the list, and he no longer leaves you at his
 cable: "fix it, I'm getting coffee" had the most careful man in the office leave the person on his list alone at
 his computer. Now he goes for coffee on his own account, and you go in after he has gone. His wave-off (🙅) and
-his ☕👉🔌🚪 went with it.
+his ☕👉🔌🚪 went with it. So did the boss plugging it in himself when back from coffee: a man who could fix
+it in a second would not have gone for coffee, so the coffee trip read as a pretext. A dead screen now sends from
+his mobile.
 
 ## The joke
 The boss gives up on his dead computer and goes to make coffee. You fix it behind his back. Then you pick up his phone and call the desk of

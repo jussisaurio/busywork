@@ -84,7 +84,6 @@ export default {
       case 'phone:called': return "you call Kev's desk from the boss's phone";
       case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
       case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
-      case 'pc:selfFixed': return 'the boss kneels and pushes the plug home himself 🔌';
       case 'pc:actsUp': return "the boss's screen goes to static again 😠";
       case 'pc:locked': return 'the boss locks his screen and leaves for the restroom';
       case 'kev:fixing': return "Kev kneels behind the boss's desk at the plug, the boss standing over him";
