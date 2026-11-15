@@ -415,6 +415,15 @@ function fail(ctx, game, t, e) {
   phone(ctx, 440, 248, 2.1, PHONES.lin.lamp, t, { lifted: true });
   heldHandset(ctx, looks(game).lin, l, 380, 250, PHONES.lin.lamp, 424, 256);
   briefcase(ctx, 330, 252);
+  // your red mug, as on your desk in the office: it is your desk
+  ctx.fillStyle = C.tomato;
+  rrect(ctx, 474, 236, 11, 13, 2);
+  ctx.fill();
+  ctx.strokeStyle = C.tomato;
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.arc(486, 242.5, 3.6, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
   bubble(ctx, ['💼', '😊'], 380, 160, e);
   // you, beside the desk, holding the box
   const p = person(t);
