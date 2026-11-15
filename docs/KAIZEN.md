@@ -32,7 +32,7 @@ a tool or a doc. A promise to try harder is not a change.
 - **Don't wake an idle agent without work.** A message to a finished agent resumes it with its whole context,
   about 125,000 to 160,000 tokens, even if all it says back is "ok". Send acceptances and rulings with its next
   real task, or not at all.
-- **At most three agents at work at once.** Tools and engine agents count. Merges, tests and cold reads run one at
+- **At most three agents at work at once.** Tools and engine agents count. Every agent spends the user's usage limit. Merges, tests and cold reads run one at
   a time on main, so more agents only queue up, and a big batch hides problems: a flawed brief gets copied by every
   agent before anyone sees it. When a process is new (a new brief, a new check), take the first result all the way
   through before the others start.
