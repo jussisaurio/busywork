@@ -2,11 +2,13 @@
 // the start of the day, and what each picture must tell a first-time player who has read only the card.
 const UNPLUG = ['goto socket pretend', 'interact'];
 const TAKE = [...UNPLUG, 'goto pigeonholes pretend', 'interact'];
-const DRAWER = [...TAKE, 'goto own_desk pretend', 'interact'];
+const DRAWER = [...TAKE, 'goto drawer pretend', 'interact'];
 const SWAP = [...TAKE, 'interact']; // holding your box at the shelf: swap the labels
-const BROOM = ['goto broom_stand', 'interact', 'goto camera pretend']; // there at 3:27
-// The sweep sees the spot under the camera at 3:27.5 and 3:33.5, and looks furthest away at 3:30.5.
-const POKE_SAFE = [...BROOM, 'pretend until 3:29', 'wait 1s', 'interact'];
+// The broom fills your arms (no pretending): you wait in the corridor by the back office door, and go in once the
+// sweep has swung away from the door and the spot under the camera (it sees that spot at 3:27.5 and 3:33.5).
+const BROOM = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'wait 4s', 'goto camera', 'goto camera'];
+const POKE_SAFE = [...BROOM, 'interact'];
+const POKE_SEEN = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'goto camera', 'goto camera', 'interact'];
 const UNPLUG_TAKE_TO_OFFICE = [...TAKE, 'goto 5,6 pretend']; // Lin sees it
 const CORRIDOR_DROP = [...TAKE, 'goto corridor pretend', 'interact', 'goto own_desk pretend', 'sit'];
 // To the end card: a notice or a catch stops a pretend early, the next one goes on; 4:00 stops the last, and the day
@@ -51,23 +53,23 @@ export default [
   },
   {
     name: 'under-the-camera',
-    cmds: [...BROOM, 'pretend until 3:30', 'wait 0.5s'],
+    cmds: [...BROOM, 'wait 0.3s'],
     intent: "You stand under the camera with the broom in your hands. The camera's blue eye and its cone point away from you, down into the room; you are outside the cone. The leafy plant stands right beside the camera. Bob's monitor shows the back office.",
   },
   {
     name: 'poked-into-the-plant',
     cmds: [...POKE_SAFE, 'wait 1.4s'],
-    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob gets up from his counter, fed up with it (leaf, angry), and turns to come and look. The broom is still in your hands: time to go.",
+    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob gets up from his counter, fed up with it (screen with the leaf, angry), and turns to come and look. The broom is still in your hands: time to go.",
   },
   {
     name: 'bob-tugs-the-camera',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:32', 'wait 1s'],
+    cmds: [...POKE_SAFE, 'goto corridor', 'goto corridor', 'wait until 3:32', 'wait 1s'],
     intent: "Bob has left his counter and stands under the camera, reaching up and tugging at it: it rattles on its bracket but stays jammed in the plant's leaves. No impact star. You wait in the corridor, the broom in your hands.",
   },
   {
     name: 'bob-gives-up',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:33', 'wait 1.5s'],
-    intent: "Bob gives up on the camera, still jammed in the plant: he says (wrench, calendar): someone will fix it, another day. His monitor still shows the leaf.",
+    cmds: [...POKE_SAFE, 'goto corridor', 'goto corridor', 'wait until 3:33', 'wait 1.5s'],
+    intent: "Bob gives up on the camera, still jammed in the plant: he says (wrench, shrug): someone will fix it, some time. His monitor still shows the leaf.",
   },
   {
     name: 'labels-swapped',
@@ -82,17 +84,17 @@ export default [
   {
     name: 'lin-collects-the-mail',
     cmds: ['pretend until 3:53', 'wait 1.7s'], // she reaches the shelf at 3:53.8
-    intent: 'Nobody touched the boxes: at the pigeonholes Lin holds both (the brown one with the pink one on top) and reads the pink one\'s label (box, your face).',
+    intent: "Nobody touched the boxes: at the pigeonholes Lin has handed Bob his brown box over his counter (he holds it), and reads the pink one's label (box, your face).",
   },
   {
     name: 'empty-pigeonhole',
     cmds: [...DRAWER, 'sit', 'pretend until 3:53', 'wait 1.7s'],
-    intent: "At the pigeonholes Lin picks up only Bob's brown box: no pink box on the shelf today, and she doesn't miss it. You sit at your desk, its drawer shut.",
+    intent: "At the pigeonholes there is only Bob's brown box; Lin hands it to him over his counter (he holds it, smiling). No pink box today, and she doesn't miss it. You sit at your desk, its drawer shut.",
   },
   {
-    name: 'mail-call-shrug',
+    name: 'nothing-for-you',
     cmds: [...DRAWER, 'sit', 'pretend until 3:59', 'wait 1.4s'],
-    intent: "4:00: Lin and Bob stand in your office for the mail call. Bob holds his brown box. Lin has nothing for you (empty mailbox, your face) and shrugs, palms up. You sit at your desk.",
+    intent: "Just before 4:00: nothing comes for you. Lin is back at her own desk, empty-handed; Bob sits at his counter with his brown box. You sit at your desk, its drawer shut.",
   },
   {
     name: 'dropped-box-spotted',
@@ -106,29 +108,29 @@ export default [
   },
   {
     name: 'handover',
-    cmds: [...SWAP, 'goto own_desk pretend', 'sit', 'pretend until 3:59', 'wait 1.45s'], // the handover at 1.3 s, the day's verdict at 1.5 s
-    intent: "At the mail call in your office Lin hands Bob the pink box (box, Bob's face); big stern Bob hugs it, moved (tears). Lin still has the brown box. You sit at your desk.",
+    cmds: [...SWAP, 'goto own_desk pretend', 'sit', 'pretend until 3:53', 'wait 2.6s'], // she reaches the shelf at 3:53.8
+    intent: "At the pigeonholes Lin hands Bob the pink box over his counter (box, Bob's face); big stern Bob, at his desk, hugs it, moved (tears). Lin still has the brown box. You sit at your desk.",
   },
   // The end cards.
   {
     name: 'end-bob',
     cmds: [...SWAP, 'goto own_desk pretend', 'sit', ...END],
-    intent: "Win: Bob hugs the pink heart box with his face on the label, moved (tears); Lin holds the dull brown box out to you, your face on its label (brown box, your face); confetti; you grin. Icons: box, Bob's face, tears, brown box, your face.",
+    intent: "Win, two rooms side by side: at his counter Bob hugs the pink heart box with his face on the label, moved (tears); in your office Lin holds the dull brown box out to you, your face on its label (brown box, your face); confetti; you grin. Icons: box, Bob's face, tears, brown box, your face.",
   },
   {
     name: 'end-bob-away',
     cmds: [...SWAP, 'goto store_room pretend', ...END],
-    intent: "Win, though you weren't there: Bob hugs the pink box (tears); Lin holds the brown box out towards your empty chair (brown box, your face). Nobody is cross. Icons: box, Bob's face, tears, brown box, your face.",
+    intent: "Win, though you weren't there: at his counter Bob hugs the pink box (tears); in your office Lin holds the brown box out towards your empty chair (brown box, your face). Nobody is cross. Icons: box, Bob's face, tears, brown box, your face.",
   },
   {
     name: 'end-hidden',
     cmds: [...DRAWER, 'sit', ...END],
-    intent: "Win: no pink box today. Lin shrugs, palms up, empty-handed (empty mailbox, your face: nothing for you); Bob holds his brown box; you hum (a note) beside your desk, its drawers shut. Icons: Lin, empty mailbox, you, a note.",
+    intent: "Win: no pink box today, so nothing comes for you. Lin sits typing at her desk, her back to you; you hum (a note) beside your desk, its drawers shut. Icons: Lin, keyboard, you, a note.",
   },
   {
     name: 'end-mail',
     cmds: [...END],
-    intent: "Lose: Lin holds the pink box up high (box, your face), Bob turns to look, you go red. Icons: box, your face, blush.",
+    intent: "Lose: in your office Lin holds the pink box up high (box, your face), you go red. Icons: box, your face, blush.",
   },
   {
     name: 'end-noshow',
@@ -142,7 +144,7 @@ export default [
   },
   {
     name: 'end-caught-broom',
-    cmds: [...BROOM, 'interact', ...END],
+    cmds: [...POKE_SEEN, ...END],
     intent: 'Lose: Bob jabs a finger at his monitor (angry, @you). On it you stand right under the lens with the broom raised at the camera, its bristles big at the top of the picture. You stand behind him and go red, the broom in your hands. Icons: screen, pointing, you.',
   },
   {
@@ -158,7 +160,7 @@ export default [
   {
     name: 'end-hidden-away',
     cmds: [...DRAWER, 'goto store_room pretend', ...END],
-    intent: "Win, though you weren't there: no pink box today. Lin shrugs, empty-handed (empty mailbox, your face); Bob holds his brown box; your chair stands empty and unlit by your desk. Nobody is cross. Icons: Lin, empty mailbox, you, a note.",
+    intent: "Win, though you weren't there: no pink box today. Lin sits typing at her desk, her back to the room; your chair stands empty and unlit by your desk. Nobody looks for you. Icons: Lin, keyboard, chair.",
   },
   {
     name: 'end-spotted',

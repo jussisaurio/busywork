@@ -641,36 +641,43 @@ export function drawLabel(ctx, x, y, w, who) {
   emoji(ctx, '@' + who, x, y, h * 0.92);
 }
 
-// --- your desk drawer (tile P) ----------------------------------------------------------------------------------------
+// --- your desk drawer (tile R) ----------------------------------------------------------------------------------------
 
-// Your desk's right-hand drawer, always shut. While you stuff the parcel in, it hangs open and the box squashes down
-// into it; then it slams, and nothing pink shows. shown: { open: 0..1 how far through the stuffing you are, or -1 }.
+// The drawer at the right-hand end of your desk: a wooden front with a steel handle, always there to see. While you
+// stuff the parcel in it slides out and the box squashes down into it; then it slams, and nothing pink shows.
+// shown: { open: 0..1 how far through the stuffing you are, or -1 shut }.
 export function drawer(ctx, info, at, shown) {
-  const x = at.x * T + 38;
+  const x = at.x * T + 6;
   const y = at.y * T + 22;
-  if (shown.open < 0) return; // shut: the desk's own front is all there is
+  const front = (fy) => {
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(x - 1, fy - 1, 22, 14); // the seam round it
+    ctx.fillStyle = C.walnutTop;
+    ctx.fillRect(x, fy, 20, 12);
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.fillRect(x, fy, 20, 1.5);
+    ctx.fillStyle = C.steel;
+    ctx.fillRect(x + 6, fy + 5, 8, 2); // the handle
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(x + 6, fy + 7, 8, 0.8);
+  };
+  if (shown.open < 0) { front(y); return; }
   const q = shown.open;
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(x + 1, y + 2, 20, 12);
-  ctx.fillStyle = C.walnutEdge;
-  ctx.fillRect(x, y, 20, 12);
-  ctx.fillStyle = '#3a2416';
-  ctx.fillRect(x + 1.5, y + 1, 17, 5);
+  const out = Math.sin(Math.min(1, q * 1.15) * Math.PI) * 6; // slides out towards you, then slams back
+  ctx.fillStyle = '#3a2416'; // the dark inside, showing as it comes out
+  ctx.fillRect(x, y - 6 + out, 20, 7);
   // the box going in: squashing flatter as it sinks
-  const sink = q * 7;
+  const sink = q * 9;
   const squash = 1 - q * 0.45;
   ctx.save();
   ctx.beginPath();
-  ctx.rect(x - 6, y - 20, 32, 26);
+  ctx.rect(x - 6, y - 26, 32, 26 + out);
   ctx.clip();
-  ctx.translate(x + 10, y + 5 + sink);
+  ctx.translate(x + 10, y - 3 + out + sink);
   ctx.scale(1 + q * 0.12, squash);
   drawParcel(ctx, 0, 0, 16, null, false);
   ctx.restore();
-  ctx.fillStyle = C.walnutTop;
-  ctx.fillRect(x, y + 6, 20, 6);
-  ctx.fillStyle = C.steel;
-  ctx.fillRect(x + 7, y + 8, 6, 1.4);
+  front(y + out);
 }
 
 export function drawerState(w, game) {
@@ -728,6 +735,17 @@ export function staticThing(ctx, x, y, size, t) {
       ctx.fillRect(-5.5 + i, -4 + j, 1, 1);
     }
   }
+}
+
+// Bob's screen with the camera stuck in the plant: one giant leaf where the picture was.
+export function leafScreenThing(ctx, x, y, size, t) {
+  box(ctx, x, y, size);
+  ctx.fillStyle = '#4a4646';
+  rrect(ctx, -7.5, -6, 15, 11.5, 2);
+  ctx.fill();
+  ctx.fillStyle = '#2b2828';
+  ctx.fillRect(-2.5, 5.5, 5, 1.6);
+  drawLeafPicture(ctx, -5.5, -4, 11, 8, t ?? 0);
 }
 
 // The pink box hitting the floor: fall lines over it, a puff of dust either side.

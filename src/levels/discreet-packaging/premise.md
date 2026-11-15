@@ -2,7 +2,7 @@
 
 ## Card
 3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.
-Lin hands out the mail at 4:00. Don't let anyone see it.
+Lin hands out the mail at 4:00. Nobody can know it's yours.
 
 ## Name
 "Discreet Packaging" is what the shops print on a parcel they don't want your colleagues to read. Mum's box is the
@@ -14,9 +14,9 @@ ways out.
 You work in a small office. Mum has sent you a parcel at work: a pink box covered in red hearts, with your face on the
 address label. It waits on the parcel shelf of the pigeonholes in the back office, on top of the day's other parcel:
 Bob's plain brown box, his face on its label. Bob gets a brown box every day. Lin does the post. At 3:50 she
-collects the parcels from the pigeonholes, and at 4:00 she hands them out in your office, in front of everyone: each
-box to the face on its label. Bob comes over for it like every day. If she has your pink box then, she holds it up
-high for the office to see, and you go red (the end card).
+collects the parcels from the pigeonholes and hands each box to the face on its label: Bob's over his counter, right
+there by the shelf, and yours at 4:00 in your office, in front of everyone. If she has your pink box then, she holds
+it up high for the office to see, and you go red (the end card).
 
 So at 4:00 Lin must not hand you that box. Either it goes to somebody else, or it is not on the shelf for her to
 collect. But nobody may get hold of your box or see you with it: whoever reads your label, it is out. The camera on
@@ -32,10 +32,10 @@ smile, at about 3:21). He never looks anywhere but the lobby and his screen. If 
 it (static, ?), gets up and goes to the camera: the screen itself is still on, the picture is gone, and the camera's
 light is out. He stands under it and gives it a few thumps, facing the wall. Then he spots its cable (plug, !), follows
 it down the wall to the power strip at the far end of the counter and pushes the plug back in (a smile). If the camera
-ends up staring into the plant, his screen shows one giant leaf and nothing else. He grumbles (leaf, cross), walks over
+ends up staring into the plant, his screen shows one giant leaf and nothing else. He grumbles (screen with the leaf, cross), walks over
 and reaches up to tug the camera free. It is up high and jammed in the leaves, and it won't shift (camera, cross). He
-leaves it for facilities (wrench, calendar: another day) and goes back to his counter. He doesn't try again. At 3:56 he
-walks to your office for the mail call, stands beside Lin, and takes his brown box from her (smile). He is the
+leaves it for someone else (wrench, shrug) and goes back to his counter. He doesn't try again. When Lin comes for the
+post he is at his counter, a step from the shelf, and she hands him his box over it (smile). He is the
 authority: if he sees you take or carry the pink box, or do anything sneaky, on the monitor or with his own eyes, you
 are caught. His ❓ meter fills while he sees you not looking busy, and when it is full he sends you to your desk with 20
 minutes of work: he is the boss.
@@ -43,11 +43,11 @@ minutes of work: he is the boss.
 **Lin** sits at the desk in your office, facing south, away from your desk and the office door to the corridor. Like
 everyone seated, she glances to one side every few seconds. At 3:50 she gets up, goes out by the office door, along the
 corridor and into the back office, and reaches the pigeonholes at about 3:54. She takes whatever is on the parcel shelf
-and reads each label (box and the face on it). Bob's box is always there. If the pink box is not, she takes Bob's and
-goes: she never knew there was another. At 3:56 she carries the post to your office and waits by your desk. At 4:00 she
-hands out each box to the face on its label, Bob's first. A box with your face goes up over her head for everyone to
-see. If she has nothing for you, she looks at you (empty mailbox, your face) and shrugs. If you are not there, she looks
-at your empty chair. She knows a pink heart box when she sees one: if she sees it in your arms, she does not take it,
+and reads each label (box and the face on it). Bob's box is always there, and she hands Bob whichever box has his face,
+over his counter. If the pink box is not there, she never knew there was another. A box with your face she carries to
+your office and waits by your desk; at 4:00 she hands it out, and a box with your face goes up over her head for
+everyone to see. If you are not there, she holds it over your empty chair. If nothing is left for you, she goes back to
+her desk and types: nothing comes for you today. She knows a pink heart box when she sees one: if she sees it in your arms, she does not take it,
 she lights up and asks out loud (box, heart-eyes, then your face, box, ?: "Ooh, hearts! From your mum?"). That is the
 whole office looking at you, and you are found out. If she sees you do anything else sneaky, she shouts and points, and
 Bob, who hears it, sends you to your desk with 20 minutes of work.
@@ -81,14 +81,14 @@ fills your arms**: while you hold it, pretending does nothing, and everyone can 
 - **The brown box**: Bob's ordinary daily parcel. It shows the rule (a box goes to the face on its label) every loop,
   and it is the only other label in the building.
 - **The pink box**: the trouble.
-- **Your desk**: its drawer takes the pink box (sneaky) and shuts on it. Nothing shows.
+- **Your desk**: the drawer at its right-hand end takes the pink box (sneaky) and shuts on it. Nothing shows.
 - **Lin's desk, the counter, the lobby's glass door, the store room**: Lin's desk faces away from yours, so you can
   come in behind her. The counter faces the lobby, so Bob's back is to the back office. Nobody has a reason to open
   the store room this afternoon.
 - **The wall clock, windows, paintings and corner plants**: decoration.
 
 ## Ways to win
-You win when Lin has no box with your face at the mail call and nobody has picked up your box or seen you with it.
+You win when Lin has no box with your face at 4:00 and nobody has picked up your box or seen you with it.
 Each route has its own end card and route icon.
 
 First, blind the camera. Either way works for both routes:
@@ -98,11 +98,12 @@ First, blind the camera. Either way works for both routes:
   is still on but has no picture, and the camera's light is out, so it is the camera that looks broken; anyone goes and
   gives it a thump before tracing its cable. A plug eased out of a strip on the floor makes no sound a man watching the
   lobby would hear.
-- **Poke the camera into the plant.** Take the broom from the store room, stand under the camera and wait for its fan
-  to swing away from you. Poke it. From then on it sees only the plant, all day. Then get out of the back office:
+- **Poke the camera into the plant.** Take the broom from the store room. The broom fills your hands, so you can't
+  pretend to be busy with it: wait in the corridor until the fan swings away from the spot under the camera, then
+  step in and poke it. From then on it sees only the plant, all day. Then get out of the back office:
   Bob comes over to tug it free, and if he finds you hanging about, he sends you to your desk with work. In a real
   office: a camera up near the ceiling, wedged into a plant, needs a ladder; the manager tugs at it, can't shift it
-  and leaves it for facilities tomorrow. Nobody saw it happen, so it is just a camera that got knocked.
+  and leaves it for someone else. Nobody saw it happen, so it is just a camera that got knocked.
 
 The facts, and when you see them:
 - **The camera watches the pigeonholes, and Bob watches its monitor.** From the start you see the camera's fan
@@ -118,10 +119,10 @@ The facts, and when you see them:
 - **The camera can be knocked into the plant.** The broom hangs on its clip in the store room (shot
   `broom-on-its-clip`). Under the camera you see the plant right beside it and the fan sweep past you (shot
   `under-the-camera`). After the poke the camera stares into the plant, the monitor shows one giant leaf, and Bob
-  gets up, cross (leaf, cross; shot `poked-into-the-plant`). Poke it while it looks at you and he sees the broom
+  gets up, cross (screen with the leaf, cross; shot `poked-into-the-plant`). Poke it while it looks at you and he sees the broom
   coming (shot `end-caught-broom`).
 - **Nobody can get it out of the plant today.** Bob reaches up and tugs at it; it rattles but stays put (shot
-  `bob-tugs-the-camera`). He gives up and leaves it for another day (wrench, calendar; shot `bob-gives-up`).
+  `bob-tugs-the-camera`). He gives up and leaves it for someone else (wrench, shrug; shot `bob-gives-up`).
 
 ### 1. Bob gets it (route icon: Bob's face)
 Steps:
@@ -129,9 +130,9 @@ Steps:
 2. Take your box from the shelf, then swap its label with Bob's brown box's.
 3. Go back to your office, or anywhere out of sight.
 
-At 3:54 Lin reads Bob's face on the pink box and yours on the brown one. At the mail call she hands Bob his first: the
-pink heart box, his face on it. Big stern Bob hugs it, moved to tears, and while he does she holds the dull brown box
-out to you.
+At 3:54 Lin reads Bob's face on the pink box and yours on the brown one. Right there she hands Bob his, over his
+counter: the pink heart box, his face on it. Big stern Bob hugs it, moved to tears. At 4:00 she holds the dull brown
+box out to you.
 
 In a real office: nobody reads a parcel but its label, and whoever does the post hands each box to the name on it. The result is absurd (Bob in tears over Mum's hearts); the method is just two labels.
 
@@ -140,11 +141,11 @@ brown box out to your empty chair, and nobody minds (shot `end-bob-away`).
 
 The facts, and when you see them:
 - **Lin hands each parcel to the face on its label.** Every loop Bob's brown box is on the shelf with his face on it,
-  and at the mail call Lin hands it to him (shot `mail-call-shrug`). If you do nothing, at about 3:54 she reads your
-  label (shot `lin-collects-the-mail`), and at 4:00 she holds the pink box up for you (shot `end-mail`).
+  and Lin hands it to him over his counter (shot `lin-collects-the-mail`). If you do nothing, at about 3:54 she reads
+  your label too (same shot), and at 4:00 she holds the pink box up for you (shot `end-mail`).
 - **The labels can be swapped.** Up close the card shows both boxes and both faces (shot `parcel-on-the-shelf`).
   After the swap it shows the pink box with Bob's face and the brown box with yours (shot `labels-swapped`).
-- **Bob's box goes to Bob.** At the mail call Lin hands him the pink box (box, Bob's face), and he is moved (tears;
+- **Bob's box goes to Bob.** At the pigeonholes Lin hands him the pink box (box, Bob's face), and he is moved (tears;
   shots `handover`, `end-bob`).
 
 ### 2. No parcel today (route icon: Lin's face)
@@ -154,11 +155,11 @@ Steps:
 3. Put it where nobody will see it: in your desk drawer, or on the store room floor.
 4. Be wherever you like at 4:00.
 
-At 3:54 Lin finds only Bob's box on the shelf. At the mail call she gives Bob his, looks at you, has nothing for you
-and shrugs, while you hum. If you are not there, she shrugs at your empty chair (shot `end-hidden-away`).
+At 3:54 Lin finds only Bob's box on the shelf and hands it to him. Nothing is left for you, so she goes back to her
+desk and types, while you hum. If you are not there, nobody notices (shot `end-hidden-away`).
 
-In a real office: nobody misses a parcel they never knew about. Whoever does the post, with nothing for you, shrugs and
-moves on, and nobody wonders where you are, because there is nothing to wonder about.
+In a real office: nobody misses a parcel they never knew about. Whoever does the post, with nothing for you, doesn't
+come to you at all, and nobody wonders where you are, because there is nothing to wonder about.
 
 The facts, and when you see them:
 - **The box can be taken.** Up close the shelf lights up (shot `parcel-on-the-shelf`).
@@ -167,15 +168,15 @@ The facts, and when you see them:
   office behind Lin, and stuff it in the drawer while her glance is turned the other way.
 - **The drawer hides it.** It opens, the box sinks in, and it shuts; the shelf has only the brown box (shot
   `drawer`).
-- **A missing parcel only gets a shrug.** At about 3:54 Lin picks up Bob's box and nothing else; she never knew there
-  was a pink one (shot `empty-pigeonhole`). At 4:00 she has nothing for you and shrugs (shots `mail-call-shrug`,
-  `end-hidden`).
+- **A missing parcel is not missed.** At about 3:54 Lin finds Bob's box and nothing else, and hands it to him; she
+  never knew there was a pink one (shot `empty-pigeonhole`). Then she goes back to her desk; nothing comes for you
+  (shots `nothing-for-you`, `end-hidden`).
 - **A box on the floor gets found, but only where somebody looks.** Drop it in the corridor and Lin, on her way to
   the pigeonholes at about 3:51, spots it (shot `dropped-box-spotted`), picks it up and reads the label (shot
   `dropped-box-found`). Nobody opens the store room before 6, so a box on its floor stays there.
 
 ## Ways to lose
-- **The mail call.** Lin collected your box and holds it up high (box, your face). Bob turns to look, and you go red
+- **The mail call.** Lin collected your box and holds it up high (box, your face) in your office, and you go red
   (shot `end-mail`).
 - **The mail call, and you're not there.** Lin holds your box up high beside your empty chair, spotlit (shot
   `end-noshow`).
@@ -192,6 +193,5 @@ The facts, and when you see them:
   of work, and usually the camera is live again, or the mail is collected, before you are free.
 
 ## The joke
-4:00, route 1. In your office Lin hands out the post and gives big stern Bob, the office manager, a pink box covered in red
-hearts, his own face on the label. He hugs it, moved to tears, while confetti falls, and Lin holds his dull brown box
-out to you.
+Route 1. Over his counter Lin gives big stern Bob, the office manager, a pink box covered in red hearts, his own face
+on the label. He hugs it, moved to tears, and at 4:00, while confetti falls, Lin holds his dull brown box out to you.

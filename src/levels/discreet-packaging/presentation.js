@@ -5,12 +5,12 @@ import { C } from '../../render/palette.js';
 import { LOOKS as L1 } from '../meeting/looks.js';
 import {
   pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,
-  broomStand, broomState, drawer, drawerState, brownBoxThing, postThing, staticThing, droppedThing,
+  broomStand, broomState, drawer, drawerState, brownBoxThing, postThing, staticThing, leafScreenThing, droppedThing,
 } from './painters.js';
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00. Don't let anyone see it."],
+  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00. Nobody can know it's yours."],
   badge: ['@player', '😳'],
 };
 
@@ -33,10 +33,10 @@ export const DECOR = {
     { tile: 'C', draw: wallCamera, state: wallCameraState }, // turned where it looks; askew in the plant once poked
     { tile: 'O', draw: socket, state: socketState }, // the camera's plug in the power strip, or hanging out
     { tile: 'B', draw: broomStand, state: broomState }, // and the store room's cobwebs and dust
-    { tile: 'P', draw: drawer, state: drawerState }, // your drawer: open only while you stuff the box in
+    { tile: 'R', draw: drawer, state: drawerState }, // your drawer: shut, but it slides out while you stuff the box in
   ],
-  // '#brownbox' Bob's parcel, '#post' both boxes in Lin's arms, '#static' a snowy screen, '#dropped' a fallen box
-  things: { brownbox: brownBoxThing, post: postThing, static: staticThing, dropped: droppedThing },
+  // '#brownbox' Bob's parcel, '#post' both boxes in Lin's arms, '#static' a snowy screen, '#leafscreen' the screen all leaf, '#dropped' a fallen box
+  things: { brownbox: brownBoxThing, post: postThing, static: staticThing, leafscreen: leafScreenThing, dropped: droppedThing },
   deskOwners: ['lin_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
@@ -82,7 +82,6 @@ export const POSES = {
     { when: (n, w) => LIN(n) && w.brown === 'lin', arms: 'carry', item: '#brownbox' },
     { when: (n, w) => BOB(n) && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
     { when: (n, w) => BOB(n) && w.brown === 'bob', arms: 'carry', item: '#brownbox' },
-    { when: (n, w) => LIN(n) && w.mailEmpty && n._atMail, arms: 'shrug' }, // nothing for you on the shelf today
   ],
   marks: [
     { when: (n) => n.id === 'bob', badge: true },

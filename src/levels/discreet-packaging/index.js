@@ -27,14 +27,14 @@ import gate from './gate.js';
 
 // 30 x 17. Your office (west), the corridor (north), the back office behind the counter (middle), the store room
 // (east), the lobby (south). Bob sits behind the counter facing the lobby, his monitor on the counter.
-//   P your desk   Q/S the pigeonholes, S the parcel shelf (your parcel)   C the camera, on the wall over the back office
+//   P your desk (R its drawer end)   Q/S the pigeonholes, S the parcel shelf (your parcel)   C the camera, on the wall over the back office
 //   F the potted plant in the corner beside it   O the power strip with the camera's plug    M Bob's monitor
 //   B the broom   E the lobby's glass front door
 const MAP = [
   '##############################', // 0
   '#H..........#................#', // 1
   '#...........D................#', // 2
-  '#..TPT......#................#', // 3
+  '#..TPR......#................#', // 3
   '#...........#####D#C#####D####', // 4
   '#...........#.......F#......B#', // 5
   '#......TTT..#........#.......#', // 6
@@ -52,6 +52,7 @@ const MAP = [
 
 const LEGEND = {
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  R: { kind: 'drawer', solid: true, opaque: false, interactable: 'drawer', draw: 'desk' }, // your desk's drawer end
   Q: { kind: 'pigeonholes', solid: true, opaque: false, draw: 'floor' }, // the cabinet's top half (painters.js)
   S: { kind: 'pigeonholes', solid: true, opaque: false, interactable: 'pigeonholes', draw: 'floor' }, // its parcel shelf
   C: { kind: 'wall_camera', solid: true, opaque: true, interactable: 'cctv', draw: 'wall' }, // the camera on its bracket
@@ -73,7 +74,6 @@ const SPOTS = {
   mailroom: { x: 25, y: 7, face: 'E' },
   lobby: { x: 9, y: 13, face: 'N' },
   mail_call: { x: 7, y: 4, face: 'W' }, // 4:00: Lin hands out the mail here, facing your desk
-  bob_mail: { x: 10, y: 4, face: 'W' }, // and Bob stands beside her for it
 };
 
 const ZONES = {
@@ -123,6 +123,8 @@ const INTERACTIONS = {
     can: (p, w) => p.held === 'broom' && w.camAim !== 'plant' && p.y > 5,
     done(game) {
       game.world.camAim = 'plant'; // clunk: it swivels into the plant and sticks; the broom comes back down with you
+      burst(game, 'puff', 20.4, 5.2, 7, { speed: 0.9, ttl: 0.6 }); // the fronds shake where it hit
+      burst(game, 'crumbs', 20.4, 5.1, 6, { speed: 1.1, ttl: 0.7 });
       shake(game, 0.06, 0.15);
       blind(game, 'pushed'); // Bob sees the leaf on his screen and goes to sort it out (LURES: he can't)
     },
@@ -168,7 +170,7 @@ const INTERACTIONS = {
     },
   },
   stash_parcel: {
-    on: 'own_desk', text: 'stuff it in your desk drawer', duration: 1.0, sneaky: true, saw: '💝',
+    on: 'drawer', text: 'stuff it in your desk drawer', duration: 1.0, sneaky: true, saw: '💝',
     can: (p) => p.held === 'parcel',
     done(game, a) {
       game.player.held = null;
@@ -205,11 +207,11 @@ const ITEMS = {
       },
     },
   },
-  broom: { icon: '🧹', draw: broomThing, place: 'broom' },
+  broom: { icon: '🧹', draw: broomThing, place: 'broom', bulky: true }, // both hands on it: no pretending to work
 };
 
 const ROLES = {
-  authority: { id: 'bob', offDuty: ['mail'], helpless: [], deafIn: null }, // at the mail call he's just Bob
+  authority: { id: 'bob', offDuty: [], helpless: [], deafIn: null }, // at his counter all day, mail call or not
 };
 
 // Whoever sees the pink box lying loose walks over, picks it up and reads the label (src/sim/mechanics/fetch.js).
@@ -227,6 +229,7 @@ const FETCHES = [
       event: 'parcel:found',
     },
     caught: 1.5,
+    alert: ['💝', '@player', '❗'], // her box is yours: holding it up, no pointing off at some empty tile
   },
 ];
 
@@ -258,7 +261,7 @@ const LURES = [
     plan: 'camera',
     label: 'the leaf',
     spot: 'camera',
-    react: { wait: 1.0, says: [{ say: ['🌿', '😤'], kind: 'thought' }], event: 'bob:leaf' },
+    react: { wait: 1.0, says: [{ say: ['#leafscreen', '😠'], kind: 'thought' }], event: 'bob:leaf' },
     work: {
       override: 'tugging',
       minutes: 1,
@@ -267,7 +270,7 @@ const LURES = [
       done: {
         set: { camReported: true },
         event: 'bob:gave_up',
-        says: [{ say: ['📹', '😤'], kind: 'thought' }, { say: ['🔧', '📅'], after: 1.2 }],
+        says: [{ say: ['📹', '😤'], kind: 'thought' }, { say: ['🔧', '🤷'], after: 1.2 }],
       },
     },
   },
@@ -312,7 +315,7 @@ export default {
   cast: CAST,
   day: {
     start: START,
-    gatherAt: at('3:56'), // Lin (at the pigeonholes since about 3:54) and Bob go to the mail call
+    gatherAt: at('3:56'), // Lin (at the pigeonholes since about 3:54) takes what is left for you to your office
     meetingAt: at('4:00'), // and she hands it out
     clockRedAt: at('3:50'),
     clockTickAt: at('3:50'),
@@ -330,9 +333,9 @@ export default {
   behaviours: BEHAVIOURS,
   meeting: { override: 'mail', room: 'office', chair: 'player_desk', verdict },
   routes: [
-    // Lin hands Bob the pink box with his face on it, at the mail call (and you his brown one).
+    // At the pigeonholes Lin hands Bob the pink box with his face on it (and at 4:00 you his brown one).
     { id: 'bob', icon: '@bob', achieved: (w) => w.parcelFor === 'bob' && ['shelf', 'lin', 'bob'].includes(w.parcel) },
-    // The shelf is empty and nobody has your parcel: Lin shrugs.
+    // The shelf is empty and nobody has your parcel: nothing comes for you at 4:00.
     { id: 'hidden', icon: '@lin', achieved: (w) => w.parcel === 'drawer' || w.parcel === 'player' },
   ],
   outcomeOrder: ['bob', 'hidden'],
