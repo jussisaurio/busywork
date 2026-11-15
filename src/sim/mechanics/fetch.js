@@ -12,6 +12,8 @@
 //   caught    s after he picked it up, the office rules catch the player (play/rules.js caught, by him). Absent:
 //             he just keeps it and goes back to his day
 //   reason    the caught reason (default 'found')
+//   alert     icons the catcher says as he catches you (an alert bubble), instead of the rules' ❗👉 and your
+//             face, e.g. ['#parcel', '👉', '@player']: what he found, and whose it is
 // He goes for it while on the floor (active, not gone) with no override but the meeting's: a lure's job comes
 // first. He sees it with his own eyes or on a screen he watches (perception.js npcSees). If it is gone when he
 // gets there (the player took it back, someone else was quicker) he gives up (endOverride).
@@ -78,7 +80,7 @@ export function judge(game, rules) {
     for (const npc of game.npcs) {
       if (!npc._fetch || !f.npcs.includes(npc.id)) continue;
       if (game.loopTime - npc._fetch.t < f.caught - 1e-9) continue;
-      rules.caught(game, f.reason ?? 'found', npc.id);
+      rules.caught(game, f.reason ?? 'found', npc.id, f.alert);
       return true;
     }
   }

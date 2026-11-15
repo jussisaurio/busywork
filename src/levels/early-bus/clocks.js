@@ -180,7 +180,7 @@ function lookUp(game, npc, sim) {
     const ahead = off > st.off;
     st.off = off;
     st.beat = beatAt(npc, believed(game, npc, st)); // (no second look for the jump itself)
-    clockSay(game, npc, clock, [face, '❗'], 'alert', LOOK_S + 0.3);
+    clockSay(game, npc, clock, [face, '😮'], 'realize', LOOK_S + 0.3); // "oh, that late!" (CONTRACTS "Bubbles")
     game.events.emit('clock:jump', { id: npc.id, clock: c.id, off, ahead });
   } else {
     clockSay(game, npc, clock, [face], 'thought', LOOK_S);
@@ -293,7 +293,7 @@ export const CLOCK_BEHAVIOURS = {
         st.beat = beatAt(npc, game.clock.minute + st.off);
         game.world.herd = true;
         game.world.herdShown = time; // the end card's clock
-        clockSay(game, npc, 'open', [face, '❗'], 'alert', LOOK_S + 0.4);
+        clockSay(game, npc, 'open', [face, '😮'], 'realize', LOOK_S + 0.4);
         game.events.emit('boss:herd', { shown: time });
       } else {
         npc._shrugUntil = game.loopTime + LOOK_S + 0.4;

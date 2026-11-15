@@ -48,6 +48,7 @@ const roles = (game) => game.level.roles ?? NO_ROLE;
 const camVia = (game, npc) => seenVia(game, npc, game.player.x, game.player.y);
 const screenChain = (cam) => (cam ? { screen: cam.monitor, lens: { x: cam.x, y: cam.y } } : undefined);
 const withVia = (payload, cam) => (cam ? { ...payload, via: cam.id } : payload);
+const CAUGHT_ICONS = ['❗', '👉', '@player'];
 const pointing = (cam, icons) => (cam ? [cam.icon ?? SCREEN_ICON, ...icons] : icons);
 const itemFlags = (game, type) => (type ? game.level.items?.[type] : undefined);
 // The authority's NPC, or null.
@@ -217,14 +218,28 @@ function decaySuspicion(game, dt) {
   if (id) game.suspicion[id] = Math.max(0, game.suspicion[id] - dt / SUSPICION_DECAY_SEC);
 }
 
-// First sight of something sneaky: ❓ over the NPC (throttled). A disguise he sees through: a double take, the face
+// What the witness saw you at (a picture), for his ❓ and a late tattle's 👉: the act's `saw`, the scene's or the
+// evidence's icon, or the item in your hand (a disguise's, an owner's contraband). Undefined: just you.
+function seenIcon(game, offence) {
+  const p = game.player;
+  const r = roles(game);
+  if (offence === 'action') return p.action.saw ?? undefined;
+  if (offence === 'scene') return r.scene.icon;
+  if (offence === 'evidence') return r.evidence.icon;
+  if (offence === 'disguise' || offence === 'contraband') return itemFlags(game, p.held)?.icon;
+  return undefined;
+}
+
+// First sight of something sneaky (throttled): a thought cloud with WHAT he noticed, then ❓ (just your face when
+// it's only you). On a screen, the screen first (📺 what ❓). A disguise he sees through: a double take, the face
 // of whom she passes for, then ❓.
 function notice(game, s, npc, offence) {
   const last = s.lastNotice[npc.id];
   if (last !== undefined && game.loopTime - last < NOTICE_BUBBLE_GAP) return;
   s.lastNotice[npc.id] = game.loopTime;
   const cam = camVia(game, npc);
-  say(game, npc.id, pointing(cam, offence === 'disguise' ? doubleTakeIcons(game) : ['❓']), { kind: 'thought', ttl: 1.0 });
+  const icons = offence === 'disguise' ? doubleTakeIcons(game) : [seenIcon(game, offence) ?? '@player', '❓'];
+  say(game, npc.id, pointing(cam, icons), { kind: 'thought', ttl: 1.0 });
   sightline(game, npc.id, 'notice', 0.6, screenChain(cam));
   game.events.emit('witness:notice', { by: npc.id });
 }
@@ -239,9 +254,7 @@ function react(game, s, npc, offence) {
     return;
   }
   const p = game.player;
-  // What a late tattle points at (the thing the witness saw you at).
-  const icon = offence === 'action' ? p.action.saw ?? undefined : offence === 'scene' ? r.scene.icon
-    : offence === 'evidence' ? r.evidence.icon : offence === 'disguise' ? itemFlags(game, p.held)?.icon : undefined;
+  const icon = offence === 'contraband' ? undefined : seenIcon(game, offence); // what a late tattle points at
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
   if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)
@@ -329,10 +342,12 @@ function assignWork(game, reason, by = null) {
 }
 
 // What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
-const JUDGE = { claims, enforcing, caught: (game, reason, by) => caught(game, reason, by) };
+const JUDGE = { claims, enforcing, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
 
-// cam: the camera he saw you through (camVia), if only on a screen: he points at it, then at you.
-function caught(game, reason, by = roles(game).authority.id, cam = null) {
+// The catch: a spiky alert (CONTRACTS "Bubbles": the star means someone has spotted YOU), ❗👉 and your face by
+// default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what
+// he says instead (a mechanic's own words, e.g. a fetch's `alert`).
+function caught(game, reason, by = roles(game).authority.id, cam = null, icons = CAUGHT_ICONS) {
   if (game.caught) return;
   const p = game.player;
   game.caught = { by, reason, t: 0, via: cam ? cam.id : null }; // via: the camera he saw you on (end scenes)
@@ -340,7 +355,7 @@ function caught(game, reason, by = roles(game).authority.id, cam = null) {
   p.locked = true;
   setBusy(game, false, null);
   game.clock.ff = false;
-  say(game, by, cam ? pointing(cam, ['❗', '👉', '@player']) : ['❗', '😠'], { kind: 'alert' }); // on a screen: whom he means
+  say(game, by, pointing(cam, icons), { kind: 'alert' });
   game.events.emit('caught', withVia({ by, reason }, cam));
   shake(game, 0.3, 0.4);
 }

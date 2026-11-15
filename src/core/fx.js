@@ -11,7 +11,8 @@ export function createFx() {
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
 // icons: array of emoji strings, read left to right.
-// opts.kind: 'speech' (babble audio) | 'thought' (silent, cloud style) | 'alert' (big, e.g. ❗) | 'sign'
+// opts.kind: 'speech' (babble audio) | 'thought' (silent, cloud style) | 'alert' (spiky star: someone has spotted YOU) |
+//   'realize' (round, pale blue, rays: "oh!", a belief changes, a trick works; never alarm) | 'sign'
 // opts.ttl: seconds. opts.voice: babble voice id (defaults to owner id).
 export function say(game, owner, icons, opts = {}) {
   const kind = opts.kind ?? 'speech';

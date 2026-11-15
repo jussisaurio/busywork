@@ -85,10 +85,13 @@ function signPlace(game, b, ax, ay, view = FULL_VIEW) {
 
 // How far a bubble's drawing reaches from its centre: { x, top, bot } px (the star's points, the cloud's bumps).
 const EXTENT = { x: 0, top: 0, bot: 0 };
+const REALIZE_RAY = 7; // how far the "oh!" bubble's light rays reach past its rim
 function bubbleExtent(kind, w, h) {
   if (kind === 'alert') {
     const r = Math.max(w, h) * 0.62 + 4;
     EXTENT.x = r; EXTENT.top = r; EXTENT.bot = r;
+  } else if (kind === 'realize') {
+    EXTENT.x = w / 2 + REALIZE_RAY; EXTENT.top = h / 2 + REALIZE_RAY; EXTENT.bot = h / 2 + 8;
   } else if (kind === 'thought') {
     EXTENT.x = w / 2 - 2 + h / 2; EXTENT.top = h / 2 + 6; EXTENT.bot = h / 2 + 5;
   } else {
@@ -109,11 +112,11 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   const alpha = clamp((ttl - age) / 0.3, 0, 1);
   if (alpha <= 0 || pop <= 0.01) return;
   const kind = b.kind || 'speech';
-  const isz = kind === 'alert' ? 24 : 15;
+  const isz = kind === 'alert' ? 24 : kind === 'realize' ? 18 : 15;
   const gap = 3;
   const n = Math.max(1, icons.length);
   const cw = n * isz + (n - 1) * gap;
-  const pad = kind === 'thought' ? 9 : 6;
+  const pad = kind === 'thought' || kind === 'realize' ? 9 : 6;
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
@@ -157,6 +160,33 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
     ctx.strokeStyle = C.ink;
     ctx.lineWidth = 2;
     starPath(ctx, 0, 0, Math.max(w, h) * 0.62 + 4, Math.max(w, h) * 0.42, 10, age * 0.5);
+    ctx.fill();
+    ctx.stroke();
+  } else if (kind === 'realize') {
+    // "Oh!": a round pale-blue bubble with short light rays, no spikes (alarm is the star's alone)
+    const rx = w / 2, ry = h / 2;
+    const flash = 1 + 0.5 * Math.exp(-age * 5);
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 5; k++) { // a fan of rays over the top: the "ding" of a penny dropping
+      const a = Math.PI + (k + 0.5) * (Math.PI / 5);
+      const c = Math.cos(a), s = Math.sin(a);
+      ctx.beginPath();
+      ctx.moveTo(c * (rx + 3), s * (ry + 3));
+      ctx.lineTo(c * (rx + 3 + (REALIZE_RAY - 3) * flash * 0.75), s * (ry + 3 + (REALIZE_RAY - 3) * flash * 0.75));
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#cfe9ff';
+    ctx.beginPath();
+    ctx.moveTo(tailX - 4, ry - 2);
+    ctx.lineTo(tailX, Math.max(ry + 4, Math.min(ry + 8, tailY)));
+    ctx.lineTo(tailX + 4, ry - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
   } else if (kind === 'thought') {

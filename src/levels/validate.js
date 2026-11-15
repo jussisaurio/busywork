@@ -358,6 +358,7 @@ export function levelProblems(level, key) {
     for (const [k, id] of list(`fetches[${i}].npcs`, f?.npcs).entries()) npc(`fetches[${i}].npcs[${k}]`, id);
     if (!isStr(f?.override) || !isStr(f?.plan)) bad(`fetches[${i}]`, 'needs an override and a plan (strings)');
     if (f?.caught !== undefined && !(isNum(f.caught) && f.caught >= 0)) bad(`fetches[${i}].caught`, 'not a time in seconds');
+    if (f?.alert !== undefined && !(Array.isArray(f.alert) && f.alert.length && f.alert.every(isStr))) bad(`fetches[${i}].alert`, 'not a list of icons');
   }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {

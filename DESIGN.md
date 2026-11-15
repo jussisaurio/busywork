@@ -59,6 +59,8 @@ problem: when Kev says 🔧, he means he will fix something.
      (👔 read as a shirt, not as the boss). The engine's bubbles do too: a tattle is ❗👉 and your face, a double
      take is the face of whom you pass for, an inspection's who-check sign is the face it checked.
    - A reaction shows what it is about: the bubble names it, or the speaker faces it at that moment.
+   - One bubble shape per meaning (CONTRACTS "Bubbles"): the spiky star only for "I've spotted YOU", a round
+     rayed "oh!" for a belief changing, a cloud for a private doubt (with what it is about).
    - Speech never carries a fact on its own. The world or a body shows the fact; speech comments on it.
 2. **The world is drawn.** Every object on the map or in a hand is drawn as the real object: furniture, devices,
    documents, what people carry. No emoji stands on a tile or in a hand. Level painters

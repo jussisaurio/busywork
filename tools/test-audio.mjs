@@ -329,7 +329,7 @@ const ICON_SETS = [
   [42, null, '💢'], // junk entries
 ];
 const OWNERS = ['boss', 'lin', 'kev', 'player', { x: 13.5, y: 3.5 }, { x: NaN, y: Infinity }, 'nobody', '3.5,15.5'];
-const KINDS = ['speech', 'alert', 'thought', 'sign', undefined, 'weird'];
+const KINDS = ['speech', 'alert', 'realize', 'thought', 'sign', undefined, 'weird'];
 
 // [name, payload] for every event in CONTRACTS.md (plus junk payloads).
 function eventList() {

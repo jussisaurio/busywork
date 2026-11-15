@@ -69,6 +69,17 @@ change in order changes the digest. These are the usual ways to break it:
   noise: render draws the arc).
   **Use `say()` for every speech, thought or alert bubble.** It also emits `'say'` for audio. Without a `voice`
   it uses the owner's id as the voice name.
+  **Bubbles: one shape per meaning.** Engine and levels use the same vocabulary:
+  | kind | shape | means | engine examples |
+  |---|---|---|---|
+  | `speech` | box with tail | said aloud | owners' words, orders |
+  | `thought` | cloud | private, routine, a doubt | notice: `[what, '❓']` (what he saw you at: the act's `saw`, the scene's or evidence's icon, the item in your hand; else your face) |
+  | `alert` | spiky star | someone has spotted YOU, never anything else | tattle `❗👉@player`, caught `❗👉@player` (a fetch's `alert` replaces it) |
+  | `realize` | round, pale blue, rays | "oh!": a belief changes, a trick works; no alarm | early-bus Kev and the boss reading a pushed clock `[clock, '😮']` |
+  | `sign` | board on a post | a thing's verdict, not a person's | inspection ✔️❌ |
+  Seen on a screen, the bubble starts with the screen: `['📺', what, '❓']` noticed on it, `['📺', '❗', '👉',
+  '@player']` caught on it. A bare `['📺', '❓']` (no subject) is free for a level's "the screen went odd" (static).
+  Anger (😠) is an emotion a level may say; the engine never uses it for a catch.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` (`'*'` gets every event) and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the registry `levels`, `defaultLevel` (level 1, `meeting`) and `getLevel(id)` (throws on an
@@ -336,10 +347,11 @@ the gather; once a loop. A lure drops it; the gather lets him finish. Example: f
 
 **Fetch** (`level.fetches`, `fetch.js`): whoever sees a certain item lying loose on the floor walks over and
 picks it up. `{ item, npcs, override, plan, label, react: { wait, says?, event? }, found: { says?, event?, set? },
-caught?, reason? }`. He goes for it when on the floor with no override but the meeting's, on seeing it with his
+caught?, reason?, alert? }`. He goes for it when on the floor with no override but the meeting's, on seeing it with his
 own eyes or on a screen he watches; he gives up if it is gone before he gets there. On pickup he carries it
 (`world[place]` = his id if the item has a place), then `found`. With `caught`, the rules catch the player
-`caught` s later (reason `reason`, default `'found'`, by him). `npc._fetch = { t }` while he holds it; an owner's
+`caught` s later (reason `reason`, default `'found'`, by him; he says `alert`, a list of icons, in the alert star
+instead of the rules' `❗👉@player`). `npc._fetch = { t }` while he holds it; an owner's
 `reclaim` may set it to start the same clock. Example: discreet-packaging `FETCHES` (the pink parcel).
 
 **Attention** (`attention.js`): a noise turns heads. Two sources: an interaction row's `noise: { radius, at?,

@@ -318,7 +318,7 @@ section('keycard: boss facing the player -> caught');
   ok(tCaught !== null && tCaught - t0 >= NOTICE - 0.05 && tCaught - t0 <= NOTICE + 0.05, `caught after ~NOTICE (${tCaught && (tCaught - t0).toFixed(2)} s)`);
   ok(evs('action:cancel').some((e) => e.payload.reason === 'caught'), "action:cancel {reason:'caught'}");
   ok(game.world.keycard === 'rack' && p().locked, 'keycard stays on the rack, player locked');
-  ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.kind === 'alert' && e.payload.icons.includes('❗')), 'boss says ❗😠 (alert)');
+  ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.kind === 'alert' && e.payload.icons.join('') === '❗👉@player'), 'boss says ❗👉 and your face (alert)');
   ok(game.fx.shake.t > 0, 'screen shake');
   const x0 = p().x;
   input.hold('right'); run(0.5); input.release('right');
@@ -347,6 +347,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
     ok(!p().action && game.world.keycard === 'rack' && !p().held, `boss away, attempt ${i}: cancelled before completion`);
   }
   ok(evs('witness:notice').some((e) => e.payload.by === 'lin'), 'Lin ❓ (witness:notice)');
+  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.kind === 'thought' && e.payload.icons.length === 2 && e.payload.icons[1] === '❓' && e.payload.icons[0] !== '❓'), "Lin's ❓ says what she noticed first");
   const t = evs('witness:tattle');
   ok(t.length === 3 && t.every((e) => e.payload.by === 'lin' && e.payload.reason === 'action' && e.payload.heard === false), "witness:tattle {by:'lin', reason:'action', heard:false} x3");
   ok(evs('action:cancel').filter((e) => e.payload.reason === 'witnessed').length === 3, "action:cancel {reason:'witnessed'} x3");
