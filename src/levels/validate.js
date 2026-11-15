@@ -68,7 +68,8 @@
 //               draws: an item type with a draw, a decor.things name or an engine thing, never an emoji)
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
-//               scene in scenes, each { win, icons, draw() }
+//               scene in scenes, each { win, icons, draw() }; a lost outcome with `stopped` (sent to your desk) may
+//               give 'stopped' without one (the engine's card: screens.js STOPPED_SCENE)
 //   voices      optional; an object of voice objects
 // (*) The visual language (DESIGN.md "Visual language": people speak emoji, the world is drawn). These rules hold
 // for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
@@ -561,10 +562,12 @@ export function levelProblems(level, key) {
       for (const [name, sc] of Object.entries(ends.scenes)) {
         if (!isObj(sc) || typeof sc.win !== 'boolean' || !Array.isArray(sc.icons) || !isFn(sc.draw)) bad(`endScenes.scenes.${name}`, 'needs { win, icons, draw() }');
       }
-      for (const o of possibleOutcomes(order.filter((id) => routeIds.includes(id)))) {
+      const lost = (o) => o.result === 'fail' || o.result === 'blamed';
+      const outs = possibleOutcomes(order.filter((id) => routeIds.includes(id)));
+      for (const o of [...outs, ...outs.filter(lost).map((o) => ({ ...o, stopped: { by: roles?.authority?.id ?? null, reason: 'tattle', working: true } }))]) {
         let kind;
         try { kind = ends.kindOf(o); } catch (e) { bad('endScenes.kindOf', `throws for ${outcomeText(o)}: ${e.message}`); continue; }
-        if (!has(ends.scenes, kind)) bad('endScenes.kindOf', `${outcomeText(o)} gives ${q(kind)}, which is not in scenes`);
+        if (!has(ends.scenes, kind) && !(o.stopped && kind === 'stopped')) bad('endScenes.kindOf', `${outcomeText(o)} gives ${q(kind)}, which is not in scenes`);
       }
     }
   }

@@ -120,15 +120,17 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   learnable.
 - **Suspicion.** If the authority can see you and you are not looking busy (pretending, or doing an action; an idle
   action like eating doesn't count), his ❓ meter fills over 1.6 s. Otherwise it drains over 3 s. Full, he assigns
-  you work: he points, his order runs to you as a line, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
-  time ×8. The work is 20 game minutes from his order, the walk included. Progress shows only in the stack.
+  you work: he says 📄👉 and your face, his order runs to you as a line, you walk to your desk, and one tidy paper
+  stack lands on it as you sit. You type until the stack is gone, with time ×8, a paper-and-bar meter over your head.
+  The work is 20 game minutes from his order, the walk included. Nothing of it is left lying about afterwards. A day
+  lost after you were sent ends on the "stopped" card: whoever told (else he) points at you behind the stack.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
 - **Who saw you.** A coworker who sees you do something reportable opens an eye beside her head, its pupil on you.
   The eye widens while she keeps looking. Wide open, she tells, with a hop. A grudge (below) keeps the eye red until
   she has told.
 - **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
-  authority is on the floor, he hears it: a red line runs from her to him, he turns to her, then to you, and assigns
+  authority is on the floor, he hears it: after her shout's own beat a red line runs from her to him, he turns to her, then to you, and assigns
   you work. A level may set another cost for a heard tattle (you are caught, or its own). If he is away, the
   witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
   authority gone for good never hears it.

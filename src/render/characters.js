@@ -5,7 +5,7 @@ import {
   T, clamp, fin, hash, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
-import { NOTICE, MARKS, HOLD_TIME } from '../config.js';
+import { NOTICE, MARKS, HOLD_TIME, WORK_PENALTY_MIN } from '../config.js';
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -964,6 +964,22 @@ function drawPlayer(ctx, game, t) {
   playerHeld.on = !!at;
   playerHeld.t = t;
   if (at) { playerHeld.x = x + at.x * (s.scale || 1); playerHeld.y = y + at.y * (s.scale || 1); }
+  const forced = game.clock ? fin(game.clock.forced) : 0;
+  if (forced > 0 && !game.outcome) drawWorkMeter(ctx, x, y - 40, clamp(forced / WORK_PENALTY_MIN, 0, 1));
+}
+
+// The assigned work over your head while it lasts (game.clock.forced): a sheet of paper and the bar of it left.
+function drawWorkMeter(ctx, x, y, left) {
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillRect(x - 14, y - 5, 30, 12);
+  ctx.fillStyle = C.white;
+  ctx.fillRect(x - 13, y - 4, 8, 10);
+  ctx.fillStyle = 'rgba(42,33,27,0.55)';
+  for (let i = 0; i < 3; i++) ctx.fillRect(x - 12, y - 2 + i * 2.5, 6, 0.9);
+  ctx.fillStyle = '#2a211b';
+  ctx.fillRect(x - 3, y - 1, 18, 4);
+  ctx.fillStyle = C.tomato;
+  ctx.fillRect(x - 3, y - 1, 18 * left, 4);
 }
 
 // What E would do to what you hold, before the press (player.focus a 'self' target, play/interactions.js): its

@@ -51,8 +51,15 @@ export function updateScenario(game, dt) {
   if (game.clock.minute >= game.level.day.meetingAt) startMeeting(game, s);
 }
 
+// stopped: { by, reason, working } when a lost day had you sent to your desk (rules.js assignWork): by, who stopped
+// you (the witness who told, else the authority); working: still at it when the day ended. End scenes show it.
 function makeOutcome(game, result, routes, newRoutes) {
-  return { result, routes, newRoutes, loop: game.persist.loop, minute: game.clock.minute };
+  const o = { result, routes, newRoutes, loop: game.persist.loop, minute: game.clock.minute };
+  const r = game.rules;
+  if (result !== 'win' && result !== 'caught' && r.stoppedBy) {
+    o.stopped = { by: r.stoppedBy, reason: r.stoppedFor, working: !!(r.sent || game.clock.forced > 0) };
+  }
+  return o;
 }
 
 function startMeeting(game, s) {
@@ -93,7 +100,6 @@ function startMeeting(game, s) {
 
   if (result === 'fail') {
     // You are now presenting. There are no slides. You hurry to the front (the beat waits for you to get there).
-    burst(game, 'paper', p.x, p.y, 8);
     standUp(game);
     const spot = spotPos(game, game.level.meeting.presenter);
     const t = walkTo(game, s, spot, HURRY, false);

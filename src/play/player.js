@@ -9,15 +9,17 @@ import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from '../sim/nav.js';
 
 // Sent to your desk (sim seconds since the order; told on: the witness's shout reaches him first).
-//   told on:   0 shout -> RELAY he looks at her -> LOOK_YOU at you -> ORDER 📄📄👉🖥️ (the stack lands) -> GO you walk
+//   told on:   0 her shout, a beat of its own -> RELAY it runs to him, he looks at her -> LOOK_YOU at you
+//              -> ORDER 📄👉 you -> GO you walk to your desk; the stack lands on it as you sit
 //   idle:      the order comes at once (he was watching you already) -> GO_IDLE you walk
 // The walk is part of the WORK_PENALTY_MIN: clock.forced runs down from the order, so the work ends on the same tick.
-const RELAY = 0.3;
-const LOOK_YOU = 0.65;
-const ORDER = 0.75;
-const GO = 1.15;
+const RELAY = 1.0;
+const LOOK_YOU = 1.5;
+const ORDER = 1.7;
+const GO = 2.3;
 const GO_IDLE = 0.5;
-export const ORDER_ICONS = ['📄', '📄', '👉', '🖥️'];
+export const ORDER_ICONS = ['📄', '👉', '@player'];
+const SELF_ORDER_ICONS = ['📄', '👉', '🖥️']; // he is off the floor: the order shows over you, pointing at your desk
 
 const NULL_INPUT = { isDown: () => false, pressed: () => false, axis: () => ({ x: 0, y: 0 }) };
 export const inputOf = (game) => game.input ?? NULL_INPUT;
@@ -110,10 +112,10 @@ export function standUp(game) {
 // --- Sent to your desk --------------------------------------------------------------
 // rules.js assignWork: the order stands from now (clock.forced, locked, workAssigned); the rest plays out here.
 // by: the witness whose shout brought him (null: he saw you idling himself). auth: the authority's id, null if he's off the floor
-// (the order then shows over you at once). game.rules.sent = { t, by, auth, look, said, walk, stackAt }; look: whom
-// he faces (render: null, the witness's id, 'player'); stackAt: loopTime the paper stack landed on your desk.
+// (the order then shows over you at once). game.rules.sent = { t, by, auth, look, said, walk }; look: whom he faces
+// (render: null, the witness's id, 'player'). game.rules.stackAt: loopTime the paper stack landed on your desk (you sat).
 export function sendToDesk(game, by, auth) {
-  const sent = { t: 0, by: auth ? by : null, auth, look: by && auth ? null : 'player', said: false, walk: null, stackAt: null };
+  const sent = { t: 0, by: auth ? by : null, auth, look: by && auth ? null : 'player', said: false, walk: null };
   game.rules.sent = sent;
   game.player.moving = false;
   if (!sent.by) giveOrder(game, sent);
@@ -121,8 +123,7 @@ export function sendToDesk(game, by, auth) {
 
 function giveOrder(game, sent) {
   sent.said = true;
-  sent.stackAt = game.loopTime;
-  say(game, sent.auth ?? 'player', ORDER_ICONS, { kind: 'speech' }); // render drops the paper stack on your desk now
+  say(game, sent.auth ?? 'player', sent.auth ? ORDER_ICONS : SELF_ORDER_ICONS, { kind: 'speech' });
   if (sent.auth) sightline(game, sent.auth, 'order', 1.6); // his order runs to you (render only)
 }
 
@@ -130,6 +131,7 @@ function serveOrder(game, sent, dt) {
   setBusy(game, false, null);
   sent.t += dt;
   const told = !!sent.by;
+  if (told && sent.t - dt < RELAY - 1e-9 && sent.t >= RELAY - 1e-9) sightline(game, sent.by, 'relay', 1.0, undefined, sent.auth);
   if (told) sent.look = sent.t < RELAY - 1e-9 ? null : sent.t < LOOK_YOU - 1e-9 ? sent.by : 'player';
   if (!sent.said && sent.t >= ORDER - 1e-9) giveOrder(game, sent);
   if (sent.t < (told ? GO : GO_IDLE) - 1e-9) return; // you stand there and take it
@@ -141,6 +143,7 @@ function serveOrder(game, sent, dt) {
   if (!stepWalk(game, sent.walk, PLAYER_SPEED, dt)) return;
   game.rules.sent = null;
   game.rules.workFrom = game.clock.forced;
+  game.rules.stackAt = game.loopTime; // render drops the paper stack on your desk now
   sitAtDesk(game);
   setBusy(game, true, 'typing');
 }

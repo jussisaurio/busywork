@@ -495,11 +495,13 @@ game = {
                               // caught, after the outcome and during assigned work.
   caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection'|
                               //   a fetch's reason, t, via } (via: the camera id he saw you on, or null)
-  outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute }
-  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, workFrom },   // rules.js and player.js; render reads
-      // sent: null | { t, by, auth, look, said, walk, stackAt }: sent to your desk and not there yet (look: whom the
-      //   authority faces, null | witness id | 'player'; stackAt: loopTime the paper stack landed on your desk).
-      // workFrom: clock.forced when you sat down (the stack's full height).
+  outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute, stopped? }
+                              //   stopped: { by, reason, working } on a lost day you were sent to your desk (by: who
+                              //   told, else the authority; working: still at it). End card: screens.js STOPPED_SCENE.
+  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, workFrom, stackAt, stoppedBy, stoppedFor },
+      // sent: null | { t, by, auth, look, said, walk }: sent to your desk and not there yet (look: whom the
+      //   authority faces, null | witness id | 'player').
+      // workFrom: clock.forced when you sat down (the stack's full height); stackAt: loopTime it landed (you sat).
   scenario: { beatT, crickets, walk, arrivedAt, endAt },      // private to scenario.js (the end beat; walk: where it
                                                               // makes you go, to the front or your desk)
 }
@@ -581,8 +583,8 @@ game = {
 - The view: `effects.js` `FULL_VIEW` `{ x0, y0, x1, y1 }` (map px). While the end beat zooms in, the renderer passes
   the smaller rect to `drawBubbles`, `drawSuspicion`, `drawWitnesses` and `drawFocusHint` (last param), and they
   keep inside it; with no room above a head, a bubble goes beside it with its tail on the speaker.
-- Assigned work shows at your desk (`world.js` `drawWorkStack`: the stack lands at `rules.sent.stackAt`, shrinks with
-  `clock.forced / rules.workFrom`), not in the HUD. A witness's eye (`drawWitnesses`) reads `game.watch`,
+- Assigned work shows at your desk (`world.js` `drawWorkStack`: one tidy stack lands at `rules.stackAt`, shrinks with
+  `clock.forced / rules.workFrom`) and over your head (`characters.js` `drawWorkMeter`), not in the HUD. A witness's eye (`drawWitnesses`) reads `game.watch`,
   `rules.seen` (against `NOTICE`, `DOUBLE_TAKE`) and `rules.grudge`.
 
 ### Audio (`src/audio/*`)

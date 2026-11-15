@@ -301,7 +301,8 @@ function tattleHeard(game, by, reason) {
 }
 
 // The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes. by: the witness who told
-// (her shout runs to him as a line: he looks at her, then at you, then gives the order). The order stands from
+// (her shout has its beat, then runs to him as a line: he looks at her, then at you, then gives the order; player.js).
+// s.stoppedBy: who stopped you this loop (the witness, else the authority), for the outcome. The order stands from
 // this step (forced, locked, workAssigned); you walk to your desk inside that time (player.js sendToDesk).
 function assignWork(game, reason, by = null) {
   const s = game.rules;
@@ -309,7 +310,6 @@ function assignWork(game, reason, by = null) {
   const id = roles(game).authority.id;
   const boss = findNpc(game, id);
   const here = boss && boss.active;
-  if (by && here) sightline(game, by, 'relay', 1.0, undefined, id);
   // If the authority is off-floor (restroom), the order still lands: shown over the player at once.
   sendToDesk(game, by, here ? id : null);
   // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
@@ -321,6 +321,8 @@ function assignWork(game, reason, by = null) {
   game.clock.ff = false;
   game.suspicion[id] = 0;
   s.working = true;
+  s.stoppedBy = by ?? id;
+  s.stoppedFor = reason;
   s.seen = {};
   s.grudge = null; // you're on your way to your desk: nothing left to tell
   game.events.emit(`${id}:workAssigned`, { reason });
