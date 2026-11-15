@@ -15,6 +15,7 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } fr
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHarness, helpText } from '../src/agent/harness.js';
+import { formatClock } from '../src/config.js';
 import { defaultLevel, getLevel } from '../src/levels/index.js';
 import { levelArg } from './lib/level-arg.mjs';
 
@@ -45,7 +46,7 @@ if (rest[0] === 'new') {
   writeFileSync(join(DIR, `${name}.jsonl`), JSON.stringify({ level: level.id }) + '\n');
   const h = createHarness({ level });
   h.begin();
-  console.log(`${mission(level)}\n\n--- LOOP 1 begins: 2:30 PM, at your desk ---\n`);
+  console.log(`${mission(level)}\n\n--- LOOP 1 begins: ${formatClock(0, level.day.start)}, at your desk ---\n`);
   console.log(h.observe(obsOpts));
   process.exit(0);
 }

@@ -9,7 +9,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { formatClock, WORK_PENALTY_MIN } from '../config.js';
+import { formatClock, dayCue, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -31,7 +31,7 @@ export function drawHud(ctx, game, t, mem) {
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
   drawClock(ctx, fin(clock.minute), t, game.level.day);
   drawGoal(ctx);
-  drawHeld(ctx, game.level.itemIcons, game.player && game.player.held);
+  drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
   panel(ctx, 342, 6, 160, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
@@ -135,15 +135,15 @@ function drawKeyLegend(ctx, game) {
   drawLegendRow(ctx, LEGEND_PLAY, at.x * T, HUD_H + at.y * T, LEGEND_PLAY_STYLE, PRESSED);
 }
 
-// "3:50 PM" -> "3:50": digits only (the analog face carries the rest).
-export function clockDigits(minute) {
-  const str = formatClock(minute);
+// "3:50 PM" -> "3:50": digits only (the analog face carries the rest). start: the level's day.start.
+export function clockDigits(minute, start) {
+  const str = formatClock(minute, start);
   const sp = str.indexOf(' ');
   return sp > 0 ? str.slice(0, sp) : str;
 }
 
 function drawClock(ctx, minute, t, day) {
-  const red = minute >= day.clockRedAt;
+  const red = minute >= dayCue(day, 'clockRedAt');
   const last = minute >= day.meetingAt - 2;
   const pulse = last ? 0.5 + 0.5 * Math.sin(t * 8) : 0;
   panel(ctx, 10, 6, 168, 44);
@@ -162,10 +162,10 @@ function drawClock(ctx, minute, t, day) {
     const a = (i / 12) * Math.PI * 2;
     fillCircle(ctx, cx + Math.cos(a) * 10, cy + Math.sin(a) * 10, i % 3 ? 0.6 : 1.1, C.ink);
   }
-  clockHands(ctx, cx, cy, minute, 6, 2.4, 9.5, 1.5, red ? C.tomatoDark : C.ink);
+  clockHands(ctx, cx, cy, minute, 6, 2.4, 9.5, 1.5, red ? C.tomatoDark : C.ink, day.start);
   fillCircle(ctx, cx, cy, 1.5, C.tomato);
 
-  const hm = clockDigits(minute);
+  const hm = clockDigits(minute, day.start);
   const col = red ? C.hudRed : C.hudText;
   ctx.save();
   ctx.translate(166, 29);
@@ -187,7 +187,7 @@ function drawGoal(ctx) {
   emoji(ctx, '❌', 258, 36, 12);
 }
 
-function drawHeld(ctx, icons, held) {
+function drawHeld(ctx, items, held) {
   panel(ctx, 286, 6, 44, 44);
   ctx.strokeStyle = 'rgba(243,230,200,0.22)';
   ctx.lineWidth = 1.5;
@@ -195,7 +195,7 @@ function drawHeld(ctx, icons, held) {
   rrect(ctx, 292, 12, 32, 32, 6);
   ctx.stroke();
   ctx.setLineDash([]);
-  const ic = itemIcon(icons, held);
+  const ic = itemIcon(items, held);
   if (ic) emoji(ctx, ic, 308, 29, 24);
   else {
     ctx.globalAlpha = 0.18;

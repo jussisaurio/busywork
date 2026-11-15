@@ -3,7 +3,8 @@
 // command stops only: nothing here changes what happens in a day.
 //
 //   mission      the line tools/play.mjs prints before the help
-//   landmarks    extra `goto` names (besides interactable ids and "x,y") -> spot names. `sit` walks to my_seat.
+//   landmarks    extra `goto` names (besides interactable ids and "x,y") -> spot names. my_seat (-> player_desk,
+//                where `sit` walks) is built in (levels/validate.js ENGINE_LANDMARKS).
 //   stops        level events that end a waiting/walking command early, on top of the harness's own
 //                (caught, day:end; soft: witness:notice, witness:tattle, action:cancel)
 //   names        how event lines name people (default: the id)
@@ -26,7 +27,6 @@ export default {
   mission: 'MISSION: 4:00 PM. You promised slides. You made none. Make sure the meeting never happens.',
 
   landmarks: {
-    my_seat: 'player_desk',
     boss_desk: 'boss_desk',
     lin_desk: 'lin_desk',
     kev_desk: 'kev_desk',
@@ -110,6 +110,7 @@ export default {
         }
         return null;
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
+      case 'meeting:gather': return 'everyone heads to the meeting room';
       default: return undefined;
     }
   },

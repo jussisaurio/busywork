@@ -9,7 +9,8 @@
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
 //   interactions  the player's actions here (interactions.js; play/interactions.js adds eat_<type> per edible
 //                 item, then sit, drop, pick_up, put)
-//   items    carryable item types and their flags: icon, place, edible, contraband, owner (items.js)
+//   items    carryable item types and their flags: icon (how it draws: held, carried, dropped, the HUD), place,
+//            edible, contraband, owner (items.js)
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up
@@ -33,8 +34,7 @@
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
 //   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
 //   poses    what the cast is drawn doing: arms rules and marks (looks.js; render characters.js)
-//   cones    what makes a vision cone flare: alert overrides, items an NPC has eyes on (looks.js; render cones.js)
-//   itemIcons  the emoji for each item type (looks.js; render)
+//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (looks.js; render cones.js)
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
 //   voices   how the cast talks, by cast `voice` name (voices.js; audio/babble.js)
@@ -44,7 +44,7 @@ import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { DECOR } from './decor.js';
-import { LOOKS, POSES, CONES, ITEM_ICONS } from './looks.js';
+import { LOOKS, POSES, CONES } from './looks.js';
 import { END_SCENES } from './end-scenes.js';
 import { SOUNDS } from './sounds.js';
 import { VOICES } from './voices.js';
@@ -62,10 +62,12 @@ export default {
   patrols: ROUTES,
   cast: NPC_DEFS,
   day: {
-    start: 14 * 60 + 30, // 2:30 PM as minute-of-day (at() and formatClock() still use config.js DAY_START)
+    start: 14 * 60 + 30, // 2:30 PM as minute-of-day. The clock reads it; the at('3:10') times here count from
+    // at()'s default start, config.js DAY_START, the same 2:30 PM (another start passes it: at('9:30', START))
     gatherAt: at('3:54'), // everyone still on the floor heads to their meeting seat (sim)
     meetingAt: at('4:00'), // the meeting: the day's outcome (scenario)
-    // Cosmetic cues: separate times, not rules (none of them follows from gatherAt or meetingAt).
+    // Cosmetic cues: separate times, not rules. Each is optional: config.js dayCue defaults it to a few minutes
+    // before meetingAt (red and ticking at -5, tock -2, half minutes -1, beam -5).
     clockRedAt: at('3:50'), // the HUD clock turns red
     clockTickAt: at('3:50'), // audio: the wall clock starts ticking
     tockAt: at('3:55'), // audio: tick-tock
@@ -105,7 +107,6 @@ export default {
   looks: LOOKS,
   poses: POSES,
   cones: CONES,
-  itemIcons: ITEM_ICONS,
   endScenes: END_SCENES,
   sounds: SOUNDS,
   voices: VOICES,

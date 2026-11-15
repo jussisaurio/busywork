@@ -78,7 +78,7 @@ function offenceFor(game, s, npc) {
   const r = roles(game);
   if (p.action && p.action.sneaky && (!p.action.owner || p.action.owner === npc.id)) {
     // A locked-out boss is outside banging on the glass: he can't do anything about it.
-    if (npc.id === r.authority?.id && r.authority.helpless.includes(npc.override)) return null;
+    if (npc.id === r.authority?.id && (r.authority.helpless ?? []).includes(npc.override)) return null;
     return 'action';
   }
   if (atScene(game, s, npc)) return 'scene';
@@ -92,6 +92,28 @@ function offenceFor(game, s, npc) {
 }
 
 export function updateRules(game, dt) {
+  rulesStep(game, dt);
+  publishWatch(game);
+}
+
+// What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'action' | 'scene' |
+// 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
+// serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
+// a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
+function publishWatch(game) {
+  const watch = {};
+  const s = game.rules;
+  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working) {
+    const p = game.player;
+    for (const npc of game.npcs) {
+      const offence = offenceFor(game, s, npc);
+      if (offence && npcSees(game, npc, p.x, p.y)) watch[npc.id] = offence;
+    }
+  }
+  game.watch = watch;
+}
+
+function rulesStep(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
   const s = game.rules;
   const p = game.player;
@@ -219,8 +241,8 @@ function react(game, s, npc, offence) {
   // Just carrying their thing: they take it and that's the end of it, with a word (the owner's `says`).
   if (offence === 'contraband') {
     for (const line of owner?.says ?? []) {
-      if (line.after) npcSayLater(npc, line.after, line.say, 'speech');
-      else say(game, npc.id, line.say, { kind: 'speech' });
+      if (line.after) npcSayLater(npc, line.after, line.say, line.kind ?? 'speech', line.ttl);
+      else say(game, npc.id, line.say, { kind: line.kind ?? 'speech', ttl: line.ttl });
     }
     game.events.emit('witness:tattle', { by: npc.id, reason: offence, heard: false });
     return;
@@ -251,7 +273,9 @@ function assignWork(game, reason) {
   const boss = findNpc(game, id);
   // If the authority is off-floor (restroom), the order still lands: show it over the player.
   say(game, boss && boss.active ? id : 'player', ['📄', '📄', '👉', '🖥️'], { kind: 'speech' });
-  cancelAction(game, 'witnessed');
+  // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
+  // ends as 'idle'. Told on (a tattle): 'witnessed'.
+  cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
   dropHeld(game); // whatever you carried stays where you stood
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
   sitAtDesk(game);

@@ -9,12 +9,13 @@
 // The level's own words (goto landmarks, stop events, the WORLD line, event lines) come from
 // game.level.harness (src/levels/meeting/harness.js documents the shape).
 
+import { ENGINE_LANDMARKS } from '../levels/validate.js';
 import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
 import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
-import { TARGET_ACTIONS } from '../play/interactions.js';
+import { actionRow } from '../play/interactions.js';
 import { putSpots, canPut } from '../sim/mechanics/putdown.js';
 import { parseMap } from '../core/map.js';
 import { createScriptedInput } from './scripted-input.js';
@@ -39,7 +40,7 @@ function wrap(words, width) {
 // The command reference for a level (its goto targets: interactables, then landmarks).
 export function helpText(level = defaultLevel) {
   const ids = parseMap(level.map.rows, level.map.legend).interactables.map((i) => i.id);
-  const targets = [...wrap(ids, 62), ...wrap(Object.keys(level.harness?.landmarks ?? {}), 62)];
+  const targets = [...wrap(ids, 62), ...wrap(Object.keys({ ...ENGINE_LANDMARKS, ...level.harness?.landmarks }), 62)];
   targets[targets.length - 1] += ' | x,y (tile)';
   return `Commands (one per call or several in a row):
   look                         observe without acting
@@ -62,7 +63,8 @@ export function createHarness({ level = defaultLevel } = {}) {
   const input = createScriptedInput();
   const game = createGame({ input, level: typeof level === 'string' ? getLevel(level) : level });
   const H = game.level.harness ?? {};
-  const LANDMARKS = H.landmarks ?? {};
+  const clock = (minute) => formatClock(minute, game.level.day.start); // "2:30 PM": the level's day, not level 1's
+  const LANDMARKS = { ...ENGINE_LANDMARKS, ...H.landmarks }; // my_seat: built in, a level needn't name it
   const hardStop = new Set([...HARD_STOP, ...(H.stops?.hard ?? [])]);
   const softStop = new Set([...SOFT_STOP, ...(H.stops?.soft ?? [])]);
   const log = []; // { loop, minute, name, payload }
@@ -107,13 +109,13 @@ export function createHarness({ level = defaultLevel } = {}) {
     runUntil(() => !(game.clock.forced > 0 || game.player.locked), { soft: false });
     if (game.phase !== 'day') return null; // the meeting/caught beat ran to the end of the day
     return working
-      ? `(you were stuck at your desk doing assigned work from ${formatClock(from)} to ${formatClock(game.clock.minute)})`
-      : `(you couldn't move from ${formatClock(from)} to ${formatClock(game.clock.minute)})`;
+      ? `(you were stuck at your desk doing assigned work from ${clock(from)} to ${clock(game.clock.minute)})`
+      : `(you couldn't move from ${clock(from)} to ${clock(game.clock.minute)})`;
   }
 
   function parseDuration(tokens) {
     if (tokens[0] === 'until') {
-      const target = at(tokens[1] ?? '');
+      const target = at(tokens[1] ?? '', game.level.day.start);
       if (!Number.isFinite(target)) throw new Error(`bad time '${tokens[1]}' (use e.g. until 3:10)`);
       return { done: () => game.clock.minute >= target, label: `until ${tokens[1]}` };
     }
@@ -244,11 +246,11 @@ export function createHarness({ level = defaultLevel } = {}) {
       if (game.phase === 'day' && !game.outcome) return { text: 'the day is still going (use restart to give up)' };
       while (game.phase === 'day') frame(); // let the end-of-day beat finish
       startLoop(game);
-      return { text: `--- LOOP ${game.persist.loop} begins: 2:30 PM, at your desk ---` };
+      return { text: `--- LOOP ${game.persist.loop} begins: ${clock(0)}, at your desk ---` };
     }
     if (cmd === 'restart') {
       startLoop(game);
-      return { text: `--- gave up. LOOP ${game.persist.loop} begins: 2:30 PM, at your desk ---` };
+      return { text: `--- gave up. LOOP ${game.persist.loop} begins: ${clock(0)}, at your desk ---` };
     }
     if (game.phase !== 'day') return { text: 'the day is over: use continue' };
 
@@ -382,7 +384,7 @@ function compass(rad) {
 function focusText(game) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
-  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : TARGET_ACTIONS[f.action]?.text ?? f.action ?? 'interact';
+  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : actionRow(game, f.action)?.text ?? f.action ?? 'interact';
   return f.kind === 'self' ? `${f.icon ?? ''} ${verb}` : `${f.icon ?? ''} ${f.id}: ${verb}`;
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
@@ -393,8 +395,8 @@ export function observe(game, { map = true, debug = false } = {}) {
   const H = game.level.harness ?? {};
   // Same as the HUD: one slot per route, blank until found.
   const routes = game.level.routes.map(({ id, icon }) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
-  const meetingAt = game.level.day.meetingAt;
-  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute)} (meeting at ${formatClock(meetingAt)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
+  const { meetingAt, start } = game.level.day;
+  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute, start)} (meeting at ${formatClock(meetingAt, start)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
 
   if (game.phase === 'end' && game.outcome) {
     const o = game.outcome;
@@ -486,7 +488,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
   let lastText = null;
   let repeats = 0;
   for (const e of events) {
-    const t = formatClock(e.minute);
+    const t = formatClock(e.minute, level.day.start);
     const p = e.payload ?? {};
     let s = H.describe?.(e, memo);
     if (s === undefined) switch (e.name) {
@@ -504,7 +506,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'action:cancel': s = `your action was interrupted (${p.reason})`; break;
       case 'npc:vanish': s = `${NAME[p.id] ?? p.id} left the floor`; break;
       case 'npc:appear': s = `${NAME[p.id] ?? p.id} is back`; break;
-      case 'meeting:gather': s = 'everyone heads to the meeting room'; break;
+      case 'meeting:gather': s = 'everyone gathers for the meeting'; break; // a level's describe() names the place
       case 'day:end': s = `DAY OVER (${p.outcome?.result})`; break;
       case 'loop:start': s = null; break;
       case 'item:drop': s = `you dropped the ${p.type}`; break;

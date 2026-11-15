@@ -8,7 +8,6 @@ export default {
   mission: "MISSION: 3:00 PM. It's your birthday. Nobody was supposed to know. Make sure nobody sings.",
 
   landmarks: {
-    my_seat: 'player_desk',
     doreen_desk: 'doreen_desk',
     gus_desk: 'gus_desk',
     door: 'door',

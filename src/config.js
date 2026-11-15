@@ -1,34 +1,61 @@
 // Tunables. Units: distances in tiles, speeds in tiles per REAL second,
-// game time in minutes since DAY_START, angles in radians.
+// game time in minutes since the day's start (level.day.start, a minute-of-day), angles in radians.
 
 export const TILE = 32; // pixels per tile at 1x zoom
 export const FIXED_DT = 1 / 60; // simulation step (real seconds)
 export const SEED = 20261114; // same seed every loop -> deterministic days
 
 // --- Clock -----------------------------------------------------------------
-export const DAY_START = 14 * 60 + 30; // 2:30 PM as minute-of-day
+export const DAY_START = 14 * 60 + 30; // 2:30 PM as minute-of-day: the default `start` of at() and formatClock()
 export const GAME_MIN_PER_SEC = 0.6; // 90 game minutes ~= 150 real seconds
 export const FF_MULT = 6; // look busy while seated at own desk = fast-forward
 export const FORCED_MULT = 8; // speed while serving a "work assigned" penalty
 export const WORK_PENALTY_MIN = 20; // game minutes lost to assigned work
 
-// "3:10" -> minutes since DAY_START. Hours 1..11 are PM.
-export function at(hhmm) {
+// "3:10" -> game minutes since the day's start (`start`: the level's day.start, a minute-of-day). Hours 1..11 are
+// in the start's half of the day: PM in an afternoon day (2:30 PM: '3:10' is 3:10 PM), AM in a morning one
+// (9:00 AM: '9:30' is 9:30 AM). 12 is noon, 13..23 are 24-hour ('13:15' is 1:15 PM in a morning day).
+// A level whose day doesn't start at 2:30 PM passes its start: at('9:30', START).
+export function at(hhmm, start = DAY_START) {
   const [h, m] = hhmm.split(':').map(Number);
-  const hh = h < 12 ? h + 12 : h;
-  return hh * 60 + m - DAY_START;
+  const hh = h < 12 && start >= 12 * 60 ? h + 12 : h;
+  return hh * 60 + m - start;
 }
 
-// minutes since DAY_START -> "3:12 PM"
-export function formatClock(minute) {
-  const total = Math.floor(DAY_START + minute);
+// game minutes since the day's start (`start`, as at()) -> "3:12 PM"
+export function formatClock(minute, start = DAY_START) {
+  const total = Math.floor(start + minute);
   const h24 = Math.floor(total / 60);
   const m = total % 60;
   const h12 = ((h24 + 11) % 12) + 1;
   return `${h12}:${String(m).padStart(2, '0')} ${h24 >= 12 ? 'PM' : 'AM'}`;
 }
 
+// game minutes since the day's start -> "3:12", the short form at(_, start) reads back: 12-hour in an afternoon
+// day, 24-hour from noon on in a morning one ('9:30', '13:15').
+export function clockArg(minute, start = DAY_START) {
+  const total = Math.floor(start + minute);
+  const h24 = Math.floor(total / 60) % 24;
+  const h = start >= 12 * 60 ? ((h24 + 11) % 12) + 1 : h24;
+  return `${h}:${String(total % 60).padStart(2, '0')}`;
+}
+
 // --- Movement / interaction -----------------------------------------------
+// Cosmetic cue times, game minutes like day.meetingAt. A level may set any of them in its day; the rest default to
+// a few minutes before day.meetingAt (dayCue reads one). They are not rules: nothing in the sim reads them.
+const CUE_DEFAULTS = {
+  clockRedAt: (d) => d.meetingAt - 5, // the HUD clock turns red
+  clockTickAt: (d) => dayCue(d, 'clockRedAt'), // audio: the wall clock starts ticking (with the red clock)
+  tockAt: (d) => d.meetingAt - 2, // audio: tick-tock
+  halfMinuteAt: (d) => d.meetingAt - 1, // audio: a tick every half minute
+  beamAt: (d) => d.meetingAt - 5, // the meeting projector's beam lights the screen
+};
+export const DAY_CUES = Object.keys(CUE_DEFAULTS);
+export function dayCue(day, name) {
+  const d = day ?? {};
+  return d[name] ?? CUE_DEFAULTS[name](d);
+}
+
 export const PLAYER_SPEED = 4.2;
 export const PLAYER_BUSY_SPEED = 2.4; // striding with a folder
 export const PLAYER_RADIUS = 0.3; // collision circle

@@ -114,7 +114,7 @@ export default {
   initialWorld: () => ({ donut: 'box', items: [] }),
   harness: {
     mission: 'MISSION: the 2:40 meeting is the boss and the last donut. Eat it. He has not blinked since 2:30.',
-    landmarks: { my_seat: 'player_desk', boss: 'boss_chair', printer: 'printer', doorway: 'doorway', meeting_room: 'meeting_presenter' },
+    landmarks: { boss: 'boss_chair', printer: 'printer', doorway: 'doorway', meeting_room: 'meeting_presenter' },
     stops: { hard: ['boss:workAssigned'], soft: ['boss:suspicious'] },
     names: NAME,
     mapKey: ['MAP (# wall, T desk, O the donut, X printer, W workstation, Q water cooler, P your desk, @ you, b boss, * floor he can see right now):'],
@@ -137,6 +137,7 @@ export default {
     mustUse: [{ id: 'noise', event: 'noise' }],
     targets: ['workstation', 'donut', 'water_cooler', 'printer', 'doorway', 'boss', 'meeting_room'],
     interactable: ['workstation', 'donut', 'water_cooler'],
+    renderEvents: ['boss:workAssigned'],
     milestones: { 'donut:eaten': () => 'ate', 'boss:workAssigned': () => 'work', caught: () => 'caught' },
     binKeys: ['ate', 'work', 'caught'],
     keyActions: ['noise', 'ate'],
@@ -146,6 +147,15 @@ export default {
       // A win, then the next day without the printer.
       ['goto workstation', 'interact', 'goto donut', 'interact', 'pretend until 2:40', 'continue', 'goto donut', 'interact'],
     ],
+  },
+  title: { mission: ['2:40 PM. The meeting is the boss and the last donut.', 'Eat it.'], badge: ['🍩', '❌'] },
+  // How the boss talks (level.voices; fields: src/audio/babble.js VOICES).
+  voices: {
+    boss: {
+      wave: 'sawtooth', f0: 95, spread: 0.06, decl: 0.22, syl: [0.15, 0.2], gap: [0.04, 0.07], atk: 0.02,
+      fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
+      vowels: ['a', 'o', 'u', 'uh'], cons: 0.3, consF: 1700, consAmp: 0.18, gain: 1.1,
+    },
   },
   decor: {
     chairs: [

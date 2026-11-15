@@ -83,14 +83,14 @@ export default {
       },
     },
   },
+  title: { mission: ['3:00 PM. The boss does whatever the suggestion box says.', 'Suggest there is no meeting.'], badge: ['📝', '❌'] },
   routes: [{ id: 'box', icon: '📝', achieved: (w) => w.cancelled }],
   outcomeOrder: ['box'],
   initialWorld: () => ({ note: 'pad', cancelled: false, items: [] }),
-  itemIcons: { note: '📝' },
   harness: {
     mission: 'MISSION: 3:00 PM meeting. The boss does whatever the suggestion box says.',
     landmarks: {
-      my_seat: 'player_desk', boss_desk: 'boss_desk', box: 'box', restroom_door: 'restroom',
+      boss_desk: 'boss_desk', box: 'box', restroom_door: 'restroom',
       meeting_room: 'meeting_presenter', meeting_seat: 'meeting_player',
     },
   },
@@ -99,9 +99,9 @@ export default {
     mustUse: [{ id: 'put', event: 'item:put' }],
     targets: ['own_desk', 'my_seat', 'boss_desk', 'box', 'restroom_door', 'meeting_room', 'meeting_seat'],
     interactable: ['own_desk'],
+    renderEvents: ['boss:workAssigned'],
     milestones: {
       'note:written': () => 'wrote',
-      'item:put': (p) => `put@${p.spot}`,
       'note:recovered': () => 'pocketed',
       'meeting:cancelled': () => 'cancelled',
       'boss:workAssigned': () => 'work',

@@ -57,11 +57,8 @@ export const POSES = {
   ],
 };
 
-// level.cones: what makes an NPC's vision cone flare red (render/cones.js), besides the authority's suspicion
-// and a sneaky action he sees.
+// level.cones: what makes an NPC's vision cone flare red (render/cones.js), besides being caught by him, the
+// authority's suspicion and anything the rules object to in his sight (game.watch: a sneaky action, the scene,
+// the evidence, contraband or his own thing in your hands, published by play/rules.js).
 //   alert   overrides during which he's on alert
-//   eyesOn  npc id -> the item type that flares his cone when he sees it in your hands
-export const CONES = { alert: ['alerted', 'hunting'], eyesOn: { lin: 'sandwich' } };
-
-// level.itemIcons: the emoji for each item type (held, in hands, dropped on the floor, in the HUD).
-export const ITEM_ICONS = { coffee: '☕', keycard: '🪪', sandwich: '🥪' };
+export const CONES = { alert: ['alerted', 'hunting'] };

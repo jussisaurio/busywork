@@ -53,6 +53,22 @@ export const LOOKS = {
 };
 
 // The end card: no hand-drawn tableaux, just the carpet and the outcome's first icon, big.
+// How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.
+export const VOICES = {
+  // Doreen: brisk, clipped, a little shrill.
+  doreen: {
+    wave: 'sawtooth', f0: 225, spread: 0.08, decl: 0.12, syl: [0.07, 0.1], gap: [0.03, 0.05], atk: 0.006,
+    fmt: 1.1, q: [6, 8], mk: 2.6, f2amp: 0.7, body: 0.06, bodyF: 600,
+    vowels: ['e', 'i', 'a', 'o'], cons: 0.55, consF: 5000, consAmp: 0.2, gain: 0.8,
+  },
+  // Gus: low, warm, slow.
+  gus: {
+    wave: 'triangle', f0: 120, spread: 0.07, decl: 0.08, syl: [0.12, 0.17], gap: [0.02, 0.04], atk: 0.02,
+    fmt: 0.9, q: [5, 7], mk: 3.0, f2amp: 0.55, body: 0.2, bodyF: 500,
+    vowels: ['o', 'u', 'a', 'uh'], cons: 0.25, consF: 2400, consAmp: 0.14, gain: 1.1,
+  },
+};
+
 const picture = (icon) => (ctx, game, t) => {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);

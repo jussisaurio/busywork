@@ -297,11 +297,14 @@ section('keycard: boss facing the player -> caught');
   newDay([boss]);
   place(2.5, 1.5);
   step();
+  ok(Object.keys(game.watch).length === 0, 'game.watch: nothing in sight yet');
   input.press('interact');
   step();
+  ok(game.watch.boss === 'action', "game.watch.boss = 'action': the rules see the steal (the cone glows from this)");
   const t0 = game.loopTime;
   let tCaught = null;
   for (let i = 0; i < 60 && !game.caught; i++) { step(); if (game.caught) tCaught = game.loopTime; }
+  ok(Object.keys(game.watch).length === 0, 'game.watch empty once caught');
   ok(evs('witness:notice').some((e) => e.payload.by === 'boss'), 'boss ❓ (witness:notice) at first sight');
   ok(game.caught?.by === 'boss' && game.caught.reason === 'action', "caught {by:'boss', reason:'action'}");
   ok(tCaught !== null && tCaught - t0 >= NOTICE - 0.05 && tCaught - t0 <= NOTICE + 0.05, `caught after ~NOTICE (${tCaught && (tCaught - t0).toFixed(2)} s)`);
@@ -653,6 +656,7 @@ section('contraband');
   input.press('interact');
   run(2.5);
   ok(!game.caught && evs('boss:workAssigned')[0]?.payload.reason === 'idle', 'boss watches you eat: ❓ fills -> desk work, not fired');
+  ok(evs('action:cancel').some((e) => e.payload.type === 'eat_sandwich' && e.payload.reason === 'idle'), "the meal ends as action:cancel {reason:'idle'}, not 'witnessed'");
 
   // Kev's coffee: before he's found the pot empty, a colleague with a coffee is nothing to him.
   newDay([kev]);

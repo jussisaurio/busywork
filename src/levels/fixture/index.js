@@ -8,7 +8,7 @@
 import { at } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { CAST, BEHAVIOURS } from './cast.js';
-import { DECOR, LOOKS, TITLE, END_SCENES } from './presentation.js';
+import { DECOR, LOOKS, TITLE, END_SCENES, VOICES } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -38,7 +38,7 @@ const MAP = [
 const LEGEND = {
   W: { kind: 'calendar', solid: true, opaque: false, interactable: 'calendar' },
   M: { kind: 'microwave', solid: true, opaque: true, interactable: 'microwave' },
-  F: { kind: 'fridge', solid: true, opaque: true },
+  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' }, // render/world.js TILE_DRAWS
   B: { kind: 'cake_stand', solid: true, opaque: false, interactable: 'cake_stand' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
 };
@@ -170,6 +170,6 @@ export default {
   title: TITLE,
   decor: DECOR,
   looks: LOOKS,
-  itemIcons: { cake: '🎂' },
   endScenes: END_SCENES,
+  voices: VOICES,
 };

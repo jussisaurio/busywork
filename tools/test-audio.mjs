@@ -716,6 +716,21 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
   frames(g2, c2, a2, 5);
   const idle2 = frames(g2, c2, a2, 600);
   ok(idle2.created === 0, `idle day without music: no nodes created (${idle2.created})`);
+
+  // A level that sets no cue times gets config.js dayCue's defaults: no wall clock until 5 minutes before the
+  // meeting (it used to tick every half minute all day), then ticks.
+  const { day } = levels.meeting;
+  const g3 = makeGame();
+  g3.level = { ...levels.meeting, day: { start: day.start, gatherAt: day.gatherAt, meetingAt: day.meetingAt } };
+  const a3 = createAudio({ music: false });
+  a3.attach(g3);
+  a3.unlock();
+  const c3 = FakeAudioContext.last;
+  frames(g3, c3, a3, 5);
+  const early = frames(g3, c3, a3, 200, 1 / 60, (i) => (g3.clock.minute = 20 + i * 0.05));
+  ok(early.created === 0, `no cue times: the clock is silent before the default (${early.created} nodes)`);
+  const late = frames(g3, c3, a3, 60, 1 / 60, (i) => (g3.clock.minute = day.meetingAt - 4.6 + i * 0.05));
+  ok(late.created > 0, 'no cue times: the clock ticks from 5 minutes before the meeting');
 }
 
 // Mute: via setMuted and via game.settings.muted.

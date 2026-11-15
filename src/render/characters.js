@@ -762,10 +762,11 @@ export function resetState(s, t) {
   s.badge = false; s.crank = false; s.stain = false;
 }
 
-// The emoji for a held item type: the level's (game.level.itemIcons), '❔' if it has none, null for empty hands.
-export function itemIcon(icons, held) {
+// The emoji for a held item type: its level.items[type].icon (the validator requires one), '❔' for something
+// that isn't a level item, null for empty hands.
+export function itemIcon(items, held) {
   if (!held) return null;
-  return (icons && icons[held]) || '❔';
+  return (items && items[held]?.icon) || '❔';
 }
 
 function drawPlayer(ctx, game, t) {
@@ -777,7 +778,7 @@ function drawPlayer(ctx, game, t) {
   s.pose = p.seated ? 'sit' : p.moving ? 'walk' : 'stand';
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
-  s.item = itemIcon(game.level.itemIcons, p.held);
+  s.item = itemIcon(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? 'reach' : p.seated ? 'desk' : p.held ? 'carry' : p.moving ? 'walk' : 'idle';
@@ -821,7 +822,7 @@ function drawNpc(ctx, game, n, t) {
   if (n.carry) {
     if (!s.item && s.pose !== 'sit' && (s.arms === 'walk' || s.arms === 'idle')) {
       s.arms = 'mug';
-      s.item = itemIcon(game.level.itemIcons, n.carry);
+      s.item = itemIcon(game.level.items, n.carry);
     } else mug = true;
   }
   for (const r of poses.marks || NONE) {
@@ -834,9 +835,9 @@ function drawNpc(ctx, game, n, t) {
   const px = fin(n.x) * T;
   const py = fin(n.y) * T;
   const mugBehind = mug && Math.sin(s.dir) < 0; // on the far side of him: he overlaps it
-  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.itemIcons, n.carry));
+  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
   drawPerson(ctx, look, s, px, py);
-  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.itemIcons, n.carry));
+  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
 }
 
 // A cup set down on the desk or table in front of someone, a little to their right.

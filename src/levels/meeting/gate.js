@@ -9,8 +9,12 @@
 //                The order is behaviour: the fuzzer's rng picks by index.
 //   interactable the targets a plan can `interact` with (a goto there is often followed by one)
 //   milestones   event name -> (payload) => milestone name or null: what a run did (first minute of each)
+//                (on top of the engine's: tools/fuzz.mjs ENGINE_MILESTONES; a level's own win on a clash)
 //   binKeys      the milestones that define an outcome bin (the rest are only reported)
 //   keyActions   the milestones whose time span across all wins the report lists
+//   renderEvents events that tools/golden-render.mjs also renders at (and 20 frames after), besides the engine's
+//                own (caught, work:done, item:drop/pickup, witness:tattle, meeting:gather, day:end, loop:start,
+//                player:sit): the level's visible beats
 //   goldenPlans  hand-written golden plans that tools/golden.mjs --write --from adds to the fuzzer's: what the
 //                fuzzer's plan language never does (raw movement, several loops)
 
@@ -23,6 +27,10 @@ export default {
     'restroom_door', 'meeting_room', 'meeting_seat',
   ],
   interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge'],
+  renderEvents: [
+    'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:bang', 'boss:lockedOut', 'boss:workAssigned',
+    'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'coffee:confiscated', 'kev:alerted',
+  ],
   milestones: {
     'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
     'projector:broken': () => 'broke',

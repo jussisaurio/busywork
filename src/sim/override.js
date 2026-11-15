@@ -15,9 +15,10 @@ export function endOverride(npc) {
   npc._look = null;
 }
 
-// A speech bubble `t` seconds from now, queued behind any already waiting.
-export function npcSayLater(npc, t, icons, kind) {
-  npc._sayQ.push({ t, icons, kind });
+// A speech bubble `t` seconds from now, queued behind any already waiting. ttl: how long it shows (say()'s
+// default if absent).
+export function npcSayLater(npc, t, icons, kind, ttl) {
+  npc._sayQ.push({ t, icons, kind, ttl });
 }
 
 // Stand still for at least `s` seconds before going on with the plan.
@@ -26,11 +27,11 @@ export function holdFor(npc, s) {
 }
 
 // Bubbles from level data, in order. A line: { say: icons, kind?: 'speech', ttl?, after? }. A line with `after`
-// is queued that many seconds behind the ones already waiting (npcSayLater).
+// is queued that many seconds behind the ones already waiting (npcSayLater), keeping its kind and ttl.
 export function speak(game, npc, lines) {
   if (!lines) return;
   for (const l of lines) {
-    if (l.after) npcSayLater(npc, l.after, l.say, l.kind ?? 'speech');
+    if (l.after) npcSayLater(npc, l.after, l.say, l.kind ?? 'speech', l.ttl);
     else say(game, npc.id, l.say, { kind: l.kind ?? 'speech', voice: npc.voice, ttl: l.ttl });
   }
 }

@@ -65,14 +65,14 @@ export default {
   interactions: {},
   items: { laptop: { icon: '💻', place: 'laptop', contraband: 'auditor' } },
   roles: { authority: { id: 'auditor', offDuty: ['meeting'], helpless: [] } },
+  title: { mission: ['3:00 PM. Inventory day: the auditor counts two laptops.', 'The office has one.'], badge: ['💻', '❌'] },
   routes: [{ id: 'audit', icon: '💻', achieved: (w) => w.audited }],
   outcomeOrder: ['audit'],
   initialWorld: () => ({ laptop: 'player_desk', audited: false, items: [itemOn(SPOTS, 'player_desk', 'laptop')] }),
-  itemIcons: { laptop: '💻' },
   harness: {
     mission: 'MISSION: 3:00 PM meeting. Inventory day: the auditor counts two laptops. There is one.',
     landmarks: {
-      my_seat: 'player_desk', dave_desk: 'dave_desk', auditor_desk: 'auditor_desk',
+      dave_desk: 'dave_desk', auditor_desk: 'auditor_desk',
       meeting_room: 'meeting_presenter', meeting_seat: 'meeting_player',
     },
   },
@@ -83,11 +83,7 @@ export default {
     interactable: ['my_seat', 'dave_desk'],
     milestones: {
       'item:pickup': () => 'grabbed',
-      'item:put': (p) => `put@${p.spot}`,
       'inspect:start': () => 'audit',
-      'inspect:pass': (p) => `tick${p.index}`,
-      'inspect:fail': (p) => `cross${p.index}`,
-      'inspect:moved': () => 'moved',
       'laptop:recovered': () => 'pocketed',
       'auditor:workAssigned': () => 'work',
       caught: () => 'caught',

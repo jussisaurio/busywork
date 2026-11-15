@@ -33,7 +33,7 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../src/agent/harness.js';
 import { createRng } from '../src/core/rng.js';
-import { at, formatClock } from '../src/config.js';
+import { at, clockArg } from '../src/config.js';
 import { getLevel, defaultLevel } from '../src/levels/index.js';
 
 // =================================================================================================
@@ -42,9 +42,18 @@ import { getLevel, defaultLevel } from '../src/levels/index.js';
 // goto targets, milestones, bins, key actions; src/levels/meeting/gate.js documents the shape).
 export const DEFAULT_LEVEL = defaultLevel.id;
 // Milestones every level gets for the engine's own mechanics (the level's gate.milestones win on a clash):
-// attention's noises (src/sim/mechanics/attention.js). 'noise' is also a bin key. A level that never makes a
-// noise never sees either, so its results don't change.
-const ENGINE_MILESTONES = { noise: () => 'noise', 'npc:heard': (p) => `heard:${p.id}` };
+// attention's noises (src/sim/mechanics/attention.js), put-downs (putdown.js) and inspections (inspection.js).
+// 'noise' is also a bin key; the others count in a level's bins only if its gate.binKeys lists them. A level
+// that never fires one never sees it, so its results don't change.
+const ENGINE_MILESTONES = {
+  noise: () => 'noise',
+  'npc:heard': (p) => `heard:${p.id}`,
+  'item:put': (p) => `put@${p.spot}`,
+  'inspect:pass': (p) => `tick${p.index}`,
+  'inspect:fail': (p) => `cross${p.index}`,
+  'inspect:done': (p) => (p.failed === null ? 'inspected' : 'flunked'),
+  'inspect:moved': () => 'moved',
+};
 const ENGINE_BIN_KEYS = ['noise'];
 const data = {};
 export function levelData(id) {
@@ -62,6 +71,7 @@ export function levelData(id) {
     ...level.gate,
     milestones: { ...ENGINE_MILESTONES, ...milestones },
     binKeys: [...binKeys, ...ENGINE_BIN_KEYS.filter((k) => !binKeys.includes(k))],
+    start: level.day.start,
     meetingAt,
     lastMinute: meetingAt - 1,
     putSpots,
@@ -78,25 +88,25 @@ export const BATCH = 288;
 export const defaultWorkers = () => Math.max(1, availableParallelism() - 2);
 const DRAIN_FRAMES = 20000; // frames run after the plan's last command; a day still going after that is a bug
 
-// Game minute -> "3:12", the clock form `wait/pretend until` takes.
-export const fmt = (m) => formatClock(Math.round(m)).replace(/ [AP]M$/, '');
+// Game minute -> "3:12", the clock form `wait/pretend until` takes, in the level's day (L.start).
+export const fmt = (m, L) => clockArg(Math.round(m), L.start);
 
 // ---------------------------------------------------------------------------------------------
 // Plans
 
-function stepToCmd(s) {
+function stepToCmd(s, L) {
   switch (s.k) {
     case 'goto': return `goto ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'do': return 'interact';
     case 'sit': return 'sit pretend';
     case 'put': return `put ${s.t}${s.busy ? ' pretend' : ''}`;
-    case 'until': return `${s.busy ? 'pretend' : 'wait'} until ${fmt(s.m)}`;
+    case 'until': return `${s.busy ? 'pretend' : 'wait'} until ${fmt(s.m, L)}`;
     case 'for': return `${s.busy ? 'pretend' : 'wait'} ${s.s}s`;
     default: throw new Error(`bad step ${JSON.stringify(s)}`);
   }
 }
 // L: levelData(id); the final stance is held until the level's meeting.
-export const planToCmds = (plan, L) => [...plan.steps.map(stepToCmd), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(L.meetingAt)}`];
+export const planToCmds = (plan, L) => [...plan.steps.map((s) => stepToCmd(s, L)), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(L.meetingAt, L)}`];
 
 function randomStep(rng, L) {
   // Only levels with spots that take items put things down (no rng draw otherwise: level 1's plans stay the same).
@@ -188,7 +198,7 @@ export function evaluate(plan, L = levelData(DEFAULT_LEVEL)) {
     if (g.phase !== 'day' || g.outcome || g.caught) break;
     // Skip a wait whose time has passed (the harness would no-op it anyway).
     const until = cmd.match(/until (\d+:\d+)$/);
-    if (until && at(until[1]) <= g.clock.minute) continue;
+    if (until && at(until[1], L.start) <= g.clock.minute) continue;
     const r = h.run(cmd);
     const noop = /no path|nothing to interact|nothing to put down/.test(r.text);
     if (!r.ok && !noop) {
@@ -389,7 +399,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
           if (last && last[1] === m - 1) last[1] = m;
           else spans.push([m, m]);
         });
-        w.windows.push({ step: i, cmd: stepToCmd(plan.steps[i]), spans });
+        w.windows.push({ step: i, cmd: stepToCmd(plan.steps[i], L), spans });
       }
     }
   } finally {
@@ -410,12 +420,12 @@ export function winLines(r, wk) {
   const L = levelData(r.level);
   const w = r.wins[wk];
   const out = [`WIN ${wk}: ${w.count} winning days found, ${w.randomCount} of them from random plans`];
-  const kt = Object.entries(w.keyTimes).map(([k, [a, b]]) => `${k} ${fmt(a)}–${fmt(b)}`).join(', ');
+  const kt = Object.entries(w.keyTimes).map(([k, [a, b]]) => `${k} ${fmt(a, L)}–${fmt(b, L)}`).join(', ');
   if (kt) out.push(`  key actions seen in wins: ${kt}`);
   out.push(`  minimal plan (${size(w.minimal)} steps):`);
   for (const c of planToCmds(w.minimal, L)) out.push(`    ${c}`);
   for (const win of w.windows) {
-    const spans = win.spans.map(([a, b]) => (a === b ? fmt(a) : `${fmt(a)}–${fmt(b)}`)).join(', ') || 'none';
+    const spans = win.spans.map(([a, b]) => (a === b ? fmt(a, L) : `${fmt(a, L)}–${fmt(b, L)}`)).join(', ') || 'none';
     out.push(`  window for step ${win.step + 1} (${win.cmd}): wins when it ends at ${spans}`);
   }
   return out;

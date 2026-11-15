@@ -29,10 +29,6 @@ const GENERIC = {
   put: PUT_ROW, // holding what a free spot in reach takes (mechanics/putdown.js; instant)
 };
 
-// Deprecated: every action row seen so far, keyed by verb (the harness reads its hint text from here).
-// Use actionRow(game, verb).
-export const TARGET_ACTIONS = { ...GENERIC };
-
 // Eating an edible item you hold: the boss reads it as slacking, its owner (if any) as theft, and the mustard
 // (player.smeared) stays on you for the loop.
 function eatRow(type, item) {
@@ -63,7 +59,6 @@ function actionsOf(level) {
     for (const [type, item] of Object.entries(level.items ?? {})) if (item.edible) add(`eat_${type}`, eatRow(type, item));
     for (const [verb, row] of Object.entries(GENERIC)) add(verb, row);
     tables.set(level, table);
-    Object.assign(TARGET_ACTIONS, table);
   }
   return table;
 }

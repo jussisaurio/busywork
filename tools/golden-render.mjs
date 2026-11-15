@@ -32,10 +32,10 @@ const LATER = 20;
 // item drop/pickup, and the multi-loop hand-written plan.)
 const PICK_N = 20;
 const pick = (plans) => (plans.length <= PICK_N ? plans : Array.from({ length: PICK_N }, (_, i) => plans[Math.round((i * (plans.length - 1)) / (PICK_N - 1))]));
+// Notable events: the engine's own, plus the level's gate.renderEvents (its visible beats).
 const NOTABLE = new Set([
-  'caught', 'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:bang', 'boss:lockedOut', 'boss:workAssigned',
-  'work:done', 'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'coffee:confiscated',
-  'item:drop', 'item:pickup', 'witness:tattle', 'kev:alerted', 'meeting:gather', 'day:end', 'loop:start', 'player:sit',
+  'caught', 'work:done', 'item:drop', 'item:pickup', 'witness:tattle', 'meeting:gather', 'day:end', 'loop:start', 'player:sit',
+  ...(LEVEL.gate?.renderEvents ?? []),
 ]);
 const END_STEPS = [0, 0.15, 0.4, 0.8, 1.5, 3, 6];
 

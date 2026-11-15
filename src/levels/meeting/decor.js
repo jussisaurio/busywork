@@ -2,6 +2,7 @@
 // clutter and the key legend. Data only (palette colours, no logic); render/world.js and render/hud.js read it.
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C } from '../../render/palette.js';
+import { dayCue } from '../../config.js';
 
 const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
 const MUSTARD = ['#d6a23a', '#a97b22'];
@@ -60,8 +61,9 @@ export const DECOR = {
       state: (w, game) => ({
         state: w.projector || 'ok',
         fix: w.fixProgress || 0,
-        // on from day.beamAt, and for a failed meeting's end beat (you are presenting)
-        beam: w.projector === 'ok' && ((game.clock ? game.clock.minute : 0) >= game.level.day.beamAt
+        // on from day.beamAt (config.js dayCue; default 5 minutes before the meeting), and for a failed meeting's
+        // end beat (you are presenting)
+        beam: w.projector === 'ok' && ((game.clock ? game.clock.minute : 0) >= dayCue(game.level.day, 'beamAt')
           || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail')),
       }),
     },
@@ -70,7 +72,8 @@ export const DECOR = {
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
-  // Workstations whose sitter's spot is <owner>_desk, south of the desk (personal screen, mug and prop).
+  // Workstations whose sitter's spot is <owner>_desk (personal screen, mug and prop). The spot's face points at
+  // the desk and turns the workstation to it; here both sit south of their desks, facing N.
   deskOwners: ['lin_desk', 'kev_desk'],
   // Per-owner workstation clutter ('player' is the desk with the P tile); other workstations get the
   // renderer's default (dark screen, mustard mug, a sheet of paper). screenArt: 'code' | 'grid' | 'blankSlide';
@@ -82,6 +85,8 @@ export const DECOR = {
   },
   // Lobby ashtray, on the tile east of this spot.
   ashtray: { spot: 'smoke' },
+  // The lift doors (the map's elevator tiles) open as an active NPC comes within 1.6 tiles of this spot.
+  elevator: { spot: 'elevator' },
   // Floor zones flooded from one tile in each room (walls, glass and doors stop the flood).
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },

@@ -36,7 +36,7 @@ function snapshot(g) {
     player: { x: p.x, y: p.y, held: p.held, busy: p.busy, busyPose: p.busyPose, seated: p.seated, smeared: p.smeared, locked: p.locked },
     npcs: g.npcs.map((n) => ({ id: n.id, x: n.x, y: n.y, dir: r6(n.dir), active: n.active, pose: n.pose, override: n.override, carry: n.carry, wants: n.wants })),
     world: { ...prim(g.world), items: g.world.items.map((i) => ({ type: i.type, x: i.x, y: i.y })) },
-    suspicion: g.suspicion[g.level.roles.authority.id], // level 1: boss
+    suspicion: g.level.roles?.authority ? g.suspicion[g.level.roles.authority.id] : null, // level 1: boss; none without an authority
     outcome: g.outcome ? { result: g.outcome.result, routes: g.outcome.routes } : null,
     caught: g.caught ? g.caught.reason : null,
   };

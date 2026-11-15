@@ -2,10 +2,11 @@
 // Drives the sim directly (no player, interactions, rules or scenario): updateNpcs + updateFx + advanceClock per step.
 import { createGame, resetLoop } from '../src/state.js';
 import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
+import { speak } from '../src/sim/override.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
-import { FIXED_DT, DAY_START, at, formatClock } from '../src/config.js';
+import { FIXED_DT, DAY_START, at, formatClock, clockArg, dayCue } from '../src/config.js';
 import { inZone } from '../src/game/perception.js';
 import { levels } from '../src/levels/index.js';
 
@@ -121,8 +122,19 @@ const common = (R, tag) => {
   ok(bad.length === 0, `nav: all spots mutually reachable${bad.length ? ' — ' + bad.slice(0, 4).join(', ') : ''}`);
   const badRoute = Object.entries(ROUTES).flatMap(([r, pts]) => pts.filter(([x, y]) => !g.map.isWalkable(x, y)).map((q) => `${r}:${q}`));
   ok(badRoute.length === 0, 'nav: route points are floor');
-  // at() and formatClock() still count from config.js DAY_START: the level's day must agree.
-  ok(LEVEL.day.start === DAY_START, 'level day.start matches config DAY_START');
+  // Level 1 writes its times as at('3:10'), which counts from the default start (DAY_START): its day must agree.
+  ok(LEVEL.day.start === DAY_START, 'level day.start matches the default start its at() times count from');
+  // Clocks read the level's start: an afternoon day (2:30 PM) and a morning one (9:00 AM).
+  ok(at('2:30') === 0 && at('4:00') === 90 && formatClock(90) === '4:00 PM' && clockArg(90) === '4:00', 'clock: 2:30 PM day (the default)');
+  const AM = 9 * 60;
+  ok(at('9:30', AM) === 30 && at('12:15', AM) === 195 && at('13:05', AM) === 245, "clock: 9:00 AM day reads '9:30' as AM, '12:15' as noon, '13:05' as 24-hour");
+  ok(formatClock(0, AM) === '9:00 AM' && formatClock(245, AM) === '1:05 PM', 'clock: 9:00 AM day formats');
+  ok([0, 30, 179, 180, 245, 600].every((m) => at(clockArg(m, AM), AM) === m) && [0, 89, 90].every((m) => at(clockArg(m)) === m), 'clock: clockArg reads back through at() in both days');
+  const bare = { start: DAY_START, gatherAt: 26, meetingAt: 30 };
+  ok(dayCue(bare, 'clockRedAt') === 25 && dayCue(bare, 'clockTickAt') === 25 && dayCue(bare, 'tockAt') === 28
+    && dayCue(bare, 'halfMinuteAt') === 29 && dayCue(bare, 'beamAt') === 25, 'cues: default to minutes before meetingAt');
+  ok(dayCue({ ...bare, clockRedAt: 20 }, 'clockTickAt') === 20 && dayCue({ ...bare, tockAt: 0 }, 'tockAt') === 0,
+    'cues: a set time wins, and the wall clock ticks from a set red time');
   const routeIds = LEVEL.routes.map((r) => r.id);
   ok(LEVEL.outcomeOrder.length === routeIds.length && LEVEL.outcomeOrder.every((id) => routeIds.includes(id)), 'level outcomeOrder lists each route once');
 }
@@ -320,6 +332,18 @@ let projRun = null;
   ok(!said(base, 'kev', '🥱☕').length, 'untouched day: no craving');
   ok(arr(R, 'kev', 'kev_desk', at('2:44'), at('2:50')) != null, 'pot taken earlier: Kev still back at his desk on time');
   common(R, 'empty pot');
+}
+
+// ---------------------------------------------------------------- speak: an `after` line keeps its kind and ttl
+{
+  let seen = null;
+  const lines = [{ say: ['🧪'], kind: 'thought', ttl: 1.1 }, { say: ['🧫'], kind: 'thought', after: 0.5, ttl: 7 }];
+  runDay({
+    hooks: [{ at: at('2:33'), fn: (g) => speak(g, g.npcs.find((n) => n.id === 'kev'), lines) }],
+    until: at('2:35'),
+    onStep: (g) => { seen ??= g.fx.bubbles.find((b) => b.owner === 'kev' && b.icons.join('') === '🧫') ?? null; },
+  });
+  ok(seen && seen.ttl === 7 && seen.kind === 'thought', `speak: the after line shows with its own ttl and kind (${seen ? `${seen.ttl}, ${seen.kind}` : 'never shown'})`);
 }
 
 // ---------------------------------------------------------------- away window too short
