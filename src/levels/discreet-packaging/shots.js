@@ -7,7 +7,7 @@ const SWAP = [...TAKE, 'interact']; // holding your box at the shelf: swap the l
 const BROOM = ['goto broom_stand', 'interact', 'goto camera pretend']; // there at 3:27
 // The sweep sees the spot under the camera at 3:27.5 and 3:33.5, and looks furthest away at 3:30.5.
 const POKE_SAFE = [...BROOM, 'pretend until 3:29', 'wait 1s', 'interact'];
-const UNPLUG_TAKE_TO_OFFICE = [...TAKE, 'goto 5,6 pretend', ...['pretend until 4:00', 'wait 5s']]; // Lin sees it
+const UNPLUG_TAKE_TO_OFFICE = [...TAKE, 'goto 5,6 pretend']; // Lin sees it
 const CORRIDOR_DROP = [...TAKE, 'goto corridor pretend', 'interact', 'goto own_desk pretend', 'sit'];
 // To the end card: a notice or a catch stops a pretend early, the next one goes on; 4:00 stops the last, and the day
 // ends about a game minute later.
@@ -57,16 +57,16 @@ export default [
   {
     name: 'poked-into-the-plant',
     cmds: [...POKE_SAFE, 'wait 1.4s'],
-    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob, at his counter, is fed up with it (leaf, angry). The broom is still in your hands.",
+    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob gets up from his counter, fed up with it (leaf, angry), and turns to come and look. The broom is still in your hands: time to go.",
   },
   {
     name: 'bob-tugs-the-camera',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:32', 'wait 3s'],
+    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:32', 'wait 1s'],
     intent: "Bob has left his counter and stands under the camera, reaching up and tugging at it: it rattles on its bracket but stays jammed in the plant's leaves. No impact star. You wait in the corridor, the broom in your hands.",
   },
   {
     name: 'bob-gives-up',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:33', 'wait 2.5s'],
+    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:33', 'wait 1.5s'],
     intent: "Bob gives up on the camera, still jammed in the plant: he says (wrench, calendar): someone will fix it, another day. His monitor still shows the leaf.",
   },
   {
@@ -162,7 +162,7 @@ export default [
   },
   {
     name: 'end-spotted',
-    cmds: [...UNPLUG_TAKE_TO_OFFICE],
+    cmds: [...UNPLUG_TAKE_TO_OFFICE, ...END],
     intent: "Lose: in your office Lin, hands up and delighted, asks out loud about the pink box in your arms (box, heart-eyes, your face, ?). You hold it and go red. Icons: Lin, box, heart-eyes, you, blush.",
   },
 ];

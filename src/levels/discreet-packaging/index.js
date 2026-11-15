@@ -194,6 +194,8 @@ const ITEMS = {
       id: 'lin',
       when: (npc) => !npc._fetch, // once is enough: the clock to the catch is running
       says: [{ say: ['💝', '😍'] }, { say: ['@player', '💝', '❓'], after: 0.8 }],
+      // Only ever runs with the box in your arms here: the level fetch replaces the engine's floor pickup, and you
+      // have no put spots. The engine has just emptied your hands; the box stays in them while she exclaims.
       reclaim(game, npc) {
         game.player.held = 'parcel'; // the engine's owner takes it back; Lin only stares at it in your arms
         game.world.parcel = 'spotted';
@@ -326,7 +328,7 @@ export default {
   fetches: FETCHES,
   cameras: CAMERAS,
   behaviours: BEHAVIOURS,
-  meeting: { override: 'mail', room: 'office', chair: 'player_desk', presenter: 'player_desk', verdict },
+  meeting: { override: 'mail', room: 'office', chair: 'player_desk', verdict },
   routes: [
     // Lin hands Bob the pink box with his face on it, at the mail call (and you his brown one).
     { id: 'bob', icon: '@bob', achieved: (w) => w.parcelFor === 'bob' && ['shelf', 'lin', 'bob'].includes(w.parcel) },

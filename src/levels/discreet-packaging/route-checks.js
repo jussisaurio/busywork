@@ -40,6 +40,11 @@ export default [
     cmds: ['goto broom_stand', 'interact', 'goto camera pretend', 'pretend 0.5s', 'interact', 'goto broom_stand', 'interact', 'goto pigeonholes', 'interact', 'goto own_desk pretend', 'interact', 'sit', 'wait until 4:00'],
   },
   {
+    name: 'broom: poke it into the plant, then hang about under it → Bob, coming over, sends you to your desk with work; the parcel waits for the mail call (fail)',
+    expect: { result: 'fail' },
+    cmds: ['goto broom_stand', 'interact', 'goto camera pretend', 'pretend 0.5s', 'interact', 'wait until 3:45', 'wait until 3:45', 'wait until 3:45'],
+  },
+  {
     name: 'broom: poke it while it looks at you → caught',
     expect: { result: 'caught' },
     cmds: [...POKE, 'wait until 4:00'],

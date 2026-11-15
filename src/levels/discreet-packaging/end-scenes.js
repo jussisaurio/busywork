@@ -271,7 +271,6 @@ function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false,
   p.dir = dir;
   p.head = head;
   p.angry = angry;
-  p.badge = true;
   p.arms = a;
   p.scale = sc;
   const hugs = w.parcel === 'bob' && a === 'idle';
@@ -390,7 +389,6 @@ function foundScene(ctx, game, t, e) {
   p.dir = Math.PI / 2 - 0.35;
   p.head = Math.PI / 2 - 0.7 + Math.sin(t * 1.2) * 0.08; // from the label to you
   p.arms = 'reach';
-  p.badge = id === 'bob';
   p.scale = sc;
   drawPerson(ctx, look, p, 380, 298);
   boxHeldOut(ctx, look, 380, 298, sc, game.world.parcelFor);
@@ -428,8 +426,7 @@ function caughtOnCamera(ctx, game, t, e) {
   b.head = b.dir;
   b.arms = 'point';
   b.angry = true;
-  b.badge = true;
-  b.scale = 2.5;
+    b.scale = 2.5;
   drawPerson(ctx, looks(game).bob, b, 500 + (1 - enter(e)) * 30, 300);
   counter(ctx, TAB.x - 10, TAB.x + TAB.w + 10, 292);
   // the monitor on the counter, turned to us
@@ -473,8 +470,7 @@ function caughtScene(ctx, game, t, e) {
   b.head = 0;
   b.arms = 'point';
   b.angry = true;
-  b.badge = true;
-  b.scale = 2.5;
+    b.scale = 2.5;
   drawPerson(ctx, looks(game).bob, b, 340 + (1 - enter(e)) * -80, 300);
   bubble(ctx, ['😠', '👉'], 340, 196, e);
 }

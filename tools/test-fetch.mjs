@@ -85,7 +85,7 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
   finish(h);
   const r = ev('item:reclaimed');
   ok(r?.payload.by === 'lin' && r.payload.type === 'parcel', `the owner picks it up (${r?.payload.by})`);
-  ok(ev('parcel:snatched')?.payload.by === 'lin', "through her own owner.reclaim (parcel:snatched)");
+  ok(ev('parcel:spotted_on_you')?.payload.by === 'lin', "through her own owner.reclaim (parcel:spotted_on_you)");
   ok(!ev('parcel:spotted') && !ev('parcel:found'), 'none of the level fetch events');
 }
 
