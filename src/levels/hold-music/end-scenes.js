@@ -242,6 +242,18 @@ function kitchenSide(ctx, x) {
   ctx.fillRect(x + 4, TAB.y, 4, TAB.h);
 }
 
+// Your red mug (top-left corner at x, y), the one on your desk in the office.
+function yourMug(ctx, x, y) {
+  ctx.fillStyle = C.tomato;
+  rrect(ctx, x, y, 11, 13, 2);
+  ctx.fill();
+  ctx.strokeStyle = C.tomato;
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.arc(x + 12, y + 6.5, 3.6, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+}
+
 const looks = (game) => game.level.looks;
 const enter = (e, d = 0) => easeOutBack(clamp((e - d) / 0.35, 0, 1));
 
@@ -415,15 +427,7 @@ function fail(ctx, game, t, e) {
   phone(ctx, 440, 248, 2.1, PHONES.lin.lamp, t, { lifted: true });
   heldHandset(ctx, looks(game).lin, l, 380, 250, PHONES.lin.lamp, 424, 256);
   briefcase(ctx, 330, 252);
-  // your red mug, as on your desk in the office: it is your desk
-  ctx.fillStyle = C.tomato;
-  rrect(ctx, 474, 236, 11, 13, 2);
-  ctx.fill();
-  ctx.strokeStyle = C.tomato;
-  ctx.lineWidth = 2.2;
-  ctx.beginPath();
-  ctx.arc(486, 242.5, 3.6, -Math.PI / 2, Math.PI / 2);
-  ctx.stroke();
+  yourMug(ctx, 474, 236); // as on your desk in the office: it is your desk
   bubble(ctx, ['💼', '😊'], 380, 160, e);
   // you, beside the desk, holding the box
   const p = person(t);
@@ -595,6 +599,7 @@ function blamed(ctx, game, t, e) {
   drawChair(ctx, 0, 0, Math.PI / 2, '#d8a548', '#a87a2c');
   ctx.restore();
   desk(ctx, 560, 262, 180);
+  yourMug(ctx, 600, 252);
   const b = person(t);
   b.dir = 0;
   b.head = 0;
