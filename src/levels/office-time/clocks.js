@@ -37,11 +37,8 @@ function beatAt(npc, t) {
 // level.clockFor: the minute npc's schedule reads this step.
 export function clockFor(game, npc, sim) {
   const now = game.clock.minute;
-  const st = (npc._clk ??= { off: 0, beat: null, faceT: 0, saw: {}, herdT: HERD_S });
-  if (st.faceT > 0) {
-    st.faceT -= FIXED_DT;
-    if (st.faceT <= 0) faceBack(game, npc);
-  }
+  const st = (npc._clk ??= { off: 0, beat: null, lookT: 0, saw: {}, herdT: HERD_S });
+  st.lookT = Math.max(0, st.lookT - FIXED_DT);
   if (npc.id === 'boss') followHerd(game, npc, sim, st, now);
   const b = beatAt(npc, now + st.off);
   if (st.beat === null) st.beat = b; // the first step of the day: no look-up
@@ -57,13 +54,12 @@ function reads(game, npc) {
   return npc.active && !npc._gone && !npc.override && inZone(game, CLOCKS[HOME[npc.id]].zone, npc.x, npc.y);
 }
 
-// 🕐👀: turn to the clock; if it is ahead of him, ❗ and he is ahead too.
+// 🕐👀: turn to the clock (and the chair under it) for a second; if it is ahead of him, ❗ and he is ahead too.
 function lookUp(game, npc, sim) {
   const st = npc._clk;
   const c = CLOCKS[HOME[npc.id]];
-  sim.faceSpot(game, npc, c.spot);
-  sim.holdFor(npc, LOOK_S);
-  st.faceT = LOOK_S;
+  sim.lookAt(game, npc, c.spot, LOOK_S);
+  st.lookT = LOOK_S;
   say(game, npc.id, ['🕐', '👀'], { kind: 'thought', voice: npc.voice, ttl: LOOK_S });
   game.events.emit('clock:look', { id: npc.id, clock: c.id });
   const shown = game.world[c.field];
@@ -75,13 +71,6 @@ function lookUp(game, npc, sim) {
   }
 }
 
-// Seated after a look, he turns back to his desk (the leg's own facing; walking turns him anyway).
-function faceBack(game, npc) {
-  const plan = npc._plan;
-  const leg = plan?.done && plan.legs[plan.legs.length - 1];
-  if (leg && leg.face !== undefined) npc._faceTarget = leg.face;
-}
-
 // The boss in his office notices empty desks: a frown at the first, and at the second he packs up.
 function followHerd(game, npc, sim, st, now) {
   const w = game.world;
@@ -89,9 +78,7 @@ function followHerd(game, npc, sim, st, now) {
   for (const id of ['lin', 'kev']) {
     if (!w[`${id}Gone`] || st.saw[id]) continue;
     st.saw[id] = true;
-    sim.faceSpot(game, npc, `${id}_desk`);
-    sim.holdFor(npc, FROWN_S);
-    st.faceT = FROWN_S;
+    sim.lookAt(game, npc, `${id}_desk`, FROWN_S);
     say(game, npc.id, ['🤨'], { kind: 'thought', voice: npc.voice, ttl: FROWN_S + 0.2 });
     game.events.emit('boss:frown', { at: id });
   }
@@ -111,7 +98,7 @@ export const CLOCK_BEHAVIOURS = {
   // Sitting down, he checks the time.
   lookUp: {
     arrive(game, npc, sim) {
-      if (npc._clk && npc._clk.faceT <= 0 && reads(game, npc)) lookUp(game, npc, sim); // not twice in a row
+      if (npc._clk && npc._clk.lookT <= 0 && reads(game, npc)) lookUp(game, npc, sim); // not twice in a row
     },
   },
 };

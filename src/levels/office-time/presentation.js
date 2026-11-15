@@ -51,7 +51,8 @@ export const DECOR = {
     { x: 26, y: 4, face: 'N', color: MUSTARD },
   ],
   windows: [
-    { x0: 4, x1: 6, y: 0 }, // office (the clock hangs at x 2)
+    { x0: 1, x1: 3, y: 0 }, // office (the clock hangs at x 4)
+    { x0: 6, x1: 8, y: 0 },
     { x0: 10, x1: 12, y: 0 },
     { x0: 25, x1: 27, y: 0 },
   ],

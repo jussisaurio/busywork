@@ -16,7 +16,7 @@ import gate from './gate.js';
 // (hallway wall, over Kev's desk). Plants flank O's wall so it is reached only from the hallway. The entrance L is
 // open to you today: the lobby is where the bus is.
 const MAP = [
-  '##Q###########################', // 0
+  '####Q#########################', // 0
   '#.......G..........#FTCT.....#', // 1
   '#.......G..........#.........#', // 2
   '#..TTT..G..TTTTTT..#....TTT..#', // 3
@@ -48,10 +48,10 @@ const LEGEND = {
 
 const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
-  boss_desk: { x: 4, y: 2, face: 'S' }, // his back to his clock
+  boss_desk: { x: 4, y: 2, face: 'S' }, // his back to his clock: glancing aside, he never sees the chair behind him
   lin_desk: { x: 4, y: 9, face: 'N' }, // facing the glass, and the boss's clock beyond it
   kev_desk: { x: 19, y: 9, face: 'N' }, // facing the open-plan clock
-  boss_clock_chair: { x: 2, y: 1, face: 'N' }, // the chair you stand on to reach Q
+  boss_clock_chair: { x: 4, y: 1, face: 'N' }, // the chair you stand on to reach Q, right behind his seat
   open_clock_chair: { x: 19, y: 7, face: 'N' }, // ... and O
   coffee: { x: 22, y: 2, face: 'N' },
   boss_door: { x: 6, y: 7, face: 'S' },
