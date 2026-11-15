@@ -90,5 +90,53 @@ const BACK = [...WRITE, 'pretend until 2:46'];
   ok(!started(h) && h.game.outcome?.result === 'win', `fixture-putdown: instant put, ${h.game.outcome?.result}`);
 }
 
+// --- Gap 2: the spot's owner reacts only if he saw who put it there (spot field `unseen`) ---------------------
+
+// An in-tray on the boss's own desk (he finds what lands there from his chair). Without `unseen` he reads
+// whatever he finds: today's behaviour.
+const TRAY = (extra = {}) => ({ tray: { x: 4, y: 4, face: 'N', accepts: ['note'], owner: 'boss', found: 'readNote', ...extra } });
+const found = (h) => h.log.find((e) => e.name === 'item:found');
+const AWAY = [...WRITE, 'put tray pretend', 'goto own_desk pretend', 'pretend until 2:47'];
+
+// 7. Default: put on his desk while he is away, he reads it when he's back (no `unseen`: as before).
+{
+  const { h } = play(variant({ spots: TRAY() }), AWAY);
+  ok(found(h)?.payload.by === 'boss' && !('seen' in found(h).payload), 'no `unseen`: item:found as before (no seen field)');
+  ok(h.game.world.cancelled === true, 'and he acts on a note he never saw arrive (the gap)');
+}
+
+// 8. unseen: 'leave': he finds it, didn't see who put it there, and leaves it be.
+{
+  const { h } = play(variant({ spots: TRAY({ unseen: 'leave' }) }), AWAY);
+  const it = h.game.world.items.find((i) => i.spot === 'tray');
+  ok(found(h)?.payload.seen === false, `unseen: 'leave': item:found { seen: false } (${JSON.stringify(found(h)?.payload)})`);
+  ok(!h.game.world.cancelled && it && it.seenBy.length === 0 && h.game.world.note === 'tray', 'the note stays on his desk, unread; nobody saw it land');
+  h.run('pretend until 2:52');
+  ok(h.log.filter((e) => e.name === 'item:found').length === 1, 'and he reacts to it only once');
+}
+
+// 9. unseen: 'leave', but he watches her put it there: he does what `found` says.
+{
+  const { h } = play(variant({ spots: TRAY({ unseen: 'leave' }) }), [...BACK, 'put tray pretend', 'wait 1s']);
+  ok(found(h)?.payload.seen === true && h.game.world.cancelled === true, `seen: he reads it (${JSON.stringify(found(h)?.payload)})`);
+}
+
+// 10. unseen: a hook gets { seen: false }; 'take' takes it.
+{
+  let got = null;
+  const level = { ...variant({ spots: TRAY({ unseen: 'shrug' }) }), behaviours: { ...FP.behaviours, shrug: { arrive: (g, n, sim, x) => { got = x; } } } };
+  play(level, AWAY);
+  ok(got && got.seen === false && got.spot === 'tray' && got.type === 'note', `unseen: a hook: arrive(..., { type, spot, item, seen: ${got?.seen} })`);
+  const { h } = play(variant({ spots: TRAY({ unseen: 'take' }) }), AWAY);
+  ok(h.game.world.note === 'boss' && !h.game.world.cancelled, "unseen: 'take': he pockets it unread");
+}
+
+// 11. The validator checks `unseen`.
+{
+  let msg = '';
+  try { validateLevel(variant({ spots: TRAY({ unseen: 'nope' }) }), 'bad-unseen'); } catch (e) { msg = e.message; }
+  ok(/spots\.tray\.unseen/.test(msg), `validator: ${msg.split('\n').find((l) => /tray\.unseen/.test(l))?.trim()}`);
+}
+
 console.log(fails ? `\n${fails} FAILED` : '\nall passed');
 process.exit(fails ? 1 : 0);

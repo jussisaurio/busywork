@@ -136,6 +136,7 @@ export function levelProblems(level, key) {
       for (const [i, type] of list(`${path}.accepts`, s.accepts).entries()) itemType(`${path}.accepts[${i}]`, type);
       if (s.owner !== undefined && s.owner !== null && s.owner !== 'player') npc(`${path}.owner`, s.owner);
       if (s.found !== undefined && s.found !== 'take') behaviour(`${path}.found`, s.found);
+      if (s.unseen !== undefined && s.unseen !== 'take' && s.unseen !== 'leave') behaviour(`${path}.unseen`, s.unseen);
     }
   }
   if (!isObj(level.zones)) bad('zones', 'missing');
