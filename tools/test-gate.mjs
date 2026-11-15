@@ -1,7 +1,9 @@
 // Tests for tools/gate.mjs: the verdict logic on synthetic fuzz results (no fuzzing), plus how a day's
 // mustUse lessons are matched (two real days through the harness).
 import { checkGate, gateReport } from './gate.mjs';
-import { evaluate, usedLessons, levelData } from './fuzz.mjs';
+import { getLevel } from '../src/levels/index.js';
+import { validateLevel } from '../src/levels/validate.js';
+import { evaluate, usedLessons, skippedLessons, levelData } from './fuzz.mjs';
 
 let fails = 0;
 const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m); } else console.log('ok  ', m); };
@@ -65,6 +67,22 @@ ok(/verdict: PASS/.test(gateReport(healthy(), checkGate(healthy(), L))), 'the re
 const LL = { mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'fridge', event: 'sandwich:taken' }] };
 ok(usedLessons(LL, ['goto fridge pretend'], []).join() === 'pretend', 'cmd lesson: matched by a word of a command that ran');
 ok(usedLessons(LL, ['goto pretender'], [{ name: 'sandwich:taken' }]).join() === 'fridge', 'event lesson: matched by event name; cmd needs the whole word');
+
+// A lesson with `routes` binds only the wins that include one of them.
+const LR = { mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'put', event: 'item:put', routes: ['projector'] }] };
+ok(skippedLessons(LR, { routes: ['keycard'], used: ['pretend'] }).length === 0, 'routes: a keycard win needn\'t put');
+ok(skippedLessons(LR, { routes: ['keycard', 'projector'], used: ['pretend'] }).join() === 'put', 'routes: a win that includes projector must');
+ok(skippedLessons(LR, { routes: ['projector'], used: [] }).join() === 'pretend,put', 'routes: a lesson without routes binds every win');
+const RL = { routes: ['projector', 'keycard'], mustUse: LR.mustUse };
+const rr = healthy();
+ok(checkGate(rr, RL).find((c) => c.name === 'put')?.text === 'every projector win uses put', 'the gate names the routes a lesson binds');
+
+{
+  const M = getLevel('meeting');
+  let msg = '';
+  try { validateLevel({ ...M, gate: { ...M.gate, mustUse: [{ id: 'put', event: 'item:put', routes: ['nope'] }] } }, 'bad-routes'); } catch (e) { msg = e.message; }
+  ok(/gate\.mustUse\[0\]\.routes\[0\]: no route 'nope'/.test(msg), 'validator: a lesson\'s routes name level routes');
+}
 
 // Two real days (level 1, design-jam/FUZZ.md's minimal keycard win, with and without pretend).
 const keycard = (busy) => ({ steps: [{ k: 'until', m: 16, busy }, { k: 'goto', t: 'coat_rack', busy }, { k: 'do' }, { k: 'goto', t: 'meeting_seat', busy }], endBusy: busy });

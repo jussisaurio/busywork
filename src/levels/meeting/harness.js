@@ -22,6 +22,7 @@ const name = (id) => NAME[id] ?? id;
 
 const PROJECTOR = { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' };
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
+const SPOT = { coffee: 'the coffee machine', kev_desk: 'Kev\'s desk', my_desk: 'your desk' }; // put spots (map.js)
 
 export default {
   mission: 'MISSION: 4:00 PM. You promised slides. You made none. Make sure the meeting never happens.',
@@ -51,8 +52,11 @@ export default {
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
-  outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})`
+  // o.why: the verdict's reason (verdict.js): 'mug' you held the cup, 'desk' it sat on your desk, 'kev' it sat on his.
+  outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
+    : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
+    : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
     : 'FAIL: the meeting happened and you presented a blank slide 🦗'),
 
@@ -65,6 +69,7 @@ export default {
     const bits = [];
     if (n.override === 'lockedOut') bits.push('stuck outside the entrance');
     if (n.override === 'fixing') bits.push(`fixing the projector ${Math.round(game.world.fixProgress * 100)}%`);
+    if (n.override === 'hunting' && n.id === 'boss') bits.push('searching the office, peering at every desk');
     if (n.carry) bits.push(`holding ${n.carry === 'coffee' ? 'a coffee ☕' : n.carry}`);
     return bits;
   },
@@ -73,9 +78,11 @@ export default {
   worldText(game) {
     const w = game.world;
     const rack = w.jacket === 'rack' ? `the boss's jacket${w.keycard === 'rack' ? ' (a keycard clipped to it)' : ''}` : 'nothing';
-    const floor = w.items.length ? `; on the floor: ${w.items.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}` : '';
+    const loose = w.items.filter((i) => !i.spot);
+    const floor = loose.length ? `; on the floor: ${loose.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}` : '';
+    const put = w.items.filter((i) => i.spot).map((i) => `; the empty ${i.type} ☕ sits on ${SPOT[i.spot] ?? i.spot}`).join('');
     const pot = w.coffee === 'pot' ? 'a full pot of coffee' : 'an empty pot';
-    return `WORLD: projector ${PROJECTOR[w.projector] ?? w.projector}; coffee machine: ${pot}; coat rack holds ${rack}${floor}`;
+    return `WORLD: projector ${PROJECTOR[w.projector] ?? w.projector}; coffee machine: ${pot}; coat rack holds ${rack}${floor}${put}`;
   },
 
   describe(e, memo) {
@@ -110,6 +117,10 @@ export default {
         }
         return null;
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
+      case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';
+      case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗😠🔧'
+        : `the boss spots the empty mug on ${SPOT[p.spot] ?? p.spot} ☕🤷`;
+      case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';
       default: return undefined;
     }

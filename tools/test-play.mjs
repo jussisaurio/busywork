@@ -218,11 +218,11 @@ section('brew -> carry -> spill');
   step();
   ok(p().action?.type === 'spill_coffee' && p().action.sneaky, 'spill is a sneaky action');
   run(1.3);
-  ok(game.world.projector === 'broken' && p().held === null, 'projector broken, hands empty');
+  ok(game.world.projector === 'broken' && p().held === 'mug' && game.world.mug === 'player', 'projector broken, the empty mug in hand (level 1: evidence)');
   ok(evs('projector:broken').length === 1, 'projector:broken emitted once');
   ok(game.fx.particles.some((q) => q.kind === 'sparks') && game.fx.particles.some((q) => q.kind === 'puff'), 'sparks + puff burst');
   step();
-  ok(p().focus === null, 'no focus at a broken projector with empty hands');
+  ok(p().focus === null, 'no focus at a broken projector with the mug (kept: no drop; no put spot here)');
 }
 
 section('cancel on movement, drop / pick-up, E while busy');

@@ -350,6 +350,17 @@ export function elevatorDing(E, o = {}) {
   bell(E, { t: t + 0.4, f: 1046.5, dur: 1.9, gain: 0.06 * g, partials, pan: o.pan });
 }
 
+// ☎️ A desk phone ringing: one burst of an electromechanical bell, the clapper striking about 20 times a second
+// between two small gongs. A level repeats it while the phone rings (o.dur: burst length, default 0.6 s).
+export function phoneRing(E, o = {}) {
+  const t = T(E, o), g = G(o), pan = o.pan;
+  const dur = clamp(fin(o.dur, 0.6), 0.1, 2);
+  const partials = [[1, 1, 1], [2.76, 0.35, 0.5], [5.4, 0.12, 0.3]];
+  for (let i = 0, n = Math.round(dur * 20); i < n; i++) {
+    bell(E, { t: t + i * 0.05, f: i % 2 ? 1568 : 1318.5, dur: 0.12, gain: 0.03 * g, partials, pan });
+  }
+}
+
 // 🚻 Restroom door (open: latch then thump; close: thump then latch).
 export function door(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;

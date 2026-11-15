@@ -10,15 +10,25 @@
 //             a cast id  he reacts once to each item he finds on it (sees it from within FIND_RADIUS tiles)
 //   found     what the cast owner does (default 'take'):
 //             'take'     he picks it up (npc.carry; world[place] = his id)
-//             a name     a behaviour hook: level.behaviours[found].arrive(game, npc, sim, { type, spot, item });
+//             a name     a behaviour hook: level.behaviours[found].arrive(game, npc, sim, { type, spot, item, seen });
 //                        what the hook leaves on the spot stays there
+//   unseen    what the cast owner does instead when he didn't see who put it there (default: as `found`):
+//             'leave'    nothing: it isn't his business how it got there (it stays; he reacts to it no more)
+//             'take', or a hook name, as for `found` (seen: false)
+//             Who saw it put there: every NPC who saw her when it landed (item.seenBy, a list of ids).
 // The item lies on the tile the spot faces (the desk in front of the chair; the spot's own tile without a face).
 // A world item on a spot carries `spot: name` (itemOn() builds one for initialWorld); picking it up frees the
 // spot. An item with a `place` sets world[place] = the spot's name while it lies there.
 //
 // The player's action is the generic 'put' row (instant; play/interactions.js): the nearest free spot that takes
 // what she holds, within INTERACT_RADIUS of where the item would lie. Harness: `put [spot] [pretend]`.
-// Events: item:put { type, spot }; item:found { type, spot, by } when a cast owner finds it.
+// An item (items.js) with `put: s` is evidence you don't set down in front of people: putting it down is a timed
+// sneaky action of s seconds instead (to everyone: the authority who sees it catches her, anyone else tells and
+// stops it; moving stops it too). The focus carries the timing (focus.timed; interactions.js startAction).
+// An item with `keep: true` leaves your hand only by a put: there is no drop for it, and assigned work (rules.js)
+// sends you to your desk still holding it.
+// Events: item:put { type, spot }; item:found { type, spot, by } when a cast owner finds it (on a spot with
+// `unseen`: { type, spot, by, seen }, seen: whether he saw who put it there).
 import { INTERACT_RADIUS } from '../../config.js';
 import { DIRS } from '../../core/vision.js';
 import { sightline } from '../../core/fx.js';
@@ -37,14 +47,15 @@ export function restOf(s) {
 // A world item lying on a spot, for a level's initialWorld().
 export const itemOn = (spots, name, type) => ({ type, ...restOf(spots[name]), spot: name });
 
-// The level's spots that take items: [{ name, accepts, owner, found, x, y }] (x, y: where the item lies). Cached.
+// The level's spots that take items: [{ name, accepts, owner, found, unseen, x, y }] (x, y: where the item lies).
+// Cached.
 const cache = new WeakMap();
 export function putSpots(level) {
   let list = cache.get(level);
   if (!list) {
     // (src/levels/validate.js checks at load that accepts, owner and found name what exists.)
     list = Object.entries(level.spots ?? {}).filter(([, s]) => s.accepts?.length)
-      .map(([name, s]) => ({ name, accepts: s.accepts, owner: s.owner ?? null, found: s.found ?? 'take', ...restOf(s) }));
+      .map(([name, s]) => ({ name, accepts: s.accepts, owner: s.owner ?? null, found: s.found ?? 'take', unseen: s.unseen ?? null, ...restOf(s) }));
     cache.set(level, list);
   }
   return list;
@@ -64,7 +75,7 @@ export const PUT_ROW = {
 };
 
 // The ✋ target for putting down: the nearest free spot in reach that takes what she holds, if nearer than
-// `than`; else null. row: the level's 'put' row.
+// `than`; else null. row: the level's 'put' row. An item with `put: s` makes it a timed sneaky action (focus.timed).
 export function putFocus(game, than, row) {
   const p = game.player;
   if (!p.held || !row) return null;
@@ -75,6 +86,8 @@ export function putFocus(game, than, row) {
     than = d;
     best = { kind: 'spot', id: e.name, x: e.x, y: e.y, icon: row.icon, action: 'put', item: e };
   }
+  const flags = best && game.level.items?.[p.held];
+  if (flags?.put) best.timed = { duration: flags.put, sneaky: true, owner: null, saw: flags.icon };
   return best;
 }
 
@@ -83,7 +96,9 @@ export function putHeld(game, e) {
   const p = game.player;
   const type = p.held;
   if (!type) return;
-  game.world.items.push({ type, x: e.x, y: e.y, spot: e.name });
+  // Who saw it land: anyone who sees her now (a spot's owner who didn't may react differently: `unseen`).
+  const seenBy = game.npcs.filter((n) => npcSees(game, n, p.x, p.y)).map((n) => n.id);
+  game.world.items.push({ type, x: e.x, y: e.y, spot: e.name, seenBy });
   const place = game.level.items?.[type]?.place;
   if (place) game.world[place] = e.name;
   p.held = null;
@@ -103,9 +118,13 @@ export function check(game, npc, { spot: e }, now, sim) {
   if (!it || it.foundBy) return;
   if (Math.hypot(it.x - npc.x, it.y - npc.y) > FIND_RADIUS || !npcSees(game, npc, it.x, it.y)) return;
   it.foundBy = npc.id;
-  game.events.emit('item:found', { type: it.type, spot: e.name, by: npc.id });
-  if (e.found === 'take') take(game, npc, it);
-  else game.level.behaviours[e.found].arrive(game, npc, sim, { type: it.type, spot: e.name, item: it });
+  // Did he see who put it there? (An item that started the day there: nobody did.)
+  const seen = !!it.seenBy?.includes(npc.id);
+  const does = e.unseen && !seen ? e.unseen : e.found;
+  game.events.emit('item:found', { type: it.type, spot: e.name, by: npc.id, ...(e.unseen ? { seen } : {}) });
+  if (does === 'leave') return;
+  if (does === 'take') take(game, npc, it);
+  else game.level.behaviours[does].arrive(game, npc, sim, { type: it.type, spot: e.name, item: it, seen });
 }
 
 function take(game, npc, it) {

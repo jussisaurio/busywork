@@ -4,7 +4,8 @@
 //
 //   mustUse      the lessons the level exists to teach: the gate fails on a win that skips one. Data, checked
 //                by fuzz.mjs usedLessons(): { id, cmd } = a plan command that ran contains the word cmd (it
-//                pressed that button); { id, event } = that event fired during the day.
+//                pressed that button); { id, event } = that event fired during the day. routes: [ids] binds
+//                only wins that include one of those routes.
 //   targets      where a fuzz plan can `goto` (harness goto targets): interactables first, then landmarks.
 //                The order is behaviour: the fuzzer's rng picks by index.
 //   interactable the targets a plan can `interact` with (a goto there is often followed by one)
@@ -20,7 +21,9 @@
 
 export default {
   // pretend: no win without it in 30k days (design-jam/FUZZ.md); the phone pose hides what you carry.
-  mustUse: [{ id: 'pretend', cmd: 'pretend' }],
+  // put: the mug (items.js) leaves your hand only by a put, and at 4:00 it blames whoever holds it (verdict.js).
+  // A projector win that never put it down is a bug; the keycard route never touches the mug.
+  mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'put', event: 'item:put', routes: ['projector'] }],
   targets: [
     'coffee_machine', 'projector', 'coat_rack', 'fridge',
     'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'kitchen_table', 'entrance',
@@ -30,6 +33,7 @@ export default {
   renderEvents: [
     'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:bang', 'boss:lockedOut', 'boss:workAssigned',
     'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'coffee:confiscated', 'kev:alerted',
+    'item:put', 'boss:mugHunt', 'mug:found',
   ],
   milestones: {
     'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
@@ -45,10 +49,13 @@ export default {
     'coffee:confiscated': () => 'coffeeBack',
     'witness:tattle': (p) => (p.reason === 'contraband' ? null : 'tattle'),
     'boss:workAssigned': () => 'work',
+    'boss:mugHunt': () => 'mugHunt',
+    'mug:found': (p) => `found@${p.spot}`,
     caught: () => 'caught',
   },
-  binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught'],
-  keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate'],
+  binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught',
+    'put@coffee', 'put@kev_desk', 'put@my_desk', 'mugHunt'],
+  keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate', 'put@coffee', 'put@kev_desk'],
   goldenPlans: [
     // Raw movement, with and without pretend, around the kitchen and Kev.
     ['move E 1.5s', 'move S 2s pretend', 'move W 1s', 'wait 3s', 'goto coffee_machine', 'interact', 'move N 2s', 'wait until 2:50', 'pretend until 4:00'],
@@ -56,6 +63,8 @@ export default {
     ['goto coat_rack', 'interact', 'wait until 4:00'],
     // Lin's sandwich, eaten, then walking into her hunt.
     ['goto fridge pretend', 'interact', 'interact', 'pretend until 3:10', 'goto lin_desk', 'wait 5s', 'pretend until 4:00'],
+    // The mug planted on Kev's desk before the boss's hunt, then raw movement past him with it gone.
+    ['goto coffee_machine pretend', 'interact', 'sit', 'pretend until 3:01', 'goto projector pretend', 'interact', 'put kev_desk pretend', 'move S 1s', 'wait until 3:20', 'goto meeting_seat pretend', 'pretend until 4:00'],
     // Several loops: restart mid-day, a full day, continue into the next one.
     ['goto coffee_machine', 'interact', 'restart', 'pretend until 2:46', 'goto coat_rack pretend', 'interact', 'goto meeting_seat pretend', 'pretend until 4:00', 'continue', 'move S 1s', 'wait 2s'],
   ],

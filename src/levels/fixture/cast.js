@@ -39,6 +39,7 @@ export const CAST = [
 export const BEHAVIOURS = {
   // Back with the candles: is his cake still there?
   checkCake: {
+    state: { _checked: false },
     arrive(game, npc, sim) {
       if (npc._checked) return;
       npc._checked = true;
@@ -48,6 +49,7 @@ export const BEHAVIOURS = {
   },
   // At the cake: Doreen starts the song for whoever her calendar says, if there's a cake to sing over.
   leadSong: {
+    state: { _led: false },
     arrive(game, npc, sim) {
       if (npc._led) return;
       npc._led = true;
@@ -59,6 +61,7 @@ export const BEHAVIOURS = {
   },
   // Gus, on finding out it's his birthday.
   notMine: {
+    state: { _noted: false },
     arrive(game, npc, sim) {
       if (npc._noted || game.world.birthday !== 'gus' || game.world.cake === 'eaten') return;
       npc._noted = true;

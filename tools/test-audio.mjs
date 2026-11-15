@@ -771,6 +771,21 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
   game.player.moving = false;
 }
 
+// phoneRing (a desk phone's bell), played as a level sound at a spot, schedules valid nodes and finishes.
+{
+  const saved = game.level;
+  game.level = { ...saved, sounds: { actions: { start: { ring: { sfx: 'phoneRing', spot: 'kev_desk', opts: { gain: 0.8 } } } } } };
+  const before = problems.length;
+  const c0 = ctx.created;
+  game.events.emit('action:start', { type: 'ring' });
+  for (let i = 0; i < 30; i++) {
+    ctx.advance(1 / 60);
+    audio.update(game, 1 / 60);
+  }
+  game.level = saved;
+  ok(ctx.created - c0 > 20 && problems.length === before, `phoneRing rings cleanly (${ctx.created - c0} nodes)`);
+}
+
 // Leaks: once everything has finished, only the persistent graph stays connected.
 {
   game.phase = 'title';

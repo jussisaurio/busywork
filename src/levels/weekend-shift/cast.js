@@ -70,6 +70,7 @@ export const BEHAVIOURS = {
   },
   // Back at her desk with it.
   eatFish: {
+    state: { _ate: false },
     arrive(game, n, sim) {
       if (n._ate) return;
       n._ate = true;
@@ -78,6 +79,7 @@ export const BEHAVIOURS = {
   },
   // 4:50: the boss comes out to the board. Nobody writes on it under his nose.
   checkRoster: {
+    state: { _checked: false },
     arrive(game, n, sim) {
       game.world.rosterLocked = true; // he stands guard by it: his cone covers it
     },
@@ -94,6 +96,7 @@ export const BEHAVIOURS = {
   },
   // At the board: the boss reads out the Saturday name. His own, Kev's (off the sheet), or yours.
   readRoster: {
+    state: { _read: false },
     arrive(game, n, sim) {
       const w = game.world;
       w.rosterLocked = true;
@@ -114,6 +117,7 @@ export const BEHAVIOURS = {
   },
   // Kev hands over the sheet, and reads whose name is on it.
   handSheet: {
+    state: { _handed: false },
     arrive(game, n, sim) {
       if (n._handed) return;
       n._handed = true;

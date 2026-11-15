@@ -19,7 +19,8 @@
 //   meeting  the day's frame: { override, room, chair, presenter }. At day.gatherAt every NPC on the floor gets
 //            override `override` and walks to its cast `meetingSpot` (sim; plan key `<override>#<n>`); at
 //            day.meetingAt you win only standing in zone `room`; blamed, the table stares at spot `chair`;
-//            a failed meeting puts you at spot `presenter` (play/scenario.js)
+//            a failed meeting puts you at spot `presenter` (play/scenario.js); verdict: the room judges the
+//            coffee cup (verdict.js)
 //   failSign    { spot, offset: [dx, dy] }: where a failed meeting's 🦗 sign appears (tiles from the spot's corner)
 //   routes   the ways to cancel the meeting, in route-slot order (HUD, title and end screens):
 //            { id, icon, achieved(world) }, checked at day.meetingAt (play/scenario.js)
@@ -53,6 +54,7 @@ import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
 import { LURES, HUNTS, DOORS } from './mechanics.js';
 import { BEHAVIOURS } from './behaviours.js';
+import { verdict } from './verdict.js';
 
 export default {
   id: 'meeting',
@@ -81,7 +83,7 @@ export default {
   hunts: HUNTS,
   doors: DOORS,
   behaviours: BEHAVIOURS,
-  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter' },
+  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
@@ -99,6 +101,7 @@ export default {
     items: [],
     kevGone: false,
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
+    mug: null, // the cup after the spill: 'player' | a spot it was put on (coffee, kev_desk, my_desk)
   }),
   harness,
   gate,

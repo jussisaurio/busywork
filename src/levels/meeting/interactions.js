@@ -1,5 +1,6 @@
 // The meeting's player actions (level.interactions). The engine adds, after these, eat_sandwich (the sandwich is
-// edible, items.js) and the generic sit, drop, pick_up and put.
+// edible, items.js) and the generic sit, drop, pick_up and put (the empty mug: on the coffee machine, Kev's desk or
+// your own; map.js SPOTS).
 // Each row, keyed by verb:
 //   on        the target that offers it: an interactable type, 'item' (a floor item) or 'self' (what is in hand)
 //   icon      the ✋ hint (player.focus.icon); text: the harness's words for it
@@ -28,7 +29,8 @@ export const INTERACTIONS = {
     on: 'projector', icon: '💦', text: 'spill coffee on it', duration: 1.2, sneaky: true, saw: '📽️',
     can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
     done(game, a) {
-      game.player.held = null;
+      game.player.held = 'mug'; // the cup stays in your hand, empty: the evidence (items.js)
+      game.world.mug = 'player';
       game.world.projector = 'broken';
       burst(game, 'sparks', a.x, a.y, 16, { speed: 2.5, ttl: 0.6 });
       burst(game, 'puff', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
