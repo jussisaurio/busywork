@@ -11,12 +11,12 @@
    ],
    "summary": "fail",
    "digests": [
-    "c17a0a1ed0070479",
-    "0571129bd7aae20d",
-    "c47eb458023a01c1",
-    "bb0af230669b4b73",
-    "46c00fba8bdb5dfe",
-    "109fbc28da4b7c15"
+    "39d342f51040c801",
+    "b8455c688be6ee67",
+    "5faa6404259c781e",
+    "54815dff2b67bec8",
+    "57383c45ed858ba4",
+    "f4f87704c1980e51"
    ]
   },
   {
@@ -25,8 +25,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "a0002994e2d6e335",
-    "98e7e7265fcbe4be"
+    "e8a7db435bf16ac8",
+    "d443f819414e0659"
    ]
   },
   {
@@ -37,10 +37,20 @@
    ],
    "summary": "fail",
    "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "ff8c36b49f1e6c74",
-    "13c16df798260f74"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "a3f646bec72374e6",
+    "b5dba8749a2d237f"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "7be2ec38c2ec910d",
+    "f3b637eedb49201a"
    ]
   },
   {
@@ -51,58 +61,32 @@
    ],
    "summary": "fail",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "02bd05e93e631fcb",
-    "8f8dd333e0df9afe"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "e249ad7005bb42de",
-    "9c8b6d621c6909e0",
-    "9332c8d3087a762c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a45a53b7e94e4955",
-    "f14b0bf01d9a32e5"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "b40e8d8d81d060c8",
+    "19193a9c00eb541c"
    ]
   },
   {
    "cmds": [
     "goto desk_phone pretend",
-    "interact",
-    "pretend until 4:26",
-    "goto roster pretend",
     "interact",
     "goto copier pretend",
     "interact",
+    "goto roster pretend",
+    "interact",
     "pretend until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "b5aad3c315a173ea",
-    "7872fee689cacf40",
-    "657611412dea8e7a",
-    "e8abf76318ea111b",
-    "c304a5bf33d2b25c",
-    "aac8a939bd515fa8",
-    "de34e021ac60f078"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "3d9b44e15689c089",
+    "5ae4f749965c0ab2",
+    "aa281b76c30d7961",
+    "f39f49509663c21a",
+    "b7617ebeb312151d",
+    "76ef7442176bd173"
    ]
   },
   {
@@ -113,10 +97,10 @@
    ],
    "summary": "caught",
    "digests": [
-    "933870a850e6bbb2",
-    "b75e617f52d65854",
-    "3a710502f015a4f8",
-    "67fe5d4dd34572e6"
+    "86e12afd341f4444",
+    "7ef2da5c3961e85a",
+    "9d4f4033c6272e1d",
+    "80e79708a109d558"
    ]
   },
   {
@@ -129,32 +113,32 @@
    ],
    "summary": "caught",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "d48c599f56c582f0",
-    "bb42c209cf0da460",
-    "8beab7f206fd6ff5",
-    "18708414c4f57f58"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "c7b1a3e940c9c635",
+    "d0fc6617e23805fa",
+    "36defa7fbc579bca",
+    "4180a31830041131"
    ]
   },
   {
    "cmds": [
-    "goto microwave pretend",
+    "goto microwave",
     "interact",
-    "pretend until 4:11",
-    "sit pretend",
+    "goto desk_phone pretend",
     "interact",
+    "pretend 0.5s",
     "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "ff0c7668e282efa6",
-    "002320f67d62d9f7",
-    "063969060a60b830",
-    "b7323dfba13d8b6b",
-    "982021096764e821"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "06c4f12fbbcd792c",
+    "0f80fd567ead4275",
+    "17da7e0fc03d04ca",
+    "20019bd0ca4e13e3",
+    "269a81505c292784"
    ]
   },
   {
@@ -168,13 +152,13 @@
    ],
    "summary": "caught",
    "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "5031c7177f60fbeb",
-    "29bd45dadb3bf4f3",
-    "33d901471a57ebaa",
-    "dbddd9b135fc0b13",
-    "875310d245f9c4c9"
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "79bfbe62370aa30a",
+    "365915eeda782537",
+    "5b30620d466e7f5d",
+    "a320dd661f7b5d9f",
+    "59f932898d26bc94"
    ]
   },
   {
@@ -185,10 +169,10 @@
    ],
    "summary": "fail",
    "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "f5759be77d699c6d",
-    "aed3edb09663b9d1"
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "1dfb29ee1da39dd1",
+    "8c68c9c5f02a5b92"
    ]
   },
   {
@@ -201,64 +185,28 @@
    ],
    "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "fc84cfecf7ac6efc",
-    "173fdb1dc8ce63f8",
-    "e781f662bc57704d",
-    "f844cec159ef43e6"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "7da19d518cb2147b",
+    "b5bc623163a2766c",
+    "d5ca8eb49175bfd8",
+    "ee59684513061b58"
    ]
   },
   {
    "cmds": [
-    "pretend 1.5s",
+    "pretend until 4:07",
     "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "868bae4549a6f3d5",
-    "146e2d465f04c83a",
-    "7a1ea7d53d8eaf0c",
-    "0c5530d1a654347f",
-    "16a57624b43f80cc"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "e249ad7005bb42de",
-    "d76941b2d7eadf31",
-    "05f368158a211bb1",
-    "6914e6c4ad4b306d",
-    "0afed3ec2ac31839"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto copier pretend",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "9279fe88925e2585",
-    "25de07c29a11c41b",
-    "1389ebf47176ec96",
-    "de34e021ac60f078"
+    "d8a45274c883e06c",
+    "9884109c1006a002",
+    "c988f689425ee69e",
+    "8965d74b91188c49",
+    "ee82e9e0dcb3b454"
    ]
   },
   {
@@ -271,714 +219,382 @@
    ],
    "summary": "fail",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "38492e8f3e02e537",
-    "b193873f3ad9f449",
-    "843a66947f5f255a",
-    "ff0e3ff31c2c8065"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "78c7392915fb7d46",
+    "a1d0927ae9269971",
+    "3fbf6a9ca0d4a297",
+    "19193a9c00eb541c"
    ]
   },
   {
    "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster",
-    "interact",
-    "goto roster",
-    "wait until 4:35",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "2422b6019f62219a",
-    "5f9de931edf1fb11",
-    "caadf20882e6a71f",
-    "34be6b0bf0ea3d54",
-    "8aa3a01698ca8b27",
-    "377f81f3043d90b9",
-    "4dadfe212f9262eb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
     "goto copier",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "ddfd9191d59e046b",
-    "63f50db940ff3695",
-    "f90d6d11a1e83f6e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier pretend",
     "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "44fabdb0306b41ac",
-    "ffb7403ad58fa12b",
-    "77b76c43ebb8e832",
-    "22b45bc1abe4bba7"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "pretend until 4:35",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "12fee1fc3644337c",
-    "89560c5cf111a336",
-    "9950a1fa05713651",
-    "a14c5caae3d6da6d",
-    "1bdcacac39fde43a"
-   ]
-  },
-  {
-   "cmds": [
     "goto desk_phone pretend",
-    "interact",
-    "goto roster",
-    "interact",
-    "goto microwave pretend",
     "interact",
     "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "2422b6019f62219a",
-    "5f9de931edf1fb11",
-    "d33bec6a395713bc",
-    "8d8fe632d7f6f2e9",
-    "cc593bf52429db1e",
-    "c87257361910dc28"
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "74012aad93c3a716",
+    "1979eecc96163ff5",
+    "d8c87e28d57c9aa7",
+    "0f0b0bc3002d2e45"
    ]
   },
   {
    "cmds": [
-    "pretend until 4:57",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a4a8f1f40bc7fbc2",
-    "45d3f6dd8b37461f",
-    "57807bc68ff077b9",
-    "f43bd00125f7cd1e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "wait until 4:35",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "38492e8f3e02e537",
-    "32d4588de49f7804",
-    "8bf711d8fff2aa6d",
-    "ae500ad6c9f6f8bf",
-    "5740706c0461a342"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:40",
-    "goto microwave",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "f5d4226773c81a69",
-    "f104edfef7f2513c",
-    "954f9fb1d9c9536f",
-    "dbdce8a4510a4dbc",
-    "4a47b9acf6968d5e",
-    "cf025bc81bfed948",
-    "1ad607ed1f67fce7"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "55c7e0a2903fcdbc",
-    "46d099e22c1d92d4",
-    "9c1f65d6b38deaf4",
-    "d41f076a95e3a3fc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
     "goto desk_phone",
-    "goto roster",
     "interact",
-    "pretend until 4:57",
-    "sit pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "6072b1ce625e2b38",
-    "091159605489090d",
-    "41256359e8ec541e",
-    "e0e3f878b3960a21",
-    "fd75790563edd59e",
-    "4e26b3fa998a121a"
-   ]
-  },
-  {
-   "cmds": [
     "goto copier pretend",
-    "goto roster pretend",
-    "interact",
-    "goto copier",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "f8f861d3ed9d65a0",
-    "e46f3c17cf054a3f",
-    "b633d9f0c2286400",
-    "02a3e03055c3b89b",
-    "8d65f5f4e53a1b21",
-    "48fa7ce140b5785f",
-    "43a1859573717829"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier pretend",
-    "interact",
-    "sit pretend",
-    "pretend until 4:50",
-    "wait until 4:14",
-    "goto desk_phone pretend",
-    "pretend 2s",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "9b1ed26c1b121c57",
-    "d78029e5c05ac9d1",
-    "75638be260214929",
-    "f77cb9c69bf6b03a",
-    "23e5266ee48646ed",
-    "21a0c5d1dec6f8f3",
-    "b245912204e28f37",
-    "cdf4d9d10c06e864"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier pretend",
-    "interact",
     "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "ab5e70a87bb41171",
-    "fa6a3642c0ee5458"
+    "39d342f51040c801",
+    "b8455c688be6ee67",
+    "29e24d9d595f4f86",
+    "cf15542beaca771f",
+    "c785a13b67fe68f9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "78c7392915fb7d46",
+    "a1d0927ae9269971",
+    "cb51b694cb7c52a5",
+    "d586f093abe474d2",
+    "838b9d491f93a328",
+    "18f19b20e331db34"
    ]
   },
   {
    "cmds": [
     "goto microwave",
     "interact",
-    "goto copier pretend",
     "goto copier",
-    "interact",
-    "pretend 3s",
-    "interact",
-    "pretend until 5:00"
+    "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "a39ec424f741f5fb",
-    "8af52b6d705fa836",
-    "8b98331eb991ff05",
-    "1da8b10a98c746fb",
-    "61c32fd21c5b6556",
-    "86e5631dbb218078",
-    "cef929185fcaea5b"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "6b1159bcef7ad548",
+    "f50e525f00a1e572",
+    "64ba12cc88378846"
    ]
   },
   {
    "cmds": [
-    "goto desk_phone pretend",
+    "goto copier pretend",
     "interact",
-    "goto copier",
+    "goto roster pretend",
     "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ea1b06afc34ee217",
+    "42bdbd8a50ab9423",
+    "d482dd4c47843560",
+    "9bf86859e2a19e71",
+    "f90d909f7b6f6c4d",
+    "1daa5a94fae79ea3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier pretend",
     "wait until 4:32",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "caught",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "55923277b7a53c7e",
-    "d2cf8e7b2aaa2b68",
-    "65fe959f455844be",
-    "dbc718496ea57f3a",
-    "114b9e7405cab54a",
-    "2a245b4f44c37732"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "pretend until 4:50",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "69357f182bf5ccd8",
-    "997fbbdfe030f864",
-    "2e40a5a2d2f6d0fb",
-    "ee8dd8559299f67e",
-    "e507907ad0b01110",
-    "d3c4a253f31592bd"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "a8981a4790c30915",
-    "967fd152540c2c8e",
-    "5e6911c798f1e6b1",
-    "c448e3061c11ba94",
-    "65529c123115e30c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto roster pretend",
-    "pretend 1.5s",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "44349f332a4b5992",
-    "88c0cecb999c70cd",
-    "ea75f761863f8656",
-    "5e355a973b1ebd7e",
-    "1990089b62c493f8"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:50",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b1582182d82e344e",
-    "f1b31173aa8563d0",
-    "d0b88e6ecd9314f4",
-    "2f57b313b8ea39a6",
-    "29416fd1161749ae"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:55",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "131dc5ed77e1d0d9",
-    "f4dfe1cc35aa94a0",
-    "a673adb83395eea2",
-    "b748a8f4de33e4cd",
-    "9d7f3e7d9fe384a6"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "7da19d518cb2147b",
+    "3dab2489dab94902",
+    "b2ef61c035cf4f2b",
+    "bb51c41fda07c371",
+    "c1010d51433ed45b"
    ]
   },
   {
    "cmds": [
     "goto desk_phone pretend",
     "interact",
-    "goto roster pretend",
+    "goto roster",
     "interact",
+    "goto microwave pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "abcf6e6445f39912",
+    "a17f604eeb085d7b",
+    "0d15d85d0cac2011",
+    "82bdd4a8968f66b3",
+    "56c2d1de92507af3",
+    "67fed4400b7a82df"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:56",
+    "goto desk_phone pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "0df7bc005c8ab7b8",
+    "d3bf0a4ed91335e4",
+    "78b55aa1030481f8",
+    "c5d391b3397e8657",
+    "2dd1fd18d078f48b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "3d9b44e15689c089",
+    "5ae4f749965c0ab2",
+    "83a372d991bd5375",
+    "76ef7442176bd173"
+   ]
+  },
+  {
+   "cmds": [
     "goto microwave",
     "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "38492e8f3e02e537",
-    "b193873f3ad9f449",
-    "77c4f3c0e08942d7",
-    "c1b10a7663553396",
-    "99bc230e7f98a2c7",
-    "a509112f00438f3a",
-    "f2eccac37ec4c292",
-    "91bca086eb2c1f87"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "c80e21c28a65332c",
-    "c9aa5aca5411899b",
-    "f5ed78c564a8d541",
-    "06a1606035eb4eb3",
-    "b0e546c3ab089fcc",
-    "6974f69397b01bbd",
-    "8657db2682a56586"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:16",
-    "pretend 2s",
-    "goto roster pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "4d91542bd9218744",
-    "ea404684e732dda1",
-    "838ac224c1f0f16b",
-    "52ef429763e2cd73",
-    "73ee02a9cc8e6978",
-    "a624cb569bd7c312",
-    "d2fb874ebe048f48",
-    "4a8d3fe92e7e79ca"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto copier",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "d62f0f7a3c57006a",
-    "94ae7323d07c79aa",
-    "d7f18bddab643475",
-    "8657db2682a56586"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:50",
-    "goto microwave pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b1582182d82e344e",
-    "a676917e7b5ef51b",
-    "c00fa87570956174",
-    "1a8a18114237b867",
-    "d2c6ab7053c8a72d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "a8981a4790c30915",
-    "967fd152540c2c8e",
-    "a070db5da6895c84",
-    "faa50cdbdc896597",
-    "305bab6c8237a312",
-    "1728e60c691e64fd"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto copier",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "f2e324271ed220ce",
-    "ed18cba05370c56f",
-    "3bc98df7068ac420",
-    "6fc0de60ea448ab4",
-    "db52fffec93c5431",
-    "3d4f3c12dc822eca"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "interact",
-    "goto copier",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "e249ad7005bb42de",
-    "1040d509df2744fb",
-    "833b0c1e615fb153",
-    "fc469b17f6b9ab29",
-    "2d25be30490973d5",
-    "ac73339e8ce424fa",
-    "c16c84386659abe8",
-    "e1b37bfc5cbfdbf2"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:50",
-    "goto copier pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b1582182d82e344e",
-    "f1b31173aa8563d0",
-    "d0b88e6ecd9314f4",
-    "1e97f4d30e88232c",
-    "51eb9a52d3d75bf0",
-    "b7a85bb97bc006c5",
-    "7a9a24792913032c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:40",
-    "interact",
-    "goto microwave",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "f5d4226773c81a69",
-    "dcc74422a8ed1ee3",
-    "7c5bd7e2f3560cfe",
-    "0978678063f1cc1e",
-    "d749cec5c69d6672",
-    "7319a9e909869bb9",
-    "1bb49aa46b937a0a",
-    "354afbc0d7c60115"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:06",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend 1.5s",
-    "goto desk_phone pretend",
-    "goto board pretend",
-    "interact",
+    "goto lin_desk pretend",
     "goto roster",
     "interact",
     "pretend until 5:00"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "6252319a6ab29225",
-    "8184d114d68634d0",
-    "64a0c288897e833c",
-    "6943f460030279ce",
-    "cc83db94319ea7da",
-    "b9c3ebab22add44f",
-    "51169a0573241831",
-    "c1b90247e23c482e",
-    "69630d6e32dd59f1",
-    "b4750e008481b709",
-    "de200a52a242f80b",
-    "3884a6377fd3d2a1"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "f596b4d2541574ee",
+    "49a64e0d6f5d03c9",
+    "aa6fe2ab402798c3",
+    "202f888e3058ff36"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "c12fdcca9efb5421",
+    "84e76e2cb74b65f7"
    ]
   },
   {
    "cmds": [
     "goto desk_phone pretend",
     "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
+    "pretend until 4:20",
     "goto roster pretend",
+    "goto copier pretend",
     "interact",
     "pretend until 5:00"
    ],
-   "summary": "win ding",
+   "summary": "caught",
    "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "6e2e4c86072a990b",
-    "38e582ecba9fbf28",
-    "c082e7d74a1f4608",
-    "67a75721661d702b",
-    "b0eb0ff52e53cb59",
-    "0e9ca4ba232e72c9",
-    "5586be11360bde74"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "b8f24811e0dd9e09",
+    "783f715961ec19ce",
+    "2f5837d2e3f89021",
+    "68eb16e15b7d475f",
+    "7f98ba15ae92d9fc",
+    "ecd20058e5a71c43"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend until 4:12",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "79bfbe62370aa30a",
+    "0d8c57711acfa8ce",
+    "bd64af9d8c13e9bb",
+    "eb569504ee97a020",
+    "e68e9bc1708a6cbe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "pretend until 4:52",
+    "goto desk_phone",
+    "pretend 2s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "ea1b06afc34ee217",
+    "42bdbd8a50ab9423",
+    "35592460f362f918",
+    "3f621f9151f38a99",
+    "cfb611490291a619",
+    "d9bd5d2fedd38da8",
+    "5b740f6d3ac66312",
+    "62c3945a20fae080",
+    "c1f7b43331cc05f7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "8b0a7bb1ae9029fb",
+    "6d2094698b21ae34"
    ]
   },
   {
    "cmds": [
     "goto microwave",
     "interact",
-    "goto copier pretend",
+    "goto lin_desk pretend",
+    "wait until 4:27",
     "goto roster pretend",
     "interact",
+    "goto copier pretend",
     "interact",
     "pretend until 5:00"
    ],
+   "summary": "fail",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "1d3913e8d8d080aa",
+    "249bc5050e582024",
+    "63e1bc8e050d4e6d",
+    "8a2d813e61eccbba",
+    "fd4ca5e3d865718c",
+    "9a9a5228597baff4",
+    "657a67151f4a0403"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto roster",
+    "interact",
+    "wait 8s",
+    "pretend until 4:07",
+    "goto roster",
+    "interact",
+    "goto copier",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "13dc3eda80a9ba36",
+    "b3aead2ff0962817",
+    "266b4ad3c999f0ef",
+    "8bece3fe9908ed67",
+    "14aa6182afe56e30",
+    "4772ed805702e0d0",
+    "5d656d17a3c22911",
+    "9f25dd58e21e15ea",
+    "b3690d8f338afad1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 4:27",
+    "interact",
+    "goto microwave",
+    "interact",
+    "wait until 5:00"
+   ],
    "summary": "caught",
    "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "a39ec424f741f5fb",
-    "d15c4f4cfd407d5a",
-    "358a7259c182ffdc",
-    "d7eb3ef141416e64",
-    "1ce953e3d08a5b0a",
-    "6fcea8f9b5c5292e"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "3d9b44e15689c089",
+    "5ae4f749965c0ab2",
+    "e6e89fbf847f19b0",
+    "748313f1cdc5ed2d",
+    "fa4e2dfb2723a04d",
+    "fe8c378e4cadf11d",
+    "748090f9f64c765e",
+    "60d3eb8d1e7ab724"
    ]
   },
   {
@@ -990,787 +606,317 @@
    ],
    "summary": "fail",
    "digests": [
-    "9cfbea0ef2cd9439",
-    "781a1f887b393a3d",
-    "8c1b4734989e5124",
-    "49331ae28ad1bf7f",
-    "611fb8ca1dc6d771"
+    "b91abc5fcdc7c102",
+    "2e88c5d0fe14a778",
+    "7906c027b03a7f5c",
+    "cf8cbacb230d6699",
+    "902e5f4b8b85b7d8"
    ]
   },
   {
    "cmds": [
-    "pretend until 4:46",
-    "goto desk_phone pretend",
     "interact",
-    "goto microwave pretend",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "9e624b16d8093372",
-    "b7a6db4c561dd0f5",
-    "03b748bab821773f",
-    "268b69097755d3f2",
-    "ede66785bbb483b9",
-    "236b3bae1bb9c2f8",
-    "52749415c1fcfe26",
-    "ff0e3ff31c2c8065"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_window pretend",
-    "pretend until 4:09",
-    "goto roster",
-    "wait 0.75s",
-    "goto roster",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "f44129410f2e21de",
-    "8d61b19289f9181e",
-    "a88142b933cab127",
-    "7417d16903ce0825",
-    "9f37ab68e5ef7c68",
-    "a1f58512386150d7",
-    "bd7b1236d7bfbc83",
-    "f376ba4ae57856ba",
-    "69344c41dde13660"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "cb1750b551c31356",
-    "5718599ef8fb1067",
-    "d4c629a34491e89d",
-    "0b424f50a289cdec"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "55c7e0a2903fcdbc",
-    "46d099e22c1d92d4",
-    "afd423c06962ff0b",
-    "ff391a7fc5502932",
-    "1aaf2b47b83cd042"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "6e2e4c86072a990b",
-    "38e582ecba9fbf28",
-    "c082e7d74a1f4608",
-    "67a75721661d702b",
-    "b0eb0ff52e53cb59",
-    "fd036bfc34709f3f",
-    "666d8c49bb92d092"
-   ]
-  },
-  {
-   "cmds": [
     "goto copier",
     "interact",
-    "goto desk_phone pretend",
-    "interact",
     "goto microwave pretend",
     "interact",
     "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "113518070750be56",
-    "d49ee48b415540cd",
-    "fb75d706d4b3e64f",
-    "f95273f01f98b8c1",
-    "e8f8d1462ef48341",
-    "97c193bbdec5c18c",
-    "81f638784a9e451c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "c80e21c28a65332c",
-    "65e1fb0cea2b0633",
-    "6ffbda143870cc9f",
-    "35f9b96beff51fb4",
-    "9e2cd596d0af6aa1",
-    "6d2f716bb51fc3eb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kev_desk",
-    "pretend until 4:51",
-    "goto microwave pretend",
-    "goto copier",
-    "interact",
-    "goto desk_phone",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "26cc7d3939dced21",
-    "0d213f469b7c3020",
-    "29d774e6ed0ad20d",
-    "34bc095fec2bfd7b",
-    "9441c9db7376c2d9",
-    "b9f163757c97987d",
-    "6e8e9d3499d3ad2a",
-    "9dad537ce4e66087",
-    "4420cd2dcb333703"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 4:50",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "814e4be1f0047bb8",
-    "650cddf1d825f80a",
-    "88a1659f4e11818d",
-    "a75e35f3248cd52c",
-    "42fe309bdb8337c2",
-    "d3ae0a358a7d5ef4",
-    "1b0a017d9887f1bf",
-    "d9eb7a55ae546895"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 4:58",
-    "goto desk_phone",
-    "interact",
-    "pretend until 4:42",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "814e4be1f0047bb8",
-    "650cddf1d825f80a",
-    "88a1659f4e11818d",
-    "b2cf6a9b2e88c0ae",
-    "d15d33b12dba0501",
-    "049bad580262e91a",
-    "d9ae262c98146649",
-    "42ff4e91adbcbae2",
-    "6949d48c96f38d3f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "55c7e0a2903fcdbc",
-    "46d099e22c1d92d4",
-    "e1a3c6474a438ec8",
-    "cd712d97e02505eb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "sit pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "814e4be1f0047bb8",
-    "650cddf1d825f80a",
-    "88a1659f4e11818d",
-    "ff6c7d46e7b9a3f0",
-    "2e93b0dc234c07f5",
-    "5bf1cc288b53fb98",
-    "658b52e56d39c452",
-    "884e93cfd785c601",
-    "e5396f9d9af70550"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 4:46",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "9e624b16d8093372",
-    "b7a6db4c561dd0f5",
-    "03b748bab821773f",
-    "268b69097755d3f2",
-    "6fe2b5cbacfdce7e",
-    "9c096929617f68f2",
-    "ecbe75c1b29fff85",
-    "cd8f2fb0c19d5ba1",
-    "ffcf1df870a29f13"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "113518070750be56",
-    "d49ee48b415540cd",
-    "2b8fcce0c715311b",
-    "a7174fba9bc2aad9",
-    "ea91270dcf68582d",
-    "745aef33cb530750"
-   ]
-  },
-  {
-   "cmds": [
-    "goto roster pretend",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "goto copier pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "933870a850e6bbb2",
-    "6ab71a9a4a3f12ca",
-    "22caf82780f56c5d",
-    "1eeeddbcc0401986",
-    "5ef4eee29bf9caf6",
-    "3f172cdbb1d64943",
-    "8e4ebaa552743f6d",
-    "8e8b3f71ecbe63ae",
-    "a5182c4d840ca87e",
-    "a39c0210491d45e2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "sit pretend",
-    "goto roster",
-    "interact",
-    "pretend until 4:58",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "814e4be1f0047bb8",
-    "73eff65195d02c87",
-    "e132d45e60a9c997",
-    "a985c463bcca6df5",
-    "a32079b54a795fcb",
-    "28e1f243443294b2",
-    "0472424222023f9b",
-    "22fa9bbec2a359fa",
-    "c673a70b24ad877c",
-    "e7fc4d8fa36639e3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "113518070750be56",
-    "d49ee48b415540cd",
-    "fb75d706d4b3e64f",
-    "8734e7dda2ca1434",
-    "bf00408dd73d97d8",
-    "8e356d7e9c387eb1",
-    "044f17bd236188b6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "pretend until 4:56",
-    "goto desk_phone",
-    "interact",
-    "pretend until 4:40",
     "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "1942f2fed7d96d50",
-    "e3146aa0715b45a2",
-    "6bfff50bcff99760",
-    "45f44673ae2ecbe2",
-    "36faa55afb99d453",
-    "f4f68adaa47135a7"
+    "38de9e51f487b56a",
+    "cb73304562247185",
+    "088234a97369560e",
+    "6bccf631e7f60e9e",
+    "f132c9c61bd55854",
+    "a01ca2ce0a16189f",
+    "20082c4b15da222e",
+    "fcfc4fd0e1c29a0b"
    ]
   },
   {
    "cmds": [
-    "goto microwave",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 4:55",
-    "goto roster pretend",
+    "pretend until 4:30",
     "wait 3s",
-    "goto copier",
+    "goto desk_phone",
     "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "a39ec424f741f5fb",
-    "a9c1d0b4e9acd300",
-    "d74b2fb4d983f656",
-    "071e9509af282757",
-    "1f3c57d4bdacb1fb",
-    "90aa88e3b275ccc5",
-    "993ce29146425735",
-    "c2d43b75b26bdc20",
-    "309b2ad65ff129ce"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "c2336027d0ccb1b6",
-    "1840bcb6cf3a445c",
-    "aed9ba5329c6d147",
-    "6e27faae70061842"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "6e2e4c86072a990b",
-    "38e582ecba9fbf28",
-    "c082e7d74a1f4608",
-    "67a75721661d702b",
-    "b0eb0ff52e53cb59",
-    "718e845f046d5cf6",
-    "f79e5d852c12b292",
-    "e2c89af12e32973a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto copier pretend",
-    "pretend until 4:05",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "fc84cfecf7ac6efc",
-    "9a5ebbe342a694d2",
-    "3978690a1e676b85",
-    "8ce879e2ee58aacd",
-    "552e392f7b0b5cc0",
-    "9418ca4f987cdee3",
-    "27c2e745127261a0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "ba6156f190daac15",
-    "e32efe4e906c4351",
-    "2694daaa4a707f55",
-    "47ea63bf1e4b6042",
-    "00df1c1053f52d2c",
-    "2775bdfbba1ea937"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
+    "pretend until 4:18",
+    "goto roster",
     "interact",
     "wait until 5:00"
    ],
    "summary": "blamed phone",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "c80e21c28a65332c",
-    "65e1fb0cea2b0633",
-    "6ffbda143870cc9f",
-    "35f9b96beff51fb4",
-    "16cb6e99d543f784",
-    "fff1f18d9d3b8dc2"
+    "a533dff8f216b1d0",
+    "41be8e648660410f",
+    "12e9b1dfa40d6995",
+    "588395393d9d6c48",
+    "fb4e3278689ef1ec",
+    "c3a6ff560c1d3b8c",
+    "d17ae728f6262e24",
+    "0bb3073441e0fee1",
+    "ce1fc07af2b2c00b"
    ]
   },
   {
    "cmds": [
-    "goto copier",
+    "pretend until 4:49",
+    "goto microwave",
+    "goto copier pretend",
     "interact",
     "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "113518070750be56",
-    "d49ee48b415540cd",
-    "fb75d706d4b3e64f",
-    "f95273f01f98b8c1",
-    "e8f8d1462ef48341",
-    "a5b32438bd428c45",
-    "0c0507db22d9707d",
-    "ee4c1c2826c7586c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "interact",
-    "pretend until 4:51",
-    "goto roster pretend",
-    "goto copier",
-    "interact",
-    "pretend until 5:00"
+    "wait until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "862dd453cc07cd9c",
-    "6937c6f075e6d6e3",
-    "ec65fff03c3e12d7",
-    "ccaaca8e022b5bb6",
-    "0b1ec35ca0227ebf",
-    "06312340e3e6d3a9",
-    "64f84a6c10e6cc84"
+    "b91abc5fcdc7c102",
+    "043dddf80f54cc30",
+    "43926cfdf40a9184",
+    "69717f6455f1a9ab",
+    "5e1300d01c3cbb27",
+    "8af3b543ab1aaa25",
+    "2244bf351805f11a"
    ]
   },
   {
    "cmds": [
-    "goto copier",
-    "interact",
     "goto microwave pretend",
+    "pretend until 4:55",
     "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
+    "wait until 5:00"
    ],
-   "summary": "win ding",
+   "summary": "fail",
    "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "a8981a4790c30915",
-    "967fd152540c2c8e",
-    "5e6911c798f1e6b1",
-    "84b9266c0aa2b01d",
-    "d591b172db0664a6",
-    "9a95d78ee54034cf",
-    "d3f253014515c10e"
+    "3d0377b7b96638ac",
+    "a61924d9672e0853",
+    "b2c63464cc9fd8c3",
+    "e60476ad64184112",
+    "914fe1b90a712e41"
    ]
   },
   {
    "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto copier",
-    "goto copier",
     "goto desk_phone pretend",
     "interact",
+    "goto roster pretend",
     "interact",
-    "pretend 1.5s",
+    "interact",
+    "goto microwave",
+    "interact",
     "goto roster pretend",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "caught",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "38305fb63ab3d620",
-    "712fd3220aed25ff",
-    "5d73b4e6c921a07c",
-    "14734c6cb37b6210",
-    "39237fc90cffdbb7",
-    "37880d00b1b5d919"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "78c7392915fb7d46",
+    "a1d0927ae9269971",
+    "dce1356cb418dfe4",
+    "13e697b095e9874b",
+    "5b2a1ce22b994840",
+    "92cef99945b90a15",
+    "96dea91979b7584c",
+    "5a5b6177160be11c",
+    "ba72c3cd61d6cbcd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto microwave",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "3d9b44e15689c089",
+    "5ae4f749965c0ab2",
+    "aa281b76c30d7961",
+    "f39f49509663c21a",
+    "91ea818c042efc78",
+    "b8f2eb0eac9846fc",
+    "8bff4f6b14052cce",
+    "4eff372b1a8ac93d"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "38de9e51f487b56a",
+    "78d0e770f4e9db22",
+    "839d5973319ead15",
+    "de72657ba858adec",
+    "1b06e9c01d9abc85",
+    "74d099dc27d90568",
+    "d7700bd37ce76484",
+    "888146371179462b",
+    "a4c9a5d5da99abe2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "pretend until 4:19",
+    "interact",
+    "pretend 8s",
+    "goto desk_phone pretend",
+    "interact",
+    "goto copier",
+    "interact",
+    "pretend until 4:39",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8acbdc094c8dbc9e",
+    "1c9d48c2e3ca9699",
+    "af123e28c92840fe",
+    "025c9ac63783566d",
+    "1f0e19f5bf0cdac4",
+    "6d1dccc33648e3df",
+    "ca9547db6add9c40",
+    "0adda27b5522a7e0",
+    "1cf12b69d0e7520b",
+    "dc1f6072eea67136"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "f80200e4ab20d842",
+    "e17544988766026a",
+    "63be1ec847df30a5",
+    "152df4984e73e8b0",
+    "f1af8f5912ebdd2d",
+    "f6319ee0e3b8dffc",
+    "314170f05355bf53"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "dba9d5faa7345546",
+    "8d9991abc17cdbfc",
+    "1286cde3f0564d2a",
+    "19eef515ab318f94",
+    "32e1ab59bd0488ef",
+    "d13e0d4e993d1426"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:41",
+    "goto microwave pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "20ce88ef6460ab95",
+    "5d8a29b329757981",
+    "cad653162e47aef3",
+    "9e45e416b1accaa5",
+    "32625d276c21841a",
+    "d07e1294e711a4dc",
+    "8e2d61e42477c0ed",
+    "88e85b7741b53591"
+   ]
+  },
+  {
+   "cmds": [
+    "sit pretend",
+    "wait until 4:48",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "wait until 4:55",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "a36c7062931d4d74",
+    "18664fb5a7eeea12",
+    "b196d999ce578eca",
+    "ac167ae5abbea4d6",
+    "31f52165b8e69e5b",
+    "1f195c178193cffe",
+    "e035fdab83b7d295",
+    "4143c5960c2e7c9f",
+    "900654a4b015805a",
+    "4ea20d5e74120e06"
    ]
   },
   {
    "cmds": [
     "goto microwave pretend",
     "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 4:56",
     "goto copier pretend",
     "interact",
     "goto desk_phone",
     "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "e20bb73297948835",
-    "1b50ba881dc6ffd7",
-    "825b2e3d4877a9fd",
-    "0e5ee2cdf8554ad7",
-    "837d08c8b7c0e0de",
-    "e898acc5d8708c96",
-    "a382644999008b76",
-    "c05bf79a0620f685",
-    "131a3cf2101dc0fc",
-    "180a32b3af283666"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
     "wait until 5:00"
    ],
-   "summary": "blamed ding",
+   "summary": "fail",
    "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "a8981a4790c30915",
-    "967fd152540c2c8e",
-    "5e6911c798f1e6b1",
-    "84b9266c0aa2b01d",
-    "d591b172db0664a6",
-    "aadebfd342fc75f7",
-    "187fb85276b4e255"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "7da19d518cb2147b",
+    "b5bc623163a2766c",
+    "ed76bb2f25ad0141",
+    "a89b7d5ec9452a55",
+    "77a00e5c18f4868d",
+    "3e5a9d5a42fecf2c"
    ]
   },
   {
@@ -1781,1471 +927,48 @@
     "interact",
     "sit pretend",
     "goto roster pretend",
-    "interact",
-    "goto microwave pretend",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "6e2e4c86072a990b",
-    "38e582ecba9fbf28",
-    "c082e7d74a1f4608",
-    "67a75721661d702b",
-    "b0eb0ff52e53cb59",
-    "dd1173a607d102b5",
-    "c38587cde4537082",
-    "ac0faaa04d906b98"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "win ding",
    "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "c65e71b5614eca0a",
-    "6285db887f86e752",
-    "a95a944e177634fd",
-    "76b2ae4bd318fc23",
-    "cb03a7bcddc76e42",
-    "94ce071d0c307741"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "2b9129d8daa5bc78",
-    "95b1ff00e650c6bb",
-    "8f17c66a62eebdd4",
-    "80a7a973f5db91a8",
-    "e7aca692ecf1fb29",
-    "94a19a217fe32ff3",
-    "feaf655598837acd",
-    "a75c8b6b43d64125"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "55c7e0a2903fcdbc",
-    "46d099e22c1d92d4",
-    "fa15dcb7d9b02745",
-    "6df277b725cf65b6",
-    "baeddeac0685c16a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:38",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "goto boss_window pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "f1b5856b5e0ce174",
-    "164f8f0fb39e32ef",
-    "21f5377ca4312008",
-    "1749ee1f8be1f448",
-    "b7edfe6b5fd2ffab",
-    "dffd6849204cc4be",
-    "5a6a9bd3227ae431",
-    "c61c8c9430f4a54b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto copier",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "1a65edf15368f4bc",
-    "eec81df7387092b2",
-    "2fd818f294416e33",
-    "8bb85ee03017c65c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "ba6156f190daac15",
-    "e32efe4e906c4351",
-    "2694daaa4a707f55",
-    "47ea63bf1e4b6042",
-    "117688d35f3f9a24",
-    "b802f50568da63a9",
-    "b808fabd7270b5f3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "a2f67a0972cc2397",
-    "0cba72b0930c0d08"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto copier pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "6e2e4c86072a990b",
-    "38e582ecba9fbf28",
-    "c082e7d74a1f4608",
-    "4c46cafe35fa193f",
-    "11ac02f7fd02a792",
-    "bf9c64759bf989dc",
-    "2dad846a0dfbf43c",
-    "ff4114cec5cdd91b",
-    "e38968a1aacdca1e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "ba6156f190daac15",
-    "e32efe4e906c4351",
-    "2694daaa4a707f55",
-    "47ea63bf1e4b6042",
-    "117688d35f3f9a24",
-    "3d13405bf4ec2326",
-    "669883afb29f05e8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "cb1750b551c31356",
-    "5718599ef8fb1067",
-    "21bd4c0c9d650e9a",
-    "bf59525b5bb71fac",
-    "e7b7b6545e3993b5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto roster pretend",
-    "pretend 1.5s",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "44349f332a4b5992",
-    "88c0cecb999c70cd",
-    "ea75f761863f8656",
-    "a956466b3e84b7a0",
-    "b83b6016fd7d7644"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:38",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto boss_window pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "f1b5856b5e0ce174",
-    "164f8f0fb39e32ef",
-    "21f5377ca4312008",
-    "1749ee1f8be1f448",
-    "fbd0966506db4f6c",
-    "d6baa1bce7cfe87f",
-    "f4bcb7358fe5101b",
-    "bfc67f545b7cb087",
-    "13910f6681547fc9"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "c80e21c28a65332c",
-    "65e1fb0cea2b0633",
-    "6ffbda143870cc9f",
-    "bfc5f213509addf4",
-    "36bc08cd7a20bc88",
-    "75d3f92ec42c10fb",
-    "29ae9cec24d792ee"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "cb1750b551c31356",
-    "5718599ef8fb1067",
-    "ce5ca6a227815878",
-    "8ab937e3c2eaa1df",
-    "5e329e542981c01f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto roster",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "c2336027d0ccb1b6",
-    "1840bcb6cf3a445c",
-    "d0f93758f3052546",
-    "40896d29802c9866",
-    "1bf845522c180554",
-    "7df16036be56d6ec"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "124289e5e812d3fa",
+    "7cd15af4ebebafd8",
+    "80f231db1f45c620",
+    "ef910439015e1639",
+    "2fe992e8fc595c6a",
+    "b8899fb9954a9935",
+    "00733d3b61f75bf5"
    ]
   },
   {
    "cmds": [
     "goto board",
     "wait until 4:58",
-    "goto microwave pretend",
-    "interact",
-    "goto copier pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "14a5bbc4cb76f39b",
-    "71c1968dfd34de04",
-    "e83e265e9cf0edeb",
-    "b2912b6ee163059f",
-    "8b2800c8457661d7",
-    "beb7890b58d8c02d",
-    "41d315757342de9f",
-    "4c6b7626341c31cd",
-    "5775ddf5edaefd4a",
-    "a990f951c193e375"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "c65e71b5614eca0a",
-    "6285db887f86e752",
-    "a95a944e177634fd",
-    "76b2ae4bd318fc23",
-    "fab5170a0c0b11f4",
-    "22772e78ecefce71",
-    "4ba1a3ebc72e729a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "a8981a4790c30915",
-    "967fd152540c2c8e",
-    "5e6911c798f1e6b1",
-    "84b9266c0aa2b01d",
-    "d591b172db0664a6",
-    "01a85319db16f4c8",
-    "0bbf1907de55b455",
-    "fbd27d1dc7efd136"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto copier",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend 1.5s",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "c2336027d0ccb1b6",
-    "1840bcb6cf3a445c",
-    "a3e28cf5bdea708f",
-    "4bd92d015950dd67",
-    "7c6a52384364d946",
-    "bbfbce8f47b37464",
-    "9003cedded2d6974",
-    "63471dca20ef9331"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto roster",
-    "goto roster pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "c6de1197aaae2fad",
-    "8bb50298092bfcab",
-    "c295337442faaf88",
-    "f359a9ad4cb280b8",
-    "abe8333e09f34e66",
-    "aee21243a93af53e",
-    "1c6636748e3e8a85",
-    "cdf1c80774a0ef2a",
-    "fc35c5af7572f776",
-    "67e80e4d216299ec"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
     "goto copier pretend",
     "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "c39eb4d721d299f8",
-    "cc69c4b91d5ce40b",
-    "60a9a555437f29aa",
-    "cd983a5514694690",
-    "e1bb6ad3169c6cd2",
-    "b47f0bcdb18b3acb"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "pretend 1.5s",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "3480bd46b7ba14fc",
-    "4f92f73b1fe35039",
-    "df3358b727db24ce",
-    "ec799b2dc46a36a1",
-    "1e5e13abe2ff57f2",
-    "ee4f67f9bb118bc3",
-    "1d64889b0e306147"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "pretend until 4:32",
-    "interact",
-    "wait until 4:35",
-    "interact",
-    "sit pretend",
-    "goto roster",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "0fa0eaf74b31304f",
-    "e390d439b77fe79b",
-    "109cd50a2516081e",
-    "6303003cef2f9d67",
-    "047eb74f6a6f6bcc",
-    "9ddb3d5233cb06f9",
-    "a0b2c47b7bb1fe50",
-    "3604e86e28d28df3",
-    "4152cacc1a237ab5"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "pretend until 4:49",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "e249ad7005bb42de",
-    "6f64abd755bac97f",
-    "e5af31f231bde9a6",
-    "5f31e487391dd304",
-    "bb63d358399e5d14",
-    "6238e6e9c92cf9d9",
-    "c16dee601b2455af",
-    "755ad3f3708162d3",
-    "f15b55851440d777"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "c65e71b5614eca0a",
-    "6285db887f86e752",
-    "a95a944e177634fd",
-    "349059f53d93de62",
-    "989e481aad907115",
-    "c93c1ab9f3ff1dce",
-    "d97b0bebf3b16e08"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto copier",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "wait 1.5s",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "c2336027d0ccb1b6",
-    "1840bcb6cf3a445c",
-    "a3e28cf5bdea708f",
-    "a6e26a4cb6ed5f34",
-    "0ced7fd5f599c40a",
-    "d02d7a79e4ddc36c",
-    "d6a783ab0fd5f0b9",
-    "b44d44bb88631d2a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "wait until 4:47",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "5b5856dcd11922ba",
-    "46d72e2d52adf01a",
-    "40947c599ea63bb3",
-    "5e91d1bcfa1a05a1",
-    "a1ada8fe1b48d178",
-    "acfe1d8ba3ca4feb",
-    "a320e4b32bcb1f68",
-    "3c57e24f5f9b4c0f",
-    "f422c22919cbaba1",
-    "6a57298a67d3363f",
-    "e2e43db3e4aab60c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto roster pretend",
-    "pretend 1.5s",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "44349f332a4b5992",
-    "88c0cecb999c70cd",
-    "ea75f761863f8656",
-    "9994d44714d7d74c",
-    "4dc28a1f5e01cd90",
-    "215811253ce9fd94"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kev_desk",
-    "pretend until 4:51",
-    "goto microwave pretend",
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "26cc7d3939dced21",
-    "0d213f469b7c3020",
-    "29d774e6ed0ad20d",
-    "34bc095fec2bfd7b",
-    "9441c9db7376c2d9",
-    "09ffa13731ecfc17",
-    "cfbade126057d263",
-    "0f2e2af21ed25a00",
-    "d2e1b9de541473bb",
-    "5f6968425aff7cf3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "wait 2s",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "438c6561b2c1b5da",
-    "6072b1ce625e2b38",
-    "0a2caaf07bc2456c",
-    "a2fea1aa290bdc7a",
-    "05c4c6ca60ddbcba",
-    "6bbcdd10664d2815",
-    "01f433cb99940503",
-    "3397acfc3ec249ac"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto roster",
-    "goto roster pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "c6de1197aaae2fad",
-    "8bb50298092bfcab",
-    "c295337442faaf88",
-    "f359a9ad4cb280b8",
-    "abe8333e09f34e66",
-    "aee21243a93af53e",
-    "1c6636748e3e8a85",
-    "a4d9a039986a1a84",
-    "8bf9001fb2c0f9bf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "24a2c3ad9705b1f4",
-    "a42f4d94a5dcf625",
-    "314805f6baa1c556",
-    "e624780d842c0e37",
-    "c5a6bfa8ccb884fc",
-    "aa7b1c87f7f26ff1",
-    "002f63ebe939b8f0",
-    "777334e25b562748"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 4:55",
-    "goto roster pretend",
-    "goto copier",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "e249ad7005bb42de",
-    "d76941b2d7eadf31",
-    "05f368158a211bb1",
-    "94f8ec6922dca2b7",
-    "c97632fc6522d849",
-    "fad17af709531061",
-    "0bbe636599b7a2bb",
-    "0eb471e1807c61e7",
-    "c27f8ea3b79dea74"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "wait 0.5s",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "interact",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "3e75ea498be6122a",
-    "7dcc8a1118b01478",
-    "bbab824dc23fee6e",
-    "bc5a6d7e64066d48",
-    "2543ee7df93f18f4",
-    "3febc0769077e2bf",
-    "6444392ec8a5c0ff",
-    "7aec59834ffe324e",
-    "920b014cc5f14150",
-    "9591fe65f0564237",
-    "6a5869f0641d102c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "pretend 1.5s",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "3480bd46b7ba14fc",
-    "4f92f73b1fe35039",
-    "df3358b727db24ce",
-    "ec799b2dc46a36a1",
-    "1e5e13abe2ff57f2",
-    "595c7c4f508acb3f",
-    "f70d5e2163d5249f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto desk_phone pretend",
-    "interact",
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "3ac7758fc347f2b4",
-    "27e8b2107bc70257",
-    "55923277b7a53c7e",
-    "d2cf8e7b2aaa2b68",
-    "22c5e3ec9089fc4b",
-    "b660a6bfefa49924",
-    "deefae44c655041e",
-    "c7fb107987877bea",
-    "0182351850fdd436",
-    "801f5ed282885892",
-    "5e9286d5459590bb",
-    "c968f04fddcdfc25",
-    "1c9bb0070ae5be1c",
-    "4b5f370fae3ee75c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "c80e21c28a65332c",
-    "65e1fb0cea2b0633",
-    "6ffbda143870cc9f",
-    "35f9b96beff51fb4",
-    "2f835a508d79370b",
-    "85cb1ace56c0f27d",
-    "0360c2f24f5beccd"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto copier",
-    "goto desk_phone pretend",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "2b9129d8daa5bc78",
-    "95b1ff00e650c6bb",
-    "9f9bacbc1d6175d0",
-    "40e4ca46e2d8e013",
-    "bdaab4f80e473ea0",
-    "ab771b6b34d208ba",
-    "07811be9bf659520",
-    "130ec500704b3538",
-    "673132a22e34d74a",
-    "5f0855164196fa76",
-    "d5236ea51df2cbe6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto roster",
-    "goto roster pretend",
-    "interact",
-    "goto boss_window",
-    "goto desk_phone",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "c6de1197aaae2fad",
-    "8bb50298092bfcab",
-    "c295337442faaf88",
-    "f359a9ad4cb280b8",
-    "abe8333e09f34e66",
-    "aee21243a93af53e",
-    "1c6636748e3e8a85",
-    "cdf1c80774a0ef2a",
-    "a259953bccb72e57",
-    "e028953f422b992d",
-    "646e588e6a2eccea"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "bdf638d74aa7438f",
-    "6185edc372199f0f",
-    "c2336027d0ccb1b6",
-    "1840bcb6cf3a445c",
-    "a3e28cf5bdea708f",
-    "4afc471983bb973f",
-    "72eca3a1a892795e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "0d11fdf52cc39229",
-    "6926bdfca0e15ee4",
-    "cfe82ba0ceec0924",
-    "e05d86eb117eb4e5",
-    "e05d86eb117eb4e5"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "b6e074b1a44433fd",
-    "f50c8c8823313676",
-    "66f66f508565beb0",
-    "aac3847697ff70ec",
-    "3dffceb9c488ecf5",
-    "913d3c48b77ce693",
-    "8b573e5d00d35b12",
-    "7af24c2dc3b1e7a9",
-    "b050867fb04739a2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto copier",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "97a7731861a48cd6",
-    "86379a8ebb8d1167",
-    "4b9912876f369efc",
-    "77170e1c170b8747",
-    "113518070750be56",
-    "d49ee48b415540cd",
-    "fb75d706d4b3e64f",
-    "f95273f01f98b8c1",
-    "a07be86e21b62e8e",
-    "52ad24601ab55f8f",
-    "83f69246de2d70ae",
-    "c60741908d238217",
-    "8b2d0e05bd58a3ff"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto copier",
-    "interact",
-    "pretend until 4:55",
-    "goto roster pretend",
-    "goto copier",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c2710f7c9f05ea4e",
-    "c2bb3fcf728d9dc1",
-    "d7d1ee8ba2a5d340",
-    "508e3b8e47f74f19",
-    "e10f167fb7d548bb",
-    "10a9e052656ccee4",
-    "e3fabcfacc3cb0b0",
-    "225d2ad84773a57f",
-    "c56f4a2cf71e36cc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "interact",
-    "pretend until 4:58",
-    "goto desk_phone",
-    "interact",
-    "pretend until 4:45",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "24a2c3ad9705b1f4",
-    "351bf378f0abca85",
-    "e02cf6bdcce8e57f",
-    "d0b66254545587f9",
-    "1f69f1bdb77001b9",
-    "4d66950f8cd8f9d2",
-    "67a07875d996dd87"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto roster pretend",
-    "wait 0.5s",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "pretend until 4:28",
-    "interact",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "d48c599f56c582f0",
-    "b18dfb2d6c38724c",
-    "bcbfe5e79a58a776",
-    "617baa3eb972886d",
-    "9ab3074a8e08975d",
-    "a1153cc2524b6973",
-    "1797d5d66800c88b",
-    "82a885977bf5b4f1",
-    "23337d4b2230fa73",
-    "a97ce30291d13ee7",
-    "f80ab1c6c4badf72",
-    "6dd074fdab49d1f4",
-    "0da07ba9ab1dc8a6"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "pretend 1.5s",
-    "goto copier pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "a0002994e2d6e335",
-    "6f1deaf47eb1ab69",
-    "1af177636b01ff6a",
-    "122511b17548e31b",
-    "0772cc684625a928",
-    "9b3d29f5c998cb4c",
-    "cab66dd90ea4677e",
-    "5cd3de09fa848c23",
-    "f684e5a757ce9ccd",
-    "3f86d50d7758e79c",
-    "8497419d0c0b42d0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "7628076cc96ed69b",
-    "025ae0a3e398df5c",
-    "c65e71b5614eca0a",
-    "6285db887f86e752",
-    "a95a944e177634fd",
-    "76b2ae4bd318fc23",
-    "e1032714ebe49c3b",
-    "be65746ecaa7109e",
-    "d50ba77530ff553c",
-    "502dd3e0fc6bca86"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "e20bb73297948835",
-    "1b50ba881dc6ffd7",
-    "825b2e3d4877a9fd",
-    "ba6bcf15bc965f87",
-    "4effedb6455277a5",
-    "901e15f8c1112e9e",
-    "d4f32e4d124247cd",
-    "34d7e74e2871cbb5",
-    "027a95f48b70ac70"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "sit pretend",
-    "goto roster pretend",
-    "interact",
-    "pretend until 4:53",
-    "goto copier pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "35996c6291596315",
-    "661dbb635c1ca00c",
-    "c20f4534110d2915",
-    "673a3d4650deae61",
-    "7c1396fe0d3f7dec",
-    "894c485cff192a3a",
-    "f2577cc5766abc57",
-    "7eeb9bf66ea73a87",
-    "e94e2c57a68933b0",
-    "45398ca1ac72f562"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
     "goto board",
-    "interact",
     "pretend until 5:00"
    ],
-   "summary": "win ding",
+   "summary": "caught",
    "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "b6e074b1a44433fd",
-    "f50c8c8823313676",
-    "66f66f508565beb0",
-    "aac3847697ff70ec",
-    "3dffceb9c488ecf5",
-    "39f6b6fd250fe47c",
-    "48be9a4c6aa476c0",
-    "fa460865ba94b03e",
-    "c0b85ca4104f78b3"
+    "199b36b5fb62a866",
+    "666e12955dc7b5df",
+    "9fa5489997b72619",
+    "d31acd7a6dab9106",
+    "c98407a947970102",
+    "2ae1aa472af2322f",
+    "2ae1aa472af2322f"
    ]
   },
   {
    "cmds": [
     "goto microwave pretend",
     "interact",
-    "goto roster pretend",
-    "sit pretend",
-    "interact",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "interact",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "d48c599f56c582f0",
-    "bb36d93ee314efb8",
-    "30109805274c4dd2",
-    "fc509b3063f5544c",
-    "f89f1c569759725b",
-    "294253d01aa0377d",
-    "6cc7d6d018718b39",
-    "ca43995a36c8c23b",
-    "2b621ceabd35905b",
-    "552e0d46b47e2f4e",
-    "a3ce5a7cdcb3a606",
-    "b30ad5993d33cfdb",
-    "c774342346a24c4d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "goto desk_phone",
+    "goto desk_phone pretend",
+    "goto lin_desk pretend",
     "goto roster pretend",
     "interact",
     "interact",
@@ -3253,304 +976,168 @@
    ],
    "summary": "caught",
    "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "b6e074b1a44433fd",
-    "f50c8c8823313676",
-    "66f66f508565beb0",
-    "64d6269af08561b2",
-    "197ad3e04b429d8f",
-    "6e5ec72c5fe5df0e",
-    "85f5b05f6db7063e",
-    "fe52c01a21085f3a",
-    "fe52c01a21085f3a"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "6af19e9998dbfb2c",
+    "fc88a579dae0388e",
+    "4ae340a67844b0b8",
+    "c9898759cc4053e8",
+    "7b8e0be0d212f8d4",
+    "9ecb0124049e941c"
    ]
   },
   {
    "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto roster pretend",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:35",
-    "pretend until 4:40",
-    "goto roster pretend",
-    "pretend until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "d48c599f56c582f0",
-    "bcb59ef8094eb352",
-    "a2f6721b2169dead",
-    "5fc5e8c990f0e591",
-    "51cfe5e2122127d7",
-    "56e179466833f8cc",
-    "12ac9100656bbbae",
-    "dc61552bc944387c",
-    "99252cc7dba8c943",
-    "9d232abba0122e67",
-    "c47af6d38e3a4b5f",
-    "48aa646ec94878af",
-    "66caa599b4acd305",
-    "306091bfb2a30609"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
     "goto copier",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
+    "pretend until 4:54",
     "interact",
     "goto desk_phone pretend",
     "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "win ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "b6e074b1a44433fd",
-    "f50c8c8823313676",
-    "66f66f508565beb0",
-    "aac3847697ff70ec",
-    "3dffceb9c488ecf5",
-    "913d3c48b77ce693",
-    "8b573e5d00d35b12",
-    "9ae4f6246dc5b67f",
-    "9270d4072fd2a968",
-    "5453f7723f2059fc",
-    "6278d38f1e1766f2"
-   ]
-  },
-  {
-   "cmds": [
     "goto microwave pretend",
-    "interact",
-    "goto boss_window",
-    "goto copier",
-    "goto roster",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "9067f6ec9bea38c2",
-    "5e1f32738a4cce3e",
-    "e8032d82a198d1df",
-    "82fb00694da5bb3a",
-    "5cf7df6e46e9a249",
-    "8f3aed9b12d8a496",
-    "610efd7fd6454aab"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "goto copier",
-    "interact",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "interact",
-    "pretend 1.5s",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "a1be80e815837752",
-    "0f8df435b3cc1955",
-    "ba6156f190daac15",
-    "e32efe4e906c4351",
-    "390ecdd27b8f6ae3",
-    "6820a3d3b850617d",
-    "5f095aaf55c2eb8a",
-    "96251454f40ea306",
-    "e3b823aab005d87d",
-    "6daadcc675aa4650"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto copier",
-    "goto desk_phone pretend",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "wait 1.5s",
-    "goto roster pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
     "wait until 5:00"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "f3be6088494018c7",
-    "1b8a80ba5701bba2",
-    "a2add9e468e50eda",
-    "f9713b5806b8a26d",
-    "77e712af4bc95cb7",
-    "5823fc8ecac77f55",
-    "903bfa0bc8073e4c",
-    "940677006579a24b",
-    "3837dbf1f5191c74",
-    "5c5891b51574378e",
-    "cf06fadf2618548b",
-    "88581ff40efc6701",
-    "aad7628f6d3c367b",
-    "084078b7b712703f"
+    "75f0767dfb4bed01",
+    "f91d23ef70afd1a3",
+    "c0322618c817ce28",
+    "f6c2eddd113c8efc",
+    "00fd074861a5e381",
+    "97e9bbccfb04aba3",
+    "d896dbf74302f4ba",
+    "82ceedf7f9debd42"
    ]
   },
   {
    "cmds": [
-    "wait until 4:48",
+    "goto desk_phone",
+    "interact",
     "goto microwave pretend",
-    "goto copier",
-    "goto desk_phone pretend",
     "interact",
     "goto roster pretend",
     "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "39d342f51040c801",
+    "b8455c688be6ee67",
+    "5faa6404259c781e",
+    "54815dff2b67bec8",
+    "0f812ab936dd3b50",
+    "22a3ffc09a2d2477",
+    "25e32bc817e2cd76",
+    "922d937304f4d101"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
     "interact",
+    "goto desk_phone pretend",
+    "goto roster",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "abbf053939b4fc04",
+    "155716a4c4fb9aed",
+    "94406dc4fd88f20b",
+    "71cacec50b3acd67"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster",
+    "wait until 4:09",
+    "pretend until 4:50",
+    "pretend until 4:31",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "37e79929f1c6bd67",
+    "1971a48d7560bfe9",
+    "fc12df13bdbc38af",
+    "3a7f6997cef8bc3b",
+    "9db3901eb6acb620",
+    "dcb3e82ae9af43a0",
+    "1dad892aae048731",
+    "14f2c0a502cf3660",
+    "0371b06fdf217fe8",
+    "b5379f75a3ead032",
+    "4e0d10ff1d20804e",
+    "6669dd77140d3814",
+    "8671ceb14ab59b35"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster",
+    "interact",
+    "goto copier pretend",
     "pretend until 5:00"
    ],
    "summary": "blamed phone",
    "digests": [
-    "a0002994e2d6e335",
-    "74c71fa8bfc33489",
-    "612f86caf89f3d46",
-    "e91ae58b1e50d612",
-    "09de244206870b3a",
-    "1d0d5381185365a3",
-    "006307d4f5ffa74c",
-    "97287e23612377a2",
-    "3cfe83f63e4d8cb1",
-    "c3502ed5f6da1639"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "3ade4b2f32916556",
+    "e57e4af9ca457f51",
+    "8bb7cf2198041a46",
+    "e4bfa54c468653e3",
+    "219cb622e3ffd538"
    ]
   },
   {
    "cmds": [
-    "goto copier pretend",
+    "goto desk_phone pretend",
     "interact",
     "goto microwave pretend",
     "interact",
-    "goto roster pretend",
     "sit pretend",
-    "interact",
-    "pretend until 4:56",
-    "goto copier pretend",
-    "interact",
-    "goto desk_phone",
-    "interact",
-    "interact",
-    "pretend until 4:40",
     "goto roster pretend",
+    "interact",
     "wait until 5:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "b5cbbb50182b3e2f",
-    "547de43bba50698d",
-    "8207729ec441425c",
-    "41638ffb4bc87cdb",
-    "1c06f3106ef3797d",
-    "75f1e258fab7ac45",
-    "9ba3b11b3195d9cd",
-    "bd196b2e5b937b58",
-    "9590f026eb794a4a",
-    "f6088f399e456a14",
-    "fb31e9f87241a849",
-    "dfae0c75f40a6814",
-    "2338526b5a32ce34",
-    "164b59fa12572bb0",
-    "e243b0ffdbbe4f5d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto roster",
-    "goto boss_window",
-    "pretend 1.5s",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "pretend until 4:49",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
    ],
    "summary": "blamed ding",
    "digests": [
-    "bb650f7abea0d926",
-    "638d01b1943c0a4a",
-    "c4549d03716c11b5",
-    "1065ac060e519447",
-    "a8abcebecd3525d6",
-    "fd45d17f15d93a07",
-    "976dd85a5d75ead0",
-    "05e85dc1504c38b4",
-    "d1bc967447a19c5d",
-    "80225f002966f1a6",
-    "98b4743e7a8c855c",
-    "730f9ea4f5f61c15",
-    "79c2472544f52f92",
-    "e4bf22013fd8f2fc",
-    "9f0e74de14d938b4",
-    "067394e6615e06f7",
-    "ee852874ccc28c35",
-    "d1e789625b639185"
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "124289e5e812d3fa",
+    "7cd15af4ebebafd8",
+    "80f231db1f45c620",
+    "ef910439015e1639",
+    "2fe992e8fc595c6a",
+    "fbbad2ffa8c14c4f",
+    "a9da7e6985d60f52"
    ]
   },
   {
    "cmds": [
-    "wait until 4:48",
-    "pretend 1.5s",
-    "goto copier pretend",
+    "goto microwave pretend",
     "interact",
+    "goto copier",
+    "goto copier",
     "goto desk_phone pretend",
-    "pretend 0.5s",
-    "interact",
-    "goto roster pretend",
     "interact",
     "goto roster pretend",
     "interact",
@@ -3558,399 +1145,3068 @@
    ],
    "summary": "win phone",
    "digests": [
-    "a0002994e2d6e335",
-    "6f1deaf47eb1ab69",
-    "1af177636b01ff6a",
-    "122511b17548e31b",
-    "0772cc684625a928",
-    "29c8108994e7c4cd",
-    "d6da96502fdc2964",
-    "4aedd3345124908a",
-    "9ed3d3948e770463",
-    "59f01123051b875d",
-    "f8af82cee019794a",
-    "83b5eb6112cd8cf0",
-    "f57dcdf4b6d1f3eb"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "c04ab84ba9f785fe",
+    "19d443fe979d2acc",
+    "4054e7e645e3b832",
+    "be9f538b4f21317e",
+    "03986e929bfe4e09",
+    "ab16c050ea264242",
+    "4ab1d32e9ba4503b"
    ]
   },
   {
    "cmds": [
     "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto microwave",
-    "interact",
     "interact",
     "goto desk_phone pretend",
+    "interact",
     "goto roster pretend",
     "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "aaa5c19a93977a78",
+    "986bd0def97a54d7",
+    "01014825d8826298"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
     "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "ccf94b1071513e53",
+    "32cecd5431ab19dc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto roster pretend",
+    "goto microwave",
+    "goto roster",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "b5730d0532aa000d",
+    "2b715e7a552b5d3d",
+    "16b2efe6ec13024c",
+    "a7a61dc144ee0123",
+    "bcc6c2c84fb7fac3",
+    "fbf24f17a69ec467",
+    "9db272775602f94a",
+    "a71620c880b87d6e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "goto roster",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "731dab9e6fb5a93b",
+    "9da8e45ebc5af16b",
+    "ac3779b7bf0dbfae",
+    "bfd095aec23132e7",
+    "3163185976929816",
+    "848a6b6f26504938",
+    "792c24d9ca58a42b",
+    "b929f874a218f049",
+    "5d81faf1dd3df3ab",
+    "f788caebb9c3ba69"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "7da19d518cb2147b",
+    "b5bc623163a2766c",
+    "90012c34215c8065",
+    "ee003afdd2c55d3d",
+    "9288455ff1000d45",
+    "83697d65b500deb1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone",
+    "pretend until 4:56",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "win ding",
    "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "83de925733d8697b",
-    "71fa1ca55e0d15af",
-    "0fff512fee5e96ed",
-    "a8f09484138676b8",
-    "8a8b1b903b6e6c56",
-    "90b800f7675a38e8",
-    "d4ef3ba138193169",
-    "eb34351a2941fe94",
-    "5b92dff71086bcbd",
-    "2cd4b1e683ff8e68"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "972e7a6c63f192d2",
+    "55ff04c79cd5a604",
+    "cfe85b0a47c6e021",
+    "807c430b0e71edbb",
+    "27bb1575ad704f2a",
+    "f48443f0fec85905",
+    "e9b71ac0ca8847e9",
+    "6540c26d195de0da"
    ]
   },
   {
    "cmds": [
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
     "goto microwave pretend",
     "interact",
     "sit pretend",
     "goto roster pretend",
     "interact",
-    "pretend until 4:53",
-    "goto copier pretend",
-    "interact",
-    "interact",
-    "wait 2s",
-    "goto microwave pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:40",
-    "goto roster pretend",
     "pretend until 5:00"
    ],
-   "summary": "blamed ding",
+   "summary": "win ding",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "35996c6291596315",
-    "661dbb635c1ca00c",
-    "c20f4534110d2915",
-    "673a3d4650deae61",
-    "7c1396fe0d3f7dec",
-    "60d622f9e80a549b",
-    "d02a9dcd80cbd135",
-    "766a9927a5261677",
-    "766a9927a5261677",
-    "766a9927a5261677",
-    "766a9927a5261677",
-    "766a9927a5261677",
-    "766a9927a5261677"
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "74012aad93c3a716",
+    "1979eecc96163ff5",
+    "af2a92cfd4ef688c",
+    "67c792d4eb31b717",
+    "e9d8a6e3b4c881a0",
+    "f3f9f339d91ed0d2",
+    "9e4f9c7333341fc6",
+    "c27f5200a2a126c8",
+    "61fa75ae50b15386"
    ]
   },
   {
    "cmds": [
-    "wait until 4:24",
     "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto microwave pretend",
-    "interact",
     "interact",
     "goto desk_phone pretend",
+    "goto roster",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "abbf053939b4fc04",
+    "155716a4c4fb9aed",
+    "c2ab5b8cd25bd6d5",
+    "e2574e7c3bedffb2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto microwave pretend",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "124289e5e812d3fa",
+    "0aea0aec76c1e55c",
+    "0101a6490c335c33",
+    "27cc51f2c9f473c1",
+    "a668ae5d1fa995b4",
+    "df457e1f0b9f4646",
+    "f9720fa99cc4bc7e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "cbf26a3bc123df50",
+    "3a326a1e5d16cef1",
+    "0f4e165c2d360318",
+    "4574e50aca28e500"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "4b11f7503ef02ab6",
+    "d49c30dda23e0cec",
+    "95cdf8710b88e768",
+    "47f9cdbce1c29a17",
+    "f9a57a79246f3e73",
+    "5a4c3ba873c342ac",
+    "0a624db4baa23c03",
+    "40f32fa0f343bbbe",
+    "f7fe65a13628b84b",
+    "4f3576291b397610"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "b7c02f2a7ac55dc3",
+    "de3d946216248ec1",
+    "933549586503543e",
+    "abe07a3133547618"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "c04ab84ba9f785fe",
+    "19d443fe979d2acc",
+    "a7edd445e57720d0",
+    "95bad59ad623ae54",
+    "d8852e141c3d18da",
+    "f7b4d22a7c30f243"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "15ac37167ae7a347",
+    "f4a631ced5281c96",
+    "cafc3305fa32ea1f",
+    "a1172c21e9a4b437"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 4:54",
+    "goto roster pretend",
+    "wait 2.5s",
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "90c565b34c870f7a",
+    "55d83b23c3fd1e0f",
+    "b3ba10d1f2835c00",
+    "583d516bad9ccc3d",
+    "ba63d6ecbfa6a48d",
+    "ad5d964a7738505c",
+    "e691c0f7d403b87c",
+    "c50afba7f15e66cb",
+    "aa6a7a0629a04a26"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "3bbebe4605044ab3",
+    "77ebf16e0c16f3fc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto microwave pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "b7c02f2a7ac55dc3",
+    "0641ccacea07951a",
+    "06a6beb17c9671b0",
+    "580b26335aa764a3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "pretend until 4:10",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 4:56",
+    "goto desk_phone",
+    "interact",
+    "pretend until 4:40",
     "goto roster pretend",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "fail",
    "digests": [
-    "6142f6a0cd6c4688",
-    "ef822e4ef64b261c",
-    "d25650706f90b0fe",
-    "586e87de3ca36ab5",
-    "c236401fc842a96d",
-    "c840fa302d58073e",
-    "acfcf6dbd58803da",
-    "2531eacf53ffbde0",
-    "ee48bdd3ab330dac",
-    "6d116f1cae84c8c4",
-    "6d116f1cae84c8c4",
-    "6d116f1cae84c8c4"
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "9fb8d04891fc077c",
+    "5941d04a3ced9af0",
+    "49e635e85a5c8c07",
+    "4f813c2404fc37e8",
+    "570d62f4609e9676",
+    "b8aa2ff915f72f07",
+    "1a6652e1ca81461a",
+    "9a587b1f828d775d",
+    "973f2d6db0c8212c",
+    "c13c97a37c18ef49",
+    "723890c856aa02bf",
+    "02dff251b653c053"
    ]
   },
   {
    "cmds": [
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
+    "pretend until 4:49",
     "goto copier pretend",
     "interact",
     "wait until 5:00"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "0f8df435b3cc1955",
-    "ba6156f190daac15",
-    "e32efe4e906c4351",
-    "2694daaa4a707f55",
-    "47ea63bf1e4b6042",
-    "117688d35f3f9a24",
-    "3f35cb56ee1fb10e",
-    "94f8dbecf67effea",
-    "52191942324ea7e9",
-    "b4655e056351aabd",
-    "8f50a39a68ba7957",
-    "bc936ac21c381c1d",
-    "747bac6b16598655",
-    "30fc1aab65cdf5f2"
+    "b91abc5fcdc7c102",
+    "2e88c5d0fe14a778",
+    "7906c027b03a7f5c",
+    "6797ecb50609208d",
+    "af9493b13e27f02b"
    ]
   },
   {
    "cmds": [
-    "goto copier pretend",
-    "interact",
-    "goto microwave pretend",
-    "goto boss_window",
-    "goto copier",
-    "goto desk_phone",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "b5cbbb50182b3e2f",
-    "4dd99c1ec7c04719",
-    "5cef915643937b2d",
-    "2891142e6bdcb8aa",
-    "3eb890ab34dbc1ca",
-    "c394f775e2c5e121",
-    "b667136eb0b86b65",
-    "29a59de1f2723661",
-    "fc8ce49da7f32275",
-    "fc8ce49da7f32275"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
-    "interact",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto microwave",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "0a3dd6f06d80db1b",
-    "a07c91a6d9a04c11",
-    "55c7e0a2903fcdbc",
-    "46d099e22c1d92d4",
-    "fa15dcb7d9b02745",
-    "b3b024a1d68d0bf7",
-    "6df277b725cf65b6",
-    "60854cdcb392ee31",
-    "ba6a8789d1465b9f",
-    "b18bafdc9414707d",
-    "34ac8efd92ad5362",
-    "5d93a3f13902bfad",
-    "0bb6e035a9937603"
-   ]
-  },
-  {
-   "cmds": [
-    "goto microwave pretend",
     "goto copier",
     "interact",
-    "pretend until 4:01",
-    "goto copier",
-    "goto desk_phone pretend",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "interact",
-    "wait 1.5s",
-    "goto roster pretend",
-    "interact",
-    "wait until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "a1be80e815837752",
-    "0a8641ae960c9ff9",
-    "8514c4df967c66a5",
-    "667fc8601799d10a",
-    "b893ed1efad3946e",
-    "8ac866cceca05bf9",
-    "d4b223f24f7f9857",
-    "f8f0a6cd000a6e54",
-    "a1a30006e96d9ab5",
-    "f7e826d9bbf2db83",
-    "7b6aad6f59e4fece",
-    "3deba9308cb4556a",
-    "0a9f2bba65a20c59"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 4:48",
-    "interact",
-    "goto copier",
-    "goto kev_desk",
-    "goto desk_phone pretend",
-    "interact",
-    "interact",
-    "goto roster pretend",
-    "interact",
-    "goto copier pretend",
-    "interact",
-    "pretend until 5:00"
-   ],
-   "summary": "blamed ding",
-   "digests": [
-    "a0002994e2d6e335",
-    "eb5eb36ec3dfab19",
-    "2b9129d8daa5bc78",
-    "9f1d965046722c3a",
-    "4c9ce25e3cd6bc98",
-    "ce7bac1296a881d2",
-    "d8bfd01a66568080",
-    "9357b53233084096",
-    "98b15048d00543f5",
-    "01361adefc3340c2",
-    "b35ba41499533970",
-    "23d09706b418d850",
-    "962f720d1b0786a4"
-   ]
-  },
-  {
-   "cmds": [
+    "goto boss_window pretend",
     "goto microwave pretend",
     "interact",
     "sit pretend",
     "goto roster pretend",
     "interact",
-    "pretend until 4:56",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "5c9fcf2985947402",
+    "a4d7c596a3981505",
+    "0bda2e1aa1110083",
+    "56b47e5fac47483f",
+    "64b2c82c48d79d6c",
+    "44c9a4a082dcc46e",
+    "ce406bcd4215e3c8",
+    "559797647f982fdf"
+   ]
+  },
+  {
+   "cmds": [
     "goto copier pretend",
     "interact",
-    "wait until 4:19",
-    "pretend until 4:40",
-    "pretend until 5:00"
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
    ],
    "summary": "blamed ding",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "67692cac88c34879",
-    "ba00ec97923c9f3b",
-    "73f05627841794a6",
-    "e20bb73297948835",
-    "1b50ba881dc6ffd7",
-    "825b2e3d4877a9fd",
-    "54c4407ba2b3c3f2",
-    "2b999796a2b9af9a",
-    "2d72e579d667728e",
-    "f9bdf87f29f742c5"
+    "ea1b06afc34ee217",
+    "42bdbd8a50ab9423",
+    "f1a1727ca0303e97",
+    "d409e55467868444",
+    "cf0239d71afdb571",
+    "368d9ed48e93d3b6",
+    "a9351b42b3e53c11",
+    "2fe75f0e5d01a088",
+    "0527416e11fdf34b"
    ]
   },
   {
    "cmds": [
     "goto microwave pretend",
-    "goto boss_window",
-    "goto microwave pretend",
     "interact",
+    "wait until 4:54",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "1da4eebbcfc4c0a5",
+    "a645b469ecd785ba",
+    "540fdfb63551e7a0",
+    "655ff995d32aa006",
+    "34796b2f7ec90a04",
+    "d6647a18ac7b8ae6",
+    "d6647a18ac7b8ae6",
+    "d6647a18ac7b8ae6"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 8s",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 4:56",
+    "goto desk_phone",
+    "interact",
+    "goto roster pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "69e299a2297c433a",
+    "99bb6bd95013af65",
+    "99bb6bd95013af65",
+    "02657342932bd8da",
+    "90a1702eb693d118",
+    "dbdc4c0400ac6c47",
+    "c10c43065a7c04ae",
+    "45ea9a675c2b2090",
+    "9f91202d69e14a84",
+    "ba2e326a798cd48d",
+    "c1e954a7f7756d19"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "pretend 1.5s",
+    "wait until 4:42",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "1072b63bcc34faf4",
+    "60c2edb05f811631",
+    "6a49533d997694ba",
+    "2ca3dda47b588e5d",
+    "7ecf212b40732843"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
     "interact",
     "goto desk_phone pretend",
     "goto roster pretend",
     "interact",
-    "interact",
-    "goto desk_phone pretend",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "win ding",
    "digests": [
-    "b23b36927c2baf1c",
-    "785eaef1f693fa58",
-    "5b332758c84d61d7",
-    "ddfee9600e9b0e90",
-    "6a5efae68b6b03a8",
-    "7997d654e9d3531c",
-    "3328298ba956e94d",
-    "654df9f4e70bb216",
-    "d223b83d6e776c86",
-    "b3acf82eab7250a7",
-    "25f077e0b2e62b70",
-    "8e3c574f9aaafd40",
-    "89aea918ed4b19cf"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "47fca0b178efaf7c",
+    "c702abc403e92761",
+    "d1017f9f3308f1be",
+    "6fc1d31348065f1b",
+    "cc6e6d2e51f82e40"
    ]
   },
   {
    "cmds": [
-    "goto roster",
-    "goto boss_window",
-    "pretend 1.5s",
     "goto microwave pretend",
     "interact",
+    "goto lin_desk pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "5433cf42b99ed7e9",
+    "a0aebf6c9b3b55cb",
+    "be1f753fbcaa0078",
+    "de215a6b7e3608f8",
+    "8c5b6f8094f93e84",
+    "81c4cd466f3d12ac"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto copier pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "731dab9e6fb5a93b",
+    "0e8132d06f769d87",
+    "757c8804272a6e4f",
+    "0b731c668f5ba303",
+    "cff0d3f303abf003",
+    "7c9ec87b01dbe1fe",
+    "e277f26025cb9282",
+    "f153749733734bee",
+    "76dfa437db6419aa",
+    "17436ee5c9bc17f0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "pretend 1.5s",
+    "wait until 4:42",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "c04ab84ba9f785fe",
+    "19d443fe979d2acc",
+    "4054e7e645e3b832",
+    "be9f538b4f21317e",
+    "fda7d2e195387986",
+    "ad29cc4e722c9727",
+    "5c0886cc2dd7fa2f",
+    "64b751ee1cfcec36",
+    "12aa5e393804683f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "124289e5e812d3fa",
+    "7cd15af4ebebafd8",
+    "80f231db1f45c620",
+    "ef910439015e1639",
+    "2fe992e8fc595c6a",
+    "4e8b81d4c57c06b4",
+    "1f2751ad17476425",
+    "7fab9315cd09da84",
+    "b7434bdbf3d73f0e",
+    "30c2c253eaf28ccd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "c04ab84ba9f785fe",
+    "19d443fe979d2acc",
+    "4054e7e645e3b832",
+    "be9f538b4f21317e",
+    "03986e929bfe4e09",
+    "c83c28f78ac72e94",
+    "4ba2c487d248dbe5",
+    "7eb5f7173b2bd595"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "goto copier",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "86e12afd341f4444",
+    "4e637f1e4349b019",
+    "26af77ae3be2e426",
+    "c49f6f3ced76b2a2",
+    "d109e48f78214fd2",
+    "a67adf3d27841b97",
+    "86d4df2341da1c42",
+    "ef5973076957cfce",
+    "470e55e67b9e9bbf",
+    "ddc9cada81936137",
+    "26934a389c0d2a17",
+    "d9e8c584cca69ffb",
+    "848fa58f1510192b",
+    "a125b2ac460e8a85"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait 3s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "23d914dbd531ada7",
+    "8a2e77db435bc51d",
+    "54b31e70577b53a5",
+    "5ebb624db9284ae6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "8d3af51e6f5a5969",
+    "8ff65f72a9a99e3d",
+    "8034736529dfd3f8",
+    "af6db027861a55eb",
+    "a6ca301e94ab9fdd",
+    "0a51179abb89b185"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "4b11f7503ef02ab6",
+    "d49c30dda23e0cec",
+    "95cdf8710b88e768",
+    "47f9cdbce1c29a17",
+    "f9a57a79246f3e73",
+    "5a4c3ba873c342ac",
+    "0a624db4baa23c03",
+    "ceaaa1b4e392a10a",
+    "bcc7befd1b743b47",
+    "85ddc53dd8b120ab",
+    "1dd95f58c81ef1aa",
+    "d1cd291ace55f9f2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:30",
+    "wait 3s",
+    "goto desk_phone",
+    "interact",
+    "pretend until 4:18",
+    "goto roster",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "a533dff8f216b1d0",
+    "41be8e648660410f",
+    "12e9b1dfa40d6995",
+    "588395393d9d6c48",
+    "fb4e3278689ef1ec",
+    "c3a6ff560c1d3b8c",
+    "d17ae728f6262e24",
+    "265190f3f5ff0d0e",
+    "f1c06625c589de54"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "b5730d0532aa000d",
+    "2b715e7a552b5d3d",
+    "5ab3afc4a839ce27",
+    "71178fbb9b982cb0",
+    "d0cdb6d01405dcb8",
+    "d7c1417aa3f35cb1",
+    "eb5290f39f90d2fb",
+    "b3a8711c7e03f1d0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "74012aad93c3a716",
+    "1979eecc96163ff5",
+    "af2a92cfd4ef688c",
+    "67c792d4eb31b717",
+    "7c4b86488446f769",
+    "47dab49c5b51afc2",
+    "a7a221c8ffdf4f9f",
+    "8c9b4c95c45986aa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "9b8014c175309edc",
+    "c9b5d0feb9c43f9f",
+    "d115aa9dd785cfc1",
+    "3c05e1c0c8c09763",
+    "27548e29dc09bcf3",
+    "e6a85fbdbfeda3e1",
+    "13530688cbeb444b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 4:56",
+    "goto desk_phone",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "goto boss_window pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "972e7a6c63f192d2",
+    "55ff04c79cd5a604",
+    "cfe85b0a47c6e021",
+    "da421fde17daffbc",
+    "76b7c800081ab189",
+    "aa3e21e0c76884be",
+    "57b05896883524fc",
+    "84f6e590ff5481c9",
+    "dff928e01d53a673",
+    "312a48d3d4e41085",
+    "9e0dcd30d1f40272"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait 3s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "61a898f1769ceee0",
+    "1af2d0773216ea07",
+    "aea56251b8bc208e",
+    "faa50cc8d929e220",
+    "13157808a96ba912",
+    "d6dc5fe837ed1f28",
+    "7e4cef03275981cc",
+    "f78f15999a3f7de0",
+    "374226c7a95e4553",
+    "effb79bddb9944d1",
+    "f5daa0bc0817ade5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
     "interact",
     "goto desk_phone pretend",
     "goto roster pretend",
     "interact",
     "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "47fca0b178efaf7c",
+    "c702abc403e92761",
+    "d1017f9f3308f1be",
+    "6e614ba91e273b7f",
+    "62d9aadbe553412f",
+    "942a1bde54603021"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "fa96672ad3fb4867",
+    "390b0f039e3303c9",
+    "0f067de93562b056"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "7991690a41f74562",
+    "569f5b06bf752850",
+    "227b7add43ff4417",
+    "018d8ad7f9cdc414",
+    "0a718aa804c71a09",
+    "b915785bd09bb329"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "15ac37167ae7a347",
+    "f4a631ced5281c96",
+    "3d2ab8ac78c53de9",
+    "21f8458d281e515d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone",
+    "goto roster pretend",
+    "interact",
+    "pretend 5.08s",
+    "goto roster pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "02b57b3296475195",
+    "a03ab504d88a6bbb",
+    "f4eca2b07b675f0d",
+    "57b1b592ac0eb2ac",
+    "23321ab6d83cbcce",
+    "4eaa576d64b4909a",
+    "443922217ee4a423"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait until 4:38",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto boss_window pretend",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "86e12afd341f4444",
+    "c01f6e6b7a6e3d71",
+    "94b16b1816b906fe",
+    "3d1ad5e2ea63b623",
+    "04bb0df5e3d9cf8d",
+    "b58e7cfadc15f0ea",
+    "80afd51e8d3a52c6",
+    "76be04abc44bacca",
+    "0e0717d62ddf7bbe",
+    "62d2aca7880ec253",
+    "f4ddfc84e23d8c20",
+    "531bbdacf28d0160",
+    "f21f838d7137d130",
+    "fd1f129fbb5e0cfc",
+    "2889b0739e921c9c",
+    "768c3da6da72128e",
+    "768c3da6da72128e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "goto microwave",
+    "sit pretend",
+    "goto microwave pretend",
+    "interact",
+    "wait until 4:56",
+    "goto desk_phone",
+    "interact",
+    "pretend until 4:40",
+    "goto roster pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "4497c7b95d7a69e3",
+    "21ccaa85a282b661",
+    "12ba8268b1dbb51a",
+    "81e3151491c61796",
+    "3e00d0471c1752ec",
+    "97fb5b99a0e38b55",
+    "6f2a2c5bea49aaf3",
+    "c18bddaed441ad0e",
+    "6aeb1fb841101677",
+    "7cdbc4b352e54411",
+    "ee31dace12091708"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "a753563a73dbf19c",
+    "6132b8f419cd1ba3",
+    "e71c82b0d0780d0c",
+    "aaa5c19a93977a78",
+    "4f39f7789322d193",
+    "2ac736facb3ac531"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "pretend until 4:54",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "75f0767dfb4bed01",
+    "f91d23ef70afd1a3",
+    "c0322618c817ce28",
+    "f6c2eddd113c8efc",
+    "00fd074861a5e381",
+    "aaf1954eddda8caa",
+    "db84bfa20c62786c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "interact",
+    "pretend until 4:05",
+    "goto copier pretend",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto roster",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "94b16b1816b906fe",
+    "65878ccc4b545683",
+    "946fab212b119189",
+    "87b1ca6aa7418777",
+    "41d494b6f2d4da02",
+    "6423a97544526093",
+    "da211317833512d0",
+    "ab9cbeff84b4520e",
+    "a75d83357492811f",
+    "0544df34ced78c3f",
+    "ff134019ec72083c",
+    "2941354f24e8bc17",
+    "1f256880161a0d12"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "fefe6e9261ba5ee3",
+    "1037841b4d0c53ed",
+    "c66ffad8b352e990",
+    "030893c15a3eab1f",
+    "9f71af9bec46748b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 2.54s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "b7c02f2a7ac55dc3",
+    "7faa3a173b57bb5c",
+    "8da6c048d295f0fe",
+    "c64f2233624dae88",
+    "c37892c647ed0475",
+    "dc9c8a4f827d77d6",
+    "4dae35e8ade055f3",
+    "473e4a30692670a6",
+    "f1ad2ebd1cc7fcec"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "ebfb6213b7be95c8",
+    "f0b520c626c7dafb",
+    "8177ec3e384ff3a2",
+    "8525cc7c65335932",
+    "31108755a9586ad2",
+    "f637427e9f6e25df",
+    "1b8ae6286c481fbf",
+    "1b99517512ed549e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "86e12afd341f4444",
+    "4e637f1e4349b019",
+    "26af77ae3be2e426",
+    "c49f6f3ced76b2a2",
+    "d504dcb53444d5e4",
+    "8eae76463bd42398",
+    "9a11efceeef7e942",
+    "41df0495019e898f",
+    "9c398e7f450e9cee",
+    "999adb78fb9439e0",
+    "c4b775a9a19d2015",
+    "e9146435c8b5da4a",
+    "a3b31d072627b016"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "ed0742bf969b80cd",
+    "86515c0e9da78543",
+    "cce9ffaf1d1ca02c",
+    "6b47abcd18c24bf5",
+    "917900b86480a44f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "86e12afd341f4444",
+    "4e637f1e4349b019",
+    "26af77ae3be2e426",
+    "c49f6f3ced76b2a2",
+    "d109e48f78214fd2",
+    "a67adf3d27841b97",
+    "86d4df2341da1c42",
+    "ef5973076957cfce",
+    "470e55e67b9e9bbf",
+    "ddc9cada81936137",
+    "26934a389c0d2a17",
+    "5da2c623b1bdcc86",
+    "f388d3dbaf971c01",
+    "89989d22a096a1dd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto roster",
+    "interact",
+    "goto copier pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "abbf053939b4fc04",
+    "155716a4c4fb9aed",
+    "55335eaba79fd29d",
+    "85648302bec3f11b",
+    "b0fc093ea3d9c481"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "pretend until 4:28",
+    "goto boss_window",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_desk",
+    "interact",
+    "interact",
+    "pretend 0.28s",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "e4b878ab7928d13d",
+    "c71197901bbfa325",
+    "1d8b205c5f438382",
+    "9f51422431900598",
+    "40af7c5bfa0ac239",
+    "b39618153435d691",
+    "df0ec9f51f7ef2ad",
+    "ed3becd6ee55fa1d",
+    "059a8bed6873597a",
+    "36526fb45d8e25d7",
+    "9f5d62ab8e1a8619"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "fa96672ad3fb4867",
+    "33e4343a5f50f4b3",
+    "c98797ab4e10e316"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait until 4:15",
+    "pretend until 4:28",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "38de9e51f487b56a",
+    "76e526719299d6da",
+    "7e4718fe1968483e",
+    "de0b0b9df43adc68",
+    "ed5806bb77243b0a",
+    "54d663ff0257c00f",
+    "46c00804ea518008",
+    "fc7e55c19b88a920",
+    "c55de16cd234f762",
+    "5b1c30926421ae9d",
+    "3dc17a3899e97ef3",
+    "028e46914a6c1e8a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "b5730d0532aa000d",
+    "2b715e7a552b5d3d",
+    "5ab3afc4a839ce27",
+    "71178fbb9b982cb0",
+    "d0cdb6d01405dcb8",
+    "d7c1417aa3f35cb1",
+    "08a0a8754ae78474",
+    "a7fb87d01f34d72c",
+    "15637d7f5858bb9f",
+    "133b89e350dcf87c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 2.54s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "c87b7c8b5cddea75",
+    "62ce818e7f98b72c",
+    "3ed30fd0c49882b7",
+    "c30f40e915280698",
+    "7e549798207b584b",
+    "5bb31fe892ebfa17",
+    "f9bec9d849caadea",
+    "f4dde2644a510c60",
+    "77f61bd195c58887",
+    "70ed70276b1d9145"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 1.88s",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "4ccc226f9662f532",
+    "9e66076d91a561d2",
+    "d3814541659bba30",
+    "b5209111739749e1",
+    "00c076e3bb94c6fe",
+    "5605e08c4ad870fe",
+    "420f11ecd94ee16d",
+    "0b367637792d0cc9",
+    "c7950275a2185115",
+    "a0959d6f886efda9",
+    "b326fc3e9b19ade1",
+    "dfc7b351d0a07626"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "pretend until 4:54",
+    "goto roster pretend",
+    "wait 2.5s",
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "38de9e51f487b56a",
+    "e5e4270c88ec156d",
+    "8ccd966b49a6c42e",
+    "cd30be7f817cad95",
+    "cae7653870f5e908",
+    "7431c1334384b86e",
+    "5b5c4ee832b3ab50",
+    "8b7648a733d38710",
+    "abda0444e1aec538",
+    "274b829e729484d5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "75f0767dfb4bed01",
+    "71cd523a7e4c9409",
+    "74012aad93c3a716",
+    "1979eecc96163ff5",
+    "af2a92cfd4ef688c",
+    "67c792d4eb31b717",
+    "e9d8a6e3b4c881a0",
+    "f3f9f339d91ed0d2",
+    "9e4f9c7333341fc6",
+    "b420f69c197cb605",
+    "f9e4b515b30ec9b6",
+    "df60bfa9a840a4c1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "goto copier",
+    "goto roster",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "8d3af51e6f5a5969",
+    "8ff65f72a9a99e3d",
+    "bf444ba7ce944053",
+    "b54d2060fbde032c",
+    "ba9e448741fbaaa2",
+    "6b5ba7286cec203c",
+    "7ed8dc0236f148e6",
+    "4f5e1d0de42e9c42",
+    "6575188b28a77358",
+    "f8e478ee7b0555a9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto desk_phone",
+    "interact",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 2.54s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "c87b7c8b5cddea75",
+    "62ce818e7f98b72c",
+    "3ed30fd0c49882b7",
+    "7560ea28fb60b09f",
+    "e7e635cbe44c6f20",
+    "b072b18b165b1f87",
+    "d21ab21ed661cdce",
+    "e602cbdab22da964",
+    "bb16be68aa48d671",
+    "359ab9103ab1aed7",
+    "f25e40e2007f38db",
+    "51efe53b6d23ce43"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_phone pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d2e9e2bd09040175",
+    "066923472878114b",
+    "124289e5e812d3fa",
+    "7cd15af4ebebafd8",
+    "05822d872d61b3b7",
+    "8fd634aa7f2bcab0",
+    "b080c05930f631a1",
+    "3b561a31abb31cd9",
+    "7a122fbf95b3fcb2",
+    "091977df0518f145",
+    "1436044b785586ff",
+    "850e384ec857719e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "fa96672ad3fb4867",
+    "a2b3530a7dca928d",
+    "74ce34e19bee5c6c",
+    "800bf0bf83ea3acb",
+    "5dae2e0bdf6fe5a7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "7991690a41f74562",
+    "569f5b06bf752850",
+    "227b7add43ff4417",
+    "018d8ad7f9cdc414",
+    "b63f301bd17f97cf",
+    "7e9016656b6827fa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "pretend 8s",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "c04ab84ba9f785fe",
+    "19d443fe979d2acc",
+    "1248798ee54d8b70",
+    "814e41fe3419ed51",
+    "6f93004849545f6d",
+    "cd6ead8d8a062297",
+    "740096fe150cdbf2",
+    "fb5a95ab00dd6cd8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "15ac37167ae7a347",
+    "f4a631ced5281c96",
+    "46c9ee561dc4bf1a",
+    "70ad2d65b31acadb",
+    "eae1320a1f5f98da",
+    "f7399c7b9aae5158",
+    "221e706bfefbe1d8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "goto roster",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto roster",
+    "sit pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "eed5b9bedf18461f",
+    "a343dd1ce852200a",
+    "1489042b7af9b1b6",
+    "c0766ec687b44c0a",
+    "72ae8b0ae5c8375e",
+    "c461cec6f5d9754d",
+    "388316ed5f60942c",
+    "8f392b8c05cf81c0",
+    "8f392b8c05cf81c0",
+    "8f392b8c05cf81c0"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto microwave pretend",
+    "pretend until 4:28",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto boss_desk",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend 0.42s",
+    "goto kev_desk",
+    "pretend until 4:09",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed phone",
+   "digests": [
+    "38de9e51f487b56a",
+    "ed8f7606ae6b7932",
+    "8bf1fb16f07d2fdf",
+    "b2ffdcf34e04a103",
+    "9f51422431900598",
+    "40af7c5bfa0ac239",
+    "b39618153435d691",
+    "df0ec9f51f7ef2ad",
+    "489ffc009c09e5f5",
+    "24e181344fa73a35",
+    "799eb882ebc421ea",
+    "891aff3ffe4a6ed5",
+    "e2b255c55f28dabb",
+    "7ddabde8af309227",
+    "ebfa3403cdef1755"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier",
+    "goto desk_phone pretend",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "3a96fc456875634e",
+    "4667873fdc9a62c4",
+    "2aa2331e1eb8da52",
+    "15f657769ff87624",
+    "1e8a60eed394df16",
+    "2018393787c06c15",
+    "9c062fc8fa976a3c",
+    "5bb9b6db1ebd271b",
+    "fdd69c936643901a",
+    "e68f1db82b3b06e7",
+    "8457140fccdd03ad",
+    "e441be8d159117f6",
+    "3e6fedf5ffb381f6",
+    "1b6bb70f139783e5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait until 4:42",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "ed289e3b2b00d5c0",
+    "6f37530d772fc6dc",
+    "1c1441d9daeba54d",
+    "2a35b43505d52e6a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "goto copier",
+    "interact",
+    "goto desk_phone",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "b5730d0532aa000d",
+    "2b715e7a552b5d3d",
+    "5ab3afc4a839ce27",
+    "71178fbb9b982cb0",
+    "d0cdb6d01405dcb8",
+    "d7c1417aa3f35cb1",
+    "08a0a8754ae78474",
+    "a7fb87d01f34d72c",
+    "ce1f9a55c640c6f2",
+    "60b6c9c307a94e4f",
+    "ca8c79c986d0255b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "6678b4bcd00dfeb3",
+    "47fca0b178efaf7c",
+    "c702abc403e92761",
+    "d1017f9f3308f1be",
+    "0659ee8f7074213a",
+    "ad6ceb2a902c8dfe",
+    "114fe3f07be67485",
+    "d94ca55802ca4cac"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "15ac37167ae7a347",
+    "f4a631ced5281c96",
+    "46c9ee561dc4bf1a",
+    "70ad2d65b31acadb",
+    "eae1320a1f5f98da",
+    "e9a902b0cf64ac12",
+    "8bcbb4b8d3e3705d",
+    "a715ccf772cfa6a7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend 1.27s",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "b7c02f2a7ac55dc3",
+    "de3d946216248ec1",
+    "0d0f5f03c552922c",
+    "9c5937509cd5c03b",
+    "1ec212241f4af09d",
+    "f7f7bd3f15f2d620",
+    "c52dbb015efc72ff",
+    "a30120b55be5c4a3",
+    "a30120b55be5c4a3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto copier",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "1c9061c88932b8eb",
+    "5fa4d3aadd096f7b",
+    "53489e720da79696",
+    "d84b097f1f8a1b0f",
+    "167a6cd2eb301d4c",
+    "56d5a8ee5f4ead96",
+    "fb896d93db8cfdc5",
+    "7816d918b0349116",
+    "7816d918b0349116",
+    "7816d918b0349116",
+    "7816d918b0349116"
+   ]
+  },
+  {
+   "cmds": [
+    "goto lin_desk pretend",
+    "goto desk_phone",
+    "goto copier pretend",
+    "interact",
+    "pretend until 4:17",
+    "goto roster pretend",
+    "goto microwave",
+    "interact",
+    "goto copier",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "05a6c8c3f943eaa2",
+    "1546309ea91ba9be",
+    "f10b28c29857346c",
+    "fd325c730dd85f5e",
+    "5e59910ba2087068",
+    "bb8efa62cf0f3950",
+    "b115d2c3146025ba",
+    "a729591334ee7a82",
+    "e2486565125f9814",
+    "b6e668064dd1bd75",
+    "e6b2ab063d04e1c4",
+    "d13fe798b6097efc",
+    "2cb84a7c385664fe",
+    "e05355fa90424abd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "7da19d518cb2147b",
+    "b5bc623163a2766c",
+    "35defc9be1c40704",
+    "4de036d6288b8daa",
+    "f22c7bf620d76bde",
+    "625bdcce85df4988",
+    "a9c0a6ea302b06b4",
+    "35ab82ebefc24cbc",
+    "c318b783b8eb997b",
+    "ad075a32f6dda3ad"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 4:56",
+    "goto copier",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "972e7a6c63f192d2",
+    "55ff04c79cd5a604",
+    "cfe85b0a47c6e021",
+    "da421fde17daffbc",
+    "408c996a1730e2e0",
+    "1a3d3d71cee201f2",
+    "ea7fba5afef508e3",
+    "9c5f4d6116ee521b",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587",
+    "157ac0ae24beb587"
+   ]
+  },
+  {
+   "cmds": [
+    "goto copier",
+    "pretend until 4:54",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "75f0767dfb4bed01",
+    "f91d23ef70afd1a3",
+    "c0322618c817ce28",
+    "f6c2eddd113c8efc",
+    "00fd074861a5e381",
+    "811f9090775065ae",
+    "c29b5691a5987cee"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:32",
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 3.76s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "e8a7db435bf16ac8",
+    "086157dd8ea830f6",
+    "68bfe06c6c9059fb",
+    "85d77ff8324e9a14",
+    "7248c59856223f85",
+    "ec9cc9c708a2808e",
+    "5f7ac2864cd7b855",
+    "fc3061f806990ce3",
+    "ee6a8b42a36fbfc1",
+    "b6629e2f6133b568",
+    "108381bc6c0f2e5e",
+    "ed21fdc1a4437b2f",
+    "fe7f1ba60a1ed2f5",
+    "04f0d7673afb5c00",
+    "e85cd44cfb99bb84",
+    "3294ae18ed14cacd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "4c040b3897002501",
+    "9b8014c175309edc",
+    "c9b5d0feb9c43f9f",
+    "53e2ef45ecf1bae0",
+    "8a7c5ed9d598a5f6",
+    "6794ce3b135c2a7d",
+    "c196a3e214ddcf52",
+    "1eae084ccf59d9f6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto microwave pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "ed0742bf969b80cd",
+    "86515c0e9da78543",
+    "cce9ffaf1d1ca02c",
+    "5d82b253c99a0b34",
+    "579861875339c1f4",
+    "22b56ce68114f3cc",
+    "68df828b87d9e6c9",
+    "5ebc483834c91b40",
+    "cd82ae9397ef7df4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto lin_desk pretend",
+    "goto desk_phone",
+    "goto copier pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "pretend until 4:17",
+    "goto roster pretend",
+    "goto microwave",
+    "interact",
+    "goto copier",
+    "goto desk_phone pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "05a6c8c3f943eaa2",
+    "1546309ea91ba9be",
+    "f10b28c29857346c",
+    "fd325c730dd85f5e",
+    "1ed83c35698172be",
+    "53eb27e6f4c65dad",
+    "39aa34bb85298200",
+    "376c74f0571de7cf",
+    "0c923e5cafb88b7b",
+    "b94710e7cba1494f",
+    "4e564763bb88aee7",
+    "6787c59ee7ac2b55",
+    "8b3cb205c0512b44",
+    "84635e8f6d8c236d",
+    "1f56e2eb5d226086",
+    "65712ae86ec897c2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto boss_window",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "blamed ding",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "04e75a8ed393043b",
+    "6b012ff0529c9613",
+    "c3ac3d47caaf6044",
+    "3f8a6897434fcc9e",
+    "15ac37167ae7a347",
+    "f4a631ced5281c96",
+    "46c9ee561dc4bf1a",
+    "70ad2d65b31acadb",
+    "eae1320a1f5f98da",
+    "014f3311c1e753da",
+    "bbadf1b68b0ec299"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto microwave pretend",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 1.27s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "38de9e51f487b56a",
+    "ed8f7606ae6b7932",
+    "e4df0037a2766e7c",
+    "413c825c34284db9",
+    "b322def359447d9a",
+    "40391443879e2e3d",
+    "af3d293a6e3d6b73",
+    "56a40fb82eef49c1",
+    "24a9db2e637e0f9e",
+    "869e2cb6d5330377",
+    "33ab7370f0d376ac",
+    "ecabdb4d6dcaef68",
+    "23aebe7da875b9f4",
+    "4371e08a82098df9",
+    "6c4c92a4cc25dd6b"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:32",
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto desk_phone pretend",
+    "goto copier",
+    "interact",
+    "goto roster pretend",
+    "pretend 1.88s",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "e8a7db435bf16ac8",
+    "086157dd8ea830f6",
+    "68bfe06c6c9059fb",
+    "85d77ff8324e9a14",
+    "7248c59856223f85",
+    "ec9cc9c708a2808e",
+    "5f7ac2864cd7b855",
+    "fc3061f806990ce3",
+    "ee6a8b42a36fbfc1",
+    "b6629e2f6133b568",
+    "108381bc6c0f2e5e",
+    "ed21fdc1a4437b2f",
+    "fe83a616798d5f41",
+    "42387fc975f593ef",
+    "46239f3911967374",
+    "18fc2626180d64d5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "05fc7763bd81a7d0",
+    "b836b66968546fac",
+    "fa96672ad3fb4867",
+    "a2b3530a7dca928d",
+    "100c1646b7e83c8f",
+    "00e22ab8dc784eb3",
+    "cd23e9b918060501",
+    "789e921b1eee988d",
+    "0a755dbd069f6443"
+   ]
+  },
+  {
+   "cmds": [
+    "goto roster pretend",
+    "wait 1.5s",
+    "goto copier pretend",
+    "interact",
+    "pretend until 4:05",
+    "goto boss_window pretend",
+    "goto microwave pretend",
     "pretend until 4:29",
     "interact",
-    "pretend until 4:49",
+    "sit pretend",
+    "goto roster pretend",
+    "goto roster",
+    "interact",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "86e12afd341f4444",
+    "f8277deeff57eaf6",
+    "f65b1d01a71a7f9f",
+    "e69e6a69aca1d845",
+    "44a9607726a54948",
+    "7bd10c0460761f59",
+    "01e55b82a690df8d",
+    "f8a0cefd3d635f75",
+    "a937dc8b34143c17",
+    "8123f9497096ea3a",
+    "501d6c0814da20ba",
+    "96d1d2e7d6e8d937",
+    "d9bcd4c181c971a3",
+    "0ffd7955acd463c9",
+    "c38dc40104c38396",
+    "ff96cad77a1d166b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "sit pretend",
+    "goto roster pretend",
+    "interact",
+    "pretend until 4:58",
+    "goto copier",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "goto copier",
+    "interact",
+    "goto boss_window pretend",
+    "goto microwave pretend",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "972e7a6c63f192d2",
+    "55ff04c79cd5a604",
+    "cfe85b0a47c6e021",
+    "1dc792fd37e0fc54",
+    "9928df242128de0b",
+    "f5d3a78bfbc327fe",
+    "250de14a3928aae3",
+    "d4aa1f28f0366dc7",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61",
+    "8826b76bdcda5f61"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "win ding",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "b5730d0532aa000d",
+    "2b715e7a552b5d3d",
+    "5ab3afc4a839ce27",
+    "71178fbb9b982cb0",
+    "d0cdb6d01405dcb8",
+    "d7c1417aa3f35cb1",
+    "b39fd2765ffcf60b",
+    "2149fcd2fda0d253"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto copier",
+    "goto copier",
+    "goto desk_phone pretend",
+    "interact",
     "interact",
     "goto copier pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto microwave pretend",
+    "goto roster pretend",
     "interact",
     "pretend until 5:00"
    ],
    "summary": "caught",
    "digests": [
-    "bb650f7abea0d926",
-    "638d01b1943c0a4a",
-    "c4549d03716c11b5",
-    "1065ac060e519447",
-    "a8abcebecd3525d6",
-    "fd45d17f15d93a07",
-    "976dd85a5d75ead0",
-    "05e85dc1504c38b4",
-    "d1bc967447a19c5d",
-    "80225f002966f1a6",
-    "0598a52841afd844",
-    "764b42627f907ffb",
-    "b65899626243351b",
-    "69c2925cd016b18f",
-    "eeda4c95ade9c5ee",
-    "fbba0cb2f394338d",
-    "fbba0cb2f394338d",
-    "fbba0cb2f394338d"
+    "3d0377b7b96638ac",
+    "f62b49f0e4cbe282",
+    "aeb19f6824581496",
+    "fe174db9f7f45932",
+    "16838a7508f60c6b",
+    "661401868fa6483e",
+    "850034c186f87359",
+    "cdbb2697d68e48e9",
+    "dab0f4be598fc8fa",
+    "18399b2d5b2c5be6",
+    "9ba458fbf7fbbf5b",
+    "803929e1ab3c729d",
+    "bc86fa1508021ab6",
+    "dfb914c1bac96f30",
+    "53d68dccb12aa807"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "interact",
+    "goto desk_phone",
+    "goto roster pretend",
+    "interact",
+    "pretend 5.08s",
+    "goto roster pretend",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "b7c02f2a7ac55dc3",
+    "0038ea3e9ad40875",
+    "1c242ce7c7957d6a",
+    "5dbf681ea02c1bbc",
+    "f0264ad8dff17e14",
+    "8403cd35c620aacb",
+    "681d5a5e1865f2fc",
+    "3060706fb7063fd0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto lin_desk pretend",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto microwave",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "155c8f4c29961fbf",
+    "8d3af51e6f5a5969",
+    "8ff65f72a9a99e3d",
+    "8034736529dfd3f8",
+    "af6db027861a55eb",
+    "400043917f1d0faf",
+    "31fd013f52237e05",
+    "a1028dc7ad8ca3eb",
+    "26ec4cfc83223b5a",
+    "5331d09e00ba1b72",
+    "a58cbfe583d554f0",
+    "a58cbfe583d554f0",
+    "a58cbfe583d554f0"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:52",
+    "goto desk_phone pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto microwave",
+    "interact",
+    "pretend until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "90ad78ab61d82797",
+    "4aec93a215c6d954",
+    "7872d8d8d64babbe",
+    "e96bddb6f4e23360",
+    "485b897b14a95936",
+    "a5cbcd5bf9fa4cc0",
+    "0ded177dcab4ed08",
+    "b614fdc3b388818f",
+    "0f85c8b94f0bffd8",
+    "0f85c8b94f0bffd8",
+    "0f85c8b94f0bffd8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto desk_phone pretend",
+    "pretend until 4:54",
+    "goto roster pretend",
+    "wait 2.5s",
+    "goto copier",
+    "interact",
+    "wait until 5:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "f00a11103f44799b",
+    "3b34e44cfd97e03a",
+    "06c4f12fbbcd792c",
+    "6a13e7d93bde1f4d",
+    "58098c0f44ef6724",
+    "864ad80f02f5cefd",
+    "778491f0b003458f",
+    "4228488f0a55dc58",
+    "773705a2f4a952ac",
+    "b5dba8749a2d237f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto boss_window",
+    "goto desk_phone pretend",
+    "interact",
+    "goto roster pretend",
+    "interact",
+    "goto copier pretend",
+    "interact",
+    "goto desk_phone",
+    "goto roster pretend",
+    "interact",
+    "pretend 5.08s",
+    "goto roster pretend",
+    "pretend 1.5s",
+    "pretend until 5:00"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "e4ac866577b02b14",
+    "4617d16e0f59a08f",
+    "19222dcd22728ba6",
+    "87d5320f4728b7b6",
+    "aee28ca111e98839",
+    "313ff59faff6726f",
+    "b0b9d40ff3c9e349",
+    "b78ca047c398c359",
+    "5dfea470c7c295e7",
+    "8a099e37dd85a4b8",
+    "861e49ec65137948",
+    "b7f710453e8a0fee",
+    "555c4553317ed8fa",
+    "f584c099c20666ed",
+    "f9ed69c6dddbec26"
    ]
   },
   {
@@ -3964,13 +4220,13 @@
    ],
    "summary": "fail",
    "digests": [
-    "5c8c59c4a5fe4489",
-    "813671327c6cb4a6",
-    "0c8ec5db1c5e9ec3",
-    "706bba37da9cbd32",
-    "b56629113deead97",
-    "16ea5b26d2767589",
-    "6094da3d932a3751"
+    "d75c9a24633b9a54",
+    "dd79c63b3f55cb48",
+    "61312e08d0069a6d",
+    "f2a1a635d2c5a930",
+    "6c4e34f618450791",
+    "de4b65bbf91ccbae",
+    "0a188c61caee7962"
    ]
   },
   {
@@ -3985,14 +4241,14 @@
    ],
    "summary": "fail",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "12fee1fc3644337c",
-    "b457f891978f36d6",
-    "4bcf212c17732fc3",
-    "5371cc95078e519b",
-    "b58dca073309365b",
-    "dfad977c73d183dd"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "fff6bb92df2c499f",
+    "a39073efd032ab9a",
+    "5d288a34e9b1c500",
+    "cd231e1e6abc0d88",
+    "aaeb6df1cf1a63a7",
+    "41ff96f8c416dbab"
    ]
   },
   {
@@ -4008,15 +4264,15 @@
    ],
    "summary": "win ding",
    "digests": [
-    "b23b36927c2baf1c",
-    "71dbe629c4b75666",
-    "d48c599f56c582f0",
-    "b818b42afcd9ce9d",
-    "9ffda79a89357613",
-    "19c9d942ae753381",
-    "55e61eefebca1d29",
-    "4aca14b6d3742183",
-    "1041ddcdb15b2660"
+    "3d0377b7b96638ac",
+    "8661b84e693bddbb",
+    "c7b1a3e940c9c635",
+    "a3eb5873bad25784",
+    "18becdcc428e04c7",
+    "c88496ea726c89ae",
+    "5cdffefb7b867616",
+    "ee51329d9504c0d0",
+    "af46512f7ef1d8c8"
    ]
   },
   {
@@ -4025,6 +4281,7 @@
     "interact",
     "restart",
     "pretend until 4:31",
+    "goto desk_phone pretend",
     "interact",
     "goto board pretend",
     "interact",
@@ -4035,18 +4292,19 @@
    ],
    "summary": "fail",
    "digests": [
-    "f8f861d3ed9d65a0",
-    "324c40f277ae35c4",
-    "216d7ca3b9022817",
-    "3c838246058ac6e5",
-    "64d7eba74790d203",
-    "8398c890a7d53200",
-    "411114112585ff6c",
-    "f67efe9e123ac5fa",
-    "1a440ad980691f7f",
-    "0f03613d62af297b",
-    "687d34afcfbfa615",
-    "c822327017aa242a"
+    "ea1b06afc34ee217",
+    "42bdbd8a50ab9423",
+    "ad0a16c0c67ddb38",
+    "d8e7ec3d01b5641a",
+    "05097f6bc1108f51",
+    "c34b3fdcfecc7336",
+    "37e5732b8376bbc7",
+    "8bbd2507567fcb2f",
+    "63629355079556be",
+    "fdac6eef7154409e",
+    "ea5719972b6b3f60",
+    "68cb044dfe463a93",
+    "ecf20d3c5bbbe45d"
    ]
   }
  ]

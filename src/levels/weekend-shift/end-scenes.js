@@ -1,14 +1,17 @@
-// Weekend Shift's end cards (level 1's end-scenes.js documents the fields). Every one is the same picture: the office
+// Weekend Shift's end cards (level 1's end-scenes.js documents the fields). Most are the same picture: the office
 // on Saturday, sun in the window, the desks empty but one, and the roster board beside it. What changes is who sits
 // at that desk, working, with their face on the board: the boss or Kev (a win), or you (a loss). Caught: the boss
-// came in too, to point at you. Blamed: the board shows the change crossed out and your face put back.
+// came in too, to point at you. Blamed is the day as it ended instead: Friday, 5:00, everyone in their chairs round
+// the board. The board still shows the face you wrote, but you weren't there: the boss points at your empty chair,
+// and Lin and Kev have turned to look at it. Whoever isn't here gets Saturday.
 // The row under it is the punchline: cause, effect, you.
 import { fillCircle, fillEllipse, rrect } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
+import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { drawBoard } from './props.js';
+import { drawBoard, drawEmptyPlace } from './props.js';
 
 const SOUTH = Math.PI / 2;
 const WALL_H = 112;
@@ -160,7 +163,7 @@ function room(ctx, t) {
 const DESK_X = 520;
 const DESK_Y = TAB.y + 196;
 const BUBBLE_Y = DESK_Y - 82; // over the worker's head
-const SEAT = { boss: ['#6b2f24', '#4e2019'], kev: ['#5f6b3a', '#47512a'], player: ['#d6a23a', '#a97b22'] };
+const SEAT = { boss: ['#6b2f24', '#4e2019'], kev: ['#5f6b3a', '#47512a'], player: ['#d6a23a', '#a97b22'], lin: ['#2f8f83', '#22675f'] };
 
 // Win: the boss, or Kev, works Saturday. Their face on the board, them at the desk, the sun outside.
 function sceneWin(ctx, game, t, e, o) {
@@ -195,13 +198,96 @@ function sceneCaught(ctx, game, t, e) {
   bubble(ctx, ['😳'], DESK_X, BUBBLE_Y, e - 0.5, 'speech', 1.2);
 }
 
-// Blamed: you weren't there when it was read out. On the board the change is crossed out and your face is back.
+// Friday's window, at 5:00: a low sun going down behind the buildings across the street.
+function fridayWindow(ctx, t) {
+  const x = 520;
+  const y = TAB.y + 14;
+  const w = 226;
+  const h = 72;
+  ctx.fillStyle = '#e9e4d6'; // frame and sill
+  ctx.fillRect(x - 6, y - 6, w + 12, h + 12);
+  const sky = ctx.createLinearGradient(0, y, 0, y + h);
+  sky.addColorStop(0, '#8fb3d6');
+  sky.addColorStop(1, '#f2c98a');
+  ctx.fillStyle = sky;
+  ctx.fillRect(x, y, w, h);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  fillCircle(ctx, x + w * 0.7, y + h - 14, 15, '#f7a94a');
+  // the buildings across the street, a few windows lit
+  for (const [bx, bw, bh] of [[0, 34, 40], [38, 46, 56], [90, 30, 34], [124, 52, 48], [182, 44, 62]]) {
+    ctx.fillStyle = '#6e6a78';
+    ctx.fillRect(x + bx, y + h - bh, bw, bh);
+    ctx.fillStyle = 'rgba(255,214,140,0.75)';
+    for (let wy = y + h - bh + 6; wy < y + h - 6; wy += 10) {
+      for (let wx = x + bx + 5; wx < x + bx + bw - 6; wx += 10) if ((wx * 7 + wy * 3) % 5 < 2) ctx.fillRect(wx, wy, 4, 5);
+    }
+  }
+  ctx.restore();
+  ctx.fillStyle = '#e9e4d6'; // the window's bar
+  ctx.fillRect(x + w / 2 - 2, y, 4, h);
+}
+
+// A chair of the half-circle round the board at (x, y) (its seat, px), facing `dir`, and whoever sits in it (look;
+// null: nobody), facing the board, their head turned to face `at`.
+function meetingSeat(ctx, look, seat, x, y, dir, at, t, phase) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(2.4, 2.4);
+  drawChair(ctx, 0, 0, dir, seat[0], seat[1]);
+  ctx.restore();
+  if (!look) return;
+  const p = person(t);
+  p.dir = dir;
+  p.head = at ? Math.atan2(at.y - y, at.x - x) + Math.sin(t * 1.3 + phase) * 0.05 : dir;
+  p.pose = 'sit';
+  p.scale = 2.4;
+  drawPerson(ctx, look, p, x, y - 4);
+  return p;
+}
+
+// Blamed: Friday, 5:00, everyone in their chairs round the board, as the day ended. The board shows the face you
+// wrote; the boss read it out, looked for you, and points at your chair: empty, your outline on it. Lin and Kev have
+// turned round to look at it.
 function sceneBlamed(ctx, game, t, e, o) {
   const who = written(game, o);
-  room(ctx, t);
-  board(ctx, looks(game).player, t, { crossed: looks(game)[who] });
-  workDesk(ctx, looks(game).player, DESK_X, DESK_Y, t, { seat: SEAT.player, sweat: true });
-  bubble(ctx, ['😩'], DESK_X, BUBBLE_Y, e, 'speech', 1.3);
+  const L = looks(game);
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
+  backWall(ctx, WALL_H);
+  fridayWindow(ctx, t);
+  ctx.save();
+  drawClock(ctx, 446, TAB.y + 48, 48, 120); // 5:00
+  ctx.restore();
+  board(ctx, L[who], t);
+  const W = Math.PI;
+  const mine = { x: 634, y: TAB.y + 170 };
+  // the map's meeting spots: Kev north of your chair, Lin south of it, the boss beside the board
+  meetingSeat(ctx, L.kev, SEAT.kev, 540, TAB.y + 128, W, mine, t, 0);
+  meetingSeat(ctx, null, SEAT.player, mine.x, mine.y, W);
+  ctx.save();
+  ctx.translate(mine.x, mine.y - 4);
+  ctx.scale(2.4, 2.4);
+  drawEmptyPlace(ctx, 0, 0, t, true);
+  ctx.restore();
+  const bx = 400;
+  const by = TAB.y + 206;
+  const toMine = Math.atan2(mine.y - 14 - by, mine.x - bx);
+  ctx.save();
+  ctx.translate(bx, by);
+  ctx.scale(2.4, 2.4);
+  drawChair(ctx, 0, 0, toMine, SEAT.boss[0], SEAT.boss[1]);
+  ctx.restore();
+  const b = person(t);
+  b.dir = toMine;
+  b.head = toMine;
+  b.pose = 'sit';
+  b.arms = 'point';
+  b.scale = 2.4;
+  drawPerson(ctx, L.boss, b, bx + Math.max(0, Math.sin(t * 5)) * 2, by - 4);
+  meetingSeat(ctx, L.lin, SEAT.lin, 540, TAB.y + 214, W, mine, t, 2);
+  bubble(ctx, ['👉', '@player'], bx, by - 72, e, 'speech', 1.2);
 }
 
 function kindOf(o) {
@@ -216,6 +302,6 @@ export const END_SCENES = {
     winKev: { win: true, icons: ['✏️', '@kev', '🏖️'], draw: sceneWin },
     fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
     caught: { win: false, icons: ['✏️', '😠', '@player'], draw: sceneCaught },
-    blamed: { win: false, icons: ['🪑', '✏️', '@player'], draw: sceneBlamed },
+    blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },
   },
 };

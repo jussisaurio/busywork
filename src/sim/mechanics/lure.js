@@ -15,6 +15,7 @@
 //     start     { set?, event?, says? } applied on arrival. He gives up (endOverride) as soon as a field that
 //               start.set set changes (someone else dealt with it, or undid it)
 //     done      { set?, event?, says? } applied when progress reaches 1, then endOverride
+//     pose      optional: his pose while working ('sit': down on the floor at it, as if kneeling); default standing
 // Debug label while working: `${work.override} N%`. While working he doesn't daydream about what he wants (crave).
 // The gather leaves him to finish the job (endOverride sends him to the meeting afterwards).
 import { GAME_MIN_PER_SEC } from '../../config.js';
@@ -48,6 +49,7 @@ function arrive(game, npc, lure) {
   const w = game.world;
   if (!lure.when(w)) return endOverride(npc);
   npc.override = lure.work.override; // same episode: no _ovSeq bump, keep the plan
+  if (lure.work.pose && npc._plan) npc._plan.pose = lure.work.pose; // finishPlan, right after this, applies it
   w[lure.work.progress] = 0;
   applyEffect(game, lure.work.start);
   speak(game, npc, lure.work.start?.says);

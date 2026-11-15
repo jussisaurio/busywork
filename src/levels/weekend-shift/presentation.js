@@ -6,11 +6,12 @@ import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
 import { READ_S, POINT_S } from './cast.js';
-import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone } from './props.js'; // decor.props' painters
+import { inZone } from '../../game/perception.js';
+import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, THINGS, POP_S } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['5:00 PM. Someone works this Saturday.', "Make sure it isn't you."],
+  mission: ['Friday, 4:00 PM. At 5:00 the boss picks who works Saturday.', "Make sure it isn't you."],
   badge: ['🗓️', '@player'], // the roster's week, and you down for it
 };
 
@@ -24,7 +25,20 @@ const look = (game, id) => game?.level?.looks?.[id] ?? null;
 const dingIn = (w, game) => (w.noodles === 'cooking' && w.dingAt !== null ? (w.dingAt - (game?.clock?.minute ?? 0)) / GAME_MIN_PER_SEC : null);
 
 // Lin stands at the microwave with her fish in it (4:30-4:37): the window lights up with a fish going round
+const lin = (game) => (game?.npcs || []).find((n) => n.id === 'lin');
 const linHeatsFish = (game) => !!(game?.npcs || []).find((n) => n.id === 'lin' && n.anim === 'fishIn' && !n.moving && !n.override);
+// Lin's lunch box: on her desk ('cold'), with her ('away': in her hands, or in the microwave), back open ('hot')
+function lunch(game) {
+  const n = lin(game);
+  if (!n) return 'cold';
+  if (n._ate) return 'hot';
+  return n.anim === 'fishIn' || n.anim === 'fish' ? 'away' : 'cold';
+}
+// She carries it while she isn't standing at the microwave with it inside
+function linAtMicrowave(n, game) {
+  const m = game?.level?.spots?.microwave;
+  return !!m && !n.moving && Math.hypot(n.x - (m.x + 0.5), n.y - (m.y + 0.5)) < 0.6;
+}
 
 // The reading (cast.js readRoster): READ_S s before 5:00 the boss turns to the board and points at it; at POINT_S
 // he turns to whoever's face is on it. readS: s into it, else null.
@@ -36,6 +50,38 @@ function readS(game) {
   return s >= 0 ? s : null;
 }
 const WROTE_FRESH_MIN = 3; // game minutes the ink glints after you write
+const sinceMin = (game, m) => (m === null || m === undefined ? null : ((game?.clock?.minute ?? 0) - m) / GAME_MIN_PER_SEC);
+// s into the beat a new face pops up off the board, else null
+function popS(w, game) {
+  const s = sinceMin(game, w.wroteAt);
+  return s !== null && s >= 0 && s < POP_S ? s : null;
+}
+// the side of the board, -1 west or 1 east, away from you: the popping face drifts that way
+function popSide(game) {
+  const p = game?.player;
+  const bx = (game?.level?.map?.rows || []).reduce((x, row) => (x >= 0 ? x : row.indexOf('R')), -1);
+  if (!p || bx < 0 || !Number.isFinite(p.x)) return 0;
+  return p.x > bx + 0.5 ? -1 : 1;
+}
+// s since the jammed copier's last beep (it beeps 1 s after the jam, then every 2 s: index.js NOISES), else null
+function beepS(w, game) {
+  if (w.copier !== 'jammed' && w.copier !== 'fixing') return null;
+  const s = sinceMin(game, w.jamAt);
+  return s === null || s < 1 ? null : (s - 1) % 2;
+}
+// Your place round the board, from the gather on, while you aren't in the half-circle: outlined on the floor; hot
+// once the room has noticed (blamed)
+function emptyPlace(game) {
+  const day = game?.level?.day;
+  const p = game?.player;
+  if (!day || !p || !game.clock || game.clock.minute < day.gatherAt) return false;
+  if (game.outcome && game.outcome.result !== 'blamed') return false;
+  return !inZone(game, game.level.meeting.room, p.x, p.y);
+}
+function placePx(game) {
+  const s = game?.level?.spots?.[game.level.meeting.chair];
+  return s ? { x: s.x * T + T / 2, y: s.y * T + T / 2 } : null;
+}
 
 // Where the renderer puts the boss's hand at his ear, on the phone (render/characters.js 'phone' arms, standing):
 // px, for the cord to his phone's handset (props.js paintBossPhone). null unless he's standing there talking.
@@ -86,10 +132,15 @@ export const DECOR = {
           look: look(game, w.roster),
           fresh: w.wroteAt !== null && (game?.clock?.minute ?? 0) - w.wroteAt < WROTE_FRESH_MIN,
           pulse: s !== null && s < POINT_S, // the boss is reading it out
+          pop: popS(w, game), // a new face, just written
+          popSide: popSide(game), // ... drifting away from you
+          place: placePx(game),
+          empty: emptyPlace(game),
+          hot: game?.outcome?.result === 'blamed',
         };
       },
     },
-    { tile: 'X', draw: paintCopier, state: (w) => ({ copier: w.copier }) },
+    { tile: 'X', draw: paintCopier, state: (w, game) => ({ copier: w.copier, beep: beepS(w, game) }) },
     {
       tile: 'M',
       draw: paintMicrowave,
@@ -97,12 +148,14 @@ export const DECOR = {
     },
     { tile: 'Q', draw: paintMyPhone, state: (w, game) => ({ phone: w.phone, to: game?.map?.find?.('B')?.[0] ?? null }) },
     { tile: 'B', draw: paintBossPhone, state: (w, game) => ({ phone: w.phone, hand: bossPhoneHand(game) }) },
+    { tile: 'L', draw: paintLunch, state: (w, game) => ({ lunch: lunch(game) }) },
   ],
+  things: THINGS, // '#handset', '#lunchbox', '#lunchhot', '#spot', '#microwave', '#deskphone' (props.js)
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
     kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: null }, // her lunch box goes there (props.js)
   },
   zoneSeeds: [
     { zone: 'office', x: 10, y: 2 }, // the boss's office (his desk draws as an exec desk)
@@ -113,18 +166,20 @@ export const DECOR = {
 
 export const LOOKS = LEVEL1_LOOKS;
 
-// level.poses (level 1's looks.js documents the fields). Things in hand are drawn by the renderer from emoji, so
-// nobody holds anything here: Kev reaches into the copier (props.js draws his spanner in it), the boss holds the
-// phone to his ear (props.js draws the handset and its cord), and pointing is the arm.
+// level.poses (level 1's looks.js documents the fields). Things in hand are '#<name>' things (decor.things, or the
+// engine's): Kev kneels at the copier ratcheting a spanner (and props.js turns one in its works), the boss holds his
+// phone's handset to his ear (props.js runs its cord to that hand), Lin carries her lunch box there and back, and
+// pointing is the arm.
 export const POSES = {
   arms: [
     // the reading: he points at the board, then at whoever's face is on it; at his own, he spreads his hands
     { when: (n, w, game) => n.id === 'boss' && readS(game) !== null && (w.roster !== 'boss' || readS(game) < POINT_S), arms: 'point' },
     { when: (n, w, game) => n.id === 'boss' && readS(game) !== null, arms: 'shrug' },
-    { when: (n) => n.override === 'fixing', arms: 'reach' },
-    // item ' ': nothing drawn in his hand (the renderer's own phone there is a mobile); props.js draws his phone's
-    // handset under that hand, on its cord
-    { when: (n) => n.override === 'onPhone', arms: 'phone', item: ' ' },
+    { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
+    { when: (n) => n.override === 'onPhone', arms: 'phone', item: '#handset' },
+    // 4:30 she stands up with her lunch box and takes it to the microwave; 4:37 she brings it back, open, hot
+    { when: (n, w, game) => n.id === 'lin' && n.anim === 'fishIn' && !n._ate && !linAtMicrowave(n, game), arms: 'mug', item: '#lunchbox' },
+    { when: (n, w, game) => n.id === 'lin' && n.anim === 'fish' && !n._ate, arms: 'mug', item: '#lunchhot' },
   ],
   marks: [
     { when: (n, w, game) => n.id === 'boss' && w.roster === 'boss' && readS(game) >= POINT_S, angry: true }, // red to the ears
