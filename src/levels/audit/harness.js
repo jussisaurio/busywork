@@ -88,6 +88,9 @@ export default {
       case 'audit:fired': return 'at your desk the auditor checks his list 💻❌, glares, and points you to the door 😠👉';
       case 'auditor:suspicious': return 'the auditor eyes you ❓ (a meter over his head starts filling)';
       case 'auditor:workAssigned': return `the auditor sends you to your desk 📄 (${p.reason})`;
+      case 'laptop:spotted': return `${name(p.by)} sees ${WHOSE[p.type]} laptop on your desk 😠👀 and heads over`;
+      case 'auditor:phone': return 'the auditor\'s phone rings 📱: he takes it to the meeting room';
+      case 'auditor:call': return 'the auditor talks on the phone at the meeting-room window 💬, his back to the door';
       case 'laptop:reclaimed': return `${name(p.by)} took ${WHOSE[p.type]} laptop back 😠💻`;
       case 'kev:packed': return 'Kev unplugs his laptop and takes it under his arm';
       case 'kev:forgot': return 'Kev sets his laptop down on your desk to wave 👋, and walks off without it';
