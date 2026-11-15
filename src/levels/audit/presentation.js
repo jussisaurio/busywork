@@ -3,6 +3,7 @@
 // read-only; the auditor is new.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
+import { COUNTED_STICKERS } from './things.js';
 
 export const TITLE = {
   mission: ['3:00 PM. A laptop audit at 3:30. There should be four.', 'You sold yours. Make him count four.'],
@@ -35,6 +36,7 @@ export const DECOR = {
   props: [
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
     { tile: 'K', draw: 'coatRack', state: () => ({ coat: false, tag: false }) },
+    COUNTED_STICKERS, // a green sticker on each desk he has counted (things.js)
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {

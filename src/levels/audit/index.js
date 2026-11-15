@@ -144,9 +144,9 @@ export default {
   meeting: { override: 'signoff', room: 'desk', chair: 'player_desk', presenter: 'player_desk' },
   // A route: whose laptop he counted twice.
   routes: [
-    { id: 'boss', icon: '👔', achieved: (w) => twice(w, 'laptop_boss') },
-    { id: 'lin', icon: '👓', achieved: (w) => twice(w, 'laptop_lin') },
-    { id: 'kev', icon: '🔧', achieved: (w) => twice(w, 'laptop_kev') },
+    { id: 'boss', icon: '@boss', achieved: (w) => twice(w, 'laptop_boss') },
+    { id: 'lin', icon: '@lin', achieved: (w) => twice(w, 'laptop_lin') },
+    { id: 'kev', icon: '@kev', achieved: (w) => twice(w, 'laptop_kev') },
   ],
   outcomeOrder: ['boss', 'lin', 'kev'],
   initialWorld: () => ({
