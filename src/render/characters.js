@@ -5,6 +5,7 @@ import {
   T, clamp, fin, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
+import { NOTICE } from '../config.js';
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -900,6 +901,7 @@ function drawNpc(ctx, game, n, t) {
     s.arms = 'walk';
   }
   if (strictGlyphs()) pointAt(game, n, s);
+  orderTurn(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
   let mug = false;
   if (n.carry) {
@@ -914,9 +916,17 @@ function drawNpc(ctx, game, n, t) {
     if (r.badge) s.badge = true;
     if (r.jacket === false) s.jacket = false;
   }
-  if (game.caught && n.id && n.id === game.level.roles?.authority?.id) s.angry = true; // the authority, catching you
+  const auth = game.level.roles?.authority?.id;
+  if (game.caught && n.id && n.id === auth) s.angry = true; // the authority, catching you
+  if (game.rules?.grudge?.by === n.id && n.id) s.angry = true; // she saw you, and she'll tell him when he's back
   const px = fin(n.x) * T;
-  const py = fin(n.y) * T;
+  let py = fin(n.y) * T;
+  // A witness who just saw you at it (game.watch, play/rules.js) starts: a little hop (render/effects.js drawWitnesses
+  // opens the eye beside her head).
+  if (n.id !== auth && game.watch && Object.hasOwn(game.watch, n.id)) {
+    const seen = fin(game.rules?.seen?.[n.id]);
+    if (seen > 0 && seen < NOTICE) py -= Math.sin((seen / NOTICE) * Math.PI) * 3;
+  }
   const mugBehind = mug && Math.sin(s.dir) < 0; // on the far side of him: he overlaps it
   if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
   drawPerson(ctx, look, s, px, py);
@@ -940,6 +950,26 @@ function pointAt(game, n, s) {
   s.arms = 'point';
   s.item = null;
   s.crank = false;
+}
+
+// Sending you to your desk (game.rules.sent, play/player.js): the authority turns to the witness whose shout reached
+// him, then to you; once he has given the order he points at you (bare hand: a migrated level only) until you're
+// at your desk.
+function orderTurn(game, n, s) {
+  const sent = game.rules && game.rules.sent;
+  if (!sent || !n.id || sent.auth !== n.id || !sent.look) return;
+  const to = sent.look === 'player' ? game.player : game.npcs && game.npcs.find((m) => m && m.id === sent.look);
+  if (!to) return;
+  const dx = fin(to.x) - fin(n.x);
+  const dy = fin(to.y) - fin(n.y);
+  if (Math.abs(dx) + Math.abs(dy) > 0.01) s.dir = Math.atan2(dy, dx);
+  s.head = s.dir;
+  s.glance = 0;
+  if (sent.said && sent.look === 'player' && strictGlyphs()) {
+    s.arms = 'point';
+    s.item = null;
+    s.crank = false;
+  }
 }
 
 // A cup set down on the desk or table in front of someone, a little to their right.

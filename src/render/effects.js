@@ -7,6 +7,7 @@ import {
 import { C } from './palette.js';
 import { headY, lookFor } from './characters.js';
 import { findNpc } from '../game/perception.js';
+import { NOTICE, DOUBLE_TAKE } from '../config.js';
 
 // The part of the map on screen, in map pixels (renderer.js: smaller while the end beat zooms in). Bubbles, the
 // suspicion meter and the witness's eye stay inside it.
@@ -407,23 +408,23 @@ export function drawRipples(ctx, game) {
 }
 
 // --- sightlines -----------------------------------------------------------------
-// game.fx.lines: [{ from: npcId, to: 'player', kind, age, ttl, via? }]. A dashed line from the
+// game.fx.lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]. A dashed line from the
 // watcher's eyes to your body, using live positions so it follows both of you. It draws on fast,
 // then fades. 'notice' is a faint cream glance; 'tattle'/'caught' are thick tomato with a mark on you.
+// 'relay' runs from a witness to the authority's eyes (her shout reaching him): a dotted line that a red pulse rides
+// along, then a ring pops round his head.
 const LINE_STYLE = {
   notice: { w: 1.4, dash: [5, 4], color: '243,214,150', alpha: 0.6, mark: false },
   tattle: { w: 2.6, dash: [7, 4], color: '229,67,47', alpha: 0.9, mark: true },
   caught: { w: 3, dash: [8, 3], color: '229,67,47', alpha: 1, mark: true },
+  relay: { w: 2.6, dash: [2, 6], color: '229,67,47', alpha: 0.95, mark: false, on: 0.3 },
 };
 const DRAW_ON = 0.1; // seconds for the dash to reach you
 
 export function drawSightlines(ctx, game, t) {
   const lines = game.fx && game.fx.lines;
   const p = game.player;
-  if (!Array.isArray(lines) || !lines.length || !p) return;
-  const px = fin(p.x, NaN) * T;
-  const py = fin(p.y, NaN) * T - (p.seated ? 1 : 4); // chest, not feet
-  if (!Number.isFinite(px) || !Number.isFinite(py)) return;
+  if (!Array.isArray(lines) || !lines.length) return;
   ctx.save();
   ctx.lineCap = 'round';
   for (let i = 0; i < lines.length; i++) {
@@ -431,6 +432,20 @@ export function drawSightlines(ctx, game, t) {
     if (!l) continue;
     const n = game.npcs && findNpc(game, l.from);
     if (!n || !n.active) continue;
+    // the far end: your chest (not your feet), or the eyes of the NPC it runs to
+    let px;
+    let py;
+    if (l.to && l.to !== 'player') {
+      const m = game.npcs && findNpc(game, l.to);
+      if (!m || !m.active) continue;
+      px = fin(m.x, NaN) * T;
+      py = headY(game.level.looks, m, 'eyeDy', NaN);
+    } else {
+      if (!p) continue;
+      px = fin(p.x, NaN) * T;
+      py = fin(p.y, NaN) * T - (p.seated ? 1 : 4);
+    }
+    if (!Number.isFinite(px) || !Number.isFinite(py)) continue;
     const st = LINE_STYLE[l.kind] || LINE_STYLE.notice;
     const ttl = fin(l.ttl, 0.8) > 0 ? fin(l.ttl, 0.8) : 0.8;
     const age = clamp(fin(l.age), 0, ttl);
@@ -450,7 +465,8 @@ export function drawSightlines(ctx, game, t) {
     if (len < 6) continue;
     ex += (dx / len) * 4;
     ey += (dy / len) * 4;
-    const k = clamp(age / DRAW_ON, 0, 1);
+    const on = st.on ?? DRAW_ON;
+    const k = clamp(age / on, 0, 1);
     const tx = ex + (px - ex) * k;
     const ty = ey + (py - ey) * k;
     const a = clamp(st.alpha * fade, 0, 1);
@@ -468,6 +484,7 @@ export function drawSightlines(ctx, game, t) {
     ctx.stroke();
     ctx.setLineDash([]);
     if (st.mark && k >= 1) drawLineMark(ctx, px, py, age, a, st.color);
+    if (l.kind === 'relay') drawRelayHead(ctx, tx, ty, k, (age - on) / 0.35, a);
   }
   ctx.setLineDash([]);
   ctx.restore();
@@ -500,6 +517,23 @@ function drawScreenChain(ctx, via, ex, ey, px, py, st, age, fade, t) {
   }
   ctx.setLineDash([]);
   if (st.mark && age >= 2 * DRAW_ON) drawLineMark(ctx, px, py, age - DRAW_ON, a, st.color);
+}
+
+// The relay's moving end: a red pulse riding the line (k < 1), then rings popping round the head it reached (q: 0..1).
+function drawRelayHead(ctx, x, y, k, q, a) {
+  if (k < 1) {
+    fillCircle(ctx, x, y, 5, `rgba(229,67,47,${a.toFixed(3)})`);
+    fillCircle(ctx, x, y, 2.2, `rgba(255,246,201,${a.toFixed(3)})`);
+    return;
+  }
+  for (let i = 0; i < 2; i++) {
+    const f = q - i * 0.25;
+    if (f < 0 || f >= 1) continue;
+    ctx.strokeStyle = `rgba(229,67,47,${(a * (1 - f)).toFixed(3)})`;
+    ctx.lineWidth = 1 + 2.5 * (1 - f);
+    circle(ctx, x, y, 8 + 16 * (1 - (1 - f) * (1 - f)));
+    ctx.stroke();
+  }
 }
 
 // The hit mark on you: a ring that snaps in, then a small cross.
@@ -658,6 +692,69 @@ export function drawSuspicion(ctx, game, t, view = FULL_VIEW) {
   const was = glyphScope('speech'); // his reaction, not a thing
   emoji(ctx, lvl > 0.75 ? '❗' : '❓', x + 3 + jit * 0.5, y - 9, sz);
   glyphScope(was);
+}
+
+// --- witnesses -------------------------------------------------------------------
+// A coworker who sees you at something the rules object to (game.watch, play/rules.js) opens an eye beside her head,
+// its pupil on you: it pops open on the first sight and widens while she keeps looking (game.rules.seen against NOTICE,
+// DOUBLE_TAKE for a disguise); wide open, she tells. One who saw you with the authority away (game.rules.grudge)
+// keeps it wide, red-rimmed and throbbing, until she has told him. The authority has his own meter (drawSuspicion).
+export function drawWitnesses(ctx, game, t, view = FULL_VIEW) {
+  const p = game.player;
+  const npcs = game.npcs;
+  if (!p || !Array.isArray(npcs) || game.phase !== 'day') return;
+  const auth = game.level?.roles?.authority?.id;
+  const watch = game.watch || {};
+  const grudge = game.rules?.grudge?.by;
+  for (let i = 0; i < npcs.length; i++) {
+    const n = npcs[i];
+    if (!n || !n.active || !n.id || n.id === auth) continue;
+    const off = Object.hasOwn(watch, n.id) ? watch[n.id] : null;
+    const held = n.id === grudge;
+    if (!off && !held) continue;
+    const seen = fin(game.rules?.seen?.[n.id]);
+    const open = held ? 1 : clamp(seen / (off === 'disguise' ? DOUBLE_TAKE : NOTICE), 0, 1);
+    const pop = held ? 1 : easeOutBack(seen / 0.12);
+    const x = clamp(fin(n.x) * T + 13, view.x0 + EDGE + 10, view.x1 - EDGE - 10);
+    const y = clamp(headY(game.level.looks, n, 'eyeDy') - 12, view.y0 + EDGE + 9, view.y1 - EDGE - 9);
+    const dx = fin(p.x) * T - x;
+    const dy = fin(p.y) * T - 6 - y;
+    const d = Math.hypot(dx, dy) || 1;
+    drawEye(ctx, x, y, open, pop * (held ? 1 + 0.12 * Math.abs(Math.sin(t * 6)) : 1), dx / d, dy / d, held);
+  }
+}
+
+// An eye, centred at (x, y): open 0..1 (lids apart), size the pop scale, (lx, ly) the way it looks, hot a red rim.
+function drawEye(ctx, x, y, open, size, lx, ly, hot) {
+  if (!(size > 0.01)) return;
+  const w = 8;
+  const hh = 1.6 + 4.4 * open;
+  const almond = (ww, h) => {
+    ctx.beginPath();
+    ctx.moveTo(-ww, 0);
+    ctx.quadraticCurveTo(0, -2 * h, ww, 0);
+    ctx.quadraticCurveTo(0, 2 * h, -ww, 0);
+    ctx.closePath();
+  };
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(size, size);
+  ctx.fillStyle = 'rgba(24,19,15,0.55)';
+  almond(w + 2.5, hh + 2.5);
+  ctx.fill();
+  ctx.fillStyle = '#fffaf0';
+  almond(w, hh);
+  ctx.fill();
+  ctx.save();
+  ctx.clip();
+  fillCircle(ctx, lx * 3.5, ly * Math.min(2.5, hh), 3, C.ink);
+  fillCircle(ctx, lx * 3.5 - 1, ly * Math.min(2.5, hh) - 1, 0.9, '#ffffff');
+  ctx.restore();
+  ctx.strokeStyle = hot ? C.tomato : C.ink;
+  ctx.lineWidth = hot ? 2.2 : 1.5;
+  almond(w, hh);
+  ctx.stroke();
+  ctx.restore();
 }
 
 export function drawLoopStamp(ctx, game, cx, cy) {

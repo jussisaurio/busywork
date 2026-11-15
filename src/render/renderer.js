@@ -11,7 +11,7 @@ import { drawCones } from './cones.js';
 import { drawDarkness } from './darkness.js';
 import {
   drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
-  FULL_VIEW,
+  drawWitnesses, FULL_VIEW,
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
@@ -168,6 +168,7 @@ export function createRenderer(canvas, opts = {}) {
       drawSightlines(ctx, game, t); // above people, below the bubbles
       drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t, view);
+      drawWitnesses(ctx, game, t, view); // a coworker's eye on you
       drawFocusHint(ctx, game, t, view);
       drawBubbles(ctx, game, view);
     }
