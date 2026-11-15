@@ -62,6 +62,7 @@ const SPOTS = {
   player_desk: { x: 11, y: 8, face: 'N' }, // your seat; you start here
   switchboard: { x: 10, y: 2, face: 'N' }, // in front of the switchboard
   boss_desk: { x: 3, y: 2, face: 'S' }, // behind his desk, watching the office through the glass
+  boss_rise: { x: 4, y: 2, face: 'S' }, // half up from his chair, at Lin's phone ringing
   boss_window: { x: 2, y: 2, face: 'N' }, // the boss on his own phone, back to the room
   boss_window_view: { x: 2, y: 1 }, // what he stares at meanwhile: the window
   boss_front: { x: 2, y: 4, face: 'N' }, // anyone else at the boss's phone
@@ -124,7 +125,7 @@ export default {
     ...initialPhones(),
     stared: false,
     hold_boss: 0, hold_lin: 0, hold_kev: 0, // time on hold, 0..1 (the lures' progress)
-    job_boss: 0, job_lin: 0, job_kev: 0,
+    job_boss: 0, job_lin: 0, job_kev: 0, fix_lin: 0, rise_boss: 0,
     items: [],
   }),
   harness,

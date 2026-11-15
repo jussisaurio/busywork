@@ -42,7 +42,7 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'visit', spot: 'kitchen_kev' }), // coffee
-      s('3:06', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his cable round: the socket by Lin's desk
+      s('3:06', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his charging spot: the socket by Lin's desk
       s('3:13', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
       s('3:27', { do: 'sit', spot: 'kev_desk' }),
     ],
@@ -50,16 +50,26 @@ export const CAST = [
 ];
 
 export const BEHAVIOURS = {
-  // Kev's cable round: he crouches at the socket; a cord lying loose goes back in.
+  // Kev charges his mobile at the socket by Lin's desk: he crouches and plugs his charger in under her plug, then
+  // stands by it until 3:13 (phones.js: kevCharge). Her plug lying loose is in his way: ❗, he jams it back into
+  // the wall (a spark: phones.js does it at kevJamAt, if he is still there), 😤, then plugs his charger in.
   plugIn: {
     arrive(game, npc, sim) {
       const w = game.world;
-      sim.holdFor(npc, 1.6);
-      w.kevReach = game.clock.minute + 1;
-      if (w.cord !== 'out') return sim.speak(game, npc, [{ say: ['👌'], kind: 'thought', ttl: 1, after: 0.8 }]);
-      w.cord = 'in';
-      sim.speak(game, npc, [{ say: ['❗'], ttl: 0.8 }, { say: ['👍'], after: 1, ttl: 1 }]);
-      game.events.emit('cord:in', {});
+      const m = game.clock.minute;
+      w.kevAt = m;
+      if (w.cord !== 'out') {
+        w.kevReach = m + 0.8;
+        w.kevCharge = m + 0.6;
+        sim.holdFor(npc, 1.6);
+        return sim.speak(game, npc, [{ say: ['🔋'], kind: 'thought', ttl: 1.1, after: 0.9 }]);
+      }
+      w.kevJam = m + 0.9;
+      w.kevJamAt = m + 0.5;
+      w.kevReach = m + 1.6;
+      w.kevCharge = m + 1.4;
+      sim.holdFor(npc, 2.9);
+      sim.speak(game, npc, [{ say: ['❗'], ttl: 0.8 }, { say: ['😤'], after: 1.1, ttl: 1.1 }]);
     },
   },
 };
