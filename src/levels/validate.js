@@ -26,6 +26,8 @@
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
+//   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
+//               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
 //   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a boolean
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
@@ -58,6 +60,7 @@ import { parseMap } from '../core/map.js';
 import { DAY_CUES } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
+import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
@@ -102,6 +105,15 @@ export function levelProblems(level, key) {
     for (const [k, t] of v.entries()) itemType(`${path}[${k}]`, t);
   };
   const icons = (path, v) => { if (!isStr(v) && !(Array.isArray(v) && v.every(isStr))) bad(path, 'not an icon or a list of icons'); };
+  const noiseTiming = (path, n) => {
+    if (!isObj(n)) return;
+    if (n.delay !== undefined && !(isNum(n.delay) && n.delay >= 0)) bad(`${path}.delay`, 'not a number >= 0 (s)');
+    for (const k of ['every', 'turn']) if (n[k] !== undefined && !(isNum(n[k]) && n[k] > 0)) bad(`${path}.${k}`, 'not a number > 0 (s)');
+    if (n.while !== undefined && !isFn(n.while)) bad(`${path}.while`, 'not a function (world) -> bool');
+    if (n.sfx !== undefined && !(isStr(n.sfx) && isFn(SFX[n.sfx]))) bad(`${path}.sfx`, `no sound ${q(n.sfx)} in audio/sfx.js`);
+    const rp = n.ripple;
+    if (rp !== undefined && rp !== true && !(isObj(rp) && (rp.color === undefined || isStr(rp.color)))) bad(`${path}.ripple`, 'not true or { color? }');
+  };
 
   // --- identity and title -----------------------------------------------------------------------
   if (!isStr(level.id)) bad('id', 'missing');
@@ -241,6 +253,7 @@ export function levelProblems(level, key) {
       if (!isObj(row)) { bad(path, 'not an object'); continue; }
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
       if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
+      if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
     }
   }
   if (level.items !== undefined && !isObj(level.items)) bad('items', 'not an object');
@@ -335,6 +348,7 @@ export function levelProblems(level, key) {
       if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
       spot(`${path}.at`, n?.at);
       for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
+      noiseTiming(path, n);
     }
   }
   if (level.darkness !== undefined) {
