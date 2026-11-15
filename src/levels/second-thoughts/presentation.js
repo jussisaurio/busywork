@@ -3,13 +3,13 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, smokeProp } from './things.js';
+import { trayProp, smokeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He empties it at 3:40. Get it back first.'],
+  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He goes through it at 3:40.'],
   badge: ['✉️', '@boss'],
 };
 
@@ -48,28 +48,29 @@ export const DECOR = {
   ],
   clock: { x: 17, y: 6 },
   // The in-tray on his desk, your letter lying in it while it's there, and the coffee machine smoking while the fuse
-  // it blew is out (things.js). (The switch and the fuse box: darkness.controls.)
+  // it blew is out. Once the power is back it brews what Lin switched it on for: its lamp glows green and the pot is
+  // full, and a full pot pours a cup (index.js pour_coffee). (The switch and the fuse box: darkness.controls.)
   props: [
     { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
-    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) }, // brewed once the power's back
-    { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on' }) }, // it blew the fuse
+    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) },
+    { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on', brewing: w.coffee === 'tripped' && w.fuse === 'on' }) },
   ],
+  // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
+  things: { tray: trayThing, phone: phoneThing },
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
   },
   legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
 
-// level.poses (level 1's looks.js documents it): Kev working at the fuse box, the boss feeling his way along the
-// wall, and a phone held out as a torch while the fuse is out (render/darkness.js draws the phone in that hand).
+// level.poses (level 1's looks.js documents it): Kev's hands in the fuse box, the boss's on his light switch, fuming.
+// Anyone holding a phone torch keeps free hands: render/darkness.js draws the arm and the phone.
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'fixing', arms: 'reach' },
-    { when: (n) => n.override === 'dark' || n.override === 'groping', arms: 'reach' },
-    { when: (n, w) => w.fuse !== 'on', arms: 'reach' },
+    { when: (n) => n.override === 'fixing' || n.override === 'switching', arms: 'reach' },
   ],
   marks: [
-    { when: (n) => n.override === 'groping', angry: true },
+    { when: (n) => n.override === 'switching', angry: true },
   ],
 };
 

@@ -16,30 +16,32 @@ const took = (log, how) => {
 
 export default [
   {
-    name: 'do nothing → fail (he empties his tray and reads it)',
+    name: 'do nothing → fail (he goes through his tray and reads it)',
     expect: { result: 'fail' },
     cmds: ['wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41'],
   },
   {
-    name: 'switch: flip his light, take it from the front while he gropes along the wall → win',
+    name: 'switch: flip his light behind his back, take it while he walks his torch to the switch → win',
     expect: { result: 'win', routes: ['switch'] },
-    play({ run, g, log }) {
+    play({ run, waitFor, npc, g, log }) {
       run('goto office_switch pretend');
-      run('interact'); // clack: he turns to the noise, then gets up
-      run('goto tray');
+      run('interact'); // his office goes dark: ❓, he holds up his phone; as he gets up his beam swings east
+      run('goto 1,4'); // into the shadow under his plants, behind the swing
+      if (!waitFor(() => npc('boss').x < 3.5, { busy: false, maxSec: 6 })) throw new Error('he never set off for the switch');
+      run('goto tray'); // he walks his torch to the switch, his back to the tray
       run('interact');
       took(log, 'switch');
       atDesk(run, g);
     },
   },
   {
-    name: 'switch: flip it and stay by the switch → he gropes along the wall straight into you → caught',
+    name: 'switch: flip it and stay by the switch → his torch finds you there → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, g }) {
       run('goto office_switch pretend');
       run('interact');
       waitFor((gg) => gg.caught, { maxSec: 30 });
-      caughtFor(g, 'evidence'); // pretending doesn't help: he walked into you
+      caughtFor(g, 'evidence'); // pretending doesn't help: whoever is in his dark office flipped it
     },
   },
   {

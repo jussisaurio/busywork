@@ -83,14 +83,17 @@ export default {
       case 'interview:hungUp': return 'the interview call is over';
       case 'phone:answering': return `${name(p.by)} heard ${PHONE[p.phone]} ring and goes to answer it ❗`;
       case 'phone:unanswered': return `${PHONE[p.phone]} stops ringing: nobody heard it`;
-      case 'lin:checks': return 'Lin lifts her receiver and listens (checking her phone), then looks at the clock';
+      case 'lin:checks': return 'Lin lifts her receiver and listens (checking her line)';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switchboard:ring': return `you plugged into the jack for ${PHONE[p.phone]}: it rings 🔔`;
       case 'boss:onHold': case 'lin:onHold': case 'kev:onHold': return `${name(e.name.split(':')[0])} picks up and gets the hold music 🎵`;
       case 'boss:hungUp': case 'lin:hungUp': case 'kev:hungUp': return `${name(e.name.split(':')[0])} hangs up`;
       case 'cord:out': return "you pulled Lin's phone cord out of the wall 🔌 (it lies on the floor)";
-      case 'cord:in': return "Kev found Lin's cord loose and plugged it back in 🔌👍";
+      case 'cord:in': return p.by === 'kev'
+        ? "Kev found Lin's plug loose in the way of his charger and jammed it back in ❗ (a spark)"
+        : "Lin found her line dead and pushed her plug back into the wall";
+      case 'lin:deadLine': return "Lin's receiver is silent: her line is dead ❓ (she goes to the socket)";
       case 'interview:lin': return 'Lin takes her interview call 📞😊';
       case 'interview:busy': return `the interviewer gets a busy line: ${name(p.by)} is on Lin's phone 🎵`;
       case 'interview:dead': return "Lin's phone never rings: its cord is out 🔌";
