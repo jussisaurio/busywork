@@ -1,20 +1,22 @@
-// "Kev's Hoodie": the same office as level 1, forty minutes later. The boss's screen shows your awful review and
-// he sends it at 3:45. Delete it first.
+// "The Layoff List": the same office as level 1, an hour later. At 3:45 the boss emails HR the layoff list, and you
+// are on it: a column of faces on his screen, yours marked in red (list.js). Get your name off it.
 //
 // Nobody lets you at his computer as yourself. But clothes are who you are, to people who don't know better
 // (src/play/disguise.js):
-//   - Kev gets hot, and goes home while the boss is in the restroom (so the boss doesn't know). He waves to Lin
-//     first, so she knows, then leaves his hoodie on his chair on the way out. In the hoodie, the boss sees Kev (👋),
-//     and Kev may fix his computer: he steps aside and watches. Lin sees through it (🧥❓, then ❗👉), so go while
-//     she's in the restroom (3:32).
+//   - 3:00: his computer acts up (static), he waves Kev over, and Kev types at it while he stands aside and watches.
+//     Kev is the one person allowed at that computer. Kev slips out early while the boss is in the restroom (so
+//     the boss doesn't know): he waves to Lin first (so she knows), then, hot, leaves his hoodie on his chair. At
+//     3:35 the computer acts up again and the boss waves for Kev, who isn't there. In the hoodie, the boss sees
+//     Kev (👋), and Kev may fix his computer: he steps aside and watches, as he did at 3:00. Lin sees through it
+//     (🧥❓, then ❗👉), so go while she's in the restroom (3:32).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
-// Then be at your desk at 3:45, or the office stares at your empty chair.
+// Then be at your desk at 3:45: if your chair is empty when he looks up to send it, he puts you back on.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
-import { say, burst } from '../../core/fx.js';
+import { say } from '../../core/fx.js';
 import { C } from '../../render/palette.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
@@ -64,8 +66,8 @@ const SPOTS = {
   lin_desk: { x: 4, y: 9, face: 'N' }, // facing the boss's office: she sees his screen through the glass
   kev_desk: { x: 4, y: 12, face: 'N' }, // behind Lin, by the entrance: his hoodie ends up on this chair
   coat_rack: { x: 2, y: 1, face: 'W' },
-  boss_aside: { x: 6, y: 3, face: 'W' }, // where the boss stands to watch "Kev" fix his computer
-  review_chair: { x: 4, y: 4, face: 'N' }, // in front of his desk: where you sit for your review
+  boss_aside: { x: 6, y: 3, face: 'W' }, // where the boss stands to watch Kev fix his computer
+  pc_front: { x: 4, y: 4, face: 'N' }, // in front of his desk: where Kev types (and where you stand at 3:45 if you fail)
   kev_bye: { x: 5, y: 7, face: 'S' }, // in front of Lin's desk: Kev waves goodbye
   boss_door: { x: 6, y: 7, face: 'S' },
   door_in: { x: 4, y: 12, face: 'S' },
@@ -79,7 +81,7 @@ const ZONES = {
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 },
 };
 
-// Who you were when you deleted it (who the people watching took you for).
+// Who you were when you took your name off (who the people watching took you for).
 const AS = { hoodie: 'kev', jacket: 'boss' };
 
 const INTERACTIONS = {
@@ -110,21 +112,21 @@ const INTERACTIONS = {
       game.events.emit('pc:asked', { x: a.x, y: a.y });
     },
   },
-  delete_review: {
-    on: 'boss_pc', icon: '🗑️', text: 'delete your review', duration: 3.0, sneaky: true, saw: '🖥️', // longer than any glance away
-    can: (p, w) => w.review === 'queued' && w.pc === 'free',
+  strike_name: {
+    on: 'boss_pc', icon: '🗑️', text: 'take your name off the list', duration: 3.0, sneaky: true, saw: '🖥️', // longer than any glance away
+    can: (p, w) => w.list === 'on' && w.pc === 'free',
     done(game, a) {
       const w = game.world;
       const as = AS[game.player.held] ?? 'you';
-      w.review = 'deleted';
-      w.deletedAs = as;
-      burst(game, 'puff', a.x, a.y, 8, { speed: 0.5, lift: 0.8, ttl: 1.0 });
+      w.list = 'off';
+      w.listOffAt = game.clock.minute; // your face drops off his screen (list.js)
+      w.offAs = as;
       if (w.fix === 'asked') { // "Kev" is done: the boss thanks him and takes his chair back
         w.fix = 'done';
         w.pc = 'boss';
         say(game, 'boss', ['😊', '👋'], { voice: 'boss', ttl: 2.5 });
       }
-      game.events.emit('review:deleted', { as });
+      game.events.emit('list:edited', { as, x: a.x, y: a.y });
     },
   },
 };
@@ -168,23 +170,23 @@ const LURES = [
       override: 'watching',
       minutes: 4,
       progress: 'fixProgress',
-      start: { set: { pc: 'free' }, event: 'pc:free' },
+      start: { set: { pc: 'free', glitch: false }, event: 'pc:free' }, // "Kev" at it: it works again
       done: { set: { pc: 'boss', fix: 'done' }, event: 'boss:impatient', says: [{ say: ['😠'] }] },
     },
   },
 ];
 
 export default {
-  id: 'hoodie',
+  id: 'layoffs',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,
   patrols: {},
   cast: CAST,
   day: {
-    start: START, // 3:05 PM; at() times count from it
+    start: START, // 3:00 PM; at() times count from it
     gatherAt: at('3:42', START), // the boss sits down to send it
-    meetingAt: at('3:45', START), // SEND 📧
+    meetingAt: at('3:45', START), // he sends it to HR
     clockRedAt: at('3:40', START),
     clockTickAt: at('3:40', START),
     tockAt: at('3:43', START),
@@ -197,16 +199,18 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'review_chair' },
+  meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'pc_front' }, // fail: called in as it goes
   routes: [
-    { id: 'hoodie', icon: '🧥', achieved: (w) => w.review === 'deleted' && w.deletedAs === 'kev' },
-    { id: 'jacket', icon: '👔', achieved: (w) => w.review === 'deleted' && w.deletedAs !== 'kev' }, // also a plain delete: the gate flags one
+    { id: 'hoodie', icon: '🧥', achieved: (w) => w.list === 'off' && w.offAs === 'kev' },
+    { id: 'jacket', icon: '👔', achieved: (w) => w.list === 'off' && w.offAs !== 'kev' }, // also a plain edit: the gate flags one
   ],
   outcomeOrder: ['hoodie', 'jacket'],
   initialWorld: () => ({
-    review: 'queued', // 'queued' | 'deleted'
-    deletedAs: null, // who did it, to the people watching: 'kev' | 'boss' | 'you'
-    pc: 'boss', // 'boss' (he's at it) | 'free' (nobody at it: he's out, or watching "Kev")
+    list: 'on', // your name on the layoff list: 'on' | 'off'
+    listOffAt: 0, // the game minute it came off (list.js animates it)
+    offAs: null, // who took it off, to the people watching: 'kev' | 'boss' | 'you'
+    glitch: true, // his screen is acting up (static): at 3:00 until Kev fixes it, and again at 3:35 (cast.js)
+    pc: 'boss', // 'boss' (he's at it) | 'kev' (the real Kev fixing it) | 'free' (nobody at it: he's out, or watching "Kev")
     fix: 'none', // 'none' | 'asked' ("Kev" offered) | 'done'
     fixProgress: 0,
     jacket: 'rack', // the boss's jacket: 'rack' | 'player' | 'dropped'

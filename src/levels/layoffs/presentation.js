@@ -1,13 +1,15 @@
-// How Kev's Hoodie looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
+// How The Layoff List looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
 // end-scenes.js, sounds.js and voices.js document the fields).
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
+import { listFeed } from './list.js';
+import { END_SCENES } from './end-scenes.js';
+
+export { END_SCENES };
 
 export const TITLE = {
-  mission: ["3:45 PM. The boss's screen shows your awful review.", 'Delete it before he sends it.'],
-  badge: ['💻', '🗑️'],
+  mission: ["3:00 PM. At 3:45 the boss emails HR the layoff list. You're on it.", 'Get your name off it.'],
+  badge: ['🖥️', '🗑️'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -42,8 +44,8 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
-    // His screen: your review, queued to send (📧), or gone (🗑️).
-    { tile: 'Q', draw: 'icon', state: (w) => ({ icon: w.review === 'queued' ? '📧' : '🗑️', size: 13 }) },
+    // His screen: the layoff list, a row of people, you the red one; static while it acts up (list.js).
+    { tile: 'Q', draw: 'monitor', state: listFeed },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: false }) },
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
   ],
@@ -72,7 +74,10 @@ export const LOOKS = {
 
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'watching', arms: 'shrug' }, // the boss, watching "Kev" at his computer
+    { when: (n, w) => n.id === 'kev' && w.pc === 'kev' && !n.moving, arms: 'type' }, // fixing the boss's computer
+    // The boss, watching Kev (or "Kev") at his computer.
+    { when: (n, w) => n.id === 'boss' && !n.moving && (n.override === 'watching' || w.pc === 'kev'), arms: 'shrug' },
+    { when: (n, w) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving, arms: 'bang' }, // at the static
   ],
   marks: [
     { when: (n, w) => n.id === 'kev' && w.hoodie !== 'kev', jacket: false }, // in his T-shirt
@@ -118,25 +123,12 @@ export const SOUNDS = {
     'jacket:taken': { sfx: 'rustle', who: 'player' },
     'jacket:hung': { sfx: 'swish', who: 'player' },
     'kev:hoodieOff': { sfx: 'rustle', who: 'kev' },
-    'review:deleted': { sfx: 'swish', who: 'player' },
+    'pc:actsUp': { sfx: 'rattle', who: 'boss' },
+    'pc:fixed': { sfx: 'fixed', who: 'kev' },
+    'pc:thumped': { sfx: 'bang', who: 'boss' },
+    'list:edited': { sfx: 'swish', who: 'player' },
     'kev:left': { sfx: 'elevator' },
   },
   drops: { hoodie: 'soft', jacket: 'soft' },
   elevator: { spot: 'elevator', radius: 2.5 },
-};
-
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes.includes('hoodie') ? 'hoodie' : 'jacket') : o?.result ?? 'fail'),
-  scenes: {
-    hoodie: { win: true, icons: ['🔧', '🙏', '😇'], draw: picture('🧥') }, // he thanked "Kev"
-    jacket: { win: true, icons: ['👔', '👋', '😬'], draw: picture('👔') }, // Lin waved at "the boss"
-    fail: { win: false, icons: ['📧', '📉', '😱'], draw: picture('📧') },
-    caught: { win: false, icons: ['👔', '👉', '😠'], draw: picture('📦') },
-    blamed: { win: false, icons: ['🪑', '👉', '🗑️'], draw: picture('🪑') }, // it's gone, and so are you
-  },
 };

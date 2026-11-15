@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Kev's Hoodie (src/levels/meeting/gate.js documents the fields).
+// What the fuzzer and the gate know about The Layoff List (src/levels/meeting/gate.js documents the fields).
 export default {
   mustUse: [{ id: 'disguise', event: 'disguise:fooled' }], // every win passes for someone else
   targets: ['boss_pc', 'coat_rack', 'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'restroom_door'],
@@ -7,13 +7,13 @@ export default {
     'jacket:taken': () => 'jacket',
     'item:pickup': (p) => (p.type === 'hoodie' ? 'hoodie' : null),
     'pc:asked': () => 'asked',
-    'review:deleted': () => 'deleted',
+    'list:edited': () => 'edited',
     'witness:tattle': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['jacket', 'hoodie', 'asked', 'deleted', 'work', 'caught'],
-  keyActions: ['jacket', 'hoodie', 'asked', 'deleted'],
+  binKeys: ['jacket', 'hoodie', 'asked', 'edited', 'work', 'caught'],
+  keyActions: ['jacket', 'hoodie', 'asked', 'edited'],
   goldenPlans: [
     // Raw movement, then the boss's computer while he's at it.
     ['move W 1.5s', 'move N 2s pretend', 'wait 2s', 'goto boss_pc', 'interact', 'wait until 3:45'],

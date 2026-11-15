@@ -8,7 +8,7 @@ import fixtureInspection from './fixture-inspection/index.js';
 import officeTime from './office-time/index.js';
 import holdMusic from './hold-music/index.js';
 import monitor from './monitor/index.js';
-import hoodie from './hoodie/index.js';
+import layoffs from './layoffs/index.js';
 import lightsOut from './lights-out/index.js';
 import audit from './audit/index.js';
 import { validateLevel } from './validate.js';
@@ -22,7 +22,7 @@ export const levels = {
   'office-time': officeTime, // your bus leaves at 4:30
   'hold-music': holdMusic,
   monitor, // design jam batch 1: the camera
-  hoodie, // Kev's Hoodie: disguise
+  layoffs, // The Layoff List: disguise
   'lights-out': lightsOut, // batch 1: darkness
   audit, // The Audit: one laptop counted twice
 };
