@@ -32,7 +32,7 @@
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
 //   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
 //   poses    what the cast is drawn doing: arms rules and marks (looks.js; render characters.js)
-//   cones    what makes a vision cone flare: alert overrides, items an NPC has eyes on (looks.js; render cones.js)
+//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (looks.js; render cones.js)
 //   itemIcons  the emoji for each item type (looks.js; render)
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)

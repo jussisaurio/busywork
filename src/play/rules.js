@@ -92,6 +92,28 @@ function offenceFor(game, s, npc) {
 }
 
 export function updateRules(game, dt) {
+  rulesStep(game, dt);
+  publishWatch(game);
+}
+
+// What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'action' | 'scene' |
+// 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
+// serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
+// a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
+function publishWatch(game) {
+  const watch = {};
+  const s = game.rules;
+  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working) {
+    const p = game.player;
+    for (const npc of game.npcs) {
+      const offence = offenceFor(game, s, npc);
+      if (offence && npcSees(game, npc, p.x, p.y)) watch[npc.id] = offence;
+    }
+  }
+  game.watch = watch;
+}
+
+function rulesStep(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
   const s = game.rules;
   const p = game.player;

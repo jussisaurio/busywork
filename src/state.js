@@ -54,6 +54,7 @@ export function resetLoop(game) {
   game.world = game.level.initialWorld();
   const authority = game.level.roles?.authority;
   game.suspicion = authority ? { [authority.id]: 0 } : {}; // the authority's ❓ meter (play/rules.js), keyed by his id
+  game.watch = {}; // npc id -> the offence he has in sight; play/rules.js publishes it every step, render reads it
   game.caught = null;
   game.outcome = null;
   game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null }; // rules.js only: who saw what, the grudge

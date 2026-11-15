@@ -2,7 +2,7 @@
 // DDA ray cast. Cones flash warmer/redder while that NPC is "noticing" the player.
 import { T, clamp, fin } from './util.js';
 import { CONE_TINT_DEFAULT } from './palette.js';
-import { viewerOf, npcSees } from '../game/perception.js';
+import { viewerOf } from '../game/perception.js';
 
 const RAYS = 56;
 const MAX_STEPS = 64;
@@ -37,8 +37,10 @@ function castRay(map, ox, oy, dx, dy, maxDist) {
 
 const NO_CONES = {};
 
-// 0..1: how hard this NPC is "noticing" the player right now (derived, read-only). The authority's suspicion
-// (game.suspicion, keyed by his id); the level's cones (level.cones: alert overrides, items an NPC has eyes on).
+// 0..1: how hard this NPC is "noticing" the player right now (derived, read-only): caught by him; the authority's
+// suspicion (game.suspicion, keyed by his id); one of the level's alert overrides (level.cones.alert); or something
+// the rules object to in his sight (game.watch, published by play/rules.js every step, so the glow is exactly
+// what the rules react to).
 function noticeLevel(game, npc) {
   let lvl = 0;
   if (game.caught && game.caught.by === npc.id) return 1;
@@ -48,12 +50,7 @@ function noticeLevel(game, npc) {
   }
   const cones = (game.level && game.level.cones) || NO_CONES;
   if (npc.override && cones.alert && cones.alert.includes(npc.override)) lvl = Math.max(lvl, 0.55);
-  const p = game.player;
-  if (p && game.phase === 'day') {
-    const eyes = cones.eyesOn;
-    const risky = (p.action && p.action.sneaky) || (p.held && eyes && Object.hasOwn(eyes, npc.id) && eyes[npc.id] === p.held);
-    if (risky && game.map && npcSees(game, npc, p.x, p.y)) lvl = Math.max(lvl, 0.8);
-  }
+  if (game.watch && Object.hasOwn(game.watch, npc.id)) lvl = Math.max(lvl, 0.8);
   return lvl;
 }
 
