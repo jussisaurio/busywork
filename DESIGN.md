@@ -152,6 +152,10 @@ their desk.
 
 ## Lessons that hold for every level
 These came from playtests of level 1 (details in its `LEVEL.md`).
+- **Every solution would work in a real office.** The game is a comedy about real offices, so a route is only good
+  if a real person would believe it might work. Putting on a coworker's shirt does not make you that coworker, and a
+  boss fooled by it makes the whole game look like it is cheating. Absurd results are welcome; an absurd method is
+  not. Test every route with this question: "would this get past a real, half-awake boss?"
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
 - **Red herrings are welcome; every failure shows its cause.** A thing that leads nowhere stops the player from
