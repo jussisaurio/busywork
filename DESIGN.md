@@ -154,10 +154,11 @@ their desk.
 These came from playtests of level 1 (details in its `LEVEL.md`).
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
-- **Dead ends show themselves at once.** A thing that leads nowhere is welcome: it stops the player from winning by
-  trying everything, and it makes the office feel real. What is out is a false route, a plan that seems to work and
-  fails only at the deadline: in a 2.5-minute loop that costs a whole loop. A toy shows within seconds that it is only
-  a toy (the cup is just a cup), and the best toys teach an NPC rule on the way.
+- **Red herrings are welcome; every failure shows its cause.** A thing that leads nowhere stops the player from
+  winning by trying everything, and it makes the office feel real. A plan may even look right and fail only at the
+  deadline: loops are short, Pretend speeds them up, and working out why is the game. What is out is a failure the
+  player cannot explain from what they saw: the last beat or the end card shows which step broke. The best toys (the
+  cup is just a cup) teach an NPC rule on the way.
 - **The authority catches the crime the level is about.** If the trouble invites a nasty act (moving laptops in an
   audit), the authority seeing you at it ends your day, and a witness telling on you costs you something you can see.
   An act that is nasty in the story but free in the rules reads as broken, not clever.
