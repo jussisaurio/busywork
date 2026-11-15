@@ -460,9 +460,34 @@ try {
   ok(shotWhen(beat) === `landed ${beat.at}, the caught beat` && shotWhen(ended) === `landed ${ended.at}, then the end card`, `shots: the line says which (${shotWhen(beat)}; ${shotWhen(ended)})`);
   let beatErr = null;
   try { renderShot(meeting, { name: 'no-catch', cmds: ['wait 1s'], beat: true }, lib); } catch (e) { beatErr = e.message; }
-  ok(/beat: true, but its commands do not stop at a catch \(nobody caught you\)/.test(beatErr ?? ''), `shots: beat: true with no catch is an error (${beatErr})`);
-  ok(shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: 'yes' }]).some((p) => /beat: true or false/.test(p)) && !shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: true }]).length,
-    'shots: beat must be true or false');
+  ok(/beat: true, but its commands do not stop in a beat \(nobody caught you, and the deadline has not come\)/.test(beatErr ?? ''), `shots: beat: true with no catch and before the deadline is an error (${beatErr})`);
+  // The deadline's beat (END_BEAT, 2 s): a wait after the deadline lands in it. Without beat: true the shot jumped to
+  // the end card, so a beat at the outcome (Weekend Shift's 5:00 redraw) showed only in the replay strips.
+  const ws = getLevel('weekend-shift');
+  const IN_BEAT = ['pretend until 5:00', 'wait 0.5s'];
+  const outCard = renderShot(ws, { name: 'o', cmds: IN_BEAT }, lib);
+  const mid = renderShot(ws, { name: 'o', cmds: IN_BEAT, beat: true }, lib);
+  ok(outCard.phase === 'end' && mid.phase === 'day' && mid.beat === 'outcome' && mid.outcome?.result === 'fail' && mid.beatT > 0 && mid.beatT < 2 && !outCard.png.equals(mid.png),
+    `shots: commands that stop in the deadline's beat draw its end card; with beat: true, the beat itself (${outCard.phase}, ${mid.phase}, ${mid.beatT?.toFixed(2)} s in)`);
+  ok(new RegExp(`^landed ${mid.at}, 0\\.\\d s into the deadline's beat$`).test(shotWhen(mid)), `shots: the line says how far into the deadline's beat (${shotWhen(mid)})`);
+  // A command that starts in the beat runs it out (the player is locked), so beat: <s> runs on into it itself.
+  const BOSS_WS = ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'pretend until 5:00'];
+  const won = renderShot(ws, { name: 'w', cmds: BOSS_WS, beat: 0.8 }, lib);
+  const won2 = renderShot(ws, { name: 'w', cmds: BOSS_WS, beat: 1.5 }, lib);
+  ok(won.phase === 'day' && won.beat === 'outcome' && won.outcome?.result === 'win' && Math.abs(won.beatT - 0.8) < 0.05 && !won.png.equals(won2.png),
+    `shots: beat: 0.8 draws the deadline's beat 0.8 s in, and 1.5 another moment (${won.beatT?.toFixed(2)}, ${won2.beatT?.toFixed(2)})`);
+  const caught2 = renderShot(meeting, { name: 'c', cmds: CAUGHT, beat: 0.3 }, lib);
+  ok(caught2.beat === 'caught' && Math.abs(caught2.beatT - 0.3) < 0.05 && !caught2.png.equals(beat.png), `shots: beat: 0.3 draws the caught beat 0.3 s in (${caught2.beatT?.toFixed(2)})`);
+  let pastErr = null;
+  try { renderShot(ws, { name: 'past', cmds: BOSS_WS, beat: 3 }, lib); } catch (e) { pastErr = e.message; }
+  ok(/beat: 3 is past the end of the deadline's beat/.test(pastErr ?? ''), `shots: seconds past the end of the beat are an error (${pastErr})`);
+  let lateErr = null;
+  try { renderShot(ws, { name: 'late', cmds: ['pretend until 5:00', 'wait 5s'], beat: true }, lib); } catch (e) { lateErr = e.message; }
+  ok(/do not stop in a beat \(the day is already over/.test(lateErr ?? ''), `shots: beat: true after the beat has run out is an error (${lateErr})`);
+  ok(shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: 'yes' }]).some((p) => /beat: true, false or seconds/.test(p))
+    && shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: -1 }]).length === 1
+    && !shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: true }, { name: 'z', cmds: [], intent: 'y', beat: 0.8 }]).length,
+    'shots: beat is true, false or seconds into the beat');
   s = await stageStatus('meeting', 'pictures', { root, lib, shots: TWINS });
   ok(!s.ok && /pixel-identical/.test(s.error ?? ''), 'pictures: a level whose shots repeat cannot be fresh: the status says why');
 

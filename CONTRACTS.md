@@ -684,8 +684,9 @@ exits 2 and lists the registry.
   `tools/test-gate.mjs` tests the verdict logic.
 - **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`
   and prints the game clock each shot landed on next to its intent (the pictures cold read's `intents.md` has it
-  too); two shots that render pixel-identical are an error. A shot whose commands stop at a catch draws its end
-  card, or the caught beat with `beat: true` in `shots.js`. `Ns` in harness commands is real seconds, so
+  too); two shots that render pixel-identical are an error. A shot whose commands stop at a catch or at the deadline
+  draws its end card; `beat: <seconds>` in `shots.js` draws that beat instead, that many seconds in (`beat: true`: a
+  catch's beat 0.8 s in). `Ns` in harness commands is real seconds, so
   `pretend 5s` lands about 18 game minutes on: time a shot with `pretend until 3:20` or `pretend 2m`, then
   `wait Ns` (`docs/COLD-READ.md`). `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--verbs` draws a verb sheet per
   item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,

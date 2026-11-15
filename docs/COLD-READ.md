@@ -194,7 +194,7 @@ The funniest moment, described as a picture.
 ## shots.js (in every level folder)
 ```js
 // Each shot: harness commands from the start of the day, and what the picture must tell a first-time player.
-// Optional: beat: true, to draw the caught beat, not its end card, when the commands stop at a catch.
+// Optional: beat: true or seconds, to draw the beat of a catch or of the deadline, not its end card.
 export default [
   { name: 'start', cmds: [], intent: 'Your desk, the boss behind glass, the clock on the wall.' },
   { name: 'kev-fixes', cmds: ['pretend until 3:06'], intent: 'Kev types at the boss\'s computer while the boss watches.' },
@@ -206,8 +206,15 @@ export default [
 - A shot whose commands end the day draws the end card as it looks 2 seconds after it comes up. That includes
   commands that stop at a catch: the harness's next command would run the caught beat out to the end of the day, so
   no command lands in it. To draw the caught beat itself (whoever caught you, the alert up, 0.8 seconds in, before
-  the end card), give the shot `beat: true`: `{ name: 'caught', cmds: [...], beat: true, intent: '...' }`. A shot with
-  `beat: true` whose commands do not stop at a catch is an error.
+  the end card), give the shot `beat: true`: `{ name: 'caught', cmds: [...], beat: true, intent: '...' }`.
+- The deadline's outcome has a beat of its own too: about 2 seconds of the room reacting, then the end card. No
+  command can stop in it either: the player is locked, so a command that starts in a beat runs it out. Give the shot
+  `beat: <seconds>`: the shot runs on from where its commands stopped, into the beat that is up or comes up next
+  (within 2 seconds), and draws it that many seconds in: `{ name: 'redraw', cmds: ['pretend until 5:00'], beat:
+  0.8, intent: '...' }`. The clock line then says how far in (`landed 5:00 PM, 0.8 s into the deadline's beat`).
+  `beat: <seconds>` works for a catch's beat too (1.6 seconds long); `beat: true` there means 0.8 seconds in.
+- A shot with a `beat` whose commands neither stop in a beat nor reach one within 2 seconds is an error, and so are
+  seconds past the end of the beat.
 - Each shot reports the game clock its commands landed on, next to its intent: `node tools/shots.mjs --level <id>`
   prints it, and the comparer's `intents.md` has it on each line (`05.png (kev-fixes, landed 3:06 PM): ...`). An
   intent is a builder's words about a moment; the clock says which moment was drawn. The comparer marks a shot whose
