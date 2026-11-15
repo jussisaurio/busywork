@@ -24,6 +24,6 @@ export default {
     // Holding the cake at your desk when Gus comes back.
     ['pretend until 2:44', 'goto cake_stand pretend', 'interact', 'goto my_seat pretend', 'interact', 'wait until 3:00'],
     // Several loops: restart mid-day, a full day, continue into the next one.
-    ['goto microwave pretend', 'interact', 'restart', 'pretend until 2:44', 'goto cake_stand pretend', 'interact', 'interact', 'goto party pretend', 'pretend until 3:00', 'continue', 'move S 1s', 'wait 2s'],
+    ['goto microwave pretend', 'interact', 'restart', 'pretend until 2:44', 'goto cake_stand pretend', 'interact', 'eat', 'goto party pretend', 'pretend until 3:00', 'continue', 'move S 1s', 'wait 2s'],
   ],
 };

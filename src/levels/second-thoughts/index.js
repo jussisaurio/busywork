@@ -181,7 +181,7 @@ const ITEMS = {
     draw: letter, // the envelope (things.js), wherever it is held or lies
     place: 'letter',
     contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: back in his pocket
-    edible: true, // eat your words
+    edible: { leaves: null }, // eat your words
   },
   coffee: COFFEE_CUP,
 };

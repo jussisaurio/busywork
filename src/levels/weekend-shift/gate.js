@@ -24,7 +24,7 @@ export default {
     // The teaching fail: writing before the ding, with everyone still facing the board.
     ['goto microwave pretend', 'interact', 'goto roster pretend', 'interact', 'pretend until 5:00'],
     // The playtester's day: noodles, Lin's fish, the copier, Kev's desk; the board still shows your face.
-    ['goto microwave pretend', 'interact', 'pretend until 4:35', 'goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 5:00'],
+    ['goto microwave pretend', 'interact', 'pretend until 4:38', 'goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 5:00'],
     // The mirror fail: the board while the copier beeps.
     ['goto copier pretend', 'interact', 'goto roster pretend', 'interact', 'pretend until 5:00'],
     // The ding, written twice: Kev's face on the board, his groan at the reading, and his Saturday.

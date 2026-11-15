@@ -25,21 +25,26 @@
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
-//               noise.at (optional) a spot; no `icon` (*: the target lights up with the E key cap instead)
+//               noise.at (optional) a spot or an { x, y } on the map; no `icon` (*: the target lights up with the E key cap instead);
+//               a 'self' row's preview one of render/characters.js ARM_POSES (the player's pose while it is what E
+//               would do: nothing else shows it), its hold (optional) a boolean
 //   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
 //               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
 //               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
-//               cast ids; put seconds; keep a boolean; disguise { as (a cast id), look? (an object of look
+//               cast ids; put seconds; keep and bulky booleans; edible { leaves } with leaves a config.js MARKS name
+//               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
-//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
-//   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
+//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
+//               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
+//   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
 //               icon or a list, its absent true or false; a count check a whole count >= 1 with a non-empty spots
 //               list or a zone (then a from); its look a number, its record (on an item or count check) a field of
-//               initialWorld(); a noise is not 'noise' or 'npc:heard'
+//               initialWorld(); a noise is not 'noise' or 'npc:heard'; a fetch has an override, a plan and a
+//               caught time >= 0 (if any)
 //   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
 //               torch { when(), fov, radius }; controls a list of { tile (a legend letter on the map), kind (one of
 //               game/darkness.js CONTROL_KINDS), on() } (src/game/darkness.js)
@@ -69,12 +74,13 @@
 // for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
 // icon rows) is never checked.
 import { parseMap } from '../core/map.js';
-import { DAY_CUES } from '../config.js';
+import { DAY_CUES, MARKS } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
 import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 import { THINGS } from '../render/things.js';
+import { ARM_POSES } from '../render/characters.js';
 import { isLegacyLevel } from './legacy.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
 
@@ -166,6 +172,11 @@ export function levelProblems(level, key) {
     }
   }
   const inMap = (x, y) => !map || (x >= 0 && y >= 0 && x < map.w && y < map.h);
+  // A noise's `at`: a spot, or a point { x, y } (tile units) anywhere on the map (sim/mechanics/attention.js).
+  const noiseAt = (path, at) => {
+    if (!isObj(at)) spot(path, at);
+    else if (!isNum(at.x) || !isNum(at.y) || !inMap(at.x, at.y)) bad(path, 'not a spot or an { x, y } on the map');
+  };
   const interTypes = new Set((map?.interactables ?? []).map((i) => i.type));
   const interIds = new Set((map?.interactables ?? []).map((i) => i.id));
 
@@ -272,9 +283,13 @@ export function levelProblems(level, key) {
       const path = `interactions.${verb}`;
       if (!isObj(row)) { bad(path, 'not an object'); continue; }
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
-      if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
+      if (row.noise?.at !== undefined) noiseAt(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
       if (drawn && row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
+      if (row.on === 'self') {
+        if (!ARM_POSES.includes(row.preview)) bad(`${path}.preview`, `${row.preview === undefined ? 'missing' : `no arm pose ${q(row.preview)}`}: the pose that shows what E does to what you hold (one of ${ARM_POSES.join(', ')})`);
+        if (row.hold !== undefined && typeof row.hold !== 'boolean') bad(`${path}.hold`, 'not true or false (true: holding E does it, a tap does the others)');
+      }
     }
   }
   if (level.items !== undefined && !isObj(level.items)) bad('items', 'not an object');
@@ -297,6 +312,12 @@ export function levelProblems(level, key) {
     }
     if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
     if (it.keep !== undefined && typeof it.keep !== 'boolean') bad(`items.${type}.keep`, 'not true or false (true: it leaves your hand only by a put)');
+    if (it.bulky !== undefined && typeof it.bulky !== 'boolean') bad(`items.${type}.bulky`, 'not true or false (true: no pretending while you hold it)');
+    if (it.edible !== undefined) {
+      const marks = Object.keys(MARKS).map(q).join(', ');
+      if (!isObj(it.edible) || !('leaves' in it.edible)) bad(`items.${type}.edible`, `not { leaves }: say what eating leaves on you (${marks}, or null for nothing)`);
+      else if (it.edible.leaves !== null && !Object.hasOwn(MARKS, it.edible.leaves)) bad(`items.${type}.edible.leaves`, `no mark ${q(it.edible.leaves)} (config.js MARKS: ${marks}; or null for nothing)`);
+    }
   }
   const roles = level.roles;
   if (roles !== undefined) {
@@ -305,6 +326,8 @@ export function levelProblems(level, key) {
       if (roles.authority) {
         npc('roles.authority.id', roles.authority.id);
         if (roles.authority.deafIn != null) zone('roles.authority.deafIn', roles.authority.deafIn);
+        const tt = roles.authority.tattle;
+        if (tt !== undefined && tt !== 'work' && tt !== 'caught' && !isFn(tt)) bad('roles.authority.tattle', "not 'work', 'caught' or a function (what a heard tattle costs)");
       }
       if (roles.evidence) npc('roles.evidence.by', roles.evidence.by);
       if (roles.scene) {
@@ -328,6 +351,12 @@ export function levelProblems(level, key) {
     spot(`doors[${i}].spot`, d?.spot);
     zone(`doors[${i}].zone`, d?.zone);
     for (const [k, id] of list(`doors[${i}].npcs`, d?.npcs).entries()) npc(`doors[${i}].npcs[${k}]`, id);
+  }
+  for (const [i, f] of (level.fetches ?? []).entries()) {
+    itemTypes(`fetches[${i}].item`, f?.item);
+    for (const [k, id] of list(`fetches[${i}].npcs`, f?.npcs).entries()) npc(`fetches[${i}].npcs[${k}]`, id);
+    if (!isStr(f?.override) || !isStr(f?.plan)) bad(`fetches[${i}]`, 'needs an override and a plan (strings)');
+    if (f?.caught !== undefined && !(isNum(f.caught) && f.caught >= 0)) bad(`fetches[${i}].caught`, 'not a time in seconds');
   }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
@@ -371,7 +400,7 @@ export function levelProblems(level, key) {
     for (const [name, n] of Object.entries(level.noises)) {
       const path = `noises[${q(name)}]`;
       if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
-      spot(`${path}.at`, n?.at);
+      noiseAt(`${path}.at`, n?.at);
       for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
       noiseTiming(path, n);
     }

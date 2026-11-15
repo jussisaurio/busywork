@@ -111,6 +111,7 @@ export function createNpc(game, def, now = 0) {
     _craveT: undefined, // s to the next daydream about what he wants (want/crave)
     _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
     _inspected: undefined, // ...and the ones he has started today
+    _fetch: undefined, // a found item he holds: { t: loopTime he picked it up } (mechanics/fetch.js)
   };
   // The fields the level's hooks keep (a behaviour's `state`). Every field an NPC will ever get is on it from the
   // start: NPCs that differ in shape make every NPC field read in the sim slow.
@@ -157,6 +158,7 @@ function updateNpc(game, npc, dt, now) {
   updateFacing(npc, dt);
   updateGlance(npc, dt);
   tickAttention(npc, dt);
+  npc.heeding = !!(npc._heard || npc._stare); // render: something holds his eyes (a seated NPC stops typing)
   const m = mechanicOf(game, npc);
   npc.label = (m && m.kind.label?.(game, npc, m.data)) ?? npc._plan.label;
   npc.anim = npc._plan.anim;

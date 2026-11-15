@@ -1,9 +1,10 @@
 // Early Bus's three people (level 1's cast.js documents the schedule fields). Every time below is what the
-// person BELIEVES it is: his home clock (clocks.js). He looks up at it on each schedule entry and on each of his
-// LOOK_UPS (silent beats: a glance at the clock with nothing else to do).
+// person BELIEVES it is: the clock of the zone he stands in (clocks.js). He looks up at it on each schedule entry
+// and on each of his LOOK_UPS (silent beats: a glance at the clock with nothing else to do).
 //
-// The normal day: the boss is back from lunch at 3:15, smokes 3:40-3:55 and leaves at 4:50 sharp. Nobody leaves
-// before him: Lin and Kev wave and go at 4:51 by their clock, right after him. Your bus is at 4:30.
+// The normal day: the boss is back from lunch at 3:15, has a coffee in the kitchen 3:40-3:55 (walking back under the
+// open-plan clock), and at 4:50 sharp takes his coat off the rack and goes home. Nobody leaves before him: at their
+// 4:50 Lin and Kev stand up, look at his coat, and go only once it has gone with him. Your bus is at 4:30.
 import { at, deg } from '../../config.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -19,12 +20,11 @@ export const CAST = [
     vision: { fov: deg(100), radius: 8 },
     coneTint: [255, 160, 82],
     schedule: [
-      s('3:00', { do: 'away', spot: 'elevator' }), // a long lunch
-      s('3:15', { do: 'sit', spot: 'boss_desk', arrive: 'lookUp' }), // first thing back: what time is it?
-      s('3:40', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
-      s('3:55', { do: 'sit', spot: 'boss_desk', arrive: 'lookUp' }),
-      s('4:48', { do: 'say', icons: ['👋'], kind: 'speech' }),
-      s('4:50', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { bossGone: true }, event: 'boss:left' } }),
+      s('3:00', { do: 'away', spot: 'street_end' }), // a long lunch
+      s('3:15', { do: 'sit', spot: 'boss_desk', prelude: ['fixQ', 'fixO'], arrive: 'lookUp' }), // back: what time is it?
+      s('3:40', { do: 'visit', spot: 'coffee', prelude: ['fixQ', 'fixO'], arrive: 'pour' }), // his break: a cup in the kitchen
+      s('3:55', { do: 'sit', spot: 'boss_desk', prelude: ['fixO', 'passO', 'fixQ'], arrive: 'lookUp' }), // back under O
+      s('4:50', { do: 'leave', spot: 'street_end', prelude: 'coat', anim: 'leaving', gone: { set: { bossGone: true }, event: 'boss:left' } }),
     ],
   },
   {
@@ -33,14 +33,15 @@ export const CAST = [
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
-    vision: { fov: deg(100), radius: 9 }, // sharp eyes: through the glass to the boss's clock
+    vision: { fov: deg(100), radius: 9 }, // sharp eyes: through the glass to the boss's clock (and his coat)
     coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
       s('3:20', { do: 'away', spot: 'restroom' }),
       s('3:30', { do: 'sit', spot: 'lin_desk', arrive: 'lookUp' }),
-      s('4:50', { do: 'say', icons: ['👋'], kind: 'speech' }), // he has gone: home time
-      s('4:51', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { linGone: true }, event: 'lin:left' } }),
+      s('4:50', { do: 'visit', spot: 'lin_desk', arrive: 'coatCheck' }), // up: is his coat still on the rack?
+      s('4:51', { do: 'say', icons: ['👋'], kind: 'speech' }),
+      s('4:52', { do: 'leave', spot: 'street_end', anim: 'leaving', gone: { set: { linGone: true }, event: 'lin:left' } }),
     ],
   },
   {
@@ -53,19 +54,20 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
-      s('3:01', { do: 'visit', spot: 'coffee' }),
+      s('3:01', { do: 'visit', spot: 'coffee', arrive: 'pour' }),
       s('3:07', { do: 'sit', spot: 'kev_desk', arrive: 'lookUp' }),
-      s('3:35', { do: 'visit', spot: 'coffee' }),
-      s('3:41', { do: 'sit', spot: 'kev_desk', arrive: 'lookUp' }),
-      s('4:50', { do: 'say', icons: ['👋'], kind: 'speech' }),
-      s('4:51', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { kevGone: true }, event: 'kev:left' } }),
+      s('3:25', { do: 'visit', spot: 'coffee', arrive: 'pour' }), // done before the boss's break
+      s('3:31', { do: 'sit', spot: 'kev_desk', arrive: 'lookUp' }),
+      s('4:50', { do: 'visit', spot: 'kev_desk', arrive: 'coatCheck' }),
+      s('4:51', { do: 'say', icons: ['👋'], kind: 'speech' }),
+      s('4:52', { do: 'leave', spot: 'street_end', anim: 'leaving', gone: { set: { kevGone: true }, event: 'kev:left' } }),
     ],
   },
 ];
 
 // Extra look-up beats (believed times), so each person checks his clock every quarter hour or so.
 export const LOOK_UPS = {
-  boss: [at('3:30', START), at('3:38', START), at('4:10', START), at('4:25', START)],
+  boss: [at('3:30', START), at('4:10', START), at('4:25', START)],
   lin: [at('3:12', START), at('3:50', START), at('4:10', START), at('4:25', START)],
   kev: [at('3:20', START), at('3:55', START), at('4:10', START), at('4:25', START)],
 };

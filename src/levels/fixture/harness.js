@@ -31,8 +31,6 @@ export default {
     : o.result === 'blamed' ? `BLAMED 🪑👉 (no song, via ${o.routes.join(' + ')}, but you skipped your own party)`
     : 'FAIL: the whole office sang Happy Birthday to you 🎶😅'),
 
-  playerText: (game) => (game.player.smeared ? ['frosting on your chin'] : []),
-
   statusText: (game) => (game.suspicion.doreen > 0 ? [`a ❓ meter over Doreen's head: ${Math.round(game.suspicion.doreen * 100)}%`] : []),
 
   npcText(game, n) {

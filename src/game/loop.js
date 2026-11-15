@@ -33,7 +33,21 @@ export function advanceClock(game, dt) {
   game.loopTime += dt;
 }
 
-// Ticks per real-time frame: fast-forward while pretending, faster still during forced work.
+// Ticks per real-time frame: fast-forward while pretending, faster still during forced work at the desk (not
+// while you walk there: game.rules.sent).
 export function frameMult(game) {
-  return (game.clock.forced > 0 ? FORCED_MULT : game.clock.ff ? FF_MULT : 1) * game.debug.speed;
+  const typing = game.clock.forced > 0 && !game.rules?.sent;
+  return (typing ? FORCED_MULT : game.clock.ff ? FF_MULT : 1) * game.debug.speed;
+}
+
+// One real-time frame of the day (main.js and the harness): frameMult(game) ticks, fewer if the day ends or forced
+// work runs out meanwhile. Forced work ends on a frame's last tick, so what follows (work:done, the end beat) starts
+// on a fresh frame at its own speed.
+export function runFrame(game, dt) {
+  const mult = frameMult(game);
+  const forced = game.clock.forced > 0;
+  for (let i = 0; i < mult && game.phase === 'day'; i++) {
+    tick(game, dt);
+    if (forced && !(game.clock.forced > 0)) break;
+  }
 }

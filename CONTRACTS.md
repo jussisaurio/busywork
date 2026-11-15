@@ -19,14 +19,15 @@ change in order changes the digest. These are the usual ways to break it:
   (a leading underscore).
 - **Event names and payloads are digested.** Rename nothing once recorded.
 - **Tick order:** `updatePlayer → updateInteractions → updateNpcs → updateRules → updateScenario → advanceClock`.
-  Mechanics run in check order: lures, hunts, doors, spot owners (put down), inspections, each list in level order.
+  Mechanics run in check order: lures, hunts, doors, spot owners (put down), inspections, fetches, each list in
+  level order.
 - **The harness paths with BFS.** A* would change every path.
 - **No wall-clock time, no `Math.random` in gameplay.** No `Date`, no `performance.now`. Only `input.js` reads
   real time (press expiry). `Math.random` is for visual-only things (particles, wobble).
 - **Schedules are sorted by `at`.** The sim takes the latest entry whose time has passed.
 
 ## Conventions
-- Vanilla JS ES modules, no dependencies, no build step. Serve with `python3 -m http.server` from the repo root.
+- Vanilla JS ES modules, no dependencies, no build step. Serve with `node tools/serve.mjs` (port 8642, caching off, so a plain reload runs the files on disk).
   Node 22 runs the headless tests (`node tools/test-*.mjs`).
 - **No DOM access at module import time.** Only `createInput(window)`, `createRenderer(canvas)`, `createAudio()` and
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
@@ -54,13 +55,18 @@ change in order changes the digest. These are the usual ways to break it:
 | level author | one folder `src/levels/<id>/` (its goldens are written by the tools), plus one line in `src/levels/index.js` |
 
 ## Engine modules (read these, don't edit)
-- `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion), `SEED`,
+- `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion, the witness's
+  `NOTICE` and `DOUBLE_TAKE`), `SEED`,
   `DAY_START`, `at()`, `formatClock()`, `clockArg()`, `dayCue()`, `DAY_CUES`, `deg()`.
 - `src/core/map.js`: `parseMap(rows, legend)` returns `{ w, h, rows, defs, char(x,y), tile(x,y), isSolid, isOpaque,
   isWalkable(x,y,who), interactables[], find(c) }`. `isWalkable(x,y,'npc')` also passes `npcPassable` tiles.
 - `src/core/vision.js`: `canSee(map, viewer, tx, ty)`, `inCone`, `hasLineOfSight`, `angleDiff`, `DIRS`.
 - `src/core/fx.js`: `say(game, owner, icons, {kind, ttl, voice})`, `burst(game, kind, x, y, n, opts)`, `shake(game, amount, t)`,
-  `sightline(game, from, kind='notice', ttl=0.8)` (a dashed line from an NPC to the player: 'notice' ❓ | 'tattle' ❗👉 | 'caught').
+  `sightline(game, from, kind='notice', ttl=0.8, via, to='player')` (a dashed line from an NPC to the player, or to
+  the NPC `to`: 'notice' ❓ | 'tattle' ❗👉 | 'caught' | 'relay', a witness's shout reaching the authority |
+  'order', his order to your desk), `ripple(game, x, y, radius, opts)` (a burst at the source, rings out to
+  `radius`; ttl default `max(1, radius / 12)` s), `turned(game, id, from, x, y, ttl)` (a head swung from `from` to a
+  noise: render draws the arc).
   **Use `say()` for every speech, thought or alert bubble.** It also emits `'say'` for audio. Without a `voice`
   it uses the owner's id as the voice name.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
@@ -70,7 +76,8 @@ change in order changes the digest. These are the usual ways to break it:
 - `src/game/perception.js`: `viewerOf(npc)`, `npcSees(game, npc, x, y)`, `witnesses(game, x, y)`, `spotPos(game, name)`
   (throws on an unknown spot), `inZone(game, name, x, y)` (false for an unknown zone), `findNpc(game, id)`.
 - `src/state.js`: `createGame({ events, input, level })` and `resetLoop(game)`. They build the state below.
-- `src/game/loop.js`: `startLoop(game)`, `tick(game, dt)`, `advanceClock`, `frameMult`. The sim step order; the
+- `src/game/loop.js`: `startLoop(game)`, `tick(game, dt)`, `advanceClock`, `frameMult`, `runFrame(game, dt)` (one
+  real-time frame: `frameMult` ticks, ending early when the day or the forced work ends). The sim step order; the
   harness uses it too.
 - `src/sim/override.js`: override plumbing shared by the sim, its mechanics and level hooks (`setOverride`,
   `endOverride`, `holdFor`, `speak`, `applyEffect`, `spotLeg`).
@@ -107,7 +114,7 @@ Examples used below:
 | `interactions` | yes (`{}` is fine) | `play/interactions.js` | fixture `INTERACTIONS` |
 | `items` | no | interactions, rules, render | fixture `ITEMS` |
 | `roles` | no | rules | fixture `ROLES` |
-| `lures`, `hunts`, `doors`, `inspections` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection |
+| `lures`, `hunts`, `doors`, `inspections`, `fetches` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection, discreet-packaging `FETCHES` |
 | `noises` | no | `mechanics/attention.js` | (none yet) |
 | `behaviours` | if the cast names a hook | sim | `fixture/cast.js` `BEHAVIOURS` |
 | `failSign` | no | scenario | meeting `index.js` |
@@ -191,10 +198,12 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     interrupted. Away NPCs are included.
   - `meetingAt`: the outcome (`play/scenario.js`): no route achieved is `'fail'`; a route and you in zone
     `meeting.room` is `'win'`; a route and you elsewhere is `'blamed'`. A catch before this ends the day `'caught'`.
-  - Cosmetic cues, all optional. Each defaults to a few minutes before `meetingAt` (config.js `dayCue`):
+  - Cosmetic cues, all optional. Each defaults to `meetingAt` or a few minutes before (config.js `dayCue`):
     `clockRedAt` (HUD clock turns red; −5), `clockTickAt` (wall clock starts ticking; with `clockRedAt`),
     `tockAt` (tick-tock; −2), `halfMinuteAt` (a tick every half minute; −1), `beamAt` (the projector beam in
-    level 1's `decor.js`; −5). Read a cue with `dayCue(day, name)`, not `day[name]`.
+    level 1's `decor.js`; −5), `deadlineAt` (the time on the `'#clock'` face of the mission panel and the title
+    screen; `meetingAt`). Read a cue with `dayCue(day, name)`, not `day[name]`. Once the outcome is set the HUD
+    clock shows its minute, as the end card does.
 - `meeting`: `{ override, room, chair, presenter }`. `override` is the NPCs' override name at the meeting;
   `room` the zone you must be in at `meetingAt`; `chair` the spot the room stares at when you are blamed;
   `presenter` the spot a failed meeting puts you at. The event `meeting:gather` and the cancel reason `'meeting'`
@@ -214,10 +223,15 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   edible item, then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's. For one
   target the first row whose `can` holds wins; the nearest target wins; `'self'` rows apply only when nothing else
   does.
+- Of the `'self'` rows, a tap of E does the first possible one without `hold` (a level's own, else `drop`). Holding
+  E for `HOLD_TIME` (0.35 s) while standing still does the first possible `hold: true` row (`eat_<type>`); moving
+  starts the hold over. So eating never takes the drop key. With no tap row (an item with `keep`), a tap eats.
 
 | Row field | Meaning |
 |---|---|
 | `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
+| `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`). The validator refuses a `'self'` row without one |
+| `hold` | `'self'` rows: `true` = holding E does it, a tap does the others |
 | `text` | the harness's words for it. A player sees the target light up with the E key cap |
 | `icon` | legacy levels only (`src/levels/legacy.js`): the hint over the target. The validator refuses it elsewhere |
 | `duration` | real seconds; `instant: true` instead does it at once (never seen in progress) |
@@ -229,20 +243,24 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
-- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner? } }`.
+- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner?, keep?, bulky? } }`.
   - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
   - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
     and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
   - `tint`: a colour, or `'owner'` (the owner's `look.body`; needs an `owner`). The painter gets it as `opts.tint`.
   - `place`: the `world` field that says where it is: `'player'` held, `'dropped'`, `'eaten'`, a spot name, or a
     cast id.
-  - `edible`: the engine offers `eat_<type>` (sneaky to its owner, `idle`, sets `player.smeared`, event
-    `<type>:eaten`).
+  - `edible`: `{ leaves }` (required, no default): the engine offers `eat_<type>` (a hold row; sneaky to its owner;
+    `idle`; event `<type>:eaten`). `leaves`: what eating leaves on you, a `config.js` `MARKS` name (the renderer
+    paints its colours on the player's front, the harness says its `words`) stored in `player.smeared`, or `null`
+    for nothing. The validator refuses an edible item that doesn't say.
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
     sees it on the floor (`<type>:recovered`). Needs a `place`.
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
     `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
     (default: he carries it, `<type>:confiscated {by}`).
+  - `bulky`: it fills your arms: no pretending (the busy button does nothing) while you hold it, so you can't
+    hide it behind a folder or a phone call.
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
 
 **Things** (DESIGN.md "Visual language": the world is drawn). A thing is an object drawn in the world by a painter
@@ -263,8 +281,11 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
 - `authority`: `{ id, offDuty?, helpless?, deafIn? }`. His sighting of a sneaky action, or of his contraband in
   your hands, means caught. He owns the suspicion meter (`game.suspicion[id]`) and assigns work. `offDuty`: his
   overrides during which he enforces nothing. `helpless`: overrides during which he can't act even on what he
-  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `roles` and `authority` are optional. Without
-  an authority nobody assigns work and only an inspection can catch you.
+  sees. `deafIn`: a zone where he can't hear a shout (or a noise). `tattle`: what a tattle he hears costs:
+  `'work'` (default: he sends you to your desk), `'caught'` (reason: the witness's), or a hook
+  `(game, { by, reason })` (he walks over and checks, say). The witness's shout runs to him first in every case
+  (a `'relay'` line). `roles` and `authority` are optional. Without an authority nobody assigns work and only an
+  inspection can catch you.
 - `evidence`: `{ by, while, mark, knows, icon }`. A player field (`mark`) that pretending doesn't hide. The witness
   `by`, in override `while` (one value), reads it as guilt; telling sets `world[knows]`. Reason `'evidence'`.
 - `scene`: `{ by, while, zone, door, radius?, fresh(world), icon }`. While `by` is in one of the `while`
@@ -312,10 +333,22 @@ then? }`, with `then` one of `'caught'` (reason `'inspection'`, by him), `'stare
 (`arrive(game, npc, sim, { index })`), or none. He starts only when on the floor with no override; never after
 the gather; once a loop. A lure drops it; the gather lets him finish. Example: fixture-inspection.
 
+**Fetch** (`level.fetches`, `fetch.js`): whoever sees a certain item lying loose on the floor walks over and
+picks it up. `{ item, npcs, override, plan, label, react: { wait, says?, event? }, found: { says?, event?, set? },
+caught?, reason? }`. He goes for it when on the floor with no override but the meeting's, on seeing it with his
+own eyes or on a screen he watches; he gives up if it is gone before he gets there. On pickup he carries it
+(`world[place]` = his id if the item has a place), then `found`. With `caught`, the rules catch the player
+`caught` s later (reason `reason`, default `'found'`, by him). `npc._fetch = { t }` while he holds it; an owner's
+`reclaim` may set it to start the same clock. Example: discreet-packaging `FETCHES` (the pink parcel).
+
 **Attention** (`attention.js`): a noise turns heads. Two sources: an interaction row's `noise: { radius, at?,
-npcs? }` (at spot `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
-(whenever that event fires; not `noise` or `npc:heard`). Everyone within `radius` (straight line; walls don't
+npcs? }` (at `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
+(whenever that event fires; not `noise` or `npc:heard`). `at` is a spot, or a point `{ x, y }` in tile units
+anywhere on the map, a desk or a wall too (a phone rings from the phone). Everyone within `radius` (straight line; walls don't
 stop sound), active and not gone, faces it for 1.5 s; a second noise retargets him. `npcs` limits who hears it.
+`ripple` (true or `ripple()` opts) draws it; at a spot named after a machine (an interactable whose type or id is
+`at`, within 1.6 tiles) the rings start on the machine (`makeNoise`'s `from`). Every head it turns shows the swing
+(`fx.turned`), ripple or not.
 The authority hears nothing in his `deafIn` zone. With no override he turns his body and waits; in any
 override only his head turns and his plan goes on. Glances due meanwhile still draw from the rng. Events
 `noise {x, y, radius}`, then `npc:heard {id}` per listener in cast order. Example: fixture-attention (the printer).
@@ -353,7 +386,9 @@ Render and audio read these; the sim never does. All optional except `title`.
   anyone telling on you or catching you.
 - `cones`: `{ alert: [override] }`: overrides during which a cone glows red. A cone also glows while its NPC sees
   something the rules react to (`game.watch`) and when he catches you; the authority's also while his suspicion
-  is above 0.
+  is above 0. Every cone is drawn as plainly as the authority's; its edge firms up while he has you in sight.
+- A seated NPC with no `arms` pose types (keystroke ticks, silent, no paper flurry) unless he is in an override,
+  on a schedule `anim`, `heeding` a noise or a stare, or glancing 0.3 rad or more aside.
 - `endScenes`: `{ kindOf(outcome), scenes: { [kind]: { win, icons, draw(ctx, game, t, e, outcome) } } }`.
   `kindOf` must map every outcome to a scene. Absent: `render/screens.js` `DEFAULT_END_SCENES`, a plain scene per
   result. `draw` paints a scene: people, furniture and things (`drawThing`, the level's painters), never an emoji
@@ -429,7 +464,7 @@ game = {
   input,                      // set by main.js (see Input)
 
   // --- per loop (rebuilt by resetLoop) ---
-  fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player', kind, age, ttl }]
+  fx: { bubbles, particles, shake, lines, ripples, turns },   // lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]
   loopTime: 0,                // real (sim) seconds since loop start
   paused: false,              // main.js only: nothing ticks while true
   clock: { minute: 0, ff: false, forced: 0 },
@@ -443,10 +478,12 @@ game = {
     busy: false,              // pretend button held (and allowed)
     busyPose: null,           // null | 'typing' | 'folder' | 'phone'
     seated: true,             // at own desk (snapped to spot player_desk)
-    smeared: false,           // ate an edible item; a role's evidence `mark` can name it
+    smeared: false,           // false | the MARKS name eating left on you; a role's evidence `mark` can name it
     action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle, x, y, item }
     locked: false,            // can't move or act (forced work, caught, end beat)
     focus: null,              // null | { kind: 'interactable'|'item'|'self'|'spot', id, x, y, icon, action, item }
+                              //   'self' adds preview, hold (the verb holding E does), holdPreview
+    hold: null,               // null | { verb, t }: E down on a 'self' focus with a hold verb (decided on release / HOLD_TIME)
   },
   npcs: [],                   // createNpcs(game), in cast order. See NPC shape.
   world: {                    // level.initialWorld(): the level's own fields, plus
@@ -456,10 +493,15 @@ game = {
   watch: {},                  // { [npcId]: 'action'|'scene'|'evidence'|'contraband' }: what each NPC sees that the
                               // rules react to, after each step (rules.js; render/cones.js reads it). Empty while
                               // caught, after the outcome and during assigned work.
-  caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection', t }
+  caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection'|
+                              //   a fetch's reason, t, via } (via: the camera id he saw you on, or null)
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute }
-  rules: { seen, lastNotice, working, sceneTold, grudge },   // private to rules.js
-  scenario: { beatT, crickets },                              // private to scenario.js (the end beat)
+  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, workFrom },   // rules.js and player.js; render reads
+      // sent: null | { t, by, auth, look, said, walk, stackAt }: sent to your desk and not there yet (look: whom the
+      //   authority faces, null | witness id | 'player'; stackAt: loopTime the paper stack landed on your desk).
+      // workFrom: clock.forced when you sat down (the stack's full height).
+  scenario: { beatT, crickets, walk, arrivedAt, endAt },      // private to scenario.js (the end beat; walk: where it
+                                                              // makes you go, to the front or your desk)
 }
 ```
 
@@ -480,6 +522,7 @@ game = {
                              // every ~6 s unless busy at a lure's job; cleared when he gets it
   label: '',                 // debug string of the current activity
   anim: null,                // null | the current schedule entry's `anim` (none under an override)
+  heeding: false,            // render only: a noise or a stare holds his eyes (a seated NPC stops typing)
   rng,                       // per-NPC (see the traps)
 }
 ```
@@ -519,19 +562,28 @@ game = {
   - Evidence and scene (roles): the same shout and tattle, with reason `'evidence'` or `'scene'`.
   - Owners take their thing back on sight (unless you pretend), while `when` holds. Carrying it is reason
     `'contraband'`: his `says`, no tattle.
-  - Work: `clock.forced = WORK_PENALTY_MIN` (20), you are snapped to your desk typing, held items drop, events
+  - Work: `clock.forced = WORK_PENALTY_MIN` (20) from the order, held items drop, events
     `<authority>:workAssigned {reason}` and later `work:done`. A running action is cancelled `'idle'` (sent for
-    slacking) or `'witnessed'` (a tattle).
+    slacking) or `'witnessed'` (a tattle). Then `player.js` plays it out (`rules.sent`): told on, he looks at the
+    witness, then at you, and gives the order; you walk to your desk (the walk counts against the 20 minutes), sit
+    and type. Time runs ×8 (`FORCED_MULT`) only while you type. What a heard tattle costs: `roles.authority.tattle`.
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
-  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you stand at
-  `meeting.presenter`, and the 🦗 sign shows at `failSign`.
+  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you walk to
+  `meeting.presenter`, and the 🦗 sign shows at `failSign`. Sent to your desk and not there yet: you walk there. The
+  outcome is decided at `meetingAt`; the beat waits for the walk.
 
 ### Render (`src/render/*`)
 - `createRenderer(canvas)` returns `{ render(game) }`. It owns canvas sizing (fit the window, crisp on HiDPI) and
   draws title / day / end screens from `game.phase` and `game.outcome`. It never mutates gameplay state.
 - Level painters may import `render/things.js` (`box`, `THINGS`, `drawThing`) and the drawing helpers of
   `render/util.js`, `render/characters.js` and `render/tableau.js`.
+- The view: `effects.js` `FULL_VIEW` `{ x0, y0, x1, y1 }` (map px). While the end beat zooms in, the renderer passes
+  the smaller rect to `drawBubbles`, `drawSuspicion`, `drawWitnesses` and `drawFocusHint` (last param), and they
+  keep inside it; with no room above a head, a bubble goes beside it with its tail on the speaker.
+- Assigned work shows at your desk (`world.js` `drawWorkStack`: the stack lands at `rules.sent.stackAt`, shrinks with
+  `clock.forced / rules.workFrom`), not in the HUD. A witness's eye (`drawWitnesses`) reads `game.watch`,
+  `rules.seen` (against `NOTICE`, `DOUBLE_TAKE`) and `rules.grudge`.
 
 ### Audio (`src/audio/*`)
 - `createAudio()` returns `{ attach(game), unlock(), update(game, realDt), setMuted(bool), setPaused(bool) }`.
@@ -579,8 +631,9 @@ per animation frame (realDt capped at 0.1):
   game.time += realDt
   title: input start → startLoop
   day:   accumulate realDt; per FIXED_DT step:
-           mult = frameMult(game) = (clock.forced>0 ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
-           repeat mult times: tick(game, FIXED_DT)
+           runFrame(game, FIXED_DT): mult = frameMult(game) =
+             (clock.forced>0 && !rules.sent ? FORCED_MULT : clock.ff ? FF_MULT : 1) * debug.speed
+           repeat mult times: tick(game, FIXED_DT), stopping after the tick that ends the day or the forced work
          R → startLoop
          Esc / ⏸ click (PAUSE_BTN in render/hud.js) / window blur → game.paused = true: no ticks, the
            accumulator is dropped, fx frozen (updateFx dt 0), audio.setPaused(true) suspends the
@@ -601,8 +654,8 @@ exits 2 and lists the registry.
   `createHarness({ level, onFrame })` (a level object or id) builds a game with a scripted Input. `onFrame(game)`,
   if given, is called after every frame the harness steps (the replay strips use it to watch; it must not change the
   game). `run('<command>')` runs
-  human-level commands (`look`, `goto`, `move`, `interact`, `put [spot] [pretend]`, `sit`, `pretend`, `wait`,
-  `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
+  human-level commands (`look`, `goto`, `move`, `interact` (a tap of E), `eat` (holds E), `put [spot] [pretend]`,
+  `sit`, `pretend`, `wait`, `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
   events. `observe()` returns only what a human can see. `node tools/play.mjs new <session> --level <id>` starts a
   session (the level id is the first line of `.agent-sessions/<session>.jsonl`); later calls replay the log.
   `help --level <id>` prints the commands and that level's `goto` targets (with the built-in `my_seat`). Times in
@@ -624,14 +677,20 @@ exits 2 and lists the registry.
     recorded `works` in `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and
     never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
   `tools/test-gate.mjs` tests the verdict logic.
-- **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`;
-  `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`. Bubbles, sightlines and ripples are
-  drawn as a player at normal speed sees them at that clock time, even after pretending (`playerView`,
-  `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
+- **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`
+  and prints the game clock each shot landed on next to its intent (the pictures cold read's `intents.md` has it
+  too); two shots that render pixel-identical are an error. A shot whose commands stop at a catch draws its end
+  card, or the caught beat with `beat: true` in `shots.js`. `Ns` in harness commands is real seconds, so
+  `pretend 5s` lands about 18 game minutes on: time a shot with `pretend until 3:20` or `pretend 2m`, then
+  `wait Ns` (`docs/COLD-READ.md`). `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--verbs` draws a verb sheet per
+  item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,
+  sightlines and ripples are drawn as a player at normal speed sees them at that clock time, even after pretending
+  (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
   `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
 - **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
   level's premise, pictures and replays, and record a verdict per stage in `cold-read.md`. `--status` lists every
-  level's stages. `tools/test-cold-read.mjs` tests it with a fake reader. See `docs/COLD-READ.md`.
+  level's stages. The pictures stage also shows the verb sheets. `tools/test-cold-read.mjs` tests it with a fake
+  reader; `tools/test-verb-sheet.mjs` tests that the sheets cover every item and verb. See `docs/COLD-READ.md`.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.
