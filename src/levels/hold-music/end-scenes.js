@@ -494,8 +494,12 @@ function heldPlug(ctx, x, y, colour) {
   ctx.fillRect(x - 4.5, y - 2, 9, 2.6);
 }
 
-// caught: the boss saw you at the switchboard. He points; you freeze, a plug in your hand.
+// caught: the boss saw you at it. He points; you freeze, a plug in your hand. Where you were decides the picture:
+// at Lin's socket (the only place he can catch you in practice), or at the switchboard.
 function caught(ctx, game, t, e) {
+  const pl = game.player;
+  const sock = game.level.map.rows[7].indexOf('O');
+  if (pl && Math.hypot(pl.x - (sock + 0.5), pl.y - 7.5) < 3) return caughtAtSocket(ctx, game, t, e);
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_Y - TAB.y);
   const plugAt = { x: 556, y: 300 };
@@ -517,6 +521,52 @@ function caught(ctx, game, t, e) {
   b.scale = 2.4;
   drawPerson(ctx, looks(game).boss, b, 330 + (1 - enter(e)) * -80, 296);
   bubble(ctx, ['😠', '👉'], 330, 200, e);
+}
+
+function caughtAtSocket(ctx, game, t, e) {
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
+  backWall(ctx, WALL_Y - TAB.y);
+  // Lin's desk and phone on the right; her socket on the wall, empty: the plug is in your hand, its cord to her phone
+  desk(ctx, 640, 262, 170);
+  phone(ctx, 676, 258, 2.1, PHONES.lin.lamp, t);
+  socket(ctx, 470, 180, 1.6);
+  const hx = 503;
+  const hy = 232 + Math.sin(t * 9) * 0.8;
+  ctx.strokeStyle = '#2b2420';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(hx + 10, hy);
+  ctx.bezierCurveTo(hx + 40, hy + 30, 600, 290, 662, 262);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+  const p = person(t);
+  p.dir = 0;
+  p.head = Math.PI - 0.35 + Math.sin(t * 9) * 0.04;
+  p.arms = 'point';
+  p.sweat = true;
+  p.scale = 2.3;
+  drawPerson(ctx, looks(game).player, p, 470, 236);
+  // the plug, prongs up, in your fist
+  ctx.save();
+  ctx.translate(hx, hy);
+  ctx.rotate(-0.5);
+  ctx.fillStyle = '#c9a24a';
+  ctx.fillRect(-4, -14, 2.5, 7);
+  ctx.fillRect(1.5, -14, 2.5, 7);
+  ctx.fillStyle = '#2b2420';
+  rrect(ctx, -6, -8, 12, 15, 3);
+  ctx.fill();
+  ctx.restore();
+  fillCircle(ctx, hx - 2, hy + 2, 2.3 * 2.3, looks(game).player.skin);
+  const b = person(t);
+  b.dir = 0;
+  b.head = 0;
+  b.arms = 'point';
+  b.angry = true;
+  b.scale = 2.4;
+  drawPerson(ctx, looks(game).boss, b, 300 + (1 - enter(e)) * -80, 300);
+  bubble(ctx, ['😠', '👉'], 300, 204, e);
 }
 
 // blamed: you got Lin off the phone, but you weren't at your desk during the call for your job. The boss points at
