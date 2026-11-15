@@ -12,7 +12,8 @@ a tool or a doc. A promise to try harder is not a change.
 ## What a pass does
 
 1. **Measure.** Record blockers per level per round, problems that come back next round, rounds until a level
-   passes, cost, and how many times a check missed something.
+   passes, cost, and how many times a check missed something. Also measure tokens: tokens per round, tokens spent
+   on work that was later thrown away, and tokens spent resuming agents that had no work to do.
 2. **Find the root cause.** Take the biggest waste and ask "why" until the answer is about our process: "our
    pipeline never asked X", not "level Y was wrong".
 3. **Make one small change.** Prefer a check or a tool over a rule that someone has to remember.
@@ -28,6 +29,9 @@ a tool or a doc. A promise to try harder is not a change.
 - **A problem that recurs is a premise problem.** If the same problem comes back in two rounds, stop fixing it
   locally. Change or cut the idea behind it.
 - **Run the tests after every merge.** Do this before the next merge or commit, even for a prompt-only branch.
+- **Don't wake an idle agent without work.** A message to a finished agent resumes it with its whole context,
+  about 125,000 to 160,000 tokens, even if all it says back is "ok". Send acceptances and rulings with its next
+  real task, or not at all.
 - **A test must not read the live repo's state.** Records and levels change, so a test reads fixtures or temp
   roots, never the live repo.
 
@@ -49,7 +53,12 @@ a tool or a doc. A promise to try harder is not a change.
 | main broke on a prompt-only merge | I merged without running tests, and one test read the live repo's records. | The rules "run the tests after every merge" and "a test must not read the live repo's state". The test is fixed (b57960b). |
 | Stale stall alarms, and an agent's ID lost after a context summary | The watch script read its agent list only at start. Agent IDs lived only in conversation history. | The watch script now rereads its list from a roster file every loop. A fleet roster file is kept beside it. |
 
+**Added after pass 1, on tokens:** about ten messages today only accepted work or told an agent to stay idle. Each
+resumed an agent with 125,000 to 160,000 tokens of context, so roughly 1.3 million tokens bought nothing. Change: the
+rule "don't wake an idle agent without work".
+
 **Next pass checks:**
 
 - Did the ledger keep sense blockers from coming back?
 - How many rounds does a level now take to reach `works` on sense?
+- How many tokens went on resuming idle agents with nothing to do? The target is zero.
