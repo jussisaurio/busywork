@@ -114,7 +114,8 @@ try {
   ok(parseVerdict('# Verdict: Broken.') === 'broken', 'verdict: a heading, any case, a full stop');
   ok(parseVerdict('Verdict: works, mostly') === null, 'verdict: more words on the line are not a verdict');
   ok(parseVerdict('The verdict: works') === null, 'verdict: it must start the line');
-  ok(parseVerdict('Report\nVerdict: works') === null, 'verdict: only the first line counts');
+  ok(parseVerdict("I've read the files; writing the report now.\n\nVerdict: fixable") === 'fixable', 'verdict: a line of chatter first is forgiven');
+  ok(parseVerdict('a\nb\nc\nVerdict: works') === null, 'verdict: only the first three lines count');
   ok(parseVerdict('Verdict: great') === null && parseVerdict('') === null, 'verdict: only works, fixable, broken');
 
   // --- the card ---
