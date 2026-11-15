@@ -179,7 +179,7 @@ export default [
       waitFor(() => g.clock.minute >= 16);
       run('goto fridge busy');
       run('interact');
-      run('interact'); // eat it right there: nobody who cares is watching...
+      run('eat'); // eat it right there: nobody who cares is watching...
       if (!g.player.smeared) throw new Error('no mustard after eating');
       run('goto my_seat busy');
       run('sit');
@@ -203,7 +203,7 @@ export default [
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
       run('goto boss_office_door busy');
       run('goto coat_rack busy');
-      run('interact'); // eat it in the corner, out of the hunt's reach
+      run('eat'); // eat it in the corner, out of the hunt's reach
       if (!g.player.smeared || g.player.held) throw new Error('did not eat');
       run('interact'); // the keycard
       if (g.player.held !== 'keycard') throw new Error('no keycard: ' + g.world.keycard);

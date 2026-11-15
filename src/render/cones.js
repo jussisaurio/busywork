@@ -1,9 +1,10 @@
 // Vision cones: a soft translucent fan per active NPC, clipped by opaque tiles with a
-// DDA ray cast. Cones flash warmer/redder while that NPC is "noticing" the player.
+// DDA ray cast. Every cone is as plain as the authority's: anyone can tell on you. Its edge firms up while it has
+// you in sight, and the cone flashes warmer/redder while that NPC is "noticing" the player.
 import { T, clamp, fin } from './util.js';
 import { CONE_TINT_DEFAULT } from './palette.js';
-import { viewerOf, findNpc, cameraFeed } from '../game/perception.js';
-import { canSee } from '../core/vision.js';
+import { viewerOf, findNpc, cameraFeed, npcSees, seenVia } from '../game/perception.js';
+import { canSee, angleDiff } from '../core/vision.js';
 import { darkZones, nearViewer } from '../game/darkness.js';
 
 const RAYS = 56;
@@ -87,7 +88,7 @@ export function drawCones(ctx, game, t) {
   const npcs = game.npcs || [];
   const map = game.map;
   const dark = darkZones(game); // [] without level.darkness, or with every light on: the plain path
-  const authority = game.level?.roles?.authority?.id ?? null; // his cone is a little stronger
+  const p = game.player;
   for (let n = 0; n < npcs.length; n++) {
     const npc = npcs[n];
     if (!npc || !npc.active || !npc.vision) continue;
@@ -95,9 +96,84 @@ export function drawCones(ctx, game, t) {
     const notice = noticeLevel(game, npc);
     const tint = npc.coneTint || CONE_TINT_DEFAULT;
     const near = dark.length ? nearViewer(game, v) : null;
-    drawFan(ctx, map, v, tint, notice, npc.id === authority ? 0.2 : 0.13, t, dark, near);
+    const sees = !!p && npcSees(game, npc, fin(p.x), fin(p.y)) && !seenVia(game, npc, fin(p.x), fin(p.y)); // his own eyes
+    drawFan(ctx, map, v, tint, notice, CONE_BASE, t, dark, near, sees);
   }
   if (game.level?.cameras) drawCameraCones(ctx, game, t);
+  drawTurns(ctx, game);
+}
+
+const CONE_BASE = 0.2; // a cone's fill at its root, before any notice
+
+// --- a head turned to a noise (core/fx.js turned; sim/mechanics/attention.js) -----------------------------------
+// The swing of his cone, drawn where he stands: a dashed arc from the way he was looking to the way he looks now,
+// an arrowhead on its end, and a faint ghost of his old cone's edges. It follows his live view, so it grows as he
+// turns and fades once he has.
+const TURN_R = 1.7; // tiles from his eyes to the arc
+function drawTurns(ctx, game) {
+  const list = game.fx && game.fx.turns;
+  if (!Array.isArray(list) || !list.length) return;
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (const tr of list) {
+    const npc = tr && findNpc(game, tr.id);
+    if (!npc || !npc.active || !npc.vision) continue;
+    const v = viewerOf(npc);
+    const ttl = Math.max(0.1, fin(tr.ttl, 1.2));
+    const age = clamp(fin(tr.age), 0, ttl);
+    const fade = age < ttl * 0.6 ? 1 : 1 - (age - ttl * 0.6) / (ttl * 0.4);
+    const from = fin(tr.from);
+    const sweep = angleDiff(fin(v.dir), from);
+    if (!(Math.abs(sweep) > 0.12) || !(fade > 0.01)) continue;
+    const cx = fin(v.x) * T;
+    const cy = fin(v.y) * T;
+    const R = Math.min(TURN_R, Math.max(0.8, fin(v.radius, 6) * 0.5)) * T;
+    const tint = npc.coneTint || CONE_TINT_DEFAULT;
+    // the old cone's edges, fading first
+    const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
+    ctx.setLineDash([3, 4]);
+    ctx.globalAlpha = 0.5 * fade * (1 - age / ttl);
+    ctx.strokeStyle = `rgb(${tint[0]},${tint[1]},${tint[2]})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (const a of [from - fov / 2, from + fov / 2]) {
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * R * 1.6, cy + Math.sin(a) * R * 1.6);
+    }
+    ctx.stroke();
+    // the arc and its head
+    const end = from + sweep;
+    const ccw = sweep < 0;
+    ctx.setLineDash([6, 4]);
+    for (const [w, c, a] of [[5, 'rgb(30,20,14)', 0.45], [2.5, 'rgb(255,248,225)', 1]]) {
+      ctx.globalAlpha = a * fade;
+      ctx.strokeStyle = c;
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, from, end, ccw);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    const hx = cx + Math.cos(end) * R;
+    const hy = cy + Math.sin(end) * R;
+    const tx = -Math.sin(end) * Math.sign(sweep); // the way the arc runs at its end
+    const ty = Math.cos(end) * Math.sign(sweep);
+    const nx = Math.cos(end);
+    const ny = Math.sin(end);
+    for (const [grow, c, a] of [[2, 'rgb(30,20,14)', 0.45], [0, 'rgb(255,248,225)', 1]]) {
+      const s = 6 + grow;
+      ctx.globalAlpha = a * fade;
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.moveTo(hx + tx * s * 1.2, hy + ty * s * 1.2);
+      ctx.lineTo(hx - tx * s * 0.5 + nx * s * 0.8, hy - ty * s * 0.5 + ny * s * 0.8);
+      ctx.lineTo(hx - tx * s * 0.5 - nx * s * 0.8, hy - ty * s * 0.5 - ny * s * 0.8);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
 }
 
 const NO_DARK = [];
@@ -105,7 +181,9 @@ const NO_DARK = [];
 // One soft fan: viewer v ({ x, y, dir, fov, radius }), tinted, warmed toward red by `notice` (0..1).
 // dark: the dark zones (game/darkness.js darkZones), [] for the plain path. With any, the fan shows only on lit
 // floor, and in the dark only the near sight `near` (darkness.js nearViewer(v)) shows, within arm's length.
-function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null) {
+// Its edge is drawn twice, a darker shade of the tint under the tint itself, so a pale cone reads on a pale floor;
+// `sees` (he has you in sight) firms it up.
+function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null, sees = false) {
   const ox = fin(v.x);
   const oy = fin(v.y);
   const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
@@ -133,8 +211,12 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   fan(ctx, map, ox, oy, dir, fov, radius);
   ctx.fillStyle = grad;
   ctx.fill();
-  ctx.strokeStyle = `rgba(${r},${g},${b},${(0.18 + notice * 0.4 * pulse).toFixed(3)})`;
-  ctx.lineWidth = notice > 0 ? 1.5 : 1;
+  const edge = (sees ? 0.42 : 0.26) + notice * 0.3 * pulse;
+  ctx.strokeStyle = `rgba(${Math.round(r * 0.45)},${Math.round(g * 0.45)},${Math.round(b * 0.45)},${(edge * 0.8).toFixed(3)})`;
+  ctx.lineWidth = sees || notice > 0 ? 2.5 : 2;
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(1, edge + 0.2).toFixed(3)})`;
+  ctx.lineWidth = sees || notice > 0 ? 1.5 : 1;
   ctx.stroke();
   if (dark.length) {
     ctx.restore();

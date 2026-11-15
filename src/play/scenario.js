@@ -3,24 +3,30 @@
 //
 // Attendance rule: stopping the meeting only counts if you're in the meeting room at 4:00.
 // Everyone else is there; the one empty chair is yours. Result 'blamed' (a fail).
-import { CAUGHT_DELAY } from '../config.js';
+import { CAUGHT_DELAY, PLAYER_SPEED } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { stareAt } from '../sim/npcs.js';
 import { cancelAction } from './interactions.js';
-import { setBusy, standUp } from './player.js';
+import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './player.js';
 
-export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome
+export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
 const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
+// A fail sends you to the front (meeting.presenter): you hurry there, at least this fast, and in at most WALK_MAX s.
+const HURRY = PLAYER_SPEED * 1.5;
+const WALK_MAX = 2.5;
+const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
 
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
   const s = game.scenario;
 
-  // Meeting beat in progress.
+  // Meeting beat in progress: the walk you're made to take (to the front, or on to your desk), then the beat.
   if (game.outcome) {
     s.beatT += dt;
-    if (game.outcome.result === 'fail' && !s.crickets && s.beatT >= CRICKETS_AT) {
+    const w = s.walk;
+    if (w && stepWalk(game, w, w.speed, dt)) arrive(game, s, w);
+    if (game.outcome.result === 'fail' && !s.walk && !s.crickets && s.beatT >= s.arrivedAt + CRICKETS_AT) {
       s.crickets = true;
       const sign = game.level.failSign;
       if (sign) {
@@ -28,7 +34,7 @@ export function updateScenario(game, dt) {
         say(game, { x: p.x + sign.offset[0], y: p.y + sign.offset[1] }, ['🦗'], { kind: 'sign', ttl: 1.5 });
       }
     }
-    if (s.beatT >= END_BEAT) endDay(game);
+    if (!s.walk && s.beatT >= s.endAt) endDay(game);
     return;
   }
 
@@ -52,11 +58,16 @@ function makeOutcome(game, result, routes, newRoutes) {
 function startMeeting(game, s) {
   const p = game.player;
   const w = game.world;
+  // On your way to your desk (sent there: player.js sendToDesk) you count as at it: the order stands.
+  const sent = game.rules.sent;
+  game.rules.sent = null;
+  const seat = spotPos(game, 'player_desk');
+  const at = sent ? seat : p;
 
   // Everything achieved this loop counts (both routes can be true at once), in the level's outcomeOrder.
   const level = game.level;
   const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
-  const present = inZone(game, level.meeting.room, p.x, p.y);
+  const present = inZone(game, level.meeting.room, at.x, at.y);
   const base = !routes.length ? 'fail' : present ? 'win' : 'blamed';
   // The level can judge the room itself (level.meeting.verdict(game, { result, routes, present })): null keeps
   // the rule above; else { result?, why?, stare? }. why: a string the outcome carries (for end scenes, the
@@ -76,18 +87,18 @@ function startMeeting(game, s) {
   game.clock.ff = false;
   p.locked = true;
   s.beatT = 0;
+  s.arrivedAt = 0;
+  s.endAt = END_BEAT;
+  s.walk = null;
 
   if (result === 'fail') {
-    // You are now presenting. There are no slides.
+    // You are now presenting. There are no slides. You hurry to the front (the beat waits for you to get there).
     burst(game, 'paper', p.x, p.y, 8);
-    const spot = spotPos(game, game.level.meeting.presenter);
-    p.x = spot.x;
-    p.y = spot.y;
-    p.dir = spot.dir;
-    p.moving = false;
     standUp(game);
+    const spot = spotPos(game, game.level.meeting.presenter);
+    const t = walkTo(game, s, spot, HURRY, false);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
-    say(game, 'player', ['😅'], { kind: 'speech', ttl: END_BEAT });
+    say(game, 'player', ['😅'], { kind: 'speech', ttl: t + END_BEAT });
   } else if (result === 'blamed') {
     // Wherever you are, the room has noticed.
     stareAt(game, v?.stare);
@@ -98,6 +109,37 @@ function startMeeting(game, s) {
     say(game, 'player', ['🎉'], { kind: 'speech', ttl: END_BEAT });
   }
   if (v?.stare && result !== 'blamed') stareAt(game, v.stare); // e.g. a win where the table blames someone else
+  // Sent to your desk and not there yet: you get there, and the beat waits for you.
+  if (sent && result !== 'fail') walkTo(game, s, seat, PLAYER_SPEED, true);
+}
+
+// Start the walk the beat makes you take; returns its time in s (0: you're there, or there's no way there and you
+// just are). speed: at least this fast, and fast enough to arrive within WALK_MAX. sit: sit down on arrival.
+function walkTo(game, s, spot, speed, sit) {
+  const p = game.player;
+  const walk = planWalk(game, spot);
+  const len = walk ? walkLength(game, walk) : 0;
+  if (!(len > 1e-6)) {
+    arrive(game, s, { spot, sit });
+    return 0;
+  }
+  const v = Math.max(speed, len / WALK_MAX);
+  s.walk = { ...walk, speed: v, spot, sit };
+  p.moving = false;
+  return len / v;
+}
+
+// There: the fail beat (crickets, the card) counts from now; at your desk you sit and the card follows shortly.
+function arrive(game, s, w) {
+  const p = game.player;
+  s.walk = null;
+  s.arrivedAt = s.beatT;
+  s.endAt = Math.max(s.endAt, s.beatT + (w.sit ? SIT_BEAT : END_BEAT));
+  p.x = w.spot.x;
+  p.y = w.spot.y;
+  p.dir = w.spot.dir;
+  p.moving = false;
+  if (w.sit) sitAtDesk(game);
 }
 
 function endDay(game) {

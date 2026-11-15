@@ -6,9 +6,11 @@
 // For each item in level.items, the item goes straight into the player's hand at an empty tile nobody watches (no
 // plan search: this is about what a verb looks like, not a route), and each sequence is a fresh day:
 //   carry     walking with it; pretending with it, standing (held to your ear) and walking
-//   E         what E does with it in hand, nothing else in reach, whatever verb wins (a level 'self' row, eat, drop):
-//             before (the prompt), during (an action of MID_MIN seconds or more), after
-//   <verb>    each other 'self' verb that takes it, which E does not reach there: its result (the row's done)
+//   E         what a tap of E does with it in hand, nothing else in reach, whatever verb wins (a level 'self' row,
+//             else drop): before (the prompt), during (an action of MID_MIN seconds or more), after
+//   hold E    when holding E does something else (eating; play/interactions.js): before, E held (the preview pose),
+//             during, after
+//   <verb>    each other 'self' verb that takes it, which neither reaches there: its result (the row's done)
 //   pick_up   it on the floor after the drop (or on the first spot after a put, for an item you can't drop), then in
 //             your hand again
 //   put       on each spot that takes it: before, during, after
@@ -24,7 +26,7 @@ import { actionRow } from '../../src/play/interactions.js';
 import { putSpots } from '../../src/sim/mechanics/putdown.js';
 import { npcSees } from '../../src/game/perception.js';
 import { isDark } from '../../src/game/darkness.js';
-import { FIXED_DT, INTERACT_RADIUS } from '../../src/config.js';
+import { FIXED_DT, INTERACT_RADIUS, HOLD_TIME, MARKS } from '../../src/config.js';
 import { withDom, playerView } from './draw.mjs';
 
 export const K = 2.5; // the drawing's scale over the game's view (VIEW_W x VIEW_H logical px)
@@ -105,7 +107,7 @@ function snapshot(g) {
 }
 const GLOSS = {
   held: (a, b) => `your hand: ${a ? `the ${a}` : 'empty'} → ${b ? `the ${b}` : 'empty'}`,
-  smeared: (a, b) => `player.smeared: ${a} → ${b}${b ? ' (drawn as a stain on your shirt, for the rest of the loop)' : ''}`,
+  smeared: (a, b) => `player.smeared: ${a} → ${b}${b ? ` (drawn as ${MARKS[b]?.words ?? 'a mark on you'}, for the rest of the loop)` : ''}`,
 };
 // What changed from snapshot a to b, and what happened in the events between, in words: a list of phrases.
 function effect(a, b, events) {
@@ -216,13 +218,36 @@ function pressE(S, { verb: want = null, at = null, before, after, note = '' }) {
   const verb = f.action;
   const row = actionRow(g, verb);
   const target = at ?? (f.kind === 'self' ? null : { x: f.x, y: f.y });
-  S.shoot({ verb, phase: 'before', label: `${before ?? verb} · before`, intent: `${note}The E prompt ${f.kind === 'self' ? 'over you' : `on ${f.kind === 'spot' ? `spot ${f.id}` : `the ${f.id}`}`}: E runs ${rowText(verb, row, f.timed)}.` }, target);
+  const alt = f.hold ? ` Holding E instead runs ${rowText(f.hold, actionRow(g, f.hold))}.` : '';
+  S.shoot({ verb, phase: 'before', label: `${before ?? verb} · before`, intent: `${note}The E prompt ${f.kind === 'self' ? 'over you' : `on ${f.kind === 'spot' ? `spot ${f.id}` : `the ${f.id}`}`}: a tap of E runs ${rowText(verb, row, f.timed)}.${alt}` }, target);
   const m = S.mark();
   S.input.press('interact');
   h.frame();
   finishAction(S, verb, `${verb} · during`);
   S.run(AFTER);
   S.shoot({ verb, phase: 'after', label: `${after ?? verb} · after`, intent: `${verb} done. It changed: ${S.since(m).join('; ')}.` }, target);
+  return verb;
+}
+
+// Holds E on a focus whose hold runs another verb (f.hold: eating) and shoots before, E held (half of HOLD_TIME: the
+// preview pose), during and after. Returns the hold's verb.
+function holdE(S, before) {
+  const { g, h } = S;
+  const f = g.player.focus;
+  const verb = f.hold;
+  const row = actionRow(g, verb);
+  S.shoot({ verb, phase: 'before', label: `${before} · before`, intent: `The E prompt over you: holding E (${HOLD_TIME} s, standing still) runs ${rowText(verb, row)}; a tap runs ${f.action}.` });
+  const m = S.mark();
+  S.input.press('interact');
+  S.input.hold('interact', true);
+  S.run(HOLD_TIME / 2);
+  S.shoot({ verb, phase: 'holding', label: `${before} · E held`, intent: `E held ${(HOLD_TIME / 2).toFixed(2)} of ${HOLD_TIME} s: the pose previews ${verb} (${f.holdPreview ?? 'no preview'}).` });
+  for (let i = 0; i < 600 && !g.player.action && g.phase === 'day'; i++) h.frame();
+  finishAction(S, verb, `${verb} · during`);
+  S.input.hold('interact', false);
+  S.input.releaseAll();
+  S.run(AFTER);
+  S.shoot({ verb, phase: 'after', label: `${before} · after`, intent: `${verb} done. It changed: ${S.since(m).join('; ')}.` });
   return verb;
 }
 
@@ -244,7 +269,7 @@ function tilePanels(level, lib, type, tile) {
   const flags = level.items[type];
   const at = { x: tile.x + 0.5, y: tile.y + 0.5 };
   const seed = (s) => `verbs:${type}:${s}`;
-  const out = { panels: [], trouble: new Set(), missing: [], selves: [], eVerb: null };
+  const out = { panels: [], trouble: new Set(), missing: [], selves: [], eVerb: null, holdVerb: null };
   const add = (res) => { out.panels.push(...res.panels); for (const t of res.trouble) out.trouble.add(t); };
 
   // Carrying it: walking, pretending standing, pretending walking.
@@ -278,12 +303,23 @@ function tilePanels(level, lib, type, tile) {
       out.missing.push(`E: something is in reach at tile ${tile.x},${tile.y} (${f.action} on ${f.id})`);
       return;
     }
+    out.holdVerb = f.hold ?? null;
     out.eVerb = pressE(S, { before: `E → ${f.action}` });
     if (out.eVerb === 'drop') pickUpAgain(S, tile.dir);
   }));
 
-  // The other 'self' verbs that take it, which E does not reach here: their result.
-  for (const verb of out.selves.filter((v) => v !== out.eVerb)) {
+  // Holding E, when that runs another verb (eating): a fresh day.
+  if (out.holdVerb) {
+    add(sequence(level, lib, seed('hold'), (S) => {
+      hand(S.g, type, at.x, at.y);
+      S.h.frame();
+      if (S.g.player.focus?.hold !== out.holdVerb) { out.missing.push(`hold E: the ${out.holdVerb} prompt is gone after a frame`); return; }
+      holdE(S, `hold E → ${out.holdVerb}`);
+    }));
+  }
+
+  // The other 'self' verbs that take it, which neither a tap nor a hold of E reaches here: their result.
+  for (const verb of out.selves.filter((v) => v !== out.eVerb && v !== out.holdVerb)) {
     add(sequence(level, lib, seed(verb), (S) => {
       hand(S.g, type, at.x, at.y);
       S.h.frame();
@@ -293,7 +329,7 @@ function tilePanels(level, lib, type, tile) {
       const m = S.mark();
       row.done(S.g, { type: verb, targetId: 'self', kind: 'self', id: 'self', x: p.x, y: p.y, item: null });
       S.run(AFTER);
-      const by = out.eVerb ? `E does not reach it here: ${out.eVerb} wins` : 'E does not reach it here';
+      const by = out.eVerb ? `E does not reach it here: a tap runs ${out.eVerb}${out.holdVerb ? `, a hold ${out.holdVerb}` : ''}` : 'E does not reach it here';
       S.shoot({ verb, phase: 'after', label: `${verb} · after (not on E)`, intent: `${rowText(verb, row)}; ${by}, so the sheet shows its result only. It changed: ${S.since(m).join('; ')}.` });
       if (verb === 'drop') pickUpAgain(S, tile.dir);
     }));
@@ -384,7 +420,8 @@ function itemText(type, flags, { icon = true } = {}) {
 
 // The verb sheets of `level`: one per item in level.items, in its order. items: the item types to draw (default all).
 // Returns { tile, sheets: [{ file, name, type, png (numbers only, for step 1), labelled (for step 2), panels:
-// [{ verb, phase, label, intent, held, smeared, pose, caught, reacted }], intent (markdown), trouble, missing }] }.
+// [{ verb, phase, label, intent, held, smeared, pose, caught, reacted }], intent (markdown), trouble, missing, eVerb (a
+// tap of E), holdVerb (holding E, or null) }] }.
 export function captureVerbs(level, { lib, items = Object.keys(level.items ?? {}) } = {}) {
   const tiles = emptyTiles(level);
   const sheets = [];
@@ -417,7 +454,7 @@ export function captureVerbs(level, { lib, items = Object.keys(level.items ?? {}
       file: `${n}.png`, name: `${n}-${type}.png`, type, tile: best.tile,
       png: sheetPng(lib, all),
       labelled: sheetPng(lib, all, { title: `the ${type}: ${itemText(type, flags, { icon: false })}`, labels: true }),
-      panels, intent, trouble, missing, selves: best.selves, eVerb: best.eVerb,
+      panels, intent, trouble, missing, selves: best.selves, eVerb: best.eVerb, holdVerb: best.holdVerb,
     });
   }
   return { tiles, sheets };
