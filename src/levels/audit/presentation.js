@@ -1,9 +1,7 @@
 // How the audit looks and sounds: title card, set dressing, people, voices, sounds and the end card (level 1's
-// decor.js, looks.js, voices.js, sounds.js and end-scenes.js document the fields). Level 1's people are imported
+// decor.js, looks.js, voices.js and sounds.js document the fields). Level 1's people are imported
 // read-only; the auditor is new.
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 
 export const TITLE = {
@@ -130,20 +128,5 @@ export const SOUNDS = {
   elevator: { spot: 'elevator', radius: 2.5 },
 };
 
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-// The end card: the carpet and the outcome's picture, big.
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? o.routes[0] : o?.result ?? 'fail'),
-  scenes: {
-    boss: { win: true, icons: ['💻', '👔', '✔️', '✔️'], draw: picture('🧾') },
-    lin: { win: true, icons: ['💻', '👓', '✔️', '✔️'], draw: picture('🧾') },
-    kev: { win: true, icons: ['💻', '🔧', '✔️', '✔️'], draw: picture('🧾') },
-    fail: { win: false, icons: ['🧾', '⏰', '🤷'], draw: picture('⏰') },
-    caught: { win: false, icons: ['🕵️', '❌', '👉'], draw: picture('❌') },
-    blamed: { win: false, icons: ['🪑', '🧾', '❓'], draw: picture('🪑') }, // he came to sign off and you weren't there
-  },
-};
+// The end card: a drawn scene per outcome (end-scenes.js).
+export { END_SCENES } from './end-scenes.js';
