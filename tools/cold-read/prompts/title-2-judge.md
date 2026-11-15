@@ -1,25 +1,21 @@
 Read card.txt (the game's name and its mission card), guesses.md (a first reader's guesses at how to win, from the
 card alone) and ways.md (every way the player really wins and loses).
 
-Your question: do the name or the card give away a way to win?
-The card should name the trouble (what goes wrong at the deadline, the rule you live under), never the way out. A
-guess that names a real route's key step, and quotes the name or the card for it, is a leak. The name is held
-tighter: it may restate the trouble, but if a word of the name echoes what a route does or makes happen (a word the
-ways to win would use for the trick or its effect), the guess that quotes it is a leak, even when the card alone
-also implies that outcome. Undoing the trouble is fine when the guess rests on the card's words only.
+You are judging the title screen the way a player meets it. A good card makes the player want to start: they know
+when it is, what's about to go wrong for them, and what they're trying to do, and they still have to work out how.
 
-The card must also give the stake: what happens to the player if they fail, in words a stranger understands
-without knowing the game. Check the first reader's `Stake:` line against ways.md's main way to lose. If it says
-`can't tell`, or names a stake that ways.md doesn't, that is a blocker: the player doesn't know why to bother. A
-deadline with no cost ("at 5:00 he reads it out") is not a stake. The card must also end with an order: one
-imperative that says what the player must achieve ("Keep your weekend.", "Catch the bus."). A card with no
-imperative is a blocker, even if the goal can be guessed. Its fix gives replacement card words that say what
-the player loses.
+Two questions:
+1. **Does the player know what they're playing for?** Use the first reader's `Stake:` line and your own read. Would a
+   stranger know what they stand to lose and what they're aiming at? A card that leaves them shrugging ("so the boss
+   reads it out, so what?") fails the player, however clean it is.
+2. **Does the name or the card give the method away?** A guess that names a real route's key step, quoting the name
+   or the card for it, takes the puzzle from the player. Knowing the goal is fine; that is what the card is for.
+
+Use your judgment on how much each problem would hurt a real player, and grade it by that.
 
 Reply with your report. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.
   - `broken`: the name or the card spells out a whole route.
-- Then `- Order: yes|no — <the card's imperative, or that it has none>`.
 - Then `- Stake: clear|unclear — <what the card says the player loses, or what's missing>`.
 - Then one line per guess: `- <guess>: miss|near|leak — <the route it matches, and the words that led to it>`.
   `near` means it points at a route's area (the right person or thing) but not its key step.

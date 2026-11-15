@@ -1,71 +1,51 @@
 # Kaizen log
 
-This log is about how we work, not about any one level. Every entry ends in a change to a prompt, a brief, a check,
-a tool or a doc. A promise to try harder is not a change.
+This is about how we work, not about any one level. The aim is to let every agent, me included, do good work with
+its own judgment. Most failures come from something that got in the way of that judgment: missing context, a
+misleading doc, a bad tool, or a rule that told someone what to do instead of what we're after. A pass finds that
+obstacle and removes it.
 
 ## When to run a pass
 
-- After every round of work: a fix round, a cold-read sweep, a merge batch or a playtest.
-- When the same kind of problem shows up a second time.
-- When a check misses a bug that a playtest or a later check found.
+After a round of work, when a problem keeps coming back, and when a check missed something a person found.
 
 ## What a pass does
 
-1. **Measure.** Record blockers per level per round, problems that come back next round, rounds until a level
-   passes, cost, and how many times a check missed something. Also measure tokens: tokens per round, tokens spent
-   on work that was later thrown away, and tokens spent resuming agents that had no work to do.
-2. **Find the root cause.** Take the biggest waste and ask "why" until the answer is about our process: "our
-   pipeline never asked X", not "level Y was wrong".
-3. **Make one small change.** Prefer a check or a tool over a rule that someone has to remember.
-4. **Write it down here.** At the next pass, say whether each change worked. If a change didn't help, revert it.
-
-## Standing rules (from earlier passes)
-
-- **A check that never passes is suspect.** If a check passes nothing across 10 or more verdicts, run it on a level
-  we trust before we fix any more levels against it.
-- **Sense comes before the build.** A new premise gets a `sense` read (`--pass sense`, about $0.11) before anyone
-  builds it. Its blockers are fixed in the prose first, because a believability problem in the idea itself only
-  costs more later.
-- **A problem that recurs is a premise problem.** If the same problem comes back in two rounds, stop fixing it
-  locally. Change or cut the idea behind it.
-- **Run the tests after every merge.** Do this before the next merge or commit, even for a prompt-only branch.
-- **Don't wake an idle agent without work.** A message to a finished agent resumes it with its whole context,
-  about 125,000 to 160,000 tokens, even if all it says back is "ok". Send acceptances and rulings with its next
-  real task, or not at all.
-- **At most three agents at work at once.** Tools and engine agents count. Every agent spends the user's usage limit. Merges, tests and cold reads run one at
-  a time on main, so more agents only queue up, and a big batch hides problems: a flawed brief gets copied by every
-  agent before anyone sees it. When a process is new (a new brief, a new check), take the first result all the way
-  through before the others start.
-- **Write rules as targets, not bans.** Every rule says what good looks like, with an example. A ban alone is
-  satisfied by doing less: "never name the way out" produced cards with no goal at all. When a failure teaches
-  something, write down what the good version does.
-- **A test must not read the live repo's state.** Records and levels change, so a test reads fixtures or temp
-  roots, never the live repo.
+1. **Look at what happened.** Blockers per level and round, problems that came back, rounds until a level passes,
+   tokens spent (including on work we threw away and on agents woken with nothing to do), and what checks missed.
+2. **Find what got in the way.** Ask why until the answer is about our setup: what did the agent not know, not see,
+   or get pushed toward?
+3. **Remove it.** Give better context, fix the doc or the tool, or delete the rule. Things that have to happen
+   every time (tests after a merge) belong in a tool, not in anyone's memory. Don't add a rule.
+4. **Write it down here,** and next pass say whether it helped.
 
 ## Passes
 
 ### 2026-11-15, pass 1: a whole day where no level passed
 
-**Measures:**
+- 42 stage verdicts, none `works`, Meeting included. The review prompt had a quota ("up to 5 problems") and any
+  problem made the verdict fixable, so nothing could pass. Changed: graded problems, a ledger across rounds,
+  calibration on a level we trust.
+- Every level failed on believability once we checked it. Nothing had asked builders to think about a real office.
+  Changed: the `sense` pass, and DESIGN now explains what makes a route believable.
+- Saturday's own-face problem came back three rounds running. Patching it locally never worked; cutting the idea did.
+- Tokens: about ten messages only acknowledged agents, roughly 1.3M tokens for nothing.
 
-- 42 old-style stage verdicts, 0 of them `works`, Meeting included.
-- First `sense` sweep: 8 of 8 levels `fixable`, with 21 blockers (1 to 5 per level).
-- One problem came back in 3 rounds: Saturday's boss accepting his own face.
+### 2026-11-15, pass 2: the title screens were wrong in five levels
 
-| Waste | Root cause | Change |
-|---|---|---|
-| Hours of fix rounds against a verdict that could never pass | The review prompt had a quota ("up to 5 problems"), and any problem at all made the verdict fixable. No one asked why nothing ever passed. | Graded blockers, a ledger and calibration (tools, merged). The rule "a check that never passes is suspect". |
-| Every level failed on believability once we checked it | Believability was never checked. Levels were built first and judged on pictures and legibility, and builders treated a view cone as the reason people don't notice. | The `sense` pass. Three believability rules in DESIGN.md. The rule "sense comes before the build". |
-| One problem patched locally for three rounds | Each fix round handled findings one at a time, with no memory across rounds. | The ledger promotes recurring problems to blockers. The rule "a problem that recurs is a premise problem". |
-| main broke on a prompt-only merge | I merged without running tests, and one test read the live repo's records. | The rules "run the tests after every merge" and "a test must not read the live repo's state". The test is fixed (b57960b). |
-| Stale stall alarms, and an agent's ID lost after a context summary | The watch script read its agent list only at start. Agent IDs lived only in conversation history. | The watch script now rereads its list from a roster file every loop. A fleet roster file is kept beside it. |
+The user found it in seconds: cards with no goal ("At 5:00 the boss reads it out." So what?). The cause was ours.
+DESIGN only said what a card must not do ("never the way out"), and the title check only looked for leaks. Doing
+less satisfies a ban, so cards drifted toward saying nothing. I never read the cards side by side myself.
 
-**Added after pass 1, on tokens:** about ten messages today only accepted work or told an agent to stay idle. Each
-resumed an agent with 125,000 to 160,000 tokens of context, so roughly 1.3 million tokens bought nothing. Change: the
-rule "don't wake an idle agent without work".
+The bigger lesson: I answered each failure today with a new rule, and the rules made agents comply instead of think.
+Changed:
+- The standing rules are gone. DESIGN's card, naming, no-hand-holding and believability sections now say what we're
+  after and why, with examples.
+- The title check asks whether a player would know what they're playing for, not whether a rule was broken.
+- Every card rewritten; tools/cards.mjs prints them side by side.
+- tools/merge.mjs trial-merges, merges and runs every test, so "test after merge" is a tool, not a rule.
+- Also found: re-running a pass on unchanged inputs inflated its blockers (Saturday sense 1 -> 4). Now a pass with
+  unchanged inputs is skipped; `--again` re-reads it cold.
 
-**Next pass checks:**
-
-- Did the ledger keep sense blockers from coming back?
-- How many rounds does a level now take to reach `works` on sense?
-- How many tokens went on resuming idle agents with nothing to do? The target is zero.
+**Next pass:** did the rewritten DESIGN produce better first drafts? Are builders making good calls the docs didn't
+spell out?
