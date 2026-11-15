@@ -1,10 +1,11 @@
 // Headless gameplay tests (player, interactions, rules, scenario, input).
-// Does NOT import src/sim/* or src/game/loop.js: NPCs are hand-made fakes and the tick is
-// stepped here in contract order: player -> interactions -> [npcs skipped] -> rules -> scenario -> clock.
+// Does NOT run the NPC sim: NPCs come from the sim's createNpc but are placed by hand, and the tick is
+// stepped here in contract order: player -> interactions -> [npcs skipped] -> rules -> scenario -> clock
+// (loop.js advanceClock).
 //
 //   node tools/test-play.mjs
 import {
-  FIXED_DT, GAME_MIN_PER_SEC, VISION, MEETING_AT, CAUGHT_DELAY, WORK_PENALTY_MIN,
+  FIXED_DT, GAME_MIN_PER_SEC, CAUGHT_DELAY, WORK_PENALTY_MIN,
   PLAYER_RADIUS, PLAYER_SPEED, PLAYER_BUSY_SPEED, SUSPICION_FILL_SEC,
 } from '../src/config.js';
 import { createGame, resetLoop } from '../src/state.js';
@@ -15,6 +16,8 @@ import { updatePlayer } from '../src/play/player.js';
 import { updateInteractions } from '../src/play/interactions.js';
 import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
+import { advanceClock } from '../src/game/loop.js';
+import { createNpc } from '../src/sim/npcs.js';
 import { createInput } from '../src/play/input.js';
 
 let fails = 0;
@@ -58,22 +61,19 @@ function createFakeInput() {
 // --- Harness ------------------------------------------------------------------------
 const input = createFakeInput();
 const game = createGame({ input });
+const MEETING_AT = game.level.day.meetingAt;
+const VISION = Object.fromEntries(game.level.cast.map((d) => [d.id, d.vision])); // each cast member's own
 const log = [];
 game.events.on('*', (name, payload) => log.push({ name, payload, t: game.loopTime }));
 const evs = (name) => log.filter((e) => e.name === name);
 const p = () => game.player;
 
 function fakeNpc(id, spot, extra = {}) {
-  const s = spotPos(spot);
-  return {
-    id, icon: '', color: '#000', voice: id, meetingSpot: 'meeting_head',
-    x: s.x, y: s.y, dir: s.dir,
-    glance: { offset: 0 },
-    vision: { ...(VISION[id] ?? VISION.default) },
-    active: true, pose: 'sit', moving: false, override: null, hasJacket: false,
-    label: 'fake', rng: createRng(1),
+  const s = spotPos(game, spot);
+  return Object.assign(createNpc(game, game.level.cast.find((d) => d.id === id)), {
+    x: s.x, y: s.y, dir: s.dir, pose: 'sit', label: 'fake',
     ...extra,
-  };
+  });
 }
 
 // Equivalent of loop.startLoop without the sim.
@@ -108,10 +108,7 @@ function step(n = 1) {
     // updateNpcs skipped: fake NPCs stay where the test puts them.
     updateRules(game, FIXED_DT);
     updateScenario(game, FIXED_DT);
-    const dm = FIXED_DT * GAME_MIN_PER_SEC;
-    game.clock.minute += dm;
-    if (game.clock.forced > 0) game.clock.forced = Math.max(0, game.clock.forced - dm);
-    game.loopTime += FIXED_DT;
+    advanceClock(game, FIXED_DT);
     input.age(FIXED_DT);
     if (!circleClear(p().x, p().y)) violations++;
   }
@@ -223,7 +220,7 @@ section('brew -> carry -> spill');
   run(1.3);
   ok(game.world.projector === 'broken' && p().held === null, 'projector broken, hands empty');
   ok(evs('projector:broken').length === 1, 'projector:broken emitted once');
-  ok(game.fx.particles.some((q) => q.kind === 'sparks') && game.fx.particles.some((q) => q.kind === 'smoke'), 'sparks + smoke burst');
+  ok(game.fx.particles.some((q) => q.kind === 'sparks') && game.fx.particles.some((q) => q.kind === 'puff'), 'sparks + puff burst');
   step();
   ok(p().focus === null, 'no focus at a broken projector with empty hands');
 }
@@ -300,11 +297,14 @@ section('keycard: boss facing the player -> caught');
   newDay([boss]);
   place(2.5, 1.5);
   step();
+  ok(Object.keys(game.watch).length === 0, 'game.watch: nothing in sight yet');
   input.press('interact');
   step();
+  ok(game.watch.boss === 'action', "game.watch.boss = 'action': the rules see the steal (the cone glows from this)");
   const t0 = game.loopTime;
   let tCaught = null;
   for (let i = 0; i < 60 && !game.caught; i++) { step(); if (game.caught) tCaught = game.loopTime; }
+  ok(Object.keys(game.watch).length === 0, 'game.watch empty once caught');
   ok(evs('witness:notice').some((e) => e.payload.by === 'boss'), 'boss ❓ (witness:notice) at first sight');
   ok(game.caught?.by === 'boss' && game.caught.reason === 'action', "caught {by:'boss', reason:'action'}");
   ok(tCaught !== null && tCaught - t0 >= NOTICE - 0.05 && tCaught - t0 <= NOTICE + 0.05, `caught after ~NOTICE (${tCaught && (tCaught - t0).toFixed(2)} s)`);
@@ -656,6 +656,7 @@ section('contraband');
   input.press('interact');
   run(2.5);
   ok(!game.caught && evs('boss:workAssigned')[0]?.payload.reason === 'idle', 'boss watches you eat: ❓ fills -> desk work, not fired');
+  ok(evs('action:cancel').some((e) => e.payload.type === 'eat_sandwich' && e.payload.reason === 'idle'), "the meal ends as action:cancel {reason:'idle'}, not 'witnessed'");
 
   // Kev's coffee: before he's found the pot empty, a colleague with a coffee is nothing to him.
   newDay([kev]);
@@ -676,7 +677,7 @@ section('contraband');
   ok(!p().held && kev.carry === 'coffee' && evs('coffee:confiscated')[0]?.payload.by === 'kev', 'Kev sees the coffee: confiscated (npc.carry)');
   ok(evs('witness:tattle')[0]?.payload.reason === 'contraband' && evs('boss:workAssigned').length === 0, 'contraband only: no tattle, no work');
   ok(evs('say').some((e) => e.payload.owner === 'kev' && e.payload.icons.join('') === '🤤☕'), 'Kev says 🤤☕ (a coffee!)');
-  ok(kev._sayQ?.some((q) => q.icons.join('') === '😌'), '… then 😌 (queued for the sim)');
+  ok(kev._sayQ.some((q) => q.icons.join('') === '😌'), '… then 😌 (queued for the sim)');
   ok(kev.wants === null, 'and is satisfied (wants cleared)');
 
   const kev2 = fakeNpc('kev', 'kev_desk', { wants: 'coffee' });

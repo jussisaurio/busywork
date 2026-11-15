@@ -1,31 +1,36 @@
 // Game state construction. Shape documented in CONTRACTS.md.
 import { parseMap } from './core/map.js';
 import { createEvents } from './core/events.js';
-import { createRng } from './core/rng.js';
 import { createFx } from './core/fx.js';
-import { MAP, LEGEND } from './data/level.js';
-import { SEED } from './config.js';
+import { defaultLevel } from './levels/index.js';
 import { spotPos } from './game/perception.js';
 
-export function createGame({ events, input } = {}) {
+export function createGame({ events, input, level = defaultLevel } = {}) {
   const game = {
     events: events ?? createEvents(),
-    map: parseMap(MAP, LEGEND),
-    persist: { loop: 0, routesFound: [] },
+    level,
+    map: parseMap(level.map.rows, level.map.legend),
+    persist: { loop: 0, routesFoundBy: { [level.id]: [] } },
     phase: 'title',
     settings: { showCones: true, muted: false },
     debug: { speed: 1 },
     time: 0,
     input: input ?? null,
   };
+  // persist.routesFound is the current level's list in routesFoundBy (each level keeps its own;
+  // a level first played after a switch starts empty).
+  Object.defineProperty(game.persist, 'routesFound', {
+    get: () => (game.persist.routesFoundBy[game.level.id] ??= []),
+    set: (v) => { game.persist.routesFoundBy[game.level.id] = v; },
+    enumerable: true,
+  });
   resetLoop(game);
   return game;
 }
 
 // Rebuild everything that belongs to a single day. NPCs are created by loop.startLoop.
 export function resetLoop(game) {
-  const desk = spotPos('player_desk');
-  game.rng = createRng(SEED);
+  const desk = spotPos(game, 'player_desk');
   game.fx = createFx();
   game.loopTime = 0;
   game.paused = false; // main.js: Esc / the ⏸ button / losing focus; nothing ticks while true
@@ -40,25 +45,18 @@ export function resetLoop(game) {
     busy: false,
     busyPose: null,
     seated: true,
-    smeared: false, // mustard down your sweater: you ate Lin's sandwich, and it shows
+    smeared: false, // ate an edible item (play/interactions.js eat_<type>); a role's evidence `mark` may name it
     action: null,
     locked: false,
     focus: null,
   };
   game.npcs = [];
-  game.world = {
-    projector: 'ok',
-    fixProgress: 0,
-    keycard: 'rack',
-    jacket: 'rack',
-    bossLockedOut: false,
-    sandwich: 'fridge',
-    coffee: 'pot', // 'pot' (one full carafe) | 'taken' (no coffee left today)
-    items: [],
-    kevGone: false,
-    linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
-  };
-  game.suspicion = { boss: 0 };
+  game.world = game.level.initialWorld();
+  const authority = game.level.roles?.authority;
+  game.suspicion = authority ? { [authority.id]: 0 } : {}; // the authority's ❓ meter (play/rules.js), keyed by his id
+  game.watch = {}; // npc id -> the offence he has in sight; play/rules.js publishes it every step, render reads it
   game.caught = null;
   game.outcome = null;
+  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null }; // rules.js only: who saw what, the grudge
+  game.scenario = { beatT: 0, crickets: false }; // scenario.js only: the end beat
 }

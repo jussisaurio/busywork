@@ -8,27 +8,23 @@
 // Graph: [one-shot sounds] -> sfx / voice / music buses -> master -> compressor -> destination.
 // One-shot sounds disconnect themselves when they end (see synth.js sound()). The only
 // long-lived nodes are the buses, the compressor and the music's tremolo chain.
+//
+// What the level's own actions, events and things sound like comes from the level (level.sounds,
+// e.g. src/levels/meeting/sounds.js); this file plays the engine's events and the level's recipes.
 
-import { at, MEETING_AT } from '../config.js';
-import { SPOTS } from '../data/level.js';
+import { spotPos, findNpc } from '../game/perception.js';
+import { dayCue } from '../config.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
-import { babble, hum, voiceOf } from './babble.js';
+import { babble, hum, voiceOf, sfxPitch, voicesFor } from './babble.js';
 import * as sfx from './sfx.js';
 import { createMusic } from './music.js';
 
 const MASTER = 0.55;
 const BUS = { sfx: 0.9, voice: 0.32, music: 0.12 }; // babble is dense: ~9 dB under the sfx bus
 const MAP_W = 30; // fallback when game.map is missing
-const LOBBY_Y = 13.5; // rows below the glass wall are outside (lobby)
-const CLOCK_FROM = at('3:50'); // wall clock starts ticking
-const TOCK_FROM = at('3:55'); // tick-tock
-const HALF_FROM = at('3:57'); // every half minute
 const MAX_TALK = 3; // overlapping utterances
-
-const spotPos = (name) => {
-  const s = SPOTS[name];
-  return s ? { x: s.x + 0.5, y: s.y + 0.5 } : null;
-};
+const NO_SOUNDS = {};
+const REPEAT_FIRST = 1; // seconds before a repeat's first sound when no event rearmed it
 
 // Looked up only inside unlock().
 function getAudioContextClass() {
@@ -88,7 +84,7 @@ export function createAudio(opts = {}) {
   let typeN = 0;
   let stepT = 0;
   let stepAlt = false;
-  let fixT = 1;
+  const repeatT = Object.create(null); // level.sounds.repeats name -> seconds to the next sound
   let clockIdx = null;
   let prevMinute = null;
   let lastTick = -1;
@@ -113,17 +109,12 @@ export function createAudio(opts = {}) {
   function entity(id) {
     if (!game || typeof id !== 'string') return null;
     if (id === 'player') return game.player ?? null;
-    const list = Array.isArray(game.npcs) ? game.npcs : [];
-    for (const n of list) if (n && n.id === id) return n;
-    return null;
+    return (Array.isArray(game.npcs) && findNpc(game, id)) || null;
   }
   function posOf(owner) {
     if (owner && typeof owner === 'object') return owner;
     if (typeof owner !== 'string') return null;
-    const e = entity(owner);
-    if (e) return e;
-    const m = /^(-?[\d.]+),(-?[\d.]+)$/.exec(owner); // fx.say ownerKey for point owners
-    return m ? { x: Number(m[1]), y: Number(m[2]) } : null;
+    return entity(owner);
   }
   // -> { pan, gain, muffle } for a world position (pan by x; quieter far from the player;
   // muffled through the glass when the source and the player are on different sides).
@@ -138,7 +129,8 @@ export function createAudio(opts = {}) {
     const py = fin(p?.y, NaN);
     if (!Number.isFinite(px) || !Number.isFinite(py)) return { pan, gain: 1, muffle: 0 };
     const gain = clamp(1.1 - Math.hypot(x - px, y - py) / 30, 0.5, 1);
-    const muffle = y >= LOBBY_Y !== py >= LOBBY_Y ? 1100 : 0;
+    const lobbyY = fin(game?.level?.zones?.outside?.y0, Infinity) - 0.5; // the glass wall's mid-line, just above the lobby
+    const muffle = y >= lobbyY !== py >= lobbyY ? 1100 : 0;
     return { pan, gain, muffle };
   }
   // Recipe options for a sound at an entity / spot / point.
@@ -146,8 +138,38 @@ export function createAudio(opts = {}) {
     const pl = place(pos);
     return { t: now(), pan: pl.pan, gain: pl.gain * (pl.muffle ? 0.6 : 1), ...extra };
   };
-  const atSpot = (name, extra) => atPos(spotPos(name), extra);
+  const spotAt = (name) => (game?.level ? spotPos(game, name) : null); // a level spot, null on a game without a level
+  const atSpot = (name, extra) => atPos(spotAt(name), extra);
   const atEnt = (id, extra) => atPos(entity(id), extra);
+  const sounds = () => game?.level?.sounds ?? NO_SOUNDS;
+  const entry = (table, key) => (table && typeof key === 'string' && Object.hasOwn(table, key) ? table[key] : null);
+  // The voice an NPC (or the player) speaks with: its `voice`, else its id.
+  const voices = () => voicesFor(game?.level?.voices); // the engine's voices plus the level's cast's
+  const voiceFor = (id) => {
+    const n = entity(id);
+    return n && typeof n.voice === 'string' ? n.voice : id;
+  };
+  // The talking-map key of that voice (as onSay files it).
+  const voiceKey = (id) => {
+    const v = voiceFor(id);
+    const vid = voiceOf(v, voices());
+    return vid === 'generic' && typeof v === 'string' ? v : vid;
+  };
+
+  // Play a level sound spec { sfx, spot | who, opts, when, rearm } (see src/levels/meeting/sounds.js).
+  // `sfx` names a recipe in sfx.js or one of the shared deduped sounds below; a spot or who places it,
+  // otherwise it has no position.
+  function play(spec, payload) {
+    if (!spec || typeof spec !== 'object') return;
+    if (typeof spec.when === 'function' && !spec.when(payload)) return;
+    if (spec.rearm) for (const k of Object.keys(spec.rearm)) repeatT[k] = fin(spec.rearm[k], REPEAT_FIRST);
+    if (typeof spec.sfx === 'string' && Object.hasOwn(SHARED, spec.sfx)) return SHARED[spec.sfx]();
+    const fn = typeof spec.sfx === 'string' ? sfx[spec.sfx] : null;
+    if (typeof fn !== 'function') return;
+    if (spec.spot) fn(E, atSpot(spec.spot, spec.opts));
+    else if (spec.who) fn(E, atEnt(spec.who, spec.opts));
+    else fn(E, { t: now(), ...spec.opts });
+  }
 
   // --- Babble ----------------------------------------------------------------------------
   function killAllBabble() {
@@ -182,7 +204,7 @@ export function createAudio(opts = {}) {
       oldest.end = t + 0.05;
     }
     const start = busy ? t + 0.04 : t;
-    const b = (o.kind === 'thought' ? hum : babble)(E, { ...o, t: start });
+    const b = (o.kind === 'thought' ? hum : babble)(E, { ...o, voices: voices(), t: start });
     talking.set(key, { start: b.start, end: b.end, kill: b.kill, kind: o.kind });
   }
   function onSay(p) {
@@ -190,11 +212,15 @@ export function createAudio(opts = {}) {
     const icons = Array.isArray(p.icons) ? p.icons : [];
     const pl = place(posOf(p.owner));
     if (p.kind === 'sign') {
-      // The 🦗 sign of a failed meeting gets real crickets; other signs are silent.
-      if (icons.some((i) => typeof i === 'string' && i.includes('🦗'))) cricketsOnce();
+      // A sign makes the sound its say names (p.sfx), else the level's sound for one of its icons
+      // (level.sounds.signs); other signs are silent.
+      if (typeof p.sfx === 'string') return play({ sfx: p.sfx }, p);
+      const signs = sounds().signs;
+      const icon = icons.find((i) => entry(signs, i));
+      if (icon !== undefined) play(signs[icon], p);
       return;
     }
-    const vid = voiceOf(typeof p.voice === 'string' ? p.voice : p.owner);
+    const vid = voiceOf(typeof p.voice === 'string' ? p.voice : p.owner, voices());
     const key = vid === 'generic' && typeof p.voice === 'string' ? p.voice : vid;
     if (p.kind === 'thought') {
       const cur = talking.get(key);
@@ -220,17 +246,30 @@ export function createAudio(opts = {}) {
   }
   function tattleOnce(p) {
     if (recently('tattle', 0.3)) return;
-    const by = typeof p?.by === 'string' ? p.by : 'lin';
-    // Contraband: Lin grumbles ("hey, that's mine"), Kev is delighted (a coffee!). A real tattle is the playground "nyah-nyah".
-    if (p?.reason === 'contraband') (by === 'kev' ? sfx.slurp : sfx.grumble)(E, atEnt(by, { by }));
-    else sfx.tattle(E, atEnt(by, { by }));
+    const by = typeof p?.by === 'string' ? p.by : null;
+    const pitch = sfxPitch(voiceFor(by), voices());
+    // Contraband: the witness takes their thing back, by default with a grumble ("hey, that's mine");
+    // level.sounds.contraband can give someone another reaction. A real tattle is the playground "nyah-nyah".
+    if (p?.reason === 'contraband') {
+      const name = entry(sounds().contraband, by)?.sfx;
+      const fn = typeof name === 'string' && typeof sfx[name] === 'function' ? sfx[name] : sfx.grumble;
+      fn(E, atEnt(by, { f: pitch.grumble }));
+    } else sfx.tattle(E, atEnt(by, { k: pitch.tattle }));
   }
+  // NPCs leaving or arriving near level.sounds.elevator's spot take the lift: a ding instead of a door.
   function elevatorOnce() {
-    if (recently('elevator', 1.5)) return;
-    sfx.elevatorDing(E, atSpot('elevator'));
+    const lift = sounds().elevator;
+    if (!lift || recently('elevator', 1.5)) return;
+    sfx.elevatorDing(E, atSpot(lift.spot));
   }
+  const byLift = (n) => {
+    const lift = sounds().elevator;
+    return !!(n && lift && nearSpot(n, lift.spot, fin(lift.radius, 0)));
+  };
+  // Shared sounds a level spec can name: deduped, so two triggers in a moment play once. No position.
+  const SHARED = { crickets: cricketsOnce, elevator: elevatorOnce };
   const nearSpot = (pos, name, r) => {
-    const s = spotPos(name);
+    const s = spotAt(name);
     return !!(pos && s && Math.hypot(fin(pos.x, 1e9) - s.x, fin(pos.y, 1e9) - s.y) <= r);
   };
 
@@ -245,90 +284,60 @@ export function createAudio(opts = {}) {
       prevMinute = null;
     },
     say: onSay,
-    'action:start': (p) => {
-      switch (p?.type) {
-        case 'brew_coffee':
-          return sfx.gurgle(E, atSpot('coffee'));
-        case 'spill_coffee':
-          return sfx.pour(E, atSpot('projector'));
-        case 'take_sandwich':
-          return sfx.fridgeOpen(E, atSpot('fridge'));
-        case 'take_keycard':
-          return sfx.rustle(E, atSpot('coat_rack', { gain: 0.6 }));
-      }
-    },
-    'action:done': (p) => {
-      if (p?.type === 'brew_coffee') sfx.machineBeep(E, atSpot('coffee'));
-    },
-    'item:drop': (p) => sfx.drop(E, atEnt('player', { type: p?.type })),
+    'action:start': (p) => play(entry(sounds().actions?.start, p?.type), p),
+    'action:done': (p) => play(entry(sounds().actions?.done, p?.type), p),
+    'item:drop': (p) => sfx.drop(E, atEnt('player', { type: entry(sounds().drops, p?.type) })),
     'item:pickup': () => sfx.pickup(E, atEnt('player')),
     'player:sit': () => sfx.creak(E, atEnt('player')),
     'player:stand': () => sfx.creak(E, atEnt('player', { up: true })),
     'busy:start': (p) => sfx.shuffle(E, atEnt('player', { pose: p?.pose })),
     'witness:notice': (p) => {
       // rules.js says a ❓ thought right before this; its hum already is the "hm?".
-      const vid = voiceOf(p?.by);
+      const vid = voiceOf(p?.by, voices());
       const h = last[`hum:${vid}`];
       if (h !== undefined && fin(E.ctx.currentTime, 0) - h < 0.15) return;
-      sfx.notice(E, atEnt(p?.by, { by: p?.by }));
+      sfx.notice(E, atEnt(p?.by, { f: sfxPitch(voiceFor(p?.by), voices()).notice }));
     },
     'witness:tattle': (p) => tattleOnce(p),
-    'boss:suspicious': () => sfx.tension(E, atEnt('boss')),
-    'boss:workAssigned': () => sfx.workAssigned(E, { t: now() }),
     'work:done': () => sfx.relief(E, { t: now() }),
-    caught: () => {
+    caught: (p) => {
       music?.kill();
-      // Freeze-frame: everyone but the boss's "❗" shuts up.
+      // Freeze-frame: everyone but the catcher's "❗" shuts up.
       const t = now();
+      const keep = voiceKey(p?.by);
       for (const [k, b] of talking) {
-        if (k !== 'boss' && b.end > t) {
+        if (k !== keep && b.end > t) {
           b.kill(t);
           b.end = t + 0.05;
         }
       }
       sfx.caught(E, { t });
     },
-    'projector:broken': () => sfx.splashZap(E, atSpot('projector')),
-    'kev:alerted': () => sfx.clank(E, atEnt('kev')),
-    'projector:fixing': () => {
-      fixT = 0.9;
-      sfx.clank(E, atSpot('projector', { soft: true }));
-    },
-    'projector:fixed': () => sfx.fixed(E, atSpot('projector')),
-    'keycard:taken': () => sfx.jingle(E, atEnt('player')),
-    'sandwich:taken': () => sfx.fridgeClose(E, atSpot('fridge')),
-    'sandwich:eaten': () => sfx.munch(E, atEnt('player')),
-    'sandwich:returned': () => sfx.swish(E, atEnt('player')),
-    'coffee:confiscated': () => sfx.swish(E, atEnt('player')),
-    'coffee:taken': (p) => {
-      if (p?.by && p.by !== 'player') sfx.machineBeep(E, atSpot('coffee'));
-    },
-    'sandwich:missing': () => sfx.fridgeOpen(E, atSpot('fridge', { short: true })),
-    'boss:jacket': () => sfx.rustle(E, atEnt('boss')),
-    'boss:lockedOut': () => sfx.rattle(E, atSpot('door_out')),
-    'boss:bang': () => sfx.bang(E, atSpot('door_out')),
-    'kev:left': () => elevatorOnce(),
     'npc:vanish': (p) => {
       const n = entity(p?.id);
-      if (n && nearSpot(n, 'elevator', 2.5)) return elevatorOnce();
+      if (byLift(n)) return elevatorOnce();
       sfx.door(E, atPos(n));
     },
     'npc:appear': (p) => {
       const n = entity(p?.id);
-      if (n && nearSpot(n, 'elevator', 2.5)) return elevatorOnce();
+      if (byLift(n)) return elevatorOnce();
       sfx.door(E, atPos(n, { open: true }));
     },
     'meeting:gather': () => {
-      // Distant murmur from the meeting room (bypasses the per-voice throttle).
-      const pl = place(spotPos('projector'));
+      // Distant murmur from the meeting (level.sounds.murmur's spot; bypasses the per-voice throttle):
+      // the whole cast, spread left to right by meeting seat.
+      const m = sounds().murmur;
+      const pl = place(m && m.spot ? spotAt(m.spot) : null);
       const t = now();
-      ['boss', 'lin', 'kev'].forEach((v, i) => {
+      const cast = murmurCast();
+      cast.forEach((n, i) => {
         babble(E, {
-          voiceId: v,
+          voiceId: typeof n.voice === 'string' ? n.voice : n.id,
+          voices: voices(),
           icons: ['💬', '💬', '💬'],
           kind: 'speech',
           t: t + 0.25 * i,
-          pan: pl.pan + (i - 1) * 0.15,
+          pan: pl.pan + (i - (cast.length - 1) / 2) * 0.15,
           gain: 0.35 * pl.gain,
           muffle: 900,
         });
@@ -344,6 +353,17 @@ export function createAudio(opts = {}) {
       else if (r === 'blamed') sfx.sadTrombone(E, { t: t + 0.3, gain: 0.9 });
     },
   };
+
+  // The cast in meeting-seat order, left to right (seatless NPCs last, in cast order).
+  function murmurCast() {
+    const spots = game?.level?.spots;
+    const seatX = (n) => {
+      const s = spots && typeof n.meetingSpot === 'string' && Object.hasOwn(spots, n.meetingSpot) ? spots[n.meetingSpot] : null;
+      return s ? fin(s.x, Infinity) : Infinity;
+    };
+    const npcs = Array.isArray(game?.npcs) ? game.npcs.filter((n) => n && typeof n === 'object') : [];
+    return npcs.sort((a, b) => seatX(a) - seatX(b) || 0);
+  }
 
   const guard = (fn) => (payload) => {
     if (!live()) return;
@@ -390,27 +410,31 @@ export function createAudio(opts = {}) {
     stepT = (p.busyPose === 'folder' ? 0.36 : 0.27) / speed;
   }
   // quiet: no ticks (meeting outcome or caught); the 4:00 chime still rings unless caught.
-  function clockTicks(minute, quiet, caught) {
+  // day: the level's times (meetingAt; clockTickAt: the wall clock starts ticking; tockAt: tick-tock;
+  // halfMinuteAt: a tick every half minute; config.js dayCue gives the defaults).
+  function clockTicks(minute, quiet, caught, day) {
+    const { meetingAt } = day;
+    const [clockTickAt, tockAt, halfMinuteAt] = ['clockTickAt', 'tockAt', 'halfMinuteAt'].map((n) => dayCue(day, n));
     const m = fin(minute, 0);
     if (prevMinute === null || m < prevMinute) {
       prevMinute = m;
       clockIdx = Math.floor(m * 2);
       return;
     }
-    if (prevMinute < MEETING_AT && m >= MEETING_AT && !caught) sfx.fourOClock(E, { t: now() });
+    if (prevMinute < meetingAt && m >= meetingAt && !caught) sfx.fourOClock(E, { t: now() });
     prevMinute = m;
     const idx = Math.floor(m * 2); // half-minute index
     if (idx <= clockIdx) return;
     clockIdx = idx;
     if (quiet) return;
     const mm = idx / 2; // the crossed mark
-    if (mm < CLOCK_FROM || mm >= MEETING_AT) return;
-    if (idx % 2 === 1 && mm < HALF_FROM) return; // half minutes only near the end
+    if (mm < clockTickAt || mm >= meetingAt) return;
+    if (idx % 2 === 1 && mm < halfMinuteAt) return; // half minutes only near the end
     const t = fin(E.ctx.currentTime, 0);
     if (t - lastTick < 0.12) return; // fast-forward: don't machine-gun
     lastTick = t;
-    const u = (mm - CLOCK_FROM) / (MEETING_AT - CLOCK_FROM);
-    sfx.clockTick(E, { t: now(), urgency: u, tock: mm >= TOCK_FROM && idx % 2 === 0 });
+    const u = (mm - clockTickAt) / (meetingAt - clockTickAt);
+    sfx.clockTick(E, { t: now(), urgency: u, tock: mm >= tockAt && idx % 2 === 0 });
   }
 
   function step(g, realDt) {
@@ -429,7 +453,7 @@ export function createAudio(opts = {}) {
         play: wantMusic && !muted && ctxOk && day && !g.outcome && !g.caught,
         duck: ducking,
         rate: fin(clock.forced, 0) > 0 ? 1.45 : clock.ff ? 1.3 : 1,
-        level: fin(clock.minute, 0) >= CLOCK_FROM ? 0.6 : 1, // make room for the clock
+        level: fin(clock.minute, 0) >= fin(g.level?.day && dayCue(g.level.day, 'clockTickAt'), Infinity) ? 0.6 : 1, // make room for the clock
       });
     }
     if (muted || !ctxOk || !day) {
@@ -442,14 +466,19 @@ export function createAudio(opts = {}) {
     else typeT = 0;
     if (p.moving) footsteps(p, dt, clamp(fin(g.debug?.speed, 1), 1, 3));
     else stepT = 0;
-    if (g.world?.projector === 'fixing') {
-      fixT -= dt;
-      if (fixT <= 0) {
-        fixT = rand(1.1, 2.0);
-        sfx.clank(E, atSpot('projector', { soft: true, gain: 0.7 }));
+    // level.sounds.repeats: a sound every few seconds while the world is in some state.
+    const reps = g.level?.sounds?.repeats;
+    if (reps && g.world) {
+      for (const name of Object.keys(reps)) {
+        const r = reps[name];
+        if (!r || typeof r.while !== 'function' || !r.while(g.world)) continue;
+        repeatT[name] = fin(repeatT[name], REPEAT_FIRST) - dt;
+        if (repeatT[name] > 0) continue;
+        repeatT[name] = rand(r.every[0], r.every[1]);
+        play(r);
       }
     }
-    clockTicks(clock.minute, !!(g.outcome || g.caught), !!g.caught);
+    if (g.level?.day) clockTicks(clock.minute, !!(g.outcome || g.caught), !!g.caught, g.level.day);
   }
 
   return {
@@ -458,6 +487,9 @@ export function createAudio(opts = {}) {
       attached = true;
       game = g;
       for (const [name, fn] of Object.entries(H)) g.events.on(name, guard(fn));
+      // The level's own events (level.sounds.events): one spec each.
+      const evs = g.level?.sounds?.events;
+      if (evs) for (const [name, spec] of Object.entries(evs)) g.events.on(name, guard((p) => play(spec, p)));
     },
 
     unlock() {

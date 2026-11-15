@@ -1,5 +1,5 @@
 // Shared visual-effect state helpers. Gameplay/sim code calls these; the renderer
-// draws game.fx; audio listens to the 'say' and 'fx:*' events.
+// draws game.fx; audio listens to the 'say' event.
 //
 // game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [] }
 
@@ -31,7 +31,7 @@ export function say(game, owner, icons, opts = {}) {
   return bubble;
 }
 
-// kind: 'smoke' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
+// kind: 'puff' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
 export function burst(game, kind, x, y, n = 8, opts = {}) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;
@@ -52,7 +52,6 @@ export function burst(game, kind, x, y, n = 8, opts = {}) {
 // the player (both live positions), fading out over ttl.
 // kind: 'notice' (first sight, faint) | 'tattle' (a witness shouts) | 'caught' (the boss)
 export function sightline(game, from, kind = 'notice', ttl = 0.8) {
-  if (!game.fx.lines) game.fx.lines = [];
   game.fx.lines = game.fx.lines.filter((l) => l.from !== from);
   game.fx.lines.push({ from, to: 'player', kind, age: 0, ttl });
 }
@@ -70,14 +69,12 @@ export function updateFx(game, dt) {
     p.age += dt;
     p.x += p.vx * dt;
     p.y += p.vy * dt;
-    p.vx *= 0.92;
-    p.vy *= 0.92;
+    p.vx *= 0.92 ** (dt * 60); // drag per 1/60 s, whatever the step
+    p.vy *= 0.92 ** (dt * 60);
   }
   fx.particles = fx.particles.filter((p) => p.age < p.ttl);
-  if (fx.lines) {
-    for (const l of fx.lines) l.age += dt;
-    fx.lines = fx.lines.filter((l) => l.age < l.ttl);
-  }
+  for (const l of fx.lines) l.age += dt;
+  fx.lines = fx.lines.filter((l) => l.age < l.ttl);
   if (fx.shake.t > 0) fx.shake.t = Math.max(0, fx.shake.t - dt);
   else fx.shake.amount = 0;
 }

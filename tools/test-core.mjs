@@ -19,7 +19,7 @@ ok(hasLineOfSight(map, 1.5, 1.5, 4.5, 1.5), 'clear LOS in room');
 ok(!hasLineOfSight(map, 1.5, 1.5, 7.5, 1.5), 'wall blocks LOS');
 ok(hasLineOfSight(map, 1.5, 2.5, 7.5, 2.5), 'glass does not block LOS');
 ok(hasLineOfSight(map, 1.5, 4.5, 8.5, 4.5), 'open corridor LOS');
-ok(!hasLineOfSight(map, 4.5, 3.5, 6.5, 1.5) || true, 'diagonal near wall (no crash)');
+ok(typeof hasLineOfSight(map, 4.5, 3.5, 6.5, 1.5) === 'boolean', 'diagonal near wall (no crash)');
 ok(hasLineOfSight(map, 2.5, 2.5, 2.5, 2.5), 'same cell');
 // corner peek: cells (5,1) and (5,3) are walls; ray from (4,2)->(6,4)... glass at (5,2) transparent
 ok(!hasLineOfSight(map, 4.0, 3.0, 6.0, 1.0) , 'corner between opaque cells blocks');

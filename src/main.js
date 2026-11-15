@@ -1,19 +1,37 @@
 // Browser entry point: wires input, renderer, audio and the fixed-step loop.
-import { FIXED_DT, FF_MULT, FORCED_MULT } from './config.js';
+import { FIXED_DT } from './config.js';
 import { createGame } from './state.js';
-import { startLoop, tick } from './game/loop.js';
+import { startLoop, tick, frameMult } from './game/loop.js';
 import { updateFx } from './core/fx.js';
 import { createInput } from './play/input.js';
 import { createRenderer } from './render/renderer.js';
 import { PAUSE_BTN } from './render/hud.js';
 import { VIEW_W, VIEW_H } from './render/util.js';
 import { createAudio } from './audio/audio.js';
+import { getLevel } from './levels/index.js';
 
 const SPEEDS = [1, 2, 4, 8];
 
 const canvas = document.getElementById('game');
+
+// ?level=<id> picks the level; without it, the registry's default. An unknown id replaces the canvas with
+// getLevel's error (which lists the levels), so a typo is visible, not a silent level 1.
+function pickLevel() {
+  const id = new URLSearchParams(location.search).get('level');
+  if (id === null) return undefined;
+  try {
+    return getLevel(id);
+  } catch (err) {
+    const note = document.createElement('pre');
+    note.textContent = `BUSYWORK: ${err.message}`;
+    note.style.cssText = 'color:#f3e6c8;font:18px/1.5 monospace;padding:24px;white-space:pre-wrap;';
+    canvas.replaceWith(note);
+    throw err;
+  }
+}
+
 const input = createInput(window);
-const game = createGame({ input });
+const game = createGame({ input, level: pickLevel() });
 const renderer = createRenderer(canvas);
 const audio = createAudio();
 audio.attach(game);
@@ -81,7 +99,7 @@ function frame(now) {
       acc += realDt;
       while (acc >= FIXED_DT && game.phase === 'day') {
         acc -= FIXED_DT;
-        const mult = (game.clock.forced > 0 ? FORCED_MULT : game.clock.ff ? FF_MULT : 1) * game.debug.speed;
+        const mult = frameMult(game);
         for (let i = 0; i < mult && game.phase === 'day'; i++) tick(game, FIXED_DT);
       }
       if (game.phase === 'end') game._endedAt = game.time;

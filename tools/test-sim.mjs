@@ -1,12 +1,18 @@
 // Headless tests for the NPC sim (src/sim/*). Run: node tools/test-sim.mjs [-v]
-// Drives the sim directly (no loop.js / play/*): updateNpcs + updateFx + clock advance per step.
+// Drives the sim directly (no player, interactions, rules or scenario): updateNpcs + updateFx + advanceClock per step.
 import { createGame, resetLoop } from '../src/state.js';
 import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
+import { speak } from '../src/sim/override.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
-import { GAME_MIN_PER_SEC, FIXED_DT, MEETING_AT, at, formatClock } from '../src/config.js';
-import { SPOTS, ROUTES } from '../src/data/level.js';
-import { MEETING_GATHER_AT, NPC_DEFS } from '../src/data/schedules.js';
+import { advanceClock } from '../src/game/loop.js';
+import { FIXED_DT, DAY_START, at, formatClock, clockArg, dayCue } from '../src/config.js';
+import { inZone } from '../src/game/perception.js';
+import { levels } from '../src/levels/index.js';
+
+const LEVEL = levels.meeting; // createGame()'s default level
+const { spots: SPOTS, patrols: ROUTES } = LEVEL;
+const { meetingAt: MEETING_AT, gatherAt: MEETING_GATHER_AT } = LEVEL.day;
 
 const VERBOSE = process.argv.includes('-v');
 let fails = 0;
@@ -78,8 +84,7 @@ function runDay({ hooks = [], until = MEETING_AT + 0.5, sampleAt = [], onStep, g
     while (samples.length && samples[0] <= m) {
       R.snaps[samples.shift()] = game.npcs.map((n) => [n.id, n.x, n.y, n.dir, n.glance.offset, n.active, n.pose, n.label]);
     }
-    game.clock.minute += FIXED_DT * GAME_MIN_PER_SEC;
-    game.loopTime += FIXED_DT;
+    advanceClock(game, FIXED_DT);
     R.steps++;
   }
   R.ms = performance.now() - t0;
@@ -117,6 +122,21 @@ const common = (R, tag) => {
   ok(bad.length === 0, `nav: all spots mutually reachable${bad.length ? ' — ' + bad.slice(0, 4).join(', ') : ''}`);
   const badRoute = Object.entries(ROUTES).flatMap(([r, pts]) => pts.filter(([x, y]) => !g.map.isWalkable(x, y)).map((q) => `${r}:${q}`));
   ok(badRoute.length === 0, 'nav: route points are floor');
+  // Level 1 writes its times as at('3:10'), which counts from the default start (DAY_START): its day must agree.
+  ok(LEVEL.day.start === DAY_START, 'level day.start matches the default start its at() times count from');
+  // Clocks read the level's start: an afternoon day (2:30 PM) and a morning one (9:00 AM).
+  ok(at('2:30') === 0 && at('4:00') === 90 && formatClock(90) === '4:00 PM' && clockArg(90) === '4:00', 'clock: 2:30 PM day (the default)');
+  const AM = 9 * 60;
+  ok(at('9:30', AM) === 30 && at('12:15', AM) === 195 && at('13:05', AM) === 245, "clock: 9:00 AM day reads '9:30' as AM, '12:15' as noon, '13:05' as 24-hour");
+  ok(formatClock(0, AM) === '9:00 AM' && formatClock(245, AM) === '1:05 PM', 'clock: 9:00 AM day formats');
+  ok([0, 30, 179, 180, 245, 600].every((m) => at(clockArg(m, AM), AM) === m) && [0, 89, 90].every((m) => at(clockArg(m)) === m), 'clock: clockArg reads back through at() in both days');
+  const bare = { start: DAY_START, gatherAt: 26, meetingAt: 30 };
+  ok(dayCue(bare, 'clockRedAt') === 25 && dayCue(bare, 'clockTickAt') === 25 && dayCue(bare, 'tockAt') === 28
+    && dayCue(bare, 'halfMinuteAt') === 29 && dayCue(bare, 'beamAt') === 25, 'cues: default to minutes before meetingAt');
+  ok(dayCue({ ...bare, clockRedAt: 20 }, 'clockTickAt') === 20 && dayCue({ ...bare, tockAt: 0 }, 'tockAt') === 0,
+    'cues: a set time wins, and the wall clock ticks from a set red time');
+  const routeIds = LEVEL.routes.map((r) => r.id);
+  ok(LEVEL.outcomeOrder.length === routeIds.length && LEVEL.outcomeOrder.every((id) => routeIds.includes(id)), 'level outcomeOrder lists each route once');
 }
 
 // ---------------------------------------------------------------- 1. untouched day
@@ -155,7 +175,7 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   ok(said(R, 'boss', '🚬❓').length === 1, 'boss thinks 🚬❓ once');
   const jk = evAt(R, 'boss:jacket');
   ok(jk != null && jk >= at('3:35') && jk < at('3:37'), `boss takes jacket ~3:35 (${fmtS(jk)})`);
-  ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss' && npc(R, 'boss').hasJacket, 'keycard and jacket -> boss');
+  ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss', 'keycard and jacket -> boss');
   ok(arr(R, 'boss', 'smoke', at('3:35'), at('3:48')) != null, `boss reaches smoke spot (${fmt(arr(R, 'boss', 'smoke'))})`);
   ok(arr(R, 'boss', 'boss_desk', at('3:48'), at('3:54')) != null, `boss back at desk before 3:54 (${fmt(arr(R, 'boss', 'boss_desk', at('3:48')))})`);
   ok(!R.game.world.bossLockedOut && !R.counts['boss:lockedOut'], 'boss NOT locked out');
@@ -187,9 +207,9 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
     hooks: [{ at: at('3:20'), fn: (g) => { g.world.keycard = 'player'; } }],
     onStep: (g) => {
       const b = g.npcs.find((n) => n.id === 'boss');
-      if (b.y >= 14) leftOffice = true;
+      if (inZone(g, 'outside', b.x, b.y)) leftOffice = true;
       if (g.world.bossLockedOut && lockedAt == null) lockedAt = g.clock.minute;
-      if (lockedAt != null && b.y < 14) reentered = true;
+      if (lockedAt != null && !inZone(g, 'outside', b.x, b.y)) reentered = true;
     },
   });
   const b = npc(R, 'boss');
@@ -314,10 +334,22 @@ let projRun = null;
   common(R, 'empty pot');
 }
 
+// ---------------------------------------------------------------- speak: an `after` line keeps its kind and ttl
+{
+  let seen = null;
+  const lines = [{ say: ['🧪'], kind: 'thought', ttl: 1.1 }, { say: ['🧫'], kind: 'thought', after: 0.5, ttl: 7 }];
+  runDay({
+    hooks: [{ at: at('2:33'), fn: (g) => speak(g, g.npcs.find((n) => n.id === 'kev'), lines) }],
+    until: at('2:35'),
+    onStep: (g) => { seen ??= g.fx.bubbles.find((b) => b.owner === 'kev' && b.icons.join('') === '🧫') ?? null; },
+  });
+  ok(seen && seen.ttl === 7 && seen.kind === 'thought', `speak: the after line shows with its own ttl and kind (${seen ? `${seen.ttl}, ${seen.kind}` : 'never shown'})`);
+}
+
 // ---------------------------------------------------------------- away window too short
 { // Temporarily shorten the boss's restroom window (3:12 -> 3:15): he can't get there in time,
   // so he never vanishes and just carries on with the next entry. Restored right after.
-  const entry = NPC_DEFS.find((d) => d.id === 'boss').schedule.find((e) => e.at === at('3:22'));
+  const entry = LEVEL.cast.find((d) => d.id === 'boss').schedule.find((e) => e.at === at('3:22'));
   entry.at = at('3:15');
   let R;
   try { R = runDay({ until: at('3:30') }); } finally { entry.at = at('3:22'); }
@@ -352,6 +384,37 @@ let projRun = null;
   ok(glances >= 8, `determinism: boss glances during the day (${glances})`);
   ok(tA.length === tB.length && tA.every((s, i) => s === tB[i]), 'determinism: boss glances identical with/without projector broken');
   ok(tA.every((s, i) => s === tC[i]), 'determinism: boss glances identical with/without sandwich stolen');
+}
+
+// ---------------------------------------------------------------- 5b. level data drives the specials (P3)
+{
+  // npc.anim follows the schedule entry: the boss smokes from his 3:35 entry (coat-rack walk included) until 3:48.
+  const anims = [];
+  runDay({ until: at('3:50'), onStep: (g) => {
+    const b = g.npcs[0];
+    const last = anims[anims.length - 1];
+    if (b.anim !== (last?.anim ?? null)) anims.push({ m: g.clock.minute, anim: b.anim, label: b.label });
+  } });
+  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'visit smoke' && fmt(anims[0].m) === '3:35'
+    && anims[1].anim === null, `anim: boss 'smoking' only during 'visit smoke' (${anims.map((a) => `${fmt(a.m)} ${a.anim}`).join(', ')})`);
+
+  // A hook name the level doesn't define fails when the NPC is created, not mid-day.
+  const badCast = LEVEL.cast.map((d) => (d.id === 'kev'
+    ? { ...d, schedule: d.schedule.map((e) => (e.arrive ? { ...e, arrive: 'noSuchHook' } : e)) } : d));
+  let msg = '';
+  try { createNpcs(createGame({ level: { ...LEVEL, cast: badCast } })); } catch (e) { msg = e.message; }
+  ok(/noSuchHook/.test(msg), `hooks: an unknown behaviour name throws at createNpcs (${msg || 'no throw'})`);
+
+  // Without mechanics, hooks, leave effects or a fail sign, a level still runs its day: a cast on plain schedules.
+  const strip = ({ prelude, arrive, gone, anim, ...e }) => e;
+  const plain = {
+    ...LEVEL, lures: undefined, hunts: undefined, doors: undefined, behaviours: undefined, failSign: undefined,
+    cast: LEVEL.cast.map(({ meetingArrive, ...d }) => ({ ...d, schedule: d.schedule.map(strip) })),
+  };
+  const P = runDay({ game: createGame({ level: plain }), hooks: [breakAt(at('2:50'))] });
+  const specials = ['kev:alerted', 'boss:jacket', 'boss:lockedOut', 'kev:left', 'coffee:taken', 'sandwich:missing'];
+  ok(specials.every((e) => !P.counts[e]) && P.counts['meeting:gather'] === 1 && P.game.npcs.every((n) => !n._navFail),
+    `level data: a level without mechanics or hooks runs its day (${specials.filter((e) => P.counts[e]).join(' ') || 'no specials'})`);
 }
 
 // ---------------------------------------------------------------- 6. perf (fast-forward headroom)

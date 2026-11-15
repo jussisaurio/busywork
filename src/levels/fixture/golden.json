@@ -1,0 +1,1295 @@
+{
+ "note": "written by tools/golden.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "pretend until 2:53",
+    "goto microwave pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "05d18f102ac87af0",
+    "88a971535ff5f063",
+    "65dc3bfb0d1c7fd6",
+    "002f7e1ecde4d988",
+    "97ad47ef7c47dcb0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto calendar",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "6765111f32172ece",
+    "2e2e06dbd7cd329d",
+    "4c2a88e1f86f200a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "67d6355faba769c9",
+    "cc1344890a09589a",
+    "c56cbd03bc0ad33a",
+    "0a786e48a710a005"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "1c593aeba72c64da",
+    "3b5c7c6feceb34f7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:53",
+    "goto microwave pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "05d18f102ac87af0",
+    "88a971535ff5f063",
+    "65dc3bfb0d1c7fd6",
+    "d080b7169b3286f6",
+    "b7e24b06cdc8ec75"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "2561c40d08253c8e",
+    "aa6bca4229f16214"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "67d6355faba769c9",
+    "cc1344890a09589a",
+    "aedead71373fb269",
+    "900ef09fc4cb713b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "33acfd7f97c5ed3d",
+    "e728651805953912",
+    "dd1008b024f8b60c",
+    "c9499a50b07c16c8",
+    "8a7a8a2956faacc3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "goto party",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "2ea992ca0824725c",
+    "1c35ddf10bf923e1",
+    "d9ca337da6e6e760",
+    "73429acc0bdf99c6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "9616b61f151fe7e7",
+    "355c2d4cac746083",
+    "b5e6587a5a6d8a70",
+    "08b8792c660d84c4"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "goto calendar",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "3c9a2023b0a9aac5",
+    "b70980a9fcf6eb69",
+    "9621f84d4b2836c4",
+    "5fe448c3f4a0318b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "0880cd49e1e5ba04",
+    "c2dd402f93dbc58d",
+    "2116eb8d8fe716eb",
+    "5dde62c0c06e656e",
+    "93c1500bdcd220e5",
+    "1ae1a246a8386c12"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "pretend until 2:45",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "win cake",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "010d116022a3efa3",
+    "89d5fbb0fe4303ea",
+    "90613194582012d0",
+    "d2f12e4b225c7236",
+    "70a8b59eb40fedce",
+    "2cc8b9e8ced680ee"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:43",
+    "goto cake_stand",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "81c7b068bba7b1fe",
+    "170901904e5e0c12",
+    "bdfddfbcae895c2d",
+    "3bdf72cc500cbe5f",
+    "63eac1f5afd16c2c"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "pretend until 2:56",
+    "wait until 2:45",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "3582de2c38da80ee",
+    "157a5147458d934c",
+    "83bd7e757750e017",
+    "484dbb23a1d963a0",
+    "8f119dfb8b38b0ef",
+    "38081fadda0fce2a",
+    "c24aa6012a0358c8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "010d116022a3efa3",
+    "d5059fb53a9be892",
+    "805bfad19506cc1c",
+    "2ffc02c138f9466e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "262bc1fdc615e573",
+    "7696822863432c8f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "0880cd49e1e5ba04",
+    "c2dd402f93dbc58d",
+    "ee324831b8226a1b",
+    "95ad10eda17e716c",
+    "8cbf3964dca3506c",
+    "572e48ccfaa3b7f0"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto party pretend",
+    "interact",
+    "interact",
+    "goto cake_stand pretend",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "7a621114ef893f4f",
+    "45e58f703b20d5d7",
+    "94161b298889259b",
+    "fd6d08feb8919f2c",
+    "32aafe44f5811e54",
+    "0bf947c861fddc40",
+    "d2f32bb410ae7de5",
+    "ff5fe2ecf5add974",
+    "84051edf66a11cb8"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto cake_stand",
+    "interact",
+    "interact",
+    "pretend until 2:53",
+    "sit pretend",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "33863fbed9203b53",
+    "240b73bdc74daf8d",
+    "a1221ec3e8ac1e42",
+    "8a4030e2dd57fb6c",
+    "395212952142b49e",
+    "413c467daae33990",
+    "1769f6d5643eca22",
+    "1e12b1ea8ae25879",
+    "7e1472e103199161",
+    "239a431ac0ee0fee"
+   ]
+  },
+  {
+   "cmds": [
+    "goto calendar",
+    "interact",
+    "wait until 2:55",
+    "goto microwave",
+    "interact",
+    "goto calendar",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "6765111f32172ece",
+    "e5a836a0877d2ea8",
+    "2e2e06dbd7cd329d",
+    "c484ff629739df69",
+    "c7914ff32c9aae9d",
+    "b8f5c880967adf59",
+    "f164dadc1cf4ab59",
+    "5a0669017ae1b99c",
+    "df39c6630601a97c",
+    "b0a69b79f0aa2283"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "0880cd49e1e5ba04",
+    "c2dd402f93dbc58d",
+    "2116eb8d8fe716eb",
+    "5dde62c0c06e656e",
+    "86326221d0d1b9d4",
+    "63eac1f5afd16c2c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "pretend until 3:00"
+   ],
+   "summary": "win calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "b4f5de289f07adfc",
+    "a4d82f0f11e66e90"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "010d116022a3efa3",
+    "d5059fb53a9be892",
+    "0aab0bece2762c83",
+    "aba81f18c0287110"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "49326c0ebdbc5c2c",
+    "b880b1bc504e5bda",
+    "643fcd148bcfec78",
+    "a2ecb5209646adbe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "pretend until 2:44",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "ef0af8056d61e621",
+    "e4cf6031f405174b",
+    "0d737671f8874e22",
+    "e0ac03ff370168d7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "win cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "3c9a2023b0a9aac5",
+    "6d3418236df518d2",
+    "2fe1ddd6a4068a93"
+   ]
+  },
+  {
+   "cmds": [
+    "goto doreen_desk pretend",
+    "wait 7.5s",
+    "goto calendar",
+    "goto doreen_desk pretend",
+    "goto calendar",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "ffb31ee48bace085",
+    "0dbd4b9e5b02edcd",
+    "b4df60d0e4896905",
+    "6b45363b332c536f",
+    "23d7409373401be4",
+    "fbb1eb7a95e9ef76",
+    "4fd32e00bddc8aca",
+    "64ec1c60d4b4b904"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "wait 3s",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "010d116022a3efa3",
+    "d5059fb53a9be892",
+    "0aab0bece2762c83",
+    "d6d2b1335d57fbd9",
+    "d6c54d52567906ce",
+    "4b93f0fdd2863d1d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand",
+    "interact",
+    "goto party pretend",
+    "goto cake_stand",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "781c19bd45a78b68",
+    "dbe65431ab119fdb",
+    "b5b5a0f6449958bc",
+    "ee31a51373c2b887",
+    "8449c4a2af2b1422",
+    "37014dcbaf4c02f4",
+    "90cadbb43df6a8f0",
+    "e20126bd33fb2425",
+    "f9168f772343c072",
+    "9c8a0a90996fdf08"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "pretend 3s",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "67d6355faba769c9",
+    "aaa7717a48b7b5d3",
+    "7fe4695d25335955",
+    "054656ada52cb5f2",
+    "5ba15332fb4e9d1b",
+    "3dcff03426fa78b5",
+    "1ecf9623725f1f57",
+    "ba6feddf5c7562ca",
+    "2b89591dfbbee329"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "goto calendar",
+    "wait until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "3c9a2023b0a9aac5",
+    "b70980a9fcf6eb69",
+    "017e8890582874ef",
+    "81154b0e48940e7a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "33dccb10d24f0bd6",
+    "ca7a86dea7001bac",
+    "1cdff3b5110df3b6",
+    "fbf854ed213eb8fe",
+    "860e9628452e9680",
+    "2ffc02c138f9466e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto calendar pretend",
+    "goto cake_stand pretend",
+    "interact",
+    "goto door pretend",
+    "goto microwave pretend",
+    "interact",
+    "sit pretend",
+    "goto calendar pretend",
+    "goto cake_stand pretend",
+    "interact",
+    "goto microwave pretend",
+    "sit pretend",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake+calendar",
+   "digests": [
+    "9616b61f151fe7e7",
+    "e1191da81bf45a63",
+    "0c0bd81a13d99207",
+    "9a954bbfb27a7166",
+    "bd446af81d3f379f",
+    "3eae10b07e3bb20e",
+    "57e2b8843c5af455",
+    "602cc85e1df281ef",
+    "4214cfb701a50f40",
+    "170ffdd8e467c77d",
+    "296c08d5d352de55",
+    "119f9f29b3bc1a2e",
+    "058aff958f92abed",
+    "4c67731d514cf140",
+    "54dfaed41e52ba1e",
+    "d7f1f4a6f56306bb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "pretend until 2:45",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "010d116022a3efa3",
+    "89d5fbb0fe4303ea",
+    "90613194582012d0",
+    "f807b8a621ed9472",
+    "aac9c86fce37d6ec",
+    "e288508f051de0ed",
+    "6022f7307963436d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:42",
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "12646a98fed77f57",
+    "7bc5fedcb50b65dc",
+    "1d6ece3fd49c7ebd",
+    "ac6c0c1de4c2a84c",
+    "38e21c0ca43277e9",
+    "273dff9cfdc9f38e",
+    "21af766e731d24fa",
+    "63a7018a4d1fa350",
+    "fbbe0f2c0091ce66",
+    "38626089ddd97321"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto microwave",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "7a621114ef893f4f",
+    "d445b148c159bd3c",
+    "5e9dbb41f3e67124",
+    "054656ada52cb5f2",
+    "5ba15332fb4e9d1b",
+    "3dcff03426fa78b5",
+    "1ecf9623725f1f57",
+    "2ef43ab170c415d9",
+    "e3e1ec14904da3a9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto calendar",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake+calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "257a1b4aeb83c009",
+    "e31ba64d4caa4f00",
+    "09fb0d51a6519494",
+    "eb7303b517277410",
+    "621b2b9615a50a68",
+    "b5bd9cf64dfcf9f2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "win calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "257a1b4aeb83c009",
+    "42eef2801db71002",
+    "cdcac55a9aa201d4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "win cake+calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "257a1b4aeb83c009",
+    "e31ba64d4caa4f00",
+    "09fb0d51a6519494",
+    "15247ad94631ad45",
+    "8422d6184ad7503a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "67d6355faba769c9",
+    "cc1344890a09589a",
+    "b0f94d71cfc9b34e",
+    "1b212c439d0731dc",
+    "d8eeb2252f6a2f42",
+    "2e295bccac5a7083",
+    "eece70823f4ad21f",
+    "680441005f644187"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "win calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "257a1b4aeb83c009",
+    "24ce8516705b7fe0",
+    "d00be0e535dc2040"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto calendar",
+    "wait until 3:00"
+   ],
+   "summary": "blamed cake+calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "9ecfd2c507f62ed9",
+    "5753fcbbc8d0e25e",
+    "08dc9f83b3b3c64d",
+    "257a1b4aeb83c009",
+    "e31ba64d4caa4f00",
+    "09fb0d51a6519494",
+    "eb7303b517277410",
+    "8363104e961ea7ce",
+    "da7ac159b83d4989"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "interact",
+    "goto cake_stand pretend",
+    "pretend until 2:47",
+    "interact",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "67d6355faba769c9",
+    "cc1344890a09589a",
+    "b0f94d71cfc9b34e",
+    "75eb9c0d15c49706",
+    "943aa890911acf05",
+    "7612df73f933cab6",
+    "c70a8456435c1cef",
+    "153abf09cc0aba8f",
+    "d956e2ef459b1171",
+    "6d35ecb13d00fb1e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "33acfd7f97c5ed3d",
+    "e728651805953912",
+    "dd1008b024f8b60c",
+    "87e02a38606f74d2",
+    "4791d3481302ee55"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "goto microwave pretend",
+    "goto calendar pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto microwave",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "2abd4761558abd68",
+    "0a5bca5e234049a2",
+    "619aaecb7acde302",
+    "6e8a1ef80c23fb2b",
+    "69e5e361393ae5e8",
+    "b1fe2f1dbeb5c237",
+    "645a6ed3c92e702d",
+    "98b057eaadf042ba"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "wait until 2:56",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "goto cake_stand pretend",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "63248a044e71ac13",
+    "8132e9ecfdd8747d",
+    "f1eef36b2f2f4e27",
+    "04af462c15fbadf5",
+    "d1f0560da59e0fdf",
+    "1f7874d56773235c",
+    "b9ad257a4bf726cb",
+    "00b43a4cbc5285ec"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand",
+    "interact",
+    "goto party pretend",
+    "goto cake_stand",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "goto party",
+    "pretend until 3:00"
+   ],
+   "summary": "win cake",
+   "digests": [
+    "781c19bd45a78b68",
+    "dbe65431ab119fdb",
+    "b5b5a0f6449958bc",
+    "ee31a51373c2b887",
+    "8449c4a2af2b1422",
+    "37014dcbaf4c02f4",
+    "90cadbb43df6a8f0",
+    "b946b98448108bc0",
+    "53312b724dd91edf",
+    "832bf5beb9d35ea9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:53",
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "05d18f102ac87af0",
+    "88a971535ff5f063",
+    "65dc3bfb0d1c7fd6",
+    "8f75a1f84982acc9",
+    "157eaa206ad1b782",
+    "4c6952e5b8097fd8",
+    "c858482497e0003e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto cake_stand",
+    "interact",
+    "wait until 2:56",
+    "wait until 2:50",
+    "sit pretend",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "33863fbed9203b53",
+    "240b73bdc74daf8d",
+    "a1221ec3e8ac1e42",
+    "c12ff4982a7b428d",
+    "154c551c7d2b97ce",
+    "4ce8c9c98a25f654",
+    "3885c28c0956f4a1",
+    "f2608e5c27d45fe0",
+    "f5a9a436b2d4bbe5",
+    "7a150c1d8f91e190"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "goto calendar pretend",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed cake",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "49326c0ebdbc5c2c",
+    "5e21f7af1481f1ec",
+    "9e55487f76ce96cc",
+    "b50b8f04a57e58e3",
+    "a8ff5726034799be",
+    "99bb3f8bde7214d1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand",
+    "interact",
+    "pretend until 2:53",
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "781c19bd45a78b68",
+    "dbe65431ab119fdb",
+    "5c7cfd1154f31aa0",
+    "4c2ba1c4095869ba",
+    "00e9a2b670ee4140",
+    "a16b7a89a16353d5",
+    "5d07688dd20aa5fd",
+    "554d88d43dc777db",
+    "a9ef560691680a88"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave",
+    "pretend 6s",
+    "interact",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "67d6355faba769c9",
+    "7452647c3d1a50db",
+    "144f19b13da3edcb",
+    "11245ab52c8d1d6f",
+    "f1113c3b0547cad9",
+    "bf76ca503e51583d",
+    "b16a3e16aedc7916"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:53",
+    "goto microwave pretend",
+    "interact",
+    "goto cake_stand",
+    "interact",
+    "goto cake_stand pretend",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "05d18f102ac87af0",
+    "88a971535ff5f063",
+    "65dc3bfb0d1c7fd6",
+    "8f75a1f84982acc9",
+    "157eaa206ad1b782",
+    "5baec7a77b50c5b2",
+    "8ec84fc6e49c8a5a",
+    "389dc71afc8b758f"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto cake_stand",
+    "interact",
+    "wait until 2:56",
+    "pretend until 2:53",
+    "sit pretend",
+    "goto calendar pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "blamed calendar",
+   "digests": [
+    "33863fbed9203b53",
+    "240b73bdc74daf8d",
+    "a1221ec3e8ac1e42",
+    "c12ff4982a7b428d",
+    "33a7ca3429621fc3",
+    "2103ac35948786b2",
+    "fd568c09a676f672",
+    "669da5ed3bdfec65",
+    "96bb0b56e5617806",
+    "60efe9d0ce202bf4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand",
+    "interact",
+    "goto party pretend",
+    "goto cake_stand",
+    "interact",
+    "goto microwave pretend",
+    "interact",
+    "interact",
+    "goto party",
+    "pretend until 3:00"
+   ],
+   "summary": "win cake",
+   "digests": [
+    "781c19bd45a78b68",
+    "dbe65431ab119fdb",
+    "b5b5a0f6449958bc",
+    "ee31a51373c2b887",
+    "8449c4a2af2b1422",
+    "37014dcbaf4c02f4",
+    "90cadbb43df6a8f0",
+    "e20126bd33fb2425",
+    "b406c4d11620900b",
+    "a23da6751f931cc3",
+    "8621a9317a83ec82"
+   ]
+  },
+  {
+   "cmds": [
+    "move E 1.5s",
+    "move N 2s pretend",
+    "wait 2s",
+    "goto calendar",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5aee4cabd83724aa",
+    "026ec650222aec08",
+    "e8b594649a8d422b",
+    "9fb671313c6c519d",
+    "ca7cd71e1e7da48d",
+    "46548fb7496e43f8",
+    "676209bf8e7639a6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto cake_stand pretend",
+    "interact",
+    "wait 5s",
+    "pretend until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "0880cd49e1e5ba04",
+    "c2dd402f93dbc58d",
+    "f984b11b84fa29bf",
+    "e526d012f4bc876f",
+    "1c414814d788e09e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "goto my_seat pretend",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "6de229f0adfe6ec5",
+    "657165cd4d1b3296",
+    "2f1281bf36ef7598",
+    "1466e65b504b1149",
+    "7b1fecc4ff0f5264",
+    "a4528a6edec9c820",
+    "3a9d49d9b3666d98"
+   ]
+  },
+  {
+   "cmds": [
+    "goto microwave pretend",
+    "interact",
+    "restart",
+    "pretend until 2:44",
+    "goto cake_stand pretend",
+    "interact",
+    "interact",
+    "goto party pretend",
+    "pretend until 3:00",
+    "continue",
+    "move S 1s",
+    "wait 2s"
+   ],
+   "summary": "fail",
+   "digests": [
+    "792f20890ce58d05",
+    "403a84455a79b48f",
+    "b84082aafdd515da",
+    "6f5b106b35990796",
+    "d645022767fe13c8",
+    "de82ee2ae122ce81",
+    "adfb5d2a9352364d",
+    "efa863ba4d83493c",
+    "625b24aed967f6c0",
+    "2d3fbba3cd0ba2d4",
+    "e77495d29f233c4b",
+    "afcb81e0a237c02a",
+    "e2460b45e4248930"
+   ]
+  }
+ ]
+}

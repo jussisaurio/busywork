@@ -1,0 +1,346 @@
+{
+ "note": "written by tools/golden-render.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "goto workstation",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "fail",
+   "renders": [
+    "356afb24910afd5b",
+    "2c578e07f878c92a",
+    "22d8daa3087a2806",
+    "9d87cfd0585a1fe6",
+    "60970d4b09501a90",
+    "88f254445e3da6f1",
+    "4bfb0ac3556e86b2",
+    "5c773feb1eb64284",
+    "ae9d3c770b535fd3",
+    "0ad9d0b37d8f56f5",
+    "0ad9d0b37d8f56f5",
+    "5be7d69112e4edc6",
+    "1c36d8e0513abf91",
+    "ae4fd80891e1111b",
+    "43a1675d455f914e",
+    "662763bf729ec74d",
+    "ee30e2856b70ddbb"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "renders": [
+    "356afb24910afd5b",
+    "214a6476e6f74759",
+    "b24ca8ff142e5d97",
+    "8411c59f6d474683",
+    "b32a00a6b65c028a",
+    "55909722a44220fc",
+    "09411d903da1b1ba",
+    "8b768686e9cd8d77",
+    "8b768686e9cd8d77",
+    "d3269fa63402bbd6",
+    "c1cd20a91c0e914f",
+    "cd66c521e5fe0150",
+    "57ef8147973d589d",
+    "23596147124bb5b4",
+    "0c49a9b876c99d4a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto donut pretend",
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "efaea0a8826408da",
+    "4136d13bc4243a46",
+    "6797a74204a61a24",
+    "6797a74204a61a24",
+    "baee2bec13b0e8f9",
+    "2b5df9c6c10a8420",
+    "1a5dccca1e57fb9b",
+    "310344201acf149e",
+    "310344201acf149e",
+    "1c0249cd59375ed3",
+    "1549d9255672ec2c",
+    "a52fea5a826d71bf",
+    "96eff9eb23b000f4",
+    "b493d06a72884902",
+    "6373e230eef7b6b1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut pretend",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "caught",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "31a2ea0f7d65270c",
+    "030f40e1bfb5a4a9",
+    "5c34eda3db066338",
+    "d28f929039370fdb",
+    "f43bf43fc5bb3399",
+    "f43bf43fc5bb3399",
+    "c85ae82dd81addb0",
+    "c7fa06e8f9b76b3c",
+    "c7fa06e8f9b76b3c",
+    "c7fa06e8f9b76b3c",
+    "e9f271f273dd2846",
+    "95930823ec8a7a7f",
+    "a99aef9cc3519294",
+    "53d1a45f1f706bfe",
+    "a3917ec2226dbae0",
+    "f437a9f065d1cef6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto donut pretend",
+    "interact",
+    "wait until 2:40"
+   ],
+   "summary": "caught",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "efaea0a8826408da",
+    "4136d13bc4243a46",
+    "520840ddd7ef2f86",
+    "520840ddd7ef2f86",
+    "73a470fe8cccbe4a",
+    "4d687d8d66f2b5a3",
+    "4d687d8d66f2b5a3",
+    "4d687d8d66f2b5a3",
+    "97c49bdf1d152944",
+    "709192d91eed2546",
+    "62ce3c8178355cb9",
+    "3f79822c8e4d131e",
+    "9f1dcff242b59940",
+    "f43c1c18a770c7e5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "wait until 2:40"
+   ],
+   "summary": "blamed donut",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "31a2ea0f7d65270c",
+    "030f40e1bfb5a4a9",
+    "5c34eda3db066338",
+    "e047c9e12278cc89",
+    "f81805809a770a47",
+    "6d7db7acc1511af7",
+    "c2308787f2cd3c24",
+    "afc3f96d3f6f9d0f",
+    "f5c629d157b1af69",
+    "bff656a881cea177",
+    "3083e8583ab4f6be",
+    "3083e8583ab4f6be",
+    "c27c38074201c3ea",
+    "efb36a74f1bed4ed",
+    "02f92bb58f282f83",
+    "b02a6725878c54dc",
+    "374acc2b74accdae",
+    "5952c7a26039d348"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "wait until 2:40"
+   ],
+   "summary": "fail",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "31a2ea0f7d65270c",
+    "030f40e1bfb5a4a9",
+    "5c34eda3db066338",
+    "e047c9e12278cc89",
+    "797dcc738bc2e1b9",
+    "9ce9187e578366ea",
+    "a8cedaa78cd93ae9",
+    "f5c629d157b1af69",
+    "12660b465bf36d69",
+    "f60f7a6691a9e06f",
+    "f60f7a6691a9e06f",
+    "d1fccb8755620a05",
+    "2ce0eec736e935af",
+    "27bceab6e0a9efe5",
+    "2ec39415c9724f33",
+    "240e53a657e99bca",
+    "71e55fd3f17d4376"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "goto water_cooler pretend",
+    "pretend until 2:40"
+   ],
+   "summary": "blamed donut",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "31a2ea0f7d65270c",
+    "030f40e1bfb5a4a9",
+    "5c34eda3db066338",
+    "e047c9e12278cc89",
+    "f81805809a770a47",
+    "e2317e882170510e",
+    "82ac03c44bcdc752",
+    "88875ac9b903cf1b",
+    "6c2bc89af4ca75f8",
+    "21b8ec3a381e54ea",
+    "21b8ec3a381e54ea",
+    "fb50a33894b1771e",
+    "16f0b383cb3ccb58",
+    "3e248b4f556c9ec5",
+    "79d966e0ca4b2b61",
+    "97a7a1ab023ed55f",
+    "fbea42333360220d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation pretend",
+    "interact",
+    "goto donut",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "win donut",
+   "renders": [
+    "356afb24910afd5b",
+    "51624ae03a9f9080",
+    "d5d7546e14fd4f57",
+    "31a2ea0f7d65270c",
+    "030f40e1bfb5a4a9",
+    "5c34eda3db066338",
+    "e047c9e12278cc89",
+    "f81805809a770a47",
+    "fa963b9fab81a0cf",
+    "1348e32e5d9e1e18",
+    "eaf3d96662a35766",
+    "873725ba278cad96",
+    "873725ba278cad96",
+    "ac37a4761279cba6",
+    "fcab7b174112c16c",
+    "effb10bf9ff1f7f0",
+    "b9121865fb708faa",
+    "f85dd1fb40023d89",
+    "4873ddaadc1f287b"
+   ]
+  },
+  {
+   "cmds": [
+    "move W 0.5s",
+    "goto workstation",
+    "interact",
+    "goto donut pretend",
+    "interact",
+    "pretend until 2:40"
+   ],
+   "summary": "caught",
+   "renders": [
+    "356afb24910afd5b",
+    "2c578e07f878c92a",
+    "22d8daa3087a2806",
+    "9411bc038f88e4f2",
+    "6924b690fdf70ffe",
+    "3587501019785f33",
+    "11c44e1ff1960fdd",
+    "a7dc61a6493dc29d",
+    "85abbcf488262b34",
+    "85abbcf488262b34",
+    "ea58fdcae2aba625",
+    "6d551bda90754909",
+    "6d551bda90754909",
+    "6d551bda90754909",
+    "b11d058329406baa",
+    "d526390fb14ba87e",
+    "0ea78a2248b7c5e4",
+    "d96a0e8f7df9e5cb",
+    "15eb463ba2ad204a",
+    "9cd2c876178ab598"
+   ]
+  },
+  {
+   "cmds": [
+    "goto workstation",
+    "interact",
+    "goto donut",
+    "interact",
+    "pretend until 2:40",
+    "continue",
+    "goto donut",
+    "interact"
+   ],
+   "summary": "fail",
+   "renders": [
+    "356afb24910afd5b",
+    "2c578e07f878c92a",
+    "22d8daa3087a2806",
+    "9d87cfd0585a1fe6",
+    "60970d4b09501a90",
+    "88f254445e3da6f1",
+    "b88b6f9b7e313d5a",
+    "d03c74b74f8c1fae",
+    "4d94e8f4c082671a",
+    "9d1b33ad85531239",
+    "3b1dc1c9e906e81b",
+    "94c7f9ceb2ea451d",
+    "4974bf8d9ecf0ef3",
+    "f0a26e7609fd7629",
+    "5387411984841c3d",
+    "54df322673e53cd1",
+    "f56cb1fdd3fc0e87",
+    "3c5e52a331236da3",
+    "6eb530335ffeff85",
+    "c9bf2396bbb8f958",
+    "41c031d2ef8d112a",
+    "d77c2ea99e7f4974",
+    "8954621c3810cd91",
+    "8954621c3810cd91",
+    "91252727db3a29d4",
+    "8f561149d3dc0fc9",
+    "95119ed1883da5bc",
+    "04f10ca1f759f395",
+    "5c27b7462b5490fe",
+    "a9ceff08b842c376"
+   ]
+  }
+ ]
+}

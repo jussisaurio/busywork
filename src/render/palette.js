@@ -1,4 +1,4 @@
-// Muted mid-century office palette: oatmeal carpet, walnut, mustard, teal, and one tomato-red hero.
+// Muted mid-century office palette: oatmeal carpet, walnut, ochre, teal, and one tomato-red hero.
 export const C = {
   bg: '#1d1a17',
   ink: '#2a211b',
@@ -61,8 +61,8 @@ export const C = {
   steelDark: '#8b9297',
 
   // accents
-  mustard: '#d6a23a',
-  mustardDark: '#a97b22',
+  ochre: '#d6a23a',
+  ochreDark: '#a97b22',
   teal: '#2f8f83',
   tealDark: '#22675f',
   olive: '#5f6b3a',
@@ -86,16 +86,7 @@ export const C = {
   hudPanel: '#18130f',
   hudText: '#f3e6c8',
   hudRed: '#ff5a43',
-  chipOk: '#cfe0c4',
-  chipBad: '#f1b8a6',
-  chipWarn: '#f3d38a',
-  chipNeutral: '#e3d8c0',
 };
 
-// Vision cone tints (r,g,b).
-export const CONE_TINT = {
-  boss: [255, 160, 82],
-  lin: [150, 230, 214],
-  kev: [214, 230, 140],
-  default: [255, 245, 210],
-};
+// Vision cone tint (r,g,b) for an NPC without its own (the cast sets each NPC's coneTint).
+export const CONE_TINT_DEFAULT = [255, 245, 210];

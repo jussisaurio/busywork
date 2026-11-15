@@ -4,15 +4,12 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap,
-  MONO_FAMILY, UI_FAMILY, ROUTE_ICONS,
+  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
+  MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { at, formatClock, MEETING_AT, WORK_PENALTY_MIN, DAY_START } from '../config.js';
-
-const RED_AT = at('3:50');
-const PULSE_AT = MEETING_AT - 2;
+import { formatClock, dayCue, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -26,20 +23,20 @@ function panel(ctx, x, y, w, h, color = C.hudPanel) {
 export function drawHud(ctx, game, t, mem) {
   ctx.fillStyle = C.hudBg;
   ctx.fillRect(0, 0, VIEW_W, HUD_H);
-  ctx.fillStyle = C.mustard;
+  ctx.fillStyle = C.ochre;
   ctx.fillRect(0, HUD_H - 3, VIEW_W, 1.5);
   ctx.fillStyle = C.teal;
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
-  drawClock(ctx, fin(clock.minute), t);
+  drawClock(ctx, fin(clock.minute), t, game.level.day);
   drawGoal(ctx);
-  drawHeld(ctx, game.player && game.player.held);
+  drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
   panel(ctx, 342, 6, 160, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
   text(ctx, String(Math.max(0, (game.persist && game.persist.loop) | 0)), 377, 29, font(22, MONO_FAMILY, 'bold'), C.hudText, 'left');
-  drawRouteSlots(ctx, game.persist ? game.persist.routesFound : [], 418, 10, 36, 4);
+  drawRouteSlots(ctx, game.level.routes, game.persist ? game.persist.routesFound : [], 418, 10, 36, 4);
   drawStatus(ctx, game, clock, t);
   if (game.phase === 'day') {
     drawPauseButton(ctx, !!game.paused);
@@ -127,25 +124,27 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Sits on the blank wall block under the open office, east of the lobby (map rows 14-16).
+// Centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
+  const at = game.level.decor && game.level.decor.legendAt;
+  if (!at) return;
   const p = game.player || {};
   PRESSED['⇧'] = !!p.busy;
   PRESSED.E = !!p.action;
-  drawLegendRow(ctx, LEGEND_PLAY, 640, HUD_H + 15 * T + 16, LEGEND_PLAY_STYLE, PRESSED);
+  drawLegendRow(ctx, LEGEND_PLAY, at.x * T, HUD_H + at.y * T, LEGEND_PLAY_STYLE, PRESSED);
 }
 
-// "3:50 PM" -> "3:50": digits only (the analog face carries the rest).
-export function clockDigits(minute) {
-  const str = formatClock(minute);
+// "3:50 PM" -> "3:50": digits only (the analog face carries the rest). start: the level's day.start.
+export function clockDigits(minute, start) {
+  const str = formatClock(minute, start);
   const sp = str.indexOf(' ');
   return sp > 0 ? str.slice(0, sp) : str;
 }
 
-function drawClock(ctx, minute, t) {
-  const red = minute >= RED_AT;
-  const last = minute >= PULSE_AT;
+function drawClock(ctx, minute, t, day) {
+  const red = minute >= dayCue(day, 'clockRedAt');
+  const last = minute >= day.meetingAt - 2;
   const pulse = last ? 0.5 + 0.5 * Math.sin(t * 8) : 0;
   panel(ctx, 10, 6, 168, 44);
   if (last) {
@@ -156,33 +155,17 @@ function drawClock(ctx, minute, t) {
   // mini analog face
   const cx = 34;
   const cy = 28;
-  fillCircle(ctx, cx, cy, 15, red ? C.hudRed : C.mustard);
+  fillCircle(ctx, cx, cy, 15, red ? C.hudRed : C.ochre);
   fillCircle(ctx, cx, cy, 12.5, C.cream);
   ctx.fillStyle = C.ink;
   for (let i = 0; i < 12; i++) {
     const a = (i / 12) * Math.PI * 2;
     fillCircle(ctx, cx + Math.cos(a) * 10, cy + Math.sin(a) * 10, i % 3 ? 0.6 : 1.1, C.ink);
   }
-  const total = DAY_START + minute;
-  const mA = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  const hA = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = C.ink;
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(hA) * 6, cy + Math.sin(hA) * 6);
-  ctx.stroke();
-  ctx.strokeStyle = red ? C.tomatoDark : C.ink;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(mA) * 9.5, cy + Math.sin(mA) * 9.5);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
+  clockHands(ctx, cx, cy, minute, 6, 2.4, 9.5, 1.5, red ? C.tomatoDark : C.ink, day.start);
   fillCircle(ctx, cx, cy, 1.5, C.tomato);
 
-  const hm = clockDigits(minute);
+  const hm = clockDigits(minute, day.start);
   const col = red ? C.hudRed : C.hudText;
   ctx.save();
   ctx.translate(166, 29);
@@ -204,7 +187,7 @@ function drawGoal(ctx) {
   emoji(ctx, '❌', 258, 36, 12);
 }
 
-function drawHeld(ctx, held) {
+function drawHeld(ctx, items, held) {
   panel(ctx, 286, 6, 44, 44);
   ctx.strokeStyle = 'rgba(243,230,200,0.22)';
   ctx.lineWidth = 1.5;
@@ -212,7 +195,7 @@ function drawHeld(ctx, held) {
   rrect(ctx, 292, 12, 32, 32, 6);
   ctx.stroke();
   ctx.setLineDash([]);
-  const ic = itemIcon(held);
+  const ic = itemIcon(items, held);
   if (ic) emoji(ctx, ic, 308, 29, 24);
   else {
     ctx.globalAlpha = 0.18;
@@ -221,13 +204,13 @@ function drawHeld(ctx, held) {
   }
 }
 
-// Route slots, one per route. A found route shows its icon; an unfound one is a blank slot
-// (never a greyed-out icon: that would reveal the solution). opts.hide lists found routes to draw
-// blank anyway (the end screen stamps them in). Shared with the title and end screens.
-export function drawRouteSlots(ctx, found, x, y, size, gap, opts) {
+// Route slots, one per route (the level's routes, in order). A found route shows its icon; an unfound
+// one is a blank slot (never a greyed-out icon: that would reveal the solution). opts.hide lists found
+// routes to draw blank anyway (the end screen stamps them in). Shared with the title and end screens.
+export function drawRouteSlots(ctx, routes, found, x, y, size, gap, opts) {
   const list = Array.isArray(found) ? found : [];
-  for (let i = 0; i < ROUTE_ICONS.length; i++) {
-    const [id, icon] = ROUTE_ICONS[i];
+  for (let i = 0; i < routes.length; i++) {
+    const { id, icon } = routes[i];
     const sx = x + i * (size + gap);
     const hidden = opts && opts.hide && opts.hide.includes(id);
     const on = list.includes(id) && !hidden;
@@ -235,7 +218,7 @@ export function drawRouteSlots(ctx, found, x, y, size, gap, opts) {
     rrect(ctx, sx, y, size, size, 7);
     ctx.fill();
     if (on) {
-      ctx.strokeStyle = C.mustard;
+      ctx.strokeStyle = C.ochre;
       ctx.lineWidth = 2;
       rrect(ctx, sx + 1, y + 1, size - 2, size - 2, 6);
       ctx.stroke();
@@ -277,7 +260,7 @@ function drawStatus(ctx, game, clock, t) {
   }
   const speed = game.debug ? fin(game.debug.speed, 1) : 1;
   if (speed !== 1) {
-    text(ctx, `×${speed}`, x - 2, cy + 1, font(15, MONO_FAMILY, 'bold'), C.mustard, 'right');
+    text(ctx, `×${speed}`, x - 2, cy + 1, font(15, MONO_FAMILY, 'bold'), C.ochre, 'right');
     x -= 40;
   }
   if (game.settings && game.settings.showCones === false) {

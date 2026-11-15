@@ -1,124 +1,169 @@
 // The office: a static layer (floors, walls, glass, furniture) cached in an offscreen
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
-import { T, MAP_W, MAP_H, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, ITEM_ICON, clamp } from './util.js';
+import {
+  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, clamp, clockHands, drawScreen,
+} from './util.js';
 import { C } from './palette.js';
-import { SPOTS } from '../data/level.js';
-import { at, DAY_START, WORK_PENALTY_MIN } from '../config.js';
+import { itemIcon } from './characters.js';
+import { WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
-const WALLISH = new Set(['#', 'R', 'E']);
-const STRUCT = new Set(['#', 'R', 'E', 'G', 'L', 'D']); // glass arms connect to these
-const DESKISH = new Set(['T', 'P', 'J', 'C']);
 
-// Static chairs: [tileX, tileY, facing radians, seat color, back color]
-const N = -Math.PI / 2, S = Math.PI / 2, E = 0, W = Math.PI;
-const FACE = { N, S, E, W };
-function chairList() {
-  const sp = (k) => SPOTS[k];
+// What a map tile draws as: its legend entry's `draw`, else its kind (core/map.js; off the map: 'wall'). The base
+// legend's kinds are draws already; a level's own letters say which one they look like. The draws:
+//   wall            a wall block                        floor      the floor of its room (decor.zoneSeeds)
+//   glass           a glass partition                   outside    the lobby's tiled floor
+//   entrance        a glass door in a glass wall, doormats either side
+//   door            a doorway in a wooden frame         restroom   a wall with a 🚻 door in it
+//   elevator        a wall with lift doors; they open as an active NPC nears decor.elevator.spot
+//   desk            a desk or table tile: touching desk tiles make one piece of furniture, drawn by what it holds
+//   own_desk        a desk tile that makes its piece the player's workstation
+//   meeting_table   a desk tile that makes its piece the meeting table (rug, notepads; a slideProjector prop on it)
+//   coffee_machine  a desk tile with a coffee machine on it: its piece is the kitchen counter
+//   plant           a potted plant                      coat_rack  a coat-rack stand (the coatRack prop hangs things)
+//   refrigerator    a tall fridge
+// Any other draw is plain floor (a decor prop can stand on it). The level validator (src/levels/validate.js)
+// rejects a legend `draw` not in TILE_DRAWS.
+export const TILE_DRAWS = [
+  'wall', 'glass', 'entrance', 'door', 'restroom', 'elevator', 'floor', 'outside', 'desk', 'own_desk',
+  'meeting_table', 'coffee_machine', 'plant', 'coat_rack', 'refrigerator',
+];
+const WALLISH = new Set(['wall', 'restroom', 'elevator']);
+const STRUCT = new Set([...WALLISH, 'glass', 'entrance', 'door']); // glass arms connect to these
+// Draws that join into one desk piece; a decor.deskOwners spot faces one of these.
+export const DESK_DRAWS = ['desk', 'own_desk', 'meeting_table', 'coffee_machine'];
+const DESKISH = new Set(DESK_DRAWS);
+const STEP = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }; // a spot's face as a tile step
+
+// The draw at tile (x, y), from a grid built once per map.
+const drawGrids = new WeakMap();
+function drawAt(map, x, y) {
+  if (x < 0 || y < 0 || x >= map.w || y >= map.h) return 'wall';
+  let grid = drawGrids.get(map);
+  if (!grid) {
+    grid = [];
+    for (let ty = 0; ty < map.h; ty++) for (let tx = 0; tx < map.w; tx++) {
+      const t = map.tile(tx, ty);
+      grid.push(t.draw ?? t.kind);
+    }
+    drawGrids.set(map, grid);
+  }
+  return grid[y * map.w + x];
+}
+// Every tile with draw `name`, in reading order.
+function findDraw(map, name) {
   const out = [];
-  const add = (x, y, dir, seat, back) => out.push([x, y, dir, seat, back]);
-  add(sp('boss_desk').x, sp('boss_desk').y, S, '#6b2f24', '#4e2019'); // oxblood leather
-  add(sp('player_desk').x, sp('player_desk').y, N, C.mustard, C.mustardDark);
-  add(sp('lin_desk').x, sp('lin_desk').y, N, C.teal, C.tealDark);
-  add(sp('kev_desk').x, sp('kev_desk').y, N, C.olive, C.oliveDark);
-  add(13, 12, N, C.mustard, C.mustardDark);
-  add(22, 12, N, C.teal, C.tealDark);
-  add(sp('meeting_head').x, sp('meeting_head').y, E, '#6b2f24', '#4e2019'); // the boss's leather again
-  // Your seat at the meeting table is the odd one out: mustard, like your desk chair.
-  const mine = sp('meeting_player') || { x: 13, y: 5, face: 'N' };
-  for (const x of [12, 13, 14, 15]) if (x !== mine.x || mine.y !== 5) add(x, 5, N, C.teal, C.tealDark);
-  add(mine.x, mine.y, FACE[mine.face] ?? N, C.mustard, C.mustardDark);
-  for (const x of [12, 14, 15]) add(x, 2, S, C.teal, C.tealDark);
-  for (const x of [24, 25, 26]) add(x, 4, N, C.mustard, C.mustardDark);
-  add(25, 2, S, C.mustard, C.mustardDark);
+  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (drawAt(map, x, y) === name) out.push({ x, y });
   return out;
 }
 
+const FACE = { N: -Math.PI / 2, S: Math.PI / 2, E: 0, W: Math.PI };
+
+// Set dressing comes from the level (level.decor, e.g. src/levels/meeting/decor.js). Every field is optional.
+const NO_DECOR = {};
+const NO_PADS = {};
+const NONE = [];
+const decorOf = (level) => level.decor || NO_DECOR;
+// A workstation whose owner has no decor.desks entry.
+const DESK_STYLE = { screen: '#37494c', screenArt: null, mug: C.ochre, prop: 'paper' };
+
 // --- map analysis (cached per map) ------------------------------------------
 const infoCache = new WeakMap();
-export function mapInfo(map) {
+function mapInfo(map, level) {
+  const SPOTS = level.spots;
   let info = infoCache.get(map);
   if (info) return info;
+  const decor = decorOf(level);
   const w = map.w;
   const h = map.h;
   const zone = new Array(w * h).fill(null);
-  const barrier = (c) => WALLISH.has(c) || c === 'G' || c === 'L' || c === 'D';
+  const barrier = (d) => STRUCT.has(d);
   const flood = (sx, sy, name) => {
     const stack = [[sx, sy]];
     while (stack.length) {
       const [x, y] = stack.pop();
       if (x < 0 || y < 0 || x >= w || y >= h) continue;
       const i = y * w + x;
-      if (zone[i] || barrier(map.char(x, y))) continue;
+      if (zone[i] || barrier(drawAt(map, x, y))) continue;
       zone[i] = name;
       stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
     }
   };
-  const seed = (name, spot) => SPOTS[spot] && flood(SPOTS[spot].x, SPOTS[spot].y, name);
-  seed('office', 'boss_desk');
-  seed('meeting', 'projector');
-  seed('kitchen', 'fridge');
-  seed('lobby', 'door_out');
+  for (const s of decor.zoneSeeds || []) flood(s.x, s.y, s.zone);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const c = map.char(x, y);
-      if (c === ':') zone[y * w + x] = 'lobby';
-      else if (!zone[y * w + x] && !barrier(c)) zone[y * w + x] = 'carpet';
+      const d = drawAt(map, x, y);
+      if (d === 'outside') zone[y * w + x] = 'lobby';
+      else if (!zone[y * w + x] && !barrier(d)) zone[y * w + x] = 'carpet';
     }
   }
 
-  // Desk components (connected T/P/J/C tiles).
+  // Desk components (connected desk-like tiles: DESKISH).
   const seen = new Set();
   const desks = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (!DESKISH.has(map.char(x, y)) || seen.has(y * w + x)) continue;
-      const comp = { x0: x, y0: y, x1: x, y1: y, chars: new Set() };
+      if (!DESKISH.has(drawAt(map, x, y)) || seen.has(y * w + x)) continue;
+      const comp = { x0: x, y0: y, x1: x, y1: y, draws: new Set() };
       const stack = [[x, y]];
       seen.add(y * w + x);
       while (stack.length) {
         const [cx, cy] = stack.pop();
-        comp.chars.add(map.char(cx, cy));
+        comp.draws.add(drawAt(map, cx, cy));
         comp.x0 = Math.min(comp.x0, cx);
         comp.x1 = Math.max(comp.x1, cx);
         comp.y0 = Math.min(comp.y0, cy);
         comp.y1 = Math.max(comp.y1, cy);
         for (const [nx, ny] of [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]) {
           if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-          if (!DESKISH.has(map.char(nx, ny)) || seen.has(ny * w + nx)) continue;
+          if (!DESKISH.has(drawAt(map, nx, ny)) || seen.has(ny * w + nx)) continue;
           seen.add(ny * w + nx);
           stack.push([nx, ny]);
         }
       }
       const z = zone[comp.y0 * w + comp.x0];
-      if (comp.chars.has('P')) comp.kind = 'player';
-      else if (comp.chars.has('J')) comp.kind = 'meeting';
-      else if (comp.chars.has('C')) comp.kind = 'counter';
+      if (comp.draws.has('own_desk')) comp.kind = 'player';
+      else if (comp.draws.has('meeting_table')) comp.kind = 'meeting';
+      else if (comp.draws.has('coffee_machine')) comp.kind = 'counter';
       else if (z === 'kitchen') comp.kind = 'kitchenTable';
-      else if (z === 'office') comp.kind = 'boss';
+      else if (z === 'office') comp.kind = 'exec';
       else comp.kind = 'work';
+      // The sitter: a decor.deskOwners spot (at the player's desk, player_desk) whose face points into this
+      // piece. Its face turns the workstation (comp.face; no sitter: 'N', sat at from the south).
+      const facesIn = (s) => {
+        const step = s && STEP[s.face];
+        if (!step) return false;
+        const tx = s.x + step[0];
+        const ty = s.y + step[1];
+        return tx >= comp.x0 && tx <= comp.x1 && ty >= comp.y0 && ty <= comp.y1 && DESKISH.has(drawAt(map, tx, ty));
+      };
       comp.owner = null;
-      for (const id of ['lin', 'kev']) {
-        const s = SPOTS[`${id}_desk`];
-        if (s && s.x >= comp.x0 && s.x <= comp.x1 && s.y === comp.y1 + 1) comp.owner = id;
+      comp.face = 'N';
+      for (const spot of decor.deskOwners || []) {
+        if (facesIn(SPOTS[spot])) {
+          comp.owner = spot.replace(/_desk$/, '');
+          comp.face = SPOTS[spot].face;
+        }
       }
-      if (comp.kind === 'player') comp.owner = 'player';
+      if (comp.kind === 'player') {
+        comp.owner = 'player';
+        if (facesIn(SPOTS.player_desk)) comp.face = SPOTS.player_desk.face;
+      }
       desks.push(comp);
     }
   }
   const find1 = (c) => map.find(c)[0] || null;
+  const sc = decor.screen;
   info = {
     zone,
     zoneAt: (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? null : zone[y * w + x]),
     desks,
     playerDesk: desks.find((d) => d.kind === 'player') || null,
-    projector: find1('J'),
-    rack: find1('K'),
-    coffee: find1('C'),
-    entrance: find1('L'),
-    elevator: map.find('E'),
-    screen: { x: 15 * T + 2, y: T - FRONT - 1, w: 3 * T - 6, h: 28 }, // projection screen on the meeting room's north wall
+    props: (decor.props || NONE).map((pr) => find1(pr.tile)), // decor.props' tiles, in order (null: not on the map)
+    entrance: findDraw(map, 'entrance')[0] || null,
+    elevator: findDraw(map, 'elevator'),
+    screen: sc ? { x: sc.x * T + 2, y: frontY(sc.y) - 1, w: sc.w * T - 6, h: 28 } : null,
   };
   infoCache.set(map, info);
   return info;
@@ -127,10 +172,12 @@ export function mapInfo(map) {
 // =============================================================================
 // Static layer
 // =============================================================================
-export function drawStaticLayer(ctx, map) {
-  const info = mapInfo(map);
+export function drawStaticLayer(ctx, map, level) {
+  const SPOTS = level.spots;
+  const decor = decorOf(level);
+  const info = mapInfo(map, level);
   ctx.fillStyle = C.wallVoid;
-  ctx.fillRect(0, 0, MAP_W, MAP_H);
+  ctx.fillRect(0, 0, map.w * T, map.h * T);
 
   // 1. floors
   for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) drawFloorTile(ctx, map, info, x, y);
@@ -139,45 +186,49 @@ export function drawStaticLayer(ctx, map) {
   // 3. soft shadow at the foot of walls
   for (let y = 1; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      if (WALLISH.has(map.char(x, y))) continue;
-      if (!WALLISH.has(map.char(x, y - 1))) continue;
+      if (WALLISH.has(drawAt(map, x, y))) continue;
+      if (!WALLISH.has(drawAt(map, x, y - 1))) continue;
       ctx.fillStyle = 'rgba(30,18,10,0.10)';
       ctx.fillRect(x * T, y * T, T, 7);
       ctx.fillRect(x * T, y * T, T, 3);
     }
   }
   // 4. walls
-  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (WALLISH.has(map.char(x, y))) drawWall(ctx, map, x, y);
+  for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) if (WALLISH.has(drawAt(map, x, y))) drawWall(ctx, map, x, y);
   // 5. glass, doors, entrance, restroom, elevator
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      const c = map.char(x, y);
-      if (c === 'G') drawGlass(ctx, map, x, y, false);
-      else if (c === 'L') drawGlass(ctx, map, x, y, true);
-      else if (c === 'D') drawDoor(ctx, map, x, y);
-      else if (c === 'R') drawRestroom(ctx, x, y);
+      const d = drawAt(map, x, y);
+      if (d === 'glass') drawGlass(ctx, map, x, y, false);
+      else if (d === 'entrance') drawGlass(ctx, map, x, y, true);
+      else if (d === 'door') drawDoor(ctx, map, x, y);
+      else if (d === 'restroom') drawRestroom(ctx, x, y);
     }
   }
   if (info.elevator.length) drawElevator(ctx, info.elevator);
   // 6. wall decorations
-  drawWallDecor(ctx, map, info);
+  drawWallDecor(ctx, map, info, decor);
   // 7. chairs (under desks), 8. desks
-  for (const [x, y, dir, seat, back] of chairList()) drawChair(ctx, x * T + T / 2, y * T + T / 2, dir, seat, back);
-  for (const d of info.desks) drawDesk(ctx, d);
+  for (const c of decor.chairs || []) {
+    const p = c.spot ? SPOTS[c.spot] : c;
+    if (p) drawChair(ctx, p.x * T + T / 2, p.y * T + T / 2, FACE[c.face], c.color[0], c.color[1]);
+  }
+  for (const d of info.desks) drawDesk(ctx, d, decor);
   // 9. appliances and props
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
-      const c = map.char(x, y);
-      if (c === 'H') drawPlant(ctx, x * T + T / 2, y * T + T / 2);
-      else if (c === 'F') drawFridge(ctx, x * T, y * T);
-      else if (c === 'C') drawCoffeeMachine(ctx, x * T, y * T);
-      else if (c === 'K') drawRackBase(ctx, x * T + T / 2, y * T + T / 2);
+      const d = drawAt(map, x, y);
+      if (d === 'plant') drawPlant(ctx, x * T + T / 2, y * T + T / 2);
+      else if (d === 'refrigerator') drawFridge(ctx, x * T, y * T);
+      else if (d === 'coffee_machine') drawCoffeeMachine(ctx, x * T, y * T);
+      else if (d === 'coat_rack') drawRackBase(ctx, x * T + T / 2, y * T + T / 2);
     }
   }
-  // lobby ashtray by the smoking spot
-  if (SPOTS.smoke) {
-    const ax = (SPOTS.smoke.x + 1) * T + 10;
-    const ay = (SPOTS.smoke.y) * T + 8;
+  // ashtray on the tile east of a spot
+  const ash = decor.ashtray && SPOTS[decor.ashtray.spot];
+  if (ash) {
+    const ax = (ash.x + 1) * T + 10;
+    const ay = (ash.y) * T + 8;
     fillEllipse(ctx, ax, ay + 6, 6, 2.5, 'rgba(0,0,0,0.2)');
     fillCircle(ctx, ax, ay, 5, C.steelDark);
     fillCircle(ctx, ax, ay, 3.6, '#d9cfb4');
@@ -191,11 +242,11 @@ function floorKindForGlassSide(info, x, y) {
 }
 
 function drawFloorTile(ctx, map, info, x, y) {
-  const c = map.char(x, y);
-  if (WALLISH.has(c)) return;
-  if (c === 'G' || c === 'L') {
+  const d = drawAt(map, x, y);
+  if (WALLISH.has(d)) return;
+  if (isGlass(d)) {
     // Split the tile between the floors on either side of the glass.
-    const horiz = STRUCT.has(map.char(x - 1, y)) || STRUCT.has(map.char(x + 1, y));
+    const horiz = STRUCT.has(drawAt(map, x - 1, y)) || STRUCT.has(drawAt(map, x + 1, y));
     if (horiz) {
       clipPaint(ctx, x, y, x * T, y * T, T, T / 2, floorKindForGlassSide(info, x, y - 1));
       clipPaint(ctx, x, y, x * T, y * T + T / 2, T, T / 2, floorKindForGlassSide(info, x, y + 1));
@@ -205,7 +256,7 @@ function drawFloorTile(ctx, map, info, x, y) {
     }
     return;
   }
-  const kind = c === 'D' ? 'carpet' : info.zoneAt(x, y) || 'carpet';
+  const kind = d === 'door' ? 'carpet' : info.zoneAt(x, y) || 'carpet';
   paintFloor(ctx, kind, x, y);
 }
 
@@ -277,8 +328,8 @@ function paintFloor(ctx, kind, x, y) {
 }
 
 function drawRugs(ctx, map, info) {
-  // Boss office: mustard rug with teal border under the desk.
-  const bd = info.desks.find((d) => d.kind === 'boss');
+  // Executive office: mustard rug with teal border under the desk.
+  const bd = info.desks.find((d) => d.kind === 'exec');
   if (bd) {
     const x = (bd.x0 - 1) * T + 8;
     const y = (bd.y0 - 1) * T + 6;
@@ -327,7 +378,7 @@ function drawRugs(ctx, map, info) {
 function drawWall(ctx, map, x, y) {
   const px = x * T;
   const py = y * T;
-  const wall = (cx, cy) => WALLISH.has(map.char(cx, cy));
+  const wall = (cx, cy) => WALLISH.has(drawAt(map, cx, cy));
   const front = y + 1 < map.h && !wall(x, y + 1);
   const enclosed = wall(x - 1, y) && wall(x + 1, y) && wall(x, y - 1) && wall(x, y + 1) &&
     wall(x - 1, y - 1) && wall(x + 1, y + 1) && wall(x - 1, y + 1) && wall(x + 1, y - 1);
@@ -361,22 +412,23 @@ function drawWall(ctx, map, x, y) {
 }
 
 // --- glass -------------------------------------------------------------------
+const isGlass = (d) => d === 'glass' || d === 'entrance';
+
 // Glass partitions must read as windows at a glance: a tall translucent pane with the floor
 // showing through, thin frame rails, a mullion between panes and diagonal reflection streaks.
 // Horizontal runs show the pane's face (3/4 view); vertical runs are a wide framed strip.
 const GLASS_TOP = 4; // horizontal pane: top rail, px below the tile top
 const GLASS_BOT = 28; // horizontal pane: sill
 const GLASS_HW = 7; // vertical strip: half width
-const isGlass = (c) => c === 'G' || c === 'L';
 
 function drawGlass(ctx, map, x, y, entrance) {
   const px = x * T;
   const py = y * T;
   const cx = px + T / 2;
-  const n = STRUCT.has(map.char(x, y - 1));
-  const s = STRUCT.has(map.char(x, y + 1));
-  const w = STRUCT.has(map.char(x - 1, y));
-  const e = STRUCT.has(map.char(x + 1, y));
+  const n = STRUCT.has(drawAt(map, x, y - 1));
+  const s = STRUCT.has(drawAt(map, x, y + 1));
+  const w = STRUCT.has(drawAt(map, x - 1, y));
+  const e = STRUCT.has(drawAt(map, x + 1, y));
   const horiz = w || e || !(n || s);
   const vert = n || s;
   const frame = entrance ? C.entranceFrame : C.glassFrame;
@@ -394,7 +446,7 @@ function drawGlass(ctx, map, x, y, entrance) {
     ctx.fillStyle = C.glassFrameHi;
     ctx.fillRect(cx - GLASS_HW - 1, y0, 1, y1 - y0);
     ctx.fillStyle = C.glassPost;
-    if (n && isGlass(map.char(x, y - 1))) ctx.fillRect(cx - GLASS_HW - 1, py - 1, GLASS_HW * 2 + 2, 2); // mullion
+    if (n && isGlass(drawAt(map, x, y - 1))) ctx.fillRect(cx - GLASS_HW - 1, py - 1, GLASS_HW * 2 + 2, 2); // mullion
     else if (n) ctx.fillRect(cx - GLASS_HW - 1, py, GLASS_HW * 2 + 2, 3); // head rail against the wall
   }
 
@@ -413,9 +465,9 @@ function drawGlass(ctx, map, x, y, entrance) {
     ctx.fillRect(x0, bot - 2, x1 - x0, 1);
     // mullion between neighbouring panes; a heavier post where the run meets a wall or door
     ctx.fillStyle = C.glassPost;
-    if (w && isGlass(map.char(x - 1, y))) ctx.fillRect(px - 1, top, 2, bot - top);
+    if (w && isGlass(drawAt(map, x - 1, y))) ctx.fillRect(px - 1, top, 2, bot - top);
     else if (w) ctx.fillRect(px, top - 1, 3, bot - top + 3);
-    if (e && !isGlass(map.char(x + 1, y))) ctx.fillRect(px + T - 3, top - 1, 3, bot - top + 3);
+    if (e && !isGlass(drawAt(map, x + 1, y))) ctx.fillRect(px + T - 3, top - 1, 3, bot - top + 3);
   }
 
   if (horiz && vert) {
@@ -482,7 +534,7 @@ function streak(ctx, x0, y0, x1, y1, thick, color) {
 }
 
 function drawDoor(ctx, map, x, y) {
-  const horiz = STRUCT.has(map.char(x - 1, y)) || STRUCT.has(map.char(x + 1, y));
+  const horiz = STRUCT.has(drawAt(map, x - 1, y)) || STRUCT.has(drawAt(map, x + 1, y));
   const px = x * T;
   const py = y * T;
   if (horiz) {
@@ -493,16 +545,16 @@ function drawDoor(ctx, map, x, y) {
     ctx.fillStyle = 'rgba(255,255,255,0.25)';
     ctx.fillRect(px, py + T / 2 - 3, T, 1);
     ctx.fillStyle = C.walnutEdge;
-    if (map.char(x - 1, y) !== 'D') ctx.fillRect(px, py + 4, 3, T - 6);
-    if (map.char(x + 1, y) !== 'D') ctx.fillRect(px + T - 3, py + 4, 3, T - 6);
+    if (drawAt(map, x - 1, y) !== 'door') ctx.fillRect(px, py + 4, 3, T - 6);
+    if (drawAt(map, x + 1, y) !== 'door') ctx.fillRect(px + T - 3, py + 4, 3, T - 6);
   } else {
     ctx.fillStyle = C.oakEdge;
     ctx.fillRect(px + T / 2 - 3, py, 6, T);
     ctx.fillStyle = C.oak;
     ctx.fillRect(px + T / 2 - 3, py, 4, T);
     ctx.fillStyle = C.walnutEdge;
-    if (map.char(x, y - 1) !== 'D') ctx.fillRect(px + 4, py, T - 8, 3);
-    if (map.char(x, y + 1) !== 'D') ctx.fillRect(px + 4, py + T - 3, T - 8, 3);
+    if (drawAt(map, x, y - 1) !== 'door') ctx.fillRect(px + 4, py, T - 8, 3);
+    if (drawAt(map, x, y + 1) !== 'door') ctx.fillRect(px + 4, py + T - 3, T - 8, 3);
   }
 }
 
@@ -551,7 +603,7 @@ function frontY(y) {
 }
 
 function hasFront(map, x, y) {
-  return WALLISH.has(map.char(x, y)) && !WALLISH.has(map.char(x, y + 1));
+  return WALLISH.has(drawAt(map, x, y)) && !WALLISH.has(drawAt(map, x, y + 1));
 }
 
 function drawWindow(ctx, map, x0, x1, y) {
@@ -577,7 +629,7 @@ function drawPainting(ctx, map, x, y, variant) {
   ctx.fillStyle = C.cream;
   ctx.fillRect(px, fy + 2, w, FRONT - 6);
   if (variant === 0) {
-    fillCircle(ctx, px + 12, fy + 6, 3.2, C.mustard);
+    fillCircle(ctx, px + 12, fy + 6, 3.2, C.ochre);
     ctx.fillStyle = C.teal;
     ctx.fillRect(px + 18, fy + 3, 10, 5);
     ctx.fillStyle = C.tomato;
@@ -586,39 +638,31 @@ function drawPainting(ctx, map, x, y, variant) {
     ctx.fillStyle = C.olive;
     ctx.fillRect(px + 4, fy + 3, 14, 5);
     fillCircle(ctx, px + 26, fy + 6, 3, C.teal);
-    ctx.fillStyle = C.mustard;
+    ctx.fillStyle = C.ochre;
     ctx.fillRect(px + 32, fy + 3, 4, 5);
   }
 }
 
-function drawWallDecor(ctx, map, info) {
-  drawWindow(ctx, map, 2, 6, 0); // boss office
-  drawWindow(ctx, map, 10, 12, 0); // meeting room
-  drawWindow(ctx, map, 25, 27, 0); // kitchen
-  drawPainting(ctx, map, 10, 6, 0);
-  drawPainting(ctx, map, 25, 6, 1);
-  drawPainting(ctx, map, 2, 0, 1) || null;
-  // kitchen upper cabinets over the counter
-  for (let x = 21; x <= 23; x++) {
-    if (!hasFront(map, x, 0)) continue;
-    const fy = frontY(0);
-    ctx.fillStyle = C.tealDark;
-    ctx.fillRect(x * T + 1, fy - 2, T - 2, FRONT);
-    ctx.fillStyle = C.teal;
-    ctx.fillRect(x * T + 3, fy, T - 6, FRONT - 4);
-    fillCircle(ctx, x * T + T / 2, fy + FRONT - 6, 1.2, C.cream);
+function drawWallDecor(ctx, map, info, decor) {
+  for (const w of decor.windows || []) drawWindow(ctx, map, w.x0, w.x1, w.y);
+  for (const p of decor.paintings || []) drawPainting(ctx, map, p.x, p.y, p.variant);
+  const cab = decor.cabinets;
+  if (cab) {
+    for (let x = cab.x0; x <= cab.x1; x++) {
+      if (!hasFront(map, x, cab.y)) continue;
+      const fy = frontY(cab.y);
+      ctx.fillStyle = C.tealDark;
+      ctx.fillRect(x * T + 1, fy - 2, T - 2, FRONT);
+      ctx.fillStyle = C.teal;
+      ctx.fillRect(x * T + 3, fy, T - 6, FRONT - 4);
+      fillCircle(ctx, x * T + T / 2, fy + FRONT - 6, 1.2, C.cream);
+    }
   }
-  // projection screen (rolled down, unlit) on the meeting room wall
+  // projection screen (rolled down, unlit)
   const sc = info.screen;
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(sc.x + 2, sc.y + 3, sc.w, sc.h);
-  ctx.fillStyle = '#4a4440';
-  rrect(ctx, sc.x - 3, sc.y - 2, sc.w + 6, 4, 2);
-  ctx.fill();
-  ctx.fillStyle = '#e8e6de';
-  ctx.fillRect(sc.x, sc.y + 1, sc.w, sc.h);
-  ctx.fillStyle = '#c9c5b8';
-  ctx.fillRect(sc.x, sc.y + sc.h - 2, sc.w, 2);
+  if (sc) drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, {
+    shadow: 'rgba(0,0,0,0.25)', bar: [3, 3, 4, 2], face: '#e8e6de', hem: '#c9c5b8',
+  });
 }
 
 // --- furniture ---------------------------------------------------------------
@@ -679,7 +723,7 @@ function grain(ctx, px, py, w, h, seed) {
   ctx.stroke();
 }
 
-function drawDesk(ctx, d) {
+function drawDesk(ctx, d, decor) {
   const px = d.x0 * T + 2;
   const py = d.y0 * T + 3;
   const w = (d.x1 - d.x0 + 1) * T - 4;
@@ -698,7 +742,7 @@ function drawDesk(ctx, d) {
     const ly = d.y0 * T + 11;
     fillCircle(ctx, lx - 4, ly, 5, '#d9d4c8');
     fillCircle(ctx, lx - 4, ly, 3, '#b8b2a5');
-    fillCircle(ctx, lx + 7, ly + 3, 3, C.mustard);
+    fillCircle(ctx, lx + 7, ly + 3, 3, C.ochre);
     fillCircle(ctx, lx + 7, ly + 3, 1.8, '#5b3a20');
     const sx = d.x1 * T + 4;
     ctx.fillStyle = C.steelDark;
@@ -727,12 +771,13 @@ function drawDesk(ctx, d) {
     deskBase(ctx, px, py, w, h, C.walnutTop, C.walnutEdge, 14);
     grain(ctx, px, py, w, h, seed);
     // notepads + water glasses at the seats
-    for (const sx of [12, 14, 15]) {
+    const pads = decor.notepads || NO_PADS;
+    for (const sx of pads.north || []) {
       ctx.fillStyle = C.paper;
       ctx.fillRect(sx * T + 10, py + 4, 11, 8);
       fillCircle(ctx, sx * T + 25, py + 7, 2.5, 'rgba(200,230,240,0.85)');
     }
-    for (const sx of [12, 13, 14, 15]) {
+    for (const sx of pads.south || []) {
       ctx.fillStyle = C.paper;
       ctx.fillRect(sx * T + 10, py + h - 17, 11, 8);
     }
@@ -741,8 +786,8 @@ function drawDesk(ctx, d) {
   deskBase(ctx, px, py, w, h, C.walnutTop, C.walnutEdge);
   grain(ctx, px, py, w, h, seed);
   const midX = ((d.x0 + d.x1 + 1) / 2) * T;
-  if (d.kind === 'boss') {
-    // Boss sits north of the desk facing south: monitor back at the south edge.
+  if (d.kind === 'exec') {
+    // The executive sits north of the desk facing south: monitor back at the south edge.
     ctx.fillStyle = '#29453a';
     rrect(ctx, midX - 14, py + 4, 28, 13, 2); // leather blotter
     ctx.fill();
@@ -755,7 +800,7 @@ function drawDesk(ctx, d) {
     ctx.fillStyle = '#c9a43a'; // brass name plate
     ctx.fillRect(midX - 7, py + h - 9, 14, 3);
     // desk lamp (mustard shade)
-    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.mustard);
+    fillCircle(ctx, px + w - 12, py + 9, 5.5, C.ochre);
     fillCircle(ctx, px + w - 12, py + 9, 2.5, '#fff1c2');
     // phone + mug
     ctx.fillStyle = '#2f2b29';
@@ -765,8 +810,31 @@ function drawDesk(ctx, d) {
     fillCircle(ctx, px + 12, py + 18, 2, '#4a2e1a');
     return;
   }
-  // Workstation: sitter is south of the desk, facing north.
-  const owner = d.owner;
+  // Workstation. Screen, mug and prop come from the owner's decor.desks style; d.face is the sitter's face.
+  const st = (decor.desks && decor.desks[d.owner]) || DESK_STYLE;
+  if (d.face === 'N' || !TURN[d.face]) {
+    drawWorkstation(ctx, px, py, w, h, midX, d.x0 * T + 14, d.x1 * T + 16, st);
+    return;
+  }
+  // Any other face: the same workstation drawn in a frame turned about the desk's centre, its long side across
+  // the sitter's line of sight.
+  const across = d.face === 'S' ? d.x1 - d.x0 + 1 : d.y1 - d.y0 + 1;
+  const along = d.face === 'S' ? d.y1 - d.y0 + 1 : d.x1 - d.x0 + 1;
+  const lw = across * T - 4;
+  const lh = along * T - 5;
+  ctx.save();
+  ctx.translate(px + w / 2, py + h / 2);
+  ctx.rotate(TURN[d.face]);
+  drawWorkstation(ctx, -lw / 2, -lh / 2, lw, lh, 0, -lw / 2 + 12, lw / 2 - 14, st);
+  ctx.restore();
+}
+
+// A canvas turn that takes the 'N' workstation (sitter at local +y) to a sitter facing this way.
+const TURN = { N: 0, E: Math.PI / 2, S: Math.PI, W: -Math.PI / 2 };
+
+// A workstation sat at from the south (+y), facing north: monitor at the top edge, keyboard at the bottom, the
+// owner's mug left and prop right. midX: the monitor's centre; leftX, rightX: the mug's and the prop's x.
+function drawWorkstation(ctx, px, py, w, h, midX, leftX, rightX, st) {
   const monTopY = py + 3;
   ctx.fillStyle = 'rgba(0,0,0,0.18)';
   rrect(ctx, midX - 11, monTopY + 3, 24, 17, 2);
@@ -777,17 +845,16 @@ function drawDesk(ctx, d) {
   ctx.fillStyle = C.bezel;
   rrect(ctx, midX - 12, monTopY + 6, 24, 11, 2); // screen face (faces the sitter)
   ctx.fill();
-  const scr = owner === 'player' ? '#f4f1e6' : owner === 'kev' ? '#1f3d2a' : owner === 'lin' ? '#cfe2ee' : '#37494c';
-  ctx.fillStyle = scr;
+  ctx.fillStyle = st.screen;
   ctx.fillRect(midX - 10, monTopY + 8, 20, 7);
-  if (owner === 'kev') {
+  if (st.screenArt === 'code') {
     ctx.fillStyle = '#7fe08a';
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9, monTopY + 9 + i * 2, 4 + hash(i, 7) * 12, 1);
-  } else if (owner === 'lin') {
+  } else if (st.screenArt === 'grid') {
     ctx.fillStyle = 'rgba(40,90,120,0.6)';
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9, monTopY + 9 + i * 2, 18, 0.8);
     for (let i = 0; i < 3; i++) ctx.fillRect(midX - 9 + i * 6, monTopY + 8, 0.8, 7);
-  } else if (owner === 'player') {
+  } else if (st.screenArt === 'blankSlide') {
     ctx.fillStyle = '#c9c3b3'; // a blank slide titled nothing
     ctx.fillRect(midX - 6, monTopY + 9.5, 12, 1.2);
   }
@@ -803,25 +870,21 @@ function drawDesk(ctx, d) {
   for (let r = 0; r < 2; r++) for (let k = 0; k < 6; k++) ctx.fillRect(midX - 8 + k * 3, kbY + 1.3 + r * 2.2, 2, 1.2);
   fillEllipse(ctx, midX + 15, kbY + 3, 2.4, 3, C.keyboard);
   // personal items
-  const leftX = d.x0 * T + 14;
-  const rightX = d.x1 * T + 16;
-  const mug = owner === 'player' ? C.tomato : owner === 'lin' ? C.teal : owner === 'kev' ? C.olive : C.mustard;
-  if (owner !== 'player' || true) {
-    fillCircle(ctx, leftX, py + 15, 3.6, mug);
-    fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');
-    ctx.strokeStyle = mug;
-    ctx.lineWidth = 1.4;
-    ctx.beginPath();
-    ctx.arc(leftX + 4, py + 15, 1.8, -1.2, 1.2);
-    ctx.stroke();
-  }
-  if (owner === 'lin') {
+  const mug = st.mug;
+  fillCircle(ctx, leftX, py + 15, 3.6, mug);
+  fillCircle(ctx, leftX, py + 15, 2.2, '#4a2e1a');
+  ctx.strokeStyle = mug;
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.arc(leftX + 4, py + 15, 1.8, -1.2, 1.2);
+  ctx.stroke();
+  if (st.prop === 'plant') {
     fillCircle(ctx, rightX, py + 13, 4.5, C.pot);
     for (let i = 0; i < 6; i++) {
       const a = (i / 6) * Math.PI * 2;
       fillEllipse(ctx, rightX + Math.cos(a) * 3, py + 12 + Math.sin(a) * 2.5, 2.6, 1.6, C.plantB);
     }
-  } else if (owner === 'kev') {
+  } else if (st.prop === 'earbuds') {
     fillCircle(ctx, rightX - 2, py + 12, 3, '#9aa45a');
     fillCircle(ctx, rightX - 2, py + 12, 1.6, '#c8ccd0');
     ctx.strokeStyle = '#222';
@@ -830,7 +893,7 @@ function drawDesk(ctx, d) {
     ctx.moveTo(rightX - 12, py + 20);
     ctx.bezierCurveTo(rightX - 4, py + 12, rightX + 4, py + 24, rightX + 8, py + 16);
     ctx.stroke();
-  } else if (owner !== 'player') {
+  } else if (st.prop === 'paper') {
     ctx.fillStyle = C.white;
     ctx.save();
     ctx.translate(rightX, py + 13);
@@ -989,24 +1052,21 @@ function drawRackBase(ctx, cx, cy) {
 // =============================================================================
 export function drawWorldDynamic(ctx, game, t) {
   const map = game.map;
-  const info = mapInfo(map);
+  const SPOTS = game.level.spots;
+  const info = mapInfo(map, game.level);
   const world = game.world || {};
   const minute = game.clock ? game.clock.minute : 0;
 
-  drawWallClock(ctx, map, minute);
+  const decor = decorOf(game.level);
+  drawWallClock(ctx, map, minute, decor.clock, game.level.day.start);
 
-  // Projector + screen.
-  if (info.projector) {
-    const beam = world.projector === 'ok' && (minute >= at('3:55') || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail'));
-    if (beam) drawBeam(ctx, info, t);
-    drawProjector(ctx, info.projector.x * T + T / 2, info.projector.y * T + T / 2, world.projector || 'ok', world.fixProgress || 0, t);
+  // Furniture with moving parts (decor.props), in order, each showing what its state(world, game) says.
+  const props = decor.props || NONE;
+  for (let i = 0; i < props.length; i++) {
+    const at = info.props[i];
+    const paint = at && PROP_PAINTERS[props[i].draw];
+    if (paint) paint(ctx, info, at, props[i].state(world, game), t);
   }
-
-  // Coffee pot: full until someone takes the last of it ('taken'); missing state means full.
-  if (info.coffee) drawCarafe(ctx, info.coffee.x * T, info.coffee.y * T, world.coffee !== 'taken', t);
-
-  // Coat rack: jacket and keycard.
-  if (info.rack) drawRackItems(ctx, info.rack.x * T + T / 2, info.rack.y * T + T / 2, world.jacket === 'rack', world.keycard === 'rack', t);
 
   // Player's desk: a paper stack while serving assigned work.
   if (info.playerDesk) {
@@ -1034,14 +1094,15 @@ export function drawWorldDynamic(ctx, game, t) {
     const y = it.y * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     fillEllipse(ctx, x, y + 6, 7, 2.5, 'rgba(0,0,0,0.22)');
-    emoji(ctx, ITEM_ICON[it.type] || '❔', x, y + Math.sin(t * 3 + i) * 1, 14);
+    emoji(ctx, itemIcon(game.level.items, it.type), x, y + Math.sin(t * 3 + i) * 1, 14);
     if ((t + i * 0.7) % 2.4 < 0.25) sparkle(ctx, x + 6, y - 6, 3.5, '#fff');
   }
 
-  // Elevator doors open while someone is right in front of them.
-  if (info.elevator.length && SPOTS.elevator) {
-    const ex = SPOTS.elevator.x + 0.5;
-    const ey = SPOTS.elevator.y + 0.5;
+  // Elevator doors open while someone is right in front of them (at decor.elevator's spot).
+  const lift = decor.elevator && SPOTS[decor.elevator.spot];
+  if (info.elevator.length && lift) {
+    const ex = lift.x + 0.5;
+    const ey = lift.y + 0.5;
     let near = 99;
     for (const n of game.npcs || []) if (n.active) near = Math.min(near, Math.hypot(n.x - ex, n.y - ey));
     const open = clamp(1.6 - near, 0, 1);
@@ -1058,6 +1119,28 @@ export function drawWorldDynamic(ctx, game, t) {
   }
 }
 
+// The decor.props painters, by name: (ctx, info, tile, shown, t). `shown` is the prop's state(world, game).
+// Exported for the level validator (src/levels/validate.js): a prop must name one of these.
+export const PROP_PAINTERS = {
+  // { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }: a beam lights decor.screen.
+  slideProjector(ctx, info, at, shown, t) {
+    if (shown.beam && info.screen) drawBeam(ctx, info, at, t);
+    drawProjector(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.state, shown.fix, t);
+  },
+  // { full }: a full pot, or clear glass with dregs.
+  carafe(ctx, info, at, shown, t) {
+    drawCarafe(ctx, at.x * T, at.y * T, shown.full, t);
+  },
+  // { coat, tag }: a jacket on the rack, a badge clipped to it.
+  coatRack(ctx, info, at, shown, t) {
+    drawRackItems(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.coat, shown.tag, t);
+  },
+  // { icon, size? }: any level's stand-in, one emoji on the tile (nothing when icon is empty).
+  icon(ctx, info, at, shown) {
+    if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
+  },
+};
+
 export function sparkle(ctx, x, y, r, color) {
   ctx.fillStyle = color;
   ctx.beginPath();
@@ -1073,36 +1156,19 @@ export function sparkle(ctx, x, y, r, color) {
   ctx.fill();
 }
 
-function drawWallClock(ctx, map, minute) {
-  // Analog clock on the hallway wall, showing the game time.
-  const x = 17;
-  const y = 6;
+function drawWallClock(ctx, map, minute, clock, start) {
+  // Analog wall clock showing the game time.
+  if (!clock) return;
+  const { x, y } = clock;
   if (!hasFront(map, x, y)) return;
   const cx = x * T + T / 2;
   const cy = frontY(y) + FRONT / 2 - 1;
   fillCircle(ctx, cx, cy, 6.5, '#1f1814');
   fillCircle(ctx, cx, cy, 5.3, C.cream);
-  const total = DAY_START + (Number.isFinite(minute) ? minute : 0);
-  const mAng = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-  const hAng = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
-  ctx.strokeStyle = C.ink;
-  ctx.lineCap = 'round';
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(hAng) * 3, cy + Math.sin(hAng) * 3);
-  ctx.stroke();
-  ctx.lineWidth = 0.9;
-  ctx.strokeStyle = C.tomatoDark;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(mAng) * 4.6, cy + Math.sin(mAng) * 4.6);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
+  clockHands(ctx, cx, cy, minute, 3, 1.4, 4.6, 0.9, C.tomatoDark, start);
 }
 
-function drawBeam(ctx, info, t) {
-  const p = info.projector;
+function drawBeam(ctx, info, p, t) {
   const lx = p.x * T + T / 2;
   const ly = p.y * T + T / 2 - 8;
   const sc = info.screen;
@@ -1115,10 +1181,7 @@ function drawBeam(ctx, info, t) {
   ctx.lineTo(lx + 2, ly);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,240,0.25)';
-  ctx.fillRect(sc.x - 4, sc.y - 2, sc.w + 8, sc.h + 6);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(sc.x, sc.y + 1, sc.w, sc.h);
+  drawScreen(ctx, sc.x, sc.y + 1, sc.w, sc.h, { glow: ['rgba(255,255,240,0.25)', 4, 3, 3], face: '#ffffff' });
 }
 
 export function drawProjector(ctx, cx, cy, state, fix, t) {
@@ -1219,7 +1282,6 @@ function drawRackItems(ctx, cx, cy, jacket, keycard, t) {
     ctx.lineTo(cx + 3, ty + 4);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#e8e2d2';
     fillCircle(ctx, cx + 0.5, ty + 15, 0.9, '#c9c2b0');
     fillCircle(ctx, cx + 0.5, ty + 18, 0.9, '#c9c2b0');
     // pocket

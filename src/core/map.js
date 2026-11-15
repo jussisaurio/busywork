@@ -3,7 +3,7 @@
 // has position (x + 0.5, y + 0.5).
 
 // solid: blocks movement. opaque: blocks vision.
-export const BASE_LEGEND = {
+const BASE_LEGEND = {
   '#': { kind: 'wall', solid: true, opaque: true },
   'G': { kind: 'glass', solid: true, opaque: false },
   '.': { kind: 'floor', solid: false, opaque: false },

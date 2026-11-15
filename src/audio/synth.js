@@ -21,7 +21,7 @@ const hz = (f) => clamp(f, 1, 20000);
 // Sanitised AudioParam automation.
 export const P = {
   set: (p, v, t) => p.setValueAtTime(fin(v), tm(t)),
-  lin: (p, v, t) => p.linearRampToValueAtTime(fin(v), tm(t)),
+  ramp: (p, v, t) => p.linearRampToValueAtTime(fin(v), tm(t)),
   exp: (p, v, t) => p.exponentialRampToValueAtTime(Math.max(EPS, fin(v, EPS)), tm(t)),
   // Glide toward v from whatever the param is doing now (no jumps). Used for buses.
   to: (p, v, t, tc) => p.setTargetAtTime(fin(v), tm(t), Math.max(0.002, fin(tc, 0.05))),
@@ -36,20 +36,20 @@ export function perc(param, t, a, dur, peak) {
   const d = Math.max(0.01, fin(dur, 0.1));
   const at = clamp(a, 0.001, d * 0.8);
   P.set(param, 0, t);
-  P.lin(param, pk, t + at);
+  P.ramp(param, pk, t + at);
   P.exp(param, EPS, t + d);
 }
 
 // Flat gain envelope (beeps): quick attack, hold, quick release.
-export function flat(param, t, a, dur, peak) {
+function flat(param, t, a, dur, peak) {
   const pk = Math.max(0, fin(peak, 0));
   const d = Math.max(0.02, fin(dur, 0.1));
   const at = clamp(a, 0.001, d * 0.4);
   const rel = Math.min(0.03, d * 0.4);
   P.set(param, 0, t);
-  P.lin(param, pk, t + at);
-  P.lin(param, pk, t + d - rel);
-  P.lin(param, 0, t + d);
+  P.ramp(param, pk, t + at);
+  P.ramp(param, pk, t + d - rel);
+  P.ramp(param, 0, t + d);
 }
 
 // Connect nodes in order (nulls are skipped). Returns the last node.

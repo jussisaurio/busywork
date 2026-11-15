@@ -1,28 +1,10 @@
 // People: top-down with a hint of 3/4. Body ellipse + head circle + facing cues
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
-import { T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, ITEM_ICON } from './util.js';
+import {
+  T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+} from './util.js';
 import { C } from './palette.js';
-
-export const LOOKS = {
-  player: {
-    body: C.tomato, bodyDark: C.tomatoDark, skin: '#f1c9a2', skinDark: '#d9a47c', hair: '#7a3b1e',
-    hairStyle: 'tuft', legs: '#3a3946', wide: 1, tall: 1, head: 6.6, trim: '#f3e6c8',
-  },
-  boss: {
-    body: C.navy, bodyDark: C.navyDark, shirt: '#d7e4ee', shirtDark: '#a9bccb', tie: '#9c2a22',
-    skin: '#ebb792', skinDark: '#cf9670', hair: '#a19c95', hairStyle: 'horseshoe', mustache: true,
-    legs: '#1c2232', wide: 1.25, tall: 1.12, head: 7.4,
-  },
-  lin: {
-    body: C.teal, bodyDark: C.tealDark, skin: '#d9a77c', skinDark: '#bb875e', hair: '#1f1a1a',
-    hairStyle: 'bun', glasses: true, legs: '#4a3b33', wide: 0.95, tall: 1, head: 6.4, trim: '#f3e6c8',
-  },
-  kev: {
-    body: C.olive, bodyDark: C.oliveDark, skin: '#c98d62', skinDark: '#a8714a', hair: '#3a2a1c',
-    hairStyle: 'spiky', hood: true, legs: '#2f3340', wide: 1.05, tall: 1, head: 6.6,
-  },
-};
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -31,18 +13,26 @@ function shade(hex, f) {
   const ch = (v) => clamp(Math.round(v * f), 0, 255).toString(16).padStart(2, '0');
   return `#${ch((n >> 16) & 255)}${ch((n >> 8) & 255)}${ch(n & 255)}`;
 }
-export function lookFor(id, color) {
-  if (LOOKS[id]) return LOOKS[id];
+// How to draw person `id`: the level's look for them (level.looks, e.g. src/levels/meeting/looks.js; fields
+// listed there), else a generic look in their colour.
+export function lookFor(looks, id, color) {
+  if (looks && looks[id]) return looks[id];
   const key = color || '#888888';
   let l = genericLooks.get(key);
   if (!l) {
     l = {
       body: shade(key, 1), bodyDark: shade(key, 0.72), skin: '#e2b58d', skinDark: '#c4936b', hair: '#3a2a1c',
-      hairStyle: 'cap', legs: '#3a3640', wide: 1, tall: 1, head: 6.6,
+      hairStyle: 'cap', legs: '#3a3640', wide: 1, tall: 1, head: 6.6, bubbleDy: 30, eyeDy: 12,
     };
     genericLooks.set(key, l);
   }
   return l;
+}
+
+// Screen y (px) of a person's eyes (key 'eyeDy') or bubble anchor ('bubbleDy'); sitting lowers both 3 px.
+// d is the tile y used when n.y is not a finite number. looks: the level's (game.level.looks).
+export function headY(looks, n, key, d = 0) {
+  return fin(n.y, d) * T - lookFor(looks, n.id, n.color)[key] + (n.seated || n.pose === 'sit' ? 3 : 0);
 }
 
 // Reusable per-draw description.
@@ -50,7 +40,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    keycard: false, crank: false,
+    badge: false, crank: false, stain: false,
   };
 }
 
@@ -112,7 +102,7 @@ function computeHands(s, g) {
       lx = lsx - rx * 5; ly = lsy - 4 - ry * 5;
       rxh = rsx + rx * 5; ryh = rsy - 4 + ry * 5;
       break;
-    case 'smoke': {
+    case 'puff': {
       const k = smokeLift(t);
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       const dx = rsx + rx * 3 + fx * 2;
@@ -367,7 +357,7 @@ export function drawPerson(ctx, look, s, x, y) {
   fillEllipse(ctx, 0, bodyY + 1.5, brx, bry, bodyDark);
   fillEllipse(ctx, 0, bodyY, brx * 0.97, bry * 0.9, bodyCol);
   drawTorsoDetail(ctx, look, s, noJacket);
-  if (s.mustard) drawMustard(ctx);
+  if (s.stain) drawMustard(ctx);
   if (s.item && mugOverTorso(s, G)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
@@ -406,16 +396,11 @@ export function drawPerson(ctx, look, s, x, y) {
     const sx = hr * 0.95;
     const sy = headY - hr * 0.3 + ph * 6;
     ctx.globalAlpha = 1 - ph * 0.6;
-    ctx.fillStyle = '#8fd0ff';
-    ctx.beginPath();
-    ctx.moveTo(sx, sy - 3.5);
-    ctx.quadraticCurveTo(sx + 2.4, sy, sx, sy + 1.6);
-    ctx.quadraticCurveTo(sx - 2.4, sy, sx, sy - 3.5);
-    ctx.fill();
+    drawDrop(ctx, sx, sy, 3.5, 2.4, 1.6);
     ctx.globalAlpha = 1;
   }
 
-  if (s.arms === 'smoke') drawSmoke(ctx, s, G);
+  if (s.arms === 'puff') drawSmoke(ctx, s, G);
 
   if (s.typing) {
     for (let i = 0; i < 3; i++) {
@@ -426,19 +411,15 @@ export function drawPerson(ctx, look, s, x, y) {
       ctx.globalAlpha = 1 - ph;
       ctx.translate(px, py);
       ctx.rotate(Math.sin(s.t * 5 + i) * 0.6);
-      ctx.fillStyle = C.white;
-      ctx.fillRect(-3, -4, 6, 8);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillRect(-2, -2, 4, 0.7);
-      ctx.fillRect(-2, 0, 4, 0.7);
+      drawPaper(ctx, 6, 8, 2);
       ctx.restore();
     }
   }
   ctx.restore();
 }
 
-// The boss's keycard on a teal lanyard, clipped to the jacket pocket.
-function drawKeycardTag(ctx) {
+// A badge (level 1: the boss's keycard) on a teal lanyard, clipped to the jacket pocket.
+function drawBadge(ctx) {
   const { cd, sd, bodyY, brx, bry } = G;
   if (sd < -0.25) return; // pocket is on the front
   const side = cd >= 0 ? 1 : -1;
@@ -480,7 +461,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
   const south = sd > 0.2;
   const cx = fx * brx * 0.45;
   const top = bodyY - bry * 0.78;
-  if (look === LOOKS.boss) {
+  if (look.torso === 'suit') {
     if (noJacket) {
       // suspenders + tie
       ctx.strokeStyle = '#7a2a22';
@@ -531,10 +512,10 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
       ctx.fillStyle = 'rgba(0,0,0,0.25)';
       ctx.fillRect(-0.5, top + 2, 1, bry * 1.3);
     }
-    if (s.keycard && !noJacket) drawKeycardTag(ctx);
+    if (s.badge && !noJacket) drawBadge(ctx);
     return;
   }
-  if (look === LOOKS.player) {
+  if (look.torso === 'sweater') {
     if (south) {
       ctx.fillStyle = look.trim; // shirt collar
       ctx.beginPath();
@@ -555,7 +536,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
     ctx.stroke();
     return;
   }
-  if (look === LOOKS.lin) {
+  if (look.torso === 'cardigan') {
     if (south) {
       ctx.fillStyle = look.trim;
       ctx.beginPath();
@@ -565,12 +546,12 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
       ctx.lineTo(cx - 1.2, bodyY + bry * 0.8);
       ctx.closePath();
       ctx.fill();
-      fillCircle(ctx, cx + 2.4, bodyY - 1, 0.8, C.mustard);
-      fillCircle(ctx, cx + 2.2, bodyY + 2.5, 0.8, C.mustard);
+      fillCircle(ctx, cx + 2.4, bodyY - 1, 0.8, C.ochre);
+      fillCircle(ctx, cx + 2.2, bodyY + 2.5, 0.8, C.ochre);
     }
     return;
   }
-  if (look === LOOKS.kev && south) {
+  if (look.torso === 'hoodie' && south) {
     ctx.fillStyle = look.bodyDark;
     rrect(ctx, cx - 4.5, bodyY + 1, 9, 4, 1.5); // hoodie pocket
     ctx.fill();
@@ -772,16 +753,20 @@ function drawPlayerRing(ctx, game, t, mem) {
   ctx.globalAlpha = 1;
 }
 
-function resetState(s, t) {
+const NONE = [];
+const NO_POSES = {};
+
+export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.keycard = false; s.crank = false; s.mustard = false;
+  s.badge = false; s.crank = false; s.stain = false;
 }
 
-export function itemIcon(held) {
+// The emoji for a held item type: its level.items[type].icon (the validator requires one), '❔' for something
+// that isn't a level item, null for empty hands.
+export function itemIcon(items, held) {
   if (!held) return null;
-  const type = typeof held === 'string' ? held : held.type;
-  return ITEM_ICON[type] || '❔';
+  return (items && items[held]?.icon) || '❔';
 }
 
 function drawPlayer(ctx, game, t) {
@@ -793,22 +778,22 @@ function drawPlayer(ctx, game, t) {
   s.pose = p.seated ? 'sit' : p.moving ? 'walk' : 'stand';
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
-  s.item = itemIcon(p.held);
+  s.item = itemIcon(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? 'reach' : p.seated ? 'desk' : p.held ? 'carry' : p.moving ? 'walk' : 'idle';
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
-  s.mustard = !!p.smeared;
+  s.stain = !!p.smeared;
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
-  drawPerson(ctx, LOOKS.player, s, fin(p.x) * T, fin(p.y) * T);
+  drawPerson(ctx, lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
 }
 
 function drawNpc(ctx, game, n, t) {
   const s = S;
   resetState(s, t);
-  const look = lookFor(n.id, n.color);
+  const look = lookFor(game.level.looks, n.id, n.color);
   const world = game.world || {};
   const off = n.glance ? fin(n.glance.offset) : 0;
   s.dir = fin(n.dir);
@@ -817,53 +802,50 @@ function drawNpc(ctx, game, n, t) {
   s.pose = n.pose === 'sit' ? 'sit' : n.pose === 'walk' || n.moving ? 'walk' : 'stand';
   s.moving = !!n.moving;
   s.phase = t * 10 + (n.id ? n.id.length * 1.3 : 0);
-  s.jacket = n.id === 'boss' ? n.hasJacket !== false : true;
-  const ov = n.override;
-  if (ov === 'lockedOut') {
-    s.arms = 'bang';
-    s.angry = true;
-  } else if (ov === 'fixing') {
-    s.arms = 'reach';
-    s.item = '🔧';
-    s.crank = true;
-  } else if (n.id === 'boss' && ov === 'meeting' && world.projector !== 'ok' && !n.moving) {
-    s.arms = 'shrug';
-  } else if (n.id === 'boss' && !ov && n.label === 'visit smoke') {
-    s.arms = n.moving ? 'walk' : 'smoke';
-    s.item = '🚬';
-  } else if (n.id === 'lin' && world.sandwich === 'lin') {
-    s.arms = 'carry';
-    s.item = '🥪';
+  // The level's poses (level.poses, e.g. src/levels/meeting/looks.js): the first arms rule that holds, else
+  // sitting at a desk or walking; then every marks rule that holds.
+  const poses = game.level.poses || NO_POSES;
+  let rule = null;
+  for (const r of poses.arms || NONE) if (r.when(n, world, game)) { rule = r; break; }
+  if (rule) {
+    s.arms = typeof rule.arms === 'function' ? rule.arms(n) : rule.arms;
+    if (rule.item) s.item = rule.item;
+    if (rule.angry) s.angry = true;
+    if (rule.crank) s.crank = true;
   } else if (s.pose === 'sit') {
     s.arms = 'desk';
   } else if (s.pose === 'walk') {
     s.arms = 'walk';
   }
-  // The day's last coffee: in hand while the hands are free, otherwise set down beside him.
+  // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
   let mug = false;
-  if (n.carry === 'coffee') {
+  if (n.carry) {
     if (!s.item && s.pose !== 'sit' && (s.arms === 'walk' || s.arms === 'idle')) {
       s.arms = 'mug';
-      s.item = ITEM_ICON.coffee;
+      s.item = itemIcon(game.level.items, n.carry);
     } else mug = true;
   }
-  if (ov === 'alerted' || ov === 'hunting') s.angry = n.id === 'boss' || ov === 'hunting';
-  if (n.id === 'boss' && game.caught) s.angry = true;
-  if (n.id === 'boss' && world.keycard === 'boss') s.keycard = true;
+  for (const r of poses.marks || NONE) {
+    if (!r.when(n, world, game)) continue;
+    if (r.angry) s.angry = true;
+    if (r.badge) s.badge = true;
+    if (r.jacket === false) s.jacket = false;
+  }
+  if (game.caught && n.id && n.id === game.level.roles?.authority?.id) s.angry = true; // the authority, catching you
   const px = fin(n.x) * T;
   const py = fin(n.y) * T;
   const mugBehind = mug && Math.sin(s.dir) < 0; // on the far side of him: he overlaps it
-  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir);
+  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
   drawPerson(ctx, look, s, px, py);
-  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir);
+  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
 }
 
 // A cup set down on the desk or table in front of someone, a little to their right.
-function drawSetDownMug(ctx, px, py, d) {
+function drawSetDownMug(ctx, px, py, d, icon) {
   const c = Math.cos(d);
   const sn = Math.sin(d);
   const x = px + c * 16 - sn * 10;
   const y = py + sn * 18 + c * 3 - 4;
   fillEllipse(ctx, x, y + 5, 5, 2, 'rgba(30,18,10,0.25)');
-  emoji(ctx, ITEM_ICON.coffee, x, y, 11);
+  emoji(ctx, icon, x, y, 11);
 }

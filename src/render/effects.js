@@ -1,10 +1,12 @@
 // game.fx drawing (bubbles, particles, sightlines) plus small in-world overlays: interaction hint,
 // action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
-  T, MAP_W, MAP_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle, fillEllipse,
-  starPath, loopIcon, text, font, MONO_FAMILY,
+  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, rrect, circle, fillCircle,
+  starPath, loopIcon, drawDrop, drawPaper, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
+import { headY, lookFor } from './characters.js';
+import { findNpc } from '../game/perception.js';
 
 // --- bubbles -------------------------------------------------------------------
 const ANCHOR = { x: 0, y: 0 };
@@ -14,20 +16,14 @@ function anchorOf(game, owner) {
     const p = game.player;
     if (p && (owner === 'player' || owner === p.id)) {
       ANCHOR.x = fin(p.x) * T;
-      ANCHOR.y = fin(p.y) * T - (p.seated ? 27 : 30);
+      ANCHOR.y = headY(game.level.looks, p, 'bubbleDy');
       return true;
     }
-    const npcs = game.npcs || [];
-    for (let i = 0; i < npcs.length; i++) {
-      const n = npcs[i];
-      if (n && n.id === owner) {
-        if (!n.active) return false;
-        ANCHOR.x = fin(n.x) * T;
-        ANCHOR.y = fin(n.y) * T - (n.id === 'boss' ? 36 : 30) + (n.pose === 'sit' ? 3 : 0);
-        return true;
-      }
-    }
-    return false;
+    const n = game.npcs && findNpc(game, owner);
+    if (!n || !n.active) return false;
+    ANCHOR.x = fin(n.x) * T;
+    ANCHOR.y = headY(game.level.looks, n, 'bubbleDy');
+    return true;
   }
   if (owner && typeof owner === 'object' && Number.isFinite(owner.x) && Number.isFinite(owner.y)) {
     ANCHOR.x = owner.x * T;
@@ -37,17 +33,17 @@ function anchorOf(game, owner) {
   return false;
 }
 
-export function drawBubbles(ctx, game, t) {
+export function drawBubbles(ctx, game) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, t);
+    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y);
   }
 }
 
-export function drawBubble(ctx, b, ax, ay, t) {
+export function drawBubble(ctx, b, ax, ay) {
   const icons = Array.isArray(b.icons) ? b.icons : b.icons != null ? [String(b.icons)] : [];
   const age = Math.max(0, fin(b.age));
   const ttl = fin(b.ttl, 2.5);
@@ -63,9 +59,9 @@ export function drawBubble(ctx, b, ax, ay, t) {
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
-  // bubble centre, clamped inside the map
-  const bx = clamp(ax, w / 2 + 4, MAP_W - w / 2 - 4);
-  const by = clamp(ay - lift - h / 2, h / 2 + 4, MAP_H - h / 2 - 4);
+  // bubble centre, clamped inside the play area
+  const bx = clamp(ax, w / 2 + 4, PLAY_W - w / 2 - 4);
+  const by = clamp(ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
 
   ctx.save();
   ctx.globalAlpha = alpha;
@@ -106,7 +102,7 @@ export function drawBubble(ctx, b, ax, ay, t) {
   } else if (kind === 'sign') {
     ctx.fillStyle = C.walnutEdge;
     ctx.fillRect(-1.5, h / 2 - 2, 3, Math.max(0, tailY - h / 2 + 4));
-    ctx.fillStyle = C.mustard;
+    ctx.fillStyle = C.ochre;
     rrect(ctx, -w / 2 - 2, -h / 2 - 2, w + 4, h + 4, 4);
     ctx.fill();
     ctx.fillStyle = C.cream;
@@ -165,7 +161,7 @@ function cloudPath(ctx, w, h) {
 }
 
 // --- particles -----------------------------------------------------------------
-const CONFETTI = [C.tomato, C.mustard, C.teal, '#7fb3c8', '#f2ead3', C.olive];
+export const CONFETTI = [C.tomato, C.ochre, C.teal, '#7fb3c8', '#f2ead3', C.olive];
 
 export function drawParticles(ctx, game, t) {
   const list = game.fx && game.fx.particles;
@@ -179,12 +175,12 @@ export function drawParticles(ctx, game, t) {
     const ttl = Math.max(0.01, fin(p.ttl, 1));
     const age = Math.max(0, fin(p.age));
     const k = clamp(age / ttl, 0, 1);
-    const seed = hash(Math.floor(ttl * 100003), i);
+    const seed = hash(Math.floor(ttl * 100003)); // ttl is random per particle; an index would shift as others die
     const vx = fin(p.vx);
     const vy = fin(p.vy);
     ctx.globalAlpha = 1;
     switch (p.kind) {
-      case 'smoke': {
+      case 'puff': {
         ctx.globalAlpha = 0.5 * (1 - k);
         fillCircle(ctx, x + Math.sin(age * 3 + seed * 6) * 2, y - k * 12, 3 + k * 9, seed < 0.5 ? '#8a8580' : '#a29d97');
         break;
@@ -210,12 +206,7 @@ export function drawParticles(ctx, game, t) {
         ctx.save();
         ctx.translate(x, y + k * 6);
         ctx.rotate(age * 5 * (seed < 0.5 ? -1 : 1) + seed * 6);
-        ctx.fillStyle = C.white;
-        ctx.fillRect(-3.5, -4.5, 7, 9);
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.fillRect(-2.5, -2.5, 5, 0.7);
-        ctx.fillRect(-2.5, -0.5, 5, 0.7);
-        ctx.fillRect(-2.5, 1.5, 3.5, 0.7);
+        drawPaper(ctx, 7, 9, 3);
         ctx.restore();
         break;
       }
@@ -226,13 +217,7 @@ export function drawParticles(ctx, game, t) {
       }
       case 'sweat': {
         ctx.globalAlpha = 1 - k;
-        const yy = y + k * 5;
-        ctx.fillStyle = '#8fd0ff';
-        ctx.beginPath();
-        ctx.moveTo(x, yy - 3);
-        ctx.quadraticCurveTo(x + 2.2, yy, x, yy + 1.5);
-        ctx.quadraticCurveTo(x - 2.2, yy, x, yy - 3);
-        ctx.fill();
+        drawDrop(ctx, x, y + k * 5, 3, 2.2, 1.5);
         break;
       }
       case 'confetti': {
@@ -273,14 +258,12 @@ export function drawSightlines(ctx, game, t) {
   const px = fin(p.x, NaN) * T;
   const py = fin(p.y, NaN) * T - (p.seated ? 1 : 4); // chest, not feet
   if (!Number.isFinite(px) || !Number.isFinite(py)) return;
-  const npcs = game.npcs || [];
   ctx.save();
   ctx.lineCap = 'round';
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i];
     if (!l) continue;
-    let n = null;
-    for (let j = 0; j < npcs.length; j++) if (npcs[j] && npcs[j].id === l.from) n = npcs[j];
+    const n = game.npcs && findNpc(game, l.from);
     if (!n || !n.active) continue;
     const st = LINE_STYLE[l.kind] || LINE_STYLE.notice;
     const ttl = fin(l.ttl, 0.8) > 0 ? fin(l.ttl, 0.8) : 0.8;
@@ -288,9 +271,8 @@ export function drawSightlines(ctx, game, t) {
     const fade = 1 - age / ttl;
     if (!(fade > 0.01)) continue;
     // eyes: head centre, nudged toward you so the line leaves the face, not the hair
-    const boss = n.id === 'boss';
     let ex = fin(n.x, NaN) * T;
-    let ey = fin(n.y, NaN) * T - (boss ? 14 : 12) + (n.pose === 'sit' ? 3 : 0);
+    let ey = headY(game.level.looks, n, 'eyeDy', NaN);
     if (!Number.isFinite(ex) || !Number.isFinite(ey)) continue;
     const dx = px - ex;
     const dy = py - ey;
@@ -378,7 +360,7 @@ export function drawActionRing(ctx, game, t) {
   circle(ctx, x, y, r);
   ctx.stroke();
   // Same look for every action: colouring "sneaky" ones would explain a rule (no hand-holding).
-  ctx.strokeStyle = C.mustard;
+  ctx.strokeStyle = C.ochre;
   ctx.lineWidth = 3.2;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -391,17 +373,17 @@ export function drawActionRing(ctx, game, t) {
   }
 }
 
+// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
 export function drawSuspicion(ctx, game, t) {
-  const s = game.suspicion ? fin(game.suspicion.boss) : 0;
+  const id = game.level?.roles?.authority?.id;
+  const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
   if (!(s > 0)) return;
-  const npcs = game.npcs || [];
-  let boss = null;
-  for (let i = 0; i < npcs.length; i++) if (npcs[i] && npcs[i].id === 'boss') boss = npcs[i];
+  const boss = game.npcs && findNpc(game, id);
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;
   const x = fin(boss.x) * T + 17 + jit;
-  const y = fin(boss.y) * T - 46;
+  const y = fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10;
   const h = 20;
   ctx.fillStyle = 'rgba(24,19,15,0.8)';
   rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);
@@ -445,7 +427,7 @@ export function drawLoopStamp(ctx, game, cx, cy) {
 }
 
 // Vignette over the map area during the busted/meeting beat.
-export function drawVignette(ctx, k, x0, y0, w, h, t) {
+export function drawVignette(ctx, k, x0, y0, w, h) {
   if (k <= 0) return;
   const cx = x0 + w / 2;
   const cy = y0 + h / 2;
@@ -454,8 +436,4 @@ export function drawVignette(ctx, k, x0, y0, w, h, t) {
   g.addColorStop(1, `rgba(20,10,6,${(0.75 * k).toFixed(3)})`);
   ctx.fillStyle = g;
   ctx.fillRect(x0, y0, w, h);
-}
-
-export function dropShadow(ctx, x, y, rx, ry) {
-  fillEllipse(ctx, x, y, rx, ry, 'rgba(0,0,0,0.25)');
 }

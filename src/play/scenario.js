@@ -3,39 +3,30 @@
 //
 // Attendance rule: stopping the meeting only counts if you're in the meeting room at 4:00.
 // Everyone else is there; the one empty chair is yours. Result 'blamed' (a fail).
-import { CAUGHT_DELAY, MEETING_AT } from '../config.js';
-import { SPOTS, inZone } from '../data/level.js';
+import { CAUGHT_DELAY } from '../config.js';
 import { say, burst } from '../core/fx.js';
-import { spotPos } from '../game/perception.js';
+import { spotPos, inZone } from '../game/perception.js';
 import { stareAtEmptyChair } from '../sim/npcs.js';
 import { cancelAction } from './interactions.js';
-import { setBusy } from './player.js';
+import { setBusy, standUp } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome
-const CRICKETS_AT = 0.9; // fail beat: 🦗 sign appears at this point
-
-// Per-loop state, keyed by the player object (rebuilt every loop).
-const states = new WeakMap();
-function scenarioState(game) {
-  let s = states.get(game.player);
-  if (!s) {
-    s = { beatT: 0, crickets: false };
-    states.set(game.player, s);
-  }
-  return s;
-}
+const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
 
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
-  const s = scenarioState(game);
+  const s = game.scenario;
 
   // Meeting beat in progress.
   if (game.outcome) {
     s.beatT += dt;
     if (game.outcome.result === 'fail' && !s.crickets && s.beatT >= CRICKETS_AT) {
       s.crickets = true;
-      const proj = SPOTS.projector;
-      say(game, { x: proj.x + 0.5, y: proj.y + 1.5 }, ['🦗'], { kind: 'sign', ttl: 1.5 });
+      const sign = game.level.failSign;
+      if (sign) {
+        const p = game.level.spots[sign.spot];
+        say(game, { x: p.x + sign.offset[0], y: p.y + sign.offset[1] }, ['🦗'], { kind: 'sign', ttl: 1.5 });
+      }
     }
     if (s.beatT >= END_BEAT) endDay(game);
     return;
@@ -51,7 +42,7 @@ export function updateScenario(game, dt) {
     return;
   }
 
-  if (game.clock.minute >= MEETING_AT) startMeeting(game, s);
+  if (game.clock.minute >= game.level.day.meetingAt) startMeeting(game, s);
 }
 
 function makeOutcome(game, result, routes, newRoutes) {
@@ -62,11 +53,10 @@ function startMeeting(game, s) {
   const p = game.player;
   const w = game.world;
 
-  // Everything achieved this loop counts (both routes can be true at once).
-  const routes = [];
-  if (w.bossLockedOut) routes.push('keycard');
-  if (w.projector === 'broken') routes.push('projector');
-  const present = inZone('meeting_room', p.x, p.y);
+  // Everything achieved this loop counts (both routes can be true at once), in the level's outcomeOrder.
+  const level = game.level;
+  const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
+  const present = inZone(game, level.meeting.room, p.x, p.y);
   const result = !routes.length ? 'fail' : present ? 'win' : 'blamed';
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
@@ -84,15 +74,12 @@ function startMeeting(game, s) {
   if (result === 'fail') {
     // You are now presenting. There are no slides.
     burst(game, 'paper', p.x, p.y, 8);
-    const spot = spotPos('meeting_presenter');
+    const spot = spotPos(game, game.level.meeting.presenter);
     p.x = spot.x;
     p.y = spot.y;
     p.dir = spot.dir;
     p.moving = false;
-    if (p.seated) {
-      p.seated = false;
-      game.events.emit('player:stand', {});
-    }
+    standUp(game);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
     say(game, 'player', ['😅'], { kind: 'speech', ttl: END_BEAT });
   } else if (result === 'blamed') {

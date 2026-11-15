@@ -5,6 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { performance } from 'node:perf_hooks';
+import { createFakeCanvas, badStr } from './lib/fake-canvas.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
@@ -51,169 +52,41 @@ const { createGame, resetLoop } = await import('../src/state.js');
 const { say, burst, sightline } = await import('../src/core/fx.js');
 const { createRng } = await import('../src/core/rng.js');
 const { spotPos } = await import('../src/game/perception.js');
-const { NPC_DEFS } = await import('../src/data/schedules.js');
-const { VISION, at, MEETING_AT } = await import('../src/config.js');
+const { VISION_DEFAULT, at } = await import('../src/config.js');
+const { levels } = await import('../src/levels/index.js');
+const MEETING_AT = levels.meeting.day.meetingAt;
 const { DIRS } = await import('../src/core/vision.js');
 const { LEGEND_PLAY } = await import('../src/render/hud.js');
 
 // --- 1. fake canvas ---------------------------------------------------------------
-const METHODS = new Set(('arc arcTo beginPath bezierCurveTo clearRect clip closePath createConicGradient createImageData ' +
-  'createLinearGradient createPattern createRadialGradient drawFocusIfNeeded drawImage ellipse fill fillRect fillText ' +
-  'getContextAttributes getImageData getLineDash getTransform isPointInPath isPointInStroke lineTo measureText moveTo ' +
-  'putImageData quadraticCurveTo rect reset resetTransform restore rotate roundRect save scale setLineDash setTransform ' +
-  'stroke strokeRect strokeText transform translate').split(' '));
-const ENUMS = {
-  textAlign: ['left', 'right', 'center', 'start', 'end'],
-  textBaseline: ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'],
-  lineCap: ['butt', 'round', 'square'],
-  lineJoin: ['round', 'bevel', 'miter'],
-  globalCompositeOperation: ['source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in',
-    'destination-out', 'destination-atop', 'lighter', 'copy', 'xor', 'multiply', 'screen', 'overlay', 'darken', 'lighten',
-    'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'],
-};
-const errors = [];
 const wordy = new Set();
 const LEGEND_WORDS = new Set(LEGEND_PLAY.flatMap((k) => [k.key, k.label]));
-let scene = 'setup';
-let calls = 0;
-let dashCalls = 0; // dashed strokes started (HUD slots, sightlines)
-const fail = (msg) => {
-  if (errors.length < 60) errors.push(`[${scene}] ${msg}`);
-};
-const badStr = (s) => /NaN|undefined|Infinity|\[object/.test(s);
-function validColor(v) {
-  if (v && typeof v === 'object') return !!v.__fake;
-  if (typeof v !== 'string' || badStr(v)) return false;
-  if (/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v)) return true;
-  const m = v.match(/^rgba?\(([^)]*)\)$/);
-  if (m) {
-    const parts = m[1].split(',').map((s) => s.trim());
-    if (parts.length < 3 || parts.length > 4) return false;
-    if (!parts.every((p) => /^-?\d+(\.\d+)?%?$/.test(p))) return false;
-    const a = parts.length === 4 ? Number(parts[3]) : 1;
-    return a >= 0 && a <= 1 && parts.slice(0, 3).every((p) => Number(p) >= 0 && Number(p) <= 255);
-  }
-  return /^[a-z]+$/i.test(v);
-}
-const gradient = () => ({
-  __fake: true,
-  addColorStop(off, color) {
-    if (!Number.isFinite(off) || off < 0 || off > 1) fail(`addColorStop offset ${off}`);
-    if (!validColor(color)) fail(`addColorStop color ${color}`);
+const strokes = {}; // scene -> strokeStyles set
+const fake = createFakeCanvas({
+  onSet(label, key, value) {
+    if (key === 'strokeStyle') (strokes[fake.scene] ??= new Set()).add(value);
+  },
+  onCall(label, key, [txt]) {
+    if (key !== 'fillText' || (typeof txt !== 'string' && typeof txt !== 'number') || badStr(String(txt))) return;
+    // "No text except the mission card": outside the title screen only digits, ':', '×', '.', emoji
+    // and the key legend (one word naming each control).
+    if (!fake.scene.startsWith('title') && /[A-Za-z]/.test(String(txt)) && !LEGEND_WORDS.has(String(txt))) wordy.add(`${fake.scene}: "${txt}"`);
   },
 });
-
-const contexts = [];
-function makeCanvas(label, w = 300, h = 150) {
-  const canvas = { width: w, height: h, style: {}, label };
-  const state = { depth: 0, underflow: 0, label };
-  const props = {
-    canvas, globalAlpha: 1, fillStyle: '#000000', strokeStyle: '#000000', lineWidth: 1, lineCap: 'butt',
-    lineJoin: 'miter', miterLimit: 10, lineDashOffset: 0, font: '10px sans-serif', textAlign: 'start',
-    textBaseline: 'alphabetic', direction: 'inherit', shadowBlur: 0, shadowColor: 'rgba(0,0,0,0)', shadowOffsetX: 0,
-    shadowOffsetY: 0, globalCompositeOperation: 'source-over', imageSmoothingEnabled: true, imageSmoothingQuality: 'low',
-    filter: 'none', letterSpacing: '0px', fontKerning: 'auto',
-  };
-  const special = {
-    save() { state.depth++; },
-    restore() { if (state.depth === 0) state.underflow++; else state.depth--; },
-    measureText(s) { return { width: String(s).length * 8 }; },
-    createLinearGradient: gradient,
-    createConicGradient: gradient,
-    createRadialGradient(x0, y0, r0, x1, y1, r1) {
-      if (r0 < 0 || r1 < 0) fail(`createRadialGradient negative radius ${r0} ${r1}`);
-      return gradient();
-    },
-    createPattern() { return { __fake: true, setTransform() {} }; },
-    arc(x, y, r) { if (r < 0) fail(`arc negative radius ${r}`); },
-    arcTo(x1, y1, x2, y2, r) { if (r < 0) fail(`arcTo negative radius ${r}`); },
-    ellipse(x, y, rx, ry) { if (rx < 0 || ry < 0) fail(`ellipse negative radius ${rx} ${ry}`); },
-    roundRect(x, y, w, h, r) { if (typeof r === 'number' && r < 0) fail(`roundRect negative radius ${r}`); },
-    drawImage(img) {
-      if (!img || !(img.width > 0) || !(img.height > 0)) fail('drawImage with empty source');
-    },
-    fillText(txt) {
-      if (typeof txt !== 'string' && typeof txt !== 'number') fail(`fillText non-string ${typeof txt}`);
-      else if (badStr(String(txt))) fail(`fillText "${txt}"`);
-      // "No text except the mission card": outside the title screen only digits, ':', '×', '.', emoji
-      // and the key legend (one word naming each control).
-      else if (!scene.startsWith('title') && /[A-Za-z]/.test(String(txt)) && !LEGEND_WORDS.has(String(txt))) wordy.add(`${scene}: "${txt}"`);
-    },
-    setLineDash(arr) {
-      if (!Array.isArray(arr) || arr.some((v) => !Number.isFinite(v) || v < 0)) fail(`setLineDash ${arr}`);
-      else if (arr.length) dashCalls++;
-    },
-    getLineDash() { return []; },
-    getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; },
-  };
-  const fns = {};
-  const ctx = new Proxy({}, {
-    get(_, key) {
-      if (key === '__state') return state;
-      if (typeof key === 'symbol') return undefined;
-      if (Object.prototype.hasOwnProperty.call(props, key)) return props[key];
-      if (!fns[key]) {
-        if (!METHODS.has(key)) fail(`unknown ctx member read: ${key}`);
-        fns[key] = (...args) => {
-          calls++;
-          for (let i = 0; i < args.length; i++) {
-            const a = args[i];
-            if (typeof a === 'number' && !Number.isFinite(a)) fail(`${key} arg ${i} = ${a}`);
-            if (a === undefined) fail(`${key} arg ${i} undefined`);
-          }
-          const sp = special[key];
-          return sp ? sp(...args) : undefined;
-        };
-      }
-      return fns[key];
-    },
-    set(_, key, value) {
-      if (!Object.prototype.hasOwnProperty.call(props, key)) fail(`unknown ctx property set: ${String(key)}`);
-      if (value === undefined || value === null) fail(`${String(key)} = ${value}`);
-      else if (typeof value === 'number' && !Number.isFinite(value)) fail(`${String(key)} = ${value}`);
-      else if (key === 'fillStyle' || key === 'strokeStyle' || key === 'shadowColor') {
-        if (!validColor(value)) fail(`${key} = ${value}`);
-      } else if (typeof value === 'string' && badStr(value)) fail(`${String(key)} = ${value}`);
-      if (key === 'font' && !/(^|\s)\d+(\.\d+)?px\s/.test(value)) fail(`font = ${value}`);
-      if (key === 'globalAlpha' && (value < 0 || value > 1)) fail(`globalAlpha out of range ${value}`);
-      if (key === 'lineWidth' && !(value > 0)) fail(`lineWidth ${value}`);
-      if (key === 'shadowBlur' && value < 0) fail(`shadowBlur ${value}`);
-      if (ENUMS[key] && !ENUMS[key].includes(value)) fail(`${key} = ${value}`);
-      props[key] = value;
-      return true;
-    },
-  });
-  contexts.push(ctx);
-  canvas.getContext = (type) => (type === '2d' ? ctx : null);
-  return canvas;
-}
+const { errors, contexts, listeners, fail, makeCanvas } = fake;
 
 // --- 2. DOM stubs -----------------------------------------------------------------
-const listeners = {};
-globalThis.window = {
-  innerWidth: 1280, innerHeight: 800, devicePixelRatio: 2,
-  addEventListener(type, fn) { (listeners[type] ||= []).push(fn); },
-  removeEventListener() {},
-};
-let created = 0;
-globalThis.document = {
-  createElement(tag) {
-    if (tag !== 'canvas') throw new Error(`unexpected createElement(${tag})`);
-    created++;
-    return makeCanvas(`offscreen${created}`);
-  },
-};
+fake.installDom();
 
 // --- 3. game states ---------------------------------------------------------------
 const SPOT_FOR = { boss: 'boss_desk', lin: 'lin_desk', kev: 'kev_desk' };
 function makeNpcs(game) {
-  return NPC_DEFS.map((d, i) => {
-    const s = spotPos(SPOT_FOR[d.id] || 'player_desk');
+  return game.level.cast.map((d, i) => {
+    const s = spotPos(game, SPOT_FOR[d.id] || 'player_desk');
     return {
       id: d.id, icon: d.icon, color: d.color, voice: d.voice, meetingSpot: d.meetingSpot,
-      x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(VISION[d.id] || VISION.default) },
-      active: true, pose: 'sit', moving: false, override: null, carry: null,
-      hasJacket: d.id === 'boss' ? game.world.jacket === 'boss' : false,
+      x: s.x, y: s.y, dir: s.dir, glance: { offset: 0 }, vision: { ...(d.vision || VISION_DEFAULT) },
+      coneTint: d.coneTint, active: true, pose: 'sit', moving: false, override: null, carry: null,
       label: d.id, rng: createRng(1000 + i),
     };
   });
@@ -224,7 +97,7 @@ const canvas = makeCanvas('main');
 const mainCtx = canvas.getContext('2d');
 const renderer = createRenderer(canvas, { strict: true });
 ok(listeners.resize && listeners.resize.length === 1, 'resize listener registered inside createRenderer');
-ok(created === 0, 'no offscreen canvas until first render');
+ok(fake.created === 0, 'no offscreen canvas until first render');
 
 const game = createGame();
 const SKIP = new Set(['events', 'map', 'rng', 'input']);
@@ -232,7 +105,7 @@ const snap = (g) => JSON.stringify(g, (k, v) => (SKIP.has(k) ? undefined : v));
 let renders = 0;
 let mutated = 0;
 function draw(name) {
-  scene = name;
+  fake.scene = name;
   const before = snap(game);
   try {
     renderer.render(game);
@@ -267,7 +140,7 @@ for (const t of [0, 0.05, 0.3, 0.8, 1.5, 3, 10, 30]) {
   game.time = t;
   draw(`title t=${t}`);
 }
-ok(created === 1, 'offscreen static layer created lazily (once)');
+ok(fake.created === 1, 'offscreen static layer created lazily (once)');
 game.persist.routesFound = ['projector'];
 game.persist.loop = 4;
 game.time = 40;
@@ -354,7 +227,7 @@ day((g) => {
 draw('bubbles at map edges / inactive owner');
 
 // Particles
-const PKINDS = ['smoke', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
+const PKINDS = ['puff', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
 for (const kind of PKINDS) {
   day((g) => {
     burst(g, kind, 12, 8, 10, { lift: 1 });
@@ -382,7 +255,7 @@ for (const pj of ['ok', 'broken', 'fixing']) for (const kevGone of [false, true]
     Object.assign(g.world, { projector: pj, kevGone, fixProgress: pj === 'fixing' ? fp : 0 });
     if (pj === 'fixing') {
       const k = npc(g, 'kev');
-      const s = spotPos('projector');
+      const s = spotPos(g, 'projector');
       Object.assign(k, { x: s.x, y: s.y, dir: s.dir, override: 'fixing', pose: 'stand' });
     }
     if (kevGone) npc(g, 'kev').active = false;
@@ -393,7 +266,6 @@ for (const pj of ['ok', 'broken', 'fixing']) for (const kevGone of [false, true]
 for (const kc of ['rack', 'player', 'dropped', 'boss']) for (const jacket of ['rack', 'boss']) {
   day((g) => {
     Object.assign(g.world, { keycard: kc, jacket });
-    npc(g, 'boss').hasJacket = jacket === 'boss';
     if (kc === 'player') g.player.held = 'keycard';
     if (kc === 'dropped') g.world.items.push({ type: 'keycard', x: 8.2, y: 10.4 });
   });
@@ -402,8 +274,8 @@ for (const kc of ['rack', 'player', 'dropped', 'boss']) for (const jacket of ['r
 day((g) => {
   Object.assign(g.world, { keycard: 'boss', jacket: 'boss', bossLockedOut: true });
   const b = npc(g, 'boss');
-  const s = spotPos('door_out');
-  Object.assign(b, { x: s.x, y: s.y, dir: s.dir, pose: 'stand', override: 'lockedOut', hasJacket: true });
+  const s = spotPos(g, 'door_out');
+  Object.assign(b, { x: s.x, y: s.y, dir: s.dir, pose: 'stand', override: 'lockedOut' });
 });
 draw('boss locked out');
 for (const sw of ['fridge', 'player', 'dropped', 'eaten', 'lin']) {
@@ -444,9 +316,9 @@ draw('unknown carry values');
 // Sightline flashes: every kind across its life, live positions, and garbage.
 // dashes(): dashed strokes in one render, compared against the same day without lines.
 function dashes(name) {
-  const d0 = dashCalls;
+  const d0 = fake.dashCalls;
   draw(name);
-  return dashCalls - d0;
+  return fake.dashCalls - d0;
 }
 day();
 const baseDashes = dashes('sightline baseline (no lines)');
@@ -506,12 +378,11 @@ day((g) => { g.fx.lines = 'nope'; });
 draw('fx.lines not an array');
 day((g) => { delete g.fx.lines; });
 draw('fx.lines missing');
-day((g) => { g.fx = { bubbles: [], particles: [], shake: { t: 0, amount: 0 } }; sightline(g, 'lin', 'notice'); });
-draw('fx.lines created on demand by sightline()');
+day((g) => { sightline(g, 'lin', 'notice'); });
+draw('sightline() from the sim');
 day((g) => {
   g.world.keycard = 'boss'; g.world.jacket = 'boss';
   const b = npc(g, 'boss');
-  b.hasJacket = true;
   b.pose = 'walk'; b.moving = true;
 });
 for (const d of DIR_LIST) { npc(game, 'boss').dir = d; game.time += 0.1; draw(`boss wears keycard dir=${d.toFixed(2)}`); }
@@ -564,7 +435,7 @@ for (const ov of ['alerted', 'fixing', 'hunting', 'lockedOut', 'meeting']) {
 day((g) => { npc(g, 'kev').active = false; });
 draw('inactive NPC (kev)');
 day((g) => {
-  const s = spotPos('elevator');
+  const s = spotPos(g, 'elevator');
   Object.assign(npc(g, 'kev'), { x: s.x, y: s.y + 0.3, pose: 'walk', moving: true, dir: DIRS.N });
 });
 draw('NPC at elevator');
@@ -619,7 +490,7 @@ for (const o of OUTCOMES) {
     const { jacketless, kevGone, ...outcome } = o;
     g.outcome = { ...outcome, loop: 3, minute: o.result === 'caught' ? 47.5 : MEETING_AT };
     if (o.result === 'caught') g.caught = { by: 'boss', reason: 'contraband', t: 1 };
-    if (jacketless) npc(g, 'boss').hasJacket = false;
+    if (jacketless) g.world.jacket = 'rack';
     if (kevGone) { g.world.kevGone = true; npc(g, 'kev').active = false; }
     g.phase = 'end';
   });
@@ -631,6 +502,32 @@ for (const o of OUTCOMES) {
 }
 day((g) => { g.phase = 'end'; g.outcome = null; });
 draw('end without outcome');
+
+// A level without endScenes gets the engine's plain cards: a win wears the teal (win) border, the rest tomato.
+{
+  const { DEFAULT_END_SCENES } = await import('../src/render/screens.js');
+  const { C } = await import('../src/render/palette.js');
+  const level = game.level;
+  const { endScenes, ...bare } = level;
+  const kinds = {};
+  for (const result of ['win', 'caught', 'blamed', 'fail']) {
+    day((g) => {
+      g.level = bare;
+      g.persist.routesFound = [];
+      g.outcome = { result, routes: result === 'win' || result === 'blamed' ? [level.routes[0].id] : [], newRoutes: [], loop: 1, minute: MEETING_AT };
+      g.phase = 'end';
+    });
+    for (const dt of [0, 0.5, 2]) {
+      game.time += dt;
+      draw(`plain end ${result} +${dt}`);
+    }
+    kinds[result] = DEFAULT_END_SCENES.kindOf(game.outcome);
+    const st = strokes[`plain end ${result} +2`] ?? new Set();
+    ok(result === 'win' ? st.has(C.teal) && !st.has(C.tomato) : st.has(C.tomato), `no endScenes: a ${result} card has the ${result === 'win' ? 'teal' : 'tomato'} border`);
+  }
+  game.level = level;
+  ok(Object.entries(kinds).every(([r, k]) => r === k) && DEFAULT_END_SCENES.kindOf(null) === 'fail', 'default end scenes: one per result');
+}
 
 // Resize / DPR changes
 for (const [w, h, dpr] of [[1920, 1080, 1], [800, 1200, 3], [1, 1, 1], [3000, 600, 1.5], [1280, 800, 2]]) {
@@ -648,6 +545,60 @@ for (const [w, h, dpr] of [[1920, 1080, 1], [800, 1200, 3], [1, 1, 1], [3000, 60
 
 ok(wordy.size === 0, 'no letters drawn outside the title screen (digits and icons only)');
 if (wordy.size) for (const w of [...wordy].slice(0, 15)) console.log('   ', w);
+
+// Workstations turn to their sitter: the monitor sits on the far side of the desk from the deskOwners spot that
+// faces into it. A transform-tracking ctx finds each monitor box's world-space centre.
+{
+  const { drawStaticLayer } = await import('../src/render/world.js');
+  const { parseMap } = await import('../src/core/map.js');
+  const { C } = await import('../src/render/palette.js');
+  const rows = ['#########', '#.......#', '#.T.TTT.#', '#.T.....#', '#.T.....#', '#.......#', '#########'];
+  const map = () => parseMap(rows);
+  const monitors = (spots) => {
+    let m = [1, 0, 0, 1, 0, 0];
+    const stack = [];
+    let path = [];
+    const out = [];
+    const tx = (x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+    const own = {
+      fillStyle: '#000',
+      save() { stack.push(m); },
+      restore() { m = stack.pop(); },
+      translate(x, y) { m = [m[0], m[1], m[2], m[3], m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]; },
+      rotate(a) {
+        const c = Math.cos(a);
+        const s = Math.sin(a);
+        m = [m[0] * c + m[2] * s, m[1] * c + m[3] * s, m[2] * c - m[0] * s, m[3] * c - m[1] * s, m[4], m[5]];
+      },
+      beginPath() { path = []; },
+      moveTo(x, y) { path.push(tx(x, y)); },
+      arcTo(x, y) { path.push(tx(x, y)); },
+      fill() {
+        if (own.fillStyle !== C.monitor || !path.length) return;
+        const xs = path.map((p) => p[0]);
+        const ys = path.map((p) => p[1]);
+        out.push([(Math.min(...xs) + Math.max(...xs)) / 2 / 32, (Math.min(...ys) + Math.max(...ys)) / 2 / 32]);
+      },
+      measureText: () => ({ width: 0 }),
+    };
+    const nop = () => ({ addColorStop() {} });
+    const ctx = new Proxy(own, { get: (o, k) => (k in o ? o[k] : nop), set: (o, k, v) => { o[k] = v; return true; } });
+    drawStaticLayer(ctx, map(), { spots: spots, decor: { deskOwners: Object.keys(spots) } });
+    return out;
+  };
+  // Vertical desk: x 2, y 2-4 (centre 2.5, 3.5). Horizontal desk: x 4-6, y 2 (centre 5.5, 2.5).
+  const near = (ms, x0, x1, y0, y1) => ms.find(([x, y]) => x >= x0 && x <= x1 && y >= y0 && y <= y1);
+  const v = (face, x) => near(monitors({ a_desk: { x, y: 3, face } }), 1.5, 3.5, 1.5, 5.5);
+  const hz = (face, y) => near(monitors({ a_desk: { x: 5, y, face } }), 3.5, 7.5, 1.5, 3.5);
+  const e = v('E', 1);
+  const w = v('W', 3);
+  const n = hz('N', 3);
+  const so = hz('S', 1);
+  ok(e && e[0] > 2.5 && Math.abs(e[1] - 3.5) < 0.6, `sitter west, facing E: monitor on the desk's east side (${e})`);
+  ok(w && w[0] < 2.5 && Math.abs(w[1] - 3.5) < 0.6, `sitter east, facing W: monitor on the desk's west side (${w})`);
+  ok(n && n[1] < 2.5 && Math.abs(n[0] - 5.5) < 0.6, `sitter south, facing N: monitor on the desk's north side (${n})`);
+  ok(so && so[1] > 2.5 && Math.abs(so[0] - 5.5) < 0.6, `sitter north, facing S: monitor on the desk's south side (${so})`);
+}
 
 // Report coverage errors so far
 ok(errors.length === 0, `${renders} renders: no throws, NaN args, bad styles, negative radii or save/restore leaks`);
@@ -690,12 +641,12 @@ day((g) => {
   sightline(g, 'boss', 'notice', 99);
   say(g, 'boss', ['☕', '❓'], { kind: 'thought', ttl: 99 });
   say(g, 'lin', ['🥪', '❗'], { kind: 'speech', ttl: 99 });
-  burst(g, 'smoke', 13.5, 3.5, 30, { ttl: 99 });
+  burst(g, 'puff', 13.5, 3.5, 30, { ttl: 99 });
   burst(g, 'paper', 13.5, 9.5, 30, { ttl: 99 });
 });
-scene = 'perf';
+fake.scene = 'perf';
 const before = snap(game);
-const callsBefore = calls;
+const callsBefore = fake.calls;
 const t0 = performance.now();
 const FRAMES = 300;
 for (let i = 0; i < FRAMES; i++) {
@@ -705,7 +656,7 @@ for (let i = 0; i < FRAMES; i++) {
   renderer.render(game);
 }
 const ms = (performance.now() - t0) / FRAMES;
-const perFrame = Math.round((calls - callsBefore) / FRAMES);
+const perFrame = Math.round((fake.calls - callsBefore) / FRAMES);
 void before;
 ok(errors.length === 0, `perf run clean (${FRAMES} frames)`);
 if (errors.length) for (const e of errors.slice(0, 20)) console.log('   ', e);

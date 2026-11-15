@@ -1,91 +1,125 @@
-// Office rules: witnesses and tattling, contraband, boss suspicion, assigned work, getting caught.
-// Runs after updateNpcs, so it sees this step's NPC positions and glances.
+// Office rules: witnesses and tattling, contraband, the authority's suspicion, assigned work, getting caught.
+// Runs after updateNpcs, so it sees this step's NPC positions and glances. Who plays which part comes from
+// level.roles (authority, evidence, scene) and the item flags in level.items (owner, contraband).
 //
-// Witnesses (Lin, Kev) don't punish you themselves: they shout and point ❗👉. If the boss is on
-// the floor he hears it and sends you to your desk. While he's out (restroom, smoke break) the
-// shout lands on nobody, but the witness remembers: the moment he's back on the floor she points
-// you out (👉 + what she saw) and you go to your desk then. Only a boss locked out for good, or
-// the 4:00 meeting, ends the grudge.
-// Owners take their things back on sight: Lin her sandwich (only she knows it's hers: to anyone
-// else, taking or eating it is just lunch), and Kev the day's only cup of coffee, but only once
-// he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
+// Witnesses (everyone but the authority) don't punish you themselves: they shout and point ❗👉. If the
+// authority is on the floor he hears it and sends you to your desk. While he's out (restroom, smoke break) the
+// shout lands on nobody, but the witness remembers: the moment he's back on the floor she points you out
+// (👉 + what she saw) and you go to your desk then. Only an authority off duty for good (locked out), or the
+// 4:00 meeting, ends the grudge.
+// Owners take their things back on sight, but only while they know it's theirs (the owner's `when`): level 1's
+// Lin her sandwich (to anyone else, taking or eating it is just lunch), and Kev the day's only cup of coffee,
+// once he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
 import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
 import { say, burst, shake, sightline } from '../core/fx.js';
-import { npcSees, findNpc } from '../game/perception.js';
-import { inZone } from '../data/level.js';
-import { npcTakes } from '../sim/npcs.js';
-import { cancelAction, dropHeld } from './interactions.js';
+import { npcSees, findNpc, inZone } from '../game/perception.js';
+import { npcTakes, npcSayLater } from '../sim/npcs.js';
+import { judge } from '../sim/mechanics/index.js';
+import { cancelAction, dropHeld, actionRow } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
 
 // Module tunables.
 export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts
 const NOTICE_BUBBLE_GAP = 1.0; // min seconds between ❓ bubbles from the same NPC
-const TELL_DELAY = 1.2; // seconds after the boss is back on the floor before a witness tells on you
-// What a late tattle points at (the thing the witness saw you at).
-const SAW_ICON = { take_keycard: '🪪', take_sandwich: '🥪', eat_sandwich: '🥪', spill_coffee: '📽️', scene: '📽️', evidence: '🥪' };
-// Kev, once the projector breaks, blames whoever he sees at the scene: anywhere in the meeting
-// room, or within SCENE_RADIUS of its door (unless you're pretending: just someone on a call).
+const TELL_DELAY = 1.2; // seconds after the authority is back on the floor before a witness tells on you
+// The scene's investigator blames whoever he sees in its zone, or within this many tiles of its door (unless
+// you're pretending: just someone on a call). A level's scene may set its own `radius`.
 export const SCENE_RADIUS = 3.5;
-const SCENE_DOOR = { x: 14.5, y: 6.5 };
-// Who takes what back, and whether they know it's theirs right now.
-const OWNS = { lin: 'sandwich', kev: 'coffee' };
-function claims(npc, item) {
-  if (!item || OWNS[npc.id] !== item) return false;
-  return npc.id !== 'kev' || npc.wants === 'coffee';
-}
 
-// Per-loop state, keyed by the player object (resetLoop builds a new one every loop).
-const states = new WeakMap();
-function rulesState(game) {
-  let s = states.get(game.player);
-  if (!s) {
-    s = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null };
-    states.set(game.player, s);
+const NO_ROLE = {};
+// The level's items that are contraband and tracked in world (cached per level: updateRules runs every step).
+const contrabandCache = new WeakMap();
+function contrabandItems(level) {
+  let list = contrabandCache.get(level);
+  if (!list) {
+    list = Object.entries(level.items ?? {}).filter(([, item]) => item.contraband && item.place);
+    contrabandCache.set(level, list);
   }
-  return s;
+  return list;
+}
+const roles = (game) => game.level.roles ?? NO_ROLE;
+const itemFlags = (game, type) => (type ? game.level.items?.[type] : undefined);
+// The authority's NPC, or null.
+const authorityNpc = (game) => (roles(game).authority ? findNpc(game, roles(game).authority.id) : null);
+
+// Who takes what back (the item's owner), and whether they know it's theirs right now.
+function claims(game, npc, item) {
+  const owner = itemFlags(game, item)?.owner;
+  if (!owner || owner.id !== npc.id) return false;
+  return !owner.when || owner.when(npc);
 }
 
-// Does the boss currently enforce suspicion/contraband?
-function bossEnforcing(boss) {
-  return !!boss && boss.active && boss.override !== 'lockedOut' && boss.override !== 'meeting';
+// Does this NPC (the authority) currently enforce suspicion/contraband?
+function enforcing(game, npc) {
+  return !!npc && npc.active && !(roles(game).authority?.offDuty ?? []).includes(npc.override);
 }
 
-// The boss hears a witness shout if he's on the floor (not away, not outside in the lobby).
-function bossHears(boss) {
-  return bossEnforcing(boss) && !inZone('outside', boss.x, boss.y);
+// The authority hears a witness shout if he's on the floor (not away, not in the zone he's deaf in).
+function authorityHears(game, boss) {
+  const deafIn = roles(game).authority?.deafIn;
+  return enforcing(game, boss) && !(deafIn && inZone(game, deafIn, boss.x, boss.y));
 }
 
-// Kev's projector just broke and the player is where the culprit would be.
+// The scene's investigator is on it and the player is where the culprit would be.
 function atScene(game, s, npc) {
+  const scene = roles(game).scene;
   const p = game.player;
-  if (npc.id !== 'kev' || s.sceneTold) return false;
-  if (npc.override !== 'alerted' && npc.override !== 'fixing') return false;
-  if (inZone('meeting_room', p.x, p.y)) return true;
-  return !p.busy && Math.hypot(p.x - SCENE_DOOR.x, p.y - SCENE_DOOR.y) <= SCENE_RADIUS;
+  if (!scene || npc.id !== scene.by || s.sceneTold) return false;
+  if (!scene.while.includes(npc.override)) return false;
+  if (inZone(game, scene.zone, p.x, p.y)) return true;
+  const door = scene.door;
+  return !p.busy && Math.hypot(p.x - door.x, p.y - door.y) <= (scene.radius ?? SCENE_RADIUS);
 }
 
 // What this NPC would object to right now, if it saw the player:
-// 'action' (doing something sneaky) | 'scene' (Kev: near his broken projector) | 'contraband' | null.
-function offenceFor(game, s, npc, boss) {
+// 'action' (doing something sneaky) | 'scene' (near the scene) | 'evidence' (the mark on you) | 'contraband' | null.
+function offenceFor(game, s, npc) {
   const p = game.player;
+  const r = roles(game);
   if (p.action && p.action.sneaky && (!p.action.owner || p.action.owner === npc.id)) {
     // A locked-out boss is outside banging on the glass: he can't do anything about it.
-    if (npc.id === 'boss' && npc.override === 'lockedOut') return null;
+    if (npc.id === r.authority?.id && (r.authority.helpless ?? []).includes(npc.override)) return null;
     return 'action';
   }
   if (atScene(game, s, npc)) return 'scene';
   // Lin hunting for her sandwich spots the mustard down your sweater. Pretending doesn't hide a stain.
-  if (npc.id === 'lin' && npc.override === 'hunting' && p.smeared && !game.world.linKnows) return 'evidence';
+  const ev = r.evidence;
+  if (ev && npc.id === ev.by && npc.override === ev.while && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
   if (p.busy) return null; // phone call / folder stride hides contraband
-  if (npc.id === 'boss' && p.held === 'keycard' && bossEnforcing(boss)) return 'contraband';
-  if (claims(npc, p.held)) return 'contraband';
+  if (npc.id === itemFlags(game, p.held)?.contraband && enforcing(game, npc)) return 'contraband';
+  if (claims(game, npc, p.held)) return 'contraband';
   return null;
 }
 
 export function updateRules(game, dt) {
+  rulesStep(game, dt);
+  publishWatch(game);
+}
+
+// What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'action' | 'scene' |
+// 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
+// serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
+// a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
+function publishWatch(game) {
+  const watch = {};
+  const s = game.rules;
+  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working) {
+    const p = game.player;
+    for (const npc of game.npcs) {
+      const offence = offenceFor(game, s, npc);
+      if (offence && npcSees(game, npc, p.x, p.y)) watch[npc.id] = offence;
+    }
+  }
+  game.watch = watch;
+}
+
+function rulesStep(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
-  const s = rulesState(game);
+  const s = game.rules;
   const p = game.player;
+  // Mechanics with a say (what lies on your desk: putdown.js; a failed inspection: inspection.js) judge first,
+  // even while you serve assigned work: evidence doesn't wait.
+  if (judge(game, JUDGE)) return;
 
   // Serving assigned work: nothing else applies until it's done.
   if (s.working) {
@@ -99,13 +133,14 @@ export function updateRules(game, dt) {
     game.events.emit('work:done', {});
   }
 
-  const boss = findNpc(game, 'boss');
-  if (game.world.projector === 'ok') s.sceneTold = false; // a fresh breakage is a fresh scene
+  const boss = authorityNpc(game);
+  const scene = roles(game).scene;
+  if (scene && scene.fresh(game.world)) s.sceneTold = false; // a fresh breakage is a fresh scene
 
-  // A witness who shouted at an empty office tells the boss once he's back within earshot.
+  // A witness who shouted at an empty office tells the authority once he's back within earshot.
   if (s.grudge) {
     const w = findNpc(game, s.grudge.by);
-    if (w && w.active && bossHears(boss)) {
+    if (w && w.active && authorityHears(game, boss)) {
       s.grudge.t += dt;
       if (s.grudge.t >= TELL_DELAY) {
         tellLate(game, s, w);
@@ -116,9 +151,9 @@ export function updateRules(game, dt) {
     }
   }
 
-  // Witnesses (sneaky actions, Kev's crime scene) and contraband.
+  // Witnesses (sneaky actions, the scene, the evidence) and contraband.
   for (const npc of game.npcs) {
-    const offence = offenceFor(game, s, npc, boss);
+    const offence = offenceFor(game, s, npc);
     if (offence && npcSees(game, npc, p.x, p.y)) {
       if (!s.seen[npc.id]) notice(game, s, npc);
       s.seen[npc.id] = (s.seen[npc.id] || 0) + dt;
@@ -132,31 +167,38 @@ export function updateRules(game, dt) {
     }
   }
 
-  // A keycard lying where the boss can see it goes straight back into his pocket.
-  if (game.world.keycard === 'dropped' && bossEnforcing(boss)) {
-    const card = game.world.items.find((i) => i.type === 'keycard');
-    if (card && npcSees(game, boss, card.x, card.y)) {
-      game.world.items = game.world.items.filter((i) => i !== card);
-      game.world.keycard = 'boss';
-      say(game, 'boss', ['🪪', '❗'], { kind: 'speech', voice: boss.voice });
-      game.events.emit('keycard:recovered', {});
+  // Contraband lying where its confiscator can see it goes straight back into his pocket (the keycard).
+  for (const [type, item] of contrabandItems(game.level)) {
+    if (game.world[item.place] !== 'dropped') continue;
+    const by = findNpc(game, item.contraband);
+    if (!enforcing(game, by)) continue;
+    const it = game.world.items.find((i) => i.type === type);
+    if (it && npcSees(game, by, it.x, it.y)) {
+      game.world.items = game.world.items.filter((i) => i !== it);
+      game.world[item.place] = by.id;
+      say(game, by.id, [item.icon, '❗'], { kind: 'speech', voice: by.voice });
+      game.events.emit(`${type}:recovered`, {});
     }
   }
+  const auth = roles(game).authority;
+  if (!auth) return;
 
-  // Boss suspicion: he sees you standing around (not busy, not doing anything).
+  // The authority's suspicion: he sees you standing around (not busy, not doing anything).
+  const id = auth.id;
   const slacking = !p.action || p.action.idle; // eating at work is not working
-  const idleInView = bossEnforcing(boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y);
+  const idleInView = enforcing(game, boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y);
   if (idleInView) {
-    if (game.suspicion.boss === 0) game.events.emit('boss:suspicious', {});
-    game.suspicion.boss = Math.min(1, game.suspicion.boss + dt / SUSPICION_FILL_SEC);
-    if (game.suspicion.boss >= 1) assignWork(game, 'idle');
+    if (game.suspicion[id] === 0) game.events.emit(`${id}:suspicious`, {});
+    game.suspicion[id] = Math.min(1, game.suspicion[id] + dt / SUSPICION_FILL_SEC);
+    if (game.suspicion[id] >= 1) assignWork(game, 'idle');
   } else {
     decaySuspicion(game, dt);
   }
 }
 
 function decaySuspicion(game, dt) {
-  game.suspicion.boss = Math.max(0, game.suspicion.boss - dt / SUSPICION_DECAY_SEC);
+  const id = roles(game).authority?.id;
+  if (id) game.suspicion[id] = Math.max(0, game.suspicion[id] - dt / SUSPICION_DECAY_SEC);
 }
 
 // First sight of something sneaky: ❓ over the NPC (throttled).
@@ -170,54 +212,50 @@ function notice(game, s, npc) {
 }
 
 function react(game, s, npc, offence) {
-  if (npc.id === 'boss') {
-    sightline(game, 'boss', 'caught', 1.6);
+  const r = roles(game);
+  if (npc.id === r.authority?.id) {
+    sightline(game, npc.id, 'caught', 1.6);
     caught(game, offence);
     return;
   }
   const p = game.player;
-  const what = offence === 'action' ? p.action?.type : offence;
+  // What a late tattle points at (the thing the witness saw you at).
+  const icon = offence === 'action' ? actionRow(game, p.action.type)?.saw : offence === 'scene' ? r.scene.icon : offence === 'evidence' ? r.evidence.icon : undefined;
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
-  if (offence === 'evidence') game.world.linKnows = true; // ends her hunt (sim)
+  if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)
   sightline(game, npc.id, 'tattle', 1.2);
 
   // Owners take their things back, whatever else you were up to.
-  const own = OWNS[npc.id];
-  if (claims(npc, p.held)) {
+  const held = p.held;
+  const owner = itemFlags(game, held)?.owner;
+  if (claims(game, npc, held)) {
     p.held = null;
-    if (own === 'sandwich') {
-      // Before lunch she puts it back in the fridge; mid-hunt she has found it, and that's the end of the hunt.
-      game.world.sandwich = npc.override === 'hunting' ? 'lin' : 'fridge';
-      game.events.emit('sandwich:returned', {});
-    } else {
-      npcTakes(npc, own);
-      game.events.emit('coffee:confiscated', { by: npc.id });
+    if (owner.reclaim) owner.reclaim(game, npc);
+    else {
+      npcTakes(npc, held);
+      game.events.emit(`${held}:confiscated`, { by: npc.id });
     }
   }
 
-  // Just carrying their thing: they take it and that's the end of it.
-  // Lin is cross (😠🥪: her lunch). Kev is a desperate man who has just seen a coffee (🤤☕ … 😌).
+  // Just carrying their thing: they take it and that's the end of it, with a word (the owner's `says`).
   if (offence === 'contraband') {
-    if (own === 'coffee') {
-      say(game, npc.id, ['🤤', '☕'], { kind: 'speech' });
-      (npc._sayQ ??= []).push({ t: 1.3, icons: ['😌'], kind: 'speech' });
-    } else {
-      say(game, npc.id, ['😠', '🥪'], { kind: 'speech' });
+    for (const line of owner?.says ?? []) {
+      if (line.after) npcSayLater(npc, line.after, line.say, line.kind ?? 'speech', line.ttl);
+      else say(game, npc.id, line.say, { kind: line.kind ?? 'speech', ttl: line.ttl });
     }
     game.events.emit('witness:tattle', { by: npc.id, reason: offence, heard: false });
     return;
   }
-  // Caught in the act (or at the scene): they shout and point. The boss hears it if he's around.
-  say(game, npc.id, offence === 'evidence' ? ['🥪', '❗', '👉'] : ['❗', '👉'], { kind: 'alert', ttl: 1.6 });
-  const boss = findNpc(game, 'boss');
-  const heard = bossHears(boss);
+  // Caught in the act (or at the scene): they shout and point. The authority hears it if he's around.
+  say(game, npc.id, offence === 'evidence' ? [r.evidence.icon, '❗', '👉'] : ['❗', '👉'], { kind: 'alert', ttl: 1.6 });
+  const heard = authorityHears(game, authorityNpc(game));
   game.events.emit('witness:tattle', { by: npc.id, reason: offence, heard });
   if (heard) assignWork(game, 'tattle');
-  else if (!s.grudge) s.grudge = { by: npc.id, icon: SAW_ICON[what] ?? '❗', reason: offence, t: 0 };
+  else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
 }
 
-// The boss is back: the witness points you out, with what she saw.
+// The authority is back: the witness points you out, with what she saw.
 function tellLate(game, s, w) {
   const g = s.grudge;
   s.grudge = null;
@@ -227,14 +265,17 @@ function tellLate(game, s, w) {
   assignWork(game, 'tattle');
 }
 
-// The boss sends you back to your desk to type for WORK_PENALTY_MIN game minutes.
-export function assignWork(game, reason) {
-  const s = rulesState(game);
+// The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes.
+function assignWork(game, reason) {
+  const s = game.rules;
   const p = game.player;
-  const boss = findNpc(game, 'boss');
-  // If the boss is off-floor (restroom), the order still lands: show it over the player.
-  say(game, boss && boss.active ? 'boss' : 'player', ['📄', '📄', '👉', '🖥️'], { kind: 'speech' });
-  cancelAction(game, 'witnessed');
+  const id = roles(game).authority.id;
+  const boss = findNpc(game, id);
+  // If the authority is off-floor (restroom), the order still lands: show it over the player.
+  say(game, boss && boss.active ? id : 'player', ['📄', '📄', '👉', '🖥️'], { kind: 'speech' });
+  // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
+  // ends as 'idle'. Told on (a tattle): 'witnessed'.
+  cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
   dropHeld(game); // whatever you carried stays where you stood
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
   sitAtDesk(game);
@@ -243,22 +284,25 @@ export function assignWork(game, reason) {
   p.locked = true;
   game.clock.forced = WORK_PENALTY_MIN;
   game.clock.ff = false;
-  game.suspicion.boss = 0;
+  game.suspicion[id] = 0;
   s.working = true;
   s.seen = {};
   s.grudge = null; // you're at your desk already: nothing left to tell
-  game.events.emit('boss:workAssigned', { reason });
+  game.events.emit(`${id}:workAssigned`, { reason });
 }
 
-export function caught(game, reason) {
+// What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
+const JUDGE = { claims, enforcing, caught: (game, reason, by) => caught(game, reason, by) };
+
+function caught(game, reason, by = roles(game).authority.id) {
   if (game.caught) return;
   const p = game.player;
-  game.caught = { by: 'boss', reason, t: 0 };
+  game.caught = { by, reason, t: 0 };
   cancelAction(game, 'caught');
   p.locked = true;
   setBusy(game, false, null);
   game.clock.ff = false;
-  say(game, 'boss', ['❗', '😠'], { kind: 'alert' });
-  game.events.emit('caught', { by: 'boss', reason });
+  say(game, by, ['❗', '😠'], { kind: 'alert' });
+  game.events.emit('caught', { by, reason });
   shake(game, 0.3, 0.4);
 }

@@ -2,7 +2,7 @@
 // Owns canvas sizing (fit-to-window, HiDPI), caches the static office in an offscreen
 // canvas and composes world, HUD and screens. Never mutates game state: the only memory
 // it keeps (screen start times, the end-beat zoom, the day-start ping) lives in this closure.
-import { T, HUD_H, MAP_W, MAP_H, VIEW_W, VIEW_H, clamp, fin, easeOutCubic } from './util.js';
+import { T, HUD_H, PLAY_W, PLAY_H, VIEW_W, VIEW_H, clamp, fin, easeOutCubic } from './util.js';
 import { C } from './palette.js';
 import { drawStaticLayer, drawWorldDynamic } from './world.js';
 import { drawCharacters } from './characters.js';
@@ -12,7 +12,7 @@ import {
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
-import { MEETING_AT } from '../config.js';
+import { findNpc } from '../game/perception.js';
 
 export function createRenderer(canvas, opts = {}) {
   const strict = !!opts.strict;
@@ -59,7 +59,7 @@ export function createRenderer(canvas, opts = {}) {
     });
   }
 
-  function ensureLayer(map) {
+  function ensureLayer(map, level) {
     const k = kx;
     if (layer && layerK === k && layerMap === map) return;
     const doc = typeof document !== 'undefined' ? document : null;
@@ -68,11 +68,13 @@ export function createRenderer(canvas, opts = {}) {
       return;
     }
     if (!layer) layer = doc.createElement('canvas');
-    layer.width = Math.max(1, Math.round(MAP_W * k));
-    layer.height = Math.max(1, Math.round(MAP_H * ky));
+    const mw = map.w * T;
+    const mh = map.h * T;
+    layer.width = Math.max(1, Math.round(mw * k));
+    layer.height = Math.max(1, Math.round(mh * ky));
     const lc = layer.getContext('2d');
-    lc.setTransform(layer.width / MAP_W, 0, 0, layer.height / MAP_H, 0, 0);
-    drawStaticLayer(lc, map);
+    lc.setTransform(layer.width / mw, 0, 0, layer.height / mh, 0, 0);
+    drawStaticLayer(lc, map, level);
     layerK = k;
     layerMap = map;
   }
@@ -96,16 +98,18 @@ export function createRenderer(canvas, opts = {}) {
     if (game.phase === 'day' && (mem.dayPhase !== 'day' || minute < mem.lastMinute - 0.001)) mem.dayStart = t;
     mem.dayPhase = game.phase;
     mem.lastMinute = minute;
-    const beat = game.phase === 'day' && (!!game.caught || minute >= MEETING_AT);
+    const beat = game.phase === 'day' && (!!game.caught || minute >= game.level.day.meetingAt);
     if (beat && mem.beatStart < 0) mem.beatStart = t;
     else if (!beat) mem.beatStart = -1;
   }
 
   function drawWorld(game, t, title) {
     const map = game.map;
+    const mw = map ? map.w * T : PLAY_W;
+    const mh = map ? map.h * T : PLAY_H;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(0, HUD_H, MAP_W, MAP_H);
+    ctx.rect(0, HUD_H, PLAY_W, PLAY_H);
     ctx.clip();
     ctx.translate(0, HUD_H);
 
@@ -113,19 +117,15 @@ export function createRenderer(canvas, opts = {}) {
     if (mem.beatStart >= 0) {
       beatK = easeOutCubic((t - mem.beatStart) / 0.8);
       const p = game.player;
-      let fx = p ? fin(p.x) * T : MAP_W / 2;
-      let fy = p ? fin(p.y) * T : MAP_H / 2;
-      if (game.caught && game.npcs) {
-        for (let i = 0; i < game.npcs.length; i++) {
-          const n = game.npcs[i];
-          if (n && n.id === game.caught.by && n.active) {
-            fx = (fx + fin(n.x) * T) / 2;
-            fy = (fy + fin(n.y) * T) / 2;
-          }
-        }
+      let fx = p ? fin(p.x) * T : mw / 2;
+      let fy = p ? fin(p.y) * T : mh / 2;
+      const by = game.caught && game.npcs && findNpc(game, game.caught.by);
+      if (by && by.active) {
+        fx = (fx + fin(by.x) * T) / 2;
+        fy = (fy + fin(by.y) * T) / 2;
       }
-      fx = clamp(fx, 0, MAP_W);
-      fy = clamp(fy, 0, MAP_H);
+      fx = clamp(fx, 0, mw);
+      fy = clamp(fy, 0, mh);
       const z = 1 + 0.06 * beatK;
       ctx.translate(fx, fy);
       ctx.scale(z, z);
@@ -138,8 +138,8 @@ export function createRenderer(canvas, opts = {}) {
     }
 
     if (map) {
-      if (layer) ctx.drawImage(layer, 0, 0, MAP_W, MAP_H);
-      else drawStaticLayer(ctx, map);
+      if (layer) ctx.drawImage(layer, 0, 0, mw, mh);
+      else drawStaticLayer(ctx, map, game.level);
       drawWorldDynamic(ctx, game, t);
     }
     if (!title && game.phase === 'day') drawCones(ctx, game, t);
@@ -150,10 +150,10 @@ export function createRenderer(canvas, opts = {}) {
       drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t);
       drawFocusHint(ctx, game, t);
-      drawBubbles(ctx, game, t);
+      drawBubbles(ctx, game);
     }
     ctx.restore();
-    if (beatK > 0) drawVignette(ctx, beatK, 0, HUD_H, MAP_W, MAP_H, t);
+    if (beatK > 0) drawVignette(ctx, beatK, 0, HUD_H, PLAY_W, PLAY_H);
   }
 
   function frame(game) {
@@ -167,7 +167,7 @@ export function createRenderer(canvas, opts = {}) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(kx, 0, 0, ky, 0, 0);
     ctx.imageSmoothingEnabled = true;
-    if (game.map) ensureLayer(game.map);
+    if (game.map) ensureLayer(game.map, game.level);
 
     if (game.phase === 'title') {
       drawWorld(game, t, true);
@@ -177,7 +177,7 @@ export function createRenderer(canvas, opts = {}) {
     drawWorld(game, t, false);
     drawHud(ctx, game, t, mem);
     if (game.phase === 'end') drawEnd(ctx, game, t, mem);
-    else drawLoopStamp(ctx, game, MAP_W / 2, HUD_H + MAP_H / 2 - 40);
+    else drawLoopStamp(ctx, game, PLAY_W / 2, HUD_H + PLAY_H / 2 - 40);
   }
 
   function render(game) {

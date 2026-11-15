@@ -19,35 +19,16 @@ const VOWELS = {
   oe: [430, 1450],
 };
 
-// Voice characters.
+// Voice characters. The engine has the player's and a generic one; a level adds its cast's (level.voices, e.g.
+// src/levels/meeting/voices.js; a level's voice of the same name wins).
 //   wave: source waveform. f0: base pitch (Hz). spread: random pitch per syllable (+-fraction).
 //   decl: pitch drop across the utterance. syl/gap: syllable/gap length ranges (s). atk: attack (s).
 //   fmt: formant scale. q: [Q1, Q2] formant sharpness. mk: formant make-up gain. f2amp: F2 level.
 //   body: low-passed direct source level (chestiness). cons: consonant chance; consF: its colour.
 //   growl: amplitude-wobble rate (Hz) for gruffness. post: extra filters [type, f, Q, dB].
 //   gain: overall level. bounce: alternating up/down pitch (sing-song).
+//   pitch: pinned pitches for the voice's one-shot sounds (see sfxPitch), instead of the f0-derived ones.
 export const VOICES = {
-  // Boss: low, gruff, slow, dropping.
-  boss: {
-    wave: 'sawtooth', f0: 92, spread: 0.06, decl: 0.24, syl: [0.15, 0.21], gap: [0.04, 0.07], atk: 0.02,
-    fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
-    vowels: ['a', 'o', 'u', 'uh', 'ae'], cons: 0.3, consF: 1700, consAmp: 0.18,
-    growl: 31, post: [['lowpass', 2600, 0.7]], gain: 1.15,
-  },
-  // Lin: mid-high, quick, crisp.
-  lin: {
-    wave: 'sawtooth', f0: 245, spread: 0.13, decl: 0.08, syl: [0.075, 0.105], gap: [0.02, 0.04], atk: 0.006,
-    fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
-    vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22,
-    gain: 0.8,
-  },
-  // Kev: mid, mumbly, nasal (hollow square source, nasal peak, dull top, legato, near-monotone).
-  kev: {
-    wave: 'square', f0: 148, spread: 0.04, decl: 0.06, syl: [0.12, 0.16], gap: [0.008, 0.02], atk: 0.025,
-    fmt: 0.95, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.06, bodyF: 450,
-    vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
-    post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
-  },
   // Player: bright and squeaky.
   player: {
     wave: 'square', f0: 430, spread: 0.16, decl: 0.0, syl: [0.06, 0.085], gap: [0.02, 0.035], atk: 0.004,
@@ -71,14 +52,36 @@ const RE_EXCL = /❗|❕|‼|!/u;
 const MAX_SYL = 12; // long bubbles get capped
 const MAX_LEN = 2.2; // seconds; longer plans are sped up to fit
 
-export function voiceOf(id) {
-  return typeof id === 'string' && Object.hasOwn(VOICES, id) ? id : 'generic';
+// The voice table for a level's voices (level.voices): the engine's plus the level's, built once per level table.
+const TABLES = new WeakMap();
+export function voicesFor(levelVoices) {
+  if (!levelVoices || typeof levelVoices !== 'object') return VOICES;
+  let table = TABLES.get(levelVoices);
+  if (!table) {
+    table = { ...VOICES, ...levelVoices };
+    TABLES.set(levelVoices, table);
+  }
+  return table;
+}
+
+// The voice an id speaks with in `table` (voicesFor): its own, else 'generic'.
+export function voiceOf(id, table = VOICES) {
+  return typeof id === 'string' && Object.hasOwn(table, id) ? id : 'generic';
+}
+
+// Pitches for a voice's one-shot sounds (sfx.js notice: Hz, tattle: ratio, grumble: Hz): the generic
+// voice's scaled by f0, unless the voice pins its own.
+export function sfxPitch(voiceId, table = VOICES) {
+  const V = table[voiceOf(voiceId, table)];
+  const k = V.f0 / table.generic.f0;
+  const pin = V.pitch ?? {};
+  return { notice: pin.notice ?? 500 * k, tattle: pin.tattle ?? k, grumble: pin.grumble ?? 220 * k };
 }
 
 // Plan an utterance (pure; exported for tests). Times are relative to the start.
 // Returns { syl: [{ t, dur, f, f2, vowel, vowel2, cons, amp, atk }], length, q, angry, excl }.
-export function planBabble(voiceId, icons, kind = 'speech') {
-  const V = VOICES[voiceOf(voiceId)];
+export function planBabble(voiceId, icons, kind = 'speech', table = VOICES) {
+  const V = table[voiceOf(voiceId, table)];
   const list = Array.isArray(icons) ? icons.filter((x) => typeof x === 'string') : [];
   const text = list.join('');
   const q = RE_Q.test(text);
@@ -140,12 +143,14 @@ export function planBabble(voiceId, icons, kind = 'speech') {
   return { syl, length, q, angry, excl };
 }
 
-// Speak. opts: { voiceId, icons, kind, t, pan, gain, muffle (low-pass Hz, 0 = off), dest }.
+// Speak. opts: { voiceId, icons, kind, t, pan, gain, muffle (low-pass Hz, 0 = off), dest, voices (a voicesFor table;
+// default: the engine's) }.
 // Returns { start, end, kill(at) } — kill fades the utterance out in 40 ms.
 export function babble(E, opts) {
-  const vid = voiceOf(opts.voiceId);
-  const V = VOICES[vid];
-  const plan = planBabble(vid, opts.icons, opts.kind);
+  const table = opts.voices ?? VOICES;
+  const vid = voiceOf(opts.voiceId, table);
+  const V = table[vid];
+  const plan = planBabble(vid, opts.icons, opts.kind, table);
   const t = fin(opts.t, E.now());
   const end = t + plan.length + 0.06;
   const s = sound(E);
@@ -210,18 +215,18 @@ export function babble(E, opts) {
     const [a1, a2] = VOWELS[x.vowel];
     const [b1, b2] = VOWELS[x.vowel2];
     P.setF(f1.frequency, a1 * V.fmt, tv);
-    P.lin(f1.frequency, b1 * V.fmt, tv + d);
+    P.ramp(f1.frequency, b1 * V.fmt, tv + d);
     P.setF(f2.frequency, a2 * V.fmt, tv);
-    P.lin(f2.frequency, b2 * V.fmt, tv + d);
+    P.ramp(f2.frequency, b2 * V.fmt, tv + d);
     P.set(env.gain, 0, tv);
-    P.lin(env.gain, x.amp, tv + x.atk);
-    P.lin(env.gain, x.amp * 0.7, tv + Math.max(x.atk + 0.005, d * 0.7));
-    P.lin(env.gain, 0, tv + d);
+    P.ramp(env.gain, x.amp, tv + x.atk);
+    P.ramp(env.gain, x.amp * 0.7, tv + Math.max(x.atk + 0.005, d * 0.7));
+    P.ramp(env.gain, 0, tv + d);
     if (x.cons && nEnv) {
       P.setF(nf.frequency, V.consF * rand(0.7, 1.4), t0);
       P.set(nEnv.gain, 0, t0);
-      P.lin(nEnv.gain, V.consAmp * x.amp, t0 + 0.004);
-      P.lin(nEnv.gain, 0, t0 + 0.02 + rand(0, 0.012));
+      P.ramp(nEnv.gain, V.consAmp * x.amp, t0 + 0.004);
+      P.ramp(nEnv.gain, 0, t0 + 0.02 + rand(0, 0.012));
     }
   }
   s.play(osc, t, end);
@@ -237,17 +242,19 @@ export function babble(E, opts) {
       const a = Math.max(t, fin(at, t));
       if (a >= end) return;
       P.set(kill.gain, level, a);
-      P.lin(kill.gain, 0, a + 0.04);
+      P.ramp(kill.gain, 0, a + 0.04);
     },
   };
 }
 
 // Closed-mouth "hmm" for thought bubbles (rises into "hm?" when the thought is a question).
 export function hum(E, opts) {
-  const V = VOICES[voiceOf(opts.voiceId)];
+  const table = opts.voices ?? VOICES;
+  const vid = voiceOf(opts.voiceId, table);
+  const V = table[vid];
   const t = fin(opts.t, E.now());
   const q = RE_Q.test((opts.icons ?? []).join(''));
-  const f = V.f0 * (V === VOICES.player ? 0.75 : 1) * (q ? 1.05 : 1);
+  const f = V.f0 * (vid === 'player' ? 0.75 : 1) * (q ? 1.05 : 1);
   const dur = rand(0.3, 0.42);
   const s = sound(E);
   const osc = s.osc('triangle', f);
@@ -263,9 +270,9 @@ export function hum(E, opts) {
   }
   const pk = 0.28 * clamp(fin(opts.gain, 1), 0, 3);
   P.set(g.gain, 0, t);
-  P.lin(g.gain, pk, t + 0.05);
-  P.lin(g.gain, pk * 0.75, t + dur * 0.7);
-  P.lin(g.gain, 0, t + dur);
+  P.ramp(g.gain, pk, t + 0.05);
+  P.ramp(g.gain, pk * 0.75, t + dur * 0.7);
+  P.ramp(g.gain, 0, t + dur);
   chain(osc, lp, g, s.out(opts.dest ?? E.voice, opts.pan));
   s.play(osc, t, t + dur + 0.02);
   s.done();
