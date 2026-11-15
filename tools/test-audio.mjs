@@ -363,6 +363,7 @@ function eventList() {
   ev.push(['boss:jacket', {}], ['boss:lockedOut', {}], ['boss:bang', {}], ['boss:bang', {}]);
   ev.push(['kev:left', {}], ['npc:vanish', { id: 'kev' }], ['npc:vanish', { id: 'lin' }], ['npc:appear', { id: 'lin' }], ['npc:vanish', { id: 'ghost' }]);
   ev.push(['meeting:gather', {}]);
+  ev.push(['noise', { x: 4.5, y: 9.5, radius: 5 }], ['noise', { x: 4.5, y: 9.5, radius: 5, sfx: 'elevatorDing' }], ['noise', { x: NaN, y: 1, radius: 2, sfx: 'machineBeep' }]);
   for (const result of ['win', 'fail', 'caught', 'blamed', 'huh']) ev.push(['day:end', { outcome: { result } }]);
   ev.push(['day:end', undefined], ['day:end', { outcome: null }]);
   return ev;
@@ -570,6 +571,7 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
     ['npc:vanish', { id: 'lin' }],
     ['npc:appear', { id: 'lin' }],
     ['meeting:gather', {}],
+    ['noise', { x: 4.5, y: 9.5, radius: 5, sfx: 'machineBeep' }],
     ['day:end', { outcome: { result: 'win' } }],
     ['day:end', { outcome: { result: 'caught' } }],
     ['day:end', { outcome: { result: 'blamed' } }],
@@ -582,6 +584,14 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
     for (let i = 0; i < 240; i++) ctx.advance(1 / 60); // 4 s apart (past every dedupe window)
   }
   ok(silent.length === 0, `every mapped event makes a sound${silent.length ? ` (silent: ${silent.join(', ')})` : ''}`);
+  {
+    // A noise without an sfx (or naming none that exists) is silent: its sound is the level's business.
+    const c0 = ctx.created;
+    game.events.emit('noise', { x: 4.5, y: 9.5, radius: 5 });
+    game.events.emit('noise', { x: 4.5, y: 9.5, radius: 5, sfx: 'nope' });
+    ok(ctx.created === c0, "a 'noise' without a known sfx makes no sound");
+    for (let i = 0; i < 240; i++) ctx.advance(1 / 60);
+  }
 
   // Dedupes: two tattles in one step = one nyah-nyah; kev:left + vanish at the elevator = one ding; 🦗 sign + day:end fail = one crickets.
   const cost = (fn) => {

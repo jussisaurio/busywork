@@ -9,7 +9,7 @@ import { drawCharacters, useFaces } from './characters.js';
 import { drawCones } from './cones.js';
 import { drawDarkness } from './darkness.js';
 import {
-  drawBubbles, drawParticles, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
+  drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
@@ -148,6 +148,7 @@ export function createRenderer(canvas, opts = {}) {
     if (game.level?.darkness) drawDarkness(ctx, game, t); // dark rooms (game/darkness.js)
     if (!title) {
       drawParticles(ctx, game, t);
+      drawRipples(ctx, game); // a noise you can see (core/fx.js ripple)
       drawSightlines(ctx, game, t); // above people, below the bubbles
       drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t);
