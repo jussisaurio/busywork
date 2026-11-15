@@ -49,3 +49,7 @@ Changed:
 
 **Next pass:** did the rewritten DESIGN produce better first drafts? Are builders making good calls the docs didn't
 spell out?
+
+## Pass 3 notes (in progress)
+- Saturday's builder ran the sense read twice and kept the "works". A cold read on main (--again, no history) said fixable, 2 blockers. One read is a sample, not a verdict, and the ledger read is anchored on the old list (it checks old problems, finds fewer new ones). Change: builders report a --again read, once, whatever it says. Watch whether ledger reads and cold reads keep disagreeing; if they do, the ledger is hiding problems.
+- Fix rounds keep adding explanations (Kev protests, so Lin must stay quiet, so...). Each beat added to answer a reader creates the next problem. Cutting the beat that needs explaining is usually the fix.
