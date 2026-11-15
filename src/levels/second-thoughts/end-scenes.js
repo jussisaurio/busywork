@@ -503,9 +503,9 @@ function sceneCaught(ctx, game, t, e) {
   bubble(ctx, ['❗', '😠'], B.x + 30, Math.max(TAB.y + 66, B.y - 86), e, 'alert');
 }
 
-// Caught outside his office: he came out to the lighting panel to see why his lights were off and found you at it, or
-// Kev found you at the fuse box he came to fix. Whoever caught you points at you (in the dark, his phone torch is on
-// you); you sweat, the letter in your hand if you had it. The panel or the fuse box shows as it was.
+// Caught outside his office: he came out to the lighting panel to see why his lights were off, or out to the fuse box
+// in the blackout, and found you at it. He points at you (in the dark, his phone torch is on you); you sweat, the
+// letter in your hand if you had it. The panel or the fuse box shows as it was.
 function caughtOutside(ctx, game, t, e) {
   const w = game.world;
   const you = game.player;

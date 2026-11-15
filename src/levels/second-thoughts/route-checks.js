@@ -14,6 +14,19 @@ const took = (log, how) => {
   if (e.payload.how !== how) throw new Error(`took it ${e.payload.how}, not ${how}`);
 };
 
+// The breaker: pull it, step off onto the floor (on the phone, not standing about in his torch), wait for him to come
+// out to the box, then in by his hallway door behind his back and take it.
+const breakerTake = ({ run, waitFor, npc, log }) => {
+  run('goto fuse_box pretend');
+  run('interact');
+  run('goto lin_desk pretend');
+  if (!waitFor(() => npc('boss').override === 'waiting', { maxSec: 30 })) throw new Error('he never came out to the fuse box');
+  run('goto desk_side pretend');
+  run('goto desk_side pretend');
+  run('interact');
+  took(log, 'breaker');
+};
+
 export default [
   {
     name: 'do nothing → fail (he goes through his tray and reads it)',
@@ -96,21 +109,22 @@ export default [
     },
   },
   {
-    name: 'blackout: take it from in front of his desk → frozen in his phone torch → caught',
+    name: 'blackout: take it and wait in his office till the lights come back → he walks back in and sees it in your hand → caught',
     expect: { result: 'caught' },
-    play({ run, waitFor, g }) {
-      run('goto 20,2 pretend'); // by the fridge, beside the machine: out of Kev's sight through the kitchen door
-      run('interact'); // pour the jug down its back, onto the socket
-      if (!g.world.rigged) throw new Error('never rigged the machine');
+    play({ run, waitFor, g, log }) {
+      run('goto 20,2 pretend');
+      run('interact');
       run('goto my_seat');
-      run('pretend until 3:11'); // stops when it shorts
-      run('pretend 5s'); // and when the fuse blows
+      run('pretend until 3:11');
+      run('pretend 5s');
       if (g.world.fuse !== 'off' || g.world.fuseBy !== 'coffee') throw new Error('the coffee machine never blew the fuse');
-      run('goto tray pretend');
-      run('goto tray pretend');
-      try { run('interact'); } catch { /* caught mid-take */ }
-      waitFor((gg) => gg.caught, { maxSec: 10 });
-      caughtFor(g, 'action');
+      if (g.npcs[0].override !== 'blackout' && g.npcs[0].override !== 'waiting') throw new Error('the boss stayed at his desk in the dark');
+      run('goto desk_side pretend');
+      run('goto desk_side pretend');
+      for (let i = 0; i < 3 && g.world.letter !== 'player'; i++) run('interact');
+      took(log, 'blackout');
+      waitFor((gg) => gg.caught, { busy: false, maxSec: 60 });
+      caughtFor(g, 'contraband');
     },
   },
   {
@@ -126,34 +140,29 @@ export default [
     },
   },
   {
-    name: 'breaker: pull it, take the letter from beside his desk, back to your seat → win',
+    name: 'breaker: pull it, step away, wait for him to come out to the box, take it, back to your seat → win',
     expect: { result: 'win', routes: ['breaker'] },
-    play({ run, g, log }) {
-      run('goto fuse_box pretend');
-      run('interact');
-      run('goto desk_side pretend');
-      run('interact');
-      took(log, 'breaker');
-      atDesk(run, g);
+    play(ctx) {
+      breakerTake(ctx);
+      atDesk(ctx.run, ctx.g);
     },
   },
   {
-    name: 'breaker: pull it and hang about at the fuse box → Kev\'s torch finds you → desk work → fail',
-    expect: { result: 'fail' },
-    play({ run, waitFor, log }) {
+    name: 'breaker: pull it and hang about at the fuse box → he comes out with his torch and finds you there → caught',
+    expect: { result: 'caught' },
+    play({ run, waitFor, g }) {
       run('goto fuse_box pretend');
       run('interact');
-      waitFor(() => log.some((e) => e.name === 'boss:workAssigned'), { busy: false, maxSec: 60 });
-      const t = log.find((e) => e.name === 'witness:tattle');
-      if (!(t && t.payload.by === 'kev' && t.payload.reason === 'scene')) throw new Error('no scene tattle from Kev');
+      waitFor((gg) => gg.caught, { maxSec: 30 });
+      caughtFor(g, 'evidence');
     },
   },
   {
     name: 'breaker, then eat it after 3:30 → still inside you at 3:40 → win (eaten)',
     expect: { result: 'win', routes: ['breaker'] },
-    play({ run, g, log }) {
-      run('goto fuse_box pretend'); run('interact'); run('goto desk_side pretend'); run('interact');
-      took(log, 'breaker');
+    play(ctx) {
+      const { run, g } = ctx;
+      breakerTake(ctx);
       run('goto my_seat pretend'); run('goto my_seat pretend');
       for (let i = 0; i < 3; i++) run('wait until 3:32');
       run('move S 0.4s'); // at your desk E is the drawer
@@ -164,19 +173,55 @@ export default [
     },
   },
   {
+    name: 'breaker, then eat it about 3:28 → it comes up after he sat down to his tray → he finds the tray empty → win (eaten)',
+    expect: { result: 'win', routes: ['breaker'] },
+    play(ctx) {
+      const { run, g, log } = ctx;
+      breakerTake(ctx);
+      run('goto my_seat pretend'); run('goto my_seat pretend');
+      for (let i = 0; i < 3; i++) run('wait until 3:27');
+      run('move S 0.4s');
+      run('eat');
+      if (g.world.letter !== 'eaten') throw new Error('never ate it');
+      for (let i = 0; i < 6 && !g.outcome; i++) run('wait until 3:41');
+      if (!log.some((e) => e.name === 'player:sick')) throw new Error('it never came up before 3:40');
+      if (g.outcome?.why !== 'eaten') throw new Error(`end card ${g.outcome?.why}, not eaten`);
+    },
+  },
+  {
     name: 'breaker, then eat it early → it comes back up, he comes over to see the retching and knows his envelope → caught (soggy)',
     expect: { result: 'caught' },
-    play({ run, waitFor, g, log }) {
-      run('goto fuse_box pretend'); run('interact'); run('goto desk_side pretend'); run('interact');
+    play(ctx) {
+      const { run, waitFor, g, log } = ctx;
+      breakerTake(ctx);
       run('goto my_seat pretend'); run('goto my_seat pretend');
       run('move S 0.4s');
       run('eat');
-      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:23');
+      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:30');
       if (!g.world.sick || g.world.letter !== 'puddle') throw new Error('it never came back up');
       waitFor((gg) => gg.caught, { maxSec: 120 });
       caughtFor(g, 'inspection');
       waitFor((gg) => gg.outcome, { maxSec: 30 });
       if (g.outcome?.why !== 'soggy') throw new Error(`end card ${g.outcome?.why}, not soggy`);
+    },
+  },
+  {
+    name: 'breaker, eat it early, then fish it back out of the sick and into your drawer before he gets there → win',
+    expect: { result: 'win', routes: ['breaker'] },
+    play(ctx) {
+      const { run, g, log } = ctx;
+      breakerTake(ctx);
+      run('goto my_seat pretend'); run('goto my_seat pretend');
+      run('move S 0.4s');
+      run('eat');
+      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:30');
+      if (g.world.letter !== 'puddle') throw new Error('it never came back up');
+      for (let i = 0; i < 3 && g.world.letter === 'puddle'; i++) run('interact'); // pick it out of the puddle
+      if (g.world.letter !== 'player') throw new Error('could not pick it out of the puddle');
+      run('goto my_seat'); run('goto my_seat');
+      if (g.world.letter !== 'drawer') run('interact');
+      if (g.world.letter !== 'drawer') throw new Error('never got it into the drawer');
+      for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
     },
   },
   {

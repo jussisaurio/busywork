@@ -305,6 +305,7 @@ export function levelProblems(level, key) {
     if (it.tint === 'owner' && !it.owner) bad(`items.${type}.tint`, "'owner' but the item has no owner");
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
     if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
+    if (it.contrabandIn !== undefined) zone(`items.${type}.contrabandIn`, it.contrabandIn);
     if (it.disguise !== undefined) {
       if (!isObj(it.disguise)) bad(`items.${type}.disguise`, 'not an object');
       else {
