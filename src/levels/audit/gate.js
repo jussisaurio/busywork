@@ -17,5 +17,12 @@ export default {
     'tick0', 'tick1', 'tick2', 'tick3', 'moved', 'reclaimed', 'work', 'caught',
   ],
   keyActions: ['took:boss', 'took:lin', 'took:kev', 'put@your_desk', 'put@kev_desk'],
-  goldenPlans: [],
+  goldenPlans: [
+    // Raw movement, with and without pretend; standing at Lin's desk while everyone's routine runs past.
+    ['move W 1.5s', 'move N 1s pretend', 'wait 3s', 'goto lin_desk', 'wait until 3:20', 'pretend until 3:47'],
+    // Lin's laptop held in plain view as she comes back from the restroom: she takes it back.
+    ['goto hallway_west pretend', 'pretend until 3:14', 'interact', 'wait until 3:26', 'wait until 3:26', 'wait until 3:26', 'pretend until 3:47'],
+    // Several loops: Kev's laptop picked up, restart, Lin's route to a win, continue into the next day.
+    ['pretend until 3:24', 'goto kev_desk pretend', 'interact', 'restart', 'goto hallway_west pretend', 'pretend until 3:36.1', 'interact', 'put your_desk pretend', 'goto my_seat pretend', 'pretend until 3:47', 'continue', 'move E 1s', 'wait 2s'],
+  ],
 };
