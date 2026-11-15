@@ -146,23 +146,28 @@ function computeHands(s, g) {
       rxh = rsx + rx * 2; ryh = rsy - 14 + Math.sin(t * 12 + 2) * 2;
       break;
     case 'lift': {
-      // what you hold, lifted from the carry hold toward the mouth (s.lift 0..1; 1 = at the mouth: eating)
+      // what you hold, lifted from the carry hold toward the mouth (s.lift 0..1; 1 = at the mouth: eating). Facing
+      // away it goes up beside the head (drawn behind it, half showing), the way an elbow-up bite looks from behind.
       const k = s.lift;
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       const cx = fx * 8 + rx * 3;
       const cy = bodyY + fy * 8 + ry * 3;
-      const mx = fx * (hr + 1) + rx * (hr * 0.5 + 1.5);
-      const my = headY + hr * 0.5 + fy * (hr + 1) + ry * (hr * 0.5 + 1.5);
+      const out = g.sd < -0.25 ? hr + 2 : hr * 0.5 + 1.5;
+      const mx = fx * (hr + 1) + rx * out;
+      const my = headY + hr * 0.5 + fy * (hr + 1) + ry * out;
       rxh = cx + (mx - cx) * k; ryh = cy + (my - cy) * k;
       break;
     }
     case 'holdout': {
-      // what you hold, held out at arm's length over the floor (ready to let go); HAND.fx/fy: the floor under it
-      const f = 10;
-      const r = brx * 0.6 + 5;
+      // what you hold, held out at arm's length over the floor, ready to let go: out at the side facing N/S, out in
+      // front in profile (clear of the body either way), at chest height so the floor shows under it. HAND.fx/fy:
+      // the floor under it (its shadow).
+      const side = 1 - Math.abs(fx);
+      const ox = rx * (brx + 6) * side + fx * 13 * (1 - side);
+      const oy = ry * (brx + 6) * side + fy * 13 * (1 - side);
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
-      rxh = fx * f + rx * r; ryh = bodyY + 3 + fy * f + ry * r;
-      HAND.fx = rxh; HAND.fy = 8.5 + fy * f + ry * r;
+      rxh = ox; ryh = bodyY - 1 + oy;
+      HAND.fx = ox; HAND.fy = 8 + oy;
       break;
     }
     default:
@@ -253,8 +258,9 @@ function mugOverTorso(s, g) {
   return (s.arms === 'mug' || s.arms === 'holdout') && g.sd < -0.25;
 }
 
-// What you hold lifted to your mouth is drawn over your head, whichever way you face (the head would hide it).
-const liftOverHead = (s) => s.arms === 'lift' && s.lift > 0.4;
+// What you hold lifted to your mouth is drawn over your head (the head would hide it), except facing away: then it
+// is behind the head, the way the mouth is.
+const liftOverHead = (s) => s.arms === 'lift' && s.lift > 0.4 && G.sd >= -0.25;
 
 function drawHeldItem(ctx, s, x, y) {
   if (s.crank) {
@@ -411,7 +417,7 @@ export function drawPerson(ctx, look, s, x, y) {
   }
 
   computeHands(s, G);
-  if (s.arms === 'holdout' && s.item) fillEllipse(ctx, HAND.fx, HAND.fy, 4, 1.6, 'rgba(25,15,8,0.3)'); // where it would land
+  if (s.arms === 'holdout' && s.item) fillEllipse(ctx, HAND.fx, HAND.fy, 4.5, 1.8, 'rgba(25,15,8,0.4)'); // the floor under it
   if (north) drawArms(ctx, look, s, G, bodyDark);
 
   // torso
