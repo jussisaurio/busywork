@@ -6,7 +6,7 @@
 import { CAUGHT_DELAY } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
-import { stareAtEmptyChair } from '../sim/npcs.js';
+import { stareAt } from '../sim/npcs.js';
 import { cancelAction } from './interactions.js';
 import { setBusy, standUp } from './player.js';
 
@@ -57,11 +57,17 @@ function startMeeting(game, s) {
   const level = game.level;
   const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
   const present = inZone(game, level.meeting.room, p.x, p.y);
-  const result = !routes.length ? 'fail' : present ? 'win' : 'blamed';
+  const base = !routes.length ? 'fail' : present ? 'win' : 'blamed';
+  // The level can judge the room itself (level.meeting.verdict(game, { result, routes, present })): null keeps
+  // the rule above; else { result?, why?, stare? }. why: a string the outcome carries (for end scenes, the
+  // harness); stare: where the table looks (npcs.js stareAt; blamed without one: your empty chair).
+  const v = level.meeting.verdict?.(game, { result: base, routes, present }) ?? null;
+  const result = v?.result ?? base;
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
   found.push(...newRoutes);
   game.outcome = makeOutcome(game, result, routes, newRoutes);
+  if (v?.why) game.outcome.why = v.why;
 
   // Freeze the player for the beat.
   cancelAction(game, 'meeting');
@@ -84,13 +90,14 @@ function startMeeting(game, s) {
     say(game, 'player', ['😅'], { kind: 'speech', ttl: END_BEAT });
   } else if (result === 'blamed') {
     // Wherever you are, the room has noticed.
-    stareAtEmptyChair(game);
+    stareAt(game, v?.stare);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
     say(game, 'player', ['😰'], { kind: 'thought', ttl: END_BEAT });
   } else {
     burst(game, 'confetti', p.x, p.y, 30, { speed: 2.5, lift: 1.2, ttl: 1.6 });
     say(game, 'player', ['🎉'], { kind: 'speech', ttl: END_BEAT });
   }
+  if (v?.stare && result !== 'blamed') stareAt(game, v.stare); // e.g. a win where the table blames someone else
 }
 
 function endDay(game) {

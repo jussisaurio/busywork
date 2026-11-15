@@ -23,7 +23,7 @@
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
 //   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
-//   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
+//   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
 //   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds
@@ -216,6 +216,7 @@ export function levelProblems(level, key) {
     zone('meeting.room', m.room);
     spot('meeting.chair', m.chair);
     spot('meeting.presenter', m.presenter);
+    if (m.verdict !== undefined && typeof m.verdict !== 'function') bad('meeting.verdict', 'not a function (game, { result, routes, present })');
   }
 
   // --- the player's actions, items, roles ---------------------------------------------------------
