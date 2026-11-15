@@ -3,7 +3,7 @@
 // read-only; the auditor is new.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
-import { DESK_MARKS } from './things.js';
+import { DESK_MARKS, penShake, penScribble } from './things.js';
 
 // The card names the trouble, the time first, and never the way out.
 export const TITLE = {
@@ -56,6 +56,7 @@ export const DECOR = {
     { zone: 'lobby', x: 4, y: 14 },
   ],
   legendAt: { x: 20, y: 15.5 },
+  things: { penShake, penScribble }, // his dry pen at your desk (POSES)
 };
 
 export const LOOKS = {
@@ -72,11 +73,24 @@ export const LOOKS = {
 // At Lin's desk he goes through her paper pile (things.js) before he writes: why her desk takes him longer.
 const atLinsPile = (n) => n.override === 'audit' && n._insp?.i === 2 && !n.moving && n._wait > 1.25;
 
+// At your desk his pen runs dry, every loop: why he stands there so long (index.js INSPECTIONS, look PEN_LOOK s).
+// Seconds into the stay: he writes and nothing comes, shakes the pen, scribbles on the clipboard's corner, shakes it
+// again, and writes. Head down over the clipboard, facing your desk: Kev slips home behind his back (cast.js).
+export const PEN_LOOK = 4.2;
+const PEN_BEATS = [[0.5, null], [1.4, 'shake'], [2.6, 'scribble'], [3.4, 'shake']];
+export function penBeat(n) {
+  if (n.override !== 'audit' || n._insp?.i !== 3 || n.moving || !(n._wait > 0)) return null;
+  const into = PEN_LOOK - n._wait;
+  return PEN_BEATS.find(([until]) => into < until)?.[1] ?? null;
+}
+
 export const POSES = {
   arms: [
     // A coffee, standing: the auditor before 3:30, Kev and Lin in the kitchen.
     { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '#cup' },
     { when: (n) => n.id === 'auditor' && atLinsPile(n), arms: 'reach' },
+    { when: (n) => n.id === 'auditor' && penBeat(n) === 'shake', arms: 'type', item: '#penShake' },
+    { when: (n) => n.id === 'auditor' && penBeat(n) === 'scribble', arms: 'type', item: '#penScribble' },
     // The auditor's clipboard: at his side while he walks, written on while he stands at a desk.
     { when: (n) => n.id === 'auditor', arms: (n) => (n.moving ? 'mug' : 'type'), item: '#clipboard' },
     { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '#cigarette' },

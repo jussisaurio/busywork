@@ -1,13 +1,13 @@
 // The audit's four people and their hooks (cast.js and behaviours.js in level 1 document the fields).
-// The day runs from 3:00 to the sign-off at about 3:46; every time below is on that clock (at(time, START)).
+// The day runs from 3:00 to the sign-off at about 3:47.7; every time below is on that clock (at(time, START)).
 //
 // The half hour before the audit is the level: everyone's routine opens and closes windows.
 //   3:08-3:16  the boss smokes in the lobby. Lin sees into his office through the glass, and he sees her desk.
 //   3:10-3:22  Kev goes to lunch. He packs his laptop, sets it down on your desk to wave, and leaves without it;
 //              back, he finds it there (💻🤦: silly him) and takes it home. Every loop: he's like that.
 //   3:13-3:19  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌.
-//   Back at their desks, the boss and Lin look for a laptop that's gone (💻❓), up and down the hallway till the
-//   audit; one they see within reach (on your desk, on Kev's) goes home in their hands, 😠 (index.js HUNTS).
+//   Back at their desks, the boss and Lin miss a laptop that's gone (💻❓). The boss looks for his along the hallway
+//   till 3:24; seen on your desk, it goes home in his hands, 😠 (index.js HUNTS). Lin, back at 3:24, stays put.
 //   3:24-3:37  Kev has a coffee in the kitchen, in view. Back, he waits a step short of your desk while the auditor
 //              is at it, if his laptop lies there again: just after the tick he takes it (💻🤦) to his own desk.
 //   3:25       the auditor is out of the lift, coffee at the hallway machine, clipboard. 3:30 he starts ticking:
@@ -93,25 +93,34 @@ export const CAST = [
 
 const on = (w, spot) => w.items.find((i) => i.spot === spot);
 
-// An NPC carrying his laptop puts it down where it lives (if nothing else lies there).
-function homeLaptop(game, npc, type, spot) {
+// An NPC carrying his laptop puts it down where it lives. If something else lies there (you put it there), a
+// stranger's laptop puzzles him (💻❓) and his own goes into his drawer, out of sight: nobody holds a laptop where the
+// auditor can see it (DESIGN.md: the card's rule binds everyone).
+function homeLaptop(game, npc, type, spot, sim) {
   const w = game.world;
-  if (npc.carry !== type || on(w, spot)) return false;
+  if (npc.carry !== type) return false;
   npc.carry = null;
+  if (on(w, spot)) {
+    w[type] = 'drawer';
+    sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
+    game.events.emit('laptop:drawer', { type, by: npc.id });
+    return true;
+  }
   w.items.push(itemOn(SPOTS, spot, type));
   w[type] = spot;
   game.events.emit('laptop:home', { type, by: npc.id });
   return true;
 }
 
-// Back at his desk: his laptop, home if he carries it; gone, he wonders, then looks for it once (index.js HUNTS).
-const deskCheck = (type, spot) => ({
+// Back at his desk: his laptop, home if he carries it; gone, he wonders, then (hunts) looks for it once (index.js
+// HUNTS). Lin doesn't look: she's back at 3:24 and the auditor is on the floor at 3:25, where he'd see her carry it.
+const deskCheck = (type, spot, hunts) => ({
   state: { _hunted: false },
   arrive(game, npc, sim) {
-    if (homeLaptop(game, npc, type, spot) || on(game.world, spot) || npc.carry === type) return;
+    if (homeLaptop(game, npc, type, spot, sim) || on(game.world, spot)) return;
     sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
     game.events.emit('laptop:missing', { by: npc.id });
-    if (npc._hunted) return;
+    if (!hunts || npc._hunted) return;
     npc._hunted = true;
     sim.startHunt(game, npc);
   },
@@ -142,8 +151,8 @@ const stopBy = (flag, expects) => ({
 });
 
 export const BEHAVIOURS = {
-  bossCheck: deskCheck('laptop_boss', 'boss_desk'),
-  linCheck: deskCheck('laptop_lin', 'lin_desk'),
+  bossCheck: deskCheck('laptop_boss', 'boss_desk', true),
+  linCheck: deskCheck('laptop_lin', 'lin_desk', false),
 
   // Kev's lunch: his laptop off his desk into his hands, then down on yours while he waves, and off he goes.
   kevPacks: {
@@ -182,7 +191,7 @@ export const BEHAVIOURS = {
   // At his own desk: his laptop goes back where it lives.
   kevSits: {
     arrive(game, npc, sim) {
-      if (homeLaptop(game, npc, 'laptop_kev', 'kev_desk') || on(game.world, 'kev_desk')) return;
+      if (homeLaptop(game, npc, 'laptop_kev', 'kev_desk', sim) || on(game.world, 'kev_desk')) return;
       sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
     },
   },

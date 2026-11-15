@@ -232,3 +232,87 @@ export function drawCable(ctx, mx, my, x, y) {
   ctx.fillRect(x - 3, y + 4, 2, 3);
   ctx.fillRect(x + 1, y + 4, 2, 3);
 }
+
+// --- His dry pen (presentation.js POSES, at your desk) ---------------------------------------------------------
+// decor.things painters, held: his clipboard (as the engine draws it, in the same place) with a big pen over it.
+// 'penShake': the pen held up off the board's corner, flicked hard side to side, shake marks either side of it.
+// 'penScribble': the pen's tip in the board's top corner, going round in a grey scrawl that leaves no ink.
+const PEN = '#2c6fe0'; // a bright blue ballpoint: it shows against his grey suit and navy tie
+function heldClipboard(ctx) {
+  ctx.save();
+  ctx.rotate(-0.06);
+  ctx.fillStyle = 'rgba(25,15,8,0.22)';
+  rrect(ctx, -5, -6.4, 11, 14, 1.2);
+  ctx.fill();
+  ctx.fillStyle = '#9a6a3c';
+  rrect(ctx, -5.5, -7, 11, 14, 1.2);
+  ctx.fill();
+  ctx.fillStyle = '#fbfbf8';
+  ctx.fillRect(-4.2, -4.6, 8.4, 10.6);
+  ctx.fillStyle = 'rgba(40,30,20,0.55)';
+  for (let i = 0; i < 4; i++) ctx.fillRect(-3, -2.6 + i * 2.2, i === 3 ? 3.6 : 6, 0.7);
+  ctx.fillStyle = '#b9bcc1';
+  rrect(ctx, -2.6, -8, 5.2, 2.6, 0.8);
+  ctx.fill();
+  ctx.restore();
+}
+// A ballpoint, its tip at (0, 0), pointing down from angle a (0: straight up from the tip).
+function pen(ctx, x, y, a) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(a);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  rrect(ctx, -1.2, -15.2, 3.2, 13.4, 1.4);
+  ctx.fill();
+  ctx.fillStyle = PEN;
+  rrect(ctx, -1.6, -15.6, 3.2, 13.4, 1.4);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.fillRect(-0.9, -14.6, 0.8, 11);
+  ctx.fillStyle = '#d7dae0'; // the metal cone and tip
+  ctx.beginPath();
+  ctx.moveTo(-1.5, -2.4);
+  ctx.lineTo(1.5, -2.4);
+  ctx.lineTo(0.3, 0);
+  ctx.lineTo(-0.3, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+export function penShake(ctx, x, y, size, t) {
+  box(ctx, x, y, size);
+  heldClipboard(ctx);
+  const a = Math.sin(t * 26) * 0.75;
+  // held by its middle above the board's right corner, tip down: it swings about the hand
+  ctx.save();
+  ctx.translate(6, -9);
+  ctx.rotate(a);
+  pen(ctx, 0, 7, 0);
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(30,30,40,0.75)';
+  ctx.lineWidth = 1.2;
+  ctx.lineCap = 'round';
+  for (const side of [-1, 1]) {
+    for (const r of [10, 13]) {
+      ctx.beginPath();
+      ctx.arc(6, -9, r, -Math.PI / 2 + side * 0.95 - 0.2, -Math.PI / 2 + side * 0.95 + 0.2);
+      ctx.stroke();
+    }
+  }
+}
+export function penScribble(ctx, x, y, size, t) {
+  box(ctx, x, y, size);
+  heldClipboard(ctx);
+  ctx.strokeStyle = 'rgba(95,100,110,0.8)';
+  ctx.lineWidth = 0.9;
+  ctx.beginPath();
+  for (let k = 0; k <= 28; k++) {
+    const a = k * 0.85;
+    const px = 0.2 + Math.cos(a) * 2.0 + k * 0.1;
+    const py = -2.6 + Math.sin(a) * 1.4;
+    if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+  }
+  ctx.stroke();
+  const a = t * 16;
+  pen(ctx, 1.6 + Math.cos(a) * 2.0, -2.6 + Math.sin(a) * 1.4, 0.45);
+}

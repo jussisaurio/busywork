@@ -10,7 +10,7 @@ const KEV = ['pretend until 3:24', 'goto kev_desk pretend', 'interact', ...HOME]
 const LIN_EARLY = ['goto hallway_west pretend', 'pretend until 3:14', 'interact', 'goto my_seat pretend', 'sit']; // kept
 const BOSS_EARLY = ['pretend until 3:13.5', 'goto boss_desk pretend', 'interact', 'goto my_seat pretend', 'sit']; // kept
 const POUR = ['goto hallway_coffee', 'interact']; // the hallway pot, at 3:02
-const END = ['pretend until 3:47', 'pretend until 3:47']; // to the end card (a soft stop ends the first)
+const END = ['pretend until 3:50', 'pretend until 3:50']; // to the end card (a soft stop ends the first)
 
 export default [
   // The afternoon, before anyone moves.
@@ -83,12 +83,14 @@ export default [
   { name: 'kev-tick-you', cmds: [...KEV, 'pretend until 3:40.3'],
     intent: 'Kev\'s laptop on your desk gets your desk its tick. Kev still waits beside it.' },
   { name: 'kev-fetch', cmds: [...KEV, 'pretend until 3:40.9'],
-    intent: 'Right after the tick, Kev picks up his laptop from your desk, blaming himself again (💻🤦). Your desk is bare but keeps its sticker; he carries it to his own desk, which the auditor has not checked yet.' },
-  { name: 'kev-fourth', cmds: [...KEV, 'pretend until 3:43.6'],
+    intent: 'Right after the tick, the auditor\'s pen has run dry: head down over his clipboard, he shakes it. Kev picks up his laptop from your desk, blaming himself again (💻🤦). Your desk is bare but keeps its sticker.' },
+  { name: 'pen-dry', cmds: [...KEV, 'pretend until 3:41.4'],
+    intent: 'The auditor stands at your desk, head down over his clipboard, scribbling on its corner to get his dry pen going (a pale scrawl). Out of his view cone, Kev carries his laptop (olive lid) along the hallway to his own desk, which the auditor has not checked yet. Your desk is bare and keeps its tick sticker.' },
+  { name: 'kev-fourth', cmds: [...KEV, 'pretend until 3:44.92'],
     intent: 'Kev\'s desk, his laptop back on it, gets the fourth tick and the fourth sticker.' },
-  { name: 'sign-off', cmds: [...KEV, 'pretend until 3:46.45'],
+  { name: 'sign-off', cmds: [...KEV, 'pretend until 3:47.75'],
     intent: 'The audit done, the auditor comes back to your desk to sign it off and smiles at you, sitting there (😊).' },
-  { name: 'fired', cmds: ['pretend until 3:46.45'],
+  { name: 'fired', cmds: ['pretend until 3:47.75'],
     intent: 'The audit done, the auditor is back at your desk, over you in your seat, thinking of the cross on his list (a laptop and a cross). Your desk has a red cross sticker.' },
 
   // The end cards.

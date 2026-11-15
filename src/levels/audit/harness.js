@@ -93,6 +93,7 @@ export default {
       case 'kev:forgot': return 'Kev sets his laptop down on your desk to wave 👋, and walks off without it';
       case 'kev:fetched': return 'Kev finds his laptop on your desk, facepalms 💻🤦 and takes it';
       case 'laptop:missing': return `${name(p.by)} stares at an empty desk 💻❓`;
+      case 'laptop:drawer': return `${name(p.by)} finds a laptop on ${THEIRS[p.by] ?? 'the'} desk 💻❓ and puts ${THEIRS[p.by] ?? 'the'} own in a drawer`;
       case 'laptop:home': return `${name(p.by)} puts ${THEIRS[p.by] ?? 'the'} laptop back on ${THEIRS[p.by] ?? 'the'} desk`;
       case 'coffee:taken': return 'you pour a coffee ☕ (your hands are full till you drink it)';
       case 'coffee:drunk': return 'you drink your coffee';

@@ -14,7 +14,7 @@ import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
 import { SPOTS, LAPTOPS } from './spots.js';
 import { laptop } from './things.js';
-import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, PEN_LOOK, penBeat } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -58,12 +58,12 @@ const ZONES = {
   desk: { x0: 10, y0: 7, x1: 17, y1: 11 }, // at your desk when he signs off (meeting.room)
 };
 
-// Owned laptops go straight back on their owner's desk (or into his hands if something lies there).
+// Owned laptops go straight back on their owner's desk, or into his drawer if something lies there: never into his
+// hands, where the auditor could see him carry it (cast.js homeLaptop).
 const backTo = (type, spot) => (game, npc) => {
   const w = game.world;
   if (w.items.some((i) => i.spot === spot)) {
-    npc.carry = type;
-    w[type] = npc.id;
+    w[type] = 'drawer';
   } else {
     w.items.push(itemOn(SPOTS, spot, type));
     w[type] = spot;
@@ -138,18 +138,23 @@ const INSPECTIONS = [{
   checks: [
     { item: LAPTOPS, spot: 'boss_desk', from: 'audit_boss', look: 2, record: 'atBoss' },
     { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: 2.75, record: 'atLin' }, // her paper pile (things.js)
-    { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: 2, record: 'atYou' },
+    // At your desk his pen runs dry: he shakes it, scribbles on the clipboard's corner, shakes it again, then writes
+    // (presentation.js POSES), head down, facing your desk. Every loop. Kev, if he waits for his laptop, slips home
+    // behind his back meanwhile (cast.js).
+    { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: PEN_LOOK, record: 'atYou' },
     { item: LAPTOPS, spot: 'kev_desk', from: 'audit_kev', look: 2, record: 'atKev' },
   ],
   // A ❌: angry, and on down his list (cast.js auditGoesOn). He fires you at the sign-off (cast.js signOff).
   fail: { then: 'auditGoesOn', says: [{ say: ['😠'] }] },
 }];
 
-// Owners whose laptop is gone go looking for it, back and forth along the hallway, until the audit (C: a tattle
-// costs something you can see). Seen anywhere within reach, on your desk or Kev's, it goes home in their hands.
+// The boss, his laptop gone, looks for it back and forth along the hallway (C: a tattle costs something you can
+// see). Seen within reach on your desk, it goes home in his hands. He gives up at 3:24, so that a laptop he takes
+// back is behind his office door before the auditor, out of the lift at 3:25, can see the hallway (3:25.6): nobody
+// carries a laptop in the auditor's view (DESIGN.md: the card's rule binds everyone). Lin is back only at 3:24:
+// she misses hers and stays put (cast.js linCheck).
 const PATROLS = {
-  bossHunt: [[6, 5], [6, 7], [11, 7], [16, 7]], // out of his office and down the hallway: your desk in view
-  linHunt: [[5, 7], [10, 7], [15, 7], [19, 7]],
+  bossHunt: [[6, 5], [6, 7], [11, 7]], // out of his office to the hallway coffee machine: your desk in reach
 };
 const FOUND_REACH = 4.5; // tiles: near enough to know it's his
 const foundLaptop = (type, home) => (game, npc) => {
@@ -167,13 +172,8 @@ const foundLaptop = (type, home) => (game, npc) => {
 const HUNTS = [
   {
     npc: 'boss', override: 'hunt', plan: 'bossHunt', label: 'looking for his laptop', route: 'bossHunt',
-    look: { angle: 1.1, time: 1.0 }, start: { wait: 0.8 }, until: at('3:30', START),
+    look: { angle: 1.1, time: 1.0 }, start: { wait: 0.8 }, until: at('3:24', START),
     found: foundLaptop('laptop_boss', 'boss_desk'),
-  },
-  {
-    npc: 'lin', override: 'hunt', plan: 'linHunt', label: 'looking for her laptop', route: 'linHunt',
-    look: { angle: 1.1, time: 1.0 }, start: { wait: 0.8 }, until: at('3:33', START),
-    found: foundLaptop('laptop_lin', 'lin_desk'),
   },
 ];
 
@@ -182,9 +182,14 @@ const HUNTS = [
 //   and their coffee (back at their desks they would look for their laptops, cast.js).
 //   Kev, back from the kitchen, waits a step short of your desk while the auditor is at it, if his laptop lies
 //   there: he steps in for it just after the tick (fix: the tick lands first, then the gap).
+//   The auditor, at your desk, wonders at his dry pen (🖊️❓) as he starts to shake it, every loop.
 const KEV_STEP_IN = 0.3; // game minutes after your desk's tick (about half a second)
-function clockFor(game, npc) {
+function clockFor(game, npc, sim) {
   const now = game.clock.minute;
+  if (npc.id === 'auditor' && !npc._penDry && penBeat(npc) === 'shake') {
+    npc._penDry = true;
+    sim.speak(game, npc, [{ say: ['🖊️', '❓'], kind: 'thought', ttl: 1.6 }]);
+  }
   if ((npc.id === 'boss' || npc.id === 'lin') && npc.override === 'signoff') npc.override = null;
   if (npc.id !== 'kev' || npc._released || now < KEV_GO) return now;
   const w = game.world;
@@ -207,12 +212,12 @@ export default {
   cast: CAST,
   day: {
     start: START,
-    gatherAt: at('3:44', START), // he signs off at your desk
-    meetingAt: at('3:46.5', START), // he's back at your desk to sign off
+    gatherAt: at('3:45.2', START), // he signs off at your desk
+    meetingAt: at('3:47.8', START), // he's back at your desk to sign off
     clockRedAt: at('3:30', START),
     clockTickAt: at('3:30', START),
-    tockAt: at('3:42', START),
-    halfMinuteAt: at('3:44', START),
+    tockAt: at('3:43.2', START),
+    halfMinuteAt: at('3:45.2', START),
   },
   clockFor,
   interactions: INTERACTIONS,
