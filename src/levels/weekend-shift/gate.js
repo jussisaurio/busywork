@@ -2,8 +2,8 @@
 export default {
   // The lesson: make a glance. Every win needs a noise: the ding, the copier's beeping or the boss's phone.
   mustUse: [{ id: 'noise', event: 'noise' }],
-  targets: ['microwave', 'copier', 'roster', 'boss_desk', 'lin_desk', 'kev_desk', 'boss_window', 'board'],
-  interactable: ['microwave', 'copier', 'roster'],
+  targets: ['microwave', 'copier', 'roster', 'desk_phone', 'boss_desk', 'lin_desk', 'kev_desk', 'boss_window', 'board'],
+  interactable: ['microwave', 'copier', 'roster', 'desk_phone'],
   renderEvents: ['boss:workAssigned', 'copier:jammed', 'phone:answered', 'roster:changed'],
   milestones: {
     'microwave:started': () => 'noodles',

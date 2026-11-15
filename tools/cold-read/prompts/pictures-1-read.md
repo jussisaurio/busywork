@@ -1,5 +1,6 @@
 Read card.txt (the level's name and mission card), then look at every image in shots/, in order. Each image is a
-moment from one afternoon of play. The last ones are end-of-loop pictures.
+moment of play. They come from different loops, where the player did different things, so one image need not lead
+to the next. The last ones are end-of-loop pictures.
 
 For each image, write one or two lines:
 - what you see: who, where, and what they are doing

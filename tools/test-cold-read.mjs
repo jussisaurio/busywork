@@ -3,14 +3,14 @@
 // --status, and a manual run (--bundle-only, then --record). Records go to a temp folder, never into src/levels/.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
 import {
   STAGES, parseVerdict, runStage, stageInputs, stageSteps, stageStatus, coldReadChecks, statusLines, coldReadLevels,
-  readRecord, recordFile, levelDir, bundleOnly, recordManual, batchRuns, cardText, parsePremise, isFixture,
+  readRecord, recordFile, levelDir, bundleOnly, recordManual, batchRuns, cardText, parsePremise, isFixture, PROMPTS,
 } from './cold-read.mjs';
 import { getLevel } from '../src/levels/index.js';
 import { renderShot } from './shots.mjs';
@@ -138,10 +138,14 @@ try {
   const src = files(p2).filter((f) => f.startsWith('src/'));
   ok(['card.txt', 'first-read.md', 'premise.md'].every((f) => files(p2).includes(f)) && src.includes('src/index.js') && src.includes('src/route-checks.js'),
     'premise step 2 sees the card, step 1\'s reading, premise.md and the level\'s source');
+  const engine = readFileSync(join(PROMPTS, 'engine.md'), 'utf8').trim();
+  ok(p2.prompt.startsWith('BUSYWORK is a top-down') && p2.prompt.includes(engine) && p2.prompt.indexOf(engine) < p2.prompt.indexOf('Read first-read.md'),
+    'premise step 2: the prompt is common.md, then the engine rules, then premise-2-review.md');
+  ok(!p1.prompt.includes(engine), 'premise step 1 (the card alone) does not get the engine rules');
   ok(!src.includes('src/shots.js') && files(p2).every((f) => ['card.txt', 'first-read.md', 'premise.md'].includes(f) || f.startsWith('src/')),
     'premise step 2 sees nothing else (not shots.js)');
   ok(text(p2, 'first-read.md') === R1 && p2.cwd !== p1.cwd, 'premise step 2: a new folder; first-read.md is step 1\'s reply verbatim');
-  ok(rec.verdict === 'works' && rec.hash && rec.parts.card && rec.parts.premise, 'premise: the verdict and the inputs\' hashes are recorded');
+  ok(rec.verdict === 'works' && rec.hash && rec.parts.card && rec.parts.premise && rec.parts.prompts, 'premise: the verdict and the inputs\' hashes are recorded');
   let md = readFileSync(recordFile(root), 'utf8');
   ok(md.includes('## premise: works') && md.includes(R1) && md.includes('REVIEW-ONE') && md.includes('abc1234') && md.includes('2026-11-15'),
     'the record holds the verdict, every step\'s reply verbatim, the commit and the date');
@@ -159,6 +163,20 @@ try {
   ok(!s.ok && /'## Card' must hold the card's lines/.test(s.error ?? ''), 'status: a premise.md whose card is not the level\'s is an error');
   copyFileSync(join(levelDir('meeting'), 'premise.md'), join(root, 'premise.md'));
   ok((await stageStatus('meeting', 'premise', { root })).ok, 'status: fresh again when premise.md is back');
+  const prompts = join(TMP, 'prompts');
+  cpSync(PROMPTS, prompts, { recursive: true });
+  s = await stageStatus('meeting', 'premise', { root, prompts });
+  ok(s.ok && s.fresh, 'status: the same prompts in another folder keep it fresh');
+  for (const f of ['engine.md', 'common.md', 'premise-2-review.md']) {
+    writeFileSync(join(prompts, f), readFileSync(join(PROMPTS, f), 'utf8') + '\nOne more rule.\n');
+    s = await stageStatus('meeting', 'premise', { root, prompts });
+    ok(!s.ok && s.fresh === false && s.changed.join() === 'the stage\'s prompts', `status: an edit to ${f} makes premise stale, and says so`);
+    copyFileSync(join(PROMPTS, f), join(prompts, f));
+  }
+  writeFileSync(join(prompts, 'pictures-1-read.md'), 'Another prompt.\n');
+  s = await stageStatus('meeting', 'premise', { root, prompts });
+  ok(s.ok && s.fresh, 'status: an edit to another stage\'s prompt leaves premise fresh');
+  copyFileSync(join(PROMPTS, 'pictures-1-read.md'), join(prompts, 'pictures-1-read.md'));
 
   // --- section replacement ---
   fr = fakeRunner({ '1-card': 'second read', '2-review': '**Verdict: fixable**\n\nREVIEW-TWO' });
@@ -224,7 +242,7 @@ try {
   ok(text(cmp, 'reading.md').includes('READING-1-read-1') && text(cmp, 'reading.md').includes('READING-1-read-2'), 'replay step 2: every batch\'s reading');
   ok(text(cmp, 'runs.md').includes('SECRET-CHECK-B') && /## Ways to win/.test(text(cmp, 'ways.md')) && /## Ways to lose/.test(text(cmp, 'ways.md')) && !/## The joke/.test(text(cmp, 'ways.md')),
     'replay step 2: runs.md names each check; ways.md is premise.md\'s ways to win and lose');
-  ok(rec.verdict === 'broken' && Object.keys(rec.parts).join() === 'card,checks,ways,frames', 'replay: the hash covers the card, the checks, the ways and the frames');
+  ok(rec.verdict === 'broken' && Object.keys(rec.parts).join() === 'card,checks,ways,frames,prompts', 'replay: the hash covers the card, the checks, the ways, the frames and the prompts');
   s = await stageStatus('meeting', 'replay', { root, lib, checks: [CHECKS[0], { ...CHECKS[1], cmds: ['busy until 4:00'] }] });
   ok(s.changed.join(', ') === 'route-checks.js, the replay strips', 'replay: a changed check makes it stale (the checks and the strips)');
 
