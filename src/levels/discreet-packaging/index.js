@@ -1,6 +1,7 @@
 // Discreet Packaging. Mum has sent a parcel to your office: a pink box covered in
-// red hearts, your face on the label. It waits in the pigeonholes in the back office. At 3:50 Lin goes to collect
-// the mail, and at 4:00 she hands it out in your office, in front of everyone (Security Bob comes over for it too).
+// red hearts, your face on the label. It waits on the parcel shelf in the back office, stacked on Security Bob's
+// own parcel (a plain brown box, his face on it: he gets one every day). At 3:50 Lin goes to collect the mail, and at
+// 4:00 she hands it out in your office, in front of everyone; each box goes to the face on its label.
 // Bob sits at the counter with his back to the pigeonholes, facing the lobby. He doesn't need to turn round: the
 // camera on the wall sweeps the back office, and he watches its monitor.
 //
@@ -12,7 +13,7 @@
 //
 // The parcel never has to reach your drawer: anywhere nobody looks will do. You lose only when someone ends up with
 // it (Lin hands it out with your face on it, or someone finds it on the floor and reads the label: fetch.js) or sees
-// you take it or carry it. Stick the spare label with Bob's face over yours and Lin hands it to him instead.
+// you take it or carry it. Or swap the two boxes' labels: Lin hands Bob the pink box, and you the brown one.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { deg } from '../../config.js';
@@ -21,7 +22,7 @@ import { npcSayLater } from '../../sim/override.js';
 import { npcTakes } from '../../sim/npcs.js';
 import { CAST, BEHAVIOURS, START, t as at } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, CONES } from './presentation.js';
-import { parcelThing, broomThing, labelThing } from './painters.js';
+import { parcelThing, broomThing } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -29,14 +30,14 @@ import gate from './gate.js';
 // (east), the lobby (south). Bob sits behind the counter facing the lobby, his monitor on the counter.
 //   P your desk   Q/S the pigeonholes, S the parcel shelf (your parcel)   C the camera, on the wall over the back office
 //   F the potted plant in the corner beside it   O the power strip with the monitor's plug   M Bob's monitor
-//   A the label printer   B the broom   E the lobby's glass front door
+//   B the broom   E the lobby's glass front door
 const MAP = [
   '##############################', // 0
   '#H..........#................#', // 1
   '#...........D................#', // 2
   '#..TPT......#................#', // 3
   '#...........#####D#C#####D####', // 4
-  '#...........#.......F#A.....B#', // 5
+  '#...........#.......F#......B#', // 5
   '#......TTT..#........#.......#', // 6
   '#...........#Q.......#.......#', // 7
   '#...........#S.......#.......#', // 8
@@ -58,7 +59,6 @@ const LEGEND = {
   F: { kind: 'plant', solid: true, opaque: true, draw: 'plant' }, // tall and leafy: the camera can't see past it
   O: { kind: 'socket', solid: true, opaque: false, interactable: 'socket' },
   M: { kind: 'monitor', solid: true, opaque: false, draw: 'desk' }, // the monitor prop on the counter
-  A: { kind: 'label_printer', solid: true, opaque: false, interactable: 'label_printer', draw: 'desk' },
   B: { kind: 'broom_stand', solid: true, opaque: false, interactable: 'broom_stand' },
   E: { kind: 'entrance', solid: true, opaque: false },
 };
@@ -93,7 +93,8 @@ const CAMERAS = [
     id: 'back_office_cam',
     x: 19.5, y: 5.05, // the lens, just under the wall
     dir: deg(143), fov: deg(70), radius: 9,
-    sweep: { arc: deg(64), period: 10 },
+    // Half a period on: its plant end comes at 3:21.5, while Bob is still watching the screen, smiling at the fronds.
+    sweep: { arc: deg(64), period: 10, phase: 0.5 },
     aim: (w) => (w.camAim === 'plant' ? deg(15) : null), // stuck staring point-blank at the plant
     live: (w) => w.plug === 'in',
     monitor: { x: 16.5, y: 10.5 },
@@ -147,26 +148,6 @@ const INTERACTIONS = {
       game.events.emit('broom:returned', {});
     },
   },
-  print_label: {
-    on: 'label_printer', text: "take the spare address label with Bob's face on it", duration: 0.6, sneaky: false,
-    can: (p, w) => !p.held && w.label === 'printer',
-    done(game) {
-      game.player.held = 'label';
-      game.world.label = 'player';
-      game.events.emit('label:printed', {});
-    },
-  },
-  relabel: {
-    on: 'pigeonholes', text: "stick Bob's label over yours", duration: 1.5, sneaky: true, saw: '💝',
-    can: (p, w) => p.held === 'label' && w.parcel === 'shelf' && w.parcelFor === 'player',
-    done(game) {
-      const w = game.world;
-      w.parcelFor = 'bob';
-      w.label = 'parcel';
-      game.player.held = null;
-      game.events.emit('parcel:relabelled', {});
-    },
-  },
   take_parcel: {
     on: 'pigeonholes', text: 'take your parcel', duration: 1.0, sneaky: true, saw: '💝',
     can: (p, w) => !p.held && w.parcel === 'shelf' && w.parcelFor === 'player',
@@ -176,12 +157,27 @@ const INTERACTIONS = {
       game.events.emit('parcel:taken', {});
     },
   },
+  // Holding your box at the shelf, peel your label off it and Bob's off his, and swap them: now the pink box is his.
+  swap_labels: {
+    on: 'pigeonholes', text: "swap your box's label with Bob's", duration: 1.5, sneaky: true, saw: '💝',
+    can: (p, w) => p.held === 'parcel' && w.brown === 'shelf' && w.parcelFor === 'player',
+    done(game, a) {
+      const w = game.world;
+      w.parcelFor = 'bob';
+      w.parcel = 'shelf';
+      game.player.held = null;
+      burst(game, 'puff', a.x, a.y, 6, { speed: 0.8, ttl: 0.45 });
+      game.events.emit('parcel:swapped', {});
+    },
+  },
   stash_parcel: {
     on: 'own_desk', text: 'stuff it in your desk drawer', duration: 1.0, sneaky: true, saw: '💝',
     can: (p) => p.held === 'parcel',
-    done(game) {
+    done(game, a) {
       game.player.held = null;
       game.world.parcel = 'drawer';
+      burst(game, 'puff', a.x, a.y, 5, { speed: 0.7, ttl: 0.4 }); // slam
+      shake(game, 0.04, 0.12);
       game.events.emit('parcel:stashed', {});
     },
   },
@@ -198,17 +194,18 @@ const ITEMS = {
     bulky: true,
     owner: {
       id: 'lin',
-      says: [{ say: ['💝', '❗'], kind: 'thought' }, { say: ['@player', '❗'], after: 0.8 }],
+      says: [{ say: ['✋', '💝'] }, { say: ['@player', '❗'], after: 0.8 }],
       reclaim(game, npc) {
         npcTakes(npc, 'parcel');
         game.world.parcel = 'snatched';
+        game.world.snatchT = game.loopTime; // her grab (presentation.js POSES)
+        burst(game, 'puff', npc.x, npc.y, 5, { speed: 0.8, ttl: 0.4 });
         npc._fetch = { t: game.loopTime }; // fetch.js: the clock to the catch, as if she had found it
         game.events.emit('parcel:snatched', { by: npc.id });
       },
     },
   },
   broom: { icon: '🧹', draw: broomThing, place: 'broom' },
-  label: { icon: '🏷️', draw: labelThing, place: 'label' },
 };
 
 const ROLES = {
@@ -226,7 +223,7 @@ const FETCHES = [
     react: { wait: 0.5, says: [{ say: ['💝', '❗'], kind: 'thought' }], event: 'parcel:spotted' },
     found: {
       set: { parcel: 'found' },
-      says: [{ say: ['💝', '❓'], kind: 'thought' }, { say: ['@player', '❗'], after: 0.8 }],
+      says: [{ say: ['💝', '@player'], kind: 'thought' }, { say: ['@player', '❗'], after: 0.8 }],
       event: 'parcel:found',
     },
     caught: 1.5,
@@ -243,7 +240,7 @@ const LURES = [
     plan: 'camera',
     label: 'static',
     spot: 'camera',
-    react: { wait: 0.6, says: [{ say: ['📺', '❓'], kind: 'thought' }], event: 'bob:static' },
+    react: { wait: 0.6, says: [{ say: ['#static', '❓'], kind: 'thought' }], event: 'bob:static' },
     work: {
       override: 'whacking',
       minutes: 2,
@@ -269,15 +266,20 @@ const LURES = [
   },
 ];
 
-// At 4:00 the mail goes round. Anyone with the parcel in hand, or on the way to it, has found it: fail. A route
-// achieved and you at the mail call: win. Not there: blamed (they look at your empty chair). No route: Lin holds
-// up your parcel and everyone looks at you.
-function verdict(game, { routes }) {
+// At 4:00 the mail goes round. Anyone with the parcel in hand, or on the way to it, has found it: fail. Otherwise:
+//   no route, there:       Lin holds up your parcel and everyone looks at you ('mail')
+//   no route, not there:   she holds it up over your empty chair ('noshow')
+//   hidden, not there:     nothing for you on the shelf, and no you either: they look at your chair, then wonder
+//   swapped, not there:    still a win: Bob has his pink box, and a dull brown one waits for you (nobody wonders)
+function verdict(game, { routes, present }) {
   const w = game.world;
   const fetching = game.npcs.some((n) => n.override === 'fetching' || n._fetch);
   if (fetching || w.parcel === 'found' || w.parcel === 'snatched') return { result: 'fail', why: 'found' };
-  if (!routes.length) return { why: 'mail', stare: { at: 'player', think: ['💝'], say: ['@player', '❗'] } };
-  return null;
+  if (!routes.length && present) return { why: 'mail', stare: { at: 'player', think: ['💝'], say: ['@player', '❗'] } };
+  if (!routes.length) return { result: 'blamed', why: 'noshow', stare: { think: ['🪑', '❓'], say: ['💝', '@player'] } };
+  if (present) return null;
+  if (routes.includes('bob')) return { result: 'win', why: 'away' };
+  return { stare: { think: ['📭'], say: ['@player', '❓'] } };
 }
 
 export default {
@@ -307,7 +309,7 @@ export default {
   behaviours: BEHAVIOURS,
   meeting: { override: 'mail', room: 'office', chair: 'player_desk', presenter: 'player_desk', verdict },
   routes: [
-    // Lin hands Bob a pink box with his face on it, at the mail call.
+    // Lin hands Bob the pink box with his face on it, at the mail call (and you his brown one).
     { id: 'bob', icon: '@bob', achieved: (w) => w.parcelFor === 'bob' && ['shelf', 'lin', 'bob'].includes(w.parcel) },
     // The shelf is empty and nobody has your parcel: Lin shrugs.
     { id: 'hidden', icon: '@lin', achieved: (w) => w.parcel === 'drawer' || w.parcel === 'player' },
@@ -324,8 +326,9 @@ export default {
     plugProgress: 0,
     camAim: 'room', // 'room' (sweeping) | 'plant' (poked round into the plant)
     broom: 'stand', // 'stand' | 'player' | 'dropped'
-    label: 'printer', // 'printer' | 'player' | 'dropped' | 'parcel'
-    mailEmpty: false, // Lin found the parcel shelf empty
+    brown: 'shelf', // Bob's brown box: 'shelf' | 'lin' (collected) | 'bob' (handed to whoever's face is on it)
+    mailEmpty: false, // Lin found no pink box on the parcel shelf
+    snatchT: null, // when Lin took the parcel off you (loopTime)
     items: [],
   }),
   harness,

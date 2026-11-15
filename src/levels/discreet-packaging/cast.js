@@ -19,6 +19,8 @@ export const CAST = [
     coneTint: [130, 170, 245],
     schedule: [
       s('3:20', { do: 'sit', spot: 'bob_desk' }),
+      // The camera's sweep brings the plant's fronds into his picture (painters.js monitorState): his favourite bit.
+      { at: t('3:21') + 0.5, do: 'say', icons: ['🪴', '😊'], kind: 'thought' },
     ],
   },
   {
@@ -39,17 +41,25 @@ export const CAST = [
 
 const npc = (game, id) => game.npcs.find((n) => n.id === id);
 
-// At the mail call, a parcel with Bob's face goes to Bob, once both of them are there.
+// At the mail call, once Lin and Bob are both there, each box goes to the face on its label: Bob gets his (the brown
+// one, or the pink one if you swapped the labels), and Lin turns to you with whatever is left.
 function handOver(game, sim) {
   const w = game.world;
   const lin = npc(game, 'lin');
   const bob = npc(game, 'bob');
-  if (!lin?._atMail || !bob?._atMail || w.parcel !== 'lin' || w.parcelFor !== 'bob') return;
-  w.parcel = 'bob';
+  if (!lin?._atMail || !bob?._atMail || lin._handed) return;
+  lin._handed = true;
   sim.faceSpot(game, lin, 'bob_mail');
   sim.faceSpot(game, bob, 'mail_call');
-  sim.speak(game, lin, [{ say: ['💝', '@bob'] }]);
-  sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought' }]); // at once: the day's verdict comes 0.2 s later
+  if (w.parcel === 'lin' && w.parcelFor === 'bob') {
+    w.parcel = 'bob'; // he hugs it; the dull brown one is yours
+    sim.speak(game, lin, [{ say: ['💝', '@bob'] }, { say: ['#brownbox', '@player'], after: 1.2 }]);
+    sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought' }]); // at once: the day's verdict comes 0.2 s later
+  } else if (w.brown === 'lin') {
+    w.brown = 'bob';
+    sim.speak(game, bob, [{ say: ['🙂'], kind: 'thought' }]);
+    if (w.mailEmpty) sim.speak(game, lin, [{ say: ['📭', '@player'] }]); // nothing for you today
+  }
   game.events.emit('parcel:handed', {});
 }
 
@@ -60,16 +70,17 @@ function stand(npc) {
 }
 
 export const BEHAVIOURS = {
-  // Lin at the pigeonholes, 3:50: she takes whatever is on the parcel shelf and reads the label. Nothing there: she
-  // shrugs.
+  // Lin at the pigeonholes, 3:50: she takes what is on the parcel shelf and reads the labels. Bob's box is always
+  // there; no pink box today, she wonders.
   collectMail: {
     arrive(game, lin, sim) {
       if (lin._collected) return;
       lin._collected = true;
       const w = game.world;
+      if (w.brown === 'shelf') w.brown = 'lin';
       if (w.parcel !== 'shelf') {
-        w.mailEmpty = true; // her shrug (presentation.js POSES)
-        sim.speak(game, lin, [{ say: ['📭', '❓'], kind: 'thought' }]);
+        w.mailEmpty = true;
+        sim.speak(game, lin, [{ say: ['💝', '❓'], kind: 'thought' }]);
         game.events.emit('parcel:missing', {});
         return;
       }
@@ -78,14 +89,12 @@ export const BEHAVIOURS = {
       game.events.emit('parcel:collected', { for: w.parcelFor });
     },
   },
-  // Lin at the mail call: your parcel goes up over her head for the whole office to see; Bob's goes to Bob. No
-  // parcel: no mail today, she shrugs.
+  // Lin at the mail call: your parcel goes up over her head for the whole office to see; then the hand-over.
   linAtMailCall: {
     arrive(game, lin, sim) {
       stand(lin);
       const w = game.world;
       if (w.parcel === 'lin' && w.parcelFor !== 'bob') sim.speak(game, lin, [{ say: ['💝', '@player'] }]);
-      if (w.mailEmpty) sim.speak(game, lin, [{ say: ['📭', '🤷'] }]);
       handOver(game, sim);
     },
   },
