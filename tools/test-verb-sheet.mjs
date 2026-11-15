@@ -119,7 +119,7 @@ const seen = boss.panels.find((p) => p.reacted.length);
 ok(!seen || (boss.intent.includes('Someone reacted to you by this panel') && boss.trouble.length > 0), 'audit: a reaction to the player is marked on the panel where it happens');
 
 // --- a level with no items: no sheets ---
-ok(captureVerbs(getLevel('early-bus'), { lib: fakeLib() }).sheets.length === 0, 'early-bus: no items, no sheets');
+ok(captureVerbs({ ...getLevel('meeting'), items: {} }, { lib: fakeLib() }).sheets.length === 0, 'a level with no items: no sheets'); // early-bus had none until its redesign
 
 // --- the same level gives the same bytes ---
 const again = captureVerbs(getLevel('second-thoughts'), { lib: fakeLib(), items: ['letter'] }).sheets[0];
