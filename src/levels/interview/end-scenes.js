@@ -1,14 +1,14 @@
 // The Interview's end cards: a drawn scene per outcome (contract: src/levels/meeting/end-scenes.js). Each shows what
 // happened to the 3:30 call and what it means for you; the icon row under it retells the picture left to right.
 // The phones are the level's own (painters.js): ivory rotary bodies, handsets in the line's colour, curly cords,
-// the hold tune as drawn notes. A desk says whose it is the way it does in the office: Lin's has her teal chair, her
+// the callers drawn (HR's hold tune as notes, Gary as talk). A desk says whose it is the way it does in the office: Lin's has her teal chair, her
 // plant, her teal mug and her nameplate; yours has the mustard chair, your red mug and your nameplate.
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
-import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, bigMug, glow, NOTE } from './painters.js';
+import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE } from './painters.js';
 import { PHONES, OUTSIDE } from './phones.js';
 
 const IVORY = '#e8dfc8';
@@ -168,8 +168,9 @@ function heldHandset(ctx, look, s, px, py, colour, cx, cy) {
   return EAR;
 }
 
-// The hold tune: white notes out of the handset at an ear (one colour on every line, as in the office).
+// The callers, as in the office: HR's hold tune, white notes out of the handset at an ear; Gary, talk.
 const notes = (ctx, ear, colour, t, k = 2) => notesFrom(ctx, ear.x + 2, ear.y - 6, NOTE, t, k);
+const talk = (ctx, ear, t, k = 2) => talkFrom(ctx, ear.x + 4, ear.y - 2, t, k);
 
 // A cardboard box held at the belly of a person facing the viewer (feet at x, y, scale sc), your plant in its corner.
 function box(ctx, x, y, sc, t, skin) {
@@ -360,7 +361,7 @@ function busy(ctx, game, t, e) {
   linsThings(ctx, 246, t, 2, { px: 300, mx: 470, nx: 440 });
   phone(ctx, 400, 244, 2.1, PHONES.lin.lamp, t, { lifted: true });
   const ear = heldHandset(ctx, looks(game).boss, b, 350, by, PHONES.lin.lamp, 386, 252);
-  notes(ctx, ear, PHONES.lin.lamp, t);
+  talk(ctx, ear, t);
   // Lin beside her own desk: hands up at him
   const l = person(t);
   l.dir = Math.PI - 0.8;
@@ -428,7 +429,7 @@ function ringout(ctx, game, t, e) {
   b.scale = 1.7;
   drawPerson(ctx, looks(game).boss, b, 262, 216);
   const ear = heldHandset(ctx, looks(game).boss, b, 262, 216, PHONES.boss.lamp, 222, 234);
-  notes(ctx, ear, null, t, 1.5);
+  talk(ctx, ear, t, 1.5);
   // Lin on hold at the kitchen's wall phone, small at the back
   kitchenPhone(ctx, 700, 150, 1.8, true);
   const l = person(t);
@@ -670,7 +671,7 @@ export const END_SCENES = {
   kindOf: (o) => (o?.result === 'win' ? (Array.isArray(o.routes) && o.routes[0]) || 'fail' : o?.result ?? 'fail'),
   scenes: {
     answered: { win: true, icons: ['@boss', '💼', '❓', '@lin', '😠'], draw: answered },
-    busy: { win: true, icons: ['@boss', '🎵', '@lin', '😠'], draw: busy },
+    busy: { win: true, icons: ['@boss', '⛳', '@lin', '😠'], draw: busy },
     unplugged: { win: true, icons: ['🔌', '@lin', '🕞', '❓'], draw: unplugged },
     ringout: { win: true, icons: ['🔔', '🪑'], draw: ringout },
     fail: { win: false, icons: ['@lin', '💼', '😊', '📦'], draw: fail },

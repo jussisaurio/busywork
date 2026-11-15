@@ -2,8 +2,9 @@
 //
 // A cord switchboard stands in the reception nook above your desk: one jack per phone (Lin's desk, the boss's
 // desk, Kev's desk, the kitchen wall phone), each under a card with its owner's face. Plug in and that phone rings:
-// its owner comes to answer it if he hears it, else whoever is nearest in earshot, and gets the hold music
-// (phones.js). The lesson: you can move people. Lin's phone cord runs to a wall socket by her desk: pull it out and
+// its owner comes to answer it if he hears it, else whoever is nearest in earshot, and gets the call waiting at the
+// board: the boss's golf buddy Gary on the inside lines, head office's "please hold for HR" on the outside line
+// (the kitchen) (phones.js). The lesson: you can move people. Lin's phone cord runs to a wall socket by her desk: pull it out and
 // her phone can't ring, unless Lin finds her line dead when she checks it, or Kev, who charges his mobile at that
 // socket, finds her plug in his way and jams it back in.
 //
@@ -74,7 +75,6 @@ const SPOTS = {
   kev_desk: { x: 23, y: 8, face: 'N' },
   kev_side: { x: 25, y: 7, face: 'W' }, // anyone else at Kev's phone
   kitchen_phone: { x: 20, y: 1, face: 'N' },
-  kitchen_door: { x: 16, y: 5 }, // the kitchen doorway (the boss looks that way for Lin)
   kitchen_lin: { x: 18, y: 4, face: 'N' }, // her tea, at the kitchen table
   kitchen_kev: { x: 23, y: 2, face: 'N' }, // the coffee machine
   clock_view: { x: 7, y: 6, face: 'N' }, // under the wall clock (Lin glances at it)
@@ -120,7 +120,7 @@ export default {
   meeting: { override: 'interview', room: 'my_desk', chair: 'player_desk', presenter: 'player_desk' },
   routes: [
     { id: 'answered', icon: '🤷', achieved: (w) => w.interview === 'other' || (w.interview === 'ringing' && !!w.jobBy && w.jobBy !== 'lin') },
-    { id: 'busy', icon: '🎵', achieved: (w) => w.interview === 'busy' },
+    { id: 'busy', icon: '⛳', achieved: (w) => w.interview === 'busy' },
     { id: 'unplugged', icon: '🔌', achieved: (w) => w.interview === 'dead' },
     { id: 'ringout', icon: '🔔', achieved: (w) => w.interview === 'rangOut' },
   ],

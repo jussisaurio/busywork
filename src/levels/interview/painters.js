@@ -8,9 +8,8 @@ import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
 import { C } from '../../render/palette.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
-import { PHONES, PHONE_IDS, OUTSIDE, SLAM, HOLD } from './phones.js';
+import { PHONES, PHONE_IDS, OUTSIDE, SLAM } from './phones.js';
 
-const HOLD_LIN = HOLD.lin.lin; // game minutes Lin holds her own phone (the slam is at SLAM of it)
 
 const IVORY = '#e8dfc8';
 const IVORY_DARK = '#b5a888';
@@ -190,7 +189,6 @@ function deskPhone(ctx, game, w, p, x, y, t) {
   } else {
     handset(ctx, x, y - 6 - (ringing ? Math.abs(Math.sin(t * 26)) * 2.4 : 0), PHONES[p].lamp);
   }
-  if (p === 'lin' && slammed(w)) tumble(ctx, x, y - 10, sinceMin(game, w.lineAt_lin + SLAM * HOLD_LIN), t);
   if (ringing) arcs(ctx, x, y - 3, colour, t);
 }
 
@@ -214,17 +212,6 @@ function listening(ctx, px, py, colour, t) {
   }
   ctx.globalAlpha = 1;
   ctx.lineCap = 'butt';
-}
-
-// The tune cut off by a slam: its last notes tumble off the cradle for half a second (age: sim s since the slam).
-function tumble(ctx, x, y, age, t) {
-  if (!(age >= 0) || age > 0.6) return;
-  const q = age / 0.6;
-  for (let i = 0; i < 3; i++) {
-    ctx.globalAlpha = 1 - q;
-    note(ctx, x + (i - 1) * 7 + (i - 1) * q * 6, y - 4 + q * q * 14 + i * 2, NOTE, i === 1, 1.1);
-  }
-  ctx.globalAlpha = 1;
 }
 
 const DESK = (p) => (ctx, info, at, { w, game }, t) => deskPhone(ctx, game, w, p, SEAT[p].x, SEAT[p].y, t);
@@ -328,13 +315,37 @@ export function notesFrom(ctx, x, y, colour, t, k = 1) {
   ctx.globalAlpha = 1;
 }
 
-// The hold tune (phones.js tune_<p>): notes out of the handset at the holder's ear.
+// Talk pouring out of a handset at (x, y): short white arcs, a new one every 0.3 s, spreading and fading, as if
+// the caller never draws breath (Gary, phones.js CALLER).
+export function talkFrom(ctx, x, y, t, k = 1) {
+  const EVERY = 0.3;
+  const LIFE = 0.9;
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 3; i++) {
+    const q = ((t + i * EVERY) % LIFE) / LIFE;
+    const r = (5 + q * 11) * k;
+    for (const [c, wd, a] of [['rgba(20,12,8,0.55)', 3.6 * k, 0.8], [NOTE, 2 * k, 1]]) {
+      ctx.globalAlpha = a * clamp((1 - q) * 1.6, 0, 1);
+      ctx.strokeStyle = c;
+      ctx.lineWidth = wd;
+      ctx.beginPath();
+      ctx.arc(x, y, r, -Math.PI * 0.55, -Math.PI * 0.05);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+// The line's caller (phones.js tune_<p>), out of the handset at the holder's ear: head office's hold music on the
+// outside line (the kitchen), notes; Gary talking on the inside lines, talk.
 function holdNotes(ctx, info, at, { w, game }, t) {
   for (const p of PHONE_IDS) {
     if (!w[`tune_${p}`]) continue;
     const n = npcById(game, w[`line_${p}`]);
     if (!n) continue;
-    notesFrom(ctx, n.x * T + 4, n.y * T - 22, NOTE, t, 1.35);
+    if (p === 'kitchen') notesFrom(ctx, n.x * T + 4, n.y * T - 22, NOTE, t, 1.35);
+    else talkFrom(ctx, n.x * T + 6, n.y * T - 18, t, 1.2);
   }
 }
 
