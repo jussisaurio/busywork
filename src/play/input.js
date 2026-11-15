@@ -20,10 +20,10 @@ const CODE_MAP = {
   ArrowLeft: ['left'],
   KeyD: ['right'],
   ArrowRight: ['right'],
-  KeyE: ['interact', 'start'],
-  Space: ['interact', 'start'],
-  Enter: ['interact', 'start'],
-  NumpadEnter: ['interact', 'start'],
+  KeyE: ['interact', 'start'], // the one use key: the key helper says E
+  Space: ['start'], // Space and Enter only move past the mission and end cards. As hidden use keys they were
+  Enter: ['start'], //   undiscoverable and fired actions by accident (the card-dismissing press rang a phone)
+  NumpadEnter: ['start'],
   ShiftLeft: ['busy'],
   ShiftRight: ['busy'],
   KeyP: ['busy'], // P for 'pretend' (Shift stays primary: a hold under the WASD pinky)
