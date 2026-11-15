@@ -54,7 +54,7 @@ export function updateScenario(game, dt) {
 // stopped: { by, reason, working } when a lost day had you sent to your desk (rules.js assignWork): by, who stopped
 // you (the witness who told, else the authority); working: still at it when the day ended. End scenes show it.
 function makeOutcome(game, result, routes, newRoutes) {
-  const o = { result, routes, newRoutes, loop: game.persist.loop, minute: game.clock.minute };
+  const o = { result, routes, newRoutes, loop: game.persist.loop, minute: game.caught?.minute ?? game.clock.minute }; // caught: the minute it happened, not the end of the beat
   const r = game.rules;
   if (result !== 'win' && result !== 'caught' && r.stoppedBy) {
     o.stopped = { by: r.stoppedBy, reason: r.stoppedFor, working: !!(r.sent || game.clock.forced > 0) };

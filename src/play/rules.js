@@ -350,7 +350,7 @@ const JUDGE = { claims, enforcing, caught: (game, reason, by, icons) => caught(g
 function caught(game, reason, by = roles(game).authority.id, cam = null, icons = CAUGHT_ICONS) {
   if (game.caught) return;
   const p = game.player;
-  game.caught = { by, reason, t: 0, via: cam ? cam.id : null }; // via: the camera he saw you on (end scenes)
+  game.caught = { by, reason, t: 0, via: cam ? cam.id : null, minute: game.clock.minute }; // via: the camera he saw you on (end scenes); minute: when (the card's and the HUD's)
   cancelAction(game, 'caught');
   p.locked = true;
   setBusy(game, false, null);
