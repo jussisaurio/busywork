@@ -36,6 +36,8 @@ In the spirit of Jonathan Blow's games, the game explains nothing beyond the mis
 - **Feedback is fine, exposition is not.** The ❓ meter over the authority's head, a coworker pointing ❗👉 with a
   dashed sightline, being marched to your desk: these are consequences you can see. A strike counter or "you were
   seen!" text explains a rule, so it is out.
+- **Nothing lights up on the first frame.** No interaction is in reach of the seat you start in. A target lit before
+  the player has moved points at it, and the player reads it as the way to play.
 - **When a playtester asks for an explanation, make the consequence more visible instead of adding words.**
 - **The AI harness follows the same rule.** It reports only what a player would see on screen.
 
