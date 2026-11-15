@@ -53,8 +53,13 @@ export function createNpcs(game) {
 
 // One NPC as the sim builds it at game minute `now` (test fakes come from here too, so they carry the
 // private fields). The schedule is copied: tests edit the level's cast, and NPCs must not see that mid-day.
+// Every copy has all the entry fields (CONTRACTS.md), in one order: one hidden class keeps the schedule scans
+// that run every step (entryIndex, fireScheduleSays) fast.
 export function createNpc(game, def, now = 0) {
-  const sched = def.schedule.map((e) => ({ ...e }));
+  const sched = def.schedule.map((e) => ({
+    at: e.at, do: e.do, spot: e.spot, route: e.route, icons: e.icons, kind: e.kind,
+    gone: e.gone, prelude: e.prelude, arrive: e.arrive, anim: e.anim,
+  }));
   const first = sched.find((e) => e.spot);
   const p = spotPos(game, first.spot);
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
