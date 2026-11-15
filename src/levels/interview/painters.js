@@ -1,8 +1,8 @@
 // The Interview's own painters: the props (decor.props draws: (ctx, info, at, shown, t), shown = { w, game }) and
 // the things (decor.things: (ctx, x, y, size, t, game, opts)). Everything the outcome depends on is drawn on the
 // object: a ringing phone shakes and rings spread from it in its line's colour; its handset is off the cradle on a
-// curly cord to whoever holds it, and notes rise from it while the hold tune plays; the switchboard's patch cords,
-// lamps and jacks; Lin's power cord coiled on the floor, its plug in the wall socket or lying loose.
+// curly cord to whoever holds it, and notes (HR) or talk (Gary) come from it while the caller is on; the patch cords,
+// lamps and jacks; Lin's power cord coiled on the floor, its adapter in the wall socket or lying loose.
 import { T, rrect, circle, fillCircle, fillEllipse, emoji, clamp, starPath } from '../../render/util.js';
 import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
@@ -548,7 +548,8 @@ function cable(ctx, path, width = 3.2) {
   ctx.lineJoin = 'miter';
 }
 
-// A mains plug, its body at (x, y), prongs pointing left (into the wall) or toward `dir` radians.
+// Her phone's power adapter: a black brick with prongs, its body at (x, y), prongs pointing left (into the wall) or
+// toward `dir` radians. Plugged in, a small green power light glows on it.
 function mainsPlug(ctx, x, y, dir = Math.PI, bare = false) {
   ctx.save();
   ctx.translate(x, y);
@@ -559,13 +560,14 @@ function mainsPlug(ctx, x, y, dir = Math.PI, bare = false) {
     ctx.fillRect(-7.5, 1, 4, 1.4);
   }
   ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  rrect(ctx, -3.5, -3, 9, 7.5, 1.8);
+  rrect(ctx, -3.5, -4.6, 10, 10.5, 1.8);
   ctx.fill();
   ctx.fillStyle = '#3a3330';
-  rrect(ctx, -4, -3.8, 9, 7.5, 1.8);
+  rrect(ctx, -4, -5.4, 10, 10.5, 1.8);
   ctx.fill();
   ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.fillRect(-3, -3, 7, 1.2);
+  ctx.fillRect(-3, -4.6, 8, 1.2);
+  if (!bare) fillCircle(ctx, 3.2, 2.2, 1.1, '#4fd36a');
   ctx.restore();
 }
 
@@ -849,22 +851,22 @@ export const THINGS = {
     ctx.fillStyle = charging ? '#4fd36a' : '#ff3b30';
     ctx.fillRect(-0.1, -5.7, charging ? 1 + ((t * 1.5) % 1) * 2 : 1, 1);
   },
-  // Lin's loose phone plug, held up: a black plug, brass prongs up, its cable hanging below.
+  // Lin's loose phone adapter, held up: a black brick, brass prongs up, its cable hanging below.
   plug(ctx, x, y, size) {
     box(ctx, x, y, size);
     ctx.fillStyle = BRASS;
     ctx.fillRect(-3, -9, 1.8, 5);
     ctx.fillRect(1.2, -9, 1.8, 5);
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    rrect(ctx, -4.2, -4.2, 9.4, 9, 2);
+    rrect(ctx, -4.2, -4.2, 9.4, 11, 2);
     ctx.fill();
     ctx.fillStyle = '#3a3330';
-    rrect(ctx, -4.7, -5, 9.4, 9, 2);
+    rrect(ctx, -4.7, -5, 9.4, 11, 2);
     ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
     ctx.fillRect(-3.7, -4.2, 7.4, 1.2);
     ctx.fillStyle = CABLE;
-    ctx.fillRect(-1, 4, 2, 5);
+    ctx.fillRect(-1, 6, 2, 4);
   },
   // Lin's interview notes: a white sheet of handwriting.
   notes(ctx, x, y, size) {

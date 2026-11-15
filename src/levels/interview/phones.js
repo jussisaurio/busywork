@@ -2,7 +2,7 @@
 //
 // A ring (you plug a cord into a jack) sets ring_<p> = 'you'. Every step (tick, below) a ringing phone is answered
 // by its owner if he is free and in earshot, else by the nearest free NPC in earshot (call_<p>). He walks over,
-// picks up (line_<p>) and gets the hold music until he gives up (HOLD minutes). Nobody hears it: it stops after
+// picks up (line_<p>) and gets the caller (CALLER) until he gives up (HOLD minutes). Nobody hears it: it stops after
 // RING_FOR minutes. The ring is also a noise (index.js noises): heads in earshot turn. Earshot and the drawn rings
 // are measured from the phone itself (PHONES bell).
 //
@@ -29,6 +29,7 @@ const RING_OUT = 2; // game minutes the interviewer lets it ring
 const CHECK_EVERY = 2.6; // game minutes between Lin's checks of her line, before her tea
 const CHECK_FOR = 0.8; // game minutes she holds the receiver to her ear
 const LAUGH_EVERY = 1.6; // game minutes between the boss's laughs on the phone with Gary
+const ARM = 2.5; // tiles: within this, someone notices you at the socket whatever way they face
 const GLANCE_EVERY = 1.7; // game minutes between her glances at the clock after her tea, rehearsing
 export const BACK_AT = at('3:21', START); // from here on Lin is back from her tea (cast.js: 3:22) with her notes
 export const NOTES_AFTER = 0.6; // game minutes from picking up to the hold tune
@@ -183,6 +184,16 @@ export function phoneTick(game, sim) {
     w.stared = true;
     sim.lookAt(game, lin, 'lin_side', 2);
     sim.speak(game, lin, [{ say: ['🕞', '❓'], kind: 'thought', ttl: 1.8 }]);
+  }
+
+  // Someone at arm's length notices you crouch at the socket, whatever way they faced: Lin or Kev within ARM of you
+  // while you pull the cord turns to look at it, and the engine's witness rules take it from there (told on).
+  const act = game.player?.action;
+  if (act && act.type === 'unplug') {
+    for (const id of ['lin', 'kev']) {
+      const n = byId(id);
+      if (n && n.active && !n._stare && dist(n, game.player) <= ARM) sim.lookAt(game, n, 'socket_lin', 2);
+    }
   }
 
   // On with Gary the boss laughs now and then (⛳😄): one long golf chat.
