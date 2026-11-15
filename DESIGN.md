@@ -170,6 +170,10 @@ their desk.
 
 ## Lessons that hold for every level
 These came from playtests of level 1 (details in its `LEVEL.md`).
+- **Every solution would work in a real office.** The game is a comedy about real offices, so a route is only good
+  if a real person would believe it might work. Putting on a coworker's shirt does not make you that coworker, and a
+  boss fooled by it makes the whole game look like it is cheating. Absurd results are welcome; an absurd method is
+  not. Test every route with this question: "would this get past a real, half-awake boss?"
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
 - **Red herrings are welcome; every failure shows its cause.** A thing that leads nowhere stops the player from
@@ -189,6 +193,10 @@ These came from playtests of level 1 (details in its `LEVEL.md`).
 - **A thing that looks usable is usable, in every level.** What a thing looks like is a promise the player carries
   from level to level: level 1's full coffee pot pours a cup, so every full pot pours one. Usable is not useful: the
   cup may lead nowhere. A thing kept only as set dressing is drawn spent: an empty coat rack, an empty pot.
+- **Every verb the engine gives an item makes sense for that item, and looks like it.** A generic verb (eat, drop,
+  put, carry) brings nothing from the level it was made for: what eating leaves behind belongs to the item, never to
+  level 1's sandwich. Before the player presses E, the held item shows what E will do to it. And the words a check
+  reads come from the same field the picture draws, so no check can pass on words the screen contradicts.
 - **Move the risk to where the play is.** If a setup step is trivially safe, give it a cost that bites later.
 - **Each route teaches one lesson** (timing, a sightline, a distraction), and the gate checks that a win uses it.
 - **Fast-forward only in place.** ×6 movement is uncontrollable, so the folder stride runs at normal time.
