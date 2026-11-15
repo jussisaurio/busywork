@@ -5,8 +5,14 @@ import {
   starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
-import { headY, lookFor } from './characters.js';
+import { headY, lookFor, playerHeld } from './characters.js';
 import { findNpc } from '../game/perception.js';
+import { NOTICE, DOUBLE_TAKE } from '../config.js';
+
+// The part of the map on screen, in map pixels (renderer.js: smaller while the end beat zooms in). Bubbles, the
+// suspicion meter and the witness's eye stay inside it.
+export const FULL_VIEW = Object.freeze({ x0: 0, y0: 0, x1: PLAY_W, y1: PLAY_H });
+const EDGE = 3; // px kept free between a bubble and the edge of the view
 
 // --- bubbles -------------------------------------------------------------------
 const ANCHOR = { x: 0, y: 0 };
@@ -33,15 +39,15 @@ function anchorOf(game, owner) {
   return false;
 }
 
-export function drawBubbles(ctx, game) {
+export function drawBubbles(ctx, game, view = FULL_VIEW) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
   const strict = strictGlyphs();
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y) : null;
-    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place);
+    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y, view) : null;
+    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place, view);
   }
 }
 
@@ -49,7 +55,7 @@ export function drawBubbles(ctx, game) {
 // nobody: above the point, else below it, else to its right or left; its post leans to the point. (A migrated
 // level only; the legacy ones keep it above.) Returns the board's centre, or null for the default.
 const SIGN_AT = { x: 0, y: 0 };
-function signPlace(game, b, ax, ay) {
+function signPlace(game, b, ax, ay, view = FULL_VIEW) {
   const icons = Array.isArray(b.icons) ? b.icons : [];
   const n = Math.max(1, icons.length);
   const w = n * 15 + (n - 1) * 3 + 12 + 4;
@@ -64,8 +70,8 @@ function signPlace(game, b, ax, ay) {
   for (const e of game.npcs || []) if (e && e.active) add(e);
   add(game.player);
   for (let i = 0; i < tries.length; i++) {
-    const x = clamp(ax + tries[i][0], w / 2 + 4, PLAY_W - w / 2 - 4);
-    const y = clamp(ay + tries[i][1], h / 2 + 4, PLAY_H - h / 2 - 4);
+    const x = clamp(ax + tries[i][0], view.x0 + w / 2 + 4, view.x1 - w / 2 - 4);
+    const y = clamp(ay + tries[i][1], view.y0 + h / 2 + 4, view.y1 - h / 2 - 4);
     const hit = people.some((r) => x + w / 2 > r[0] && x - w / 2 < r[2] && y + h / 2 > r[1] && y - h / 2 < r[3]);
     if (!hit) {
       if (i === 0) return null;
@@ -77,8 +83,25 @@ function signPlace(game, b, ax, ay) {
   return null;
 }
 
-// place: { x, y } the bubble's centre instead of above the anchor (a sign moved aside: signPlace).
-export function drawBubble(ctx, b, ax, ay, place = null) {
+// How far a bubble's drawing reaches from its centre: { x, top, bot } px (the star's points, the cloud's bumps).
+const EXTENT = { x: 0, top: 0, bot: 0 };
+function bubbleExtent(kind, w, h) {
+  if (kind === 'alert') {
+    const r = Math.max(w, h) * 0.62 + 4;
+    EXTENT.x = r; EXTENT.top = r; EXTENT.bot = r;
+  } else if (kind === 'thought') {
+    EXTENT.x = w / 2 - 2 + h / 2; EXTENT.top = h / 2 + 6; EXTENT.bot = h / 2 + 5;
+  } else {
+    EXTENT.x = w / 2 + 2; EXTENT.top = h / 2 + 2; EXTENT.bot = h / 2 + 2;
+  }
+  return EXTENT;
+}
+const BESIDE = 13; // px from the speaker's head to a bubble placed beside it
+
+// place: { x, y } the bubble's centre instead of above the anchor (a sign moved aside: signPlace). view: the part of
+// the map on screen (FULL_VIEW, smaller while the end beat zooms in). The whole bubble stays inside it: with no room
+// above the head it sits beside the head instead, its tail (or dots, or post) pointing at the speaker.
+export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   const icons = Array.isArray(b.icons) ? b.icons : b.icons != null ? [String(b.icons)] : [];
   const age = Math.max(0, fin(b.age));
   const ttl = fin(b.ttl, 2.5);
@@ -94,17 +117,38 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
-  // bubble centre, clamped inside the play area
-  const bx = clamp(place ? place.x : ax, w / 2 + 4, PLAY_W - w / 2 - 4);
-  const by = clamp(place ? place.y : ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
+  // bubble centre, inside the view: above the head, else beside it (side: 1 right of it, -1 left of it)
+  const ext = bubbleExtent(kind, w, h);
+  const cx0 = view.x0 + EDGE + ext.x;
+  const cx1 = Math.max(cx0, view.x1 - EDGE - ext.x);
+  const cy0 = view.y0 + EDGE + ext.top;
+  const cy1 = Math.max(cy0, view.y1 - EDGE - ext.bot);
+  let bx = place ? place.x : ax;
+  let by = place ? place.y : ay - lift - h / 2;
+  let side = 0;
+  if (!place && by < cy0) {
+    side = ax + BESIDE + ext.x <= cx1 ? 1 : ax - BESIDE - ext.x >= cx0 ? -1 : 0;
+    if (side) {
+      bx = ax + side * (BESIDE + ext.x);
+      by = ay + 12;
+    }
+  }
+  bx = clamp(bx, cx0, cx1);
+  by = clamp(by, cy0, cy1);
+  // what the tail points at, relative to the bubble's centre: the anchor over the head, or the side of the head
+  const hx = side ? ax + side * 8 - bx : ax - bx;
+  const hy = side ? ay + 14 - by : ay - by;
 
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.translate(bx, by + h / 2);
+  // it pops out of the side that faces the speaker
+  const ox = side ? -side * w / 2 : 0;
+  const oy = side ? 0 : h / 2;
+  ctx.translate(bx + ox, by + oy);
   ctx.scale(pop, pop);
-  ctx.translate(0, -h / 2);
-  const tailX = clamp(ax - bx, -w / 2 + 8, w / 2 - 8);
-  const tailY = ay - by; // anchor relative to bubble centre
+  ctx.translate(-ox, -oy);
+  const tailX = clamp(hx, -w / 2 + 8, w / 2 - 8);
+  const tailY = hy; // anchor relative to bubble centre
 
   if (kind === 'alert') {
     const wob = Math.sin(age * 30) * 0.35 * Math.exp(-age * 4);
@@ -125,17 +169,19 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
     ctx.fillRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8);
     // trailing dots toward the thinker
     const dx = tailX * 0.6;
+    const ex = -side * (w / 2 + h / 2 - 4); // beside the head: from the cloud's near end
+    const ey = clamp(hy, -h / 4, h / 4);
     for (let k = 0; k < 2; k++) {
       const f = 0.45 + k * 0.3;
-      const px = dx * (1 - f * 0.5);
-      const py = h / 2 + (tailY - h / 2) * f;
+      const px = side ? ex + (hx - ex) * (f - 0.15) : dx * (1 - f * 0.5);
+      const py = side ? ey + (hy - ey) * (f - 0.15) : h / 2 + (tailY - h / 2) * f;
       ctx.lineWidth = 1.5;
       circle(ctx, px, py, 3 - k * 1.2);
       ctx.fill();
       ctx.stroke();
     }
   } else if (kind === 'sign') {
-    if (place) { // the post leans from the board to the point it judges
+    if (place || side) { // the post leans from the board to the point it judges
       ctx.strokeStyle = C.walnutEdge;
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -160,19 +206,37 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
     rrect(ctx, -w / 2, -h / 2, w, h, 7);
     ctx.fill();
     ctx.stroke();
-    const tb = h / 2 - 0.5;
-    const ty = Math.max(tb + 4, Math.min(tb + 9, tailY));
-    ctx.beginPath();
-    ctx.moveTo(tailX - 5, tb - 2);
-    ctx.lineTo(tailX + 4, tb - 2);
-    ctx.lineTo(tailX - 1, ty);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(tailX - 5, tb + 0.5);
-    ctx.lineTo(tailX - 1, ty);
-    ctx.lineTo(tailX + 4, tb + 0.5);
-    ctx.stroke();
+    if (side) { // out of the near side, toward the head
+      const sx = -side * (w / 2 - 0.5);
+      const sy = clamp(hy, -h / 2 + 7, h / 2 - 7);
+      const tx = sx - side * Math.max(4, Math.min(9, Math.abs(hx) - w / 2));
+      const ty = clamp(hy, sy - 6, sy + 6);
+      ctx.beginPath();
+      ctx.moveTo(sx + side * 2, sy - 5);
+      ctx.lineTo(sx + side * 2, sy + 4);
+      ctx.lineTo(tx, ty);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(sx - side * 0.5, sy - 5);
+      ctx.lineTo(tx, ty);
+      ctx.lineTo(sx - side * 0.5, sy + 4);
+      ctx.stroke();
+    } else {
+      const tb = h / 2 - 0.5;
+      const ty = Math.max(tb + 4, Math.min(tb + 9, tailY));
+      ctx.beginPath();
+      ctx.moveTo(tailX - 5, tb - 2);
+      ctx.lineTo(tailX + 4, tb - 2);
+      ctx.lineTo(tailX - 1, ty);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(tailX - 5, tb + 0.5);
+      ctx.lineTo(tailX - 1, ty);
+      ctx.lineTo(tailX + 4, tb + 0.5);
+      ctx.stroke();
+    }
   }
   let x = -cw / 2 + isz / 2;
   const was = glyphScope('speech'); // any emoji may be said (DESIGN.md "Visual language" rule 1)
@@ -290,10 +354,53 @@ export function drawParticles(ctx, game, t) {
 }
 
 // --- ripples -------------------------------------------------------------------
-// game.fx.ripples: [{ x, y, radius, color, age, ttl }] (core/fx.js ripple). Three rings, a beat apart, spread from
-// the noise to its earshot and fade: who is inside the last ring heard it.
+// game.fx.ripples: [{ x, y, radius, color, age, ttl }] (core/fx.js ripple). The noise starts at its source: every
+// time it sounds, a burst there (a flash and short strokes flung outward, the cartoon "ding"), then short bold rings
+// pulse out of the source for as long as it sounds. Three earshot rings, a beat apart, leave the source on the first
+// frame and spread to its earshot, strongest near the source and fading as they go: who is inside the last ring
+// heard it. Every ring has a dark under-stroke, so a cream ring still reads on a cream floor.
 const RIPPLE_RINGS = 3;
-const RIPPLE_GAP = 0.12; // s between rings
+const RIPPLE_GAP = 0.12; // s between earshot rings
+const SOURCE_SPAN = 0.42; // s a source ring lives
+const SOURCE_GAP = 0.14; // s between source rings
+const SOURCE_R = 1.6 * T; // px a source ring reaches
+const BURST = 0.32; // s the burst at the source lasts
+const BURST_RAYS = 8;
+function ring(ctx, x, y, r, a, w, color) {
+  ctx.globalAlpha = a * 0.55;
+  ctx.strokeStyle = 'rgb(30,20,14)'; // a dark under-stroke: it reads on carpet and on tile
+  ctx.lineWidth = w + 2.5;
+  circle(ctx, x, y, r);
+  ctx.stroke();
+  ctx.globalAlpha = a;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w;
+  ctx.stroke();
+}
+// The burst on the source as it sounds: a flash and BURST_RAYS short strokes flung outward.
+function sourceBurst(ctx, x, y, age, color) {
+  const q = age / BURST;
+  if (!(q < 1)) return;
+  const e = 1 - (1 - q) * (1 - q);
+  ctx.globalAlpha = 0.9 * (1 - q);
+  fillCircle(ctx, x, y, 7 + 10 * e, color);
+  ctx.lineCap = 'round';
+  for (const [w, c, a] of [[6, 'rgb(30,20,14)', 0.55], [3, color, 1]]) {
+    ctx.globalAlpha = a * (1 - q);
+    ctx.strokeStyle = c;
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    for (let k = 0; k < BURST_RAYS; k++) {
+      const ang = (k / BURST_RAYS) * Math.PI * 2 + Math.PI / BURST_RAYS;
+      const r0 = 10 + 14 * e;
+      const r1 = r0 + 9 * (1 - q) + 3;
+      ctx.moveTo(x + Math.cos(ang) * r0, y + Math.sin(ang) * r0);
+      ctx.lineTo(x + Math.cos(ang) * r1, y + Math.sin(ang) * r1);
+    }
+    ctx.stroke();
+  }
+  ctx.lineCap = 'butt';
+}
 export function drawRipples(ctx, game) {
   const list = game.fx && game.fx.ripples;
   if (!Array.isArray(list) || !list.length) return;
@@ -304,39 +411,47 @@ export function drawRipples(ctx, game) {
     const y = fin(r && r.y, NaN) * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     const R = Math.max(0.5, fin(r.radius, 3)) * T;
-    const span = Math.max(0.1, fin(r.ttl, 1) - RIPPLE_GAP * (RIPPLE_RINGS - 1));
-    ctx.strokeStyle = typeof r.color === 'string' ? r.color : C.cream;
+    const ttl = Math.max(0.1, fin(r.ttl, 1));
+    const age = Math.max(0, fin(r.age));
+    const color = typeof r.color === 'string' ? r.color : C.cream;
+    const span = Math.max(0.1, ttl - RIPPLE_GAP * (RIPPLE_RINGS - 1));
     for (let k = 0; k < RIPPLE_RINGS; k++) {
-      const q = (fin(r.age) - k * RIPPLE_GAP) / span;
-      if (q <= 0 || q >= 1) continue;
-      const e = 1 - (1 - q) * (1 - q); // fast out, slow at the edge
-      ctx.globalAlpha = 0.75 * (1 - q);
-      ctx.lineWidth = 1 + 2.5 * (1 - q);
-      circle(ctx, x, y, 6 + e * (R - 6));
-      ctx.stroke();
+      const q = (age - k * RIPPLE_GAP) / span;
+      if (q < 0 || q >= 1) continue;
+      const e = 1 - (1 - q) ** 1.6; // quick out of the source, slower toward the edge
+      const near = 1 - q;
+      ring(ctx, x, y, 8 + e * (R - 8), 0.85 * near ** 0.8, 1.2 + 2.4 * near, color);
     }
+    for (let k = 0; k * SOURCE_GAP <= ttl - SOURCE_SPAN; k++) {
+      const q = (age - k * SOURCE_GAP) / SOURCE_SPAN;
+      if (q < 0) break;
+      if (q >= 1) continue;
+      ring(ctx, x, y, 7 + q * (SOURCE_R - 7), 1 - q, 1.5 + 3 * (1 - q), color);
+    }
+    sourceBurst(ctx, x, y, age, color);
   }
   ctx.restore();
 }
 
 // --- sightlines -----------------------------------------------------------------
-// game.fx.lines: [{ from: npcId, to: 'player', kind, age, ttl, via? }]. A dashed line from the
+// game.fx.lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]. A dashed line from the
 // watcher's eyes to your body, using live positions so it follows both of you. It draws on fast,
 // then fades. 'notice' is a faint cream glance; 'tattle'/'caught' are thick tomato with a mark on you.
+// 'relay' runs from a witness to the authority's eyes (her shout reaching him): a dotted line that a red pulse rides
+// along, then a ring pops round his head. 'order' is the authority's order reaching you: a long amber dash.
 const LINE_STYLE = {
   notice: { w: 1.4, dash: [5, 4], color: '243,214,150', alpha: 0.6, mark: false },
   tattle: { w: 2.6, dash: [7, 4], color: '229,67,47', alpha: 0.9, mark: true },
   caught: { w: 3, dash: [8, 3], color: '229,67,47', alpha: 1, mark: true },
+  relay: { w: 2.6, dash: [2, 6], color: '229,67,47', alpha: 0.95, mark: false, on: 0.3 },
+  order: { w: 2.6, dash: [9, 5], color: '240,178,62', alpha: 0.95, mark: false, on: 0.25 },
 };
 const DRAW_ON = 0.1; // seconds for the dash to reach you
 
 export function drawSightlines(ctx, game, t) {
   const lines = game.fx && game.fx.lines;
   const p = game.player;
-  if (!Array.isArray(lines) || !lines.length || !p) return;
-  const px = fin(p.x, NaN) * T;
-  const py = fin(p.y, NaN) * T - (p.seated ? 1 : 4); // chest, not feet
-  if (!Number.isFinite(px) || !Number.isFinite(py)) return;
+  if (!Array.isArray(lines) || !lines.length) return;
   ctx.save();
   ctx.lineCap = 'round';
   for (let i = 0; i < lines.length; i++) {
@@ -344,6 +459,20 @@ export function drawSightlines(ctx, game, t) {
     if (!l) continue;
     const n = game.npcs && findNpc(game, l.from);
     if (!n || !n.active) continue;
+    // the far end: your chest (not your feet), or the eyes of the NPC it runs to
+    let px;
+    let py;
+    if (l.to && l.to !== 'player') {
+      const m = game.npcs && findNpc(game, l.to);
+      if (!m || !m.active) continue;
+      px = fin(m.x, NaN) * T;
+      py = headY(game.level.looks, m, 'eyeDy', NaN);
+    } else {
+      if (!p) continue;
+      px = fin(p.x, NaN) * T;
+      py = fin(p.y, NaN) * T - (p.seated ? 1 : 4);
+    }
+    if (!Number.isFinite(px) || !Number.isFinite(py)) continue;
     const st = LINE_STYLE[l.kind] || LINE_STYLE.notice;
     const ttl = fin(l.ttl, 0.8) > 0 ? fin(l.ttl, 0.8) : 0.8;
     const age = clamp(fin(l.age), 0, ttl);
@@ -363,7 +492,8 @@ export function drawSightlines(ctx, game, t) {
     if (len < 6) continue;
     ex += (dx / len) * 4;
     ey += (dy / len) * 4;
-    const k = clamp(age / DRAW_ON, 0, 1);
+    const on = st.on ?? DRAW_ON;
+    const k = clamp(age / on, 0, 1);
     const tx = ex + (px - ex) * k;
     const ty = ey + (py - ey) * k;
     const a = clamp(st.alpha * fade, 0, 1);
@@ -381,6 +511,7 @@ export function drawSightlines(ctx, game, t) {
     ctx.stroke();
     ctx.setLineDash([]);
     if (st.mark && k >= 1) drawLineMark(ctx, px, py, age, a, st.color);
+    if (l.kind === 'relay') drawRelayHead(ctx, tx, ty, k, (age - on) / 0.35, a);
   }
   ctx.setLineDash([]);
   ctx.restore();
@@ -415,6 +546,23 @@ function drawScreenChain(ctx, via, ex, ey, px, py, st, age, fade, t) {
   if (st.mark && age >= 2 * DRAW_ON) drawLineMark(ctx, px, py, age - DRAW_ON, a, st.color);
 }
 
+// The relay's moving end: a red pulse riding the line (k < 1), then rings popping round the head it reached (q: 0..1).
+function drawRelayHead(ctx, x, y, k, q, a) {
+  if (k < 1) {
+    fillCircle(ctx, x, y, 5, `rgba(229,67,47,${a.toFixed(3)})`);
+    fillCircle(ctx, x, y, 2.2, `rgba(255,246,201,${a.toFixed(3)})`);
+    return;
+  }
+  for (let i = 0; i < 2; i++) {
+    const f = q - i * 0.25;
+    if (f < 0 || f >= 1) continue;
+    ctx.strokeStyle = `rgba(229,67,47,${(a * (1 - f)).toFixed(3)})`;
+    ctx.lineWidth = 1 + 2.5 * (1 - f);
+    circle(ctx, x, y, 8 + 16 * (1 - (1 - f) * (1 - f)));
+    ctx.stroke();
+  }
+}
+
 // The hit mark on you: a ring that snaps in, then a small cross.
 function drawLineMark(ctx, x, y, age, a, color) {
   const pop = clamp((age - DRAW_ON) / 0.12, 0, 1);
@@ -434,18 +582,25 @@ function drawLineMark(ctx, x, y, age, a, color) {
 // --- overlays --------------------------------------------------------------------
 // What E would do now (player.focus, play/interactions.js). A migrated level lights the target up (drawLitTarget);
 // a legacy one (src/levels/legacy.js) floats the row's icon over it.
-export function drawFocusHint(ctx, game, t) {
+export function drawFocusHint(ctx, game, t, view = FULL_VIEW) {
   const p = game.player;
   if (!p || !p.focus || p.action || p.locked || game.phase !== 'day') return;
   const f = p.focus;
   if (!Number.isFinite(f.x) || !Number.isFinite(f.y)) return;
   if (strictGlyphs()) {
-    drawLitTarget(ctx, f, p, t);
+    drawLitTarget(ctx, f, p, t, view);
     return;
   }
   const self = f.kind === 'self';
-  const x = f.x * T;
-  const y = f.y * T - (self ? 44 : 24) + Math.sin(t * 5) * 2.5;
+  const bob = Math.sin(t * 5) * 2.5;
+  let x = f.x * T;
+  let y = f.y * T - (self ? 44 : 24) + bob;
+  let side = 0; // no room above (the top wall): beside the target, its tail pointing back at it
+  if (y - 13 < view.y0 + 2) {
+    side = x > (view.x0 + view.x1) / 2 ? -1 : 1;
+    x += side * (self ? 26 : T / 2 + 14);
+    y = Math.max(view.y0 + 15, f.y * T - (self ? 20 : 0) + bob);
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   circle(ctx, x + 1, y + 2, 11);
   ctx.fill();
@@ -453,9 +608,15 @@ export function drawFocusHint(ctx, game, t) {
   ctx.strokeStyle = C.ink;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(x - 4, y + 9);
-  ctx.lineTo(x, y + 14);
-  ctx.lineTo(x + 4, y + 9);
+  if (side) {
+    ctx.moveTo(x - side * 9, y - 4);
+    ctx.lineTo(x - side * 14, y);
+    ctx.lineTo(x - side * 9, y + 4);
+  } else {
+    ctx.moveTo(x - 4, y + 9);
+    ctx.lineTo(x, y + 14);
+    ctx.lineTo(x + 4, y + 9);
+  }
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
@@ -467,17 +628,21 @@ export function drawFocusHint(ctx, game, t) {
 
 // DESIGN.md "Visual language" rule 4: the object itself lights up, with the E key cap over it, and no icon (an icon
 // over a tile reads as the object). The glow traces the target: the interactable's tile, the item or the free spot
-// on a desk; an action on yourself (eating what you hold) shows the key cap over your head alone. The key cap sits
-// on the target's far side from you, so your body never hides it.
-function drawLitTarget(ctx, f, p, t) {
+// on a desk, or for an action on yourself (dropping or eating what you hold) the item in your hand, where the
+// player's pose previews the verb (render/characters.js). The key cap sits on the target's far side from you, so
+// your body never hides it; where that side is off the view (a clock on the top wall), it goes beside the target.
+function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   const pulse = 0.5 + 0.5 * Math.sin(t * 5);
-  const x = f.x * T;
-  const y = f.y * T;
+  let x = f.x * T;
+  let y = f.y * T;
   const self = f.kind === 'self';
-  if (!self) {
+  const held = self && playerHeld.on && playerHeld.t === t; // drawn this frame (render/characters.js)
+  if (held) { x = playerHeld.x; y = playerHeld.y; }
+  if (!self || held) {
     ctx.save();
     const shape = () => {
       if (f.kind === 'interactable') rrect(ctx, x - T / 2 - 1.5, y - T / 2 - 1.5, T + 3, T + 3, 6);
+      else if (self) ellipse(ctx, x, y, 9 + pulse * 0.6, 8 + pulse * 0.6);
       else ellipse(ctx, x, y + 1, 12 + pulse, 9 + pulse * 0.6);
     };
     ctx.fillStyle = `rgba(255,226,122,${(0.1 + 0.12 * pulse).toFixed(3)})`;
@@ -495,14 +660,22 @@ function drawLitTarget(ctx, f, p, t) {
   }
   const bob = Math.sin(t * 5) * 2;
   if (self) {
-    keycap(ctx, x - 9, y - 50 + bob, 18, 15, 'E', 11);
+    if (!held) { // nothing drawn in a hand (a level's own action on yourself): over your head
+      keycap(ctx, clamp(x - 9, view.x0 + 2, view.x1 - 20), Math.max(view.y0 + 2, y - 50) + bob, 18, 15, 'E', 11);
+      return;
+    }
+    // beside the item, on its side away from your body
+    const kx = x >= fin(p.x) * T ? x + 11 : x - 29;
+    keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20), clamp(y - 7.5 + bob, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
     return;
   }
   const r = f.kind === 'interactable' ? T / 2 + 3 : 14; // the glow's half size
   const dx = f.x - fin(p.x, f.x);
   const dy = f.y - fin(p.y, f.y);
-  if (Math.abs(dy) >= Math.abs(dx)) keycap(ctx, x - 9, (dy > 0 ? y + r + 1 : y - r - 16) + bob, 18, 15, 'E', 11);
-  else keycap(ctx, (dx > 0 ? x + r + 1 : x - r - 19) + bob, y - 7.5, 18, 15, 'E', 11);
+  const ky = dy > 0 ? y + r + 1 : y - r - 16;
+  const kx = dx > 0 || (dx === 0 && x - r - 19 < view.x0 + 2) ? x + r + 1 : x - r - 19;
+  if (Math.abs(dy) >= Math.abs(dx) && ky >= view.y0 + 2 && ky + 15 <= view.y1 - 2) keycap(ctx, x - 9, ky + bob, 18, 15, 'E', 11);
+  else keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20) + bob, clamp(y - 7.5, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
 }
 
 export function drawActionRing(ctx, game, t) {
@@ -531,8 +704,9 @@ export function drawActionRing(ctx, game, t) {
   }
 }
 
-// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
-export function drawSuspicion(ctx, game, t) {
+// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id): an outlined gauge that
+// shows only while he has some, with a sliver of fill from the first moment.
+export function drawSuspicion(ctx, game, t, view = FULL_VIEW) {
   const id = game.level?.roles?.authority?.id;
   const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
   if (!(s > 0)) return;
@@ -540,21 +714,89 @@ export function drawSuspicion(ctx, game, t) {
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;
-  const x = fin(boss.x) * T + 17 + jit;
-  const y = fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10;
   const h = 20;
+  const x = Math.min(fin(boss.x) * T + 17, view.x1 - EDGE - 8) + jit;
+  const y = clamp(fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10, view.y0 + EDGE + 20, view.y1 - EDGE - h - 2);
   ctx.fillStyle = 'rgba(24,19,15,0.8)';
   rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);
   ctx.fill();
   const r = Math.round(214 + 41 * lvl);
   const g = Math.round(162 - 110 * lvl);
+  const fill = Math.max(4, h * lvl); // never an empty capsule: a sliver from the first moment, growing
   ctx.fillStyle = `rgb(${r},${g},47)`;
-  rrect(ctx, x, y + h * (1 - lvl), 5, h * lvl, 2);
+  rrect(ctx, x, y + h - fill, 5, fill, 2);
   ctx.fill();
+  ctx.strokeStyle = C.cream; // its outline: a gauge, not a prop
+  ctx.lineWidth = 1.5;
+  rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);
+  ctx.stroke();
   const sz = 13 + lvl * 5 + (lvl > 0.75 ? Math.abs(Math.sin(t * 10)) * 2 : 0);
   const was = glyphScope('speech'); // his reaction, not a thing
   emoji(ctx, lvl > 0.75 ? '❗' : '❓', x + 3 + jit * 0.5, y - 9, sz);
   glyphScope(was);
+}
+
+// --- witnesses -------------------------------------------------------------------
+// A coworker who sees you at something the rules object to (game.watch, play/rules.js) opens an eye beside her head,
+// its pupil on you: it pops open on the first sight and widens while she keeps looking (game.rules.seen against NOTICE,
+// DOUBLE_TAKE for a disguise); wide open, she tells. One who saw you with the authority away (game.rules.grudge)
+// keeps it wide, red-rimmed and throbbing, until she has told him. The authority has his own meter (drawSuspicion).
+export function drawWitnesses(ctx, game, t, view = FULL_VIEW) {
+  const p = game.player;
+  const npcs = game.npcs;
+  if (!p || !Array.isArray(npcs) || game.phase !== 'day') return;
+  const auth = game.level?.roles?.authority?.id;
+  const watch = game.watch || {};
+  const grudge = game.rules?.grudge?.by;
+  for (let i = 0; i < npcs.length; i++) {
+    const n = npcs[i];
+    if (!n || !n.active || !n.id || n.id === auth) continue;
+    const off = Object.hasOwn(watch, n.id) ? watch[n.id] : null;
+    const held = n.id === grudge;
+    if (!off && !held) continue;
+    const seen = fin(game.rules?.seen?.[n.id]);
+    const open = held ? 1 : clamp(seen / (off === 'disguise' ? DOUBLE_TAKE : NOTICE), 0, 1);
+    const pop = held ? 1 : easeOutBack(seen / 0.12);
+    const x = clamp(fin(n.x) * T + 13, view.x0 + EDGE + 10, view.x1 - EDGE - 10);
+    const y = clamp(headY(game.level.looks, n, 'eyeDy') - 12, view.y0 + EDGE + 9, view.y1 - EDGE - 9);
+    const dx = fin(p.x) * T - x;
+    const dy = fin(p.y) * T - 6 - y;
+    const d = Math.hypot(dx, dy) || 1;
+    drawEye(ctx, x, y, open, pop * (held ? 1 + 0.12 * Math.abs(Math.sin(t * 6)) : 1), dx / d, dy / d, held);
+  }
+}
+
+// An eye, centred at (x, y): open 0..1 (lids apart), size the pop scale, (lx, ly) the way it looks, hot a red rim.
+function drawEye(ctx, x, y, open, size, lx, ly, hot) {
+  if (!(size > 0.01)) return;
+  const w = 8;
+  const hh = 1.6 + 4.4 * open;
+  const almond = (ww, h) => {
+    ctx.beginPath();
+    ctx.moveTo(-ww, 0);
+    ctx.quadraticCurveTo(0, -2 * h, ww, 0);
+    ctx.quadraticCurveTo(0, 2 * h, -ww, 0);
+    ctx.closePath();
+  };
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(size, size);
+  ctx.fillStyle = 'rgba(24,19,15,0.55)';
+  almond(w + 2.5, hh + 2.5);
+  ctx.fill();
+  ctx.fillStyle = '#fffaf0';
+  almond(w, hh);
+  ctx.fill();
+  ctx.save();
+  ctx.clip();
+  fillCircle(ctx, lx * 3.5, ly * Math.min(2.5, hh), 3, C.ink);
+  fillCircle(ctx, lx * 3.5 - 1, ly * Math.min(2.5, hh) - 1, 0.9, '#ffffff');
+  ctx.restore();
+  ctx.strokeStyle = hot ? C.tomato : C.ink;
+  ctx.lineWidth = hot ? 2.2 : 1.5;
+  almond(w, hh);
+  ctx.stroke();
+  ctx.restore();
 }
 
 export function drawLoopStamp(ctx, game, cx, cy) {

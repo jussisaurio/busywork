@@ -7,10 +7,15 @@ export default {
     'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'kitchen', 'entrance', 'restroom_door', 'bus_stop',
   ],
   interactable: ['boss_clock', 'open_clock'],
-  renderEvents: ['clock:pushed', 'clock:jump', 'boss:frown', 'boss:herd', 'boss:left', 'kev:left', 'boss:workAssigned'],
+  renderEvents: ['clock:pushed', 'clock:jump', 'clock:reset', 'boss:desk', 'boss:hunt', 'boss:frown', 'boss:herd', 'boss:shrug',
+    'boss:coat', 'coat:seen', 'boss:left', 'kev:left', 'boss:workAssigned'],
   milestones: {
     'clock:pushed': (p) => `${p.clock}${p.off}`,
     'clock:jump': (p) => `jump:${p.id}`,
+    'clock:reset': (p) => `reset:${p.clock}`,
+    'boss:hunt': () => 'hunt',
+    'boss:shrug': () => 'shrug',
+    'boss:coat': () => 'coat',
     'boss:herd': () => 'herd',
     'boss:left': () => 'bossLeft',
     'lin:left': () => 'linLeft',
@@ -19,8 +24,8 @@ export default {
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['boss10', 'boss20', 'boss30', 'open10', 'open20', 'open30', 'open40', 'herd', 'bossLeft', 'work', 'caught'],
-  keyActions: ['boss30', 'open40', 'herd', 'bossLeft'],
+  binKeys: ['boss10', 'boss20', 'boss30', 'open10', 'open30', 'open50', 'open60', 'hunt', 'shrug', 'coat', 'herd', 'bossLeft', 'work', 'caught'],
+  keyActions: ['boss30', 'open60', 'herd', 'coat', 'bossLeft'],
   goldenPlans: [
     // Raw movement, with and without pretend, then idling in the hallway.
     ['move E 1.5s', 'move N 1s pretend', 'move W 2s', 'wait 3s', 'goto open_clock', 'interact', 'move S 1s', 'wait 5s', 'pretend until 4:30'],

@@ -1,518 +1,469 @@
 # Cold reads: early-bus
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a864132","hash":"2decb7fad42aa638e70ded0daa21493f3e3f2e2dc56cd23510a42285d835f40b","parts":{"card":"df9447296fa542448a9afb7fdfcaf51861a7d7528c08b72bd612fbc880fc6b6e","premise":"e8841bcead6572c7f2f8076a3c0db2fa28aa5dc08abdf40a7219401dc8be20f0","prompts":"c2886f589c84ff30cad9e05d737f4d22d2f634d9aba125f62e9ac2a88edc579e"},"model":"default"} -->
+<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"1909728","hash":"741bfac5738b7c056180a5400599ef50a732255fa6a00884d755a73b9f9addf3","parts":{"card":"f5a03af78aedb7ba2b47726215e19a90462bcd10e7841831e65ce15545209405","premise":"7e6d1c5c124d08e9e73f1fed64a1e8a8934e6336a64b91385d07740171602c6c","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
-Recorded 2026-11-15 at commit a864132, by claude -p (model: default). Inputs 2decb7fad42a: the card, premise.md, the stage's prompts.
+Recorded 2026-11-15 at commit 1909728, by claude -p (model: default). Inputs 741bfac5738b: the card, premise.md, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-card | first-read.md | 13 s | $0.02 |
-| 2-review | report.md | 149 s | $0.56 |
-| all | | 162 s (the steps add up to 162 s) | $0.58 |
+| 1-card | first-read.md | 13 s | $0.03 |
+| 2-review | report.md | 122 s | $0.50 |
+| all | | 135 s (the steps add up to 135 s) | $0.54 |
 
 ### 1-card: first-read.md
 
-**Situation:** It's 3:00 PM in an office. I want to catch a bus at 4:30. The boss leaves at 4:50, and there's a rule, or maybe just office culture, that nobody leaves before him.
+**Situation:** It's 3:00 PM in an office. I need the last bus, which leaves at 4:30. The boss leaves at 4:50, twenty minutes after it. Office culture, or the boss, won't let anyone leave before he does.
 
-**What I must do:** Get onto the 4:30 bus. I see two ways to read that:
-1. Sneak out unseen before the boss leaves.
-2. Get the boss to leave before 4:30, so I leave "after him."
+**Goal, reading A:** Sneak out unseen and catch the 4:30.
+**Goal, reading B:** Get the boss to leave before 4:30.
 
-**If I fail:** Either I miss the bus, or I get caught leaving early. I can't tell which counts as the loss, or whether it's both.
+**Failure:** I miss the bus and I'm stranded. Or I'm caught leaving and punished somehow. Or both.
 
 **Questions:**
-- Who enforces "nobody leaves"? The boss, coworkers who'd tell on me, or a door or sign-out sheet?
-- Is it a rule or just a habit? What happens to someone who breaks it?
-- If I get caught but still make the bus, is that a win?
-- How far away is the bus stop? Does it take time to get there?
-- Is 4:30 the last bus? Is there a later one?
-- Name: "Early Bus" suggests a later bus exists. Why not just take that one?
-- Does 🚌 mean the goal, or the win?
-- Does the clock run in real time?
+- Is "Nobody leaves before him" a rule, a threat, or just how things usually go? "Nobody does" and "nobody may" ask different things of me.
+- What happens to someone who leaves early? The card doesn't hint.
+- Am I the one taking the bus? It's implied, never said.
+- Why is the level called "Early Bus"? The 4:30 is the *last* bus. Is it "early" only next to the boss? Or is there an earlier bus I don't know about?
+- How far away is the bus stop? Will the bus wait for me?
+- Is the 🚌 icon my goal, or just the theme?
+- Does "leave" mean leaving the building, or just my desk?
 
 ### 2-review: report.md
 
 Verdict: fixable
 
-**1. Nobody enforces the rule, and the loss at the bus stop contradicts what the player sees.** The first reader's obvious plan is to sneak out. The game blocks it with nothing visible. The boss sits in a top-left office with walls between him and the stop. Yet the `end-fail-at-the-stop` card shows him in a window right behind you. In the herd route, Lin and Kev walk out before him in plain view and nothing happens. He also never notices that *your* desk is empty, though he puts a ❓ on Lin's after five minutes.
-- **When it hits:** the first loop where you walk to the stop at 4:30 and lose for no reason you can see.
-- **Fix:** make the rule happen on screen. If the boss is still in, walking out the lobby door gets you tattled on, and he marches down and sends you back. Add your desk to the desks he checks.
+**1. The name gives away the method.** I checked first-read.md against the design. The other reader stumbled on the name right away: "the 4:30 is the *last* bus, so why 'early'?" Their reading B, "get the boss to leave before 4:30", is the actual design. And "Early" points at the tool: make someone early. The card itself is clean. It names the trouble and the 🚌 badge is fine. The title is the leak. It also hides a question the card never answers: what happens if you leave? (Answer: the boss catches you in the street and fires you.) **Fix:** call it "Last Bus".
 
-**2. A tattle doesn't undo the clock push.** You can push his clock +30 during lunch, right in front of Lin. She tattles when he comes back, you type for 20 minutes, and you still win at 4:20. The boss is literally told "finger, clock" and still trusts the clock. The 3:20 restroom window, the heart of the timing puzzle, becomes optional.
-- **When it hits:** the first loop where Lin points at you and nothing bad follows.
-- **Fix:** a clock tattle makes the boss reset and straighten that clock.
+**2. Ladders under both clocks with no reason.** At 3:00 the player sees a stepladder under each wall clock. Nobody in the office uses them, so they only exist because the puzzle needs them. A first-time player will read them as "interact here", not as part of the office. **Fix:** at 3:00 show a caretaker on a ladder swapping a clock battery (🔋), who leaves both ladders behind when he goes.
 
-**3. The herd route can't be deduced.** The loop ends at 4:30, so on a normal day nobody ever leaves. premise.md says you see them leave after any push, but that's false. With +10 they wave at 4:40. With +20 they wave at 4:30, exactly as the loop ends. The player first sees "he follows them out" only after pushing +30 on a guess. The ❓ at 3:25 only shows that he notices an empty desk.
-- **When it hits:** route 2 is found by trial and error.
-- **Fix:** move Kev's coffee break so it overlaps Lin's restroom break and both desks are empty for a moment, around 3:36–3:38. The boss starts (❗) and begins packing up, then sits back down sheepishly when they return.
+**3. The rule only binds you on screen.** Lin and Kev check the coat at their 4:50. On a normal day the loop ends at 4:30, before that ever happens. So the player never sees a coworker obey "nobody leaves before him". Worse: at 3:25 the boss looks at Lin's empty desk, thinks ❓, and nothing happens. Your empty chair starts a manhunt. **Fix:** add an early beat on screen. For example, at 3:05 Kev picks up his bag, looks at the coat, 😬, and puts the bag back. Also make the boss go and check the restroom door when Lin vanishes.
 
-**4. Lin leaves for no good reason, and the clock she reads makes no sense.** She sits facing the glass and sees the boss at his desk, then walks out anyway, breaking the card's only rule in front of him. The code says his clock is "too far" to read. But it is 9 tiles straight ahead of her, and the open-plan clock is about 15 tiles away to the side.
-- **When it hits:** the player assumes Lin reads the clock she faces, and the 4:10 walkout looks like a bug.
-- **Fixes:**
-  - At "4:50", Lin and Kev stand up with their coats on and stare at him (🧥👀). He looks at his untouched clock, then at them, starts (❗) and leaves. This version is funnier and keeps the rule.
-  - Move Lin's desk so the open-plan clock is the nearer one.
+**4. The boss ignores his own clock.** The player has watched him turn to his clock at 3:22 and 3:30, so they know he lives by it. In route 2 he sees 4:58 on the hallway clock, then walks back into his office. His own straight clock there says 3:58, and he takes his coat without a glance. On the way to his coffee at 3:40 he also walks right under the hallway clock without looking up. **Fix:** move the coat rack to the hallway, under the open-plan clock. He never goes back past his own clock, and Lin and Kev stare at a coat right above Kev's desk.
 
-**5. Two moments contradict the rest of the game.**
-- **The whistle:** you whistle 🎵 one tile behind the boss's head, and he doesn't turn, in a series where noise turns heads.
-- **The blamed card:** it shows the boss waving from your bus, but he left by the elevator. Also, why does a ground-floor lobby that opens onto the street have an elevator people leave by?
-- **Fixes:**
-  - Cut the whistle.
-  - Redraw the blamed card as an empty stop with the bus pulling away.
+**5. Route 1 lets you off too easily.** In premise.md's route 1 you are still standing at his clock, "on the phone", when he turns round at 3:30. He starts at a clock that just jumped half an hour, sees you standing right under it, and lets it go. That isn't funny and it doesn't make sense. **Fix:** if he sees you inside his office right after his clock jumps, he gets suspicious (😠) and sets the clock right. That forces you to get back to your desk in time, which makes a better beat.
 
-**Stakes, card and name:**
-- **Stakes:** a missed bus is mild. The first reader asks why you can't just take a later one, and nothing answers that. Make it the last bus.
-- **Card and name:** the card, the name and 🚌 name the trouble, not the way out. Good.
-- **The obvious version:** the clock route is the obvious joke.
-- **The real joke:** the herd route.
+What holds up: both routes are in the code and the numbers work. In route 1, +30 has him at his coat at 4:20 and out before the bus. In route 2, +60 puts the hallway clock at 4:58 when he passes under it at 3:58, while +50 shows 4:48 and gets a shrug. Every step I checked is shown on screen through the clock-face bubbles, the visible sight cones and the crooked clock. One risk I couldn't confirm from the code: in route 2, Lin sits five tiles from the hallway ladder. Her regular head turns may catch you up there, and premise.md doesn't account for that.
 
-**Best thing:** the boss turns to Lin's empty desk (❓), then Kev's (❓), starts (❗), and flees his own rule while his own clock, which nobody touched, still says 4:17. Keep that.
+**Best thing:** At 3:50, Lin and Kev stand up, stare at a coat in an empty office, grimace and sit back down. Then the boss strolls back from the kitchen, looks at the clock, startles and bolts.
 
 <!-- /cold-read:premise -->
 
-<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"a864132","hash":"93264e5963617222e34b84f5d0c8d3322b702cf97fc06172367564aef11dded2","parts":{"card":"df9447296fa542448a9afb7fdfcaf51861a7d7528c08b72bd612fbc880fc6b6e","shots":"0cbe89780870c725f6064eff9a5bd49f4a04f04289da35f60e13bc61500516f6","pictures":"e75c05c80a6308624a352fbbe1c1c2c045823ce774c281ddab822eafc3162b13","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
+<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"1909728","hash":"076182f3f126a281b5dbd2011304c68099e475a491006f664b60cc30e981f750","parts":{"card":"f5a03af78aedb7ba2b47726215e19a90462bcd10e7841831e65ce15545209405","shots":"3473a8b967c92d30561f2446383142cd46337e1f229594efb13ae038b384c671","pictures":"ae5601faac3e0179f1b7f1fe84844f109c1dd5bbfa46c37cbce011331f83f8af","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
 ## pictures: fixable
-Recorded 2026-11-15 at commit a864132, by claude -p (model: default). Inputs 93264e596361: the card, shots.js, the rendered shots, the stage's prompts.
+Recorded 2026-11-15 at commit 1909728, by claude -p (model: default). Inputs 076182f3f126: the card, shots.js, the rendered shots, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 81 s | $0.45 |
-| 2-compare | report.md | 119 s | $0.57 |
-| all | | 200 s (the steps add up to 199 s) | $1.02 |
+| 1-read | reading.md | 103 s | $0.58 |
+| 2-compare | report.md | 95 s | $0.43 |
+| all | | 198 s (the steps add up to 198 s) | $1.01 |
 
 ### 1-read: reading.md
 
 # Early Bus: cold read
 
-**01 (3:00).** The player, in a red sweater with a red ring under her, sits at the middle desk. A teal-shirted coworker sits on the left and a spiky-haired coworker in green on the right. The boss's office in the top-left is empty. Wall clocks sit above two stepladders, one in his office and one over Green's desk. The bus stop is bottom-centre, with a dashed bay on the road. *Can't read:* the dashed hand slot and the two empty slots in the top bar.
+**01 (3:00)** Me (red sweater, hair bun) at a desk. Teal woman and spiky-haired guy in green also at desks. Corner office empty, navy jacket on a stand. Two wall clocks, each with a stepladder under it. The ladders give away the plan before anything happens.
 
-**02 (3:01).** The player is holding a paper and a red ripple spreads from her. The "pretend" key is lit, so I take it she's faking work. Green has a cloud thought with a clock in it. *Meaning:* I read the cloud as a thought and the round bubble as speech, but I'm guessing.
+**02** Green guy thinks of a clock. Red rings pulse around me. *Unclear:* the rings could mean I made a noise, or just mark "you".
 
-**03 (3:01).** The player is on Green's stepladder at the clock, with a clock speech bubble. Green is half-turned in his chair. Messing with clocks looks like the scheme.
+**03 (3:05)** Green guy is at the kitchen coffee machine and his chair is empty. So he takes coffee breaks.
 
-**04 (3:05).** She's still at the clock and her bubble now has a small music note. Green is at the coffee machine. So his coffee run is the window to work unseen. *Can't read:* the note. Humming? A ticking sound?
+**04 (3:02)** I'm at the office-room ladder with an E prompt on the clock. Green guy is walking past with something yellow. *Unclear:* what he's carrying.
 
-**05 (3:09).** Green is back, and a big red "!" bursts above the clock. The player is at her desk under a chair bubble. Green seems to have noticed the changed clock. *Can't read:* the chair bubble keeps coming back and I never worked it out. "Seated"? "I never left"?
+**05 (3:07)** I'm up the ladder. Green guy is coming back from the kitchen with a cup.
 
-**06 (3:12).** Teal has a clock thought and her sight cone is visible. Everyone is checking the time.
+**06 (3:11)** Green guy is back at his desk with a spiky bubble: clock + red "!". He noticed the clock changed. Changing it while he's out isn't enough.
 
-**07 (3:19).** The boss has arrived and has a clock thought too. Green has twitch lines, which could mean restless or startled.
+**07 (3:12)** Teal woman thinks of a clock. Her sight cone covers it. Two people watch this clock.
 
-**08 (3:23).** Teal wanders the floor and the boss's orange cone covers his doorway. Quiet routine.
+**08 (3:22)** Bald boss in suspenders is now at his desk, thinking a plain white circle. Teal woman walks east. *Unclear:* that circle. A clock with no hands? A plate?
 
-**09 (3:26).** Nothing happens. Teal's chair is empty and she isn't in view. The bathroom, maybe?
+**09** Green guy has shake lines. Teal woman is still walking. *Unclear:* the shake lines. Typing? Annoyed?
 
-**10 (3:03, another loop).** The player is on the boss's ladder before he arrives. Teal has a "!" with a little yellow shape inside, maybe a pointing hand. She saw.
+**10** "Pretend" is lit and papers fly off me, so I'm faking work. A fast-forward icon shows up.
 
-**11–12 (3:23–3:27).** The player is still on the ladder with the boss sitting right under her, and he doesn't react. Behind his head counts as hidden, apparently. That's funny, but it strains belief.
+**11 (3:25)** Boss thinks teal woman's face + "?". He notices empty desks. A faded bubble sits by green guy. *Unclear:* what the faded bubble is.
 
-**13 (3:30).** The boss gets a "!" at his clock while the player sits at her desk. He spotted the change, though she isn't at the scene.
+**12 (3:31)** Boss's cone turns red and pours through the glass walls. He thinks my face + "?". I'm already at the bus stop. Leaving early gets noticed.
 
-**14 (4:18).** The player is already at the bus stop. A sparkle sits on the boss's clock.
+**13 (3:04)** I'm on the boss's ladder. Teal woman bursts out "!" + a pointing hand + something. She's a snitch. *Unclear:* the last glyph.
 
-**15 (4:28).** The HUD clock turns red. The boss's office is empty, so he left early, and the bus pulls in.
+**14 (3:27)** Still on the ladder, and the boss sits down right under me. Good comic tension.
 
-**16 (win).** The boss waves goodbye under a clock that reads late. The player cheers on the bus under confetti. The first slot fills with a clock. *Clear:* setting his clock forward made him leave early.
+**15** Boss with shake lines, me still up there.
 
-**17 (4:10, another loop).** Teal and Green both have wave bubbles. The player sits under the chair bubble.
+**16 (3:30)** Boss bursts out clock + "!" and his cone goes red.
 
-**18–19 (4:17–4:19).** The coworkers are gone and the boss walks out across the floor, cone forward.
+**17 (3:47)** Boss gets coffee in the kitchen. So he also leaves his desk.
 
-**20 (win).** The boss, Green and Teal all leave, and Green waves. The icons go: coworkers, wave, boss, "?", "!", bus. The second slot gets a wave. *Meaning:* everyone else leaving makes the boss leave too. I can't see what the player did to start the coworkers leaving.
+**18 (3:59)** Boss with a mug, under the office-room clock, thinking clock + a small yellow thing. *Unclear:* that second glyph.
 
-**21 (loss, 3:31).** The boss points angrily at the player on his ladder. Caught. Very clear.
+**19 (4:21)** Boss at the coat stand, putting on his jacket, waving. He's leaving at 4:21, so the clock trick worked.
 
-**22 (loss).** The bus drives off with the **boss on it, waving**, while the player runs after it, flustered. *Confusing:* does he ride her bus? Did her own scheme work and she just dawdled? It's the best joke here, but I can't tell what I did wrong.
+**20 (4:28)** The HUD clock goes red. The bus pulls in and I'm at the stop. The coat stand is empty.
 
-**23 (loss).** The boss sits at his desk with papers and the player watches the bus go through the window. She waited like a good employee and lost.
+**21 WIN** The boss waves under a clock showing about 4:55. I'm cheering in the bus with confetti. Icons: clock, boss, wave, bus, me. A clock token fills the first slot. Clear and funny.
 
-**24 (loss).** The player is at the stop as the bus leaves, and the boss is visible at his desk through the window. **It has the same icon row as 23**, so I can't tell what separates the two. Did she get there late, or did she leave and get noticed?
+**22 (3:50)** Boss in the kitchen. Teal and green both think boss-face + 😬. *Unclear:* are they dreading him, or relieved he's gone?
+
+**23 (3:59)** Boss at the office-room clock: clock + "!".
+
+**24 (4:02)** Boss puts his coat on and waves. That's even earlier.
+
+**25 (4:09)** Everyone leaves: teal, green and the boss crossing the street. I'm still at my desk pretending.
+
+**26 WIN** Teal, green and the boss file out past the clock "!". I'm on the bus. A coffee cup token fills the second slot. *Unclear:* why coffee? Nothing in the picture shows coffee causing anything.
+
+**27 LOSS (3:31)** Boss points angrily at me up the ladder. Icons: me 😳 boss 😠. Clear.
+
+**28 LOSS (3:16)** I'm at the stop and the boss comes out of the front door pointing. So he comes in that way and walks right past the stop.
+
+**29 LOSS (4:30)** The bus pulls away and I chase it. Clear.
+
+**30 LOSS** Boss still at his desk, jacket on the stand, me at the window watching the bus go 😩. The funniest card.
+
+**31 LOSS** Same as 28 plus the bus leaving. Too close to 28 to tell apart at a glance.
 
 ## The story
-You can't leave before the boss, and the boss leaves at 4:50.
-You can sneak to the wall clocks during coffee runs and set them forward. Fix his clock and he leaves early, but get caught on the ladder and he'll be pointing at you.
-Or get your coworkers to leave first, and he follows the crowd.
-The idea it teaches: people trust the clock and the crowd more than the real time.
-My weak spots as a reader: the chair bubble, how the wave scheme starts, and how 23 differs from 24.
+
+Nobody leaves before the boss, and the boss leaves at 4:50, twenty minutes after my last bus. The ladders invite you to push the clocks forward. But coworkers and the boss all watch the clocks, and they notice if you change one in front of them, or if they look at it again after you've changed it. So you sneak it during coffee breaks and bathroom trips, then fake work until the boss reads the wrong time, grabs his coat and sets everyone free. The idea it teaches is roughly "people trust the clock on the wall."
 
 ### 2-compare: report.md
 
+I've read both files and checked the disputed screenshots. Here's the report.
+
 Verdict: fixable
 
-# Early Bus: cold-read check
+The reader understood the overall scheme: push the clocks, fake work, the boss leaves early, the bus wins. But several shots taught them wrong rules. The worst is 06: the reader now believes a coworker seeing a changed clock is bad, when that is exactly what the scheme needs. The boss's clock thought in 08 doesn't read as a clock. And the "left before the boss" loss reads as "the boss arrives through the front door." One more problem cuts across the whole level: at map scale, a pushed clock doesn't look crooked (05, 06, 15, 23, 26). The one visual that shows "I changed this" can't be seen.
 
-The player still pieced together both routes: set the clocks forward, or get everyone else to leave. But several shots the routes depend on were misread or missing a cue. **08, 09 and 18** show the timing windows and the follow-the-crowd trigger, and those cues aren't on screen. **24** can't be told apart from 23. The level can be followed, but the player is guessing at the parts that matter.
+- **01** — reads. Everything is visible. The reader didn't mention the kitchen or the stop, but the later shots show they found both.
+- **02** — partly (cosmetic). Reading: "the rings could mean I made a noise, or just mark 'you'." Intent: Kev reads the wall clock. The thought bubble works. The cause is a cue that clashes: my "you are here" marker uses red pulsing rings, the same look a noise ring would have in a level built on "noises turn heads." Fix: give the player marker its own steady, non-pulsing style, and save pulsing rings for noises only.
+- **03** — reads.
+- **04** — partly. Reading: "Green guy is walking past with something yellow. *Unclear:* what he's carrying." Intent: Kev has just left his desk under the clock and is heading to the kitchen. The cause is a tiny, unreadable prop. The empty cup should be the cue that he's off for coffee, but it's a yellow speck. Fix: draw a big white mug in his hand, the same mug as the one on his desk in 06.
+- **05** — misread. Reading: "I'm up the ladder. Green guy is coming back from the kitchen with a cup." Intent: after six pushes the clock hangs crooked and reads an hour ahead of the HUD. The cue is missing. The wall clock in the map is about 25px wide and doesn't look tilted or different. The only change shows in the E-prompt icon. Fix: tilt the clock about 15° and add a small swing animation after each push. Even better, draw the extra hour as a red arc on the clock face so the gap from the HUD clock shows at a glance.
+- **06** — misread. Reading: "He noticed the clock changed. Changing it while he's out isn't enough." Intent: Kev believes it's an hour later. The trick worked. The cause is a cue that reads as alarm. The spiky white burst with a red "!" is the same "you've been caught" language as 13 and 16. So a success looks like getting caught, and the reader's summary turned it into a rule that blocks the solution ("they notice… if they look at it again after you've changed it"). Fix: use a separate "time flies" belief bubble, a round thought bubble with the clock face, a fast-forward mark and a startled 😮 instead of a red "!". Keep spiky red for "I've spotted you."
+- **07** — reads.
+- **08** — misread. Reading: "thinking a plain white circle… A clock with no hands? A plate?" Intent: the boss turns round to read his clock. The icon isn't readable as a clock. At this size the clock glyph in the thought bubble loses its hands. It also doesn't match the drawn clock right above him, so the cause (clock) and the thought aren't linked. Fix: reuse the clock sprite from the wall (red rim, black hands) at twice the size in every clock thought. Turn the boss's sprite to face the wall for a beat before the bubble appears.
+- **09** — misread. Reading: "Green guy has shake lines… *Unclear:* the shake lines. Typing? Annoyed?" Intent: right after his clock, the boss looks through the glass at your desk while you type. The cue is missing. The boss's cone swinging toward me is faint and gets lost behind the glass. Meanwhile Kev's unexplained shake lines grab the eye. Fix: give the boss a "glance at you" beat: a brighter cone that ends on my desk, plus a small eye or my face in his thought bubble. Drop Kev's shake lines here, or use the same lines on me when I type so the meaning ("busy typing") is learned from my own character.
+- **10** — partly. Reading: "'Pretend' is lit and papers fly off me… Teal woman is still walking." Intent: Lin goes to the restroom, so nobody faces the boss's clock. The cause is effect too far from cause. The restroom door is a small sign in the far corner, and Lin is only halfway there. Fix: put a 🚻 thought bubble over Lin as she leaves her desk, or make the restroom door bigger and have it swing as she goes in.
+- **11** — partly. Reading: "*Unclear:* what the faded bubble is." Intent: the boss wonders where Lin is. The reader got that part. The faded bubble by Kev is a leftover thought fading out, and it shows as a ghostly scribble. Fix: shrink and fade old bubbles quickly instead of leaving a grey outline.
+- **12** — reads.
+- **13** — partly. Reading: "'!' + a pointing hand + something… *Unclear:* the last glyph." Intent: Lin points at you and shouts. The cause is an unreadable glyph. The target of the point (my face) is too small inside a small burst. Fix: make the burst bigger and put my face icon in it at the same size as the faces in the boss's "?" bubbles. Also turn Lin's arm toward the ladder.
+- **14** — reads.
+- **15** — partly. Reading: "Boss with shake lines, me still up there." Intent: the boss's clock hangs crooked, half an hour ahead, and the boss works on with his back to it. The cue is missing, the same crooked-clock problem as 05. The clock is hidden under my sprite and the E highlight. Fix: tilt the clock and draw it on top of the player while it's being pushed, or show the clock face as a large inset beside the ladder.
+- **16** — partly. Reading: "Boss bursts out clock + '!' and his cone goes red." Intent: he believes it's half an hour later, and you've stepped off the ladder behind him. The cause is a cue that reads as alarm, as in 06. A red cone means "hunting" in 12 and "caught" in 27, so the reader can't tell this success from being caught. Also, I'm still drawn on the ladder, not "just off" it. Fix: keep the cone its normal colour on belief beats and use the belief bubble from 06. Show me on the floor beside the ladder.
+- **17** — reads.
+- **18** — partly. Reading: "clock + a small yellow thing. *Unclear:* that second glyph." Intent: he reads the open-plan clock (not pushed this loop) and shrugs. The cause is a glyph standing in for a person's action. The 🤷 emoji at this size is a yellow blob. Fix: animate the boss sprite shrugging (shoulders up, palms out). Put only the clock in the bubble, with a calm "…" or ✓.
+- **19** — reads.
+- **20** — reads.
+- **21** — reads.
+- **22** — partly. Reading: "Teal and green both think boss-face + 😬. *Unclear:* dreading him, or relieved he's gone?" Intent: by the pushed clock it's home time, but the boss's coat is still on its stand, so they stay. The cause is effect too far from cause. The coat that holds them back is across the map, and their bubble doesn't mention it. Fix: put the coat in their thought: clock → boss's coat-on-stand → 😬. That draws the rule "nobody leaves while the coat is up."
+- **23** — reads.
+- **24** — reads.
+- **25** — reads.
+- **26** — partly. Reading: "A coffee cup token fills the second slot. *Unclear:* why coffee? Nothing in the picture shows coffee causing anything." Intent: the herd win, with the boss under the crooked open-plan clock. The cause is a missing cue in two places. The picture shows no coffee, so the token has nothing to refer to. And the clock in the picture is straight, not crooked. Fix: give the boss his mug in the win picture, tilt the clock, and add a ☕ to the icon row (boss ☕ → clock → !) so the token matches something shown.
+- **27** — reads.
+- **28** — misread. Reading: "the boss comes out of the front door pointing. So he comes in that way and walks right past the stop." Intent: you left before the boss. His coat is still on its stand (visible through the window), and he catches you outside. The cause is a missing cue in the icon row. The coat in the window is the key fact, but the icons (me 😳 boss 😠) never mention it, so the reader thinks it's about the boss's route. Fix: start the icon row with the coat on its stand → me outside → boss 😠, and highlight the coat in the window with a glow.
+- **29** — partly. Reading: "The bus pulls away and I chase it. Clear." Intent: the boss *did* go home early, so the scheme worked, but you weren't at the stop. The cause is a missing cue. Nothing shows the boss has gone, so the reader can't learn "you were right, just slow." Fix: show the empty coat stand through the window and add an empty-stand icon at the start of the row.
+- **30** — reads.
+- **31** — partly. Reading: "Same as 28 plus the bus leaving. Too close to 28 to tell apart at a glance." Intent: you left while the boss was in, *and* you missed the bus. The cause is two pictures built almost the same way. Fix: make 28 clearly early (no bus, the window clock showing about 3:15, daylight) and make 31 late (bus pulling away, window clock at 4:30, warmer late light). Better still, merge them into one loss so the game isn't teaching two lessons that look the same.
 
-Problems that show up in several shots:
-- **Shots labelled "close-up" are wide shots.** 03 and 11 are the same full-map view as every other shot, so at map scale nobody can see the clock hanging crooked (04, 12) or how far it was pushed.
-- **"!" sits on the clock, not the person** (05, 13). That reads as "he noticed the tampering" when it should read as "he believes it's later." The joke flips into a near-miss.
-- **The player's chair bubble** (05, 13, 17–19) was never understood. It's noise in every shot it appears in.
-- **The player's bubble is cut off by the top edge** when she's on the boss's ladder (10–12).
-
-## Shots
-
-**01 — reads.** Desks, empty boss office, both clocks and ladders, bus stop. The empty HUD slots are cosmetic.
-
-**02 — partly.**
-- Reading: "Green has a cloud thought with a clock in it."
-- Intent: Kev checks the open-plan clock, *then gets up for coffee*. People here go by the wall clock.
-- Cause: missing cue. The thought is there, but nothing says "coffee next," so the clock-then-coffee routine isn't taught. The player's red ripple and paper also pull the eye away.
-- Fix: follow the clock thought with a ☕ bubble while Kev stands up, both in the same shot.
-
-**03 — partly.**
-- Reading: "Green is half-turned in his chair."
-- Intent: an up-close view of a real clock with a climbable ladder, while Kev has just walked off for coffee.
-- Cause: it isn't a close-up, and Kev in mid-step reads as sitting. Nothing tells you he's leaving, so the reader only worked out the coffee window from the next shot.
-- Fix: give Kev a ☕ bubble and a clear walking pose pointed at the kitchen door.
-
-**04 — partly.**
-- Reading: "Can't read: the note. Humming? A ticking sound?"
-- Intent: the clock hangs crooked, reads 40 minutes ahead of the HUD, and you whistle.
-- Cause: missing cue. At map scale the clock is about 20 px, so the tilt and the jump in time can't be seen. A single ♪ is too vague for whistling.
-- Fix: draw the pushed clock clearly tilted, with a faint trail showing the minute hand's sweep. Show the whistle as two or three notes coming from puckered lips.
-
-**05 — partly.**
-- Reading: "Green seems to have noticed the changed clock."
-- Intent: Kev starts because he believes it's 40 minutes later.
-- Cause: the cause and the effect are in the wrong place. The "!" bursts out of the clock, so it looks like an alarm or a tampering alert, not Kev being fooled.
-- Fix: move the "!" onto Kev's head in a jolted pose, with a small clock showing the later time inside it.
-
-**06 — partly.**
-- Reading: "Teal has a clock thought… Everyone is checking the time."
-- Intent: Lin faces the glass of the boss's office (his ladder is in her view) but turns to the open-plan clock to check the time.
-- Cause: missing cue. The shot only shows her looking at the open clock. The important fact, that she normally watches the boss's ladder, isn't shown, so 10 comes as a surprise and not a lesson.
-- Fix: in her resting pose, draw her sight cone clearly over the boss's ladder through the glass. When she checks the time, show the cone swinging away.
-
-**07 — reads.** The boss is back and checks his clock. Green's twitch lines confused the reader; they aren't in the intent and are cosmetic.
-
-**08 — misread.**
-- Reading: "Teal wanders the floor… Quiet routine."
-- Intent: at 3:20 Lin goes to the restroom, so nobody is facing the boss's clock.
-- Cause: missing cue. She has no bubble and no destination, and the restroom sign is a small glyph far away in the corner. This is the safe window for the boss-clock route, and it reads as background.
-- Fix: put a 🚻 bubble over Lin as she gets up, and make her sight cone disappear the moment she leaves.
-
-**09 — misread.**
-- Reading: "Nothing happens. Teal's chair is empty."
-- Intent: the boss turns to Lin's empty desk and wonders where she is (her face, ?).
-- Cause: missing cue. The boss's bubble isn't in the shot at all. Without it the setup for the crowd route ("he notices who isn't here") is lost.
-- Fix: show the bubble (Lin's face + ?), with the boss's cone pointed at her empty chair.
-
-**10 — reads.** "She saw." The yellow pointing hand inside the "!" works. The player's own bubble is cut off at the top of the screen.
-
-**11 — reads.** The reader saw the ladder right behind the boss's chair. Comedy note: "strains belief" is a real risk. Make it a deliberate gag: the boss buried in papers, or wearing headphones, while she works above his head.
-
-**12 — partly.**
-- Reading: "he doesn't react. Behind his head counts as hidden."
-- Intent: the clock hangs crooked and reads half an hour later than the HUD, while the boss works on.
-- Cause: missing cue. The size of the change isn't visible (same scale problem as 04).
-- Fix: the same tilted clock with a minute-hand sweep, plus a small ghost "+30" style dial next to it, drawn as a picture rather than text.
-
-**13 — partly.**
-- Reading: "He spotted the change, though she isn't at the scene."
-- Intent: the boss believes it's half an hour later.
-- Cause: the cause and the effect are in the wrong place again, because the "!" is on the clock. The reader took it as the boss discovering the tampering.
-- Fix: put the "!" on the boss with a late-time clock inside it, then a 🏠 thought.
-
-**14 — partly.**
-- Reading: "A sparkle sits on the boss's clock."
-- Intent: the boss waves goodbye and gets up to go home half an hour early.
-- Cause: missing cue. The boss is still seated with no wave, so he only seems to leave between 14 and 15.
-- Fix: show a 👋 bubble and a standing pose with his bag, under the crooked clock.
-
-**15 — reads.**
-
-**16 — reads.** "Setting his clock forward made him leave early." Clean.
-
-**17 — partly.**
-- Reading: "Teal and Green both have wave bubbles."
-- Intent: at 4:10 by the HUD (4:50 on the pushed clock) they go home.
-- Cause: the cause is too far from the effect. Nothing ties the waves to the pushed open-plan clock, which is why the reader asks in 20 what started it.
-- Fix: one beat before the waves, give both of them a clock-thought showing 4:50 (or a 🏠), aimed at the open-plan clock.
-
-**18 — misread.**
-- Reading: "The coworkers are gone and the boss walks out."
-- Intent: the boss turns to Kev's empty desk and wonders where he is.
-- Cause: missing cue. The boss sits still with no bubble. The key step of the crowd route ("he notices they're gone") isn't drawn.
-- Fix: show the boss's cone on Kev's empty chair, with a bubble of Kev's face + ?.
-
-**19 — partly.**
-- Reading: "the boss walks out across the floor."
-- Intent: he decides it's home time, waves, and follows them out.
-- Cause: missing cue. There's no wave and no sign of a decision.
-- Fix: a 👋 bubble, or a 🏠 thought, as he stands up.
-
-**20 — partly.**
-- Reading: "I can't see what the player did to start the coworkers leaving."
-- Intent: the crowd win, triggered by pushing the open-plan clock.
-- Cause: missing cue. The icon row starts with the coworkers and leaves out the clock, even though the drawn picture includes it.
-- Fix: start the row with the clock: 🕓 → Lin, Kev → 👋 → boss ? ! → 🚌.
-
-**21 — reads.** "Caught. Very clear."
-
-**22 — partly.**
-- Reading: "does he ride her bus? Did her own scheme work and she just dawdled?"
-- Intent: the boss did go home early, but you weren't at the stop.
-- Cause: missing cue. The guess is right but unsure, because nothing shows *why* she was late. This is the best joke in the set, and right now it lands as confusion.
-- Fix: keep the boss waving from the bus. Add her bursting out of the lobby door, and put a late clock (the HUD time) next to her face in the icon row.
-
-**23 — reads.** "She waited like a good employee and lost."
-
-**24 — misread.**
-- Reading: "It has the same icon row as 23, so I can't tell what separates the two."
-- Intent: you went to the stop, but the boss is still at his desk in the window, so you can't get on.
-- Cause: missing cue. The icon rows are identical, and nothing shows that the boss being in view is what blocks her.
-- Fix: a different row, e.g. her → 🚏 → boss in the window 👀 → 🚫 → 🚌💨. In the picture, have the boss's eyes on her and put a 🚫 on the bus door.
+Aside: the keyboard hints on the map ("do", "pretend", "restart", "mute", "vision", "pause") are text. That breaks the brief that the mission card is the only text in the game.
 
 <!-- /cold-read:pictures -->
 
-<!-- cold-read:replay {"verdict":"fixable","date":"2026-11-15","commit":"c36a533","hash":"fa6695a8ab6267c58bbd113c356e2e7180e84d07fb39614ff1c084cead706866","parts":{"card":"df9447296fa542448a9afb7fdfcaf51861a7d7528c08b72bd612fbc880fc6b6e","checks":"f0710f3789c237c132901ec89e8fe46c3a114af360d5efb05b20fc987a28c358","ways":"949edaca124b3ca31f7d636646f94c76bc736fd52bcf611aa154878a1cf22192","frames":"5fad25a2cc5b03805675ba257ab1da4b072dc34f1daea03d466e74533ea6f56f","prompts":"667b5b463b93916700d4d0057e9b03a51bc8a6e8c76023b597de4e97eb66e589"},"model":"default"} -->
+<!-- cold-read:replay {"verdict":"fixable","date":"2026-11-15","commit":"1909728","hash":"5ab7f867e4f003f0f468dd67954ba71fc5f4a4e759701766d20433be65f7c7ce","parts":{"card":"f5a03af78aedb7ba2b47726215e19a90462bcd10e7841831e65ce15545209405","checks":"9f28480fb7b8141174d5d5d6dc1c8afaf572d5e51a827284a65973fc304f9945","ways":"45fa0ebd454306476fe27b96961125c3154b77190b70b1131080152c243f0269","frames":"4aa9b4ca832fc218a0686bc6e0ea4624c55d0514a653f9d1074ef3ff8599c164","prompts":"667b5b463b93916700d4d0057e9b03a51bc8a6e8c76023b597de4e97eb66e589"},"model":"default"} -->
 ## replay: fixable
-Recorded 2026-11-15 at commit c36a533, by claude -p (model: default). Inputs fa6695a8ab62: the card, route-checks.js, premise.md's ways to win and lose, the replay strips, the stage's prompts.
+Recorded 2026-11-15 at commit 1909728, by claude -p (model: default). Inputs 5ab7f867e4f0: the card, route-checks.js, premise.md's ways to win and lose, the replay strips, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read-1 | reading.md | 129 s | $0.59 |
-| 1-read-2 | reading.md | 187 s | $0.86 |
-| 1-read-3 | reading.md | 149 s | $0.73 |
-| 2-compare | report.md | 104 s | $0.36 |
-| all | | 291 s (the steps add up to 569 s) | $2.54 |
+| 1-read-1 | reading.md | 154 s | $0.70 |
+| 1-read-2 | reading.md | 149 s | $0.70 |
+| 1-read-3 | reading.md | 142 s | $0.70 |
+| 1-read-4 | reading.md | 89 s | $0.42 |
+| 2-compare | report.md | 87 s | $0.37 |
+| all | | 241 s (the steps add up to 621 s) | $2.89 |
 
 ### 1-read-1: reading.md
 
 # Reading: Early Bus
 
-## Run 1: loss at 4:31
+**About the evidence:** None of the four captions files contains a "You used the thing here" line. So I can't place any player action. I can only go by where the player (red top, red ring) is standing in each picture.
 
-- 3:01: I'm at the middle desk in red. A coworker in olive on the right has a clock bubble. The boss's chair is empty and I can't see him anywhere.
-- 3:12: The woman in teal on the left has a clock bubble.
-- 3:19–3:20: The boss is at his chair, under a wall clock with a stepladder below it, with a clock bubble.
-- 3:25: The teal woman's seat is empty. The boss has a bubble with a person and a "?".
-- 3:30: The teal woman is at the restroom door.
-- 3:38: The olive coworker is at the coffee machine.
-- 3:43–3:55: The boss walks down to the lobby, stands near the front door, and is back by 3:59.
-- 4:25: The clock turns red.
-- 4:30: The bus pulls up. I have a sweaty grin.
-- 4:31: End picture: the boss at his desk, me at the window, the bus leaving. Icons: boss, clock, me, 😩, 🚌, 💨.
+## Run 1
 
-**Why it ended:** the bus left while the boss was still in.
+- 3:01: Player at their desk. Man in green has a clock bubble.
+- 3:11–3:12: Coworkers have clock bubbles. Player still at desk.
+- 3:20: Bald man in a tie walks in on the left side of the office.
+- 3:22: He's at the big desk in the corner office. A woman in teal walks past the player.
+- 3:25: Bald man's bubble shows a dark-haired person and "?". Teal woman is away near the restroom.
+- 3:30–3:55: Man in green gets coffee. Bald man gets coffee in the kitchen. Clock bubbles all round.
+- 3:59: Bald man stands under the office wall clock, which has a stepladder below it. His bubble shows a clock and a figure.
+- 4:02–4:25: Everyone back in place. The timer turns red.
+- 4:30: Bus pulls up. Player at desk with a grinning bubble.
+- 4:31: **Loss.** Picture: bald man at his desk, coat on the rack, player at the window as the bus leaves. Icons: bald man, clock, player, weary face, bus, puff of air.
 
-**What caused it:** I did nothing all loop. Staying put was the cause.
+**Why:** The player stayed at their desk and missed the bus. Nobody left early.
+**Cause:** The player didn't move. If they did something at the desk, I can't see what.
+**Might not be reactions:** Every bubble here, including the "?" at 3:25 and the stop at the ladder at 3:59. The player never left the desk, so these are part of everyone's routine.
 
-**Might not be about me:** the boss's person-"?" bubble came up just as the teal woman left her seat, so it's probably about her. All the clock bubbles show up on a fixed schedule.
+## Run 2
 
-## Run 2: loss at 4:31
+Identical to Run 1, frame for frame and time for time. **Loss**, same picture. I can't see any difference in what the player did. If something was used, it changed nothing visible.
 
-This run is the same as Run 1 frame for frame. The only differences are that the "pretend" key is lit the whole time and fast-forward is on. My character fidgets at the desk, like typing or shuffling papers.
+## Run 3
 
-**Why it ended:** the same missed bus, with the same end picture.
+- 3:01: Player has already left the desk and is walking left past the man in green.
+- 3:11–3:12: Player waiting at the bus stop outside. Clock bubbles inside.
+- 3:15: Bald man appears from the right at the bus stop with a "?".
+- 3:15: He gets an angry "!" burst and a red sight line to the player.
+- 3:16: **Loss.** Picture: bald man coming out of a glass door, pointing. Player blushing at the bus stop. Icons: player, flushed face, bald man, angry face.
 
-**What caused it:** again, I never left. Pretending changed nothing anyone reacted to, and no bubble or turned head pointed at me.
+**Why:** He saw the player at the bus stop.
+**Cause:** Going to the bus stop at 3:11, an hour early.
+**Might not be a reaction:** In Runs 1, 2 and 4 his office is empty at 3:01 and he walks in at 3:20. This looks like him arriving for the afternoon through the street door. He wasn't looking for the player; the player was simply in his path.
 
-**Might not be about me:** everything here matches Run 1, so none of it was a reaction to me.
+## Run 4
 
-## Run 3: loss at 3:31
+- 3:01–3:22: Same as Run 1. Player at desk.
+- 3:25: Player walking down the left side. Bald man's bubble shows the same dark-haired "?" as in Run 1.
+- 3:30: Player at the bus stop.
+- 3:31: Bald man's "?" bubble now shows a person with a brown bun, which looks like the player. His sight cone widens over the office.
+- 3:35: His office is empty and a red sight cone sweeps the office.
+- 3:39: He's in the lobby with a "?", then an angry "!" at the player.
+- 3:40: **Loss.** Same picture and icons as Run 3.
 
-- 3:01–3:20: Same as before, with me at my desk.
-- 3:25: I'm walking left, toward the boss's office. The boss shows his person-"?" bubble.
-- 3:30: I used the thing while standing on the stepladder at the boss's wall clock, right behind his chair. The "do" key is lit.
-- 3:30: The boss shows a "?", then his sight cone turns red toward me.
-- 3:30: The boss shows a "!" burst.
-- 3:31: End picture: me on the ladder with my hand on the clock, and the boss pointing at me, angry. Icons: boss, 👉, me, clock, 😠.
+**Why:** He came looking and found the player at the stop.
+**Cause:** Leaving the desk around 3:25. The 3:31 bubble suggests he noticed the empty desk.
+**Might not be a reaction:** The 3:25 "?" happens in every run, even with the player sitting down. It probably means the teal woman, who is away at that point. Only the changed face at 3:31 points to the player, and that icon is small.
 
-**Why it ended:** the boss caught me touching his clock.
+## Overall
 
-**What caused it:** I climbed his ladder and used the clock while he was sitting about a step away. From the pictures I can't tell whether the hands actually moved.
-
-**Might not be about me:** the 3:25 "?" happens in every run, so it isn't about me walking over. The boss is away from 3:43 to 3:58, and that may be the window to do this. A second clock with a ladder hangs on the open-office wall, and nobody touched it.
+No run was won. Three things are left unexplained: the ladders under both wall clocks, the bald man's stop at the clock at 3:59, and whatever the player used in Runs 1 and 2.
 
 ### 1-read-2: reading.md
 
-# Early Bus: cold read of runs 4–6
+# Early Bus: cold read
 
-## Run 4: LOSS
+Mission card: the bus leaves at 4:30 and the boss leaves at 4:50. "Nobody leaves before him." The only icon on the card is 🚌.
 
-- 3:01 I'm standing in the open office. A man in a green jacket has a clock bubble.
-- 3:03–3:04 I'm on the ladder under the boss's wall clock. The teal coworker shows "?", then "!" and points at me. No "used" mark here.
-- 3:06 Used something at the middle desk and sat down.
-- 3:16 Teal points at me again with a clock icon. A bald man in a suit comes in from the lobby with a "papers → computer" bubble. A paper stack lands on my desk and a red paper meter appears.
-- 3:19–3:38 I work at the desk and the meter drains to empty. The bald man sits under his clock checking it. Teal leaves toward the exit sign and comes back.
-- 3:43–3:59 The bald man walks to the lobby and comes back.
-- 4:30 The bus arrives while I'm still at my desk with a grimace bubble.
+---
 
-**Why it ended:** I wasn't at the bus stop at 4:30. The end picture shows the bus pulling away.
+## Run 5: loss at 3:31
 
-**Cause:** I sat at the desk all loop. The paper pile is the likely reason I was stuck there, but I can't tell if leaving was blocked or just not tried.
+- **3:01** The player (red top, ringed) sits at a middle desk. The glass corner office is empty and a coat hangs on the stand. The green-shirt coworker next to the player has a clock thought bubble.
+- **3:12** The teal coworker at the far-left desk also has a clock bubble.
+- **3:20** A bald man in a tie (the boss) walks in from the left.
+- **3:22** The boss is at his desk with a clock bubble. The teal coworker walks past the player.
+- **3:25** The player stands up by their desk and an "E" prompt shows. The boss's bubble is a face and "?".
+- **3:30** The player is on the stepladder under the corner-office wall clock, a few steps from the boss. A "?" appears over the player and a spiky clock "!" appears by the boss, followed by an angry "!".
+- **3:31** End picture: the boss angrily points at the player on the ladder.
 
-**Unclear:** The bald man walks in at about the same time in run 6, so his arrival is probably scheduled. Only the papers seem tied to teal's report. His lobby trip at 3:43 happens only in this run, and I can't say why.
+**Why it's a loss:** the boss caught the player at his clock.
+**Cause:** the player climbed the ladder and used the boss's clock while the boss was sitting right there.
+**Might not be a reaction:**
+- The boss's 3:25 face-"?" bubble shows up at 3:25 in all three runs, even with the player seated.
+- The teal coworker's walk ends near the restroom sign in run 6 too.
+- The green coworker's coffee trip happens in every run.
 
-## Run 5: WIN
+---
 
-- 3:01–3:19 I'm at the desk. The bald man arrives by 3:19.
-- 3:24–3:26 Used the thing three times on the boss's clock, with a ♪ bubble, while the bald man sits right under the ladder.
-- 3:30 I walk out to the lobby. The bald man shows "!".
-- 3:35–4:25 I wait at the bus stop.
-- 4:18 The bald man shows a waving bubble and he's gone by 4:25.
-- 4:30 I board the bus with a party bubble. A clock icon fills the first empty slot in the top bar.
+## Run 6: loss at 4:31
 
-**Why it ended:** He left before the bus came, which seems to be the point of the mission card.
+- **3:01–3:40** The player stays seated. The others follow the same routines as in run 5.
+- **3:50–3:55** The boss goes to the kitchen.
+- **3:59** The boss climbs the open-office clock ladder with a clock-and-wrench bubble.
+- **4:02** The boss is back at his desk.
+- **4:25** The HUD clock turns red. The player is walking left.
+- **4:26** The player is near the bottom-left exit. A bus appears on the right. The boss shows the face-"?" bubble.
+- **4:30** The player is back at their own desk with a sweaty-grin bubble. The boss stands in the open office and the bus is at the stop.
+- **4:31** End picture: the bus pulls away while the boss points angrily at the player, who is standing at the stop.
 
-**Cause:** Changing his clock.
+**Why it's a loss:** I can't tell. The end picture shows the player caught at the bus stop. The last in-game picture shows them back at their desk with the bus still waiting. Either they missed the bus or they were caught leaving, and the two pictures disagree.
+**Cause:** walking toward the exit and then turning back. There's no "used the thing" mark in this run.
+**Might not be a reaction:** the boss leaving his office at 4:26. It uses the same face-"?" bubble he shows at 3:25 every run, so it could be routine. The 3:59 clock-fixing happened with no player action at all.
 
-**Might not be a reaction:** His "!" at 3:30. He did nothing after it.
+---
 
-**Editor note:** I sat at the bus stop in plain view for an hour before he left and nothing happened. "Nobody leaves before him" doesn't seem to be checked until 4:30.
+## Run 7: loss at 4:31
 
-## Run 6: WIN
+- **3:04** The player is already on the boss's clock ladder and the office is empty. The teal coworker sees them: there's a red sight line, then a "?", then "!" with a hand pointing at the player.
+- **3:05–3:08** The teal coworker keeps switching between "?" and pointing "!". Nothing comes of it.
+- **3:09** The player uses the boss's wall clock.
+- **3:12** The player walks back past the green coworker.
+- **3:20** The player is at their desk. A paper stack appears on it, along with a paper meter in the top-right corner. Neither appeared in the other runs and I can't tell why. The boss arrives as usual.
+- **3:25** The boss shows the face-"?" bubble.
+- **3:35** The meter is empty and the paper is gone.
+- **3:55** The boss is in the kitchen.
+- **4:02** The boss is back at his desk.
+- **4:25** The HUD clock turns red. Everyone is still seated.
+- **4:31** End picture: the boss at his desk under the clock while the player watches the bus leave through the window, with a weary face.
 
-- 3:02 Used the clock above the green-jacket man's desk while he was in the kitchen, with a ♪ bubble.
-- 3:09 Green Jacket comes back and shows "!".
-- 3:12 Teal shows "?" at me on the boss's ladder.
-- 3:13–3:14 Used the boss's clock three times. Teal walks off toward the exit sign.
-- 3:18 The bald man arrives. He shows a bubble with teal's face and "?", because teal's seat is empty.
-- 3:19–3:20 I leave for the bus stop. The bald man shows "!".
-- He's still there at 4:20 and gone at 4:30. The bus comes and the end picture is identical to run 5.
-
-**Cause:** Changing the boss's clock.
-
-**Unclear:** The 3:02 clock change seems to do nothing; the ending is the same without it. Green Jacket's "!" could be about his own clock or about me. Teal's walk happens in every run.
+**Why it's a loss:** the player missed the bus.
+**Cause:** the player stayed at their desk past 4:30. The clock tampering had no visible effect: the boss's day matches run 6 beat for beat. I can't tell whether the change worked or what it was supposed to do.
+**Might not be a reaction:** the teal coworker's pointing "!" changed nothing. I can't link the paper stack to anything the player did.
 
 ### 1-read-3: reading.md
 
+# Early Bus: reading
+
+## Run 8: Win
+
+- 3:01: You stand by your desk. The man in the green jacket has a clock bubble.
+- 3:12: The woman in teal has a clock bubble.
+- 3:20: A bald man in a white shirt and tie walks in from the left. Both coworkers have clock bubbles.
+- 3:22: He sits at the desk in the corner office, with a clock bubble.
+- 3:25: You walk toward his office. He shows a bubble of a person with a "?".
+- 3:27, 3:28 and 3:30: You use the wall clock behind his chair three times. At 3:30 he shows a burst with a clock and a "!".
+- 3:31: You leave his office. He shows the person-and-"?" bubble again.
+- 3:36: You use your desk. I can't tell what that did.
+- 3:40 to 4:10: Everyone sits. Clock bubbles come and go.
+- 4:21: He puts on his coat and shows a waving hand.
+- 4:25: He goes out the bottom-left door. You're still at your desk.
+- 4:30: You're at the bus stop, with a party-popper bubble.
+
+**Why it ended:** You caught the bus after the boss had left.
+
+**What caused it:** Changing his clock, as far as I can see. He left at 4:21, but the card says 4:50. The end picture shows his clock and you on the bus, and you got a clock icon.
+
+**Might not be a reaction to you:**
+- The coworkers' clock bubbles were already up at 3:01, before you did anything.
+- The "?" bubbles may be about you being in his office, not about the clock.
+- The man in green going to the kitchen at 3:27 looks like part of his routine.
+
+## Run 9: Win
+
+- 3:03 to 3:07: You use the wall clock above the open office six times. The man in green goes to the kitchen meanwhile.
+- 3:11: The man in green shows a clock-"!" burst. You go to your desk.
+- 3:12: You use your desk, and the woman in teal shows a clock-"!" burst.
+- 3:25: The bald man is already at his desk. I didn't see him arrive.
+- 3:50: He's in the kitchen. Both coworkers show a bubble of a bald face and a grimace.
+- 3:56: He walks back with a coffee cup.
+- 3:59: He passes under the open-office clock and shows a clock-"!" burst.
+- 4:01: He goes back to his office.
+- 4:06: He leaves wearing his coat. Both coworkers wave and leave too.
+- 4:30: You're at the bus stop, cheering.
+
+**Why it ended:** You caught the bus after everyone was gone.
+
+**What caused it:** You changed the open-office clock, and the boss saw it on his coffee walk. This time the reward was a coffee-cup icon.
+
+**Might not be a reaction to you:** The grimace bubbles came up when the boss left his desk. They may be about him walking around, not about anything you did.
+
+## Run 10: Loss
+
+Up to 4:06 this run matches run 9 picture for picture. You changed the same clock the same number of times, and the boss, the man in green and the woman in teal all left at 4:06.
+
+- 4:06: Everyone else leaves. You stay at your desk.
+- 4:30: You're still at your desk, with a sweating-face bubble. The bus is at the stop.
+
+**Why it ended:** The bus left without you. The end picture shows the bus driving off and a flustered face.
+
+**What caused it:** You stayed at your desk. The office was empty for 24 minutes and you never walked to the stop.
+
+**Mismatch:** The end picture shows you running at the stop, but the 4:30 picture shows you sitting at your desk.
+
+### 1-read-4: reading.md
+
 # Early Bus: cold read
 
-## Run 7: WIN
-- 3:01: Teal woman and green-shirt man are at their desks. Green-shirt man has a clock thought bubble. The boss's office is empty.
-- 3:02–3:05: I use the wall clock above green-shirt man's desk four times, humming (🎵). Green-shirt man walks to the kitchen coffee machine. Afterwards a stepladder stands under that clock.
-- 3:09: I walk out through the lobby door. Green-shirt man, back at his desk, shows a big ❗.
-- 3:12: I'm at the bus stop and stay there for the rest of the loop.
-- 3:15–3:19: The bald boss comes out of the elevator and goes to his office.
-- 3:45: The boss walks through the lobby, close to me. No reaction from either of us.
-- 4:10: Both coworkers wave 👋. By 4:14 they're walking out.
-- 4:14: The boss shows a coworker face with ❓.
-- 4:17: The boss waves 👋 and leaves.
-- 4:30: The bus arrives. 🎉
+## Run 11: loss at 4:31
 
-**Why it ended:** I was at the stop when the bus came, and nobody was left in the office.
+- **3:01** I'm in the middle room under a wall clock on a stepladder. The guy in the green jacket has a clock thought bubble before I've done anything.
+- **3:03–3:06** I use the wall clock five times. I can't see the hands move at this size. Green Jacket walks to the kitchen coffee machine.
+- **3:12** I use something at the right end of the long desk and sit there. Green Jacket is back with a mug. The woman in teal gets a spiky clock-and-"!" burst.
+- **3:20** The boss (bald, tie) comes in from the left. Both coworkers have clock thoughts.
+- **3:30–3:40** The boss is at his desk with a clock thought.
+- **4:00** The boss stands in the doorway. Both coworkers show bald-head + 😬.
+- **4:02–4:22** The boss goes back to his desk. Everyone keeps having clock thoughts.
+- **4:27** The HUD clock turns red and the bus pulls up. The coworkers show bald-head + 😬 again.
+- **4:30** I'm still at the desk and show a 😬-ish bubble.
+- **4:31 end:** the boss sits at his desk, the wall clock shows about 4:30, and I watch the bus through the window. Icons: boss, clock, me, 😩, bus, 💨.
 
-**Cause:** Probably the four uses of the clock, which seem to make everyone leave about half an hour early. The pictures don't make that certain (see run 9).
+**Why it lost:** The bus left while I was at my desk and the boss was still in. I missed it.
 
-**Might not be about me:** The coffee walk, the 3:09 ❗ and the clock bubbles all happen the same way in every run. The 3:09 ❗ came while I was gone, so he may have reacted to the clock, or it may be his normal routine.
+**What caused it:** Staying seated through 4:30. I can't see that the five clock uses did anything. No hands visibly moved and nobody left early.
 
-## Run 8: LOSS
-- 3:02–3:05: I use the wall clock four times, the same as run 7.
-- 3:06: I use my own desk (middle top) and sit there holding a paper.
-- 3:09: Green-shirt man shows ❗.
-- 3:12: Teal woman shows ❗.
-- 3:15: The boss comes out of the elevator.
-- 3:30–4:11: Clock thought bubbles from all three. The boss walks through the lobby at 3:45.
-- 4:14: The coworkers leave. The boss shows a face with ❓.
-- 4:16: The boss heads out.
-- 4:30: I'm still at my desk with a worried bubble 😰, and the bus is at the stop.
+**Might not be a reaction to me:** The teal woman's 3:12 burst also happens in Run 12 at the same minute. The 4:27 😬 bubbles line up with the bus arriving, not with anything I did.
 
-**Ending picture:** The boss waves from the bus while I run after it. 💨
+## Run 12: loss at 3:16
 
-**Why it ended:** I wasn't at the stop. The boss caught my bus.
+- **3:01** Same start, and Green Jacket has the same clock thought.
+- **3:03–3:07** I use the wall clock six times. Green Jacket does his coffee trip.
+- **3:11** I'm in the grey lobby. A clock-"!" burst appears between the two coworkers, so I can't tell whose it is.
+- **3:12** I'm outside by the bus stop. The teal woman has the clock-"!" burst.
+- **3:15** The boss walks in from the right side of the street and shows "?". Then a red sight cone covers me and he shows "!" + 😠.
+- **3:16 end:** the boss points at me at the bus stop, and I'm 😳. Icons: me, 😳, boss, 😠.
 
-**Cause:** I sat at my desk and never got up, even after the boss left at 4:16. I can't tell if that was a choice or if something kept me there.
+**Why it lost:** The boss saw me outside before he'd left, which breaks "Nobody leaves before him."
 
-**Might not be about me:** Teal woman's ❗ at 3:12 happened while I sat in plain view. It also happens in run 9 while I'm outside, so it's probably not about me.
+**What caused it:** Walking out to the stop at 3:12, more than an hour before the bus, and standing where the boss could see me.
 
-## Run 9: LOSS
-- 3:02–3:04: I use the wall clock only three times.
-- 3:09: I'm in the lobby. Green-shirt man shows ❗.
-- 3:11–3:12: Green-shirt man walks away with a clock bubble, then teal woman shows ❗.
-- 3:19: The boss is already in his office. There's no elevator scene this time.
-- 3:55: The boss walks through the lobby.
-- 4:10: Nobody waves. This is later than in run 7.
-- 4:20: The coworkers wave 👋. By 4:25 they're leaving, and the clock turns red.
-- 4:26: The boss shows a face with ❓. The bus pulls in while I'm still at the stop.
-- 4:30: I'm back at my desk with a nervous grin 😬. The boss is walking out through the office. The bus is at the stop without me.
-
-**Ending picture:** The bus leaves without me. The boss looks out the window at a clock.
-
-**Why it ended:** I wasn't on the bus.
-
-**Cause:** I can't tell. The pictures don't show why I left the stop between 4:26 and 4:30. Because I used the clock one fewer time, everyone left about ten minutes later. That's the only difference from run 7 I can see, and it may be why the boss was still around at 4:30.
-
-**Might not be about me:** The 4:26 ❓ came right after the coworkers left, not when I moved.
+**Might not be a reaction to me:** The boss being outside at 3:15 looks like his normal routine. In Run 11 he comes back in from the left at about 3:20 without me doing anything. The 3:11–3:12 bursts happen in both runs, so I can't tell whether they're about the clock I tampered with.
 
 ### 2-compare: report.md
+
+I've read all three files and checked the run 6, 7, 11 and 12 pictures where the reader and the run log disagreed. Here's the report.
 
 Verdict: fixable
 
 ## Runs
 
-**Run 1 (do nothing → fail): explained.** The reader says the bus left while the boss was still in, and that they had stayed at their desk all loop. They also put the boss's person-"?" at 3:25 down to the teal woman's empty seat, which is correct.
+| Run | Real story (runs.md) | Mark |
+|---|---|---|
+| 1 | Do nothing → missed the bus | explained |
+| 2 | Normal day; the boss turns to Lin's empty desk while she's in the restroom → missed the bus | explained |
+| 3 | Waits at the stop from 3:00; the boss passes it on his way back from lunch → caught in the street | explained |
+| 4 | Leaves after the boss is back; he sees the empty chair and comes looking → caught in the street | explained |
+| 5 | Pushes the boss's clock too close to 3:30 → he turns round → caught on the stepladder | explained |
+| 6 | Leaves at 4:24; he sees the empty chair and is still looking at 4:30 → fails at the stop | **unexplained** |
+| 7 | Pushes the boss's clock while Lin watches; she tells on the player, who gets work, and he sets the clock right → missed the bus | **partly** |
+| 8 | Win via the boss's clock (+30) | explained |
+| 9 | Win via the open-plan clock (+60) | explained |
+| 10 | Route 2, but stays at the desk → too late for the bus | explained |
+| 11 | Open-plan clock only +50 → he shrugs → missed the bus | **partly** |
+| 12 | Route 2, then straight to the stop → caught in the street | explained (see note) |
 
-**Run 2 (normal day, pretending → fail): explained.** The reader says it was the same missed bus and that "pretending changed nothing anyone reacted to." That's right.
+Both wins are explained, so the game isn't broken. One loss is unexplained, two are partly explained, and several beats misled the reader about causes. That makes it fixable.
 
-**Run 3 (boss's clock pushed too near 3:30 → caught): partly.**
-- Reading: *"I climbed his ladder and used the clock while he was sitting about a step away."* The next window they plan to try is *"The boss is away from 3:43 to 3:58."*
-- What really happened: the boss turns round to his clock on a schedule, at 3:19, 3:30 and 3:38. The player was on the stepladder at 3:30, so he looked at the clock and found them there. Being close had nothing to do with it. Run 5 proves it: the player pushes the same clock at 3:24–3:26 while he sits *"right under the ladder"*, and nothing happens.
-- Visual cause: a missing cue. His 3:19 turn shows a clock bubble, but nothing shows that he turns *away* again or that another turn is coming. The reader also says *"I can't tell whether the hands actually moved,"* so the crooked, pushed clock doesn't read at this zoom.
-- Fix: draw his chair swiveling. Whenever he turns back to his desk, his vision cone should swing visibly away from the ladder. Before each scheduled turn (3:29, 3:37), give him a one-second "neck crick" wind-up so the player learns there's a rhythm to his turns.
+**Note on run 12:** runs.md says "his look at your empty chair". But at 3:15 the boss walks in from the street with a "?" (run-12/10.png). He can't have seen the chair, because he was still at lunch. What really happened is run 3's ending: he passes the stop on his way back. The reader's reading, "Walking out to the stop at 3:12… standing where the boss could see me", fits the pictures. The run's label is wrong, not the reader.
 
-**Run 4 (Lin sees the push → tells → work → fail): partly.**
-- Reading: *"I wasn't at the bus stop at 4:30 … The paper pile is the likely reason I was stuck there, but I can't tell if leaving was blocked or just not tried."* They also write: *"Only the papers seem tied to teal's report."*
-- What really happened: Lin caught the player before any push landed. That's why there's no "used" mark. So the boss's clock was never moved, and he was always going to be in at 4:30. The papers were the punishment for being told on, but the boss staying in is what lost the run. The reader also doesn't recognise the "bald man in a suit" as the boss.
-- Visual cause: cause and effect are far apart. Lin points at 3:04, but the papers don't land until 3:16, when the boss arrives. The papers also hide the real cause. The end card does show the boss at his desk, but the reader reads only "bus gone."
-- Fix: let Lin's report come out as a picture. At 3:16, show a bubble from her to the boss containing *ladder + player face + clock*. Then make the papers fly from his hand to the player's desk. On the end card, put a small "clock unchanged" icon (clock with a ✕) in the icon row.
+## Partly and unexplained runs
 
-**Run 5 (boss's clock +30 while Lin's away → win): explained.** The reader names the cause (*"Changing his clock"*) and the outcome (*"He left before the bus came"*). See beats A and B.
+### Run 6: unexplained
+- **Reading:** "I can't tell. The end picture shows the player caught at the bus stop. The last in-game picture shows them back at their desk with the bus still waiting… the two pictures disagree."
+- **What happened:** The player left at 4:24. At 4:26 the boss saw the empty chair (face-"?"), went looking, and brought the player back. At 4:30 the boss is in the open office next to Kev and the player is back at their desk (run-06/17.png). The end card then shows the player at the stop, with the bus leaving and the boss pointing from the lobby door (18.png).
+- **Visual cause:** Missing cue, plus an end picture that contradicts the last frame. The boss bringing the player back happens off-camera, between 4:26 and 4:30. So the end card shows a moment the player never sees, and the last real frame says the opposite.
+- **Fix:** Make the end card match the last frame. If being brought back is the rule, show the boss arriving at the stop at about 4:28 with "!" and a hand on the player's shoulder, then walking them in while the bus pulls in. Use that as the end picture (player at the desk, bus leaving through the window, boss standing over them). Otherwise, freeze on the player at the stop.
 
-**Run 6 (open-plan +10 sends Lin off early, boss's clock +30 → win): partly.**
-- Reading: *"The 3:02 clock change seems to do nothing; the ending is the same without it."* They also write: *"Teal's walk happens in every run."*
-- What really happened: the +10 is what made Lin read 3:22 at 3:12 and leave for the restroom eight minutes early. Without that, she'd have been at her desk watching the boss's ladder at 3:13 and would have told on the player, as in run 4. The reader got the boss's-clock half of the win and dismissed the half that made it possible.
-- Visual cause: a missing cue, plus a bubble that reads as a reaction. The 3:12 frame shows Lin's "?" with a dotted line to the player on the ladder. The reader took it as suspicion (*"Teal shows '?' at me"*). Her glance at the open-plan clock, which is what actually got her up, isn't shown at all.
-- Fix: at 3:12, have Lin turn to the open-plan clock and show a clock bubble with the *pushed* time and a 🚻 / "hurry" sweat drop. Then she leaves. Keep the suspicion "?" for when her cone actually lands on the player, and use a different shape for it (an eye bubble, say).
+### Run 7: partly
+- **Reading:** "The teal coworker keeps switching between '?' and pointing '!'. Nothing comes of it." Also: "A paper stack appears on it, along with a paper meter… I can't tell why." And: "The clock tampering had no visible effect."
+- **What happened:** Lin saw the player on the stepladder and told on them. When the boss got back at 3:20, he gave the player 20 minutes of work (the paper stack and meter) and set his clock right. That cancelled the scheme.
+- **Visual cause:** Cause and effect too far apart, and a missing cue. Lin points at 3:04, while the boss is out at lunch (run-07/03.png), so there is nobody to point to. The punishment appears 16 minutes later with no hand-over: in 14.png the boss is still walking in from the left, nowhere near the desk, and the paper is already there. The clock being set right is never shown.
+- **Fix:** When the boss walks in at 3:20, have Lin stand and point, with a bubble showing the player's face plus the clock. The boss walks to the player's desk and drops the paper stack, and his bubble shows paper plus the player's face. On his way back he climbs the stepladder and straightens the crooked clock (clock + wrench, as he does at 3:59 in run 6). Now each step has someone visibly doing it.
 
-**Run 7 (open-plan +40 → Lin and Kev leave → boss follows the herd → win): partly.**
-- Reading: *"Probably the four uses of the clock, which seem to make everyone leave about half an hour early."*
-- What really happened: the open-plan clock only moves Lin and Kev. The boss leaves because both desks are empty: 4:14 ❓ at Lin's desk, 4:16 at Kev's, 4:17 ❗ and out. The reader wrote down the 4:14 face-❓ and didn't connect it to his leaving. Their model says the boss reads the open-plan clock, which is wrong, and it will mislead them later.
-- Visual cause: an emoji standing in for a person. A small face-❓ doesn't read as "where is everyone?" Nothing visible links it to his decision to leave.
-- Fix: after he looks at the second empty desk, show a single bubble with *two empty chairs → 👋 → ❗*. Then have him grab his coat at speed. Give the herd route its own end-card icon (empty chairs) so it isn't confused with the clock route.
-
-**Run 8 (herd, but player at desk → blamed): explained.** The reader says *"I wasn't at the stop. The boss caught my bus,"* and that they sat at their desk. They are also right that Lin's 3:12 ❗ wasn't about them.
-
-**Run 9 (open-plan only +30 → they leave 4:21, boss too late → fail): unexplained.**
-- Reading: *"Cause: I can't tell. The pictures don't show why I left the stop between 4:26 and 4:30."* There's a hedged secondary guess: *"Because I used the clock one fewer time, everyone left about ten minutes later … it may be why the boss was still around."*
-- What really happened: the player stayed at the stop. With only +30, Lin and Kev left at 4:21, and the boss checked the empty desks at 4:26 and was still walking out at 4:30. You can't board while he's in. That's the "at the stop" loss.
-- Visual cause: a missing cue, made worse by frames that contradict each other. I checked the frames:
-  - 18.png (4:26) shows the player at the stop.
-  - 19.png (4:30) shows the player back at their desk with 😬 and the boss walking through the open office.
-  - The end card (20.png) puts the player at the stop and the boss *at his desk* in the window.
-  
-  So the 4:30 frame moves the player back to their desk (probably a reset) with no explanation. The card also shows the boss somewhere he wasn't. Nothing shows "you can't board while he's inside." The reader's right guess was buried under the confusion.
-- Fix: at 4:30, leave the player at the stop. When the bus doors open, the player looks over their shoulder at the office window and sees the boss in it (🙅 / 🚫🚌). Then the bus goes. On the end card, draw the boss *walking out*, coat half on, rather than at his desk. That shows "too late by a few minutes," which is the lesson of this run.
+### Run 11: partly
+- **Reading:** "I can't see that the five clock uses did anything. No hands visibly moved and nobody left early."
+- **What happened:** The push worked, but only +50. At 3:58 the boss read 4:48 under the open-plan clock and shrugged, so he stayed. The coworkers' bald-head + 😬 bubbles at 4:00 and 4:27 are them checking his coat and staying, which proves their clock was ahead.
+- **Visual cause:** Missing cue. The shrug falls between the 3:40 and 4:00 frames. The pushed clock's hands can't be read at play size. The reader also took the coworkers' 😬 as a reaction to the bus.
+- **Fix:** When anyone reads a clock, show the time it says in their bubble (for example, a clock face at 4:48). Make the shrug a clear bubble: clock + 🤷 + coat crossed out. A near miss then reads as "almost", not "nothing happened".
 
 ## Beats that misled the reader
 
-**A. Run 5, 3:30: the boss's ❗ written off as not a reaction.**
-- Reading: *"Might not be a reaction: His '!' at 3:30. He did nothing after it."*
-- What really happened: this is the payoff. He turns round, sees 4:00 on his clock and starts. He just doesn't act on it until 4:18.
-- Visual cause: cause and effect are far apart, about 48 minutes.
-- Fix: make the ❗ a bubble with a clock showing the pushed time and a sweat drop. After it, add a visible change in his routine, such as packing a briefcase or putting his coat on the chair back, so the rest of the loop shows that the start had an effect.
+1. **Run 6, 4:26: a real reaction read as routine.** Reading: "the boss leaving his office at 4:26. It uses the same face-'?' bubble he shows at 3:25 every run, so it could be routine." What happened: he saw the player's empty chair and went looking. Visual cause: a bubble that reads as routine, because the same face-"?" is used for "Where's Lin?" every day at 3:25, and the faces are tiny. Fix: give "where's my worker?" its own bubble, an empty chair + "?", tinted in the target's shirt colour (teal for Lin, red for the player).
 
-**B. Run 5, editor note: "nobody leaves before him" looks unenforced.**
-- Reading: *"I sat at the bus stop in plain view for an hour before he left and nothing happened."*
-- What really happened: the rule is enforced only at boarding (see run 9). Waiting at the stop is allowed.
-- Visual cause: a missing cue. The constraint never appears until it costs you the run, and even then it's hidden (run 9).
-- Fix: while the boss is still inside, have the boarding spot by the stop show a faint boss-face "🚫" ghost that disappears when he leaves. The player then learns the rule in every winning run.
+2. **Runs 4 and 8: the 3:25 "?" is ambiguous.** Run 8 reading: "The '?' bubbles may be about you being in his office." Run 4 reading: "It probably means the teal woman." It is about Lin every time; the reader guessed right once and wrong once. Visual cause: an emoji standing in for a person, since the dark-haired face could be Lin or the player at that size. Fix: same as beat 1, the empty chair in Lin's teal. Also turn the boss's sight cone to her desk at that moment.
 
-**C. Run 6, 3:12: Lin's "?" read as suspicion of the player, and her early walk read as routine.** Covered under run 6. Because the bubble looks like a reaction to the player, the reader missed the real reaction, which was to the clock.
+3. **Run 8, 3:31: a real reaction with its outcome missed.** The reader saw the second "?" but not what came of it. In fact the boss saw the empty chair, looked for the player, saw them on the phone and let it go. Visual cause: missing cue, because the phone cover isn't shown. Fix: when the boss's sight cone lands on the player, show a ☎️ bubble over the player and a ✔️ or nod over the boss.
 
-**D. Runs 6, 7, 8: Kev's ❗ on returning from coffee read as routine or ambiguous.**
-- Reading (run 7): *"The coffee walk, the 3:09 ❗ and the clock bubbles all happen the same way in every run."* Run 6 says *"could be about his own clock or about me."*
-- What really happened: Kev starts *only* when his clock has been pushed. He shows no ❗ in runs 1–5. It's the confirmation that the push worked.
-- Visual cause: a bubble that reads as a reaction to the player, made worse because the ❗ carries no content.
-- Fix: put the pushed clock face inside Kev's ❗ bubble (🕓❗) and have him look up at the wall clock, not toward the player.
+4. **Run 9, 3:50, and run 11, 4:00 and 4:27: the coworkers' coat check read as something else.** Run 9 reading: "The grimace bubbles… may be about him walking around." Run 11 reading: "The 4:27 😬 bubbles line up with the bus arriving." What happened: their clock said 4:50 or later, they looked at his coat, saw it still hanging and stayed. Visual cause: an emoji standing in for an object, since the bubble shows his face, not his coat, and the coat stand is far from them. Fix: put the coat in the bubble (coat + 😬), and turn their sight cones to the coat stand for that beat.
 
-**E. Run 4: the boss's 3:43 lobby trip called "only in this run."**
-- Reading: *"His lobby trip at 3:43 happens only in this run, and I can't say why."*
-- What really happened: it's part of his daily routine. It also happens in run 1, and in run 7 at 3:45. In run 3, the reader took this trip as the safe window for the clock.
-- Visual cause: a missing cue. The trip has no purpose the player can see, so it looks like a response to something.
-- Fix: give the trip a visible purpose, such as a mail bubble ✉️ on the way out and returning with a parcel. Then it reads as a scheduled errand.
+5. **Runs 11 and 12, 3:11–3:12: real reactions dismissed as routine.** Reading: "The teal woman's 3:12 burst also happens in Run 12 at the same minute," so the reader marked it "might not be a reaction". What happened: Kev and Lin started at the pushed clock in both runs, because the player pushed it in both. Visual cause: two runs with the same push look like proof of routine. In run 12 the reader also couldn't tell whose burst it was ("between the two coworkers"). Fix: anchor the bubble firmly over the person's head. Draw a short sight line from the person to the clock as they start, so it's clear the burst is about that clock.
 
-**F. Run 9 end card: the boss shown at his desk when he was walking out.** Covered under run 9. The end card contradicts the final frame, so the reader couldn't use it to work out the cause.
+6. **Runs 1–2, run 5 and run 8: the stepladders and pushed clocks are unreadable.** Reading: "Three things are left unexplained: the ladders under both wall clocks…" and "I can't see the hands move at this size." Visual cause: missing cue, because the crooked-clock tell is too small. Fix: after a push, the clock hangs visibly crooked with a small "+" tick mark per push. Draw its hands thicker than other decor.
+
+7. **Run 10, 4:30: a frame mismatch.** Reading: "The end picture shows you running at the stop, but the 4:30 picture shows you sitting at your desk." This didn't change the cause, but it's the same problem as run 6. Fix: show the player starting to run at 4:29, or draw the end card from the desk side.
 
 <!-- /cold-read:replay -->

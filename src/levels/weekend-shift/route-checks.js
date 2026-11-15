@@ -81,7 +81,7 @@ export default [
   {
     name: "the playtester's day: noodles, Lin's fish, the copier, Kev fixing it → fail: nobody wrote on the board",
     expect: { result: 'fail' },
-    play: play(['goto microwave pretend', 'interact', 'pretend until 4:35', 'goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 5:00'], (log, w) => {
+    play: play(['goto microwave pretend', 'interact', 'pretend until 4:38', 'goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 5:00'], (log, w) => {
       must(saw(log, 'kev:alerted'), 'Kev never went for the copier');
       must(w.roster === 'player', 'the board changed without you writing on it');
     }),

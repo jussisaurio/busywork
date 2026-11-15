@@ -3,11 +3,12 @@
 import { easeOutCubic, rrect } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, confetti } from '../../render/tableau.js';
-import { drawBigClock, drawStepladder, drawBus, drawExhaust, drawStopSign } from './painters.js';
+import { drawBigClock, drawStepladder, drawBus, drawExhaust, drawStopSign, drawCoatStand } from './painters.js';
+import { faceFor, HOME_AT } from './clocks.js';
 
 const START = 15 * 60; // the clock faces' day (cast.js START)
+const BUS_AT = 90; // 4:30, in game minutes (index.js day.meetingAt)
 const BOTTOM = TAB.y + TAB.h;
 const STONE = ['#c4bcad', '#a99f8e'];
 const SLAB = '#cfcbc1';
@@ -143,45 +144,45 @@ function sceneClock(ctx, game, t, e) {
   youOnTheBus(ctx, game, t, e, 500, 286, 250, 104);
 }
 
-// The herd win: under the crooked open-plan clock Lin and Kev go home with their backpacks, and the boss trails
-// after them past their empty chairs. You are in the door of the bus.
+// The herd win: under the crooked open-plan clock (the time it showed him) the boss, back from his coffee, heads
+// home in his coat, ❗ at the clock; his coat stand stands empty, and Lin and Kev follow him out with their backpacks.
+// You are in the door of the bus.
 function sceneHerd(ctx, game, t, e) {
-  const W = 300;
+  const W = 330;
   floorCarpet(ctx, TAB.x, TAB.y, W, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, W, 96);
-  clockAndLadder(ctx, 248, 26, 100, -0.34, 96, 56);
-  for (const [x, col] of [[330, [C.teal, C.tealDark]], [430, [C.olive, C.oliveDark]]]) {
-    ctx.save();
-    ctx.translate(x, 214);
-    ctx.scale(2.2, 2.2);
-    drawChair(ctx, 0, 0, -Math.PI / 2, col[0], col[1]);
-    ctx.restore();
-  }
+  const shown = game.world?.herdShown || HOME_AT;
+  clockAndLadder(ctx, 430, 26, shown, -0.34, 96, 56);
+  drawCoatStand(ctx, 212, 250, 110, false);
   const dx = walkIn(e, -40, 0, 2.6);
-  const walker = (id, x, head) => {
+  const walker = (id, x, head, pack) => {
     const p = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 7 + x });
     p.head = head;
-    backpack(ctx, x + dx, 292, 1.9);
+    if (pack) backpack(ctx, x + dx, 292, 1.9);
     drawPerson(ctx, game.level.looks[id], p, x + dx, 292);
   };
-  walker('boss', 250, -2.4); // looking back at the empty chairs
-  walker('kev', 350, 0.6);
-  walker('lin', 440, 1.0);
-  if (e > 0.6) bubble(ctx, ['👋'], 446 + dx, 230, e - 0.6);
+  walker('lin', 262, 0.2, true);
+  walker('kev', 346, 0.3, true);
+  walker('boss', 440, -1.2, false); // in his coat, a look up at the clock
+  if (e > 0.4) bubble(ctx, [faceFor(shown), '❗'], 476 + dx, 236, e - 0.4, 'alert');
   street(ctx, TAB.x + W + 14, TAB.w - W - 14, 64, 286);
   glassWall(ctx, TAB.x + W);
-  confetti(ctx, TAB.x + W + 20, TAB.w - W - 20, TAB.y, TAB.h, e, 22);
-  youOnTheBus(ctx, game, t, e, 528, 286, 230, 100);
+  confetti(ctx, TAB.x + W + 20, TAB.w - W - 20, TAB.y, TAB.h, e, 20);
+  youOnTheBus(ctx, game, t, e, 556, 286, 206, 96);
 }
 
-// The fail when you went out to the stop anyway: the bus pulls away without you, because through the office window
-// behind you the boss is still at his desk under his 4:30 clock, and nobody leaves before him.
-function sceneFailAtStop(ctx, game, t, e) {
+// The boss fetching you from the street: out of the lobby door in his shirtsleeves (through the window, his coat
+// still on its stand and his clock at the time it showed), pointing you back in. At 4:30 the bus pulls away without
+// you; earlier, the kerb is empty. Drawn from the day as it ended.
+function sceneFetched(ctx, game, t, e) {
+  const w = game.world || {};
+  const minute = game.clock?.minute ?? BUS_AT;
   street(ctx, TAB.x, TAB.w, 124, 280);
-  // the window, and the boss in it
-  const wx = 560;
+  glassDoor(ctx, 656, 80, 124);
+  // the window: his clock, his coat stand
+  const wx = 236;
   const wy = TAB.y + 12;
-  const ww = 176;
+  const ww = 150;
   const wh = 96;
   ctx.save();
   ctx.beginPath();
@@ -190,43 +191,40 @@ function sceneFailAtStop(ctx, game, t, e) {
   ctx.fillStyle = C.officeA;
   ctx.fillRect(wx, wy, ww, wh);
   ctx.fillStyle = C.wallFront;
-  ctx.fillRect(wx, wy, ww, 44);
-  drawBigClock(ctx, wx + 58, wy + 22, 16, 90, START, 0);
-  const b = figure(t, 1.5, Math.PI / 2, { pose: 'sit', arms: 'type', typing: true });
-  b.head = Math.PI / 2 + Math.sin(t * 1.3) * 0.1;
-  drawPerson(ctx, game.level.looks.boss, b, wx + 58, wy + 70);
-  ctx.fillStyle = C.walnutTop;
-  ctx.fillRect(wx + 20, wy + 76, 80, 20);
+  ctx.fillRect(wx, wy, ww, 50);
+  drawBigClock(ctx, wx + 46, wy + 25, 17, minute + (w.bossClock || 0), START, w.bossClock ? 0.3 : 0);
+  drawCoatStand(ctx, wx + 108, wy + wh - 6, 80, w.coat !== 'boss');
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.fillRect(wx + 130, wy, 8, wh);
-  ctx.fillRect(wx + 144, wy, 3, wh);
+  ctx.fillRect(wx + 70, wy, 7, wh);
+  ctx.fillRect(wx + 82, wy, 3, wh);
   ctx.restore();
   ctx.strokeStyle = C.glassFrame;
   ctx.lineWidth = 6;
   ctx.strokeRect(wx, wy, ww, wh);
-  // the bus pulls away to the left, empty
-  const len = 250;
-  const busY = 330;
-  const bx = TAB.x + 60 - e * 18 - e * e * 1.2;
-  drawStopSign(ctx, 430, 272, 150);
-  drawBus(ctx, bx, busY, len, 100, 0);
-  drawExhaust(ctx, bx + len + 2, busY - 14, t, 6);
-  // you at the stop: facing the bus, looking back at the window
-  const p = figure(t, 2.3, Math.PI, { arms: 'shrug', sweat: true });
-  p.head = 0.25 + Math.sin(t * 2) * 0.1;
-  drawPerson(ctx, game.level.looks.player, p, 545, 268);
-  bubble(ctx, ['😳'], 505, 196, e, 'thought');
+  drawStopSign(ctx, 470, 272, 150);
+  if (minute >= BUS_AT - 1) { // the bus, pulling away to the left, empty
+    const len = 230;
+    const busY = 332;
+    const bx = TAB.x + 10 - e * 18 - e * e * 1.2;
+    drawBus(ctx, bx, busY, len, 96, 0);
+    drawExhaust(ctx, bx + len + 2, busY - 14, t, 6);
+  }
+  // you, trudging back to the door, a look back over your shoulder
+  const p = figure(t, 2.3, 0, { pose: 'walk', moving: true, phase: t * 4, sweat: true });
+  p.head = Math.PI - 0.5 + Math.sin(t * 1.6) * 0.15;
+  drawPerson(ctx, game.level.looks.player, p, walkIn(e, 520, 566, 3), 270);
+  bubble(ctx, ['😳'], 556, 196, e, 'thought');
+  // the boss in the door, pointing
+  const b = figure(t, 2.4, Math.PI, { arms: 'point', angry: true, jacket: w.coat === 'boss' });
+  b.head = Math.PI - 0.15;
+  drawPerson(ctx, game.level.looks.boss, b, 700, 274);
+  bubble(ctx, ['😠'], 708, 192, e, 'alert');
 }
 
-const atTheStop = (game) => game.outcome?.why === 'stop'; // index.js meeting.verdict
-
-// The fail: 4:30 on the boss's untouched clock and he is still at his desk, so you are still in the office. Out of
-// the window your bus drives off.
+// The fail: 4:30 and the boss still at his desk in his shirtsleeves, his coat on its stand, under his clock (the
+// time it shows, crooked if you pushed it), so you are still in the office. Out of the window your bus drives off.
 function sceneFail(ctx, game, t, e) {
-  if (atTheStop(game)) {
-    sceneFailAtStop(ctx, game, t, e);
-    return;
-  }
+  const w = game.world || {};
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, TAB.w, 170);
   // the window: the street outside, the bus pulling away
@@ -258,9 +256,10 @@ function sceneFail(ctx, game, t, e) {
   ctx.fillStyle = 'rgba(255,255,255,0.35)';
   ctx.fillRect(wx + 20, wy + 10, 6, wh - 20);
   ctx.fillRect(wx + 32, wy + 10, 3, wh - 30);
-  // the boss's clock says 4:30, straight; he works on
-  clockAndLadder(ctx, 300, 30, 90, 0, 120, 60);
-  const b = figure(t, 2.2, Math.PI / 2, { pose: 'sit', arms: 'type', typing: true });
+  // his clock, his coat; he works on
+  drawBigClock(ctx, 300, TAB.y + 48, 30, BUS_AT + (w.bossClock || 0), START, w.bossClock ? 0.3 : 0);
+  drawCoatStand(ctx, 448, 306, 130, w.coat !== 'boss');
+  const b = figure(t, 2.2, Math.PI / 2, { pose: 'sit', arms: 'type', jacket: w.coat === 'boss' });
   b.head = Math.PI / 2 + Math.sin(t * 1.3) * 0.1;
   drawPerson(ctx, game.level.looks.boss, b, 300, 262);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -276,62 +275,64 @@ function sceneFail(ctx, game, t, e) {
   const p = figure(t, 2.4, -Math.PI / 2, { arms: 'bang', sweat: true });
   p.head = -Math.PI / 2 + Math.sin(t * 2) * 0.15;
   drawPerson(ctx, game.level.looks.player, p, 634, 262);
-  bubble(ctx, ['😳'], 660, 190, e, 'thought');
+  bubble(ctx, ['😩'], 660, 190, e, 'thought');
 }
 
-// Caught: you are up the stepladder at the clock; the boss is right below, pointing up at you.
+// Caught: you are up the stepladder at his clock (the time you pushed it to); the boss is right below, pointing up
+// at you. Caught out in the street instead: he fetches you (sceneFetched).
 function sceneCaught(ctx, game, t, e) {
+  if (game.caught?.reason === 'scene') {
+    sceneFetched(ctx, game, t, e);
+    return;
+  }
+  const w = game.world || {};
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, TAB.w, 120);
   const x = 420;
-  drawStepladder(ctx, x, 318, 118);
-  drawBigClock(ctx, x, TAB.y + 42, 32, 40, START, 0.22);
+  drawStepladder(ctx, x, 318, 92);
+  drawBigClock(ctx, x - 4, TAB.y + 29, 24, (game.clock?.minute ?? 25) + (w.bossClock || 0), START, w.bossClock ? 0.22 : 0);
   const p = figure(t, 2.1, -Math.PI / 2, { arms: 'reach', sweat: true });
   p.head = -Math.PI / 2 + 1.1 + Math.sin(t * 9) * 0.2; // looking down over his shoulder
-  drawPerson(ctx, game.level.looks.player, p, x, 192);
-  const b = figure(t, 2.6, Math.PI - 0.3, { arms: 'point', item: '👉', angry: true });
+  drawPerson(ctx, game.level.looks.player, p, x, 222);
+  const b = figure(t, 2.6, Math.PI - 0.3, { arms: 'point', angry: true, jacket: w.coat === 'boss' });
   b.head = Math.PI - 0.6;
   const jab = Math.max(0, Math.sin(t * 5)) * 3;
   drawPerson(ctx, game.level.looks.boss, b, 610 - jab, 290);
   bubble(ctx, ['😠'], 616, 210, e, 'alert');
 }
 
-// Blamed: the boss went home and caught your bus; he waves from its window as it pulls away. You come running out of
-// the lobby door too late.
+// Blamed: the boss went home, and the bus with him; the stop is empty and the bus pulls away. You come running out
+// of the lobby door too late.
 function sceneBlamed(ctx, game, t, e) {
   street(ctx, TAB.x, TAB.w, 92, 280);
   glassDoor(ctx, 660, 76, 92);
   const len = 270;
   const h = 104;
   const busY = 330;
-  const bx = 250 - easeOutCubic(e / 4) * 90 - e * 6;
-  drawStopSign(ctx, 250 + len * 0.72, 272, 150);
+  const bx = 230 - easeOutCubic(e / 4) * 90 - e * 6;
+  drawStopSign(ctx, 520, 272, 150);
   drawBus(ctx, bx, busY, len, h, 0);
   drawExhaust(ctx, bx + len + 2, busY - 14, t, 6);
-  // the boss in the first passenger window
-  const top = busY - h;
-  const w0 = bx + h * 0.82;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(w0, top + h * 0.16, 52, h * 0.34);
-  ctx.clip();
-  const b = figure(t, 1.6, Math.PI / 2, { arms: 'cheer', smug: true });
-  drawPerson(ctx, game.level.looks.boss, b, w0 + 26, top + h * 0.5 + 16);
-  ctx.restore();
-  bubble(ctx, ['👋'], w0 + 26, top - 16, e);
   // you, out of the door, running after it
   const p = figure(t, 2.3, Math.PI - 0.15, { pose: 'walk', moving: true, phase: t * 13, arms: 'reach', sweat: true });
-  drawPerson(ctx, game.level.looks.player, p, walkIn(e, 700, 600, 1.2), 262);
+  const px = walkIn(e, 700, 600, 1.2);
+  drawPerson(ctx, game.level.looks.player, p, px, 262);
+  if (e > 1) bubble(ctx, ['😳'], px + 10, 190, e - 1, 'thought');
 }
 
 export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes?.includes?.('herd') ? 'herd' : 'clock') : o?.result ?? 'fail'),
+  kindOf: (o) => {
+    if (o?.result === 'win') return o.routes?.includes?.('herd') ? 'herd' : 'clock';
+    if (o?.result === 'fail' && o.why === 'stop') return 'stop'; // index.js meeting.verdict: at the stop, he still in
+    return o?.result ?? 'fail';
+  },
   scenes: {
     clock: { win: true, icons: ['🕐', '@boss', '👋', '🚌', '@player'], draw: sceneClock },
-    herd: { win: true, icons: ['@lin', '@kev', '👋', '@boss', '❓', '❗', '🚌'], draw: sceneHerd },
+    herd: { win: true, icons: ['@lin', '@kev', '@boss', '🕔', '❗', '🚌', '@player'], draw: sceneHerd },
     fail: { win: false, icons: ['@boss', '🕐', '@player', '😩', '🚌', '💨'], draw: sceneFail },
-    caught: { win: false, icons: ['@boss', '👉', '@player', '🕐', '😠'], draw: sceneCaught },
-    blamed: { win: false, icons: ['@boss', '👋', '🚌', '💨', '@player', '😳'], draw: sceneBlamed },
+    stop: { win: false, icons: ['🚌', '💨', '@player', '😳', '@boss', '😠'], draw: sceneFetched },
+    // the stepladder or the street (sceneCaught): either way you, then him
+    caught: { win: false, icons: ['@player', '😳', '@boss', '😠'], draw: sceneCaught },
+    blamed: { win: false, icons: ['🚌', '💨', '@player', '😳'], draw: sceneBlamed },
   },
 };
-

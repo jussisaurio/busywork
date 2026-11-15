@@ -14,18 +14,24 @@
 //
 // Level data (both optional):
 //   interactions[verb].noise   { radius, at?, npcs?, ...timing }: the action makes a noise when it is done
-//                              (play/interactions.js), at the level spot `at`, or else where it was aimed (the
-//                              target's centre; you, for 'self')
-//   noises     { [eventName]: { at, radius, npcs?, ...timing } }: whenever that event fires, a noise at the level
-//              spot `at` (e.g. { 'door:bang': { at: 'door', radius: 8 } }). Not 'noise' or 'npc:heard' themselves.
+//                              (play/interactions.js), at `at`, or else where it was aimed (the target's centre;
+//                              you, for 'self')
+//   noises     { [eventName]: { at, radius, npcs?, ...timing } }: whenever that event fires, a noise at `at`
+//              (e.g. { 'door:bang': { at: 'door', radius: 8 } }). Not 'noise' or 'npc:heard' themselves.
+// at: a level spot's name (its tile's centre), or a point { x, y } in tile units anywhere on the map, a tile nobody
+//     can stand on too: a phone on a desk rings from the phone ({ x: 1.44, y: 6.47 }; a tile's centre is x + 0.5).
 // Timing (all optional; s are sim seconds, like holdFor's, so fast-forward speeds them up with the clock):
 //   delay      s from the trigger to the sound (a microwave's ding): the noise waits, then sounds where it was set
 //   every      s between repeats after the first sound (a copier's beeping), for as long as `while` holds
 //   while(w)   (world) -> bool, asked at every sound, the first one too: false drops the noise, now and for good. A
 //              delayed noise with it is cancelled if the world changes meanwhile; without it a repeat goes all day
 //   turn       s heads stay turned (default TURN_TIME)
+// Show: a head that turns to a noise shows its swing (core/fx.js turned; render only), whether or not the noise does.
 // Show (optional): ripple   true or { color }: rings spread from the noise to its earshot each time it sounds
-//                           (core/fx.js ripple; render only, game.fx)
+//                           (core/fx.js ripple; render only, game.fx). They start on the machine that makes it: a
+//                           noise `at` a point starts there; one `at` a spot named after an interactable (spot
+//                           'copier', the place you stand at the copier) ripples from that interactable's tile;
+//                           heads still turn to the spot
 //                  sfx      a recipe name in audio/sfx.js (e.g. 'machineBeep'): audio plays it at the noise each
 //                           time it sounds (the 'noise' event carries it)
 // A waiting or repeating noise belongs to the loop: a new loop (createNpcs) drops it.
@@ -36,9 +42,9 @@
 // waiting and repeating noises, per game in `pending`.
 import { GLANCE_ANGLE, GLANCE_TURN_TIME } from '../../config.js';
 import { angleDiff } from '../../core/vision.js';
-import { spotPos, inZone } from '../../game/perception.js';
+import { spotPos, inZone, viewerOf } from '../../game/perception.js';
 import { holdFor } from '../override.js';
-import { ripple as showRipple } from '../../core/fx.js';
+import { ripple as showRipple, turned as showTurn } from '../../core/fx.js';
 
 // --- Tunables ------------------------------------------------------------------
 const TURN_TIME = 1.5; // s an NPC faces a noise
@@ -47,9 +53,10 @@ const HEAD_SPEED = GLANCE_ANGLE[1] / GLANCE_TURN_TIME; // rad/s: as quick as a g
 
 // Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME). `ripple`: show it;
 // `sfx`: the sound audio plays for it.
-export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, sfx }) {
+// `from`: { x, y } where the ripple starts (default the noise itself).
+export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, sfx, from }) {
   game.events.emit('noise', sfx ? { x, y, radius, sfx } : { x, y, radius });
-  if (ripple && game.fx) showRipple(game, x, y, radius, ripple === true ? {} : ripple);
+  if (ripple && game.fx) showRipple(game, from?.x ?? x, from?.y ?? y, radius, ripple === true ? {} : ripple);
   const auth = game.level.roles?.authority;
   for (const npc of game.npcs) {
     if (npcs && !npcs.includes(npc.id)) continue;
@@ -57,6 +64,7 @@ export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, 
     if (Math.hypot(npc.x - x, npc.y - y) > radius) continue;
     if (auth?.deafIn && npc.id === auth.id && inZone(game, auth.deafIn, npc.x, npc.y)) continue;
     const head = !!npc.override; // the mode is fixed when he hears it
+    if (!npc._heard && game.fx) showTurn(game, npc.id, viewerOf(npc).dir, x, y); // the swing shows (render only)
     npc._heard = { x, y, t: turn, head };
     if (!head) holdFor(npc, turn);
     game.events.emit('npc:heard', { id: npc.id });
@@ -67,8 +75,13 @@ export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, 
 export function actionNoise(game, row, x, y) {
   const n = row?.noise;
   if (!n) return;
-  const p = n.at ? spotPos(game, n.at) : { x, y };
+  const p = n.at ? noiseAt(game, n.at) : { x, y };
   setNoise(game, n, p.x, p.y);
+}
+
+// Where a noise's `at` is (tiles): a spot's centre, or the point itself.
+function noiseAt(game, at) {
+  return typeof at === 'string' ? spotPos(game, at) : { x: at.x, y: at.y };
 }
 
 // A level's noise (an action row's, or level.noises') set off at (x, y): now, or later and again (`delay`, `every`).
@@ -83,8 +96,27 @@ export function setNoise(game, n, x, y) {
 }
 function sound(game, n, x, y) {
   if (n.while && !n.while(game.world)) return false;
-  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple, sfx: n.sfx });
+  const from = n.ripple && typeof n.at === 'string' ? machineAt(game, n.at, x, y) : null;
+  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple, sfx: n.sfx, from });
   return true;
+}
+
+// The machine a noise's spot is named after: the nearest interactable of that type (or id) within MACHINE_REACH
+// tiles of (x, y), as { x, y } its tile's centre; null if none.
+const MACHINE_REACH = 1.6;
+function machineAt(game, at, x, y) {
+  if (!at) return null;
+  let best = null;
+  let bd = MACHINE_REACH + 1e-9;
+  for (const it of game.map.interactables || []) {
+    if (it.type !== at && it.id !== at) continue;
+    const d = Math.hypot(it.cx - x, it.cy - y);
+    if (d < bd) {
+      bd = d;
+      best = it;
+    }
+  }
+  return best && { x: best.cx, y: best.cy };
 }
 
 // Every step of the day, before the NPCs move (npcs.js updateNpcs): the waiting noises count down and sound, in
@@ -115,13 +147,13 @@ export function listenForNoises(game) {
   if (!names) listening.set(game, (names = new Set()));
   for (const [name, n] of Object.entries(noises)) {
     if (name === 'noise' || name === 'npc:heard') throw new Error(`level.noises: '${name}' would make a noise forever`);
-    spotPos(game, n.at);
+    noiseAt(game, n.at);
     if (names.has(name)) continue;
     names.add(name);
     game.events.on(name, () => {
       const cur = game.phase === 'day' ? game.level.noises?.[name] : null;
       if (!cur) return;
-      const p = spotPos(game, cur.at);
+      const p = noiseAt(game, cur.at);
       setNoise(game, cur, p.x, p.y);
     });
   }

@@ -11,7 +11,7 @@ import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { drawBoard, drawEmptyPlace } from './props.js';
+import { drawBoard, drawEmptyPlace, scribbleOf } from './props.js';
 
 const SOUTH = Math.PI / 2;
 const WALL_H = 112;
@@ -182,10 +182,12 @@ function sceneFail(ctx, game, t, e) {
   bubble(ctx, ['😩'], DESK_X, BUBBLE_Y, e, 'speech', 1.3);
 }
 
-// Caught: you at the desk, and the boss, in on his Saturday to make sure, at the board pointing at you.
+// Caught: you at the desk, and the boss, in on his Saturday to make sure, at the board pointing at you. Caught
+// writing, the board still has the face you were halfway through drawing over yours.
 function sceneCaught(ctx, game, t, e) {
   room(ctx, t);
-  board(ctx, looks(game).player, t);
+  const sc = scribbleOf(game);
+  board(ctx, looks(game).player, t, sc ? { scribble: sc, tray: false } : {});
   workDesk(ctx, looks(game).player, DESK_X, DESK_Y, t, { seat: SEAT.player, sweat: true });
   const b = person(t);
   b.dir = -0.12;
@@ -298,8 +300,8 @@ function kindOf(o) {
 export const END_SCENES = {
   kindOf,
   scenes: {
-    winBoss: { win: true, icons: ['✏️', '@boss', '🏖️'], draw: sceneWin },
-    winKev: { win: true, icons: ['✏️', '@kev', '🏖️'], draw: sceneWin },
+    winBoss: { win: true, icons: ['✏️', '@boss', '@player', '🏖️'], draw: sceneWin }, // his Saturday; your weekend
+    winKev: { win: true, icons: ['✏️', '@kev', '@player', '🏖️'], draw: sceneWin },
     fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
     caught: { win: false, icons: ['✏️', '😠', '@player'], draw: sceneCaught },
     blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },

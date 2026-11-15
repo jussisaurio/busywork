@@ -33,27 +33,27 @@
   },
   {
    "cmds": [
-    "goto meeting_room",
+    "goto dave_desk",
     "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
-    "7e5aedfe099f47f9",
-    "63fc70e5e1ec6c32",
-    "42db18af4332a2a1"
+    "df57132409775da6",
+    "49cfb09298d414ab",
+    "513ec7dab72866fa"
    ]
   },
   {
    "cmds": [
     "pretend until 2:45",
     "interact",
-    "pretend until 3:00"
+    "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
     "960ffadec2d00d0a",
     "5be5d5fe94311787",
-    "4f9103079d99201e",
+    "af2c44214a63d2ab",
     "1864f5097578328c"
    ]
   },
@@ -73,7 +73,7 @@
    ],
    "summary": "caught",
    "digests": [
-    "6d793014b4ea7eec",
+    "7e8f8003b780a288",
     "76dae614a57ee9bd"
    ]
   },
@@ -107,20 +107,8 @@
     "24c64ce01966c403",
     "760aaced2f68b8ef",
     "0a0292a444027942",
-    "f44975d3496b3250",
+    "64f47ca83a2efd53",
     "76dae614a57ee9bd"
-   ]
-  },
-  {
-   "cmds": [
-    "goto auditor_desk pretend",
-    "wait until 3:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "f38dcf483491b1ef",
-    "c02ea5734e7491ea",
-    "38581938a4428c53"
    ]
   },
   {
@@ -141,25 +129,7 @@
   },
   {
    "cmds": [
-    "goto my_seat",
-    "interact",
-    "interact",
-    "goto auditor_desk",
-    "wait until 3:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "599d9c8f9aeac2f9",
-    "263d53a6f95f68c5",
-    "9dfdb484087dcafc",
-    "748ab5c202455dae",
-    "91c3b572db23acc7",
-    "7c123acec8f668e2"
-   ]
-  },
-  {
-   "cmds": [
-    "put dave_desk",
+    "goto my_seat pretend",
     "interact",
     "goto meeting_room",
     "interact",
@@ -167,55 +137,49 @@
    ],
    "summary": "caught",
    "digests": [
-    "905617c26a632763",
-    "c6fd5910337b49a2",
-    "15cd14dc8e569828",
-    "8371778006b1eab9",
-    "f2c39b20df7eaeb6",
+    "24c64ce01966c403",
+    "760aaced2f68b8ef",
+    "a9b9130d73874f71",
+    "0321b051829eafa8",
+    "37f30962cfff42ea",
     "51268dc2823b280b"
    ]
   },
   {
    "cmds": [
-    "goto my_seat pretend",
+    "goto my_seat",
     "interact",
+    "put dave_desk pretend",
+    "interact",
+    "sit pretend",
     "goto dave_desk pretend",
-    "interact",
-    "interact",
-    "goto my_seat pretend",
-    "interact",
-    "goto meeting_seat pretend",
-    "wait until 3:00"
+    "pretend until 3:00"
    ],
    "summary": "caught",
    "digests": [
-    "24c64ce01966c403",
-    "760aaced2f68b8ef",
-    "7f6476507a4a5bb8",
-    "d6f37c6b49589ce1",
-    "98f4aa3b6a3ff385",
-    "73547c481daa79c0",
-    "3e596a9b16369e7c",
-    "5a9aa9a4bca17678",
-    "f16a0e6efafbf075",
-    "89adfa485fe79a84"
+    "599d9c8f9aeac2f9",
+    "263d53a6f95f68c5",
+    "1500b83f77f86a0d",
+    "29509c710e76daf4",
+    "2273fdd1727f1b96",
+    "236ae24372d339d2",
+    "92c28a260b2116d7",
+    "4c1856b2c8ff4b55"
    ]
   },
   {
    "cmds": [
     "pretend until 2:44",
     "interact",
-    "goto dave_desk",
-    "interact",
+    "put dave_desk",
     "wait until 3:00"
    ],
    "summary": "blamed audit",
    "digests": [
     "d89b6131667eb697",
     "f84dc709747c0933",
-    "33404cee16f47b90",
-    "51060bfbab0885dc",
-    "bd350bf5a5c6c5ce",
+    "75ff420e52fe33b8",
+    "cf368ac3d637ffa8",
     "abb5692ce870a3c5"
    ]
   },
@@ -225,7 +189,7 @@
     "interact",
     "goto dave_desk",
     "interact",
-    "pretend until 3:00"
+    "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
@@ -233,16 +197,69 @@
     "5be5d5fe94311787",
     "1063baa170197f23",
     "5c9aacc859391257",
-    "99554852f5d4094d",
-    "c6d9d7cf82866921"
+    "bda853425bfc55bf",
+    "47d3b1f83ad71e93"
+   ]
+  },
+  {
+   "cmds": [
+    "goto my_seat pretend",
+    "interact",
+    "put dave_desk pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "24c64ce01966c403",
+    "760aaced2f68b8ef",
+    "930a123fc22117c9",
+    "98f4aa3b6a3ff385",
+    "6a89d49641b05c40",
+    "50b3d1feab012909",
+    "f8ebedbe757ffa46"
    ]
   },
   {
    "cmds": [
     "pretend until 2:44",
     "interact",
-    "goto dave_desk",
+    "put dave_desk",
+    "pretend until 3:00"
+   ],
+   "summary": "blamed audit",
+   "digests": [
+    "d89b6131667eb697",
+    "f84dc709747c0933",
+    "75ff420e52fe33b8",
+    "42c8315ed2c39d4a",
+    "1313820ae09139a0"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
     "interact",
+    "put dave_desk",
+    "goto meeting_seat",
+    "wait until 3:00"
+   ],
+   "summary": "win audit",
+   "digests": [
+    "d89b6131667eb697",
+    "f84dc709747c0933",
+    "75ff420e52fe33b8",
+    "87a9e69d0ee0df29",
+    "408586b82575b920",
+    "2f455e552b730221"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 2:44",
+    "interact",
+    "put dave_desk",
     "interact",
     "wait until 3:00"
    ],
@@ -250,8 +267,7 @@
    "digests": [
     "d89b6131667eb697",
     "f84dc709747c0933",
-    "33404cee16f47b90",
-    "51060bfbab0885dc",
+    "75ff420e52fe33b8",
     "4f8560fcbb4b0f73",
     "6b5ad0e96c141178",
     "d5c425182cc098a0"
@@ -259,7 +275,7 @@
   },
   {
    "cmds": [
-    "interact",
+    "goto my_seat pretend",
     "interact",
     "goto meeting_room",
     "interact",
@@ -267,68 +283,19 @@
    ],
    "summary": "caught",
    "digests": [
-    "905617c26a632763",
-    "c6fd5910337b49a2",
-    "15cd14dc8e569828",
-    "8371778006b1eab9",
-    "7fd6b6e1b2a103d8",
-    "39bfe4cf6d2cd901"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 2:43",
-    "interact",
-    "goto dave_desk pretend",
-    "interact",
-    "pretend until 3:00"
-   ],
-   "summary": "blamed audit",
-   "digests": [
-    "ec7daade2ec02aa7",
-    "70d68192c307d451",
-    "17bb72382959af34",
-    "9002b382ccedc53a",
-    "a96e1639853cc1bf",
-    "937f7babefe70be9"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 2:43",
-    "interact",
-    "goto dave_desk pretend",
-    "goto dave_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto dave_desk pretend",
-    "interact",
-    "wait until 2:54",
-    "wait until 3:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "ec7daade2ec02aa7",
-    "70d68192c307d451",
-    "17bb72382959af34",
-    "8abc6d5bb50dcb79",
-    "5454d93b778c984a",
-    "ab72bab0ad78c30d",
-    "4e3554d44c01ba28",
-    "0474395c10c13e33",
-    "36caa950486b6256",
-    "af2253b295d6b44b",
-    "8d6bd8ad9b61fb98",
-    "81aeff4531dfeb22"
+    "24c64ce01966c403",
+    "760aaced2f68b8ef",
+    "a9b9130d73874f71",
+    "0321b051829eafa8",
+    "59465e74476c9b69",
+    "66da36ff373cadf4"
    ]
   },
   {
    "cmds": [
     "pretend until 2:44",
     "interact",
-    "goto dave_desk",
-    "interact",
+    "put dave_desk",
     "interact",
     "goto meeting_seat",
     "interact",
@@ -338,8 +305,7 @@
    "digests": [
     "d89b6131667eb697",
     "f84dc709747c0933",
-    "33404cee16f47b90",
-    "51060bfbab0885dc",
+    "75ff420e52fe33b8",
     "4f8560fcbb4b0f73",
     "39a977c2f03b379b",
     "22c686e43dc76fed",
@@ -351,110 +317,100 @@
    "cmds": [
     "pretend until 2:44",
     "interact",
-    "goto dave_desk",
+    "put dave_desk",
+    "wait 2s",
     "interact",
-    "goto meeting_seat",
-    "wait until 3:00"
-   ],
-   "summary": "win audit",
-   "digests": [
-    "d89b6131667eb697",
-    "f84dc709747c0933",
-    "33404cee16f47b90",
-    "51060bfbab0885dc",
-    "87a9e69d0ee0df29",
-    "408586b82575b920",
-    "2f455e552b730221"
-   ]
-  },
-  {
-   "cmds": [
-    "goto my_seat pretend",
-    "interact",
-    "pretend 1s",
-    "goto dave_desk pretend",
-    "interact",
-    "interact",
-    "goto my_seat pretend",
-    "interact",
-    "goto meeting_seat pretend",
-    "wait until 3:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "24c64ce01966c403",
-    "760aaced2f68b8ef",
-    "d4bb7143d0eec079",
-    "79c6196c7f0a3775",
-    "e965f09a623131e2",
-    "ae722dd704a50713",
-    "bcdff0590a61df39",
-    "45564157ad7898c9",
-    "9d50f884482572f3",
-    "ee3d46585865b4e2",
-    "08d5710a1eb7f188"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 2:44",
-    "interact",
-    "interact",
-    "goto meeting_seat",
     "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
     "d89b6131667eb697",
     "f84dc709747c0933",
-    "f928505e0a5400e0",
-    "be8a723b5f24ffd9",
-    "c7a75e96b1c31d78",
-    "376e239d09150113"
+    "75ff420e52fe33b8",
+    "27d97504032a4165",
+    "9271f6839d2cb152",
+    "7830a152c10d979c",
+    "44c3df5bac5afd4a"
    ]
   },
   {
    "cmds": [
     "goto my_seat pretend",
     "interact",
-    "goto dave_desk pretend",
+    "put dave_desk pretend",
     "interact",
-    "interact",
-    "goto my_seat pretend",
-    "interact",
+    "sit pretend",
     "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
     "24c64ce01966c403",
     "760aaced2f68b8ef",
-    "7f6476507a4a5bb8",
-    "d6f37c6b49589ce1",
+    "930a123fc22117c9",
     "98f4aa3b6a3ff385",
-    "73547c481daa79c0",
-    "3e596a9b16369e7c",
-    "a214c2f98cce6a62",
+    "6a89d49641b05c40",
+    "9f61c9be41110ad9",
     "9e64cdf6e79d44dd"
    ]
   },
   {
    "cmds": [
-    "put player_desk pretend",
+    "wait until 2:43",
+    "interact",
+    "interact",
+    "wait until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2b9b37836f1c29cb",
+    "c3a6dcc17fb498ca",
+    "85e27afb880e2f54",
+    "6bf84a7a4a9502bb",
+    "617b3729020c13c3"
+   ]
+  },
+  {
+   "cmds": [
     "goto my_seat",
     "interact",
     "put dave_desk pretend",
-    "goto auditor_desk",
+    "interact",
+    "sit pretend",
+    "interact",
+    "goto meeting_room",
+    "interact",
+    "pretend until 3:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "599d9c8f9aeac2f9",
+    "263d53a6f95f68c5",
+    "1500b83f77f86a0d",
+    "29509c710e76daf4",
+    "2273fdd1727f1b96",
+    "9d968e03b23b7dc3",
+    "3340c48decd845c0",
+    "635039a373bcf522",
+    "58f51fce50b72cfd",
+    "0d0958050a08b796"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "interact",
+    "put dave_desk",
+    "goto auditor_desk pretend",
     "wait until 3:00"
    ],
    "summary": "caught",
    "digests": [
     "905617c26a632763",
-    "056d8cb7584e8503",
-    "121ebe61e315680a",
-    "9bb9daec718b3226",
-    "66ba98c1f0f9fcdd",
-    "5b4c2a27db65b9d8",
-    "a3c4d23b0cc26505"
+    "c6fd5910337b49a2",
+    "d7b9a86b3953e838",
+    "43e4b14091bdd2a6",
+    "b47099b0818ebbea",
+    "ad99654e69570551"
    ]
   },
   {
@@ -508,7 +464,7 @@
    ],
    "summary": "caught",
    "digests": [
-    "6d793014b4ea7eec",
+    "7e8f8003b780a288",
     "76dae614a57ee9bd",
     "01adecee67ce3b06"
    ]
