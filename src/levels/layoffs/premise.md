@@ -6,140 +6,204 @@
 
 ## Name
 The Layoff List is the thing on the boss's screen: a white sheet with a red title bar and a row of four faces, yours
-framed in red. At 3:06, when Kev gets the computer working, the sheet pops out large beside the screen, your frame
-throbbing, and you shudder (😨). After that you can read it through the glass of his office from your own desk.
-The name says what the danger is and where it is before the player has solved anything.
+framed in red. At about 3:08, when Kev gets the computer working, the sheet pops out large beside the screen, your
+frame throbbing, and you shudder (😨). After that you can read it from your own desk, through the glass of his
+office and over his shoulder. The name says what the danger is and where it is before the player has solved
+anything.
 
 ## The situation
 - You are the office worker in the red sweater at the middle desk of the open floor. You want to keep your job.
 - At 3:45 the boss clicks send, and the list goes to HR. If your face is on it, you carry your desk out in a box.
 - HR gets what is on his screen at 3:45. Take your face off the sheet before then and the list goes without you.
-- His computer is in his glass office, and Lin's desk faces that office. You can only use his computer when he
-  invites you to, and Lin watches you while you use it.
+- His office is glass. He sits with his back to the glass and his big screen faces out, so the whole floor can
+  read it over his shoulder. Lin's desk faces his office. Anyone in his chair is in her view, and so is his
+  screen.
 - No costumes. In this game a person is their face, and you are always you. Each step uses a fact about who
   looks where and when, and the screen shows that fact before you need it.
 
 ## Cast
-- **The boss**: bald, light blue shirt, red tie.
-  - 3:00: at his desk. His screen shows static. He thumps it (👊🖥️). The static stays.
-  - 3:00.8: he phones Kev's desk (☎️ and Kev's face). Kev's desk phone rings (rings spread from it). Lin turns
+- **The boss**: bald, navy suit, red tie, moustache.
+  - 3:00: at his desk. His screen shows static. He bangs on it, and the static stays.
+  - 3:01: he phones Kev's desk (☎️ and Kev's face). Kev's desk phone rings (rings spread from it). Lin turns
     round in her chair to the ringing. Kev picks up.
-  - 3:02 to 3:06: he stands beside his desk, arms out, and watches Kev crawl behind it.
-  - 3:06: the static clears and the list comes up. He smiles and sits down.
-  - 3:10: a restroom break. When he gets up, a padlock comes up on his screen over the list (🔒). He walks
-    out across the floor. He cannot see the floor from about 3:13 to 3:19.
-  - 3:19: he comes back to his desk. The padlock goes away.
-  - 3:24: the static comes back. He thumps it (👊🖥️), and the static stays. He phones Kev's desk (☎️ and Kev's
-    face). The phone rings and rings at the empty desk. Each time it rings, Lin turns round to it. Then he has a
-    thought with Kev's face and a question mark. Nobody comes.
-  - 3:33: he gives up waiting, crawls behind his desk himself, and the static clears (🔌).
-  - 3:42: the head count. He stands up and checks the faces on his list against the floor. If your face is on it,
-    he looks at your desk and puts a ✔️ under your face. If it is not, he finds nobody from the list on this floor,
-    shrugs, and sits down.
+  - 3:04 to 3:08: he stands beside his desk and watches Kev kneel behind it.
+  - About 3:08: the static clears and the list comes up. He smiles and sits down.
+  - 3:11: a restroom break. When he gets up, a padlock comes up on his screen over the list. He walks out across
+    the floor.
+  - 3:19: he leaves the restroom and walks back (at his desk about 3:25). At his desk the padlock goes away.
+  - 3:26: the static comes back. He bangs on it, and the static stays. He phones Kev's desk again (☎️ and Kev's
+    face). The phone rings and rings at the empty desk, and Lin turns round to it. Then he has a thought with
+    Kev's face and a question mark. Nobody comes.
+  - 3:31: he gives up waiting, crawls behind his desk himself (🔌), and the static clears.
+  - 3:42: the head count. He turns round in his chair and checks the faces on his list against the floor. If your
+    face is on it, he looks at your desk and puts a ✔️ beside your face. If it is not, he shrugs and turns back.
   - 3:45: he clicks send.
 - **Kev**: young, spiky hair, olive hoodie. The office's computer person. His desk is behind Lin's, by the
   entrance, and his desk phone is on it.
-  - 3:00.8: his phone rings. He picks up (📞), walks into the boss's office, and crawls behind the boss's desk.
-    His bubble shows a plug (🔌) at about 3:05. At 3:06 the screen works.
-  - 3:06: back to his desk.
-  - 3:14: while the boss is in the restroom, he picks up his bag and goes home. He stops in front of Lin's desk
-    and says goodbye with his face and a house (👋, Kev's face, 🏠). She waves, and turns in her chair to
-    watch him walk out. He leaves by the elevator at about 3:18. The boss does not see him go.
+  - 3:01: his phone rings. He picks up, walks into the boss's office, and kneels behind the boss's desk (🔌)
+    from 3:05. About 3:08 the screen works, and he goes back to his desk.
+  - About 3:15: while the boss is on his way to the restroom, Kev picks up his bag and goes home. He stops beside Lin's
+    desk and says goodbye (👋, 🏠). She waves, and turns in her chair to watch him walk out. He leaves by the
+    elevator. The boss does not see him go.
 - **Lin**: dark hair, teal top. Her desk faces the boss's glass office, and her view cone covers all of it.
   - She is at her desk all day.
-  - About every 10 seconds (real time) her phone buzzes. She looks down at it (📱) and her head and view
-    cone turn away from the office for about 4 seconds. She does this from 3:00, so the player sees it many times.
+  - Her mobile phone lies on her desk. Now and then it buzzes: it shakes on the desk, with buzz lines. She picks
+    it up, turns away from the office to read it, and puts it back after about 4 seconds. The buzzes come at
+    uneven times (3:04, 3:11.5, 3:17, 3:21, 3:24.5, 3:29.6, 3:32.4, 3:37, 3:39.5, 3:43), so the player
+    watches her desk, not a count.
   - When a phone rings behind her (Kev's desk), she turns round to it for as long as it rings.
+  - About 3:08, when the list comes up, she reads it over the boss's shoulder. She is frightened (😨), then
+    relieved (😌): her face is not on it. Then, once Kev is back past her, she turns her head and looks at you
+    for a moment (about 3:10).
 
 ## Ways to win
 
 ### Why changing the list saves you
 - The card says it: at 3:45 the boss emails HR the layoff list, and you are on it.
-- At 3:06 the list pops out large beside his screen: a sheet with a red title bar and four faces, yours in a red
-  frame that throbs. You shudder (😨). Then it shrinks back onto his monitor, readable from your desk.
-- When you take your face off, the sheet pops out large again: your face is struck through and falls off it.
-  Three faces remain.
+- About 3:08 the list pops out large beside his screen: a sheet with a red title bar and four faces, yours in a
+  red frame that throbs. You shudder (😨). Then it shrinks back onto his screen, readable from your desk.
+- While you take your face off, the sheet pops out large again and stays out: a red line crosses out your face,
+  big enough to read from anywhere on the floor. When it is done, your face falls out of the row. Three faces
+  remain.
 - At 3:45 he clicks send: the sheet shrinks and flies off his screen. The win card shows that sheet without your
   face. The lose cards show it with your face framed in red.
 
-### The way in: fix his computer, and he gives you his chair
+### The way in: fix his computer, and he goes for coffee
 Steps, the same for both routes:
-1. Wait until Kev has gone home (3:14 to 3:18). Until then the boss wants Kev: if you go to his computer while the
+1. Wait until Kev has gone home (about 3:15). Until then the boss wants Kev: if you try the cable while the
    static is on, he waves you off (🙅, then Kev's face).
-2. At 3:24 the static comes back, and nobody answers the phone. Before he gives up (3:33), go into his office and
-   crawl behind his desk, where Kev crawled ("plug his cable back in", 2 seconds). If the screen works, the
-   action is not there.
-3. The static clears. The boss smiles (😊), stands up, points you to his chair (👉🪑), and shows a coffee cup
-   (☕): "I'll leave you to it." He walks out to the kitchen. The list is on his screen.
-4. Sit in his chair. Now you must take your face off without Lin seeing you do it. The two routes are the two
+2. At 3:26 the static comes back, and nobody answers the phone. Before he gives up (3:31), go into his office,
+   kneel behind his desk where Kev knelt, and start on the cable ("plug his cable back in", 4 seconds).
+3. As you start, he has had enough: ☕ 👉 you. Fix it, he is getting a coffee. He hangs up on Kev's empty desk,
+   gets up and walks out to the kitchen while the screen is still dead.
+4. The screen comes back on after he has gone, and the list is open on it. He locked his screen at 3:11 because
+   it was working and he was leaving it. At coffee there was nothing to lock: it was static, and you were fixing
+   it.
+5. Sit in his chair. Now you must take your face off without Lin seeing you do it. The two routes are the two
    ways to do this.
-5. Be out of his chair when he walks back with his coffee (about 3:40). If he finds you in it, he waves you out
-   (👋, then your desk). If you are still taking your face off when he walks in, he sees it (see Caught).
+6. Be finished before he walks back with his coffee (he leaves the kitchen about 3:36 and is in sight of his
+   office from about 3:39; at his desk about 3:42). From the hallway he can see his own screen and
+   whoever is in his chair. If he sees you taking your face off, you are caught. If he finds you standing around
+   in his office, he sends you back to your desk.
 
 ### Route 1: wait for Lin's phone (timing)
-In his chair, watch Lin. When she looks down at her phone (📱) and her view cone turns away, "take your face off
-the list" (3 seconds). Her look at the phone lasts about 4 seconds. If you start late, she sees you.
+In his chair, watch Lin's desk. When her phone buzzes and she picks it up and turns away, "take your face off the
+list" (3 seconds). She reads for about 4 seconds. If you start late, she turns back and sees you.
 
 ### Route 2: ring Kev's phone (a distraction)
-His desk phone is next to the keyboard. "Call Kev's desk" (☎️). Behind Lin, the empty desk's phone rings. She
-turns round to it, and she stays turned while it rings (about 6 seconds). Take your face off while it rings. This
-is the boss's own call from 3:24, made by you: the same ring, the same desk, and Lin turns the same way.
+His desk phone is next to his screen. "Call Kev's desk." Behind Lin, the empty desk's phone rings. She turns round
+to it, and she stays turned while it rings (about 6 seconds). Take your face off while it rings. This is the
+boss's own call from 3:01 and 3:26, made by you: the same ring, the same desk, and Lin turns the same way.
 
 ### The facts the player needs, and where they see each
 
 | Fact | When | What is on screen |
 |---|---|---|
-| You are on the list | 3:06 onward | The sheet pops out large, your frame throbbing, and you shudder. Then his monitor: four faces, yours framed in red |
-| Thumping does not fix it | 3:00 | 👊🖥️, and the static stays |
-| The fix is behind his desk | 3:02 to 3:06 | Kev crawls behind the boss's desk, 🔌, and the static clears. The boss smiles |
-| His computer is locked when he leaves it | 3:10 | A padlock comes up over the list as he walks off |
-| Kev went home, and the boss doesn't know | 3:14 to 3:18 | The boss is in the restroom. Kev says goodbye to Lin (Kev's face, 🏠). She waves and watches him leave |
-| The boss wants Kev, and nobody comes | 3:24 to 3:33 | Static, 👊🖥️, ☎️ with Kev's face, the empty desk ringing, then the boss's thought: Kev's face and a question mark |
-| The static does not last | 3:33 | He crawls behind his desk himself and it clears |
-| Fixing it gets you his chair | when you fix it | 😊, 👉🪑, ☕, and he walks to the kitchen |
+| You are on the list | about 3:08 onward | The sheet pops out large, your frame throbbing, and you shudder. Then his screen: four faces, yours framed in red |
+| Lin is not on it, and she knows you are | 3:08 to 3:10 | Lin's 😨 then 😌 as the list comes up, then she looks at you |
+| Banging does not fix it | 3:00 | He bangs on the screen, and the static stays |
+| The fix is behind his desk | 3:05 to 3:08 | Kev kneels behind the boss's desk, 🔌, a loose plug goes back in, and the static clears. The boss smiles |
+| His screen is locked when he leaves it working | 3:11 | A padlock comes up over the list as he walks off |
+| Kev went home, and the boss doesn't know | about 3:15 | The boss is walking away. Kev says goodbye to Lin (👋, 🏠). She waves and watches him leave |
+| The boss wants Kev, and nobody comes | 3:26 to 3:31 | Static, the banging, ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
+| The static does not last | 3:31 | He kneels behind his desk himself, 🔌, and it clears |
+| Fixing it sends him for coffee | when you start | ☕ 👉 you, and he walks to the kitchen. The screen comes on with the list open |
 | Lin watches his office | all day | Her view cone covers the office |
-| Lin's phone turns her away | all day, about every 10 s | 📱, her head down and her cone off the office for about 4 s |
-| A ring at Kev's desk turns Lin round | 3:00.8, and 3:24 to 3:33 | The ringing phone (rings spread from it), and Lin turned round to it |
-| His phone calls Kev's desk | 3:00.8, 3:24 | The boss's bubble: ☎️ and Kev's face, then Kev's phone rings |
-| He sends what is on the screen | 3:42 to 3:45 | The head count: he checks the list against the floor (✔️ under your face if you are on it), then clicks send |
+| Lin's phone turns her away | all day, at uneven times | The phone shakes on her desk, she picks it up and her cone swings off the office for about 4 s |
+| A ring at Kev's desk turns Lin round | 3:01, and 3:26 | The ringing phone (rings spread from it), and Lin turned round to it |
+| His phone calls Kev's desk | 3:01, 3:26 | The boss's bubble: ☎️ and Kev's face, then Kev's phone rings |
+| The edit shows | whenever you edit | The sheet pops out big and a red line crosses out your face |
+| He sends what is on the screen | 3:42 to 3:45 | The head count: he checks the list against the floor (✔️ by your face if you are on it), then clicks send |
 
 ## Why a real boss would fall for it
-- **The way in.** His IT person went home, he has a deadline at 3:45, and you fixed his screen in front of him. A
-  half-awake boss says "Great, make sure it works, I'm getting a coffee", and he leaves his computer unlocked.
-  People do this.
-- **Route 1.** No one is fooled. Lin checks her phone every few seconds, like everyone, and you use the moment she
+- **The way in.** A real boss doesn't knowingly sit an employee in front of the layoff list, and he doesn't. His IT
+  person went home, he has a deadline at 3:45, his screen is dead, and you are already on your knees with his
+  cable. He says "fix it, I'm getting coffee" and leaves a dead screen. It comes back on after he has gone.
+- **Route 1.** No one is fooled. Lin checks her phone when it buzzes, like everyone, and you use the moment she
   looks down. The boss is in the kitchen.
 - **Route 2.** No one is fooled. A phone ringing at an empty desk behind you makes you turn round. That is what
-  people do. The call is from the boss's phone to a desk on the same floor, exactly what the boss did at 3:24.
-- **The send.** At 3:45 he clicks send on the list he left open. He does not count the faces again. He made the
-  list, and he believes it.
+  people do. The call is from the boss's phone to a desk on the same floor, exactly what the boss did twice today.
+- **The send.** At 3:45 he clicks send on the list he left open. He counts heads against the floor, not against
+  the list he wrote at lunch. He made the list, and he believes it.
+
+## Why Lin tells
+Lin read the list over the boss's shoulder at 3:08. She is not on it, and she means to keep it that way. Someone
+who watches a coworker doctor the layoff list and says nothing is the next face on it. Telling on you is how she
+stays safe, and it costs her nothing. She can tell editing from testing because the screen faces the floor: when
+you edit, the sheet comes up big and a red line goes through your face, in plain view of her desk.
+As a real person she would think "better you than me, and I'm not going down for covering it," and say out loud
+"Um, boss? Someone's changing your list."
 
 ## Ways to lose
-- **Do nothing.** At 3:33 he fixes it himself. At 3:42 he checks your desk (✔️). At 3:45 the sheet flies off with
+- **Do nothing.** At 3:31 he fixes it himself. At 3:42 he checks your desk (✔️). At 3:45 the sheet flies off with
   your face on it. Card: the sheet with your face in a red frame flies off, and you walk out with your desk in a
   box.
-- **Seen by Lin.** She sees you take your face off. She stands up and points at you (😠👉). If the boss is in
-  view, he turns to look. The edit stops, your face stays, and you are sent to your desk. The day continues, and
-  the card at 3:45 is the same as for doing nothing.
-- **Caught by the boss.** He walks back in while you are taking your face off. ❗😠, his red line on you, and the
-  screen shakes. Your face goes back on the list. Card: the boss on his feet, pointing the way out.
+- **Seen by Lin.** She sees you take your face off. She points at you (❗👉 you). The boss hears her across the
+  floor, sends you back to your desk (📄📄👉🖥️), and you type until 3:45. Your face stays on. The card at 3:45
+  is the same as for doing nothing. (This uses the engine's told-on rule as it is today, desk move included.
+  The engine's witness also reacts on the first frame of the edit, before the sheet has grown out; the staging
+  wants her ❗ a beat after the red line, which needs an engine change.)
+- **Caught by the boss.** He walks back with his coffee while you are taking your face off. ❗😠, his red line on
+  you, and the screen shakes. Card: the boss on his feet, pointing the way out.
 
 ## The win card
-The boss at his desk with his coffee, pleased, sends the list without you. You sit at your desk in your red
-sweater, smug. Behind Lin, Kev's empty desk.
+The boss at his desk, pleased, sends the list without you. You sit at your desk in your red sweater, smug. Behind
+Lin, Kev's empty desk.
+
+## Who does what
+**The boss** comes back from lunch to a dead screen and a list due at 3:45. He bangs on it, which never works, and
+phones his IT man, who sits a few desks away. Kev comes and plugs the loose cable back in while the boss stands
+over him. Once the list is up he is happy, sits down, and works on it with his back to the floor. At 3:11 he needs
+the restroom; he locks his screen as he gets up, because the list is open on it. He walks the long way round the
+floor to the restroom and back, and while he is away from his office he never sees Kev leave. At 3:26 the screen
+dies again. He bangs on it, phones Kev's desk, and waits for Kev, who has gone home. At 3:31 he kneels and fixes it
+himself. If you get there first and start on the cable, he gives up waiting: he hangs up, points at you, says he is
+getting a coffee, and goes to the kitchen while the screen is still dead. He makes his coffee slowly and walks back. At
+3:42 he turns round in his chair to count heads against the list, and at 3:45 he clicks send.
+
+**Kev** is the office's computer person and wants to go home. At 3:01 his desk phone rings; it is the boss. He goes
+in, kneels behind the boss's desk, finds the cable loose and plugs it back in. Back at his desk, he waits until
+the boss has left his office for the restroom, picks up his bag, says goodbye to Lin and takes the elevator home.
+His desk phone stays behind, and so does the boss's habit of calling it.
+
+**Lin** is at her desk all day, facing the boss's office. When her phone buzzes she picks it up and reads it with
+her back half turned; when a phone rings behind her, she turns round to it, as anyone does. At 3:08 she reads the
+list over the boss's shoulder, finds she is not on it, and looks at you, who are. She waves Kev goodbye. If she
+sees you crossing yourself off, she calls it out loud.
+
+## Things in the office
+- **The boss's screen** (the east end of his desk): big, facing out through the glass, so the floor can read it. It shows
+  static while the cable is loose, the list when it works, a padlock while he is in the restroom, and the edit
+  when you make it. It is the level.
+- **The loose cable** (the west end of his desk, behind it): a power plug half out of its socket while the screen
+  shows static, pushed home when it works. Kev kneels at it, the boss kneels at it, and you kneel at it. It is
+  why the screen dies, and it is the job that sends the boss for coffee.
+- **The boss's desk phone** (his desk, between the cable and the screen): he calls Kev's desk on it at 3:01 and 3:26, and you can
+  call Kev's desk on it too. It is route 2.
+- **Kev's desk phone** (Kev's desk, behind Lin): it rings when anyone calls it, with rings spreading out, and Lin
+  turns round to it. It is why Kev comes at 3:01, and it is the distraction in route 2.
+- **Lin's mobile** (on her desk): it buzzes and shakes now and then; she picks it up and turns away to read it. It
+  is route 1, and it is something to watch rather than a rhythm to count.
+- **The boss's chair** (south of his desk at its west end, its back to the glass): where he sits, and where you sit to edit.
+- **The coffee machine** (the kitchen, far end of the hallway): where the boss goes when you take over his cable.
+  It is far enough away to give you a few minutes.
+- **The restroom** (the far corner of the floor): the boss's 3:11 trip, while Kev goes home.
+- **The elevator** (the lobby, behind the glass wall by the entrance): Kev leaves by it.
+- **Kev's bag**: he carries it out, so his leaving reads as going home, not a walk.
+- **Your desk** (the middle of the open floor): where you start, where the head count looks, and where you sit
+  at 3:45.
+- **The wall clock** (the hallway wall): the time, red from 3:40.
+- **Set dressing**: desk mugs, Lin's plant, Kev's earbuds and code on his screen, the meeting room and the kitchen
+  table. They make it level 1's office an hour later; nothing in them does anything.
 
 ## What was cut, and why
 The hoodie and the jacket are gone. A boss fooled by clothes contradicts the level's own picture language: people
 are faces (the list is a row of faces, and every bubble names people by their faces). Kev keeps his hoodie on all
-day. It is only his clothes, and there is nothing to take. Lin's trip to the restroom is gone too, because a
-watcher who leaves would make both routes a matter of waiting.
-
-## Set dressing
-The office is level 1's, with only what this level uses. The coat rack goes. Kev's desk gets a desk phone, the
-boss's desk gets a phone beside the keyboard, and the kitchen keeps its coffee machine (the boss goes there). The
-plants and desk mugs stay.
+day. Lin's trip to the restroom is gone, because a watcher who leaves would make both routes a matter of waiting.
+The coat rack is gone with the jacket. The boss no longer shows you the list: he leaves a dead screen, and it
+comes back on after he has gone.
 
 ## The joke
-You fix the boss's computer, and he hands you his chair and goes to make coffee. Then you pick up his phone and
-call the desk of the man who went home, so that the one person watching turns round. While the empty desk rings,
-you delete yourself from the layoff list. He comes back, sips his coffee, and sends it.
+You start fixing the boss's computer, and he goes to make coffee. Then you pick up his phone and call the desk of
+the man who went home, so that the one person watching turns round. While the empty desk rings, you delete
+yourself from the layoff list. He comes back, counts heads, and sends it.
