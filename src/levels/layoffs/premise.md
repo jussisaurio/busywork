@@ -2,7 +2,7 @@
 
 ## Card
 "Friday, 3:00 PM. You're on the layoff list."
-"At 3:45 it goes to HR."
+"It goes to HR at 3:45. Get off it."
 
 ## Name
 The Layoff List is the thing on the boss's screen: a white sheet with a red title bar and a row of four faces, yours
