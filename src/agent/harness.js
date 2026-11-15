@@ -15,7 +15,7 @@ import { createGame } from '../state.js';
 import { startLoop, tick, frameMult } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
-import { TARGET_ACTIONS } from '../play/interactions.js';
+import { actionRow } from '../play/interactions.js';
 import { putSpots, canPut } from '../sim/mechanics/putdown.js';
 import { parseMap } from '../core/map.js';
 import { createScriptedInput } from './scripted-input.js';
@@ -384,7 +384,7 @@ function compass(rad) {
 function focusText(game) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
-  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : TARGET_ACTIONS[f.action]?.text ?? f.action ?? 'interact';
+  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : actionRow(game, f.action)?.text ?? f.action ?? 'interact';
   return f.kind === 'self' ? `${f.icon ?? ''} ${verb}` : `${f.icon ?? ''} ${f.id}: ${verb}`;
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
