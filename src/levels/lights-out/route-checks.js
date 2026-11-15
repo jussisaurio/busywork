@@ -43,7 +43,7 @@ export default [
     },
   },
   {
-    name: 'blackout: wait for Lin\'s microwave, take it from beside his desk (off his torch) → win',
+    name: 'blackout: wait for Lin\'s coffee machine to trip the fuse, take it from beside his desk (off his torch) → win',
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
       run('pretend until 3:11'); // stops on fuse:tripped
@@ -51,6 +51,19 @@ export default [
       run('interact');
       took(log, 'blackout');
       atDesk(run, g);
+    },
+  },
+  {
+    name: 'blackout: take it, then spend 3:40 in the kitchen → still a win (nobody knew the letter was there)',
+    expect: { result: 'win', routes: ['blackout'] },
+    play({ run, g, log }) {
+      run('pretend until 3:11');
+      run('goto desk_side pretend');
+      run('interact');
+      took(log, 'blackout');
+      run('goto kitchen_table');
+      const k = g.level.zones.kitchen; // off the floor: without the verdict this would be 'blamed'
+      if (!(g.player.x >= k.x0 && g.player.x < k.x1 && g.player.y >= k.y0 && g.player.y < k.y1)) throw new Error('not in the kitchen');
     },
   },
   {

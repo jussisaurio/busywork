@@ -1,10 +1,11 @@
 // "Lights Out": your angry resignation letter is in the boss's tray, and at 3:40 he empties it. Get it back.
 // He sits facing his tray all afternoon, so you can't take it in the light. In the dark, every view shrinks to
 // arm's length, except along a phone torch (src/game/darkness.js). Three ways to make it dark:
-//   switch    flip his office light switch (a loud clack). He says 💡❓ and gropes along the wall to it: be
+//   switch    flip his office light switch (a loud clack). He says ❓ and gropes along the wall to it: be
 //             anywhere but in his way, because whoever he bumps into in the dark flipped it.
-//   blackout  3:10: Lin's microwave trips the fuse for the whole floor. Everyone gets a phone torch 📱, and he
-//             sweeps his across the front of his desk. Kev walks his torch down the hallway to the fuse box.
+//   blackout  3:10: Lin switches on the coffee machine, it sparks, and it trips the fuse for the whole floor.
+//             Everyone holds up a phone as a torch, and he sweeps his across the front of his desk. Kev walks his torch
+//             down the hallway to the fuse box (its door hangs open, its red lamp blinking) and resets it.
 //   breaker   pull the breaker yourself. Kev comes to the fuse box with his torch: don't be there.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, deg } from '../../config.js';
@@ -18,8 +19,9 @@ import gate from './gate.js';
 const t = (hhmm) => at(hhmm, START);
 
 // Level 1's floor (src/levels/meeting/map.js), rewired:
-//   Y the boss's in-tray (on his desk)   S his office light switch (on the wall)   X the fuse box (on the wall)
-//   M Lin's microwave   F fridge (decor)   P your desk
+//   Y the boss's in-tray (on his desk)   S his office light switch (on the wall)
+//   X the fuse box (on the hallway's end wall, facing the hallway)   M the coffee machine   F fridge   P your desk
+// The switch and the fuse box are drawn by darkness.controls (render/darkness.js), the coffee machine by the map.
 // His chair is boxed in by plants and his desk (the tray on its east end): he gets out behind it. The office's south-west wall is solid,
 // so from his chair he can't see down the hallway to the fuse box.
 const MAP = [
@@ -29,8 +31,8 @@ const MAP = [
   '#..TTY..G..TTTTTT..#....TTT..#', // 3
   'S.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
-  '####GGDGG#####D#######DD######', // 6
-  'X............................#', // 7
+  '#X##GGDGG#####D#######DD######', // 6
+  '#............................#', // 7
   '#..TTT......TPT......TTT.....#', // 8
   '#............................#', // 9
   '#............................#', // 10
@@ -46,7 +48,7 @@ const LEGEND = {
   Y: { kind: 'tray', solid: true, opaque: false, interactable: 'tray', draw: 'desk' },
   S: { kind: 'light_switch', solid: true, opaque: true, interactable: 'office_switch', draw: 'wall' },
   X: { kind: 'fuse_box', solid: true, opaque: true, interactable: 'fuse_box', draw: 'wall' },
-  M: { kind: 'microwave', solid: true, opaque: false, draw: 'desk' },
+  M: { kind: 'coffee_machine', solid: true, opaque: false }, // drawn as the kitchen counter's coffee machine
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
@@ -60,8 +62,8 @@ const SPOTS = {
   lin_desk: { x: 4, y: 9, face: 'N' },
   kev_desk: { x: 22, y: 9, face: 'N' },
   office_switch: { x: 1, y: 4, face: 'W' }, // stand here to reach S
-  fuse_box: { x: 1, y: 7, face: 'W' }, // stand here to reach X
-  microwave: { x: 22, y: 2, face: 'N' },
+  fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
+  coffee_machine: { x: 22, y: 2, face: 'N' },
   desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, off his gaze: his torch only gets here when he glances
   in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk: where you're summoned at 3:40 if he reads it
   boss_door: { x: 6, y: 7, face: 'N' },
@@ -98,7 +100,7 @@ const INTERACTIONS = {
       game.player.held = 'letter';
       w.letter = 'player';
       w.snatched = howDark(game, a.x, a.y) ?? 'light';
-      say(game, 'player', ['😇'], { kind: 'thought', ttl: 1.5 });
+      say(game, 'player', ['😊'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('letter:taken', { how: w.snatched });
       if (w.snatched !== 'light') game.events.emit('letter:snatched', { how: w.snatched });
     },
@@ -116,7 +118,7 @@ const INTERACTIONS = {
     },
   },
   pull_breaker: {
-    on: 'fuse_box', icon: '🔌', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '🔌',
+    on: 'fuse_box', icon: '⚡', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
     done(game, a) {
       const w = game.world;
@@ -143,8 +145,8 @@ const ROLES = {
   evidence: { by: 'boss', while: 'dark', mark: 'switched', knows: 'bossKnows', icon: '💡' },
   // Kev at the fuse box: whoever he finds standing at it pulled the breaker.
   scene: {
-    by: 'kev', while: ['fuse', 'fixing'], zone: 'fuse_nook', door: { x: 0.5, y: 7.5 }, radius: 2.5,
-    fresh: (w) => w.fuse === 'on', icon: '🔌',
+    by: 'kev', while: ['fuse', 'fixing'], zone: 'fuse_nook', door: { x: 1, y: 7.5 }, radius: 2.5,
+    fresh: (w) => w.fuse === 'on', icon: '⚡',
   },
 };
 
@@ -156,13 +158,13 @@ const LURES = [
     plan: 'switch',
     label: 'light switch',
     spot: 'office_switch',
-    react: { wait: 0.8, says: [{ say: ['💡', '❓'], kind: 'thought' }], event: 'boss:dark' },
+    react: { wait: 0.8, says: [{ say: ['❓'], kind: 'thought' }], event: 'boss:dark' },
     work: {
       override: 'groping',
       minutes: 2,
       progress: 'gropeProgress',
       start: { set: { officeLight: 'off' }, event: 'switch:groping' },
-      done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['💡', '😤'] }] },
+      done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['😠'] }] },
     },
   },
   { // The fuse is out: Kev walks his phone torch down the hallway to the fuse box and resets it.
@@ -172,13 +174,13 @@ const LURES = [
     plan: 'fuse',
     label: 'fuse box',
     spot: 'fuse_box',
-    react: { wait: 1.2, says: [{ say: ['🔌', '❓'], kind: 'thought' }], event: 'kev:fuse' },
+    react: { wait: 1.2, says: [{ say: ['❓'], kind: 'thought' }], event: 'kev:fuse' },
     work: {
       override: 'fixing',
       minutes: 3,
       progress: 'fixProgress',
       start: { set: { fuse: 'off' }, event: 'fuse:fixing' },
-      done: { set: { fuse: 'on', fuseBy: null }, event: 'fuse:fixed', says: [{ say: ['💡', '👍'] }] },
+      done: { set: { fuse: 'on', fuseBy: null }, event: 'fuse:fixed' },
     },
   },
 ];
@@ -214,24 +216,33 @@ export default {
       { zone: ['floor_dark', 'floor_back', 'meeting_room', 'kitchen'], lit: (w) => w.fuse === 'on' },
     ],
     torch: { when: (n, w) => w.fuse !== 'on', fov: deg(60), radius: 7 }, // everyone's phone, once the fuse is out
+    controls: [
+      { tile: 'S', kind: 'switch', on: (w) => w.officeLight === 'on' }, // its amber lamp lights while it's off
+      { tile: 'X', kind: 'breaker', on: (w) => w.fuse === 'on' }, // off: its door hangs open, its red lamp blinks
+    ],
   },
-  meeting: { override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front' },
+  // 3:40 is no meeting: he empties his tray at his desk. Nobody knows the letter ever existed, so wherever you are
+  // with it, you got away with it (never 'blamed').
+  meeting: {
+    override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
+    verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' } : null),
+  },
   routes: [
     { id: 'switch', icon: '💡', achieved: (w) => gotIt(w) && w.snatched === 'switch' },
-    { id: 'blackout', icon: '♨️', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
-    { id: 'breaker', icon: '🔌', achieved: (w) => gotIt(w) && w.snatched === 'breaker' },
+    { id: 'blackout', icon: '☕', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
+    { id: 'breaker', icon: '⚡', achieved: (w) => gotIt(w) && w.snatched === 'breaker' },
   ],
   outcomeOrder: ['breaker', 'blackout', 'switch'],
   initialWorld: () => ({
     letter: 'tray', // 'tray' | 'player' | 'dropped' | 'boss' (he picked it up) | 'eaten'
     snatched: null, // how dark it was when you took it: 'switch' | 'blackout' | 'breaker' | 'light'
     fuse: 'on', // 'on' | 'off'
-    fuseBy: null, // who tripped it: 'lin' (her microwave) | 'player' (the breaker)
+    fuseBy: null, // who tripped it: 'lin' (the coffee machine) | 'player' (the breaker)
     officeLight: 'on', // his office switch: 'on' | 'off'
     gropeProgress: 0,
     fixProgress: 0,
     bossKnows: false,
-    lunch: 'fridge', // Lin's: 'fridge' | 'nuked' (tripped the fuse) | 'cold' (no power) | 'eaten'
+    coffee: 'none', // Lin's: 'none' | 'tripped' (switching it on tripped the fuse; brewed once it's back) | 'cold'
     items: [],
   }),
   harness,

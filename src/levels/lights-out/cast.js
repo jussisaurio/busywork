@@ -1,7 +1,8 @@
 // Lights Out's three people and their hooks (level 1's cast.js and behaviours.js document the fields).
-// The boss never leaves his desk on his own: only the dark gets him up. Lin heats her lunch at 3:10 (and the
-// microwave takes the fuse with it). Kev resets fuses: a lure in index.js.
+// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her afternoon coffee at 3:10,
+// and the old coffee machine takes the fuse with it. Kev resets fuses: a lure in index.js.
 import { at, deg } from '../../config.js';
+import { burst, shake } from '../../core/fx.js';
 
 export const START = 15 * 60; // 3:00 PM
 const s = (time, entry) => ({ at: at(time, START), ...entry });
@@ -9,7 +10,7 @@ const s = (time, entry) => ({ at: at(time, START), ...entry });
 export const CAST = [
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss',
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'boss_desk',
@@ -17,13 +18,12 @@ export const CAST = [
     vision: { fov: deg(150), radius: 8 }, // nothing on his desk escapes him in the light
     coneTint: [255, 160, 82],
     schedule: [
-      s('3:00', { do: 'sit', spot: 'boss_desk' }), // facing his tray
-      s('3:25', { do: 'say', icons: ['📥', '🤔'], kind: 'thought' }),
+      s('3:00', { do: 'sit', spot: 'boss_desk' }), // facing his tray, all afternoon
     ],
   },
   {
     id: 'lin',
-    icon: '🍲',
+    icon: '@lin',
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
@@ -31,15 +31,14 @@ export const CAST = [
     coneTint: [120, 220, 205],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
-      s('3:04', { do: 'say', icons: ['🍲', '❓'], kind: 'thought' }),
-      s('3:05', { do: 'visit', spot: 'microwave', arrive: 'nukeLunch' }), // about 3:10 at the microwave
-      s('3:24', { do: 'visit', spot: 'kitchen_table', arrive: 'eatLunch' }),
+      s('3:05', { do: 'visit', spot: 'coffee_machine', arrive: 'brew' }), // her afternoon coffee: there about 3:10
+      s('3:24', { do: 'visit', spot: 'kitchen_table' }), // drinks it at the kitchen table (once it has brewed)
       s('3:31', { do: 'sit', spot: 'lin_desk' }),
     ],
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '@kev',
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'kev_desk',
@@ -52,43 +51,36 @@ export const CAST = [
 ];
 
 export const BEHAVIOURS = {
-  // Lin's lunch goes in for ten minutes on full power, and the whole floor goes with it.
-  nukeLunch: {
+  // Lin switches on the coffee machine: it sparks, and the whole floor goes dark with it (the fuse box's door
+  // flies open down the hall). If the power is already out, nothing happens.
+  brew: {
     arrive(game, npc, sim) {
-      if (npc._nuked) return;
-      npc._nuked = true;
+      if (npc._brewed) return;
+      npc._brewed = true;
       const w = game.world;
       if (w.fuse !== 'on') { // no power already
-        w.lunch = 'cold';
-        sim.speak(game, npc, [{ say: ['🍲', '❓'], kind: 'thought', ttl: 1.4 }]);
+        w.coffee = 'cold';
+        sim.speak(game, npc, [{ say: ['❓'], kind: 'thought', ttl: 1.4 }]);
         return;
       }
-      w.lunch = 'nuked';
+      w.coffee = 'tripped';
       w.fuse = 'off';
       w.fuseBy = 'lin';
+      burst(game, 'sparks', 22.5, 1.6, 28, { speed: 3.6, ttl: 1.1 });
+      burst(game, 'puff', 22.5, 1.4, 8, { speed: 0.6, ttl: 1.6 });
+      shake(game, 0.12, 0.3);
       game.events.emit('fuse:tripped', {});
-      sim.speak(game, npc, [{ say: ['♨️', '💥'], ttl: 1.2 }, { say: ['💡', '❓'], kind: 'thought', after: 1.4, ttl: 1.4 }]);
+      sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
     },
   },
-  eatLunch: {
-    arrive(game, npc, sim) {
-      if (npc._ate) return;
-      npc._ate = true;
-      if (game.world.lunch === 'nuked') {
-        game.world.lunch = 'eaten';
-        sim.speak(game, npc, [{ say: ['🍲', '😋'], ttl: 1.4 }]);
-      } else sim.speak(game, npc, [{ say: ['🍲', '🥶'], ttl: 1.4 }]);
-    },
-  },
-  // 3:40: he empties his tray.
+  // 3:40: he empties his tray. If your letter is still in it, he reads it.
   emptyTray: {
     arrive(game, npc, sim) {
       if (npc._emptied) return;
       npc._emptied = true;
       sim.faceSpot(game, npc, 'in_front');
       const w = game.world;
-      if (w.letter === 'tray' || w.letter === 'boss') sim.speak(game, npc, [{ say: ['📥'], kind: 'thought', ttl: 1.2 }, { say: ['✉️', '😠'], after: 1.6, ttl: 2.2 }]);
-      else sim.speak(game, npc, [{ say: ['📥'], kind: 'thought', ttl: 1.2 }, { say: ['📭', '🤷'], after: 1.6, ttl: 2.2 }]);
+      if (w.letter === 'tray' || w.letter === 'boss') sim.speak(game, npc, [{ say: ['✉️', '😠'], after: 0.6, ttl: 2.6 }]);
     },
   },
 };
