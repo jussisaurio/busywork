@@ -4,7 +4,7 @@
 // Runs first in tick(). Reads game.input (any object with the Input interface; null = no input).
 // Sets player.{x, y, dir, moving, busy, busyPose, seated} and game.clock.ff.
 import { PLAYER_SPEED, PLAYER_BUSY_SPEED, PLAYER_RADIUS } from '../config.js';
-import { say } from '../core/fx.js';
+import { say, sightline } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from '../sim/nav.js';
 
@@ -121,6 +121,7 @@ function giveOrder(game, sent) {
   sent.said = true;
   sent.stackAt = game.loopTime;
   say(game, sent.auth ?? 'player', ORDER_ICONS, { kind: 'speech' }); // render drops the paper stack on your desk now
+  if (sent.auth) sightline(game, sent.auth, 'order', 1.6); // his order runs to you (render only)
 }
 
 function serveOrder(game, sent, dt) {

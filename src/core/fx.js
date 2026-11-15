@@ -51,7 +51,7 @@ export function burst(game, kind, x, y, n = 8, opts = {}) {
 // A sightline flash: "this NPC is looking at you, from there". Drawn from the NPC's eyes to
 // the player (both live positions), fading out over ttl.
 // kind: 'notice' (first sight, faint) | 'tattle' (a witness shouts) | 'caught' (the boss) | 'relay' (her shout
-// reaching the authority: to = his id, a pulse runs along it)
+// reaching the authority: to = his id, a pulse runs along it) | 'order' (the authority sends you to your desk)
 // via: { screen: {x, y}, lens: {x, y} } (tile units) when he saw you on a camera's screen: the line runs from his
 // eyes to the screen, then from the camera's lens to you (play/rules.js; sim/mechanics/camera.js).
 // to: 'player' or an NPC id. A new line replaces the one with the same from and to.

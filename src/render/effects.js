@@ -438,12 +438,13 @@ export function drawRipples(ctx, game) {
 // watcher's eyes to your body, using live positions so it follows both of you. It draws on fast,
 // then fades. 'notice' is a faint cream glance; 'tattle'/'caught' are thick tomato with a mark on you.
 // 'relay' runs from a witness to the authority's eyes (her shout reaching him): a dotted line that a red pulse rides
-// along, then a ring pops round his head.
+// along, then a ring pops round his head. 'order' is the authority's order reaching you: a long amber dash.
 const LINE_STYLE = {
   notice: { w: 1.4, dash: [5, 4], color: '243,214,150', alpha: 0.6, mark: false },
   tattle: { w: 2.6, dash: [7, 4], color: '229,67,47', alpha: 0.9, mark: true },
   caught: { w: 3, dash: [8, 3], color: '229,67,47', alpha: 1, mark: true },
   relay: { w: 2.6, dash: [2, 6], color: '229,67,47', alpha: 0.95, mark: false, on: 0.3 },
+  order: { w: 2.6, dash: [9, 5], color: '240,178,62', alpha: 0.95, mark: false, on: 0.25 },
 };
 const DRAW_ON = 0.1; // seconds for the dash to reach you
 
