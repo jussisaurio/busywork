@@ -2,7 +2,7 @@
 // Gate: the automated filter a level must pass before a human plays it (REFACTOR.md P5.2). It runs the
 // fuzzer (tools/fuzz.mjs) and fails (exit 1) on any of:
 //   routes    a route of the level that no plan wins
-//   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until 4:00 is not a step)
+//   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until day.meetingAt is not a step)
 //   random    random plans winning more than EASY_RATE (1%) of the time
 //   crash     any crash or harness error (a command threw, or a day never ended)
 //   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend)

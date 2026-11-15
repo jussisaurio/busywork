@@ -2,7 +2,7 @@
 // State-space fuzzer: searches for player plans that do surprising things, especially wins that are
 // too easy. A plan is a short list of harness macro-steps (goto X [pretend], do, sit, pretend/wait
 // until T, pretend/wait N seconds, and put S [pretend] in levels with spots that take items), then a stance held
-// until 4:00. The day is deterministic, so every
+// until the level's day.meetingAt. The day is deterministic, so every
 // candidate replays from 2:30 (a day costs ~5-30 ms headless).
 //
 // Search: MAP-Elites. Every run is binned by what happened (result, routes, milestones such as
