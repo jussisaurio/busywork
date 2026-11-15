@@ -78,7 +78,7 @@ export default [
   {
     name: 'he-left-you-to-it',
     cmds: FIX,
-    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: don't touch my screen, then coffee, pointing at you) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
+    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: coffee, pointing at you) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
   },
   {
     name: 'list-up-alone',
@@ -127,9 +127,9 @@ export default [
   },
   {
     name: 'comes-for-you',
-    cmds: [...TOLD, 'wait until 3:45', 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45'],
+    cmds: [...TOLD, 'wait until 3:37.5', 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45'],
     beat: true,
-    intent: "The boss has left his office and stops on the floor, pointing at you at your desk (❗, a pointing hand, your face): caught. His screen behind him shows a padlock.",
+    intent: "The boss, at his office door, stops and points at you in the hallway on your way back to your desk (❗, a pointing hand, your face): caught. A red line runs from him to you.",
   },
   {
     name: 'caught',

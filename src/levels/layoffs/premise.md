@@ -80,7 +80,7 @@ Steps, the same for both routes:
 2. At 3:26 the static comes back, and nobody answers the phone. Before he gives up (3:31), go into his office,
    kneel behind his desk where Kev knelt, and start on the cable ("plug his cable back in": 4 seconds of play, a couple of minutes on the office clock, with
    the plug behind the desk and the screen still dead).
-3. As you start, he has had enough: 🙅🖥️ (don't touch my screen), then ☕ 👉 you. Fix it, he is getting a coffee. He hangs up on Kev's empty desk,
+3. As you start, he has had enough: 😤 at the static, then ☕ 👉 you. Fix it, he is getting a coffee. He hangs up on Kev's empty desk,
    gets up and walks out to the kitchen while the screen is still dead.
 4. The screen comes back on after he has gone, and the list is open on it. He locked his screen at 3:11 because
    it was working and he was leaving it. At coffee there was nothing to lock: it was static, and you were fixing
@@ -123,7 +123,7 @@ twice today when the boss called it. You look long enough to see nobody is there
 | Kev went home, and the boss doesn't know | about 3:15 | The boss is walking away. Kev says goodbye to Lin (👋, 🏠). She waves and watches him leave |
 | The boss wants Kev, and nobody comes | 3:26 to 3:31 | Static, the banging, ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
 | The static does not last | 3:31 | He kneels behind his desk himself, 🔌, and it clears |
-| Fixing it sends him for coffee | when you start | 🙅🖥️ (don't touch my screen), ☕ 👉 you, and he walks to the kitchen. The screen comes on with the list open |
+| Fixing it sends him for coffee | when you start | 😤 at the static, ☕ 👉 you, and he walks to the kitchen. The screen comes on with the list open |
 | Lin watches his office | all day | Her view cone covers the office |
 | Lin's phone turns her away | all day, at uneven times | The phone shakes on her desk, she picks it up and her cone swings off the office for about 4 s |
 | A ring at Kev's desk turns Lin round | 3:01, and 3:26 | The ringing phone (rings spread from it), and Lin turned round to it |
@@ -164,7 +164,8 @@ edit, the sheet comes up big and a red line goes through your face, in plain vie
   door, she points you out (👉 you, 🖥️). He leaves the coffee,
   walks back to his screen and looks (😠): your face pops back onto the list, and he locks the screen (🔒). Then he
   turns round and comes for you. When he sees you, he catches you (❗👉 you). Card: the same as caught by the boss.
-  If you keep out of his sight, he is still looking for you at 3:45, and the list goes with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
+  If you keep out of his sight, he runs out of time: just before 3:45 he gives up, goes back to his desk and sends the
+  list with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
   it would leave tells the boss, to keep her own name off it. A boss told that someone is editing his layoff list
   comes back, looks, puts it right, locks it, and goes to find the person.
 - **Caught by the boss.** He walks back with his coffee while you are taking your face off. ❗😠, his red line on

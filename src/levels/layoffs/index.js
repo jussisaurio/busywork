@@ -19,7 +19,7 @@
 // looking for you: the moment he sees you, caught (roles.evidence: Lin named you). Seen by the boss himself: caught.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at } from '../../config.js';
+import { at, GAME_MIN_PER_SEC, NPC_SPEED } from '../../config.js';
 import { say, sightline } from '../../core/fx.js';
 import { spotPos, findNpc, npcSees } from '../../game/perception.js';
 import { endOverride, npcSayLater } from '../../sim/override.js';
@@ -193,7 +193,8 @@ const LURES = [
     },
   },
   // Then he turns round on you and comes over to your desk: the moment he sees you, caught (roles.evidence, while
-  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 pack-up.
+  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 pack-up, unless 3:45 would find him still on
+  // it (bossClock: then he goes back to his desk and sends it).
   {
     npc: 'boss',
     when: (w) => w.check === 'done' && !w.pointed && !w.bossKnows,
@@ -228,7 +229,7 @@ const LURES = [
     label: 'get a coffee',
     spot: 'coffee',
     // fed up with the static, he doesn't look at the screen again: fix it, I'm getting coffee
-    react: { wait: 0.9, says: [{ say: ['🙅', '🖥️'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
+    react: { wait: 0.9, says: [{ say: ['😤'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
 ];
@@ -293,6 +294,19 @@ function bossClock(game, npc, sim) {
   if (!w.ringing) w.ringFrom = null;
   else if (w.ringFrom == null) w.ringFrom = now;
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
+  // Out of time: if 3:45 would find him still coming for you, he gives up and goes back to his desk to send it
+  // (the gather's 'send' takes over), so the list never goes with nobody at the desk. The walk back is estimated
+  // at the meeting hurry (npcs.js MEETING_HURRY_MAX, 1.3), plus a tile and a margin.
+  if ((npc.override === 'pointOut' || npc.override === 'waiting') && !w.pointed) {
+    const desk = spotPos(game, 'boss_desk');
+    const tiles = Math.abs(desk.x - npc.x) + Math.abs(desk.y - npc.y) + 1;
+    const left = (game.level.day.meetingAt - now) / GAME_MIN_PER_SEC;
+    if (left <= tiles / (NPC_SPEED * 1.3) + 0.3) {
+      w.pointed = true;
+      w.waiting = false;
+      endOverride(npc);
+    }
+  }
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
   // 3:31, the static still there and nobody came: a sigh, then he kneels at the cable himself (cast.js selfFix).
