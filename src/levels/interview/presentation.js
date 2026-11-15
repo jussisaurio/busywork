@@ -1,13 +1,14 @@
 // How The Interview looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
+import { at } from '../../config.js';
 import { C } from '../../render/palette.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
-import { PHONE_PROPS } from './painters.js';
-import { PHONE_IDS, PHONES, holdOf } from './phones.js';
+import { PHONE_PROPS, THINGS } from './painters.js';
+import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
 
 export const TITLE = {
   mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'She must miss it.'],
-  badge: ['@lin', '❌'],
+  badge: ['#interview', '❌'], // Lin and her interview's briefcase (painters.js THINGS)
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -25,10 +26,11 @@ export const DECOR = {
     { x: 17, y: 4, face: 'N', color: MUSTARD }, // kitchen table
     { x: 18, y: 4, face: 'N', color: MUSTARD },
   ],
-  windows: [{ x0: 2, x1: 5, y: 0 }, { x0: 24, x1: 27, y: 0 }],
+  windows: [{ x0: 24, x1: 27, y: 0 }], // (the boss's is painters.js: a bright one he can face)
   paintings: [{ x: 18, y: 5, variant: 1 }, { x: 23, y: 5, variant: 0 }],
   clock: { x: 7, y: 5 },
   props: PHONE_PROPS,
+  things: THINGS,
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
@@ -40,14 +42,28 @@ export const DECOR = {
 
 export const LOOKS = MEETING_LOOKS;
 
-// What the cast are seen doing (level 1's looks.js POSES documents the fields): a receiver to the ear on a line, or
-// while Lin checks hers; a shrug at someone else's interview; Kev crouched at the socket.
+// What the cast are seen doing (level 1's looks.js POSES documents the fields). On a line: the line's handset at
+// the ear (Lin slams hers down); someone else's interview gets a shrug. Kev jams Lin's plug in, crouches to plug in
+// his charger and stands by his mobile. A walk of their own day has something in hand (Kev's coffee and mobile,
+// Lin's tea and her notes); a summons (a ring) has them set off empty-handed with a ❗.
+const m = (game) => (game.clock ? game.clock.minute : 0);
+const onLine = (p) => (n, w) => n.override === `on_${p}_phone` && w[`line_${p}`] === n.id;
+const own = (n) => !n.override && n.pose !== 'sit';
 export const POSES = {
   arms: [
     { when: (n, w) => n.override === 'on_job' && n.id !== 'lin' && w[`job_${n.id}`] > 0.55, arms: 'shrug' },
-    { when: (n) => n.override === 'on_job' || (!!holdOf(n) && n.override.startsWith('on_')), arms: 'phone' },
-    { when: (n, w) => n.id === 'lin' && !!w.linCheck, arms: 'phone' },
-    { when: (n, w, game) => n.id === 'kev' && game.clock && game.clock.minute < w.kevReach, arms: 'reach' },
+    { when: (n, w) => n.id === 'lin' && n.override === 'on_lin_phone' && w.hold_lin > SLAM, arms: 'bang', angry: true },
+    ...PHONE_IDS.map((p) => ({ when: onLine(p), arms: 'phone', item: `#handset_${p}` })),
+    { when: (n) => n.override === 'on_job', arms: 'phone', item: '#handset_lin' },
+    { when: (n, w) => n.id === 'lin' && !!w.linCheck, arms: 'phone', item: '#handset_lin' },
+    { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevJam, arms: 'bang', angry: true },
+    { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevReach, arms: 'reach', item: '#mobile' },
+    { when: (n, w, game) => n.id === 'kev' && !!w.kevCharge && m(game) >= w.kevCharge && !n.moving, arms: 'carry', item: '#mobile' },
+    { when: (n, w, game) => n.id === 'lin' && !n.override && m(game) >= BACK_AT && m(game) < game.level.day.gatherAt, arms: 'folder' },
+    { when: (n, w, game) => n.id === 'lin' && !n.override && n.pose === 'sit' && m(game) >= at('3:04', START) && m(game) < BACK_AT, arms: 'mug', item: '#cup' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:06', START), arms: 'mug', item: '#mug' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:13', START), arms: 'carry', item: '#mobile' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < game.level.day.gatherAt, arms: 'mug', item: '#cup' },
   ],
   marks: [],
 };
@@ -73,8 +89,9 @@ export const VOICES = {
   },
 };
 
-// The bell is the rings' noise (phones.js NOISES, sfx 'phoneRing'); a phone on hold plays a little tune.
-const holdTune = (p) => ({ while: (w) => !!w[`line_${p}`] && !(p === 'lin' && (w.interview === 'lin' || w.interview === 'other')), every: [1.6, 2.4], sfx: 'jingle', spot: PHONES[p].at, opts: { gain: 0.35 } });
+// The bell is the rings' noise (phones.js NOISES, sfx 'phoneRing'); a phone on hold plays a little tune until it
+// ends (phones.js tune_<p>).
+const holdTune = (p) => ({ while: (w) => !!w[`tune_${p}`], every: [1.6, 2.4], sfx: 'jingle', spot: PHONES[p].at, opts: { gain: 0.35 } });
 
 export const SOUNDS = {
   actions: {
