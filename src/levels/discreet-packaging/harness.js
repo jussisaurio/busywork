@@ -10,7 +10,7 @@ const via = (p) => (p.via ? ' on his monitor 📺' : '');
 const SCREEN = { live: 'a live picture of the back office', static: 'static', wall: 'one giant leaf (the camera stares into the plant)' };
 const PARCEL = {
   shelf: 'on the parcel shelf of the pigeonholes',
-  drawer: 'jammed in your desk drawer (it sticks out)',
+  drawer: 'shut in your desk drawer',
   lin: 'in Lin\'s hands',
   bob: 'in Bob\'s arms',
   found: 'in someone else\'s hands',
@@ -39,15 +39,16 @@ export default {
 
   mapKey: [
     "MAP (# wall, T desk/counter, D door, H plant, P your desk, Q/S the pigeonholes (S its parcel shelf), C the camera on the wall, F a tall",
-    "     potted plant, O the power strip with the monitor's plug, M Bob's monitor, A label printer, B broom, E front door,",
+    "     potted plant, O the power strip with the monitor's plug, M Bob's monitor, B broom, E front door,",
     '     i item, @ you, b Bob, l Lin, * floor someone can see right now, the camera included):',
   ],
 
   outcomeText: (o) => (o.result === 'win' ? (o.routes.includes('bob')
-    ? 'WIN 🎉 (Lin hands Bob the pink box, his face on the label; he hugs it, in tears 🥹)'
-    : 'WIN 🎉 (no parcel at the mail call: Lin shrugs 🤷)')
+    ? `WIN 🎉 (Lin hands Bob the pink box, his face on the label; he hugs it, in tears 🥹${o.why === 'away' ? '; the brown box waits for you' : ''})`
+    : 'WIN 🎉 (no pink box at the mail call: nothing for you today 📭)')
     : o.result === 'caught' ? 'CAUGHT 😳 (someone has your parcel, or saw you at it)'
-    : o.result === 'blamed' ? `BLAMED 🪑❓ (the mail call went fine via ${o.routes.join(' + ')}, but you weren't in the office for it)`
+    : o.why === 'noshow' ? 'BLAMED 🪑 (Lin holds up the pink box with your face on it over your empty chair)'
+    : o.result === 'blamed' ? `BLAMED 🪑❓ (nothing for you at the mail call, and no you either: they look at your empty chair)`
     : o.why === 'found' ? 'FAIL 😳 (someone picked up your parcel and read the label: your face)'
     : 'FAIL 😳 (Lin holds up the pink box with your face on it; every head turns)'),
 
@@ -63,8 +64,10 @@ export default {
     if (n.override === 'fetching') bits.push('heading for the pink box on the floor');
     if (n.carry === 'parcel') bits.push('holding your pink box, reading the label');
     if (n.id === 'lin' && w.parcel === 'lin') bits.push(`carrying the pink box (${w.parcelFor === 'bob' ? "Bob's" : 'your'} face on the label)`);
+    if (n.id === 'lin' && w.brown === 'lin') bits.push(`carrying the brown box (${w.parcelFor === 'bob' ? 'your' : "Bob's"} face on the label)`);
     if (n.id === 'bob' && w.parcel === 'bob') bits.push('hugging the pink box');
-    if (n.id === 'lin' && w.mailEmpty) bits.push('shrugging');
+    if (n.id === 'bob' && w.brown === 'bob') bits.push('holding his brown box');
+    if (n.id === 'lin' && w.mailEmpty && n._atMail) bits.push('shrugging');
     return bits;
   },
 
@@ -80,9 +83,9 @@ export default {
     const bits = [`Bob's monitor shows ${screen}${you}`];
     if (w.camAim === 'plant') bits.push('the camera is turned into the plant');
     bits.push(`the pink parcel (${face} on the label) is ${where}`);
+    if (w.brown === 'shelf') bits.push(`Bob's plain brown parcel (${w.parcelFor === 'bob' ? 'your' : 'his'} face on the label) is on the parcel shelf`);
     if (w.plug === 'out') bits.push("the monitor's plug hangs out of the power strip");
     if (w.broom === 'stand') bits.push('a broom on its wall clip in the mailroom');
-    if (w.label === 'printer') bits.push("a spare address label with Bob's face sticks out of the label printer");
     if (floor.length) bits.push(`on the floor: ${floor.join(', ')}`);
     return `WORLD: ${bits.join('; ')}`;
   },
@@ -107,16 +110,15 @@ export default {
       case 'camera:replugged': return 'Bob plugged the monitor back in 😊';
       case 'broom:taken': return 'you took the broom';
       case 'broom:returned': return 'you put the broom back';
-      case 'label:printed': return "you took the spare label with Bob's face on it";
-      case 'parcel:relabelled': return "you stuck Bob's label over yours";
+      case 'parcel:swapped': return "you swapped the labels: Bob's face on the pink box, yours on his brown one; both back on the shelf";
       case 'parcel:taken': return 'you took your parcel';
-      case 'parcel:stashed': return 'you stuffed the parcel in your desk drawer; it won\'t shut';
+      case 'parcel:stashed': return 'you stuffed the parcel in your desk drawer and slammed it shut';
       case 'parcel:spotted': return `${name(p.by)} spots the pink box on the floor 💝❗`;
       case 'parcel:found': return `${name(p.by)} picks up the pink box and reads the label`;
       case 'parcel:snatched': return `${name(p.by)} takes the pink box off you and reads the label`;
-      case 'parcel:collected': return p.for === 'bob' ? "Lin collects the pink box from the pigeonholes (Bob's face on the label)" : 'Lin collects the pink box from the pigeonholes (your face on the label)';
-      case 'parcel:missing': return 'Lin finds the parcel shelf empty ❓';
-      case 'parcel:handed': return 'Lin hands Bob the pink box; he hugs it 🥹';
+      case 'parcel:collected': return p.for === 'bob' ? "Lin collects both boxes: the pink one has Bob's face on it, the brown one yours" : "Lin collects both boxes: Bob's brown one, and the pink one with your face on it";
+      case 'parcel:missing': return "Lin collects Bob's brown box; no pink box today 💝❓";
+      case 'parcel:handed': return 'Lin hands Bob the box with his face on it';
       default: return undefined;
     }
   },

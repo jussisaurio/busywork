@@ -8,7 +8,7 @@ import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
-import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, bigMug, glow } from './painters.js';
+import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, bigMug, glow, NOTE } from './painters.js';
 import { PHONES, OUTSIDE } from './phones.js';
 
 const IVORY = '#e8dfc8';
@@ -168,16 +168,16 @@ function heldHandset(ctx, look, s, px, py, colour, cx, cy) {
   return EAR;
 }
 
-// The hold tune: notes in the line's colour out of the handset at an ear.
-const notes = (ctx, ear, colour, t, k = 2) => notesFrom(ctx, ear.x + 2, ear.y - 6, colour, t, k);
+// The hold tune: white notes out of the handset at an ear (one colour on every line, as in the office).
+const notes = (ctx, ear, colour, t, k = 2) => notesFrom(ctx, ear.x + 2, ear.y - 6, NOTE, t, k);
 
 // A cardboard box held at the belly of a person facing the viewer (feet at x, y, scale sc), your plant in its corner.
-function box(ctx, x, y, sc, t) {
+function box(ctx, x, y, sc, t, skin) {
   const L = (v) => v * sc;
-  const top = y + L(-2);
-  plant(ctx, x + L(10), top + L(2), sc, t);
-  const w = L(32);
-  const h = L(13);
+  const top = y + L(-14);
+  plant(ctx, x + L(5), top + L(3), sc * 0.9, t);
+  const w = L(22);
+  const h = L(10);
   ctx.fillStyle = CARD;
   ctx.fillRect(x - w / 2, top, w, h);
   ctx.fillStyle = CARD_DARK;
@@ -186,6 +186,7 @@ function box(ctx, x, y, sc, t) {
   ctx.strokeStyle = CARD_DARK;
   ctx.lineWidth = 1;
   ctx.strokeRect(x - w / 2, top, w, h);
+  if (skin) for (const d of [-1, 1]) fillCircle(ctx, x + d * (w / 2), top + h * 0.55, L(2.2), skin); // your hands on it
 }
 
 // A round wall clock at (x, y), radius r, showing 3:mm.
@@ -408,53 +409,46 @@ function unplugged(ctx, game, t, e) {
   smugYou(ctx, game, t, 650, 322);
 }
 
-// ringout: Lin's phone rings red on her empty desk and nobody comes. The boss is on hold at his window, his back to
-// the room: he hears it (!) and stays with the tune. Lin is on hold at the kitchen phone. Kev types at his desk
-// across the office, too far off to hear it.
+// ringout: Lin's phone rings red on her empty desk, front and centre, and nobody comes: her chair stands empty. At
+// the back, everyone who could hear it is on hold: the boss at his window, his back to the room, and Lin at the
+// kitchen's wall phone.
 function ringout(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_Y - TAB.y);
   kitchenSide(ctx, 612);
-  view(ctx, 214, 112, 322, 180);
-  clock(ctx, 446, 126, 15, 31);
-  // Kev, far off at his own desk, typing
-  chair(ctx, 552, 214, OLIVE_CHAIR, 1.4);
-  const k = person(t);
-  k.pose = 'sit';
-  k.arms = 'type';
-  k.typing = true;
-  k.head = Math.PI / 2 + 0.15;
-  k.scale = 1.4;
-  drawPerson(ctx, looks(game).kev, k, 552, 214);
-  desk(ctx, 556, 220, 70, 22);
-  // the boss, at his window, his back to the room: his desk phone on the desk at his side
-  desk(ctx, 228, 268, 90, 40);
-  phone(ctx, 246, 266, 2, PHONES.boss.lamp, t, { lifted: true });
+  view(ctx, 196, 108, 300, 174);
+  clock(ctx, 446, 122, 15, 31);
+  // the boss at his window, small at the back, his back to the room, on hold
+  desk(ctx, 214, 236, 70, 26);
+  phone(ctx, 228, 236, 1.5, PHONES.boss.lamp, t, { lifted: true });
   const b = person(t);
   b.dir = -Math.PI / 2;
-  b.head = -Math.PI / 2 + 0.55;
+  b.head = -Math.PI / 2 + Math.sin(t * 1.1) * 0.15;
   b.arms = 'phone';
-  b.scale = 2.2;
-  drawPerson(ctx, looks(game).boss, b, 282, 238);
-  const ear = heldHandset(ctx, looks(game).boss, b, 282, 238, PHONES.boss.lamp, 236, 264);
-  notes(ctx, ear, PHONES.boss.lamp, t);
-  bubble(ctx, ['❗'], 282, 158, e);
-  // Lin's empty desk, her phone ringing with the outside line
-  chair(ctx, 446, 226, TEAL_CHAIR, 2.4);
-  desk(ctx, 446, 236, 160);
-  linsThings(ctx, 236, t, 2, { px: 386, mx: 510, nx: 410 });
-  phone(ctx, 462, 234, 2.3, PHONES.lin.lamp, t, { ring: OUTSIDE });
-  // Lin on hold at the kitchen's wall phone, her back half to us
-  kitchenPhone(ctx, 716, 150, 2.2, true);
+  b.scale = 1.7;
+  drawPerson(ctx, looks(game).boss, b, 262, 216);
+  const ear = heldHandset(ctx, looks(game).boss, b, 262, 216, PHONES.boss.lamp, 222, 234);
+  notes(ctx, ear, null, t, 1.5);
+  // Lin on hold at the kitchen's wall phone, small at the back
+  kitchenPhone(ctx, 700, 150, 1.8, true);
   const l = person(t);
   l.dir = -Math.PI / 2 + 0.5;
   l.head = l.dir + Math.sin(t * 0.8) * 0.15;
   l.arms = 'phone';
-  l.scale = 2.2;
-  drawPerson(ctx, looks(game).lin, l, 686, 252);
-  const lear = heldHandset(ctx, looks(game).lin, l, 686, 252, OUTSIDE, 728, 164);
-  notes(ctx, lear, OUTSIDE, t + 0.3);
-  smugYou(ctx, game, t, 380, 328);
+  l.scale = 1.8;
+  drawPerson(ctx, looks(game).lin, l, 676, 232);
+  const lear = heldHandset(ctx, looks(game).lin, l, 676, 232, OUTSIDE, 710, 162);
+  notes(ctx, lear, null, t + 0.3, 1.5);
+  // front and centre: Lin's empty chair at her desk, her phone ringing red with the outside line
+  ctx.save();
+  ctx.globalAlpha = 0.22;
+  fillEllipse(ctx, 450, 300, 150, 30, '#fff7d0');
+  ctx.restore();
+  chair(ctx, 450, 272, TEAL_CHAIR, 3.1);
+  desk(ctx, 450, 286, 240, 50);
+  linsThings(ctx, 286, t, 2.2, { px: 352, mx: 548, nx: 394 });
+  phone(ctx, 466, 282, 3, PHONES.lin.lamp, t, { ring: OUTSIDE });
+  smugYou(ctx, game, t, 160, 330);
 }
 
 // fail: Lin got your job. She sits in your chair at your desk (your nameplate, your red mug), beaming into the
@@ -480,19 +474,19 @@ function fail(ctx, game, t, e) {
   desk(ctx, 415, 250, 250);
   phone(ctx, 458, 248, 2.1, PHONES.lin.lamp, t, { lifted: true });
   heldHandset(ctx, looks(game).lin, l, 400, ly, PHONES.lin.lamp, 444, 256);
-  briefcase(ctx, 330, 250, 2.2);
-  nameplate(ctx, 526, 262, '@player', 2);
-  bigMug(ctx, 494, 238, C.tomato, 2.2, t);
+  briefcase(ctx, 300, 252, 2.2);
+  nameplate(ctx, 350, 266, '@player', 2.7);
+  bigMug(ctx, 520, 236, C.tomato, 2.9, t);
   bubble(ctx, ['💼', '😊'], 400, 160, e);
   // you, beside the desk, holding the box
   const p = person(t);
-  p.arms = 'desk';
+  p.arms = 'idle';
   p.head = Math.PI / 2 + 0.5;
   p.sweat = true;
   p.scale = 2.3;
-  const py = 298;
-  drawPerson(ctx, looks(game).player, p, 630, py);
-  box(ctx, 630, py, 2.3, t);
+  const py = 300;
+  drawPerson(ctx, looks(game).player, p, 650, py);
+  box(ctx, 650, py, 2.3, t, looks(game).player.skin);
 }
 
 // The switchboard as on the map, big: cards (a band in each line's colour; the outside line a briefcase, the
@@ -678,7 +672,7 @@ export const END_SCENES = {
     answered: { win: true, icons: ['@boss', '💼', '❓', '@lin', '😠'], draw: answered },
     busy: { win: true, icons: ['@boss', '🎵', '@lin', '😠'], draw: busy },
     unplugged: { win: true, icons: ['🔌', '@lin', '🕞', '❓'], draw: unplugged },
-    ringout: { win: true, icons: ['@boss', '🎵', '🔔', '@lin', '🎵'], draw: ringout },
+    ringout: { win: true, icons: ['🔔', '🪑'], draw: ringout },
     fail: { win: false, icons: ['@lin', '💼', '😊', '📦'], draw: fail },
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: caught },
     blamed: { win: false, icons: ['@boss', '👉', '🪑'], draw: blamed },

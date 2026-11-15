@@ -6,7 +6,8 @@ import { clamp, easeOutCubic, rrect, fillCircle, fillEllipse, clockHands } from 
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
-import { HELD, holding, drawLaptop, drawLaptopShut, drawCup, drawCigarette, drawFinger, tick } from './things.js';
+import { tintOf } from '../../render/things.js';
+import { drawLaptop, tick, crossMark } from './things.js';
 
 const WALL = 78; // back wall height in the pictures
 
@@ -18,8 +19,13 @@ const DESKS = {
   kev: { chair: ['#5f6b3a', '#47512a'], mug: C.olive, prop: 'earbuds' },
 };
 
-// Whose desk each of his four checks is, in order (index.js INSPECTIONS), and the world field it records.
-const CHECKED = [['boss', 'atBoss'], ['lin', 'atLin'], ['player', 'atYou'], ['kev', 'atKev']];
+// His four checks in order (index.js INSPECTIONS): the world field each records. A desk he crossed is in
+// world.crossed (cast.js auditGoesOn).
+const RECORDS = ['atBoss', 'atLin', 'atYou', 'atKev'];
+const marksOf = (w) => RECORDS.map((r, i) => (w?.crossed?.includes(i) ? 'cross' : w?.[r] ? 'tick' : null));
+
+// The colour a laptop's lid is drawn in: its owner's (index.js ITEMS tint 'owner').
+const lidOf = (game, owner) => tintOf(game, `laptop_${owner}`) ?? '#2a2e35';
 
 function office(ctx) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
@@ -27,9 +33,9 @@ function office(ctx) {
 }
 
 // A desk seen from the front, its owner sitting (or not) behind it: (x, y) the top-left of the desk top, w wide.
-// The owner's chair back shows behind it; on it, the owner's mug and prop, the back of the monitor, and the
-// laptop (drawn: things.js), or the cable it was unplugged from.
-function desk(ctx, x, y, w, owner, laptop, t) {
+// The owner's chair back shows behind it; on it, the owner's mug and prop, the back of the monitor, and a laptop
+// (drawn: things.js) with its lid in `lid`, its owner's colour, or with no lid the cable it was unplugged from.
+function desk(ctx, x, y, w, owner, lid, t) {
   const st = DESKS[owner];
   const d = 50; // depth of the top
   ctx.fillStyle = 'rgba(40,25,15,0.25)';
@@ -104,7 +110,7 @@ function desk(ctx, x, y, w, owner, laptop, t) {
   }
   // the laptop, or the loose cable where it was
   const lx = x + w * 0.3;
-  if (laptop) drawLaptop(ctx, lx, y + 40, 42);
+  if (lid) drawLaptop(ctx, lx, y + 40, 42, 0, lid);
   else {
     ctx.strokeStyle = '#2b2622';
     ctx.lineWidth = 2.5;
@@ -133,8 +139,8 @@ function chairBack(ctx, x, y, owner) {
 }
 
 // The auditor's clipboard held up to us: his list, one written row per desk, a box at the end of each, ticked
-// in pen for each desk he has passed.
-function clipboard(ctx, x, y, ticks, t) {
+// or crossed in pen as he marked it (marks: 'tick', 'cross' or null per desk).
+function clipboard(ctx, x, y, marks, t) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(Math.sin(t * 1.6) * 0.03);
@@ -156,7 +162,8 @@ function clipboard(ctx, x, y, ticks, t) {
     ctx.strokeStyle = 'rgba(40,44,70,0.45)';
     ctx.lineWidth = 1;
     ctx.strokeRect(4.5, ry - 4.5, 8, 8);
-    if (i < ticks) tick(ctx, 9, ry - 1, 4.6, '#2f7a3d', 2);
+    if (marks[i] === 'tick') tick(ctx, 9, ry - 1, 4.6, '#2f7a3d', 2);
+    else if (marks[i] === 'cross') crossMark(ctx, 8.5, ry - 0.5, 4, '#c8432f', 2);
   }
   ctx.restore();
 }
@@ -169,7 +176,8 @@ function auditor(game, t) {
 }
 
 // --- Wins: he counted four. You smug at your desk, the auditor pleased with four ticks, and the laptop's owner
-// in the act that let it run: smoking in the lobby, out with a coffee, carrying it back to his own desk.
+// in the act that let it run: smoking in the lobby, out with a coffee, carrying it back to his own desk. The
+// laptop on your desk is the owner's, in his colour.
 function tableauWin(owner) {
   return (ctx, game, t, e) => {
     office(ctx);
@@ -183,17 +191,17 @@ function tableauWin(owner) {
     p.head = Math.PI / 2 - 0.5 + Math.sin(t * 1.4) * 0.12;
     p.scale = 2.3;
     drawPerson(ctx, game.level.looks.player, p, 300, 226 - Math.abs(Math.sin(t * 3)) * 2);
-    desk(ctx, 214, 236, 190, 'player', owner !== 'kev', t);
+    desk(ctx, 214, 236, 190, 'player', owner !== 'kev' && lidOf(game, owner), t);
     // the auditor, pleased: four ticks
     const a = auditor(game, t);
     a.dir = Math.PI / 2 + 0.25;
     a.head = Math.PI / 2 + 0.35;
     a.arms = 'desk';
     drawPerson(ctx, game.level.looks.auditor, a, 476, 290);
-    clipboard(ctx, 486, 304, 4, t);
+    clipboard(ctx, 486, 304, ['tick', 'tick', 'tick', 'tick'], t);
     bubble(ctx, ['😊'], 476, 196, e, 'speech', 1.4);
-    if (owner === 'lin') walker(ctx, game, t, e, 'lin', (c, x, y) => drawCup(c, x, y, 11, t));
-    if (owner === 'kev') walker(ctx, game, t, e, 'kev', (c, x, y) => drawLaptopShut(c, x, y + 1, 14, DESKS.kev.mug));
+    if (owner === 'lin') walker(ctx, game, t, e, 'lin', '#cup');
+    if (owner === 'kev') walker(ctx, game, t, e, 'kev', '#laptop_kev');
   };
 }
 
@@ -205,12 +213,9 @@ function lobbySmoke(ctx, game, t) {
   b.dir = -0.2;
   b.head = -0.5 + Math.sin(t * 0.8) * 0.15;
   b.arms = 'puff';
-  b.item = HELD;
+  b.item = '#cigarette';
   b.scale = 2.3;
-  const fx = Math.cos(b.dir);
-  const fy = Math.sin(b.dir) * 0.6;
-  const n = Math.hypot(fx, fy - 0.6);
-  drawPerson(holding(ctx, (c, x, y) => drawCigarette(c, x, y + 2, fx / n, (fy - 0.6) / n, 6, t)), game.level.looks.boss, b, 696, 262);
+  drawPerson(ctx, game.level.looks.boss, b, 696, 262);
   ctx.fillStyle = 'rgba(170,215,234,0.45)';
   ctx.fillRect(gx - 8, TAB.y, 16, TAB.h);
   ctx.fillStyle = C.glassEdge;
@@ -220,15 +225,15 @@ function lobbySmoke(ctx, game, t) {
   for (let i = 0; i < 3; i++) ctx.fillRect(gx - 4 + i * 3, TAB.y + 30 + i * 70, 2, 34);
 }
 
-// Lin with her coffee, or Kev with his laptop, walking off to the right, humming: none the wiser. paint draws
-// what they carry (things.js).
-function walker(ctx, game, t, e, id, paint) {
+// Lin with her coffee, or Kev with his laptop, walking off to the right, humming: none the wiser. item: the
+// thing in their hand ('#cup', '#laptop_kev': render/things.js, index.js ITEMS).
+function walker(ctx, game, t, e, id, item) {
   const k = clamp(e / 3.2, 0, 1);
   const x = (id === 'kev' ? 560 : 590) + (id === 'kev' ? 70 : 100) * easeOutCubic(k);
   const walking = k < 0.98;
   if (id === 'kev') { // his desk at the edge of the picture, where it goes back: his chair, his mug, the loose cable
     chairBack(ctx, 742, 176, 'kev');
-    desk(ctx, 690, 220, 150, 'kev', false, t);
+    desk(ctx, 690, 220, 150, 'kev', null, t);
   }
   const w = person(t);
   w.dir = walking ? 0.15 : Math.PI / 2 - 0.3;
@@ -237,45 +242,58 @@ function walker(ctx, game, t, e, id, paint) {
   w.moving = walking;
   w.phase = t * 7;
   w.arms = 'mug';
-  w.item = HELD;
+  w.item = item;
   w.scale = 2.3;
-  drawPerson(holding(ctx, paint), game.level.looks[id], w, x, 290);
+  drawPerson(ctx, game.level.looks[id], w, x, 290);
   bubble(ctx, ['🎵'], x + 4, 206, e, 'speech', 1.3);
 }
 
-// --- Caught: you carry your desk in a box to the lift, and he points the way. What he found: a desk with no
-// laptop (its owner's chair and mug, the cable hanging loose, his laptop-and-cross sign), or you with a laptop in
-// your hands.
+// --- Fired and caught: you carry your desk in a box to the lift, and he points the way.
 const LIFT = { x: 626, y: TAB.y, w: 100, h: 96 };
 
-function tableauCaught(ctx, game, t, e) {
-  office(ctx);
-  drawLift(ctx, t);
-  const why = game.caught?.reason ?? 'inspection';
-  let ax = 300;
-  if (why === 'inspection') {
-    const w = game.world || {};
-    const empty = CHECKED.find(([, rec]) => !w[rec])?.[0] ?? 'player';
-    chairBack(ctx, 286, 170, empty);
-    desk(ctx, 206, 214, 160, empty, false, t);
-    bubble(ctx, ['💻', '❌'], 286, 180, e, 'sign', 1.5);
-    ax = 420;
-  } else {
-    // seen with it: the laptop where it fell
-    fillEllipse(ctx, 386, 318, 18, 5, 'rgba(0,0,0,0.2)');
-    drawLaptop(ctx, 386, 318, 40, -0.22);
-    bubble(ctx, ['💻', '❗'], ax + 10, 200, e, 'alert');
-  }
-  // the auditor, rooted to the spot, pointing the way out
+// The auditor, rooted to the spot, pointing the way out (a bare pointing hand: render/characters.js).
+function pointsOut(ctx, game, t, x) {
   const a = auditor(game, t);
   a.dir = 0.08;
   a.head = 0.08 + Math.sin(t * 2.4) * 0.08;
   a.arms = 'point';
-  a.item = HELD;
   a.angry = true;
-  const skin = game.level.looks.auditor.skin;
-  drawPerson(holding(ctx, (c, x, y) => drawFinger(c, x, y, skin)), game.level.looks.auditor, a, ax + Math.max(0, Math.sin(t * 5)) * 3, 290);
-  walkOfShame(ctx, game, t, e, why === 'inspection' ? 500 : 440);
+  drawPerson(ctx, game.level.looks.auditor, a, x + Math.max(0, Math.sin(t * 5)) * 3, 290);
+}
+
+const RECORD = { boss: 'atBoss', lin: 'atLin', you: 'atYou', kev: 'atKev' }; // index.js WHY -> RECORDS
+
+// Fired at the sign-off: the desk he crossed first (why: index.js meeting.verdict), its laptop gone, the cable
+// hanging loose, his laptop-and-cross sign over it; his list on the desk, crossed.
+const tableauFired = (why) => (ctx, game, t, e) => {
+  const owner = why === 'you' ? 'player' : why;
+  office(ctx);
+  drawLift(ctx, t);
+  chairBack(ctx, 286, 170, owner);
+  desk(ctx, 206, 214, 160, owner, null, t);
+  bubble(ctx, ['💻', '❌'], 286, 180, e, 'sign', 1.5);
+  const w = game.world;
+  const marks = w?.crossed?.length ? marksOf(w) : RECORDS.map((r) => (r === RECORD[why] ? 'cross' : 'tick'));
+  ctx.save();
+  ctx.translate(330, 236);
+  ctx.rotate(0.2);
+  clipboard(ctx, 0, 0, marks, 0);
+  ctx.restore();
+  pointsOut(ctx, game, t, 420);
+  walkOfShame(ctx, game, t, e, 500);
+};
+
+// Caught: he saw you with a laptop in your hands. The laptop where it fell, in its owner's colour.
+function tableauCaught(ctx, game, t, e) {
+  office(ctx);
+  drawLift(ctx, t);
+  const type = game.player?.held ?? game.caught?.item;
+  const lid = typeof type === 'string' && type.startsWith('laptop_') ? tintOf(game, type) : null;
+  fillEllipse(ctx, 386, 318, 18, 5, 'rgba(0,0,0,0.2)');
+  drawLaptop(ctx, 386, 318, 40, -0.22, lid ?? undefined);
+  bubble(ctx, ['💻', '❗'], 310, 200, e, 'alert');
+  pointsOut(ctx, game, t, 300);
+  walkOfShame(ctx, game, t, e, 440);
 }
 
 // You, your desk in a box, walking from x0 to the open lift: slow, then a stop at the doors.
@@ -344,14 +362,14 @@ function tableauBlamed(ctx, game, t, e, o) {
   ctx.closePath();
   ctx.fill();
   chairBack(ctx, 300, 176, 'player');
-  desk(ctx, 214, 226, 190, 'player', !kev, t);
+  desk(ctx, 214, 226, 190, 'player', !kev && lidOf(game, o.routes[0]), t);
   const a = auditor(game, t);
   a.dir = Math.PI - 0.15;
   a.head = Math.PI - 0.35 + Math.sin(t * 1.3) * 0.08; // at your empty chair
   a.arms = 'desk';
   a.angry = true;
   drawPerson(ctx, game.level.looks.auditor, a, 446, 290);
-  clipboard(ctx, 432, 304, 4, t);
+  clipboard(ctx, 432, 304, ['tick', 'tick', 'tick', 'tick'], t);
   bubble(ctx, ['@player', '❓'], 446, 196, e, 'speech', 1.3); // where are you?
   walkOfShame(ctx, game, t, e, 520);
 }
@@ -372,26 +390,36 @@ function tableauFail(ctx, game, t, e, o) {
   p.head = Math.PI / 2 + Math.sin(t * 2.4) * 0.4;
   p.scale = 2.3;
   drawPerson(ctx, game.level.looks.player, p, 330, 226);
-  desk(ctx, 244, 236, 190, 'player', false, t);
+  desk(ctx, 244, 236, 190, 'player', null, t);
   const a = auditor(game, t);
   a.dir = Math.PI / 2 + 0.3;
   a.head = -Math.PI / 2 - 0.4; // up at the clock
   a.arms = 'desk';
   drawPerson(ctx, game.level.looks.auditor, a, 600, 290);
-  const w = game.world || {};
-  clipboard(ctx, 612, 304, CHECKED.filter(([, rec]) => w[rec]).length, t);
+  clipboard(ctx, 612, 304, marksOf(game.world), t);
   bubble(ctx, ['❓'], 600, 196, e, 'thought', 1.4);
 }
 
+// A fired card names whose desk got the ❌ (the first one: index.js meeting.verdict), then his finger and your box.
+const fired = (who, face) => ({ win: false, icons: [face, '💻', '❌', '👉', '📦'], draw: tableauFired(who) });
+
 export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? o.routes[0] : o?.result ?? 'fail'),
+  kindOf: (o) => {
+    if (o?.result === 'win') return o.routes[0];
+    if (o?.result === 'fail') return o.why ? `fired_${o.why}` : 'fail';
+    return o?.result ?? 'fail';
+  },
   scenes: {
     // icon rows (the punchline): who let the laptop run and how, the laptop, his two ticks for it
     boss: { win: true, icons: ['@boss', '🚬', '💻', '✔️', '✔️'], draw: tableauWin('boss') },
     lin: { win: true, icons: ['@lin', '☕', '💻', '✔️', '✔️'], draw: tableauWin('lin') },
     kev: { win: true, icons: ['💻', '✔️', '✔️', '@kev', '🎵'], draw: tableauWin('kev') },
-    fail: { win: false, icons: ['@auditor', '📋', '❓'], draw: tableauFail },
-    caught: { win: false, icons: ['@auditor', '👉', '@player', '📦'], draw: tableauCaught }, // he points you out: your box
+    fired_boss: fired('boss', '@boss'),
+    fired_lin: fired('lin', '@lin'),
+    fired_you: fired('you', '@player'),
+    fired_kev: fired('kev', '@kev'),
+    fail: { win: false, icons: ['@auditor', '📋', '❓'], draw: tableauFail }, // the sign-off before he finished
+    caught: { win: false, icons: ['@auditor', '👀', '💻', '👉', '📦'], draw: tableauCaught }, // he saw it in your hands
     blamed: { win: false, icons: ['@auditor', '😠', '🪑', '📦'], draw: tableauBlamed }, // your empty chair at the sign-off, he glares, your box
   },
 };

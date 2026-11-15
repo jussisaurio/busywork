@@ -2,12 +2,17 @@
 // itself (an NPC who walks to a light switch is a lure; a light switch's clack is a noise).
 //
 // Level data (level.darkness, optional; absent: nothing is ever dark, and sight and render take their plain path):
-//   rooms   [{ zone, lit(world) }]: a zone name (level.zones) or a list of names, dark while lit(world) is false.
-//           A point in no room is always lit (daylight by a glass front). Overlapping rooms: dark if any is dark.
+//   rooms   [{ zone, lit(world), dip? }]: a zone name (level.zones) or a list of names, dark while lit(world) is
+//           false. A point in no room is always lit (daylight by a glass front). Overlapping rooms: dark if any is dark.
+//           dip(world, game), optional, render only: 0..1, how far a LIT room dims right now (a flicker, a
+//           brownout): its veil drawn at that fraction. Sight ignores it: a lit room is lit.
 //   near    { radius, fov? }: how far anyone sees into the dark without a torch (default NEAR_RADIUS); fov
 //           (radians, default the viewer's own) of that near sight
-//   torch   { when(npc, world), fov, radius }: whether this NPC's torch is on right now, and its beam: a cone
+//   torch   { when(npc, world), fov, radius, aim? }: whether this NPC's torch is on right now, and its beam: a cone
 //           along his gaze (his glance included, so a glance sweeps it). Optional: no torch, no beams.
+//           aim(npc, world, game), optional: where his beam points instead of his gaze: a spot name (level.spots),
+//           a point { x, y } (tiles), a direction (radians), or null for his gaze. An aimed beam ignores his
+//           glance, so it rests on the same floor every loop (sight and render both follow it).
 //   controls  [{ tile, kind, on(world) }], optional: the light switches and breaker panels, drawn as the real thing
 //           on their wall tile (render/darkness.js), on the side that faces the room. tile: a map letter (its
 //           first tile, as decor.props); kind: one of CONTROL_KINDS ('switch' a wall switch, 'breaker' a breaker
@@ -45,6 +50,21 @@ export function darkZones(game) {
   return out;
 }
 
+// The lit rooms that dip right now (rooms[].dip > 0): [{ zones: [rects], k (0..1) }]. Render only.
+export function dimZones(game) {
+  const d = game.level.darkness;
+  if (!d) return NONE;
+  let out = NONE;
+  for (const room of d.rooms) {
+    if (!room.dip || !room.lit(game.world)) continue;
+    const k = Number(room.dip(game.world, game));
+    if (!(k > 0)) continue;
+    if (out === NONE) out = [];
+    out.push({ zones: zonesOf(room).map((name) => game.level.zones[name]), k: Math.min(1, k) });
+  }
+  return out;
+}
+
 // Is the point (x, y) dark right now?
 export function isDark(game, x, y) {
   const d = game.level.darkness;
@@ -63,11 +83,28 @@ export function nearViewer(game, viewer) {
   return { ...viewer, radius: near?.radius ?? NEAR_RADIUS, fov: near?.fov ?? viewer.fov };
 }
 
-// His torch beam as a viewer (along his gaze), or null if he has no torch on.
+// His torch beam as a viewer (along his gaze, or where torch.aim points it), or null if he has no torch on.
 export function torchViewer(game, npc, viewer) {
   const torch = game.level.darkness?.torch;
   if (!torch || !npc.active || !torch.when(npc, game.world)) return null;
-  return { ...viewer, fov: torch.fov, radius: torch.radius };
+  const aimed = torch.aim ? aimDir(game, npc, torch.aim(npc, game.world, game)) : null;
+  return { ...viewer, dir: aimed ?? viewer.dir, fov: torch.fov, radius: torch.radius };
+}
+
+// torch.aim's answer as a direction from the holder, or null (his gaze).
+function aimDir(game, npc, aim) {
+  if (aim === null || aim === undefined) return null;
+  if (typeof aim === 'number') return Number.isFinite(aim) ? aim : null;
+  let p = aim;
+  if (typeof aim === 'string') {
+    const s = game.level.spots?.[aim];
+    if (!s) return null;
+    p = { x: s.x + 0.5, y: s.y + 0.5 };
+  }
+  const dx = Number(p?.x) - npc.x;
+  const dy = Number(p?.y) - npc.y;
+  if (!Number.isFinite(dx) || !Number.isFinite(dy) || (dx === 0 && dy === 0)) return null;
+  return Math.atan2(dy, dx);
 }
 
 // Does this viewer see the dark point (x, y)? (The caller already knows it is dark.)

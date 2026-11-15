@@ -28,8 +28,8 @@ export const CAST = [
     coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // waiting by her phone (phones.js: she checks it)
-      s('3:04', { do: 'sit', spot: 'kitchen_lin' }), // nerves: tea
-      s('3:22', { do: 'sit', spot: 'lin_desk' }), // back in time for the call
+      s('3:03', { do: 'sit', spot: 'kitchen_lin' }), // nerves: tea
+      s('3:22', { do: 'sit', spot: 'lin_notes' }), // back in time for the call, rehearsing from her notes
     ],
   },
   {
@@ -42,17 +42,19 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'visit', spot: 'kitchen_kev' }), // coffee
-      s('3:06', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his charging spot: the socket by Lin's desk
-      s('3:13', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
+      s('3:04', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his charging spot: the socket by Lin's desk
+      s('3:15', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
       s('3:27', { do: 'sit', spot: 'kev_desk' }),
     ],
   },
 ];
 
 export const BEHAVIOURS = {
-  // Kev charges his mobile at the socket by Lin's desk: he crouches and plugs his charger in under her plug, then
-  // stands by it until 3:13 (phones.js: kevCharge). Her plug lying loose is in his way: ❗, he jams it back into
-  // the wall (a spark: phones.js does it at kevJamAt, if he is still there), 😤, then plugs his charger in.
+  // Kev charges his mobile at the socket by Lin's desk (his own, on the wall by his desk, is taped off and sparks:
+  // painters.js): he crouches, plugs his charger in under her plug, and stands by it scrolling until 3:15
+  // (phones.js: kevCharge). Her plug lying loose is in his way: ❗, he picks it up and turns to hold it up at her
+  // empty chair, 😠, then turns back and jams it into the wall (phones.js: the turn, and the jam with a spark at
+  // kevJamAt, if he is still there), and plugs his charger in.
   plugIn: {
     arrive(game, npc, sim) {
       const w = game.world;
@@ -61,15 +63,15 @@ export const BEHAVIOURS = {
       if (w.cord !== 'out') {
         w.kevReach = m + 0.8;
         w.kevCharge = m + 0.6;
-        sim.holdFor(npc, 1.6);
-        return sim.speak(game, npc, [{ say: ['🔋'], kind: 'thought', ttl: 1.1, after: 0.9 }]);
+        return sim.holdFor(npc, 1.6);
       }
-      w.kevJam = m + 0.9;
-      w.kevJamAt = m + 0.5;
-      w.kevReach = m + 1.6;
-      w.kevCharge = m + 1.4;
-      sim.holdFor(npc, 2.9);
-      sim.speak(game, npc, [{ say: ['❗'], ttl: 1.0 }, { say: ['😤'], after: 1.1, ttl: 1.1 }]); // ❗ lasts into the spark
+      w.kevLift = m + 0.35; // he picks her plug up off the floor, and holds it up until he jams it in
+      w.kevJamAt = m + 1.25;
+      w.kevJam = m + 1.6;
+      w.kevReach = m + 2.1;
+      w.kevCharge = m + 1.9;
+      sim.holdFor(npc, 3.7);
+      sim.speak(game, npc, [{ say: ['❗'], ttl: 0.7 }, { say: ['😠'], after: 0.75, ttl: 1.2 }]);
     },
   },
 };

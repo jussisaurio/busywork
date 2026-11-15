@@ -1,4 +1,4 @@
-// How Early Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
+// How The Last Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
@@ -16,8 +16,8 @@ const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
-// A wall clock shows the true minute plus however fast it is, and each push hangs it a little more crooked. The
-// stepladder under it is part of the same drawing (painters.js).
+// A wall clock shows the true minute plus however fast it is, red over the minutes it gained, and each push hangs it
+// more crooked (one push is plain to see). The stepladder under it is part of the same drawing (painters.js).
 const wallClock = (clock, lean) => ({
   tile: clock === 'boss' ? 'Q' : 'O',
   draw: officeTimeClock,
@@ -26,7 +26,8 @@ const wallClock = (clock, lean) => ({
     return {
       minute: (game.clock ? game.clock.minute : 0) + fast,
       start: game.level.day.start,
-      tilt: lean * Math.min(0.45, fast * 0.012),
+      tilt: fast ? lean * Math.min(0.6, 0.25 + fast * 0.006) : 0,
+      ahead: fast,
     };
   },
 });
@@ -83,12 +84,20 @@ export const DECOR = {
   legendAt: { x: 21.45, y: 14.55 }, // on the blank wall strip right of the lobby, above the pavement
 };
 
-export const LOOKS = OFFICE_LOOKS;
+// Level 1's people, and the caretaker: a cap and a blue work jacket, not office clothes.
+export const LOOKS = {
+  ...OFFICE_LOOKS,
+  caretaker: {
+    body: '#3f6f8f', bodyDark: '#2c5068', skin: '#e0b08a', skinDark: '#c08e68', hair: '#5a4a3a',
+    hairStyle: 'cap', mustache: true, legs: '#4a4038', wide: 1.1, tall: 1.05, head: 6.8, bubbleDy: 32, eyeDy: 13,
+  },
+};
 
 export const POSES = {
   arms: [
-    { when: (n, w, game) => n._reachUntil > game.loopTime, arms: 'reach' }, // setting a clock right
+    { when: (n, w, game) => n._reachUntil > game.loopTime, arms: 'reach' }, // setting a clock right (a battery)
     { when: (n, w, game) => n._shrugUntil > game.loopTime, arms: 'shrug' }, // not home time yet
+    { when: (n, w, game) => n._laptopUntil > game.loopTime, arms: 'carry', item: '#laptop' }, // Kev, about to go
   ],
   marks: [
     { when: (n) => n.override === 'hunting', angry: true },
@@ -124,7 +133,7 @@ export const SOUNDS = {
   },
 };
 
-// Level 1's voices (src/levels/meeting/voices.js), copied.
+// Level 1's voices (src/levels/meeting/voices.js), copied, and the caretaker's: Kev's, lower and slower.
 export const VOICES = {
   boss: {
     wave: 'sawtooth', f0: 92, spread: 0.06, decl: 0.24, syl: [0.15, 0.21], gap: [0.04, 0.07], atk: 0.02,
@@ -146,5 +155,12 @@ export const VOICES = {
     vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
     post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
     pitch: { notice: 440, tattle: 0.84, grumble: 190 },
+  },
+  caretaker: {
+    wave: 'square', f0: 112, spread: 0.05, decl: 0.1, syl: [0.15, 0.2], gap: [0.02, 0.04], atk: 0.03,
+    fmt: 0.88, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.1, bodyF: 420,
+    vowels: ['o', 'u', 'uh', 'a'], cons: 0.2, consF: 2200, consAmp: 0.12,
+    post: [['lowpass', 1500, 0.8]], gain: 0.55,
+    pitch: { notice: 380, tattle: 0.8, grumble: 170 },
   },
 };

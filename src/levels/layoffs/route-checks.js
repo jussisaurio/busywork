@@ -3,93 +3,82 @@ const said = (log, who, icons) => log.some((e) => e.name === 'say' && e.payload.
 const mustSay = (log, who, icons) => {
   if (!said(log, who, icons)) throw new Error(`${who} never said ${icons.join('')}`);
 };
+const mustFire = (log, name) => {
+  if (!log.some((e) => e.name === name)) throw new Error(`${name} never fired`);
+};
 
-// Kev's hoodie once he's gone home (3:25), wait at his desk for the computer to act up (3:35), offer, edit.
-const HOODIE_EDIT = ['pretend until 3:26', 'goto kev_desk pretend', 'interact', 'pretend until 3:35.1', 'goto boss_pc', 'interact', 'wait 2s', 'interact'];
+// 3:26: his screen is static again and Kev went home. Kneel at the plug behind his desk while he sits there: he
+// leaves you to it (☕👉 you) and goes for a coffee.
+const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact'];
 
 export default [
   {
-    name: 'do nothing → Kev goes home (👋🏠, Lin waves back) → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → ✔️ → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
       run('pretend until 3:45');
-      mustSay(log, 'kev', ['🥵']); // hot: the hoodie comes off, over his chair
+      mustSay(log, 'boss', ['☎️', '@kev']);
+      mustSay(log, 'lin', ['😨']);
+      mustSay(log, 'lin', ['😌']);
       mustSay(log, 'kev', ['👋', '🏠']);
       mustSay(log, 'lin', ['👋']);
+      mustSay(log, 'boss', ['@kev', '❓']); // 3:26: he rang Kev's desk, and nobody picked up
+      mustSay(log, 'boss', ['🔌']);
+      mustSay(log, 'boss', ['@player', '✔️']);
     },
   },
   {
-    name: 'edit the list as yourself while the boss is in the restroom → Lin sees you at his screen → fail',
+    name: "his cable while Kev is still here → 🙅 Kev's job",
     expect: { result: 'fail' },
-    cmds: ['pretend until 3:20', 'goto boss_pc pretend', 'interact', 'goto my_seat', 'pretend until 3:45'],
-  },
-  {
-    name: "hoodie: Kev's hoodie once he's gone, offer to fix the boss's computer while it acts up and Lin is in the restroom, put the hoodie back → win",
-    expect: { result: 'win', routes: ['hoodie'] },
-    play({ run, log }) {
-      for (const c of [...HOODIE_EDIT, 'goto kev_desk', 'interact', 'goto my_seat', 'pretend until 3:45']) run(c);
-      mustSay(log, 'boss', ['🙂', '@kev']); // he took you for Kev
-      mustSay(log, 'player', ['🙋', '🔧']); // "Kev" offers
-      mustSay(log, 'boss', ['😊', '🖥️']); // let "Kev" at his computer
-      mustSay(log, 'boss', ['😊', '@kev']); // and thanked "Kev" for it
-    },
-  },
-  {
-    name: "hoodie back on Kev's chair while the boss can see it, after the edit → ❗😠: \"Kev\" was you, your face is back on his list → blamed",
-    expect: { result: 'blamed', routes: [] },
     play({ run, log, g }) {
-      for (const c of [...HOODIE_EDIT, 'goto kev_hoodie pretend', 'interact', 'goto my_seat', 'pretend until 3:45', 'wait 5s']) run(c);
-      if (g.outcome?.why !== 'seen') throw new Error(`blamed for ${g.outcome?.why}, not for being seen`);
-      mustSay(log, 'boss', ['❗', '😠']);
-      if (g.world.list !== 'on') throw new Error('your face is not back on the list');
-    },
-  },
-  {
-    name: 'hoodie still on at your desk at 3:45 → that\'s Kev in your chair, not you → blamed',
-    expect: { result: 'blamed', routes: ['hoodie'] },
-    play({ run, log, g }) {
-      for (const c of [...HOODIE_EDIT, 'goto my_seat', 'pretend until 3:45', 'wait 5s']) run(c);
-      if (g.outcome?.why !== 'kev') throw new Error(`blamed for ${g.outcome?.why}, not for being Kev`);
-      mustSay(log, 'boss', ['@kev', '❓']);
-    },
-  },
-  {
-    name: 'offer to fix his computer before it acts up → nothing to offer',
-    expect: { result: 'fail' },
-    play({ run, g }) {
-      for (const c of ['pretend until 3:26', 'goto kev_desk pretend', 'interact', 'pretend until 3:33', 'goto boss_pc', 'interact']) run(c);
-      if (g.world.fix !== 'none') throw new Error('"Kev" offered while the computer worked');
+      for (const c of ['goto behind_his_desk pretend', 'interact']) run(c);
+      mustSay(log, 'boss', ['🙅', '@kev']);
+      if (!g.world.glitch) throw new Error('the cable was fixed by you while Kev was here');
+      run('goto my_seat pretend');
       run('pretend until 3:45');
     },
   },
   {
-    name: "hoodie in front of Lin, who saw Kev go home → her double take (Kev's face ❓) ❗👉 at you → desk work → fail",
+    name: 'his screen while he is in the restroom → locked: nothing to do',
     expect: { result: 'fail' },
-    play({ run, log }) {
-      for (const c of ['pretend until 3:25', 'goto kev_desk pretend', 'interact', 'goto boss_pc', 'pretend until 3:45']) run(c);
-      mustSay(log, 'lin', ['@kev', '❓']);
-      mustSay(log, 'lin', ['❗', '👉', '@player']); // she points at you (the engine's tattle names you)
+    play({ run, g }) {
+      for (const c of ['pretend until 3:17', 'goto his_screen pretend', 'interact']) run(c);
+      if (g.world.list !== 'on') throw new Error('edited a locked screen');
+      run('goto my_seat pretend');
+      run('pretend until 3:45');
     },
   },
   {
-    name: "jacket: the boss's jacket while Lin glances away, edit the list as \"the boss\", hang it back → win",
-    expect: { result: 'win', routes: ['jacket'] },
+    name: "ring: plug his cable in (☕👉 you), ring Kev's empty desk (Lin turns round to it), edit → win",
+    expect: { result: 'win', routes: ['ring'] },
     play({ run, log }) {
-      for (const c of ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact', 'goto boss_pc', 'interact', 'goto coat_rack', 'interact', 'goto my_seat', 'pretend until 3:45']) run(c);
-      mustSay(log, 'lin', ['😳', '@boss']); // she took you for the boss
+      for (const c of [...FIX, 'goto boss_phone', 'interact', 'goto his_screen', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      mustSay(log, 'boss', ['☕', '👉', '@player']);
+      mustFire(log, 'phone:called');
+      mustSay(log, 'boss', ['🤷']);
     },
   },
   {
-    name: "jacket on in front of Lin → her double take (the boss's face ❓) ❗👉 → desk work → fail",
+    name: 'phone: plug his cable in, wait for Lin\'s mobile to buzz (she turns away to read it), edit → win',
+    expect: { result: 'win', routes: ['phone'] },
+    play({ run, log }) {
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:32.75', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      mustFire(log, 'lin:reads');
+    },
+  },
+  {
+    name: 'edit while Lin is looking → ❗👉 you, the boss hears → desk work → fail',
     expect: { result: 'fail' },
-    play({ run, log }) {
-      for (const c of ['pretend until 3:15', 'goto coat_rack pretend', 'interact', 'goto boss_pc', 'interact', 'goto my_seat', 'pretend until 3:45']) run(c);
-      mustSay(log, 'lin', ['@boss', '❓']);
+    play({ run, log, g }) {
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'pretend until 3:45']) run(c);
+      mustSay(log, 'lin', ['❗', '👉', '@player']);
+      mustFire(log, 'boss:workAssigned');
+      if (!g.world.told) throw new Error('the boss never heard Lin');
     },
   },
   {
-    name: 'jacket still on when the boss gets back → he knows his own jacket → caught',
+    name: 'edit too late: the boss is back with his coffee and sees you at his screen → caught',
     expect: { result: 'caught' },
-    cmds: ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact', 'goto boss_pc', 'interact', 'goto my_seat', 'pretend until 3:45'],
+    cmds: [...FIX, 'goto his_screen', 'wait until 3:39.8', 'interact', 'interact', 'interact', 'pretend until 3:45'],
   },
 ];

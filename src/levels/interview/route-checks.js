@@ -47,7 +47,7 @@ export default [
     name: 'answered, teaching fail: ring only the kitchen → Kev answers it, Lin takes her call → fail',
     expect: { result: 'fail' },
     play({ run, log, g }) {
-      run('pretend until 3:18');
+      run('pretend until 3:20'); // Kev is back at the coffee machine
       go(run, 'ring_kitchen');
       run('interact');
       backToDesk(run);
@@ -78,6 +78,7 @@ export default [
       run('pretend until 3:01');
       go(run, 'ring_lin');
       run('interact');
+      run('wait 2.5s'); // watch her slam it down
       backToDesk(run);
       toTheEnd(run, g);
       must(rang(log, 'lin', 'lin'), 'Lin did not answer her own phone');
@@ -86,12 +87,12 @@ export default [
   },
 
   // unplugged: the boss is on his own phone with his back to the room, Lin is in the kitchen, and Kev has been to the
-  // socket to charge his mobile (about 3:12) and gone.
+  // socket to charge his mobile (about 3:10 to 3:15) and gone.
   {
     name: "unplugged: ring the boss, pull Lin's cord after Kev's charging stop → it never rings → win",
     expect: { result: 'win', routes: ['unplugged'] },
     play({ run, log, g }) {
-      run('pretend until 3:12');
+      run('pretend until 3:14');
       go(run, 'ring_boss');
       run('interact');
       go(run, 'lin_socket');

@@ -105,7 +105,7 @@ function frame(now) {
   if (game.phase === 'title' || game.phase === 'end') {
     acc = 0;
     // E is both 'start' and 'interact': the key that starts the day must not also use whatever is in front of you on
-    // its first frame (Weekend Shift: you start seated, so it rang the boss's phone).
+    // its first frame (Saturday: you start seated, so it rang the boss's phone).
     input.pressed('interact');
     // Short guard so the key that ended the day doesn't skip the end screen.
     if (input.pressed('start') && (game.phase === 'title' || game.time - (game._endedAt ?? 0) > 0.6)) startLoop(game);

@@ -2,162 +2,182 @@
 
 ## Card
 3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.
-Lin hands out the mail at 4:00. Don't be the one who gets it.
+Lin hands out the mail at 4:00, in front of everyone.
 
 ## Name
 "Discreet Packaging" is what the shops print on a parcel they don't want your colleagues to read. Mum's box is the
 opposite: pink, covered in red hearts, your face on the label, waiting to be handed out in front of the whole office.
-The name is the trouble, the box. It says nothing about the plug, the broom, the spare label or the drawer, which are
-the ways out.
+The name is the trouble, the box. It says nothing about the plug, the broom, the labels or the drawer, which are the
+ways out.
 
 ## The situation
 You work in a small office. Mum has sent you a parcel at work: a pink box covered in red hearts, with your face on the
-address label. It waits on the parcel shelf (the bottom shelf) of the pigeonholes in the back office; the cubbies
-above it are empty today, the box is the only post. Lin does the post. At 3:50 she collects it from the pigeonholes,
-and at 4:00 she hands it out in your office, in front of everyone. Security Bob comes over for the mail call too. If she still has your box then, she holds it up high for the
-office to see, and you go red (the end card).
+address label. It waits on the parcel shelf of the pigeonholes in the back office, on top of the day's other parcel:
+Security Bob's plain brown box, his face on its label. Bob gets a brown box every day. Lin does the post. At 3:50 she
+collects the parcels from the pigeonholes, and at 4:00 she hands them out in your office, in front of everyone: each
+box to the face on its label. Bob comes over for it like every day. If she has your pink box then, she holds it up
+high for the office to see, and you go red (the end card).
 
-So at 4:00 Lin must not hand you that box. Either it goes to somebody else, or there is nothing on the shelf for her
-to collect. But nobody may get hold of your box or see you with it: whoever reads your label, it is out. The camera
-on the back office wall watches the pigeonholes, and Bob watches the camera's monitor. Whatever happens, be in your
-office at 4:00 for the mail call, like nothing happened. The day is a time loop: when you lose, it is 3:20 again.
+So at 4:00 Lin must not hand you that box. Either it goes to somebody else, or it is not on the shelf for her to
+collect. But nobody may get hold of your box or see you with it: whoever reads your label, it is out. The camera on
+the back office wall watches the pigeonholes, and Bob watches the camera's monitor. And be in your office at 4:00 for
+the mail call, like nothing happened, unless there is nothing for anyone to wonder about. The day is a time loop: when
+you lose, it is 3:20 again.
 
-## Cast
-- **Security Bob** (big, navy uniform, cap, moustache). He sits all afternoon at the counter between the back office
-  and the lobby. He faces the lobby and its glass front door, his back to the back office. His monitor stands on the
-  counter in front of him.
-  - The camera hangs on the back office's north wall by the door, a tall leafy plant in the corner beside it. It
-    sweeps the back office slowly from side to side, and the pigeonholes are always on it. Its fan on the floor shows
-    what it sees, in Bob's colour while he watches the monitor. The monitor shows the back office live, with you on
-    it when the camera sees you. What the camera sees, Bob sees. The spot right under the camera is on it at one end
-    of each sweep. The power strip by the counter never is.
-  - Static on the monitor (its plug pulled): he frowns at it (screen, ?) and gets up. It is always the camera, he
-    thinks: he walks to the spot under it and thumps it for 2 minutes, facing it. Then he thinks it over (camera, ?),
-    works it out (plug, !), walks to the power strip and pushes the plug back in (half a minute, then a smile). Pull
-    the plug at about 3:25 and he thumps the camera from about 3:27 to 3:29, turns for the power strip at about 3:29
-    and has the picture back at about 3:30. Pull it again and he does it all again.
-  - A camera that stares into the plant: the monitor shows one giant leaf. Bob looks at it and is content (plant,
-    smile). He never goes to look.
-  - 3:56: he walks over to your office for the mail call and stands beside Lin.
-  - He is the authority. If he sees you take or carry the box, or do anything sneaky, on the monitor or with his own
-    eyes, you are caught. His ❓ meter fills while he sees you (in the lobby, or on the monitor) not looking busy.
-- **Lin** (teal cardigan, the desk in your office). She sits facing south, away from your desk and the office door
-  to the corridor. Like everyone seated, she glances to one side every few seconds.
-  - 3:50: the post. She gets up, goes out through the office door, along the corridor and into the back office, and
-    reaches the pigeonholes at about 3:54. She takes whatever is on the parcel shelf and reads the label (box and the
-    face on it). If the shelf is empty, she is puzzled (empty mailbox, ?).
-  - 3:56: she takes the post to your office and waits by your desk for the mail call.
-  - 4:00: the mail call. A box with your face goes up over her head. A box with Bob's face goes to Bob. No box: she
-    shrugs (empty mailbox, shrug).
-  - The post is hers. If she sees you with the box, she takes it off you and reads the label (box, !, then your face,
-    !). If she sees you do anything else sneaky, she shouts and points, and Bob sends you to your desk with 20 minutes
-    of work.
-- **Anyone** who sees the pink box loose on the floor stops (box, !), walks over, picks it up and reads the label
-  (box, ?, then your face, !). A moment later you are found out. Nobody ever goes into the mailroom.
-- **You** (red jumper, the desk with the mustard chair at the top of your office). You start in your chair. Your
-  office's door opens onto the corridor, and the corridor has doors into the back office and the mailroom. The lobby
-  runs along the bottom, in Bob's view.
-  - **The power strip** (back office, by the counter, behind Bob): pull the monitor's plug out (a moment). The plug
-    hangs loose and the monitor shows static.
-  - **The broom** (mailroom, on a wall clip): take it. With the broom in your hands, from the spot under the camera,
-    poke the camera (a moment). It swivels into the plant beside it and stays stuck there all day.
-  - **The label printer** (mailroom): a spare address label with Bob's face sticks out of it. Take it. At the
-    pigeonholes, stick it over yours (a moment longer). The box then carries Bob's face.
-  - **The pigeonholes**: take your box. **Your desk**: stuff the box in your drawer. It won't shut: a pink corner
-    sticks out, but nobody looks.
-  - You carry one thing at a time. E on yourself puts down what you hold, where you stand.
-  - Pulling the plug, poking the camera, relabelling, taking the box and stuffing it in the drawer are sneaky.
-  - **The box fills your arms.** While you hold it, pretending does nothing: no folder, no phone call. Everyone can
-    see what you carry.
+## Who does what
+**Security Bob** sits all afternoon at the counter between the back office and the lobby, facing the lobby and its
+glass front door, his back to the back office. His monitor stands on the counter in front of him and shows what the
+camera on the back office wall sees. The camera sweeps slowly from side to side; at one end of each sweep the leafy
+plant beside it drifts into the picture, and Bob likes that bit (plant, smile, at about 3:21). He never looks
+anywhere but the lobby and his screen. If the screen goes to static he frowns at it (static, ?), gets up and does
+what every guard does: he blames the camera. He walks to the spot under it and thumps it for 2 minutes, facing the
+wall, then works it out (plug, !), walks to the power strip behind the counter and pushes the plug back in (half a
+minute, then a smile). If the camera ends up staring into the plant, his screen shows one giant leaf, his favourite
+bit, and he is content with it; he never goes to look. At 3:56 he walks to your office for the mail call, stands
+beside Lin, and takes his brown box from her (smile). He is the authority: if he sees you take or carry the pink box,
+or do anything sneaky, on the monitor or with his own eyes, you are caught. His ❓ meter fills while he sees you not
+looking busy.
+
+**Lin** sits at the desk in your office, facing south, away from your desk and the office door to the corridor. Like
+everyone seated, she glances to one side every few seconds. At 3:50 she gets up, goes out by the office door, along
+the corridor and into the back office, and reaches the pigeonholes at about 3:54. She takes whatever is on the parcel
+shelf and reads each label (box and the face on it). Bob's box is always there. If the pink box is not, she wonders
+(pink box, ?). At 3:56 she carries the post to your office and waits by your desk. At 4:00 she hands out each box to
+the face on its label. A box with your face goes up over her head for everyone to see. If she has nothing for you, she
+looks at you (empty mailbox, your face) and shrugs. If you are not there, she looks at your empty chair. The post is
+hers: if she sees you with the pink box, she takes it off you and reads the label. If she sees you do anything else
+sneaky, she shouts and points, and Bob sends you to your desk with 20 minutes of work.
+
+**Anyone** who sees the pink box loose on the floor stops (box, !), walks over, picks it up and reads the label. A
+moment later you are found out. Nobody ever goes into the mailroom.
+
+**You** start in your chair, at the desk with the mustard chair at the top of your office. Your office's door opens
+onto the corridor, and the corridor has doors into the back office and the mailroom. The lobby runs along the bottom,
+in Bob's view. You carry one thing at a time, and E on yourself puts down what you hold, where you stand. **The box
+fills your arms**: while you hold it, pretending does nothing, and everyone can see what you carry.
+
+## Things in the office
+- **The camera** (back office, north wall by the door): it watches the pigeonholes. Its fan on the floor shows what it
+  sees, in Bob's colour while he watches the monitor, grey when nobody does. The spot right under it is in view only
+  at one end of each sweep.
+- **The plant** (beside the camera): tall and leafy. It is why the broom works: knocked sideways, the camera has
+  something to stare at, and Bob likes looking at it.
+- **Bob's monitor** (on the counter): the back office live, with you on it when the camera sees you; static when its
+  plug is out; one leaf when the camera is in the plant.
+- **The power strip** (back office, by the counter, behind Bob, never on camera): the monitor's plug. Pull it (a
+  moment, sneaky) and the plug hangs loose and the monitor shows static.
+- **The broom** (mailroom, on a wall clip): it is there because the mailroom is dusty and full of cobwebs. Take it;
+  from the spot under the camera, poke the camera (a moment, sneaky) and it swivels into the plant and stays there.
+- **The pigeonholes** (back office): the cubbies are empty today; on the parcel shelf sit Bob's brown box and your
+  pink one. Up close a card shows both labels. Take your box (sneaky), or, holding it, swap your box's label with
+  Bob's (sneaky): both boxes go back on the shelf, the pink one with Bob's face, the brown one with yours.
+- **The brown box**: Bob's ordinary daily parcel. It shows the rule (a box goes to the face on its label) every loop,
+  and it is the only other label in the building.
+- **The pink box**: the trouble.
+- **Your desk**: its drawer takes the pink box (sneaky) and shuts on it. Nothing shows.
+- **Lin's desk, the counter, the lobby's glass door, the mailroom**: Lin's desk faces away from yours, so you can
+  come in behind her. The counter faces the lobby, so Bob's back is to the back office. The mailroom is where nobody
+  goes.
+- **The wall clock, windows, paintings and corner plants**: decoration.
 
 ## Ways to win
-You win when Lin has no box with your face at the mail call, nobody has picked up your box or seen you with it, and
-you are in your office at 4:00. Each route has its own end card and route icon.
+You win when Lin has no box with your face at the mail call and nobody has picked up your box or seen you with it.
+Each route has its own end card and route icon.
 
 First, blind the camera. Either way works for both routes:
 - **Pull the plug.** At the power strip, behind Bob, out of the camera's sight. It gives you about 3 and a half
-  minutes, while Bob walks to the camera and thumps it facing the wall. Be out of the back office (through its door
-  into the corridor) before he turns for the power strip.
+  minutes, while Bob walks to the camera and thumps it facing the wall. Be out of the back office before he turns for
+  the power strip. A real guard falls for it because a screen of static always looks like the camera's fault, and
+  everyone thumps the thing that looks broken before they check the plug.
 - **Poke the camera into the plant.** Take the broom from the mailroom, stand under the camera and wait for its fan
-  to swing away from you. Poke it. From then on it sees only the plant, all day. Put the broom back on its clip (or
-  put it down) to free your hands.
+  to swing away from you. Poke it. From then on it sees only the plant, all day. A real guard falls for it because
+  cameras get knocked askew all the time and nobody fixes them; this one shows the thing he already liked watching.
 
 The facts, and when you see them:
 - **The camera watches the pigeonholes, and Bob watches its monitor.** From the start you see the camera's fan
-  sweep the back office over the pigeonholes, in Bob's colour, and the monitor glow on his counter (shot `start`).
-  Up close at the shelf, the monitor shows you on it (shot `parcel-on-the-shelf`). Take the box with the camera live
-  and Bob jabs a finger at the monitor, which shows you at the shelf (shot `end-caught-camera`).
-- **The monitor needs its plug.** The plug runs from the power strip by the counter, and the strip lights up to show
-  you can use it (shot `power-strip`). Pull it and the monitor shows static (shot `static`).
+  sweep the back office over the pigeonholes, in Bob's colour, the monitor glowing on his counter, and Bob pleased
+  when the plant drifts into his picture (plant, smile; shot `start`). Up close at the shelf, the monitor shows you
+  on it (shot `parcel-on-the-shelf`). Take the box with the camera live and Bob jabs a finger at the monitor (shot
+  `end-caught-camera`).
+- **The monitor needs its plug.** The plug runs from the power strip by the counter (shot `power-strip`). Pull it and
+  the monitor shows static (shot `static`).
 - **Static sends Bob to the camera, not the plug, at first.** He frowns at the static and gets up (shot `static`),
-  stands under the camera thumping it, his back to the room (shot `bob-thumps-the-camera`), then works it out and
-  goes for the power strip (plug, !; shot `bob-plugs-it-back`). The monitor is live again at about 3:30.
+  thumps the camera, his back to the room (shot `bob-thumps-the-camera`), then works it out and goes for the power
+  strip (shot `bob-plugs-it-back`).
 - **The camera can be knocked into the plant.** The broom hangs on its clip in the mailroom (shot
-  `broom-on-its-clip`). Under the camera you see the leafy plant right beside it, and the fan sweep past you (shot
+  `broom-on-its-clip`). Under the camera you see the plant right beside it and the fan sweep past you (shot
   `under-the-camera`). After the poke the camera stares into the plant, the monitor shows one giant leaf, and Bob is
-  happy with it (shot `poked-into-the-plant`).
+  happy with it (shot `poked-into-the-plant`). Poke it while it looks at you and he sees the broom coming (shot
+  `end-caught-broom`).
 
 ### 1. Bob gets it (route icon: Bob's face)
 Steps:
-1. Take the spare label with Bob's face from the label printer in the mailroom.
-2. Blind the camera (above).
-3. At the pigeonholes, stick Bob's label over yours.
-4. Go back to your office.
+1. Blind the camera (above).
+2. Take your box from the shelf, then swap its label with Bob's brown box's.
+3. Go back to your office, or anywhere out of sight.
 
-At 3:54 Lin reads Bob's face on the label. At the mail call she hands Bob the pink heart box, and big stern Bob holds
-it, moved to tears.
+At 3:54 Lin reads Bob's face on the pink box and yours on the brown one. At the mail call she hands Bob the pink heart
+box, and big stern Bob hugs it, moved to tears. She holds the dull brown box out to you.
+
+A real office falls for it because nobody reads a parcel but its label, and a mail clerk hands each box to the name
+on it. The result is absurd (Bob in tears over Mum's hearts); the method is just two labels.
+
+If you are not at the mail call, it still works: nothing is missing, so nobody wonders where you are. Lin holds the
+brown box out to your empty chair, and nobody minds (shot `end-bob-away`).
 
 The facts, and when you see them:
-- **Lin hands each parcel to the face on its label.** If you do nothing, at about 3:54 at the pigeonholes she reads
-  the label (box, your face; shot `lin-collects-the-mail`), and at 4:00 she holds it up for you (shot `end-mail`).
-- **There is a spare label with Bob's face.** It sticks out of the label printer in the mailroom, which lights up
-  to show you can take it (shot `label-printer`).
-- **A new label changes the face.** After you stick it on, the box on the shelf shows Bob's face (shot
-  `relabelled`).
-- **Bob's box goes to Bob.** At the mail call Lin hands it to him (box, Bob's face), and he is moved (tears; shots
-  `handover`, `end-bob`).
+- **Lin hands each parcel to the face on its label.** Every loop Bob's brown box is on the shelf with his face on it,
+  and at the mail call Lin hands it to him (shot `mail-call-shrug`). If you do nothing, at about 3:54 she reads your
+  label (shot `lin-collects-the-mail`), and at 4:00 she holds the pink box up for you (shot `end-mail`).
+- **The labels can be swapped.** Up close the card shows both boxes and both faces (shot `parcel-on-the-shelf`).
+  After the swap it shows the pink box with Bob's face and the brown box with yours (shot `labels-swapped`).
+- **Bob's box goes to Bob.** At the mail call Lin hands him the pink box (box, Bob's face), and he is moved (tears;
+  shots `handover`, `end-bob`).
 
 ### 2. No parcel today (route icon: Lin's face)
 Steps:
 1. Blind the camera (above).
 2. Take your box from the pigeonholes.
 3. Put it where nobody will see it: in your desk drawer, or on the mailroom floor.
-4. Go back to your office.
+4. Be at your desk at 4:00.
 
-At 3:54 Lin finds the parcel shelf empty. At the mail call she has nothing to hand out and shrugs.
+At 3:54 Lin finds only Bob's box on the shelf. At the mail call she gives Bob his, looks at you, has nothing for you
+and shrugs, while you hum.
+
+A real office falls for it because nobody misses a parcel they never knew about: a mail clerk with nothing for you
+shrugs and moves on.
 
 The facts, and when you see them:
-- **The box can be taken.** Up close it lights up to show you can take it (shot `parcel-on-the-shelf`).
-- **Carried, it shows.** You can't pretend while you hold it. Carry it past Bob (in the lobby, or on a live camera)
-  and he points at you (shot `end-caught`). Carry it where Lin can see you and she takes it off you. So go by the
-  corridor and come into your office behind Lin. At your desk, stuff it in the drawer while her glance is turned
-  the other way: you see her cone turn.
-- **The drawer hides it.** It sticks open on a pink corner, and the shelf is empty (shot `drawer`).
-- **An empty shelf means no parcel.** At about 3:54 Lin finds the shelf empty (empty mailbox, ?; shot
-  `empty-pigeonhole`). At 4:00 she shrugs (shots `mail-call-shrug`, `end-hidden`).
+- **The box can be taken.** Up close the shelf lights up (shot `parcel-on-the-shelf`).
+- **Carried, it shows.** You can't pretend while you hold it. Carry it past Bob and he points at you (shot
+  `end-caught`). Carry it where Lin can see you and she takes it off you. So go by the corridor and come into your
+  office behind Lin, and stuff it in the drawer while her glance is turned the other way.
+- **The drawer hides it.** It opens, the box sinks in, and it shuts; the shelf has only the brown box (shot
+  `drawer`).
+- **A missing parcel only gets a shrug.** At about 3:54 Lin wonders at the shelf (pink box, ?; shot
+  `empty-pigeonhole`). At 4:00 she has nothing for you and shrugs (shots `mail-call-shrug`, `end-hidden`).
 - **A box on the floor gets found, but only where somebody looks.** Drop it in the corridor and Lin, on her way to
-  the pigeonholes at about 3:51, spots it (box, !; shot `dropped-box-spotted`), picks it up and reads the label (shot
+  the pigeonholes at about 3:51, spots it (shot `dropped-box-spotted`), picks it up and reads the label (shot
   `dropped-box-found`). Nobody ever goes into the mailroom, so a box on its floor stays there.
 
 ## Ways to lose
 - **The mail call.** Lin collected your box and holds it up high (box, your face). Bob turns to look, and you go red
   (shot `end-mail`).
-- **Caught on camera.** Bob saw you on his monitor: taking the box, relabelling it, or poking the camera. The end
-  card shows the monitor's picture frozen at the moment he saw you, with Bob at his counter jabbing a finger at it.
-  You stand behind him holding what you held, and you go red. On the screen you are at the shelf beside the box
-  (shot `end-caught-camera`), at the shelf with the white label in your hand (shot `end-caught-relabel`), or right
-  under the lens with the broom raised at it (shot `end-caught-broom`).
-- **Caught in person.** Bob saw you with the box, or at something sneaky, with his own eyes: in the lobby, or in the
-  back office on his way to the power strip. The end card: Bob points at you as you hold the box (shot
-  `end-caught`).
-- **Found.** Someone has your box: Lin or Bob picked it up off the floor, or Lin took it off you. The end card: the
-  finder holds out the box with your face on it, and you go red (shots `dropped-box-found`, `end-found`).
-- **Away from your desk.** The mail call went fine, but you were not in your office for it. The end card: Lin and
-  Bob look at your empty chair (your face, ?; shot `end-blamed`).
+- **The mail call, and you're not there.** Lin holds your box up high beside your empty chair, spotlit (shot
+  `end-noshow`).
+- **Caught on camera.** Bob saw you on his monitor taking the box, swapping the labels or poking the camera. The end
+  card shows the monitor frozen at the moment he saw you, Bob jabbing a finger at it, and you behind him going red
+  (shots `end-caught-camera`, `end-caught-broom`).
+- **Caught in person.** Bob saw you with the box, or at something sneaky, with his own eyes (shot `end-caught`).
+- **Found.** Someone has your box: Lin picked it up off the floor, or took it off you. The finder holds out the box
+  with your face on it, and you go red (shots `dropped-box-found`, `end-found`).
+- **Hidden, and you're not there.** The pink box is gone and so are you: Lin and Bob point at your empty chair,
+  spotlit (empty mailbox, chair, your face, ?; shot `end-blamed`). A missing parcel plus a missing person is a story.
 - **Twenty minutes of work.** Not a loss by itself. Lin sees you at something sneaky and tells on you, or Bob's ❓
   meter fills. He sends you to your desk with 20 minutes of work, and usually the camera is live again before you are
   free.
 
 ## The joke
 4:00, route 1. In your office Lin hands out the post and gives big stern Security Bob a pink box covered in red
-hearts, his own face on the label. He hugs it, moved to tears, while confetti falls and you grin at your desk.
+hearts, his own face on the label. He hugs it, moved to tears, while confetti falls, and Lin holds his dull brown box
+out to you.

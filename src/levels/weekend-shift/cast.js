@@ -1,4 +1,4 @@
-// Weekend Shift's people and their hooks (cast.js and behaviours.js in level 1 document the fields). Cast order is
+// Saturday's people (id weekend-shift) and their hooks (cast.js and behaviours.js in level 1 document the fields). Cast order is
 // behaviour: the sim updates them in this order.
 import { at, deg, GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
@@ -15,13 +15,19 @@ export const CAST = [
     meetingSpot: 'board_boss',
     meetingArrive: 'readRoster',
     vision: { fov: deg(100), radius: 9 },
-    glanceEvery: [3, 5.5], // twitchy: a glance away is never long enough to write on the board
+    // he keeps his eyes on the office (his cone stays on the board, so a head snapping away from it shows); a glance
+    // away is never long enough to write on the board anyway
+    glanceEvery: [30, 50],
     coneTint: [255, 160, 82],
     schedule: [
       s('4:00', { do: 'sit', spot: 'boss_desk' }),
       s('4:20', { do: 'visit', spot: 'copier_boss', arrive: 'photocopy' }), // his back to the room
       s('4:25', { do: 'sit', spot: 'boss_desk' }),
-      s('4:50', { do: 'visit', spot: 'board_boss', arrive: 'checkRoster' }), // from here on he guards the board
+      // 4:50: out to the board, head down in his folder (he never looks at it), takes the marker off its tray without
+      // looking, and sits in front of it with his back to it, guarding it: from here on nobody writes on it
+      s('4:50', { do: 'say', icons: ['📄'], kind: 'thought' }),
+      s('4:50', { do: 'sit', spot: 'board_boss', arrive: 'checkRoster', anim: 'folder' }),
+      s('4:51.4', { do: 'say', icons: ['📄'], kind: 'thought' }), // still reading as he walks
     ],
   },
   {
@@ -35,6 +41,7 @@ export const CAST = [
     coneTint: [150, 230, 214],
     schedule: [
       s('4:00', { do: 'sit', spot: 'lin_desk' }), // she watches the board all day
+      s('4:30', { do: 'say', icons: ['🐟'], kind: 'thought' }), // lunch: she gets up with it (her chair stays pushed out)
       s('4:30', { do: 'visit', spot: 'lin_wait', arrive: 'fish', anim: 'fishIn' }), // fish, in the office microwave
       s('4:37', { do: 'sit', spot: 'lin_desk', arrive: 'eatFish', anim: 'fish' }),
     ],
@@ -55,14 +62,17 @@ export const CAST = [
   },
 ];
 
-// The reading, READ_S s before 5:00. The boss has stood (from 4:55 sat) with his back to the board, facing the room,
-// the board's marker in his hand. 📢: hear this. At ANNOUNCE_S he turns to the board and points the marker at the
-// face in Saturday's slot (it lights up: presentation.js); at POINT_S, whose it is: Kev's (he turns to him, Kev
-// groans), yours (he keeps pointing at it), or his own (he goes red, and Lin and Kev clap: CLAP_S).
+// The reading, READ_S s before 5:00. The boss has sat (since 4:50) with his back to the board, facing the room, the
+// board's marker in his hand. 📢: hear this. At ANNOUNCE_S he turns to the board and points the marker at the face
+// in Saturday's slot (it lights up: presentation.js), and says whose, and holds it to 5:00. What happens then is the
+// verdict's (index.js punchline): his own (he goes red, Lin and Kev clap for CLAP_S), Kev's, yours.
 export const READ_S = 3.4;
 export const ANNOUNCE_S = 0.9;
-export const POINT_S = 2.2;
 export const CLAP_S = 1.8;
+// At 5:00 with your chair empty (blamed), the boss turns back to the board and redraws the slot: your face, from
+// REDRAW_AT s into the end beat, for REDRAW_S s (presentation.js draws it), then points at your chair.
+export const REDRAW_AT = 0.6;
+export const REDRAW_S = 0.7;
 // s from now to the reading (he has usually been at the board since 4:50, so the gather sits him down at 4:55)
 const lastMoment = (game) => Math.max(0, (game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC - READ_S);
 
@@ -93,11 +103,15 @@ export const BEHAVIOURS = {
       }
     },
   },
-  // 4:50: the boss comes out to the board. Nobody writes on it under his nose.
+  // 4:50: the boss sits down in front of the board, the marker in his hand. Nobody writes on it under his nose. He
+  // hasn't looked at it: he's pleased with himself (presentation.js puts the marker in his hand).
   checkRoster: {
     state: { _checked: false },
     arrive(game, n, sim) {
-      game.world.rosterLocked = true; // he stands guard by it: his cone covers it
+      game.world.rosterLocked = true; // he sits guard by it: his cone covers the way to it
+      if (n._checked) return;
+      n._checked = true;
+      sim.speak(game, n, [{ say: ['😏'], ttl: 1.8 }]);
     },
   },
   // At the board, before 5:00: the boss reads out the face in Saturday's slot (see READ_S).
@@ -109,28 +123,13 @@ export const BEHAVIOURS = {
       if (n._read) return;
       n._read = true;
       const t = lastMoment(game);
-      const at = t + POINT_S;
       const face = w.roster === 'boss' ? '@boss' : w.roster === 'kev' ? '@kev' : '@player';
       const lines = [
+        ...(t > 2 ? [{ say: ['😏'], ttl: 1.6 }] : []), // still guarding it, still pleased
         { say: ['📢'], ttl: ANNOUNCE_S, after: t, face: 'meeting_player' }, // to the room
-        // that face, there (yours: he holds it there up to 5:00)
-        { say: ['👈', face], ttl: (face === '@player' ? READ_S : POINT_S) - ANNOUNCE_S, after: t + ANNOUNCE_S, face: 'board_look' },
+        // that face, there, to 5:00 (index.js punchline: then whose it is)
+        { say: ['👈', face], ttl: READ_S - ANNOUNCE_S + 0.2, after: t + ANNOUNCE_S, face: 'board_look' },
       ];
-      if (w.roster === 'boss') {
-        // his own: he goes red at the board, and the room claps him into it
-        lines.push({ say: ['@boss', '😳'], ttl: 2.4, after: at, face: 'board_look' });
-        for (const id of ['lin', 'kev']) {
-          const o = game.npcs.find((k) => k.id === id);
-          if (o) sim.speak(game, o, [{ say: ['👏'], ttl: CLAP_S, after: at }]);
-        }
-      } else if (w.roster === 'kev') {
-        lines.push({ say: ['👉', '@kev'], ttl: 2, after: at, face: 'meeting_kev' });
-        const kev = game.npcs.find((k) => k.id === 'kev');
-        if (kev) sim.speak(game, kev, [{ say: ['😩'], ttl: 2.2, after: at + 0.7, face: 'board_look' }]);
-      } else {
-        // yours: he keeps the marker on your face; at 5:00 he waves you up in front of it
-        lines.push({ say: ['👈'], ttl: 1.6, after: t + READ_S + 0.1, face: 'meeting_presenter' });
-      }
       sim.speak(game, n, lines);
     },
   },
@@ -140,8 +139,8 @@ export const BEHAVIOURS = {
       const p = game.player;
       if (inZone(game, game.level.meeting.room, p.x, p.y)) return;
       if ((game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC < READ_S + 1) return;
-      sim.lookAt(game, n, game.level.meeting.chair, 1.6);
-      sim.speak(game, n, [{ say: ['❓'], kind: 'thought', ttl: 1.6 }]);
+      sim.lookAt(game, n, game.level.meeting.chair, 2.6);
+      sim.speak(game, n, [{ say: ['❓'], kind: 'thought', ttl: 2.6 }]);
     },
   },
 };
