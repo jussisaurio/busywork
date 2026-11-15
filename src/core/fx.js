@@ -1,12 +1,12 @@
 // Shared visual-effect state helpers. Gameplay/sim code calls these; the renderer
 // draws game.fx; audio listens to the 'say' event.
 //
-// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [] }
+// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [], turns: [] }
 
 let bubbleSeq = 0;
 
 export function createFx() {
-  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [] };
+  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [], turns: [] };
 }
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
@@ -70,6 +70,14 @@ export function ripple(game, x, y, radius, opts = {}) {
   list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? Math.max(1, radius / 12) });
 }
 
+// A head turned to a noise: NPC `id` was looking along `from` (rad, his view direction) and turns to (x, y) (tiles).
+// The renderer draws the swing, from the old direction to where he looks now, fading out over ttl.
+export function turned(game, id, from, x, y, ttl = 1.2) {
+  const list = game.fx.turns ?? (game.fx.turns = []);
+  for (let i = list.length - 1; i >= 0; i--) if (list[i].id === id) list.splice(i, 1);
+  list.push({ id, from, x, y, age: 0, ttl });
+}
+
 export function shake(game, amount = 0.15, t = 0.3) {
   game.fx.shake.amount = Math.max(game.fx.shake.amount, amount);
   game.fx.shake.t = Math.max(game.fx.shake.t, t);
@@ -92,6 +100,10 @@ export function updateFx(game, dt) {
   if (fx.ripples?.length) {
     for (const r of fx.ripples) r.age += dt;
     fx.ripples = fx.ripples.filter((r) => r.age < r.ttl);
+  }
+  if (fx.turns?.length) {
+    for (const r of fx.turns) r.age += dt;
+    fx.turns = fx.turns.filter((r) => r.age < r.ttl);
   }
   if (fx.shake.t > 0) fx.shake.t = Math.max(0, fx.shake.t - dt);
   else fx.shake.amount = 0;

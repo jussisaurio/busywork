@@ -24,6 +24,7 @@
 //   while(w)   (world) -> bool, asked at every sound, the first one too: false drops the noise, now and for good. A
 //              delayed noise with it is cancelled if the world changes meanwhile; without it a repeat goes all day
 //   turn       s heads stay turned (default TURN_TIME)
+// Show: a head that turns to a noise shows its swing (core/fx.js turned; render only), whether or not the noise does.
 // Show (optional): ripple   true or { color }: rings spread from the noise to its earshot each time it sounds
 //                           (core/fx.js ripple; render only, game.fx). They start on the machine that makes it: a
 //                           noise `at` a spot named after an interactable (spot 'copier', the place you stand at
@@ -38,9 +39,9 @@
 // waiting and repeating noises, per game in `pending`.
 import { GLANCE_ANGLE, GLANCE_TURN_TIME } from '../../config.js';
 import { angleDiff } from '../../core/vision.js';
-import { spotPos, inZone } from '../../game/perception.js';
+import { spotPos, inZone, viewerOf } from '../../game/perception.js';
 import { holdFor } from '../override.js';
-import { ripple as showRipple } from '../../core/fx.js';
+import { ripple as showRipple, turned as showTurn } from '../../core/fx.js';
 
 // --- Tunables ------------------------------------------------------------------
 const TURN_TIME = 1.5; // s an NPC faces a noise
@@ -60,6 +61,7 @@ export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, 
     if (Math.hypot(npc.x - x, npc.y - y) > radius) continue;
     if (auth?.deafIn && npc.id === auth.id && inZone(game, auth.deafIn, npc.x, npc.y)) continue;
     const head = !!npc.override; // the mode is fixed when he hears it
+    if (!npc._heard && game.fx) showTurn(game, npc.id, viewerOf(npc).dir, x, y); // the swing shows (render only)
     npc._heard = { x, y, t: turn, head };
     if (!head) holdFor(npc, turn);
     game.events.emit('npc:heard', { id: npc.id });
