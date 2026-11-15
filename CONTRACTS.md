@@ -637,13 +637,15 @@ exits 2 and lists the registry.
     never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
   `tools/test-gate.mjs` tests the verdict logic.
 - **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`;
-  `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`. Bubbles, sightlines and ripples are
-  drawn as a player at normal speed sees them at that clock time, even after pretending (`playerView`,
-  `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
+  `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--verbs` draws a verb sheet per
+  item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,
+  sightlines and ripples are drawn as a player at normal speed sees them at that clock time, even after pretending
+  (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
   `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
 - **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
   level's premise, pictures and replays, and record a verdict per stage in `cold-read.md`. `--status` lists every
-  level's stages. `tools/test-cold-read.mjs` tests it with a fake reader. See `docs/COLD-READ.md`.
+  level's stages. The pictures stage also shows the verb sheets. `tools/test-cold-read.mjs` tests it with a fake
+  reader; `tools/test-verb-sheet.mjs` tests that the sheets cover every item and verb. See `docs/COLD-READ.md`.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.

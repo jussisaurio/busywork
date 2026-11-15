@@ -201,13 +201,19 @@ try {
   const before2 = readFileSync(recordFile(root), 'utf8').split('<!-- cold-read:premise ')[1];
   rec = await runStage('meeting', 'pictures', { runner: fr.runner, root, lib, shots: SHOTS, log: silent, ...fixed });
   const [q1, q2] = fr.calls;
-  ok(files(q1).join() === 'card.txt,shots/01.png,shots/02.png,shots/03.png', 'pictures step 1 sees the card and the shots, numbered');
-  const rendered = (await stageInputs('meeting', 'pictures', { root, lib, shots: SHOTS })).shots;
+  const VERBS = 'verbs/01.png,verbs/02.png,verbs/03.png,verbs/04.png'; // meeting's items: coffee, keycard, mug, sandwich
+  ok(files(q1).join() === `card.txt,shots/01.png,shots/02.png,shots/03.png,${VERBS}`, 'pictures step 1 sees the card, the shots and a verb sheet per item, numbered');
+  const pinp = await stageInputs('meeting', 'pictures', { root, lib, shots: SHOTS });
+  const rendered = pinp.shots;
   ok(rendered.every((r, i) => q1.files[`shots/0${i + 1}.png`].equals(r.png)), 'pictures step 1: the PNGs are the rendered shots');
-  ok(!Object.values(q1.files).some((b) => /INTENT-|cup-at-projector|end-fail/.test(b.toString('utf8'))), 'pictures step 1 sees no intents and no shot names');
-  ok(files(q2).join() === 'intents.md,reading.md,shots/01.png,shots/02.png,shots/03.png', 'pictures step 2 sees the reading, the intents and the shots');
+  ok(pinp.verbs.every((v, i) => q1.files[`verbs/0${i + 1}.png`].equals(v.png) && !v.png.equals(v.labelled)), 'pictures step 1: the verb sheets with numbers only, not the labelled ones');
+  ok(!Object.values(q1.files).some((b) => /INTENT-|cup-at-projector|end-fail|Verb sheets|eat_sandwich/.test(b.toString('utf8'))), 'pictures step 1 sees no intents, no shot names, no verb names');
+  ok(files(q2).join() === `intents.md,reading.md,shots/01.png,shots/02.png,shots/03.png,${VERBS}`, 'pictures step 2 sees the reading, the intents, the shots and the verb sheets');
+  ok(pinp.verbs.every((v, i) => q2.files[`verbs/0${i + 1}.png`].equals(v.labelled)), 'pictures step 2: the verb sheets labelled');
   ok(text(q2, 'reading.md') === 'PICTURE-READING' && /01\.png \(start\): INTENT-START/.test(text(q2, 'intents.md')) && /03\.png \(end-fail\): INTENT-END/.test(text(q2, 'intents.md')),
     'pictures step 2: step 1\'s reading verbatim; the intents by number and name');
+  ok(/## Verb sheets/.test(text(q2, 'intents.md')) && /### verbs\/04\.png: the sandwich/.test(text(q2, 'intents.md')) && /eat_sandwich done\. It changed: [^\n]*player\.smeared: false → true/.test(text(q2, 'intents.md')),
+    'pictures step 2: the intents hold each verb sheet, with the engine\'s account of each panel');
   md = readFileSync(recordFile(root), 'utf8');
   ok(md.indexOf('<!-- cold-read:premise ') < md.indexOf('<!-- cold-read:pictures ') && md.split('<!-- cold-read:premise ')[1].startsWith(before2.slice(0, 200)),
     'a new stage\'s section goes after premise, which is left as it was');
@@ -216,6 +222,12 @@ try {
   ok(!s.ok && s.changed.join() === 'shots.js', 'pictures: a changed intent makes it stale (shots.js)');
   s = await stageStatus('meeting', 'pictures', { root, lib, shots: SHOTS.map((x, i) => (i === 1 ? { ...x, cmds: ['goto coffee_machine busy', 'interact', 'goto my_seat'] } : x)) });
   ok(!s.ok && s.changed.includes('the rendered shots'), 'pictures: a changed picture makes it stale (the rendered shots)');
+  const recText = readFileSync(recordFile(root), 'utf8');
+  // A record made from other verb sheets: their part, and so the whole hash, differ.
+  writeFileSync(recordFile(root), recText.replace(`"verbs":"${pinp.parts.verbs}"`, `"verbs":"${'0'.repeat(64)}"`).replace(`"hash":"${pinp.hash}"`, `"hash":"${'1'.repeat(64)}"`));
+  s = await stageStatus('meeting', 'pictures', { root, lib, shots: SHOTS });
+  ok(!s.ok && s.changed.join() === 'the verb sheets', 'pictures: a changed verb sheet makes it stale (the verb sheets)');
+  writeFileSync(recordFile(root), recText);
   s = await stageStatus('meeting', 'premise', { root });
   ok(s.verdict === 'unreadable', 'pictures did not touch the premise section');
 

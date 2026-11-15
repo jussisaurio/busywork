@@ -9,6 +9,9 @@
 //   node tools/shots.mjs --level <id>             writes tools/.shots/<id>/NN-name.png (01-start.png, ..., in list order)
 //   node tools/shots.mjs --level <id> --replay    writes the replay strips (tools/lib/replay.mjs), one per route check,
 //                                                 to tools/.shots/<id>/replay/run-NN/ (NN.png, captions.md), runs.md
+//   node tools/shots.mjs --level <id> --verbs     writes the verb sheets (tools/lib/verbs.mjs), one per item, to
+//                                                 tools/.shots/<id>/verbs/: NN-item.png labelled, NN.png as the step 1
+//                                                 reader sees it (numbers only), verbs.md (what each panel is)
 //
 // The same input gives the same bytes: fx particles (the only Math.random) are seeded from the shot's name, and the
 // renderer's clock is the game's. tools/cold-read.mjs hashes these PNGs to tell a fresh stage from a stale one.
@@ -23,6 +26,7 @@ import { createHarness } from '../src/agent/harness.js';
 import { getLevel } from '../src/levels/index.js';
 import { W, H, SHOTS_DIR, loadCanvas, withDom, playToEndCard, playerView } from './lib/draw.mjs';
 import { captureRuns, writeRuns } from './lib/replay.mjs';
+import { captureVerbs, verbsIntents } from './lib/verbs.mjs';
 import { loadChecks } from './lib/route-ctx.mjs';
 
 export { SETUP, loadCanvas } from './lib/draw.mjs';
@@ -106,11 +110,25 @@ export async function renderReplay(id, { lib = loadCanvas() } = {}) {
   return captureRuns(level, checks, { lib });
 }
 
+// Draws the verb sheets of level `id` and writes them to dir (default tools/.shots/<id>/verbs/), removing what a
+// previous run left there. Returns { dir, sheets }.
+export function writeVerbs(id, { lib = loadCanvas(), dir = join(shotsDir(id), 'verbs') } = {}) {
+  const { sheets } = captureVerbs(getLevel(id), { lib });
+  mkdirSync(dir, { recursive: true });
+  for (const f of readdirSync(dir)) if (/\.(png|md)$/.test(f)) rmSync(join(dir, f));
+  for (const s of sheets) {
+    writeFileSync(join(dir, s.name), s.labelled);
+    writeFileSync(join(dir, s.file), s.png);
+  }
+  writeFileSync(join(dir, 'verbs.md'), verbsIntents(sheets) || 'No items: no verb sheets.\n');
+  return { dir, sheets };
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const i = process.argv.indexOf('--level');
   const id = i > 0 ? process.argv[i + 1] : null;
   if (!id) {
-    console.error('usage: node tools/shots.mjs --level <id> [--replay]');
+    console.error('usage: node tools/shots.mjs --level <id> [--replay | --verbs]');
     process.exit(2);
   }
   try {
@@ -121,6 +139,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       const dir = writeRuns(runs, join(shotsDir(id), 'replay'));
       for (const r of runs) console.log(`  ${r.dir}: ${r.frames.length} frames (${r.total} moments)  ${r.outcome?.result ?? 'no outcome'}  ${r.name}${r.err ? `  (check failed: ${r.err})` : ''}`);
       console.log(`shots: ${id}: ${runs.length} replay strips in ${dir} (${((performance.now() - t0) / 1000).toFixed(1)} s)`);
+      process.exit(0);
+    }
+    if (process.argv.includes('--verbs')) {
+      const { dir, sheets } = writeVerbs(id);
+      for (const s of sheets) {
+        const notes = [...s.trouble.map((t) => `reaction: ${t}`), ...s.missing.map((m) => `not drawn: ${m}`)];
+        console.log(`  ${s.name}: ${s.panels.length} panels, E: ${s.eVerb ?? 'no prompt'}${notes.length ? `  (${notes.join('; ')})` : ''}`);
+      }
+      console.log(`shots: ${id}: ${sheets.length} verb sheets in ${dir} (${((performance.now() - t0) / 1000).toFixed(1)} s)`);
       process.exit(0);
     }
     const rendered = await renderShots(id);
