@@ -2,7 +2,7 @@
 //
 // A ring (you plug a cord into a jack) sets ring_<p> = 'you'. Every step (tick, below) a ringing phone is answered
 // by its owner if he is free and in earshot, else by the nearest free NPC in earshot (call_<p>). He walks over,
-// picks up (line_<p>) and gets the hold music until he gives up (HOLD minutes). Nobody hears it: it stops after
+// picks up (line_<p>) and gets the caller (CALLER) until he gives up (HOLD minutes). Nobody hears it: it stops after
 // RING_FOR minutes. The ring is also a noise (index.js noises): heads in earshot turn. Earshot and the drawn rings
 // are measured from the phone itself (PHONES bell).
 //
@@ -28,6 +28,8 @@ const RING_FOR = 1.5; // game minutes a ring nobody hears goes on
 const RING_OUT = 2; // game minutes the interviewer lets it ring
 const CHECK_EVERY = 2.6; // game minutes between Lin's checks of her line, before her tea
 const CHECK_FOR = 0.8; // game minutes she holds the receiver to her ear
+const LAUGH_EVERY = 1.6; // game minutes between the boss's laughs on the phone with Gary
+const ARM = 2.5; // tiles: within this, someone notices you at the socket whatever way they face
 const GLANCE_EVERY = 1.7; // game minutes between her glances at the clock after her tea, rehearsing
 export const BACK_AT = at('3:21', START); // from here on Lin is back from her tea (cast.js: 3:22) with her notes
 export const NOTES_AFTER = 0.6; // game minutes from picking up to the hold tune
@@ -73,6 +75,7 @@ export function initialPhones() {
     chairAt: 0, // the boss's next look at your chair, from 3:30
     heardJob: '', // who on hold has heard the interview ring (ids, space separated)
     bossRise: false, // the boss half-rises at Lin's phone ringing (LURES)
+    laughAt: 0, // the boss's next laugh on the phone with Gary
     roseFor: -1, // ... once per ring: the ring's ringAt_lin
   };
   for (const p of PHONE_IDS) {
@@ -166,13 +169,14 @@ export function phoneTick(game, sim) {
       game.events.emit('interview:rangOut', {});
     }
   }
-  // Someone on hold in earshot of the interview's ring: ❗, a look its way, and the tune keeps him.
+  // Someone on a call in earshot of the interview's ring: a hand up at it (not now), and back to his call.
   if (w.ring_lin === 'job') {
     for (const n of npcs) {
       const h = holdOf(n);
       if (!h || h[1] !== 'on' || w.heardJob.includes(n.id) || dist(n, PHONES.lin.bell) > RING_RADIUS) continue;
       w.heardJob += ` ${n.id}`;
-      sim.speak(game, n, [{ say: ['🔔', '✋'], ttl: 1.3 }, { say: ['😌'], after: 1.4, ttl: 1.2 }]); // not now: the tune
+      const p = h[2];
+      sim.speak(game, n, [{ say: ['🔔', '✋'], ttl: 1.3 }, { say: CALLER[p] === 'gary' ? ['⛳', '😄'] : ['😌'], after: 1.4, ttl: 1.2 }]);
     }
   }
   // Lin's stare at a dead phone: a moment after 3:30, once she is at her desk.
@@ -180,6 +184,26 @@ export function phoneTick(game, sim) {
     w.stared = true;
     sim.lookAt(game, lin, 'lin_side', 2);
     sim.speak(game, lin, [{ say: ['🕞', '❓'], kind: 'thought', ttl: 1.8 }]);
+  }
+
+  // Someone at arm's length notices you crouch at the socket, whatever way they faced: Lin or Kev within ARM of you
+  // while you pull the cord turns to look at it, and the engine's witness rules take it from there (told on).
+  const act = game.player?.action;
+  if (act && act.type === 'unplug') {
+    for (const id of ['lin', 'kev']) {
+      const n = byId(id);
+      if (n && n.active && !n._stare && dist(n, game.player) <= ARM) sim.lookAt(game, n, 'socket_lin', 2);
+    }
+  }
+
+  // On with Gary the boss laughs now and then (⛳😄): one long golf chat.
+  for (const p of PHONE_IDS) {
+    if (CALLER[p] !== 'gary' || w[`line_${p}`] !== 'boss' || !w[`tune_${p}`] || m < (w.laughAt ?? 0)) continue;
+    const b = byId('boss');
+    if (b && b.override === `on_${p}_phone`) {
+      w.laughAt = m + LAUGH_EVERY;
+      sim.speak(game, b, [{ say: [m % 4 < 2 ? '⛳' : '😆'], ttl: 1.0 }]);
+    }
   }
 
   // On hold he stares into space: his eyes stay ahead (no glances over his shoulder), though a ring still turns
@@ -215,8 +239,13 @@ export function phoneTick(game, sim) {
       game.events.emit('lin:checks', {});
     } else if (seated && m >= BACK_AT && m >= w.glanceAt) {
       w.glanceAt = m + GLANCE_EVERY;
-      sim.lookAt(game, lin, 'clock_view', 1.1);
-      sim.speak(game, lin, [{ say: ['🕞'], kind: 'thought', ttl: 1.1 }, { say: ['📝'], after: 1.5, ttl: 1.0 }]);
+      if (w.line_lin && w.line_lin !== 'lin') { // someone on her phone (the boss, with Gary): she hovers, too scared to cut in
+        sim.lookAt(game, lin, 'lin_side', 1.4);
+        sim.speak(game, lin, [{ say: ['#handset_lin', `@${w.line_lin}`], kind: 'thought', ttl: 1.2 }, { say: ['😬'], after: 1.4, ttl: 1.1 }]);
+      } else {
+        sim.lookAt(game, lin, 'clock_view', 1.1);
+        sim.speak(game, lin, [{ say: ['🕞'], kind: 'thought', ttl: 1.1 }, { say: ['📝'], after: 1.5, ttl: 1.0 }]);
+      }
     }
   }
 
@@ -264,8 +293,11 @@ export function phoneTick(game, sim) {
 const WHOSE = { lin: "Lin's phone", boss: "the boss's phone", kev: "Kev's phone", kitchen: 'the kitchen phone' };
 export const ringable = (w, p) => !w[`ring_${p}`] && !w[`call_${p}`] && !w[`line_${p}`]
   && (p !== 'lin' || (w.cord === 'in' && !w.linCheck));
+// Working the old switchboard is nothing to see; only Lin minds you putting a call through to her own line (and
+// only she knows to: she is keeping it free).
 const ring = (p) => ({
-  on: `ring_${p}`, text: `ring ${WHOSE[p]}`, duration: 0.6, sneaky: true, saw: '☎️',
+  on: `ring_${p}`, text: `ring ${WHOSE[p]}`, duration: 0.6,
+  ...(p === 'lin' ? { sneaky: true, owner: 'lin', saw: '☎️' } : {}),
   can: (pl, w) => ringable(w, p),
   done(game) {
     const w = game.world;
@@ -306,9 +338,15 @@ export const NOISES = {
 };
 
 // --- Answering: one lure per (person, phone) --------------------------------------------------------
-//   HOLD[npc][phone]: game minutes on the line. The boss loves the hold music: one tune, wherever he picks up. Kev
-//   gives it a while. Lin holds on the outside line (the kitchen), hoping; an internal line is not her call: on her
-//   own phone she hears the tune and slams it down (SLAM), on another she hangs up at once.
+// Two calls wait on hold at the switchboard all afternoon, and a jack puts one through to its phone (CALLER):
+//   gary     the boss's golf buddy, holding for him, who talks and never stops: on the inside lines (Lin's, the
+//            boss's, Kev's).
+//   hr       head office's queue on the outside line ("please hold for HR"), hold music: on the kitchen wall phone,
+//            which is on the outside line.
+//   HOLD[npc][phone]: game minutes on the line. The boss and Gary talk golf: one long chat, wherever he picks up.
+//   Kev is too polite to cut Gary off, for a while. Lin holds for HR, hoping it is her interview; Gary wants the
+//   boss, not her: on her own phone she hangs up on him (SLAM: she keeps her line free), on another at once.
+export const CALLER = { lin: 'gary', boss: 'gary', kev: 'gary', kitchen: 'hr' };
 const BOSS_HOLD = 9;
 export const HOLD = {
   boss: { boss: BOSS_HOLD, lin: BOSS_HOLD, kev: BOSS_HOLD, kitchen: BOSS_HOLD },
@@ -326,16 +364,19 @@ export const STAND = { // where each answers each phone
   lin: { lin: 'lin_desk', boss: 'boss_front', kev: 'kev_side', kitchen: 'kitchen_phone' },
   kev: { kev: 'kev_desk', lin: 'lin_side', boss: 'boss_front', kitchen: 'kitchen_phone' },
 };
-// His first words on picking up, and on hanging up. Lin on the outside line hopes it is her interviewer (💼❓)
-// before the tune starts; on her own phone she slams it down (presentation.js POSES), on another internal one
-// she shrugs.
+// His first words on picking up, and on hanging up. Gary: ⛳ (and @boss: he wants the boss). HR: 💼⏳, please
+// hold. Lin holds for HR with her fingers crossed; Gary on her own phone gets it slammed down (presentation.js
+// POSES), on another internal one a shrug.
 const SUMMONED = (p) => [{ say: [`#handset_${p}`, '❗'], ttl: 1.4 }]; // which phone he heard, and off he goes
 const PICK_UP = (npc, p) => {
-  if (npc === 'boss') return [{ say: ['❓'], ttl: 0.9 }, { say: ['😌'], after: 1.1, ttl: 1.4 }];
-  if (npc === 'kev') return [{ say: ['❓'], ttl: 0.9 }, { say: ['😑'], after: 1.1, ttl: 1.2 }];
-  if (p === 'kitchen') return [{ say: ['💼', '❓'], ttl: 1.2 }];
-  if (p === 'lin') return [{ say: ['❓'], ttl: 0.8 }, { say: ['😠'], after: 1.8, ttl: 1.3 }];
-  return [{ say: ['❓'], ttl: 0.8 }];
+  const hr = CALLER[p] === 'hr';
+  if (npc === 'boss') return hr ? [{ say: ['💼', '⏳'], ttl: 1.2 }, { say: ['😌'], after: 1.4, ttl: 1.2 }]
+    : [{ say: ['⛳', '❗'], ttl: 1.1 }, { say: ['😄'], after: 1.3, ttl: 1.4 }];
+  if (npc === 'kev') return hr ? [{ say: ['💼', '⏳'], ttl: 1.2 }, { say: ['😑'], after: 1.4, ttl: 1.2 }]
+    : [{ say: ['⛳', '@boss'], ttl: 1.1 }, { say: ['😑'], after: 1.3, ttl: 1.2 }];
+  if (hr) return [{ say: ['💼', '⏳'], ttl: 1.3 }, { say: ['🤞'], after: 1.5, ttl: 1.3 }];
+  if (p === 'lin') return [{ say: ['⛳', '@boss'], ttl: 1.2 }, { say: ['😠'], after: 1.6, ttl: 1.3 }];
+  return [{ say: ['⛳', '@boss'], ttl: 0.9 }];
 };
 const HUNG_UP = (npc, p) => {
   if (npc === 'boss') return [{ say: ['😊'], ttl: 1.2 }];
@@ -396,7 +437,7 @@ for (const npc of CAST_IDS) {
         event: mine ? 'interview:lin' : 'interview:other',
         says: mine
           ? [{ say: ['💼', '😊'], ttl: 1.6 }, { say: ['😊', '👍'], after: 1.8, ttl: 1.6 }]
-          : [{ say: ['💼', '❓'], ttl: 1.2 }, { say: ['@lin', '❓'], after: 1.3, ttl: 1.1, face: 'kitchen_door' }, { say: ['🤷'], after: 2.4, ttl: 1.2 }],
+          : [{ say: ['💼', '❓'], ttl: 1.2 }, { say: ['@lin', '🪑'], after: 1.3, ttl: 1.2 }, { say: ['🤷'], after: 2.6, ttl: 1.2 }], // she's not at her desk
       },
       done: { set: { jobBy: null, line_lin: null }, event: 'interview:hungUp' },
     },

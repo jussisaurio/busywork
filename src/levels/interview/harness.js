@@ -53,7 +53,7 @@ export default {
     const m = /^(to|on)_(\w+)_phone$/.exec(n.override ?? '');
     if (!m) return [];
     if (m[1] === 'to') return [`going to answer ${PHONE[m[2]]} ☎️`];
-    return [`on hold on ${PHONE[m[2]]} 🎵 ${Math.round((game.world[`hold_${n.id}`] ?? 0) * 100)}%`];
+    return [`on ${PHONE[m[2]]} ${m[2] === 'kitchen' ? 'holding for HR 🎵' : 'with Gary ⛳'} ${Math.round((game.world[`hold_${n.id}`] ?? 0) * 100)}%`];
   },
 
   worldText(game) {
@@ -87,7 +87,7 @@ export default {
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switchboard:ring': return `you plugged into the jack for ${PHONE[p.phone]}: it rings 🔔`;
-      case 'boss:onHold': case 'lin:onHold': case 'kev:onHold': return `${name(e.name.split(':')[0])} picks up and gets the hold music 🎵`;
+      case 'boss:onHold': case 'lin:onHold': case 'kev:onHold': return `${name(e.name.split(':')[0])} picks up: Gary ⛳ on an inside line, HR's hold queue 🎵 on the kitchen phone`;
       case 'boss:hungUp': case 'lin:hungUp': case 'kev:hungUp': return `${name(e.name.split(':')[0])} hangs up`;
       case 'cord:out': return "you pulled Lin's phone cord out of the wall 🔌 (it lies on the floor)";
       case 'cord:in': return p.by === 'kev'
@@ -95,7 +95,7 @@ export default {
         : "Lin found her line dead and pushed her plug back into the wall";
       case 'lin:deadLine': return "Lin's receiver is silent: her line is dead ❓ (she goes to the socket)";
       case 'interview:lin': return 'Lin takes her interview call 📞😊';
-      case 'interview:busy': return `the interviewer gets a busy line: ${name(p.by)} is on Lin's phone 🎵`;
+      case 'interview:busy': return `the interviewer gets a busy line: ${name(p.by)} is on Lin's phone ⛳`;
       case 'interview:dead': return "Lin's phone never rings: its cord is out 🔌";
       default: return undefined;
     }

@@ -7,7 +7,7 @@ import { PHONE_PROPS, THINGS } from './painters.js';
 import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'Make her miss it.'],
+  mission: ['3:00 PM. Lin wants your job. Her phone interview is at 3:30.', 'They only ring once. Make her miss it.'],
   badge: ['#interview', '#call'], // the threat: Lin's interview (her face and its briefcase) and the call (painters.js THINGS)
 };
 
@@ -89,8 +89,9 @@ export const VOICES = {
   },
 };
 
-// The bell is the rings' noise (phones.js NOISES, sfx 'phoneRing'); a phone on hold plays a little tune until it
-// ends (phones.js tune_<p>).
+// The bell is the rings' noise (phones.js NOISES, sfx 'phoneRing'); head office's hold queue on the kitchen phone
+// plays a little tune until it ends (phones.js tune_kitchen). Gary on the inside lines is heard in the boss's
+// laughs (phones.js).
 const holdTune = (p) => ({ while: (w) => !!w[`tune_${p}`], every: [1.6, 2.4], sfx: 'jingle', spot: PHONES[p].at, opts: { gain: 0.35 } });
 
 export const SOUNDS = {
@@ -106,5 +107,5 @@ export const SOUNDS = {
     'interview:lin': { sfx: 'pickup', spot: 'lin_side' },
     'interview:other': { sfx: 'pickup', spot: 'lin_side' },
   },
-  repeats: Object.fromEntries(PHONE_IDS.map((p) => [`hold_${p}`, holdTune(p)])),
+  repeats: { hold_kitchen: holdTune('kitchen') },
 };
