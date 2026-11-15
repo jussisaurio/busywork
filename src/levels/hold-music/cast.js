@@ -57,8 +57,8 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'visit', spot: 'kitchen_kev' }), // coffee
-      s('3:08', { do: 'visit', spot: 'cable_lin', arrive: 'plugIn' }), // his cable round: under Lin's desk
-      s('3:14', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
+      s('3:11', { do: 'visit', spot: 'cable_lin', arrive: 'plugIn' }), // his cable round: under Lin's desk
+      s('3:17', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
       s('3:27', { do: 'sit', spot: 'kev_desk' }),
     ],
   },
@@ -89,6 +89,10 @@ export const BEHAVIOURS = {
       npc._picked = true;
       const w = game.world;
       sim.faceSpot(game, npc, 'lin_side');
+      if (w.interview === 'due' && game.clock.minute >= game.level.day.meetingAt) { // it rang out a moment ago
+        if (npc.id === 'lin') sim.speak(game, npc, [{ say: ['📞', '😱'] }]);
+        return;
+      }
       if (w.interview !== 'due') { // someone got there first
         if (npc.id === 'lin' && w.interview === 'boss') sim.speak(game, npc, [{ say: ['😱'] }]);
         else if (npc.id === 'boss' && w.interview === 'lin') sim.speak(game, npc, [{ say: ['👀'], kind: 'thought' }]);

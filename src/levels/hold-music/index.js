@@ -33,7 +33,7 @@ const MAP = [
   '#.......G.....#..............#', // 4
   '#GGGGGGD#.....###D############', // 5
   '#............................#', // 6
-  '#.TTL.....TPT.........TTV....#', // 7
+  '#.TLT.....TPT.........TTV....#', // 7
   '#............................#', // 8
   '#............................#', // 9
   '#............................#', // 10
@@ -65,7 +65,7 @@ const SPOTS = {
   boss_desk: { x: 3, y: 2, face: 'S' }, // behind his desk, watching the office through the glass
   boss_phone: { x: 3, y: 1, face: 'N' }, // his wall phone: back to the room
   lin_desk: { x: 3, y: 8, face: 'N' },
-  lin_side: { x: 5, y: 7, face: 'W' }, // anyone else picking up Lin's phone
+  lin_side: { x: 3, y: 6, face: 'S' }, // anyone else picking up Lin's phone, right in front of her
   kev_desk: { x: 23, y: 8, face: 'N' },
   kev_side: { x: 25, y: 7, face: 'W' },
   kitchen_phone: { x: 25, y: 1, face: 'N' },
