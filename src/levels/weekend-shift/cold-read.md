@@ -61,47 +61,41 @@ The card reads aloud like a coworker talking: "makes it official" and "get out o
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"616b52e","hash":"952e5edee7a500f6ca87ce99ececf1a1b619c2f0992d8278e8f8a2de79916cf9","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"5011e7553ffed9a6b4788c1c28876c7dbed789811354e1dfbc469193d85caac2","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":5,"stretch":3,"nonsense":0},"problems":{"blocker":2,"should":3,"nit":2}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit 616b52e, by claude -p (model: default). Inputs 952e5edee7a5: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 5 sensible, 3 stretch, 0 nonsense.
-Problems: 2 blocker, 3 should, 2 nit.
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"995a3cc","hash":"e2452c98bb65ab74bb5c3bde8a90f9a5b55a8f7a88c4cdae12fb24d050ebb01a","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"f3020a30329cbc3c48e43c84d4ce54912272129e4f4c5a994c816893f772a60f","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":1,"nonsense":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
+## sense: works
+Recorded 2026-11-15 at commit 995a3cc, by claude -p (model: default). Inputs e2452c98bb65: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 1 stretch, 0 nonsense.
+Problems: 0 blocker, 2 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 43 s | $0.11 |
-| all | | 43 s (the steps add up to 43 s) | $0.11 |
+| 1-judge | report.md | 42 s | $0.11 |
+| all | | 42 s (the steps add up to 42 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In the win ending, the boss has spent all afternoon guarding the board against people going up to it, and that's the reason he gives. Then Kev says "it was them all week, not me," and the boss shrugs it off as a protest. Someone guarding a board against tampering would hear that and think "tampering" straight away. — **Fix:** Have the boss guard the board for some other reason, or give him a reason he can't check: for example, Kev has dodged Saturday before, so the boss doesn't trust him.
-- E2 [blocker] Lin's behaviour doesn't fit together. She points at you the moment she sees you writing (Told on). She and Kev both name you as soon as the boss asks (His own face). But in the win she "keeps out of it" while Kev is wrongly blamed. With only three people in the office, a real boss facing a dispute would just say "Lin?", and she has looked at that board all week. — **Fix:** Give Lin a real reason to stay quiet at 5:00. For example, she's still at her desk eating her fish and missed the start of the meeting, or she has her own grudge against Kev. Or have the boss ask her and she honestly isn't sure, because she wasn't paying attention to the Saturday box.
-- E3 [should] The boss forgetting who he put down for Saturday is a stretch when he has stared at that board all afternoon. Even a half-awake person notices the one name that matters. — **Fix:** Say he watches the people near the board from his desk, and the Saturday box is too small to read from there.
-- E4 [should] In the ding route, once the steam thins, everyone looks for whoever owns the noodles, which is you, and you're walking away from the board. That draws eyes to you at exactly the wrong spot. — **Fix:** Have the player walk to the microwave to deal with the mess, so everyone ends up looking at the kitchen. That also explains why they "wonder whose" noodles they are.
-- E5 [should] In Blamed, the boss overrides his own board because you were absent. That contradicts the win ending, where his board beats anyone's word, and Kev sitting there named on the board would object. — **Fix:** Have Kev say "they're not even here, give it to them," and the boss happily agrees.
+- E1 [should] Lin's desk faces the board all afternoon, and the board shows a drawn face, not small text. A real person looking at a board in front of her desk would notice when the face in the Saturday box changes from yours to Kev's, especially just after she turned back from the steam. "Nobody reads the weekend schedule" covers reading, not glancing at a picture. Fix: give Lin a reason not to look at the board after a write, such as her monitor or a stack of folders blocking her view of the Saturday box. Or let her notice and shrug, because she's not on it and it's none of her business. A real coworker would do that.
+- E2 [should] In "His own face", Kev points at you (👉 you), but the win section says he was "too far off to see the board… never saw anyone at it." A real person doesn't accuse someone of something they didn't see. Fix: have Kev go along for his own sake instead. He's afraid the slot will land on him, so he nods along ("yeah, must've been") rather than acting as a second witness. Or leave him out.
 
 ### 1-judge: report.md
 
-Verdict: fixable
+Verdict: works
 
-- The ding (win): stretch. The noodle boil-over is realistic, but the ending it leads to doesn't hold up (see blockers).
-- The phone (win): stretch. The wrong-number call and Lin's late fish lunch are realistic, but it shares the same ending.
-- The trap (not a win): sensible. You look at a beeping copier and see whoever is standing in front of it.
-- Fail (lose): sensible. The boss reads out the board he wrote.
-- Caught (lose): sensible. He was watching and saw you writing.
-- His own face (lose): sensible. He knows he never put himself down, so he asks the room, and they tell him.
-- Told on (lose): sensible. A coworker reports someone messing with the schedule, and the boss checks.
-- Blamed (lose): stretch. Funny and recognisable, but the boss throws out the board he just refused to doubt.
+- The ding (win): sensible. When food boils over in the microwave, everyone stares at the steam and nobody gets up. A boss who filled in the schedule on Monday reads out whatever face is there, and Kev groans and takes it.
+- The phone (win): sensible. People answer their own ringing phone, say hello twice to nobody and hang up. Lin standing with her back to the room while her fish heats is ordinary office behaviour.
+- The trap (lose, not a win): sensible. You look at a noise and see whatever is between you and it.
+- Fail (lose): sensible. The boss reads out the face he finds on the board.
+- Caught (lose): sensible. A boss who sees you erasing the weekend schedule stops you.
+- His own face (lose): stretch. The boss's reaction is right: nobody believes he put himself down. But Kev backs Lin up even though the text says he saw nothing.
+- Told on (lose): sensible. A coworker who sees someone rewriting the schedule tells the boss, and he goes to check.
+- Blamed (lose): sensible. "Whoever's not at the meeting gets the job nobody wants" is something real bosses do. Overruling his own board to do it is an absurd result, not an absurd method.
 
 ## Problems
-- blocker: In the win ending, the boss has spent all afternoon guarding the board against people going up to it, and that's the reason he gives. Then Kev says "it was them all week, not me," and the boss shrugs it off as a protest. Someone guarding a board against tampering would hear that and think "tampering" straight away. — **Fix:** Have the boss guard the board for some other reason, or give him a reason he can't check: for example, Kev has dodged Saturday before, so the boss doesn't trust him.
-- blocker: Lin's behaviour doesn't fit together. She points at you the moment she sees you writing (Told on). She and Kev both name you as soon as the boss asks (His own face). But in the win she "keeps out of it" while Kev is wrongly blamed. With only three people in the office, a real boss facing a dispute would just say "Lin?", and she has looked at that board all week. — **Fix:** Give Lin a real reason to stay quiet at 5:00. For example, she's still at her desk eating her fish and missed the start of the meeting, or she has her own grudge against Kev. Or have the boss ask her and she honestly isn't sure, because she wasn't paying attention to the Saturday box.
-- should: The boss forgetting who he put down for Saturday is a stretch when he has stared at that board all afternoon. Even a half-awake person notices the one name that matters. — **Fix:** Say he watches the people near the board from his desk, and the Saturday box is too small to read from there.
-- should: In the ding route, once the steam thins, everyone looks for whoever owns the noodles, which is you, and you're walking away from the board. That draws eyes to you at exactly the wrong spot. — **Fix:** Have the player walk to the microwave to deal with the mess, so everyone ends up looking at the kitchen. That also explains why they "wonder whose" noodles they are.
-- should: In Blamed, the boss overrides his own board because you were absent. That contradicts the win ending, where his board beats anyone's word, and Kev sitting there named on the board would object. — **Fix:** Have Kev say "they're not even here, give it to them," and the boss happily agrees.
-- nit: Kev fixes the copier in the trap, but he's described as having his head down in his code all afternoon. — **Fix:** Have whoever is nearest go and fix it, or Kev complaining about the interruption.
-- nit: Six seconds is far too short for noodles to boil over. — **Fix:** Fine as game time, but have someone say something like "who puts noodles in for ten minutes?" to cover it.
+- should: Lin's desk faces the board all afternoon, and the board shows a drawn face, not small text. A real person looking at a board in front of her desk would notice when the face in the Saturday box changes from yours to Kev's, especially just after she turned back from the steam. "Nobody reads the weekend schedule" covers reading, not glancing at a picture. Fix: give Lin a reason not to look at the board after a write, such as her monitor or a stack of folders blocking her view of the Saturday box. Or let her notice and shrug, because she's not on it and it's none of her business. A real coworker would do that.
+- should: In "His own face", Kev points at you (👉 you), but the win section says he was "too far off to see the board… never saw anyone at it." A real person doesn't accuse someone of something they didn't see. Fix: have Kev go along for his own sake instead. He's afraid the slot will land on him, so he nods along ("yeah, must've been") rather than acting as a second witness. Or leave him out.
+- nit: When Kev says "again?!", a real coworker would usually add "I did last Saturday!", and even a half-awake boss would pause at that. Fix: make it clear Kev is the office's usual weekend patsy and always gets it. Then "again?!" is a resigned groan, not an objection.
+- nit: In the ding route, after the steam "the noodles are back on the counter, open and steaming," but nobody got up to take them out. Fix: leave them in the microwave until you come back for them, or have them still sitting in the fogged window.
 
 <!-- /cold-read:sense -->
 

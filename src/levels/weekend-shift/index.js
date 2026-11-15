@@ -10,7 +10,7 @@
 //     when it dings, not hanging about at it.
 //   - the phone in the supply room (behind a wall, out of the boss's sight; his desk has none) rings his, on a
 //     side table in the corner of his office. He walks over and answers it standing there, facing the window, his
-//     back to the office: "Hello? ... Hello?" into a silent line, a few seconds, then he slams it down. The ring and
+//     back to the office: "Hello? ... Hello?" into a silent line, a few seconds, then he hangs up (🙄). The ring and
 //     the walk and the hellos are your window. Lin still watches the board, except while she heats her fish at the
 //     microwave (4:30-4:37), her back to the board: ring then.
 // Nothing is in reach of your seat (DESIGN.md): you start with nothing lit.
@@ -20,6 +20,7 @@
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { burst } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
+import { npcSees } from '../../game/perception.js';
 import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -28,8 +29,8 @@ import gate from './gate.js';
 const START = 16 * 60; // 4:00 PM
 const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes of noodles): about the walk back past the board
 const DING_TURN = 6; // s every head in earshot stays turned to the ding: as long as the noodles boil over (props.js BOIL_S)
-const WRITE_S = 2.5; // s a write takes: longer than any glance away
-const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he slams it down
+const WRITE_S = 3; // s a write takes (wipe, then draw): longer than any glance away, and too long for two in one window
+const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he hangs up
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier (on the line from the boss's desk through the board)   R the Saturday board (a whiteboard on a stand)
@@ -161,8 +162,8 @@ function write(game, who) {
 
 // 5:00, the end beat (2 s): who the board says it is. The boss filled it in on Monday and doesn't remember whom he
 // put down: he reads out whatever face is in the slot (cast.js readRoster). Now: Kev's (he points at Kev; Kev
-// protests and points at you, he waves it off at the board: the board says Kev), his own (he never put himself down: he wipes it,
-// draws yours, since Lin and Kev point at you as the reading ends, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
+// groans), his own (he never put himself down: he wipes it, draws yours, since Lin saw you at the board and points
+// at you, Kev with her, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
 // your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room
 // stare at it).
 function punchline(game, result) {
@@ -178,23 +179,14 @@ function punchline(game, result) {
   } else if (result === 'fail') {
     speak(game, boss, [{ say: ['👈'], ttl: 2, face: game.level.meeting.presenter }]);
   } else {
-    speak(game, boss, [
-      { say: ['👉', '@kev'], ttl: KEV_PROTEST_S + 0.5, face: 'meeting_kev' },
-      { say: ['👈', '🗓️'], ttl: 2 - KEV_PROTEST_S - 0.5, after: KEV_PROTEST_S + 0.5, face: 'board_look' }, // the board says Kev
-    ]);
+    // he points at Kev to the end of the beat; Kev groans (😩: again?!). Nobody disputes the board: nobody in this
+    // office reads it, they wait for it to be read out
+    speak(game, boss, [{ say: ['👉', '@kev'], ttl: 2, face: 'meeting_kev' }]);
     const kev = get('kev');
-    if (kev) {
-      speak(game, kev, [
-        // it wasn't me, it was them all week! The boss doesn't remember, and he doesn't take Kev's word over his own
-        // board: of course the one on it says it's someone else (on his own face the board is plainly wrong, and he
-        // listens: cast.js readRoster)
-        { say: ['🙅', '👉', '@player'], ttl: 1.0, after: KEV_PROTEST_S, face: game.level.meeting.chair },
-        { say: ['😩'], ttl: 2 - KEV_PROTEST_S - 1.0, after: KEV_PROTEST_S + 1.0, face: 'board_look' },
-      ]);
-    }
+    if (kev) speak(game, kev, [{ say: ['😩'], ttl: 2 - KEV_PROTEST_S, after: KEV_PROTEST_S, face: 'board_look' }]);
   }
 }
-const KEV_PROTEST_S = 0.4; // s into the beat Kev protests
+const KEV_PROTEST_S = 0.4; // s into the beat Kev groans
 
 // After a tell (Lin or Kev saw you at the board, pointed at you, and the boss heard), the boss walks over to the board,
 // looks at it and puts your face in Saturday's slot: he doesn't remember whose it was, but you were messing with it,
@@ -208,6 +200,13 @@ function tick(game) {
   const spot = SPOTS.board_boss;
   game.world.rosterLocked = !!b && b.active !== false && !b.moving && b.override !== 'onPhone'
     && Math.abs(b.x - spot.x) < 0.6 && Math.abs(b.y - spot.y) < 0.6;
+  // Lin, whose desk faces the board, notices you at it (not writing: just there) any time before the gather. On his
+  // own face that's why she points at you (cast.js readRoster). Not while every head is turned to the steam.
+  const lin = game.npcs.find((n) => n.id === 'lin');
+  const p = game.player;
+  const r = game.map?.find?.('R')?.[0];
+  if (!game.world.linSawYou && lin && p && r && game.clock.minute < game.level.day.gatherAt
+    && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 0.5)) < 5.5 && npcSees(game, lin, p.x, p.y)) game.world.linSawYou = true;
   if (watched.has(game.events)) return;
   watched.add(game.events);
   game.events.on('boss:workAssigned', (p) => {
@@ -283,7 +282,7 @@ const LURES = [
     },
   },
   { // The phone: the boss takes the call standing at it, in the corner by his window, his back to the office. Anyone
-    // answers his own ringing phone; nobody's there, so "Hello? ... Hello?" for a few seconds, and he slams it down.
+    // answers his own ringing phone; nobody's there, so "Hello? ... Hello?" for a few seconds, and he hangs up (🙄).
     npc: 'boss',
     when: (w) => w.phone === 'ringing',
     override: 'phone',
@@ -300,7 +299,7 @@ const LURES = [
         event: 'phone:answered',
         says: [{ say: ['❓'], ttl: 1.6 }, { say: ['❓', '❓'], ttl: 1.8, after: 2.2 }], // hello? ... hello??
       },
-      done: { set: { phone: 'done' }, event: 'phone:hungUp', says: [{ say: ['😠'] }] },
+      done: { set: { phone: 'done' }, event: 'phone:hungUp', says: [{ say: ['🙄'] }] }, // a wrong number
     },
   },
 ];
@@ -364,6 +363,7 @@ export default {
     roster: 'player', // whose face is in Saturday's slot: 'player' | 'boss' | 'kev'
     wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' | null (see write())
     wroteAt: null, // game minute of the last write
+    linSawYou: false, // Lin has seen you at the board this afternoon (tick): on his own face, she says so
     rosterLocked: false, // the boss sits by the board holding its marker (tick): no writing on it while he does
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     jamAt: null, // game minute of the last jam

@@ -23,7 +23,7 @@ export default [
     cmds: ['goto roster pretend', 'interact', 'wait until 5:00'],
   },
   {
-    name: "microwave, walk back past the board as it dings, write Kev's name, back to your desk, the chair at 4:55 → win (the boss reads Kev's face; Kev protests)",
+    name: "microwave, walk back past the board as it dings, write Kev's name, back to your desk, the chair at 4:55 → win (the boss reads Kev's face; Kev groans)",
     expect: { result: 'win', routes: ['ding'] },
     play: play([...DING, 'interact', 'goto player_desk pretend', 'pretend until 4:55', 'goto meeting_player pretend', 'pretend until 5:00'], (log, w) => {
       must(saw(log, 'npc:heard', (p) => p.id === 'boss'), 'the boss never turned to the ding');
