@@ -1,114 +1,107 @@
 # Cold reads: weekend-shift
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:title {"verdict":"fixable","date":"2026-11-15","commit":"1781ba1","hash":"f505bb2d0c83aa612d289a92255f084c8556d4deae3ba9b46c09dd0ba23b893e","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"ef57b2561ab7506b9523fb7cffd181c351027d489472f24b5755d04180268eb4","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":2,"near":3,"leak":0},"problems":{"blocker":3,"should":0,"nit":0}} -->
-## title: fixable
-Recorded 2026-11-15 at commit 1781ba1, by claude -p (model: default). Inputs f505bb2d0c83: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 2 miss, 3 near, 0 leak.
-Problems: 3 blocker, 0 should, 0 nit.
-Earlier problems: 0 fixed, 3 still there, 0 no longer applies (now blockers).
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"616b52e","hash":"e6e6a3e754e0803b62de51ab97fb9e09b0f5a712ff152bef8664f1906a62b0e7","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"5011e7553ffed9a6b4788c1c28876c7dbed789811354e1dfbc469193d85caac2","prompts":"71812b7000506aab5e901a48dd63d8aa5d43c7546f39641d13d12179213bd417"},"model":"default","tally":{"miss":3,"near":2,"leak":0},"problems":{"blocker":0,"should":2,"nit":1}} -->
+## title: works
+Recorded 2026-11-15 at commit 616b52e, by claude -p (model: default). Inputs e6e6a3e754e0: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 miss, 2 near, 0 leak.
+Problems: 0 blocker, 2 should, 1 nit.
+Earlier problems: 0 fixed, 2 still there, 1 no longer applies.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-guess | guesses.md | 11 s | $0.02 |
-| 2-judge | report.md | 22 s | $0.08 |
-| all | | 33 s (the steps add up to 33 s) | $0.10 |
+| 1-guess | guesses.md | 12 s | $0.02 |
+| 2-judge | report.md | 30 s | $0.10 |
+| all | | 42 s (the steps add up to 42 s) | $0.12 |
 
 ### Ledger
 The earlier record's open problems, as this run's reader marked them.
 
-- E1 still there: The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (The card still shows "🗓️ @player", and guesses 1 and 3 quote it to get to the board.)
-- E2 still there: Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (Guess 1 (now "put someone else's name") still gets from the stake to the board, and the ☀️ swap that was meant to weaken it hasn't been made.)
-- E3 still there: "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional. ("The boss makes it official" is unchanged, and guess 2 still lands on keeping the boss busy. That's close to the phone route but not its key step.)
+- E1 still there: The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (recurring: premise-level?) (The 🗓️ icon still steers guess 1 toward the board. But it only reaches the shared ending, which the opening frame shows anyway, not the microwave timing or the phone call. That makes it a near, not a leak.)
+- E2 still there: Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (recurring: premise-level?) (Guess 2 still reaches "someone else gets it." That mostly follows from the stake itself. The icons push it further: @player next to 🗓️ reads like a tag on a calendar entry that you could move to someone else. Fix: replace "🗓️ @player" with "☀️ @player". The weekend sun names what you lose, and without the calendar, @player has nothing to be tagged on.)
+- E3 no longer applies: "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional. (recurring: premise-level?) ("The boss makes it official" now leads to avoiding the boss (a losing move), not to keeping him busy. Nothing points at the phone route anymore.)
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (recurring: premise-level?)
-- E2 [blocker] Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (recurring: premise-level?)
-- E3 [blocker] "The boss makes it official" gets guess 1 to keeping the boss busy. That's close to the phone route, but it isn't the key step. Fix: if you want to move it further away, change it to "It's final at 5:00." The boss line already sounds natural, though, so this is optional. (recurring: premise-level?)
+- E1 [should] The 🗓️ icon, with "official," sends guess 3 straight to editing the schedule. That's the shared ending, though not how to pull it off. Fix: replace "Card icons: 🗓️ @player" with "Card icons: ☀️ @player" (the lost sunny Saturday), which names what's at stake instead of the thing you change. (recurring: premise-level?)
+- E2 [should] Guess 2 gets to "put it on a coworker" from "stuck working Saturday." That's the stake itself, and it's hard to say less without losing the stake. Fix: leave the line. The ☀️ swap above takes away the extra hint that pushes the guess toward the board. (recurring: premise-level?)
 
 ### 1-guess: guesses.md
 
-# Guesses
+# Guesses: how do you win "Saturday"?
 
-1. **Put someone else's name on the Saturday shift.** The card says "You're stuck working Saturday", and the icons show "🗓️ @player". That looks like a calendar slot with your name in it, so the trick may be to swap in a coworker before the boss announces it.
-2. **Stop the boss from making it official.** The line "The boss makes it official at 5:00" means nothing is final until 5:00. You might distract or delay the boss, or keep the announcement from happening at all.
-3. **Change the schedule yourself.** The "🗓️" icon and "official" suggest a written schedule. You could edit it or quietly remove your name before 5:00.
-4. **Be gone before 5:00.** "Get out of it" could be literal. If you leave the office before the boss announces it, maybe it can't be assigned to you.
-5. **Get a prior commitment on record.** "Get out of it" also sounds like finding an excuse the boss will accept, such as a claimed appointment or approved time off, before "5:00".
+1. **Get your name taken off the calendar entry before it's final.** The card icons "🗓️ @player" make it look like a calendar entry with you tagged in it. "Makes it official at 5:00" suggests it can still be changed until then.
+2. **Get a coworker to take the shift.** "Get out of it" means someone else still has to do it. "@player" suggests the tag could point to another person instead.
+3. **Stay away from the boss until after 5:00, or leave early.** "The boss makes it official at 5:00" suggests it only counts if the boss tells you in person. If the boss can't find you, maybe it never happens.
+4. **Give the boss a good excuse they'll accept.** "Stuck" and "get out of it" sound like the usual office move: a conflict you suddenly remember.
+5. **Get rid of the reason for the Saturday shift.** You could finish the work today, or show it isn't needed. "Working Saturday" points this way.
 
-Stake: if the boss announces it at 5:00, I have to come in and work on Saturday. The card says this directly: "stuck working Saturday".
+Stake: if I fail, I spend my Saturday at work and lose my weekend. The card says this clearly ("You're stuck working Saturday").
 
 ### 2-judge: report.md
 
-Verdict: fixable
-- Stake: clear. If the boss announces it at 5:00, you spend your Saturday at work. "You're stuck working Saturday" says so directly, and the first reader's Stake line repeats it. A stranger knows what they could lose (their weekend), what they want (to get out of it), and how long they have (one hour).
-- Put someone else's name on the Saturday shift: near. This is the ending both routes share (Kev's face goes into the box), but not the key step of either route (the ding or the phone call that clears the room's eyes). The reader got there from "stuck working Saturday" and the "🗓️ @player" icon.
-- Stop the boss from making it official: near. It points at the phone route's area (keep the boss busy), but not at ringing his phone from the supply room. The reader got there from "The boss makes it official at 5:00".
-- Change the schedule yourself: near. Again the shared ending (writing on the board), not how to do it unseen. The reader got there from "🗓️" and "official".
-- Be gone before 5:00: miss. Not being there at 5:00 is a loss ("Blamed"), not a win.
-- Get a prior commitment on record: miss. No route uses an excuse.
+Verdict: works
+- Stake: clear — If you fail, you work Saturday and lose your weekend. You're trying to get out of it before the boss confirms it at 5:00. The card says when it is ("Friday, 4:00 PM"), what goes wrong and what you want, and it doesn't say how.
+- Get your name off the calendar entry: near — This points at the shared ending (changing the board), but not at either distraction that makes it possible. It came from the 🗓️ icon and "official at 5:00." The board is visible in the opening frame anyway.
+- Get a coworker to take the shift: near — Kev does end up with it, but by your rewriting the board, not by asking him. It came from "get out of it" and the @player tag "could point to another person."
+- Avoid the boss or leave early: miss — This loses (Blamed). It came from "the boss makes it official."
+- Give the boss an excuse: miss — No route uses an excuse.
+- Get rid of the reason for the shift: miss — No route does this.
 
 ## Earlier problems
-- E1: still there. The card still shows "🗓️ @player", and guesses 1 and 3 quote it to get to the board.
-- E2: still there. Guess 1 (now "put someone else's name") still gets from the stake to the board, and the ☀️ swap that was meant to weaken it hasn't been made.
-- E3: still there. "The boss makes it official" is unchanged, and guess 2 still lands on keeping the boss busy. That's close to the phone route but not its key step.
-
-Read aloud, the card sounds like a person talking. "Stuck working Saturday", "makes it official" and "Get out of it" are all things a coworker would actually say. Nothing is stiff or made-up, and no guess names a route's key step.
+- E1: still there (should) — The 🗓️ icon still steers guess 1 toward the board. But it only reaches the shared ending, which the opening frame shows anyway, not the microwave timing or the phone call. That makes it a near, not a leak.
+- E2: still there (should) — Guess 2 still reaches "someone else gets it." That mostly follows from the stake itself. The icons push it further: @player next to 🗓️ reads like a tag on a calendar entry that you could move to someone else. Fix: replace "🗓️ @player" with "☀️ @player". The weekend sun names what you lose, and without the calendar, @player has nothing to be tagged on.
+- E3: no longer applies — "The boss makes it official" now leads to avoiding the boss (a losing move), not to keeping him busy. Nothing points at the phone route anymore.
 
 ## Problems
-- none
+- nit: "You're stuck working Saturday" reads as already settled for a beat, until "Get out of it" turns it around. It sounds natural, and a real office worker would say exactly this, so I'd keep it. If you want the threat to be clearer, use "Looks like you're stuck working Saturday." It names the trouble without pointing at the board.
+
+The card reads aloud like a coworker talking: "makes it official" and "get out of it" are what people actually say.
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"88c70a9","hash":"952e5edee7a500f6ca87ce99ececf1a1b619c2f0992d8278e8f8a2de79916cf9","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"5011e7553ffed9a6b4788c1c28876c7dbed789811354e1dfbc469193d85caac2","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":8,"stretch":0,"nonsense":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
-## sense: works
-Recorded 2026-11-15 at commit 88c70a9, by claude -p (model: default). Inputs 952e5edee7a5: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 8 sensible, 0 stretch, 0 nonsense.
-Problems: 0 blocker, 2 should, 2 nit.
-Earlier problems: 2 fixed, 1 still there, 0 no longer applies.
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"616b52e","hash":"952e5edee7a500f6ca87ce99ececf1a1b619c2f0992d8278e8f8a2de79916cf9","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"5011e7553ffed9a6b4788c1c28876c7dbed789811354e1dfbc469193d85caac2","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":5,"stretch":3,"nonsense":0},"problems":{"blocker":2,"should":3,"nit":2}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit 616b52e, by claude -p (model: default). Inputs 952e5edee7a5: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 5 sensible, 3 stretch, 0 nonsense.
+Problems: 2 blocker, 3 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 42 s | $0.11 |
-| all | | 42 s (the steps add up to 42 s) | $0.11 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 still there: The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other. (recurring: premise-level?) (Lin now staying out of it reads well, but Kev points at you while you sit right there, and the boss neither glances at you nor asks Lin. A real Friday-5pm boss shuts it down with a stock line instead. Fix: the boss says "Board says Kev. Take it up Monday" and stands up to leave. That ends the meeting the way a real boss would, without him having to trust the board over what Kev says.)
-- E2 fixed: When noodles boil over, real coworkers look at the microwave and then look for the owner. Everyone saw you start that microwave six seconds ago, so "nobody is asking whose noodles they are yet" is convenient. Fix: the owner hunt starts after the steam thins ("whose are these?"). That fits the six seconds, and at 5:00 the boss remembers you only as the noodle person, not the person at the board. (The "whose noodles?" question now comes after the steam thins, and you are remembered as the noodle person.)
-- E3 fixed: In the phone route, nobody says where Kev is looking. Kev's own face is going onto the board, so if he can see it, he would protest at 5:00 with "I saw them do it", not "it was you all week". Fix: say that Kev sits with his back to the board, or wears headphones facing his screen, so his protest doesn't contradict what he saw. (Kev sits too far away to see the board and has his head down in his code.)
+| 1-judge | report.md | 43 s | $0.11 |
+| all | | 43 s (the steps add up to 43 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [should] The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other. (recurring: premise-level?)
-- E2 [should] The win explanation says the boss "has watched the board all afternoon for people going up to it." No real boss guards a whiteboard for an hour. It's a puzzle-piece motive, and the bit that relies on it (he watches who goes up to the board, not what it says) breaks down once he's minding the board that closely. Fix: his desk simply faces the board, so it's in his eyeline whenever he looks up from his screen. He doesn't guard it and just half-notices people at it, which also makes it more believable that he never rereads it.
+- E1 [blocker] In the win ending, the boss has spent all afternoon guarding the board against people going up to it, and that's the reason he gives. Then Kev says "it was them all week, not me," and the boss shrugs it off as a protest. Someone guarding a board against tampering would hear that and think "tampering" straight away. — **Fix:** Have the boss guard the board for some other reason, or give him a reason he can't check: for example, Kev has dodged Saturday before, so the boss doesn't trust him.
+- E2 [blocker] Lin's behaviour doesn't fit together. She points at you the moment she sees you writing (Told on). She and Kev both name you as soon as the boss asks (His own face). But in the win she "keeps out of it" while Kev is wrongly blamed. With only three people in the office, a real boss facing a dispute would just say "Lin?", and she has looked at that board all week. — **Fix:** Give Lin a real reason to stay quiet at 5:00. For example, she's still at her desk eating her fish and missed the start of the meeting, or she has her own grudge against Kev. Or have the boss ask her and she honestly isn't sure, because she wasn't paying attention to the Saturday box.
+- E3 [should] The boss forgetting who he put down for Saturday is a stretch when he has stared at that board all afternoon. Even a half-awake person notices the one name that matters. — **Fix:** Say he watches the people near the board from his desk, and the Saturday box is too small to read from there.
+- E4 [should] In the ding route, once the steam thins, everyone looks for whoever owns the noodles, which is you, and you're walking away from the board. That draws eyes to you at exactly the wrong spot. — **Fix:** Have the player walk to the microwave to deal with the mess, so everyone ends up looking at the kitchen. That also explains why they "wonder whose" noodles they are.
+- E5 [should] In Blamed, the boss overrides his own board because you were absent. That contradicts the win ending, where his board beats anyone's word, and Kev sitting there named on the board would object. — **Fix:** Have Kev say "they're not even here, give it to them," and the boss happily agrees.
 
 ### 1-judge: report.md
 
-Verdict: works
+Verdict: fixable
 
-- The ding (win): sensible. Everyone stares at boiling-over noodles and waits for someone else to deal with it, so the board behind them goes unwatched for a few seconds.
-- The phone (win): sensible. A ringing phone gets answered, a silent line gets two hellos, and Lin is waiting at the microwave with her back to the room.
-- The trap (not a win): sensible. You look toward a beeping copier and see whoever is standing in between.
-- Fail (lose): sensible. The boss reads out the schedule he wrote.
-- Caught (lose): sensible. The boss sees you rubbing out the schedule.
-- His own face (lose): sensible. No boss believes he put himself on the weekend shift, so he asks, and people remember.
-- Told on (lose): sensible. Lin's desk faces the board, and a coworker who sees someone rubbing out the weekend schedule mentions it.
-- Blamed (lose): sensible. Whoever misses the meeting gets the job nobody wants.
-
-## Earlier problems
-- E1: still there (should). Lin now staying out of it reads well, but Kev points at you while you sit right there, and the boss neither glances at you nor asks Lin. A real Friday-5pm boss shuts it down with a stock line instead. Fix: the boss says "Board says Kev. Take it up Monday" and stands up to leave. That ends the meeting the way a real boss would, without him having to trust the board over what Kev says.
-- E2: fixed. The "whose noodles?" question now comes after the steam thins, and you are remembered as the noodle person.
-- E3: fixed. Kev sits too far away to see the board and has his head down in his code.
+- The ding (win): stretch. The noodle boil-over is realistic, but the ending it leads to doesn't hold up (see blockers).
+- The phone (win): stretch. The wrong-number call and Lin's late fish lunch are realistic, but it shares the same ending.
+- The trap (not a win): sensible. You look at a beeping copier and see whoever is standing in front of it.
+- Fail (lose): sensible. The boss reads out the board he wrote.
+- Caught (lose): sensible. He was watching and saw you writing.
+- His own face (lose): sensible. He knows he never put himself down, so he asks the room, and they tell him.
+- Told on (lose): sensible. A coworker reports someone messing with the schedule, and the boss checks.
+- Blamed (lose): stretch. Funny and recognisable, but the boss throws out the board he just refused to doubt.
 
 ## Problems
-- should: The win explanation says the boss "has watched the board all afternoon for people going up to it." No real boss guards a whiteboard for an hour. It's a puzzle-piece motive, and the bit that relies on it (he watches who goes up to the board, not what it says) breaks down once he's minding the board that closely. Fix: his desk simply faces the board, so it's in his eyeline whenever he looks up from his screen. He doesn't guard it and just half-notices people at it, which also makes it more believable that he never rereads it.
-- nit: In Told on, Lin "saw" a write that "doesn't happen." A real coworker reports what you actually did. Fix: she calls out as you lift the eraser ("What are you doing to the board?"), so there's nothing written yet for her to have seen.
-- nit: In the ding route, you walk away from your own boiling-over noodles. Coworkers who watched you start that microwave six seconds ago would glance at you, the owner, during the six seconds, not only after them. Fix: one line saying you're past the microwave and out of mind while everyone watches the steam. Or the boss mutters "whose is that?" toward the kitchen, not toward the room.
+- blocker: In the win ending, the boss has spent all afternoon guarding the board against people going up to it, and that's the reason he gives. Then Kev says "it was them all week, not me," and the boss shrugs it off as a protest. Someone guarding a board against tampering would hear that and think "tampering" straight away. — **Fix:** Have the boss guard the board for some other reason, or give him a reason he can't check: for example, Kev has dodged Saturday before, so the boss doesn't trust him.
+- blocker: Lin's behaviour doesn't fit together. She points at you the moment she sees you writing (Told on). She and Kev both name you as soon as the boss asks (His own face). But in the win she "keeps out of it" while Kev is wrongly blamed. With only three people in the office, a real boss facing a dispute would just say "Lin?", and she has looked at that board all week. — **Fix:** Give Lin a real reason to stay quiet at 5:00. For example, she's still at her desk eating her fish and missed the start of the meeting, or she has her own grudge against Kev. Or have the boss ask her and she honestly isn't sure, because she wasn't paying attention to the Saturday box.
+- should: The boss forgetting who he put down for Saturday is a stretch when he has stared at that board all afternoon. Even a half-awake person notices the one name that matters. — **Fix:** Say he watches the people near the board from his desk, and the Saturday box is too small to read from there.
+- should: In the ding route, once the steam thins, everyone looks for whoever owns the noodles, which is you, and you're walking away from the board. That draws eyes to you at exactly the wrong spot. — **Fix:** Have the player walk to the microwave to deal with the mess, so everyone ends up looking at the kitchen. That also explains why they "wonder whose" noodles they are.
+- should: In Blamed, the boss overrides his own board because you were absent. That contradicts the win ending, where his board beats anyone's word, and Kev sitting there named on the board would object. — **Fix:** Have Kev say "they're not even here, give it to them," and the boss happily agrees.
+- nit: Kev fixes the copier in the trap, but he's described as having his head down in his code all afternoon. — **Fix:** Have whoever is nearest go and fix it, or Kev complaining about the interruption.
+- nit: Six seconds is far too short for noodles to boil over. — **Fix:** Fine as game time, but have someone say something like "who puts noodles in for ten minutes?" to cover it.
 
 <!-- /cold-read:sense -->
 
