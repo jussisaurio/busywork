@@ -236,6 +236,14 @@ export function levelProblems(level, key) {
     if (!isStr(it.icon)) bad(`items.${type}.icon`, 'missing (the emoji it draws as)');
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
     if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
+    if (it.disguise !== undefined) {
+      if (!isObj(it.disguise)) bad(`items.${type}.disguise`, 'not an object');
+      else {
+        npc(`items.${type}.disguise.as`, it.disguise.as);
+        if (it.disguise.look !== undefined && !isObj(it.disguise.look)) bad(`items.${type}.disguise.look`, 'not an object (look fields)');
+        if (it.disguise.greet !== undefined && !Array.isArray(it.disguise.greet)) bad(`items.${type}.disguise.greet`, 'not a list of lines');
+      }
+    }
   }
   const roles = level.roles;
   if (roles !== undefined) {
