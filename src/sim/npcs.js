@@ -105,6 +105,7 @@ export function createNpc(game, def, now = 0) {
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
     _mechanics: mechanicsFor(game.level, def.id), // the level's mechanics that name him (read every step)
+    _entryKey: null, // the last plan key for a schedule entry with preludes: { i, names, pending, key } (entryKey)
     _craveT: undefined, // s to the next daydream about what he wants (want/crave)
     _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
     _inspected: undefined, // ...and the ones he has started today
@@ -229,10 +230,30 @@ function* hookNames(def, sched) {
   }
 }
 
+// Is prelude `name` still to walk?
+const pending = (game, npc, name) => hook(game, name).pending?.(npc) ?? true;
+
 // The preludes of schedule entry i still to walk, in the entry's order.
 function preludes(game, npc, i) {
   const names = npc._schedule[i].prelude;
-  return names ? [].concat(names).filter((name) => hook(game, name).pending?.(npc) ?? true) : [];
+  return names ? [].concat(names).filter((name) => pending(game, npc, name)) : [];
+}
+
+// The plan key for schedule entry i: e<i>, then +<name> for each of its preludes still to walk. Asked for every
+// step, so the NPC keeps the last one he built (npc._entryKey) and builds a new one only when it changes.
+function entryKey(game, npc, i) {
+  const names = npc._schedule[i].prelude;
+  if (!names) return `e${i}`; // the common case
+  let c = npc._entryKey;
+  if (c?.i !== i) c = npc._entryKey = { i, names: [].concat(names), pending: [], key: null };
+  let changed = c.key === null;
+  c.names.forEach((name, j) => {
+    const p = !!pending(game, npc, name);
+    if (p !== c.pending[j]) changed = true;
+    c.pending[j] = p;
+  });
+  if (changed) c.key = `e${i}${c.names.filter((_, j) => c.pending[j]).map((name) => `+${name}`).join('')}`;
+  return c.key;
 }
 
 function tickSayQueue(game, npc, dt) {
@@ -257,12 +278,7 @@ function planKey(game, npc, now) {
   const seq = npc._ovSeq;
   switch (npc.override) {
     case game.level.meeting.override: return `${npc.override}#${seq}`;
-    default: {
-      const i = entryIndex(npc, now);
-      const names = npc._schedule[i].prelude;
-      if (!names) return `e${i}`; // the common case: no allocation every step
-      return `e${i}${preludes(game, npc, i).map((name) => `+${name}`).join('')}`;
-    }
+    default: return entryKey(game, npc, entryIndex(npc, now));
   }
 }
 
