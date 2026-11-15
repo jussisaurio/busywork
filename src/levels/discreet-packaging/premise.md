@@ -2,7 +2,7 @@
 
 ## Card
 3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.
-Lin hands out the mail at 4:00, in front of everyone.
+Lin hands out the mail at 4:00. Don't let anyone see it.
 
 ## Name
 "Discreet Packaging" is what the shops print on a parcel they don't want your colleagues to read. Mum's box is the

@@ -1,42 +1,102 @@
 # Cold reads: layoffs
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"a8e3c4871947c56575b80859ca158890c06b19be12c0f0484135b7c68b8112a2","parts":{"card":"2abe52b881092175ab39a7db9c7c3809e5f686e5630e501b2128883d14163a1b","ways":"1fecea350d1bedc4998d9e81ee0ed683583be056ce713968aa312d2accb255a0","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":1,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":2}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs a8e3c4871947: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 4 sensible, 1 stretch, 0 nonsense.
-Problems: 1 blocker, 3 should, 2 nit.
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"da5b940","hash":"b5a78c184617ba0111ce624035846d8a5fedff15e076feb6038d959df689f914","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"cd9e47f9d24bf4cdfcdbc1d29b0bf19bf1d298e76609c15d912d928b7d3a1d42","prompts":"dd5bab76ad1fbe5da43d5bff829c95ca85430b34c17e10645da81a3ce6ac4fa1"},"model":"default","tally":{"miss":4,"near":1,"leak":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
+## title: works
+Recorded 2026-11-15 at commit da5b940, by claude -p (model: default). Inputs b5a78c184617: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 miss, 1 near, 0 leak.
+Problems: 0 blocker, 2 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 57 s | $0.12 |
-| all | | 58 s (the steps add up to 57 s) | $0.12 |
+| 1-guess | guesses.md | 13 s | $0.02 |
+| 2-judge | report.md | 27 s | $0.08 |
+| all | | 40 s (the steps add up to 40 s) | $0.10 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look.
-- E2 [should] Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up.
-- E3 [should] At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not.
-- E4 [should] He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list.
+- E1 [should] Guess 1 lands near because "Get off it" names the final action. It's mild, because that action is the goal, and the card has to say the goal. Nothing about the boss's screen, the coffee or Lin leaks. Fix: keep "Get off it". If you want it blunter about the stakes instead, try "Make sure your name's not on it."
+- E2 [should] 📦 can read as a tool to use (guesses 3 and 5), but no route uses a box. Players may go looking for one. Fix: swap 📦 for an icon of what's at stake, such as 🪪 (your badge), or keep 📦 only if it clearly reads as "clearing out your desk".
+
+### 1-guess: guesses.md
+
+# Guesses: how you win
+
+1. **Change the list itself.** You find the list and take your name off it, or swap in someone else's name. Suggested by "**The Layoff List**", "**Get off it**".
+2. **Stop it from reaching HR.** You intercept, delete or redirect the list before it's sent, perhaps as an email. Suggested by "**It goes to HR**", "**3:45**", 📧.
+3. **Use the box to move the list.** The 📦 could be a mail package or the list in a box. You hide the list in it, or send it somewhere other than HR. Suggested by 📦, "**goes to HR**".
+4. **Make it miss the deadline.** You keep it from leaving before 3:45 so it doesn't count, for example by keeping the sender busy until then. Suggested by "**3:45**", "**Friday**".
+5. **Pin the box on someone else.** Someone else ends up holding the "laid-off" box, and their name replaces yours. This is a weak guess. Suggested by 📦, "**Get off it**".
+
+Stake: You lose your job. Once the list reaches HR at 3:45 with your name still on it, you're laid off. The card never says this outright, but "layoff list" makes it clear.
+
+### 2-judge: report.md
+
+Verdict: works
+- Stake: clear — "You're on the layoff list" plus "goes to HR at 3:45" means you lose your job on Friday afternoon if your name is still on it when it's sent. The aim is plain too: "Get off it." Nobody would shrug at this.
+- Change the list itself: near — this matches the last step of both routes (take your face off the list), from "Get off it" and the name. But that step is just the goal said back. The guess doesn't touch the real puzzle: getting into the boss's chair through the cable fix and the coffee trip, then getting past Lin by waiting for her phone or ringing Kev's.
+- Stop it from reaching HR: miss — no route intercepts the send. The guess came from "goes to HR" and 📧.
+- Use the box to move the list: miss — 📦 is only the "packing your desk" lose card. The guess came from 📦.
+- Make it miss the deadline: miss — he always sends at 3:45. The coffee trip takes him away, but it doesn't stop the send. The guess came from "3:45".
+- Pin the box on someone else: miss — there is no swap route. The guess came from 📦 and "Get off it".
+
+## Problems
+- should: Guess 1 lands near because "Get off it" names the final action. It's mild, because that action is the goal, and the card has to say the goal. Nothing about the boss's screen, the coffee or Lin leaks. Fix: keep "Get off it". If you want it blunter about the stakes instead, try "Make sure your name's not on it."
+- should: 📦 can read as a tool to use (guesses 3 and 5), but no route uses a box. Players may go looking for one. Fix: swap 📦 for an icon of what's at stake, such as 🪪 (your badge), or keep 📦 only if it clearly reads as "clearing out your desk".
+- nit: "It goes to HR" leaves out who sends it, and people in an office would name the boss. Fix: "Your boss sends it to HR at 3:45." It also sounds more like a person talking and tells the player who to watch, without giving away how.
+- nit: "3:00 PM" reads like a calendar invite. Fix: "Friday, 3 o'clock." or just "Friday, 3pm."
+
+The rest reads like something a coworker would whisper: "You're on the layoff list" and "Get off it" are short and normal, and nothing on the card sounds made up.
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"da5b940","hash":"856f17e55f8b3c8bd09b5b363f5ac7ed72b7ed1883ad5be1115c8a462417c0b5","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"cd9e47f9d24bf4cdfcdbc1d29b0bf19bf1d298e76609c15d912d928b7d3a1d42","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":3,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":2,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit da5b940, by claude -p (model: default). Inputs 856f17e55f8b: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 sensible, 2 stretch, 0 nonsense.
+Problems: 1 blocker, 2 should, 1 nit.
+Earlier problems: 3 fixed, 1 still there, 0 no longer applies (now blockers).
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 46 s | $0.12 |
+| all | | 46 s (the steps add up to 46 s) | $0.12 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look. (Lin walks to the kitchen and tells him. He comes back, looks, puts your face back, locks the screen and comes for you. This matches "Caught by the boss".)
+- E2 still there: Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up. (Lin's only reaction is 😨 *after* she calls out. Nothing shows her afraid of being added to the list in your place, or any other reason, before she speaks up.)
+- E3 fixed: At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not. (He ticks the faces that are on the sheet (📋✔️) and does not count heads.)
+- E4 fixed: He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list. (He leaves angry at the static (😤 ☕ 👉 you) while the screen is dead. Nothing shows him thinking about the list, and he had no reason to lock a blank screen.)
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up. (recurring: premise-level?)
+- E2 [should] In Route 2, Lin keeps her back to the office for the whole ring (about 6 s) at a desk she watched Kev leave. A real coworker glances at the phone and turns back, or puts up with it while keeping an eye on things. Fix: make it a short glance (about 3–4 s, just long enough for the 3 s edit). Better, give her a reason to keep looking: she half stands, thinking Kev may have come back for something, then sits down again.
+- E3 [should] At 3:42 the boss ticks a list that is one face short. The missing face belongs to the person he left alone at his desk 15 minutes earlier. Ticking what is in front of him is believable, but a moment of doubt would be more natural. Fix: when he ticks, he frowns at the sheet for a moment, sips his coffee, shrugs and sends it. He trusts what is on the screen, and nobody has to act like a puzzle piece.
 
 ### 1-judge: report.md
 
 Verdict: fixable
+- Route 1: wait for Lin's phone (win): sensible. Lin reading a text is not watching the boss's office. The way in also holds up: a boss whose IT man has gone home lets whoever is already working on his cable fix it, and goes for coffee.
+- Route 2: ring Kev's desk (win): stretch. Anyone looks round at a ringing phone. But Lin saw Kev leave, so she would glance and turn back, not watch an empty desk for 6 seconds.
+- Do nothing (lose): sensible. Nothing changed, so the list goes out as he wrote it.
+- Seen by Lin (lose): stretch. The boss's part is now right: he comes back, checks the screen, puts your face back, locks it and comes for you. Lin still has no reason to tell on someone she just felt sorry for.
+- Caught by the boss (lose): sensible. Catching someone crossing themselves off his list gets an instant, angry response.
 
-- Route 1, waiting for Lin's phone (win): sensible. People get absorbed in their phones. The boss walked off and left a dead screen with you, so you sitting in his chair to check it looks normal.
-- Route 2, ringing Kev's desk (win): sensible. Most people turn to a ringing phone on an empty desk and let it ring.
-- Do nothing (lose): sensible. The boss sends the list he wrote.
-- Seen by Lin (lose): stretch. Lin tells on you without a visible reason, and the boss's mild reaction to being told is unlike any real boss.
-- Caught by the boss (lose): sensible. Any boss who found the person on the list editing it would throw them out.
+## Earlier problems
+- E1: fixed. Lin walks to the kitchen and tells him. He comes back, looks, puts your face back, locks the screen and comes for you. This matches "Caught by the boss".
+- E2: still there. Lin's only reaction is 😨 *after* she calls out. Nothing shows her afraid of being added to the list in your place, or any other reason, before she speaks up.
+- E3: fixed. He ticks the faces that are on the sheet (📋✔️) and does not count heads.
+- E4: fixed. He leaves angry at the static (😤 ☕ 👉 you) while the screen is dead. Nothing shows him thinking about the list, and he had no reason to lock a blank screen.
 
 ## Problems
-- blocker: In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look.
-- should: Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up.
-- should: At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not.
-- should: He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list.
-- nit: At 3:26 Lin knows Kev has gone home and hears the boss ringing Kev's desk again and again. Many coworkers would call out "He's gone home!" — Give her a reason not to: she has headphones in, or she shrugs and looks away because it isn't her business.
-- nit: At 3:26 the boss phones Kev and bangs the screen, though he watched Kev fix it with the cable 20 minutes earlier. Five minutes later he fixes it himself. — This is believable if he looks reluctant, as if he hates crawling under desks. A sigh before he kneels at 3:31 would show that.
+- should: In Route 2, Lin keeps her back to the office for the whole ring (about 6 s) at a desk she watched Kev leave. A real coworker glances at the phone and turns back, or puts up with it while keeping an eye on things. Fix: make it a short glance (about 3–4 s, just long enough for the 3 s edit). Better, give her a reason to keep looking: she half stands, thinking Kev may have come back for something, then sits down again.
+- should: At 3:42 the boss ticks a list that is one face short. The missing face belongs to the person he left alone at his desk 15 minutes earlier. Ticking what is in front of him is believable, but a moment of doubt would be more natural. Fix: when he ticks, he frowns at the sheet for a moment, sips his coffee, shrugs and sends it. He trusts what is on the screen, and nobody has to act like a puzzle piece.
+- nit: Nothing says what happens if he comes back and finds you sitting in his chair without having edited anything. Being "sent back to your desk" covers standing around, but sitting at his computer is bolder. Fix: he gives you a suspicious look, then sends you back to your desk.
 
 <!-- /cold-read:sense -->
 
