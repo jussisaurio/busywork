@@ -7,7 +7,7 @@ import { createGame } from '../src/state.js';
 import { createNpcs } from '../src/sim/npcs.js';
 import { canSee } from '../src/core/vision.js';
 import { npcSees, viewerOf, findNpc } from '../src/game/perception.js';
-import { isDark, darkZones, NEAR_RADIUS } from '../src/game/darkness.js';
+import { isDark, darkZones, dimZones, torchViewer, NEAR_RADIUS } from '../src/game/darkness.js';
 import { levelProblems } from '../src/levels/validate.js';
 import { levels } from '../src/levels/index.js';
 
@@ -90,6 +90,43 @@ function day(level) {
   ok(npcSees(game, boss, 4.5, 5.5), 'near.radius 3.2: he sees 3 tiles into the dark');
   ok(!npcSees(game, boss, 2.5, 5.5), 'but not 3.6 tiles away');
   ok(!isDark(game, 4.5, 15.5), 'the lobby is in no room: always lit');
+}
+
+// 3b. torch.aim points the beam somewhere fixed: a spot, a point or a direction; his glance no longer moves it.
+//     rooms[].dip dims a lit room for the render only: sight ignores it, and a dark room does not dip.
+{
+  let aim = 'boss_door';
+  const level = darkLevel({ rooms: [{ ...ROOM, dip: (w) => w.dip ?? 0 }], torch: { ...TORCH, aim: () => aim } });
+  ok(levelProblems(level, 'meeting').length === 0, 'a level with torch.aim and rooms[].dip validates');
+  const game = day(level);
+  const boss = findNpc(game, 'boss');
+  game.world.officeLight = 'off';
+  game.world.torches = true;
+  aim = { x: 7.5, y: 2.5 }; // due east of his chair (4,2)
+  const beam = () => torchViewer(game, boss, viewerOf(boss));
+  ok(Math.abs(beam().dir) < 1e-9, 'aim at a point: the beam points at it');
+  ok(npcSees(game, boss, 6.5, 2.5) && !npcSees(game, boss, 4.5, 5.5), 'he sees along the aim, not along his gaze');
+  boss.glance.offset = 40 * DEG;
+  ok(Math.abs(beam().dir) < 1e-9, 'a glance does not move an aimed beam');
+  boss.glance.offset = 0;
+  aim = Math.PI / 2;
+  ok(Math.abs(beam().dir - Math.PI / 2) < 1e-9, 'aim as a direction');
+  const sp = M.spots.boss_door;
+  aim = 'boss_door';
+  ok(sp && Math.abs(beam().dir - Math.atan2(sp.y + 0.5 - boss.y, sp.x + 0.5 - boss.x)) < 1e-9, 'aim at a spot name');
+  aim = null;
+  ok(Math.abs(beam().dir - viewerOf(boss).dir) < 1e-9, 'aim null: his gaze, as without aim');
+  aim = 'no_such_spot';
+  ok(Math.abs(beam().dir - viewerOf(boss).dir) < 1e-9, 'aim at an unknown spot: his gaze');
+  game.world.officeLight = 'on';
+  game.world.dip = 0.6;
+  ok(dimZones(game).length === 1 && dimZones(game)[0].k === 0.6 && dimZones(game)[0].zones[0] === office, 'a lit room dipping is listed with its zones');
+  ok(!isDark(game, 4.5, 4.5) && npcSees(game, boss, 4.5, 5.5), 'a dip is render only: the room is still lit to sight');
+  game.world.dip = 0;
+  ok(dimZones(game).length === 0, 'dip 0: nothing dims');
+  game.world.dip = 0.6;
+  game.world.officeLight = 'off';
+  ok(dimZones(game).length === 0, 'a dark room does not dip (it is dark)');
 }
 
 // 4. The validator names what a darkness block gets wrong.
@@ -189,6 +226,42 @@ function day(level) {
   cg.world.officeLight = 'off';
   const switchOff = frame(cg);
   ok(switchOff.filter((m) => m === 'createRadialGradient').length > allOn.filter((m) => m === 'createRadialGradient').length, 'a switch off lights its lamp');
+  // A lit room dipping is veiled at that fraction; dip 0 draws exactly as no dip.
+  const dipLevel = darkLevel({ rooms: [{ ...ROOM, dip: (w) => w.dip ?? 0 }], torch: TORCH });
+  const dg = day(dipLevel);
+  ok(JSON.stringify(frame(dg)) === JSON.stringify(lit), 'dip 0: the same draw calls as no darkness');
+  dg.world.dip = 0.5;
+  frame(dg);
+  ok(frame.sets.includes('rgba(14,20,46,0.400)'), 'dip 0.5: the room is veiled at half strength');
+  // Cones on: everyone's arm's-length sight shows over the veil; cones off, it does not.
+  const sg = day(level);
+  sg.world.officeLight = 'off';
+  const coneOn = frame(sg);
+  sg.settings.showCones = false;
+  const coneOff = frame(sg);
+  sg.settings.showCones = true;
+  ok(coneOn.filter((m) => m === 'stroke').length > coneOff.filter((m) => m === 'stroke').length, 'cones on: the near sight is outlined over the veil');
+  // The lights going out: the daylight cones shrink over DARK_FADE s; a later frame, or a first frame, shows none.
+  const fg = day(level);
+  fg.time = 10;
+  frame(fg); // lit
+  fg.time = 10.1;
+  fg.world.officeLight = 'off';
+  const justDark = frame(fg);
+  fg.time = 13;
+  const later = frame(fg);
+  const fills = (c) => c.filter((m) => m === 'fill').length;
+  ok(fills(justDark) > fills(later), 'just gone dark: the daylight cones shrink over the veil');
+  const fresh = day(level);
+  fresh.world.officeLight = 'off';
+  fresh.time = 10;
+  ok(fills(frame(fresh)) === fills(later), 'a first frame already dark: no shrink (nothing lights up on a first frame)');
+  const gap = day(level);
+  gap.time = 10;
+  frame(gap);
+  gap.time = 20;
+  gap.world.officeLight = 'off';
+  ok(fills(frame(gap)) === fills(later), 'a frame long after the last: no shrink (nobody saw the lights go)');
   ok(fake.errors.length === 0, `no canvas errors${fake.errors.length ? `: ${fake.errors.slice(0, 3).join('; ')}` : ''}`);
 }
 
