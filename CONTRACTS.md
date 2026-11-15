@@ -266,7 +266,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   - `edible`: `{ leaves }` (required, no default): the engine offers `eat_<type>` (a hold row; sneaky to its owner;
     `idle`; event `<type>:eaten`). `leaves`: what eating leaves on you, a `config.js` `MARKS` name (the renderer
     paints its colours on the player's front, the harness says its `words`) stored in `player.smeared`, or `null`
-    for nothing. The validator refuses an edible item that doesn't say.
+    for nothing. The validator refuses an edible item that doesn't say. `icon` (default `😋`): the row's and your
+    thought's face, e.g. `🤢` for a letter. `burst` (default `'crumbs'`): an `fx.burst` kind, e.g. `'paper'`.
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
     sees it on the floor (`<type>:recovered`). Needs a `place`.
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.

@@ -33,7 +33,7 @@
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
 //               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
-//               cast ids; put seconds; keep and bulky booleans; edible { leaves } with leaves a config.js MARKS name
+//               cast ids; put seconds; keep and bulky booleans; edible { leaves, icon?, burst? } with leaves a config.js MARKS name
 //               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
@@ -84,6 +84,7 @@ import { THINGS } from '../render/things.js';
 import { ARM_POSES } from '../render/characters.js';
 import { isLegacyLevel } from './legacy.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
+import { BURST_KINDS as BURSTS } from '../core/fx.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
@@ -318,6 +319,8 @@ export function levelProblems(level, key) {
       const marks = Object.keys(MARKS).map(q).join(', ');
       if (!isObj(it.edible) || !('leaves' in it.edible)) bad(`items.${type}.edible`, `not { leaves }: say what eating leaves on you (${marks}, or null for nothing)`);
       else if (it.edible.leaves !== null && !Object.hasOwn(MARKS, it.edible.leaves)) bad(`items.${type}.edible.leaves`, `no mark ${q(it.edible.leaves)} (config.js MARKS: ${marks}; or null for nothing)`);
+      if (isObj(it.edible) && it.edible.icon !== undefined && !isStr(it.edible.icon)) bad(`items.${type}.edible.icon`, 'not an icon (string)');
+      if (isObj(it.edible) && it.edible.burst !== undefined && !BURSTS.includes(it.edible.burst)) bad(`items.${type}.edible.burst`, `not a burst kind (${BURSTS.join(', ')})`);
     }
   }
   const roles = level.roles;

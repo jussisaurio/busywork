@@ -33,7 +33,8 @@ export function say(game, owner, icons, opts = {}) {
   return bubble;
 }
 
-// kind: 'puff' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
+// The burst kinds the renderer draws (render/effects.js); kind: one of them, or a string (the generic dot).
+export const BURST_KINDS = ['puff', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
 export function burst(game, kind, x, y, n = 8, opts = {}) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;
