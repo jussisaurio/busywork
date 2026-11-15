@@ -1,0 +1,2483 @@
+{
+ "note": "written by tools/golden.mjs --write; do not edit by hand",
+ "plans": [
+  {
+   "cmds": [
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ef382930f83d496f",
+    "9583a43875414533",
+    "4342ab439528e9d9",
+    "9db609bcf05d4cb9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "1e28b8d208623563",
+    "5fe5528ec8f372ee"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d1af59fa6019f3c7",
+    "7b4764ec6082ed23"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "6063c6a94c4b9eff",
+    "7b4764ec6082ed23"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "ac11c26f7120614b",
+    "f6716654654460a7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:51",
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3ff299eba06ff10f",
+    "234cf93d3e3b7bdb",
+    "61e7bf84d8cb03be",
+    "0591dbcd67366f00",
+    "2963a04ba37efa7e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "4721aed1667e7ddc",
+    "cf4b2404a2be0993"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "22ea190181d0538a",
+    "8e872a8e63f0344d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket",
+    "wait until 3:31",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "0d3ef7ee2e7dee56",
+    "daf01b41d85fe80e",
+    "4cb3f5150f8c286d",
+    "3cf86628397027f1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "818da080d6f13bdc",
+    "dba4b9d724674de7",
+    "6bd2e47aa7b01515",
+    "5fe5528ec8f372ee"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "a7ab6237d65e204a",
+    "336a4c43b553a47a",
+    "aba077b50620bc23"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "9b64bc46244ab736"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "bf87512ac87b2c40",
+    "741a7641781eb899",
+    "f49b76b933e3adfb",
+    "80725105da97ee76"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "60c3c70a6afe0332",
+    "13549bf50e49514c",
+    "ed1ceca05c61aaa6",
+    "2839243316d2b237",
+    "9956dd452fe9f1e8",
+    "e5fca927c2224ce8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "132d603b1f9cd498",
+    "dd84fe57a2826f54",
+    "edffd788e1568d8f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer pretend",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "809ed85bdb7de419",
+    "98f61f766a41cc15",
+    "cbdfaace818f0d4c",
+    "e7977de94e121f78",
+    "a63705218c3a58c1",
+    "8a08131a2f3513c4",
+    "6ee2eeaf64d2b3eb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "1034ec7c4ea0a46a",
+    "234084d88aeb00cd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "pretend 2.5s",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "c6f135d5e9f84c52",
+    "4a24c977df6ee86b",
+    "e67c556bf2373d56",
+    "498fd6ed2ac3ce28",
+    "ac0a4e51be0bb877"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ee1422f2679185de",
+    "f6716654654460a7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "3559ab2cda757206",
+    "a8dab0d3eab5b892",
+    "7585f101ac73cc43",
+    "4e09f8099f5a500c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "baef4cffd2cb603a",
+    "bbbea7d6b4372062"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "809ed85bdb7de419",
+    "98f61f766a41cc15",
+    "a5cd8d4485c93424",
+    "a5b22d7d5b2a74dc",
+    "fd6e815993e09e27",
+    "272f225575412cc8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "cb5168b4f24efd44",
+    "13ae57f4c2e07daa",
+    "5a346d1fb6e2f32a",
+    "c604861eca9f1e9a",
+    "e340447795e0b423",
+    "db5a65220a4463ab"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "pretend until 3:51",
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "83d7a8feccf974bf",
+    "d5ce0a7dad23f60e",
+    "da3e6502fbec4241",
+    "41b2972ebf457a4a",
+    "e723b749d7e134e4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "pretend until 3:54",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4b3a088184ccc896",
+    "906b9d6c526c6499",
+    "ff47034137388d07",
+    "bcd277687b8ace45",
+    "2d5942e25af9ebac",
+    "fc0f199dd7d746ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "pretend 1.5s",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "1446214852fd1617",
+    "0f4e5e9939a1a30c",
+    "cee26d24fd230d5f",
+    "a893a83c1b99697c",
+    "b992161f32e7130d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "b3d8c83dc4c3568e",
+    "835351127a391d91",
+    "1c65538bbd3cc64e",
+    "2f85a297222e244e",
+    "9b846818a88b55ba",
+    "bf2a3b85df9697b4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "818da080d6f13bdc",
+    "dba4b9d724674de7",
+    "daa47af0283860bb",
+    "a787fff30466cc3a",
+    "83e2f685b294d363",
+    "f6270e0d36cbefbc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "pretend until 3:32",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "cb5168b4f24efd44",
+    "13ae57f4c2e07daa",
+    "38aee9bfa4dd9f1f",
+    "ce6b221f10b04856",
+    "a54f2834e1f0da41",
+    "3e5ea44ad3513066",
+    "b992161f32e7130d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "ac314681e88ab547",
+    "2e1ece6489eda1e4",
+    "1c1fb0593c18fd67",
+    "1db6f611836320ac",
+    "e9bb3e809685e437",
+    "c8c824eb2cc5c25c",
+    "889a9e71becf26f8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "200238adb4569abe",
+    "e3d08864bf97555a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:36",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "808ec0664a7c675a",
+    "ff50cc1c4c86279b",
+    "d37ef0b4c1c2ae59",
+    "7eca76348d4c67d5",
+    "19aaefaf526553ad",
+    "f73d50c37111d6f1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "06098ed846fa2933",
+    "163a3388a96ed7b5",
+    "5d4a54da6507f516",
+    "aba2fdd746a44592",
+    "2414b3b26a6564f5",
+    "1d6c23f1bfe2397b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto camera pretend",
+    "wait 2.5s",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "247f287f896c0163",
+    "7ce15e44c145080c",
+    "38cd62751061b68d",
+    "48eb26fdb88f17f8",
+    "efc048d73e392736",
+    "7b6bcbf412866df7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "60c3c70a6afe0332",
+    "13549bf50e49514c",
+    "cb387d61b5572ac2",
+    "084f449eae8ca201",
+    "c1852c447ec9504b",
+    "e71e3e0e52d19584"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto camera pretend",
+    "wait 5s",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2528e5734fa83cb7",
+    "00c5afe533703e17",
+    "5fc9d6529e3c9325",
+    "62ec80b5b9d36aba",
+    "d900a4fc50236d0b",
+    "09f831311d045093",
+    "187c0a6bf12a0880",
+    "455bdd0d224e05b3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "72bd75dd15f8e270",
+    "92e8a28ebdde0131"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "2f5857696fcb3b98",
+    "8609651ee6e22c90"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "60c3c70a6afe0332",
+    "13549bf50e49514c",
+    "cb387d61b5572ac2",
+    "084f449eae8ca201",
+    "e084c47600b55504",
+    "ca9077caf7effe22"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "ac314681e88ab547",
+    "2e1ece6489eda1e4",
+    "1c1fb0593c18fd67",
+    "1db6f611836320ac",
+    "dc5dd8d6b8ae02a5",
+    "c96ef94f423ba251"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "9baa52b039eed271",
+    "fb4890bd46484bd0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "2e172fc437542916",
+    "e0441e346e138f88",
+    "fba2c8699723fd51",
+    "79f271ac2ce266cf",
+    "8b429a81b1b1e6cc",
+    "2c13e5f4b35419e3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto camera pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "4ee771d0b5b4cf7e",
+    "12b2004bdd89d349",
+    "8180539aeef946a2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "76e5bd162c15b6a5",
+    "de7c2ae0c0785e77",
+    "aca89e49008049e3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "2e172fc437542916",
+    "e0441e346e138f88",
+    "8ba9cae557e75c51",
+    "b3136b91d75368f4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "7c444612da847b00",
+    "00d65c7da96655ee",
+    "9dc08cd88ae4aa7e",
+    "2087624f90f18647",
+    "e099cfce57fadff6",
+    "5dd5805ff4b87f2d",
+    "710919d5e66bb264"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "7c444612da847b00",
+    "489c3de4864a695e",
+    "1901b140471c397b",
+    "31f6916303d54dcc",
+    "9d25cbd87d8dd4ac",
+    "307037f2b79ecbe0",
+    "91b82b8375beeaa8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "a3186792a44a8b8a",
+    "5bf9cab252f042f0",
+    "9bde92a719b1a34b",
+    "0985740dc76b38ee"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "593a4503aab4636e",
+    "8e9d2643262261c2",
+    "61a392c5ec06204b",
+    "cd753d3f13c26d17"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:51",
+    "goto socket pretend",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "3ff299eba06ff10f",
+    "234cf93d3e3b7bdb",
+    "61e7bf84d8cb03be",
+    "193d58b8a1bb27db",
+    "94b422cfd5904cae",
+    "36e9e3698e7aca0b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "3b08b75d4b7b328b",
+    "c998c003858ac541",
+    "bfb41767b474238b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto label_printer pretend",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "818da080d6f13bdc",
+    "dba4b9d724674de7",
+    "025cc2bb981060b1",
+    "353b5d1cd1702fb2",
+    "cd9d529dca3caed1",
+    "b1cfba8610bb3ec8",
+    "83d6f0c982b2534e",
+    "bc6cdfda5bfa413a",
+    "e62925e8ebfa88f9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "62d3bd4cf0e118e1",
+    "1a158d3288dc19a7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "9e621faa63fd6c24",
+    "64f80742941bd870",
+    "2f77eaa512e71958",
+    "b89704e72d41c11a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 3:59",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "62d3bd4cf0e118e1",
+    "03a3f11238297376",
+    "b394eefda4299b1c",
+    "525aae43addff57a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "2e172fc437542916",
+    "e0441e346e138f88",
+    "fba2c8699723fd51",
+    "ae89a32a7b4345c1",
+    "24d4549ccfa98b2d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto camera pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "4ee771d0b5b4cf7e",
+    "24648af7628ceb11",
+    "00dad4c7288459ca"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "2f588b69f5771eb3",
+    "8a34a5e08e99ef7c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "c454659042272586",
+    "2e13fd45ecafab66"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "38f16960167f84de",
+    "e179eac794a7d9a9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:25",
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "808ec0664a7c675a",
+    "ff50cc1c4c86279b",
+    "19f77a286d5dc5c4",
+    "a6e22e715d0a4c33",
+    "291352d6340f091c",
+    "d6014af5981dca44",
+    "8626cb856716618b",
+    "73261cfb22888613"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "2e172fc437542916",
+    "e0441e346e138f88",
+    "9ae80c5c22938e4c",
+    "55fd86fc4bb0e6f5",
+    "0b2639dd1c895d92",
+    "abd0ebef20fa7af6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto camera pretend",
+    "wait 5s",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "fae6e89f49409381",
+    "cc5edb3ab6c19e64",
+    "888d250f37a7abce",
+    "62ad1c4167705fe9",
+    "973633ca66dd3260",
+    "3e4f060460630e83"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto camera pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "d9da61e6f76219cb",
+    "d9ee3276257bc3df",
+    "7654f7e82ab1c159"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer pretend",
+    "interact",
+    "goto lin_desk pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "a3186792a44a8b8a",
+    "5bf9cab252f042f0",
+    "32a7bcc441b19577",
+    "6aced647e9f63b5d",
+    "6320566448a68252"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:39",
+    "goto label_printer",
+    "goto own_desk",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "11ccd78b6fa0655e",
+    "65477247d4e1bc2c",
+    "1b960ea579a91396",
+    "1c27299fbb253817",
+    "7e41fd386f65ddb1",
+    "3ae00dce5e982985",
+    "eefe478dbfc4e7b1",
+    "deeb9003e13b82c4",
+    "c4e5c1bd827f446a",
+    "3275a8bc790ffce4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer pretend",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "a3186792a44a8b8a",
+    "5bf9cab252f042f0",
+    "a3f94c78e820e188",
+    "e0003d3127fd0bb1",
+    "4f35328640a1ae67"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto camera pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "d9da61e6f76219cb",
+    "38987e4ea58a186c",
+    "af18246213979bdc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ff1c34f9060af7ae",
+    "dd9d253d02490f2a",
+    "ea7b75db66743194",
+    "324fb12127238511",
+    "d988d266188332cd",
+    "cbe9e4238b9cb0b0",
+    "9fe7554750dc17db",
+    "9f3b4e8bc604ceef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto camera pretend",
+    "wait 7.5s",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "463dfc954578b040",
+    "fe3ca14cf6995fc7",
+    "caaee3c64e4f24ec",
+    "7032c15b097b3196",
+    "ba1ebce55fed8869",
+    "971ad9b3e3f8a0b1"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket",
+    "wait until 3:31",
+    "goto label_printer pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "14b229d0aba051d1",
+    "2647cde1d07b93b9",
+    "d4bd1f8ba446a0cd",
+    "21e9bed8719028cb",
+    "3367445f3f44559c",
+    "557a4519e1cb797a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "b7f3970f297c76b3",
+    "079e3e8c806bb08f",
+    "bb5dde71b0787e59",
+    "82575b225014144b",
+    "66bb5cb86a8b203a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "b7f3970f297c76b3",
+    "079e3e8c806bb08f",
+    "bb5dde71b0787e59",
+    "caf50a6e3807ce6b",
+    "904babc4d6c1093a",
+    "d3ab85f55a056f4c",
+    "c0aebe0cbe9bc922"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "36b7d203f89fbcf2",
+    "877d944d2322092a",
+    "20d36a86f85ed427",
+    "5693fd33fa26ef63",
+    "4543e5bcde68c036",
+    "0357415609a7be0d",
+    "f8c610736fb3b2d6",
+    "b7d3afe92ba211a0",
+    "ba86a18fee76cc72",
+    "ce8d467cd05ce128"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "36b7d203f89fbcf2",
+    "877d944d2322092a",
+    "20d36a86f85ed427",
+    "5693fd33fa26ef63",
+    "4543e5bcde68c036",
+    "0357415609a7be0d",
+    "956d285014cf78d6",
+    "e2bf73feac57a973"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "0625c587224bded3",
+    "e15209f40f69d2bf",
+    "701933c112b8b19f",
+    "9230b9f13e3b4bca",
+    "b6dc046078183b58",
+    "e0c8dde7d21b9ade"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto label_printer",
+    "interact",
+    "goto pigeonholes pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "66ab7f6e91413ed2",
+    "42c59bf314e46470",
+    "bff2148b03f89032",
+    "2ee1a35c865f0ec2",
+    "ae8beea8b6fd2c49",
+    "c50a766e450a5997"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "0625c587224bded3",
+    "e15209f40f69d2bf",
+    "e5f4e36be442f59d",
+    "d50207306f0fd91a",
+    "e0cd8c6fe8293e76"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "goto broom_stand pretend",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "0625c587224bded3",
+    "e15209f40f69d2bf",
+    "701933c112b8b19f",
+    "b68e491b9dc64d8a",
+    "8c59f19ea214ddc4",
+    "e8c684820fce7fb2",
+    "d6d6f8b8691b06bf",
+    "20dfee8ac412bbfa"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "pretend 0.38s",
+    "interact",
+    "goto camera pretend",
+    "goto camera",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "36b7d203f89fbcf2",
+    "877d944d2322092a",
+    "20d36a86f85ed427",
+    "c7fdb3720d353d7a",
+    "91bcee7674f6eb88",
+    "c9a30fd4df7dc9ac",
+    "edc10b77d3c33802",
+    "03739903262adfab",
+    "9e64fd8060013672",
+    "b52bde3cd5619f59",
+    "7009719040367981",
+    "f8b111b3f07c397c",
+    "62135d34a56a6c21"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "76e5bd162c15b6a5",
+    "0ccb0cc3601d5342",
+    "67590b3411f31aa8",
+    "9c8457948563e8b4",
+    "98d6e4b92383ba1c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "0625c587224bded3",
+    "e15209f40f69d2bf",
+    "701933c112b8b19f",
+    "5c1deffd3e31b05b",
+    "6eec0d912f7ada10"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "14faa02e9a356602",
+    "159a31ef3a4eb98e",
+    "077f0065af682239",
+    "b47787042436e2c0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "b7f3970f297c76b3",
+    "85ecefd7783490b5",
+    "8ab680370ceeadf2",
+    "0b5e208ed7f1af2c",
+    "6129606ed73cefd6",
+    "415bd6a21f428b0c",
+    "e452de1745782f0a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer",
+    "interact",
+    "goto pigeonholes pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "76e5bd162c15b6a5",
+    "0ccb0cc3601d5342",
+    "67590b3411f31aa8",
+    "f2eda02144253dda",
+    "e1a6a0c1ca6faf63",
+    "27d4a3651f84bb91"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto mailroom pretend",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "6e513fd69d84d9fb",
+    "8edbc8b1d0cd3d1b",
+    "8139f5b0aef303b0",
+    "a0bd8a1ead4d0bd3",
+    "ffda7e6fcaa50723",
+    "5e890d61eadca089",
+    "60584ec788057fa4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto label_printer",
+    "interact",
+    "goto own_desk",
+    "pretend until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "92f43f8fc7e2cafc",
+    "4165bdfd582e1568",
+    "3e83c26087372eb0",
+    "a936fc3af61868f1",
+    "ba0221aabc532f2d",
+    "47290044648dc9b7",
+    "422f95a76990fd18",
+    "76e5bd162c15b6a5",
+    "0ccb0cc3601d5342",
+    "67590b3411f31aa8",
+    "c53603db34c5fd47",
+    "e7a75b8b1d97d755",
+    "747a2dfe9cd6458e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "14faa02e9a356602",
+    "159a31ef3a4eb98e",
+    "b0f4a0a458ab55fa",
+    "d9fe9f6029480b91",
+    "f8ee8f40050df314",
+    "c1f6f221331584de"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "interact",
+    "goto pigeonholes pretend",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "14faa02e9a356602",
+    "159a31ef3a4eb98e",
+    "6e8b963164e67a42",
+    "e54af84e8f3978b7",
+    "f68279eb741c246d",
+    "818d531cc1fbc2a2",
+    "79ab3fa18dfc4acc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket",
+    "wait until 3:31",
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed bob",
+   "digests": [
+    "526047df34e051ba",
+    "b3979ce43cde9a39",
+    "e1e9c54812d5a418",
+    "6a098349fd1e46be",
+    "e8856bc5d4aab077",
+    "f49c15ce52b32056",
+    "2bd8c553c56f0e6f",
+    "dd12868b640afcb2",
+    "d9981c4e07421304",
+    "92e8a28ebdde0131"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "interact",
+    "sit pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "14faa02e9a356602",
+    "159a31ef3a4eb98e",
+    "088f7fe5618d5e01",
+    "729915c742620eaa",
+    "98a141c66d953a9c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "goto pigeonholes pretend",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "ceeccd90a9e901bf",
+    "14faa02e9a356602",
+    "026f0f299a4a7690",
+    "d33ae5c9b5d1ec3f",
+    "b5ccd362a49ad1aa",
+    "48c884cc9fb2ef44",
+    "30e751cd97b4b58a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "goto pigeonholes pretend",
+    "goto socket",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "d7c68747335955e9",
+    "a8bf794b0eacbc66",
+    "b720acb4cfee3f47",
+    "81a91ad61954d1d4",
+    "f78f585a9c7eb3c0",
+    "0a739a0bc0b76a00"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "goto pigeonholes pretend",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "0dff74263be02725",
+    "a17096f09969f313",
+    "bc8cee8e595effa7",
+    "e08a22e568a12189",
+    "0b84b87004ac77b2",
+    "0f4608d119fe4db2",
+    "18ad6584bab6fb74"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47",
+    "interact",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "8850613aedda09bb",
+    "7bdbcd2c2f836e0d",
+    "eee238cde065af00",
+    "f87fb3c3c127da74",
+    "ddcb335d3168d899",
+    "c6b8b593718716dd",
+    "608cf2ab830c221a",
+    "47dac359171c7c5e",
+    "cc112fac47c00781",
+    "ea0db6e663d0a217"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 3:47",
+    "goto broom_stand",
+    "interact",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "620bb7f45aa20a25",
+    "282348b744d7f738",
+    "36b7d203f89fbcf2",
+    "877d944d2322092a",
+    "20d36a86f85ed427",
+    "78c4a99b3f22e0cf",
+    "ccc2bdf55397cd2f",
+    "0f48c70916bd732d",
+    "18d8722505b05b22",
+    "849d94fad8cba652",
+    "e85251bd2fbebd2d",
+    "386b911d3794d4ed",
+    "dc92d3e0c04d2b65"
+   ]
+  },
+  {
+   "cmds": [
+    "goto label_printer",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2cdae5147289950d",
+    "f6d39db87026af89",
+    "b1e3c1f6a6ded8bb",
+    "06098ed846fa2933",
+    "163a3388a96ed7b5",
+    "5d4a54da6507f516",
+    "aba2fdd746a44592",
+    "4e36c74f83f8edec",
+    "d8a582c769229331",
+    "53c27ab8657d03e2",
+    "3c4eea441ea83086"
+   ]
+  },
+  {
+   "cmds": [
+    "move E 1.5s",
+    "move S 1s",
+    "wait 2s",
+    "goto pigeonholes",
+    "wait 2s",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "bf35a2cb5d9952a9",
+    "4dedf24a2981a6ce",
+    "a88f34767fff5e52",
+    "24b11940bd908e76",
+    "768a7ab83295fa9a",
+    "2476147b7c1c83fb",
+    "6be44a1822e37b80",
+    "25858d79e53c2011"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto own_desk pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "win drawer",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "87c6663c65259378",
+    "0b1e5af0e1bc9d4d",
+    "f0b9e88bc7f91359",
+    "a57ffc7fe699a04f",
+    "deedb884bc50d014",
+    "002668f4c36099a8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto label_printer",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2528e5734fa83cb7",
+    "00c5afe533703e17",
+    "5fc9d6529e3c9325",
+    "d69b75e0eec7e34f",
+    "add92e259016e8cf",
+    "938f879b043cac83",
+    "938f879b043cac83",
+    "938f879b043cac83",
+    "938f879b043cac83",
+    "938f879b043cac83",
+    "938f879b043cac83"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "restart",
+    "goto label_printer",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00",
+    "continue",
+    "move S 1s",
+    "wait 2s"
+   ],
+   "summary": "fail",
+   "digests": [
+    "51f956d930f83801",
+    "4d163be4f1c197e9",
+    "ea5a38c9203ded97",
+    "b040ac0cc00b52e2",
+    "a0115f4cd35eef3b",
+    "e19483ab6639c743",
+    "ecd9d4b938e267d0",
+    "69faa4052883600f",
+    "b19019da07817e29",
+    "9f4af9431ea4e5fa",
+    "82ac0382d400823e",
+    "18e749c172556c1b"
+   ]
+  }
+ ]
+}

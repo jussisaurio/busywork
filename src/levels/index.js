@@ -7,6 +7,7 @@ import fixturePutdown from './fixture-putdown/index.js';
 import fixtureInspection from './fixture-inspection/index.js';
 import officeTime from './office-time/index.js';
 import holdMusic from './hold-music/index.js';
+import monitor from './monitor/index.js';
 import { validateLevel } from './validate.js';
 
 export const levels = {
@@ -17,6 +18,7 @@ export const levels = {
   'fixture-inspection': fixtureInspection, // test level: inspection
   'office-time': officeTime, // your bus leaves at 4:30
   'hold-music': holdMusic,
+  monitor, // design jam batch 1: the camera
 };
 for (const [key, level] of Object.entries(levels)) validateLevel(level, key);
 export const defaultLevel = meeting;
