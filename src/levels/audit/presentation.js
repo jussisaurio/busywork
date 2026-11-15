@@ -7,8 +7,8 @@ import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 
 export const TITLE = {
-  mission: ['3:30 PM. Laptop audit. There should be four.', 'You sold yours.'],
-  badge: ['🧾', '💻'],
+  mission: ['3:00 PM. A laptop audit at 3:30. There should be four.', 'You sold yours. Make him count four.'],
+  badge: ['📋', '💻'], // his clipboard, a laptop
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -66,8 +66,9 @@ export const LOOKS = {
 
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'audit' && !n.moving, arms: 'carry', item: '🧾' }, // clipboard up
     { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '☕' }, // the auditor, before 3:30
+    // The auditor's clipboard: held up while he ticks a desk, at his side while he walks.
+    { when: (n) => n.id === 'auditor', arms: (n) => (n.moving ? 'mug' : 'carry'), item: '📋' },
     { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
   ],
   marks: [

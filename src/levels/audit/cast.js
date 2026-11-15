@@ -45,11 +45,9 @@ export const CAST = [
     coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // back to the glass, facing his window
-      s('3:07.5', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
       s('3:08', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
       s('3:16', { do: 'sit', spot: 'boss_desk', arrive: 'bossCheck' }),
-      s('3:32.5', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }), // his desk is ticked off: smoke
-      s('3:33', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
+      s('3:33', { do: 'visit', spot: 'smoke', anim: 'smoking' }), // his desk is ticked off: smoke
     ],
   },
   {
@@ -78,10 +76,9 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
-      s('3:09.5', { do: 'say', icons: ['🍔', '👋'], kind: 'speech' }),
+      s('3:09.5', { do: 'say', icons: ['👋'], kind: 'speech' }), // off to lunch
       s('3:10', { do: 'away', spot: 'elevator' }), // his laptop stays on his desk
       s('3:18', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
-      s('3:23.5', { do: 'say', icons: ['☕', '❓'], kind: 'thought' }),
       s('3:24', { do: 'away', spot: 'kitchen' }), // his laptop stays on his desk
       s(KEV_BACK, { do: 'sit', spot: 'kev_desk', prelude: 'kevStopsAgain', arrive: 'kevSits' }), // via your desk
     ],
@@ -91,7 +88,7 @@ export const CAST = [
 const on = (w, spot) => w.items.find((i) => i.spot === spot);
 
 // Kev's stop at your desk on his way back to his own (once per return: flag names the return).
-const stopBy = (flag, hi) => ({
+const stopBy = (flag) => ({
   spot: 'hallway_mid',
   pending: (npc) => !npc[flag],
   arrive(game, npc, sim) {
@@ -105,7 +102,7 @@ const stopBy = (flag, hi) => ({
       sim.speak(game, npc, [{ say: ['💻', '❗'] }]);
       game.events.emit('kev:fetched', {});
     } else {
-      sim.speak(game, npc, [{ say: [hi, '👋'] }]);
+      sim.speak(game, npc, [{ say: ['👋'] }]);
     }
   },
 });
@@ -127,8 +124,8 @@ export const BEHAVIOURS = {
     },
   },
   // Kev, back from lunch and back from the kitchen, stops by your desk first: a wave, or his laptop, which he takes.
-  kevStops: stopBy('_lunch', '🍔'),
-  kevStopsAgain: stopBy('_coffee', '☕'),
+  kevStops: stopBy('_lunch'),
+  kevStopsAgain: stopBy('_coffee'),
   // At his own desk: his laptop goes back where it lives.
   kevSits: {
     arrive(game, npc, sim) {
@@ -149,7 +146,7 @@ export const BEHAVIOURS = {
       if (npc._signed) return;
       npc._signed = true;
       sim.faceSpot(game, npc, 'player_desk');
-      if (game.world.audited) sim.speak(game, npc, [{ say: ['🧾', '✍️'] }]);
+      if (game.world.audited) sim.speak(game, npc, [{ say: ['😊'] }]);
     },
   },
 };
