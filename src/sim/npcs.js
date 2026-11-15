@@ -16,7 +16,7 @@ import {
 } from '../config.js';
 import { angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
-import { say } from '../core/fx.js';
+import { say, sightline } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
@@ -53,14 +53,19 @@ export function createNpcs(game) {
 
 // One NPC as the sim builds it at game minute `now` (test fakes come from here too, so they carry the
 // private fields). The schedule is copied: tests edit the level's cast, and NPCs must not see that mid-day.
+// Every copy has all the entry fields (CONTRACTS.md), in one order: one hidden class keeps the schedule scans
+// that run every step (entryIndex, fireScheduleSays) fast.
 export function createNpc(game, def, now = 0) {
-  const sched = def.schedule.map((e) => ({ ...e }));
+  const sched = def.schedule.map((e) => ({
+    at: e.at, do: e.do, spot: e.spot, route: e.route, icons: e.icons, kind: e.kind,
+    gone: e.gone, prelude: e.prelude, arrive: e.arrive, anim: e.anim,
+  }));
   const first = sched.find((e) => e.spot);
   const p = spotPos(game, first.spot);
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
   for (const name of hookNames(def, sched)) hook(game, name); // an unknown name throws now, not mid-day
   const glanceEvery = def.glanceEvery ?? GLANCE_EVERY;
-  return {
+  const npc = {
     id: def.id,
     icon: def.icon,
     color: def.color,
@@ -90,6 +95,7 @@ export function createNpc(game, def, now = 0) {
     _sayQ: [], // delayed bubbles: { t, icons, kind, ttl }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
+    _stare: null, // a hook's lookAt: { t: s left, dir, back: the facing to return to }
     _heard: null, // a noise holding his attention (mechanics/attention.js)
     _gone: false, // left for the day
     _gathered: false, // the gather has been processed for this NPC: then the meeting's override name (endOverride)
@@ -99,7 +105,16 @@ export function createNpc(game, def, now = 0) {
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
+    _mechanics: mechanicsFor(game.level, def.id), // the level's mechanics that name him (read every step)
+    _entryKey: null, // the last plan key for a schedule entry with preludes: { i, names, pending, key } (entryKey)
+    _craveT: undefined, // s to the next daydream about what he wants (want/crave)
+    _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
+    _inspected: undefined, // ...and the ones he has started today
   };
+  // The fields the level's hooks keep (a behaviour's `state`). Every field an NPC will ever get is on it from the
+  // start: NPCs that differ in shape make every NPC field read in the sim slow.
+  for (const b of Object.values(game.level.behaviours ?? {})) Object.assign(npc, b.state);
+  return npc;
 }
 
 export function updateNpcs(game, dt) {
@@ -122,13 +137,15 @@ export function updateNpcs(game, dt) {
 }
 
 function updateNpc(game, npc, dt, now) {
-  fireScheduleSays(game, npc, now);
+  // The minute his schedule reads: the level's per-NPC clock, or the game clock (level.clockFor, below).
+  const t = game.level.clockFor ? game.level.clockFor(game, npc, HOOK_API) : now;
+  fireScheduleSays(game, npc, t);
   tickSayQueue(game, npc, dt);
   crave(game, npc, dt);
   checkOverrides(game, npc, now);
 
-  const key = planKey(game, npc, now);
-  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, now, key));
+  const key = planKey(game, npc, t);
+  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, t, key));
 
   const px = npc.x;
   const py = npc.y;
@@ -144,6 +161,13 @@ function updateNpc(game, npc, dt, now) {
 }
 
 // --- Schedule ---------------------------------------------------------------------
+// Each NPC's schedule reads a minute: the game clock, unless the level has a per-NPC clock,
+//   level.clockFor(game, npc, sim)  the minute (game minutes since day.start) npc's schedule reads this step:
+//                                   which entry is current, which `say` entries have fired. Called exactly once per
+//                                   NPC per step, in cast order, before anything else of his; it may keep state on
+//                                   the NPC (underscore fields) and use sim (HOOK_API: speak, holdFor, faceSpot...).
+// Only the schedule reads it. The gather, the meeting, mechanics (a hunt's `until`, an inspection's `at`) and
+// everything outside the sim keep the game clock. Without clockFor the schedule reads game.clock.minute.
 
 // Index of the activity entry (not 'say') that is current at `now`.
 function entryIndex(npc, now) {
@@ -198,6 +222,16 @@ const HOOK_API = {
     const p = spotPos(game, name);
     npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
   },
+  // Look at a spot for s seconds: he turns to it and stands still (holdFor), his head stays on it (no glance
+  // starts, a running one ends), then he turns back to the facing he had, unless something turned him meanwhile.
+  lookAt(game, npc, name, s) {
+    const p = spotPos(game, name);
+    const dir = Math.atan2(p.y - npc.y, p.x - npc.x);
+    npc._stare = { t: s, dir, back: npc._stare ? npc._stare.back : npc._faceTarget };
+    npc._faceTarget = dir;
+    npc._gl.hold = 0;
+    holdFor(npc, s);
+  },
 };
 
 function hook(game, name) {
@@ -216,10 +250,30 @@ function* hookNames(def, sched) {
   }
 }
 
+// Is prelude `name` still to walk?
+const pending = (game, npc, name) => hook(game, name).pending?.(npc) ?? true;
+
 // The preludes of schedule entry i still to walk, in the entry's order.
 function preludes(game, npc, i) {
   const names = npc._schedule[i].prelude;
-  return names ? [].concat(names).filter((name) => hook(game, name).pending?.(npc) ?? true) : [];
+  return names ? [].concat(names).filter((name) => pending(game, npc, name)) : [];
+}
+
+// The plan key for schedule entry i: e<i>, then +<name> for each of its preludes still to walk. Asked for every
+// step, so the NPC keeps the last one he built (npc._entryKey) and builds a new one only when it changes.
+function entryKey(game, npc, i) {
+  const names = npc._schedule[i].prelude;
+  if (!names) return `e${i}`; // the common case
+  let c = npc._entryKey;
+  if (c?.i !== i) c = npc._entryKey = { i, names: [].concat(names), pending: [], key: null };
+  let changed = c.key === null;
+  c.names.forEach((name, j) => {
+    const p = !!pending(game, npc, name);
+    if (p !== c.pending[j]) changed = true;
+    c.pending[j] = p;
+  });
+  if (changed) c.key = `e${i}${c.names.filter((_, j) => c.pending[j]).map((name) => `+${name}`).join('')}`;
+  return c.key;
 }
 
 function tickSayQueue(game, npc, dt) {
@@ -234,7 +288,7 @@ function tickSayQueue(game, npc, dt) {
 // Lures start and hunts end (polled from world state, so no event subscriptions leak across loops). A check that
 // runs level hooks gets HOOK_API.
 function checkOverrides(game, npc, now) {
-  for (const m of mechanicsFor(game.level, npc.id)) m.kind.check?.(game, npc, m.data, now, HOOK_API);
+  for (const m of npc._mechanics) m.kind.check?.(game, npc, m.data, now, HOOK_API);
 }
 
 function planKey(game, npc, now) {
@@ -244,12 +298,7 @@ function planKey(game, npc, now) {
   const seq = npc._ovSeq;
   switch (npc.override) {
     case game.level.meeting.override: return `${npc.override}#${seq}`;
-    default: {
-      const i = entryIndex(npc, now);
-      const names = npc._schedule[i].prelude;
-      if (!names) return `e${i}`; // the common case: no allocation every step
-      return `e${i}${preludes(game, npc, i).map((name) => `+${name}`).join('')}`;
-    }
+    default: return entryKey(game, npc, entryIndex(npc, now));
   }
 }
 
@@ -291,7 +340,7 @@ function buildPlan(game, npc, now, key) {
   }
   if (plan.done) return plan; // (a door's lockout)
   // Doors: coming in from a door's zone, its NPCs go through the door first.
-  for (const d of mechanicsFor(game.level, npc.id)) d.kind.prelude?.(game, npc, plan, d.data);
+  for (const d of npc._mechanics) d.kind.prelude?.(game, npc, plan, d.data);
   return plan;
 }
 
@@ -417,20 +466,35 @@ export function npcTakes(npc, item) {
   if (npc.wants === item) npc.wants = null;
 }
 
-// 4:00, attendance rule: everyone at the table turns to your empty chair. 🪑❓ … 😠👉
-export function stareAtEmptyChair(game) {
+// 4:00: everyone at the table turns to one place, thinks, then says it. The default is the attendance rule: your
+// empty chair, 🪑❓ … 😠👉. A level's meeting.verdict can name another (scenario.js):
+//   at     a spot name, or 'player' (default: meeting.chair)
+//   think  the thought bubble (default ['🪑', '❓']); say  the speech 1 s later (default ['😠', '👉'])
+//   line   a sightline kind (fx.js) from each of them to the player, for the beat (optional)
+export function stareAt(game, stare = {}) {
   const m = game.level.meeting;
-  const c = spotPos(game, m.chair);
+  const c = stare.at === 'player' ? game.player : spotPos(game, stare.at ?? m.chair);
   for (const n of game.npcs) {
     if (!n.active || n.override !== m.override) continue;
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
     n._gl.hold = 0; // stop any glance: all eyes on the chair
-    say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
-    npcSayLater(n, 1.0, ['😠', '👉'], 'speech');
+    say(game, n.id, stare.think ?? ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
+    npcSayLater(n, 1.0, stare.say ?? ['😠', '👉'], 'speech');
+    if (stare.line) sightline(game, n.id, stare.line, 2.0);
   }
 }
 
 // --- Facing and glances ---------------------------------------------------------------
+
+// A lookAt running out: he turns back, if he still faces what he looked at.
+function tickStare(npc, dt) {
+  const st = npc._stare;
+  if (!st) return;
+  st.t -= dt;
+  if (st.t > 0) return;
+  if (npc._faceTarget === st.dir) npc._faceTarget = st.back;
+  npc._stare = null;
+}
 
 function updateFacing(npc, dt) {
   const want = heardFacing(npc) ?? npc._faceTarget; // a noise turns him (mechanics/attention.js)
@@ -441,7 +505,8 @@ function updateFacing(npc, dt) {
 
 function updateGlance(npc, dt) {
   const g = npc._gl;
-  const can = npc.active && !npc.moving && !npc._look && !npc._heard;
+  tickStare(npc, dt);
+  const can = npc.active && !npc.moving && !npc._look && !npc._heard && !npc._stare;
 
   // Fixed timeline: the rng is drawn at every timer expiry whether or not the glance is shown.
   g.timer -= dt;

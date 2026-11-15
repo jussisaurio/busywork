@@ -5,7 +5,12 @@ import fixture from './fixture/index.js';
 import fixtureAttention from './fixture-attention/index.js';
 import fixturePutdown from './fixture-putdown/index.js';
 import fixtureInspection from './fixture-inspection/index.js';
+import officeTime from './office-time/index.js';
+import holdMusic from './hold-music/index.js';
+import monitor from './monitor/index.js';
 import hoodie from './hoodie/index.js';
+import lightsOut from './lights-out/index.js';
+import audit from './audit/index.js';
 import { validateLevel } from './validate.js';
 
 export const levels = {
@@ -14,7 +19,12 @@ export const levels = {
   'fixture-attention': fixtureAttention, // test level: attention
   'fixture-putdown': fixturePutdown, // test level: put down
   'fixture-inspection': fixtureInspection, // test level: inspection
+  'office-time': officeTime, // your bus leaves at 4:30
+  'hold-music': holdMusic,
+  monitor, // design jam batch 1: the camera
   hoodie, // Kev's Hoodie: disguise
+  'lights-out': lightsOut, // batch 1: darkness
+  audit, // The Audit: one laptop counted twice
 };
 for (const [key, level] of Object.entries(levels)) validateLevel(level, key);
 export const defaultLevel = meeting;

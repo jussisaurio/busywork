@@ -241,7 +241,7 @@ export function drawParticles(ctx, game, t) {
 }
 
 // --- sightlines -----------------------------------------------------------------
-// game.fx.lines: [{ from: npcId, to: 'player', kind, age, ttl }]. A dashed line from the
+// game.fx.lines: [{ from: npcId, to: 'player', kind, age, ttl, via? }]. A dashed line from the
 // watcher's eyes to your body, using live positions so it follows both of you. It draws on fast,
 // then fades. 'notice' is a faint cream glance; 'tattle'/'caught' are thick tomato with a mark on you.
 const LINE_STYLE = {
@@ -274,6 +274,10 @@ export function drawSightlines(ctx, game, t) {
     let ex = fin(n.x, NaN) * T;
     let ey = headY(game.level.looks, n, 'eyeDy', NaN);
     if (!Number.isFinite(ex) || !Number.isFinite(ey)) continue;
+    if (l.via) {
+      drawScreenChain(ctx, l.via, ex, ey, px, py, st, age, fade, t);
+      continue;
+    }
     const dx = px - ex;
     const dy = py - ey;
     const len = Math.hypot(dx, dy);
@@ -301,6 +305,35 @@ export function drawSightlines(ctx, game, t) {
   }
   ctx.setLineDash([]);
   ctx.restore();
+}
+
+// Seen on a camera's screen (fx.js sightline `via`): two dashed legs, his eyes to the screen, then the lens to you.
+// The second leg draws on after the first.
+function drawScreenChain(ctx, via, ex, ey, px, py, st, age, fade, t) {
+  const a = clamp(st.alpha * fade, 0, 1);
+  const sx = fin(via.screen.x) * T;
+  const sy = fin(via.screen.y) * T - 6;
+  const lx = fin(via.lens.x) * T;
+  const ly = fin(via.lens.y) * T;
+  const legs = [[ex, ey, sx, sy, clamp(age / DRAW_ON, 0, 1)], [lx, ly, px, py, clamp((age - DRAW_ON) / DRAW_ON, 0, 1)]];
+  for (const [x0, y0, x1, y1, k] of legs) {
+    if (!(k > 0)) continue;
+    const tx = x0 + (x1 - x0) * k;
+    const ty = y0 + (y1 - y0) * k;
+    ctx.setLineDash(st.dash);
+    ctx.lineDashOffset = -t * 30;
+    ctx.strokeStyle = `rgba(30,20,14,${(a * 0.35).toFixed(3)})`;
+    ctx.lineWidth = st.w + 2;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(${st.color},${a.toFixed(3)})`;
+    ctx.lineWidth = st.w;
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  if (st.mark && age >= 2 * DRAW_ON) drawLineMark(ctx, px, py, age - DRAW_ON, a, st.color);
 }
 
 // The hit mark on you: a ring that snaps in, then a small cross.

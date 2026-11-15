@@ -5,7 +5,8 @@
 //   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until day.meetingAt is not a step)
 //   random    random plans winning more than EASY_RATE (1%) of the time
 //   crash     any crash or harness error (a command threw, or a day never ended)
-//   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend)
+//   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend; a lesson with `routes`
+//             binds only the wins that include one of them)
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
 // and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
 //
@@ -50,9 +51,10 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
   check('crash', !crashCount, crashCount ? `${crashCount} crashes or harness errors` : 'no crashes or harness errors',
     r.crashes.slice(0, 2).flatMap((c) => [c.error, `  plan: ${c.cmds.join(' ; ')}`]));
 
-  for (const { id } of L.mustUse) {
+  for (const { id, routes } of L.mustUse) {
     const skips = combos.filter((wk) => r.wins[wk].without?.[id]);
-    check(id, !skips.length, skips.length ? `a win without ${id}: ${skips.join(', ')}` : `every win uses ${id}`,
+    const which = routes ? `${routes.join(' or ')} win` : 'win';
+    check(id, !skips.length, skips.length ? `a ${which} without ${id}: ${skips.join(', ')}` : `every ${which} uses ${id}`,
       skips.map((wk) => `${wk}: ${oneLine(r.wins[wk].without[id])}`));
   }
   return checks;

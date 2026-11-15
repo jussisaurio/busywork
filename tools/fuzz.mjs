@@ -18,7 +18,8 @@
 // Flags in the report are heuristics for a designer to look at, not test failures (tools/gate.mjs turns
 // them into a pass/fail verdict):
 //   EASY      a win whose minimal plan has <= EASY_STEPS steps, or random plans win too often
-//   NO-<LESSON> a win that skips one of the level's mustUse lessons (level 1: NO-PRETEND)
+//   NO-<LESSON> a win that skips one of the level's mustUse lessons (level 1: NO-PRETEND; a lesson with `routes`
+//             binds only the wins that include one of them)
 //   NO-WIN    a route of the level that no plan won
 //   CRASH     a command threw or a day never ended (a game bug, or a harness bug)
 // The report also lists the time span of each route's key action across all wins found: the real
@@ -188,6 +189,12 @@ export function usedLessons(L, ran, log) {
   return L.mustUse.filter(used).map((l) => l.id);
 }
 
+// The ids of the mustUse lessons a win skipped. A lesson with `routes` only binds wins that include one of them
+// (a level whose mechanic is one route's: the other routes needn't use it). res: { routes, used }.
+export function skippedLessons(L, res) {
+  return L.mustUse.filter((l) => !res.used.includes(l.id) && (!l.routes || l.routes.some((r) => res.routes.includes(r)))).map((l) => l.id);
+}
+
 export function evaluate(plan, L = levelData(DEFAULT_LEVEL)) {
   const h = createHarness({ level: L.id });
   h.begin();
@@ -324,8 +331,8 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
         kt[0] = Math.min(kt[0], m);
         kt[1] = Math.max(kt[1], m);
       }
-      for (const { id } of L.mustUse) {
-        if (!res.used.includes(id) && (!s.without[id] || size(plan) < size(s.without[id]))) s.without[id] = clone(plan);
+      for (const id of skippedLessons(L, res)) {
+        if (!s.without[id] || size(plan) < size(s.without[id])) s.without[id] = clone(plan);
       }
     }
     const bin = binOf(res);
