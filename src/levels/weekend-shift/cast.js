@@ -120,15 +120,17 @@ export const BEHAVIOURS = {
         { say: w.roster === 'boss' ? [face, '😳'] : ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S + 0.2, after: r + LOOK_S, face: 'board_look' },
       ];
       sim.speak(game, n, lines);
-      // His own face: he doesn't know whose it was, and nor do Lin and Kev (nobody reads the board; they wait for it
-      // to be read out). But somebody did it, and the boss turns to the room. Each of them points at someone who
-      // isn't themselves, and you're the one they can both point at (that's whose face he draws in at 5:00: index.js
-      // punchline).
-      if (w.roster === 'boss') {
-        for (const c of game.npcs) {
-          if (c.id !== 'lin' && c.id !== 'kev') continue;
-          sim.speak(game, c, [{ say: ['👉', '@player'], ttl: READ_S - ANNOUNCE_S - LOOK_S - 0.2, after: r + LOOK_S + 0.4, face: game.level.meeting.chair }]);
-        }
+      // His own face: he doesn't remember whose it was, but somebody did this, and he turns to the room. Lin, whose
+      // desk faces the board, saw you at it this afternoon (index.js tick: linSawYou; not while every head was on the
+      // steam, and a write takes too long for two in one window, so the own-face day always has you in her view):
+      // 👀👉 you. Kev, who saw nothing, goes along with it to get it settled. (That's whose face he draws in at 5:00:
+      // index.js punchline.)
+      if (w.roster === 'boss' && w.linSawYou) {
+        const span = READ_S - ANNOUNCE_S - LOOK_S;
+        const lin = game.npcs.find((c) => c.id === 'lin');
+        const kev = game.npcs.find((c) => c.id === 'kev');
+        if (lin) sim.speak(game, lin, [{ say: ['👀', '👉', '@player'], ttl: span - 0.2, after: r + LOOK_S + 0.3, face: game.level.meeting.chair }]);
+        if (kev) sim.speak(game, kev, [{ say: ['👉', '@player'], ttl: span - 0.8, after: r + LOOK_S + 0.9, face: game.level.meeting.chair }]);
       }
     },
   },
