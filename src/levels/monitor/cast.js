@@ -49,7 +49,7 @@ function handOver(game, sim) {
   sim.faceSpot(game, lin, 'bob_mail');
   sim.faceSpot(game, bob, 'mail_call');
   sim.speak(game, lin, [{ say: ['💝', '@bob'] }]);
-  sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought', after: 1.0 }]);
+  sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought' }]); // at once: the day's verdict comes 0.2 s later
   game.events.emit('parcel:handed', {});
 }
 

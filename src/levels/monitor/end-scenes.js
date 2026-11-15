@@ -47,7 +47,8 @@ function backRoom(ctx) {
 
 // Where something happened, as a backdrop: your office's carpet, or the lino everywhere else.
 function backdropAt(ctx, game, x, y) {
-  if (inZone(game, x, y, 'office')) office(ctx);
+  // The corridor has the office's cream floor and windows; the back office and the mailroom have the tiles.
+  if (inZone(game, x, y, 'office') || inZone(game, x, y, 'corridor')) office(ctx);
   else backRoom(ctx);
 }
 
