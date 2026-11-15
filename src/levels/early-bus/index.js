@@ -1,4 +1,4 @@
-// "Early Bus": the last bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
+// "The Last Bus": the last bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
 // Everyone lives by the wall clock of the zone he stands in (clocks.js), and you can climb the stepladder under a
 // clock and push it forward. Push the boss's clock (Lin watches it through the glass) and he lives his afternoon
 // early. Push the open-plan clock (Kev sits facing it) far enough and the boss, walking back under it from his coffee,
@@ -16,18 +16,19 @@ import gate from './gate.js';
 
 // Level 1's floor, rearranged around two clocks. Q the boss's clock (office, north wall), O the open-plan clock
 // (hallway wall, on the boss's way to and from the kitchen, over Kev's desk), each with a stepladder under it. K the
-// boss's coat rack, in the corner of his glass office: his coat on it means he is in. The entrance L is open
+// boss's coat rack, in the hallway by his office door, in front of Lin and Kev and far from O: his coat on it means
+// he is in. The entrance L is open
 // to you today. The lobby's glass front opens onto the pavement (,) and the bus stop (B); the road runs along the
 // bottom edge, and everyone goes home over the zebra crossing (=).
 const MAP = [
   '####Q#########################', // 0
-  '#......KG..........#FTCT.....#', // 1
+  '#.......G..........#FTCT.....#', // 1
   '#.......G..........#.........#', // 2
   '#..TTT..G..TTTTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
   '#......HG.........H#H........#', // 5
   '#GGGGGDGG#O###D#######DD######', // 6
-  '#............................#', // 7
+  '#...K........................#', // 7
   '#....TTT.TTTTPT..............#', // 8
   '#............................#', // 9
   '#............................#', // 10
@@ -61,7 +62,7 @@ const SPOTS = {
   boss_clock_chair: { x: 4, y: 1, face: 'N' }, // the stepladder under Q, right behind his seat
   open_clock_chair: { x: 10, y: 7, face: 'N' }, // ... and O, on the boss's way back from the kitchen
   coffee: { x: 22, y: 2, face: 'N' },
-  coat: { x: 7, y: 2, face: 'N' }, // in front of the coat rack
+  coat: { x: 5, y: 7, face: 'W' }, // beside the coat rack, a step out of his office door
   boss_door: { x: 6, y: 7, face: 'S' },
   door_in: { x: 4, y: 12, face: 'S' },
   street_end: { x: 15, y: 16, face: 'S' }, // the zebra crossing: where people go home (and the boss comes back from lunch)
@@ -73,7 +74,8 @@ const SPOTS = {
 const ZONES = {
   boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // the boss reads Q in here
   open_plan: { x0: 1, y0: 7, x1: 29, y1: 13 }, // Lin and Kev read O in here
-  lobby: { x0: 0, y0: 14, x1: 10, y1: 17 }, // out of the boss's earshot
+  lobby: { x0: 0, y0: 14, x1: 10, y1: 17 },
+  outdoors: { x0: 0, y0: 14, x1: 17, y1: 17 }, // the lobby and the street: out of the boss's earshot
   street: { x0: 10, y0: 14, x1: 17, y1: 17 }, // the pavement at the bus stop and the crossing: be here at 4:30
 };
 
@@ -84,7 +86,7 @@ const INTERACTIONS = {
 };
 
 const ROLES = {
-  authority: { id: 'boss', offDuty: ['bus'], helpless: [], deafIn: 'lobby' },
+  authority: { id: 'boss', offDuty: ['bus'], helpless: [], deafIn: 'outdoors' },
   // The crime is leaving before him: seen out in the street by the boss while he is still at work (or out looking
   // for you), you are caught, phone or no phone.
   scene: { by: 'boss', while: [null, 'hunting'], zone: 'street', door: { x: 11.5, y: 15.5 }, radius: 0, fresh: () => false, icon: '🚌' },
