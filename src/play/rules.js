@@ -273,7 +273,9 @@ function assignWork(game, reason) {
   const boss = findNpc(game, id);
   // If the authority is off-floor (restroom), the order still lands: show it over the player.
   say(game, boss && boss.active ? id : 'player', ['📄', '📄', '👉', '🖥️'], { kind: 'speech' });
-  cancelAction(game, 'witnessed');
+  // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
+  // ends as 'idle'. Told on (a tattle): 'witnessed'.
+  cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
   dropHeld(game); // whatever you carried stays where you stood
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
   sitAtDesk(game);

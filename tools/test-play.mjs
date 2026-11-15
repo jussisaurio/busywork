@@ -656,6 +656,7 @@ section('contraband');
   input.press('interact');
   run(2.5);
   ok(!game.caught && evs('boss:workAssigned')[0]?.payload.reason === 'idle', 'boss watches you eat: ❓ fills -> desk work, not fired');
+  ok(evs('action:cancel').some((e) => e.payload.type === 'eat_sandwich' && e.payload.reason === 'idle'), "the meal ends as action:cancel {reason:'idle'}, not 'witnessed'");
 
   // Kev's coffee: before he's found the pot empty, a colleague with a coffee is nothing to him.
   newDay([kev]);
