@@ -19,17 +19,23 @@ the data shapes, read `CONTRACTS.md`.
 The only text in a level is its mission card: two typed lines on the title screen, plus a badge of icons. Everything
 else is pictures, motion and sound.
 
-**The level's name, card and badge name the trouble, never the way out.** Name the stakes or the day's event (The
-Audit, Layoff List, Weekend Shift). Never name a mechanic, a tool or a route. A name like "Lights Out" for a level you
-win by turning the lights off gives away the solution before the first move. Test: if knowing the name narrows down
-how to win, rename it. The level's folder and id are its name too, because the level picker shows them.
+**A good card tells a stranger three things: when it is, what's about to go wrong for them, and what to do.**
+- **Now:** the loop's start time ("Friday, 4:00 PM."). The first time on the card is read as the current time.
+- **The trouble and what it costs you,** in plain words: "You're down to work Saturday." "You're on the layoff list."
+  The deadline comes with it: "The boss reads out the rota at 5:00."
+- **The order:** one imperative, the goal: "Keep your weekend." "Catch the bus." "Make her miss it." It says what to
+  achieve, and the player works out how. That is why it names the goal, not a method or a tool.
+- Test: a stranger who reads only the card can say where they are, what they stand to lose and what they're trying to
+  do.
 
-**The first time on the card is now**: the loop's start time. A card that opens with the deadline ("5:00 PM. …") is
-read as the current time.
+**A good name is the trouble or the day's event**: The Audit, Layoffs, Saturday. It sets the scene and leaves the
+method to the player, so a name that says what you do ("Lights Out" for a level you win in the dark) is the wrong
+name. The level's folder and id are its name too, because the level picker shows them.
 
 ## Design principle: no hand-holding
-In the spirit of Jonathan Blow's games, the game explains nothing beyond the mission card. Figuring out how it works
-*is* the game: the time loop, the office rules, what each object is for, and how many ways there are to win.
+In the spirit of Jonathan Blow's games, the player learns by watching and trying. The card says what to achieve;
+the world shows everything else through what happens: the time loop, the office rules, what each object is for, and
+how many ways there are to win. Figuring that out *is* the game.
 - **The world shows its state.** A broken machine sparks and smokes. Someone fixing it is seen at work on it. The HUD
   never lists solutions or progress toward them.
 - **Hints are environmental**: a sticker on a machine, a thing in reach on a hook. Never tooltips or text.
@@ -183,15 +189,13 @@ These came from playtests of level 1 (details in its `LEVEL.md`).
   if a real person would believe it might work. Putting on a coworker's shirt does not make you that coworker, and a
   boss fooled by it makes the whole game look like it is cheating. Absurd results are welcome; an absurd method is
   not. Test every route with this question: "would this get past a real, half-awake boss?"
-  The first `sense` sweep failed every level on this rule, and the failures fell into three groups:
-  - **A view cone is not a reason.** Someone at arm's length notices, whatever their cone says. Every "he didn't see
-    it" needs a real distraction that takes him out of earshot or out of the room: a call, an errand, a summons.
-  - **Nobody swallows a big lie.** People notice an hour gone missing, their own face on a board, a clock an hour out
-    from the one they just looked at. A route can rely on someone not checking. It can't rely on someone believing
-    the impossible.
-  - **Reactions fit what was done.** A boss told that someone is editing his layoff list comes back and looks. A
-    coworker doesn't take your own parcel off you. Nobody picks a letter out of vomit. Ask what a real person would
-    do next, and make the level do that.
+  What makes a route believable, from the first `sense` sweep:
+  - **The coast is really clear.** Whoever would object is out of the room or out of earshot for a real reason: a
+    call, an errand, a summons. Someone at arm's length notices, whatever way they face.
+  - **It only asks people not to check.** Real people skip checking things all the time. They don't believe the
+    impossible: an hour gone missing, their own face on a board, a clock an hour out from the one they just read.
+  - **People react the way real people would.** A boss told someone is editing his layoff list comes back and looks.
+    Ask what a real person would do next, and make the level do that.
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
 - **Red herrings are welcome; every failure shows its cause.** A thing that leads nowhere stops the player from

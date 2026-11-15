@@ -226,6 +226,13 @@ try {
   ok(md.includes('Earlier problems: 1 fixed, 1 still there, 0 no longer applies (now blockers).') && md.includes('### Ledger') && md.includes('- E1 fixed: B-ONE')
     && md.includes('- E1 [blocker] S-ONE — fix it (recurring: premise-level?)\n- E2 [should] S-NEW — fix it'), 'ledger: recorded, and the recurring problem is tagged and carried first');
   ok((await stageStatus('meeting', 'premise', { root })).fresh, 'ledger: not an input; the pass stays fresh across rounds');
+  {
+    // A second read of unchanged inputs is skipped (skipFresh, the CLI default): it is not a new round, and its ledger
+    // would promote every open should to a blocker.
+    const n = fr.calls.length;
+    const again = await runStage('meeting', 'premise', { runner: fr.runner, root, log: silent, skipFresh: true, ...fixed });
+    ok(again.skipped && fr.calls.length === n && again.verdict === rec.verdict, 'skipFresh: unchanged inputs are not read again, and the record is kept');
+  }
   fr = fakeRunner({ '1-card': 'fourth read', '2-review': 'Verdict: works\n\n## Earlier problems\n- E1: still there — same\n\n## Problems\n- none' });
   rec = await runStage('meeting', 'premise', { runner: fr.runner, root, log: silent, ...fixed });
   ok(rec.verdict === 'fixable' && rec.ledger.find((e) => e.id === 'E2').mark === 'still there' && /not marked/.test(rec.ledger.find((e) => e.id === 'E2').why)

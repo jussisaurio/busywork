@@ -36,6 +36,9 @@ a tool or a doc. A promise to try harder is not a change.
   a time on main, so more agents only queue up, and a big batch hides problems: a flawed brief gets copied by every
   agent before anyone sees it. When a process is new (a new brief, a new check), take the first result all the way
   through before the others start.
+- **Write rules as targets, not bans.** Every rule says what good looks like, with an example. A ban alone is
+  satisfied by doing less: "never name the way out" produced cards with no goal at all. When a failure teaches
+  something, write down what the good version does.
 - **A test must not read the live repo's state.** Records and levels change, so a test reads fixtures or temp
   roots, never the live repo.
 

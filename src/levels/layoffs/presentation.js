@@ -11,7 +11,7 @@ import { SECS } from './cast.js';
 export { END_SCENES };
 
 export const TITLE = {
-  mission: ["Friday, 3:00 PM. You're on the layoff list.", 'At 3:45 it goes to HR.'],
+  mission: ["Friday, 3:00 PM. You're on the layoff list.", 'It goes to HR at 3:45. Get off it.'],
   badge: ['📧', '📦'], // the trouble: the email at 3:45, and the box you carry out
 };
 

@@ -10,7 +10,7 @@ import {
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00, in front of everyone."],
+  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00. Don't let anyone see it."],
   badge: ['@player', '😳'],
 };
 

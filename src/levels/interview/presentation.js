@@ -7,7 +7,7 @@ import { PHONE_PROPS, THINGS } from './painters.js';
 import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'She must miss it.'],
+  mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'Make her miss it.'],
   badge: ['#interview', '#call'], // the threat: Lin's interview (her face and its briefcase) and the call (painters.js THINGS)
 };
 

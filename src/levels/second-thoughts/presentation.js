@@ -9,7 +9,7 @@ export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He goes through his tray at 3:40.'],
+  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He goes through his tray at 3:40. Keep your job.'],
   badge: ['✉️', '@boss', '📦'],
 };
 
