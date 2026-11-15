@@ -44,6 +44,7 @@ export const CAST = [
     voice: 'kev',
     meetingSpot: 'meeting_kev',
     vision: { fov: deg(90), radius: 7 },
+    glanceEvery: [20, 35], // heads down in his code: he hardly ever looks up
     coneTint: [214, 230, 140],
     schedule: [
       s('4:00', { do: 'sit', spot: 'kev_desk' }), // he gets up when a machine needs fixing (index.js lures)
@@ -88,7 +89,7 @@ export const BEHAVIOURS = {
   },
   // At the board, before 5:00: the boss reads out the face in Saturday's slot. He turns to the board and points at
   // it (📢: hear this), then turns to whose face it is: Kev's (he groans), yours (at 5:00 you stand up, there's
-  // no way out), or his own (he goes red).
+  // no way out), or his own (he goes red, still facing the board).
   readRoster: {
     state: { _read: false },
     arrive(game, n, sim) {
@@ -99,7 +100,9 @@ export const BEHAVIOURS = {
       const t = lastMoment(game);
       const at = t + POINT_S;
       const lines = [{ say: ['📢'], ttl: POINT_S, after: t, face: 'board_look' }];
-      if (w.roster === 'boss') lines.push({ say: ['@boss', '😳'], ttl: 2.4, after: at, face: 'meeting_player' });
+      // his own face: he goes red at the board, the cause of it. (Not at your chair: if you're away, 5:00 turns
+      // every head to it, and a blush aimed at it read as you being caught.)
+      if (w.roster === 'boss') lines.push({ say: ['@boss', '😳'], ttl: 2.4, after: at, face: 'board_look' });
       else if (w.roster === 'kev') {
         lines.push({ say: ['👉', '@kev'], ttl: 2, after: at, face: 'meeting_kev' });
         const kev = game.npcs.find((k) => k.id === 'kev');
