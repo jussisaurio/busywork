@@ -95,6 +95,7 @@ export function createNpc(game, def, now = 0) {
     _sayQ: [], // delayed bubbles: { t, icons, kind, ttl }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
+    _stare: null, // a hook's lookAt: { t: s left, dir, back: the facing to return to }
     _heard: null, // a noise holding his attention (mechanics/attention.js)
     _gone: false, // left for the day
     _gathered: false, // the gather has been processed for this NPC: then the meeting's override name (endOverride)
@@ -136,13 +137,15 @@ export function updateNpcs(game, dt) {
 }
 
 function updateNpc(game, npc, dt, now) {
-  fireScheduleSays(game, npc, now);
+  // The minute his schedule reads: the level's per-NPC clock, or the game clock (level.clockFor, below).
+  const t = game.level.clockFor ? game.level.clockFor(game, npc, HOOK_API) : now;
+  fireScheduleSays(game, npc, t);
   tickSayQueue(game, npc, dt);
   crave(game, npc, dt);
   checkOverrides(game, npc, now);
 
-  const key = planKey(game, npc, now);
-  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, now, key));
+  const key = planKey(game, npc, t);
+  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, t, key));
 
   const px = npc.x;
   const py = npc.y;
@@ -158,6 +161,13 @@ function updateNpc(game, npc, dt, now) {
 }
 
 // --- Schedule ---------------------------------------------------------------------
+// Each NPC's schedule reads a minute: the game clock, unless the level has a per-NPC clock,
+//   level.clockFor(game, npc, sim)  the minute (game minutes since day.start) npc's schedule reads this step:
+//                                   which entry is current, which `say` entries have fired. Called exactly once per
+//                                   NPC per step, in cast order, before anything else of his; it may keep state on
+//                                   the NPC (underscore fields) and use sim (HOOK_API: speak, holdFor, faceSpot...).
+// Only the schedule reads it. The gather, the meeting, mechanics (a hunt's `until`, an inspection's `at`) and
+// everything outside the sim keep the game clock. Without clockFor the schedule reads game.clock.minute.
 
 // Index of the activity entry (not 'say') that is current at `now`.
 function entryIndex(npc, now) {
@@ -211,6 +221,16 @@ const HOOK_API = {
   faceSpot(game, npc, name) {
     const p = spotPos(game, name);
     npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
+  },
+  // Look at a spot for s seconds: he turns to it and stands still (holdFor), his head stays on it (no glance
+  // starts, a running one ends), then he turns back to the facing he had, unless something turned him meanwhile.
+  lookAt(game, npc, name, s) {
+    const p = spotPos(game, name);
+    const dir = Math.atan2(p.y - npc.y, p.x - npc.x);
+    npc._stare = { t: s, dir, back: npc._stare ? npc._stare.back : npc._faceTarget };
+    npc._faceTarget = dir;
+    npc._gl.hold = 0;
+    holdFor(npc, s);
   },
 };
 
@@ -455,6 +475,16 @@ export function stareAtEmptyChair(game) {
 
 // --- Facing and glances ---------------------------------------------------------------
 
+// A lookAt running out: he turns back, if he still faces what he looked at.
+function tickStare(npc, dt) {
+  const st = npc._stare;
+  if (!st) return;
+  st.t -= dt;
+  if (st.t > 0) return;
+  if (npc._faceTarget === st.dir) npc._faceTarget = st.back;
+  npc._stare = null;
+}
+
 function updateFacing(npc, dt) {
   const want = heardFacing(npc) ?? npc._faceTarget; // a noise turns him (mechanics/attention.js)
   const d = angleDiff(want, npc.dir);
@@ -464,7 +494,8 @@ function updateFacing(npc, dt) {
 
 function updateGlance(npc, dt) {
   const g = npc._gl;
-  const can = npc.active && !npc.moving && !npc._look && !npc._heard;
+  tickStare(npc, dt);
+  const can = npc.active && !npc.moving && !npc._look && !npc._heard && !npc._stare;
 
   // Fixed timeline: the rng is drawn at every timer expiry whether or not the glance is shown.
   g.timer -= dt;
