@@ -8,11 +8,12 @@
 // The schedule reads it through level.clockFor (src/sim/npcs.js). The HUD clock, the deadline, the gather and the
 // rules keep the true time. A clock you pushed hangs crooked (presentation.js).
 //
-// The boss also follows the herd: when both Lin's and Kev's desks are empty while he is in his office, he turns to
-// each ❓, decides it must be late ❗, and leaves (world.herd).
+// The boss also watches his staff's desks. Whenever Lin or Kev disappears (Lin's restroom break, or going home) while
+// he is in his office, he turns to that desk and wonders where they are (their face, ❓). When both have gone home he
+// decides it must be 4:50 ❗ and leaves too (world.herd).
 import { FIXED_DT } from '../../config.js';
 import { say } from '../../core/fx.js';
-import { inZone } from '../../game/perception.js';
+import { inZone, findNpc } from '../../game/perception.js';
 import { LOOK_UPS } from './cast.js';
 
 // Clock -> where it hangs: its interactable id, the zone it rules, the stepladder under it, its world field (minutes
@@ -79,16 +80,18 @@ function lookUp(game, npc, sim) {
   }
 }
 
-// The boss in his office notices empty desks: ❓ at each, and at the second ❗ he packs up.
+// The boss in his office notices an empty desk: he turns to it with that person's face and ❓, once each time the
+// person disappears. At the second desk empty for good ❗ he packs up.
 function followHerd(game, npc, sim, st, now) {
   const w = game.world;
   if (w.herd || !npc.active || npc._gone || npc.override || !inZone(game, 'boss_office', npc.x, npc.y)) return;
   for (const id of ['lin', 'kev']) {
-    if (!w[`${id}Gone`] || st.saw[id]) continue;
+    if (findNpc(game, id)?.active !== false) { st.saw[id] = false; continue; } // at work (or walking about)
+    if (st.saw[id]) continue;
     st.saw[id] = true;
     sim.lookAt(game, npc, `${id}_desk`, FROWN_S);
-    say(game, npc.id, ['❓'], { kind: 'thought', voice: npc.voice, ttl: FROWN_S + 0.2 }); // ['@lin', '❓'] once faces exist
-    game.events.emit('boss:frown', { at: id });
+    say(game, npc.id, [`@${id}`, '❓'], { kind: 'thought', voice: npc.voice, ttl: FROWN_S + 0.2 });
+    game.events.emit('boss:frown', { at: id, gone: !!w[`${id}Gone`] });
   }
   if (!(w.linGone && w.kevGone)) return;
   st.herdT -= FIXED_DT;

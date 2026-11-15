@@ -3,7 +3,7 @@
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { CLOCKS } from './clocks.js';
-import './painters.js'; // registers officeTimeClock and officeTimeStreet
+import { officeTimeClock, officeTimeStreet } from './painters.js';
 import { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
@@ -20,7 +20,7 @@ const OLIVE = ['#5f6b3a', '#47512a'];
 // stepladder under it is part of the same drawing (painters.js).
 const wallClock = (clock, lean) => ({
   tile: clock === 'boss' ? 'Q' : 'O',
-  draw: 'officeTimeClock',
+  draw: officeTimeClock,
   state: (w, game) => {
     const fast = w[CLOCKS[clock].field] || 0;
     return {
@@ -65,7 +65,7 @@ export const DECOR = {
     wallClock('open', -1),
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
     // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
-    { tile: 'B', draw: 'officeTimeStreet', state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start }) },
+    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start }) },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -86,10 +86,11 @@ export const DECOR = {
 
 export const LOOKS = OFFICE_LOOKS;
 
+// The boss smokes with his hand to his mouth and the smoke drawn (no glyph in his hand: nothing in a hand is an
+// emoji). Going home is the wave and the walk to the elevator.
 export const POSES = {
   arms: [
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
-    { when: (n) => !n.override && n.anim === 'leaving', arms: 'carry', item: '🎒' },
+    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff') },
   ],
   marks: [],
 };

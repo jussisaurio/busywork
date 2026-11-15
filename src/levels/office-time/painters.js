@@ -1,10 +1,9 @@
 // Office Time's own drawings: the big wall clocks with a stepladder under each, the street (pavement, kerb, road,
-// bus stop sign) and the 4:30 bus. The world painters below register into the engine's prop registry
-// (src/render/world.js PROP_PAINTERS) when this module loads; the end scenes (end-scenes.js) reuse the same pieces
-// at a larger scale. All coordinates are logical px.
+// bus stop sign) and the 4:30 bus. The two world painters are the level's own prop painters (presentation.js
+// decor.props names them as draw functions); the end scenes (end-scenes.js) reuse the same pieces at a larger scale.
+// All coordinates are logical px.
 import { T, clamp, easeOutCubic, fillCircle, fillEllipse, rrect, clockHands } from '../../render/util.js';
 import { C } from '../../render/palette.js';
-import { PROP_PAINTERS } from '../../render/world.js';
 
 const FRONT = 14; // the wall front face's height (world.js)
 const frontY = (y) => y * T + T - FRONT;
@@ -195,7 +194,7 @@ export function drawStopSign(ctx, x, by, h) {
 
 // { minute, start, tilt }: the clock on wall tile `at` (radius 10, hung low on the front face) and the stepladder
 // on the floor tile under it, its top just under the clock.
-function officeTimeClock(ctx, info, tile, shown) {
+export function officeTimeClock(ctx, info, tile, shown) {
   const cx = tile.x * T + T / 2;
   drawStepladder(ctx, cx, (tile.y + 1) * T + T - 3, 25);
   drawBigClock(ctx, cx, frontY(tile.y) + 5, 10, shown.minute, shown.start, shown.tilt || 0);
@@ -212,7 +211,7 @@ const BUS_H = 40;
 // { minute, start }: the pavement outside the lobby's glass door, the kerb, the road along the bottom edge from
 // the door to the right side of the map, the bus stop sign on tile `at`, and the bus when it is due. The road is
 // painted over the bottom wall row: nothing walks there.
-function officeTimeStreet(ctx, info, tile, shown) {
+export function officeTimeStreet(ctx, info, tile, shown) {
   const sx = tile.x * T + T / 2 + 4; // the sign's pole
   const by = (tile.y + 1) * T; // the kerb line
   const x0 = (tile.x - 1) * T; // the pavement: the sign's tile and the one to its left, two rows
@@ -251,5 +250,3 @@ function officeTimeStreet(ctx, info, tile, shown) {
   const doors = clamp((m - BUS_DOORS) / 0.5, 0, 1);
   drawBus(ctx, bx, by + T - 2, BUS_LEN, BUS_H, doors);
 }
-
-Object.assign(PROP_PAINTERS, { officeTimeClock, officeTimeStreet });

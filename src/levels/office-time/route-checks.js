@@ -4,6 +4,18 @@ const BUS = 'pretend until 4:30';
 export default [
   { name: 'do nothing → fail', expect: { result: 'fail' }, cmds: ['wait until 4:30'] },
   {
+    // The foreshadowing: while Lin is in the restroom the boss turns to her empty desk and wonders where she is.
+    name: "a normal day: the boss turns to Lin's empty desk while she is in the restroom",
+    expect: { result: 'fail' },
+    play({ run, log }) {
+      run('pretend until 3:28');
+      const f = log.find((e) => e.name === 'boss:frown' && e.payload?.at === 'lin' && !e.payload?.gone);
+      if (!f) throw new Error('the boss never noticed her empty desk');
+      run('sit');
+      run(BUS);
+    },
+  },
+  {
     // The teaching fail: he looks up at his clock (🕐) every quarter hour or so, and it hangs right behind his chair.
     // You are on the stepladder when he turns round.
     name: "push the boss's clock behind his back too close to 3:30 → he looks up at it → caught",
@@ -42,20 +54,21 @@ export default [
     cmds: ['goto open_clock pretend', 'interact', 'goto boss_clock pretend', 'pretend until 3:12', 'interact', 'interact', 'interact', 'goto bus_stop pretend', BUS],
   },
   {
-    name: 'open-plan clock +30 while Kev gets coffee → Lin and Kev go home at 4:10 → the boss follows the herd → win',
+    name: 'open-plan clock +40 while Kev gets coffee → Lin and Kev go home at 4:11 → the boss follows the herd → win',
     expect: { result: 'win', routes: ['herd'] },
-    cmds: ['goto open_clock pretend', 'interact', 'interact', 'interact', 'goto bus_stop pretend', BUS],
+    cmds: ['goto open_clock pretend', 'interact', 'interact', 'interact', 'interact', 'goto bus_stop pretend', BUS],
   },
   {
     name: 'the herd, but you are still at your desk → blamed',
     expect: { result: 'blamed', routes: ['herd'] },
-    cmds: ['goto open_clock pretend', 'interact', 'interact', 'interact', 'sit', BUS],
+    cmds: ['goto open_clock pretend', 'interact', 'interact', 'interact', 'interact', 'sit', BUS],
   },
   {
-    name: 'open-plan clock only +20 → they leave at 4:20, the boss frowns and packs up too late → fail',
+    name: 'open-plan clock only +30 → they leave at 4:21, the boss frowns and packs up too late → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
       run('goto open_clock pretend');
+      run('interact');
       run('interact');
       run('interact');
       run('goto bus_stop pretend');

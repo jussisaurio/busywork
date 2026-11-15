@@ -49,8 +49,8 @@ export default {
 
   npcText(game, n) {
     const bits = [];
-    if (n.anim === 'leaving') bits.push('carrying a backpack 🎒');
-    if (n.anim === 'smoking' && !n.override) bits.push('on a smoke break 🚬');
+    if (n.anim === 'leaving') bits.push('going home');
+    if (n.anim === 'smoking' && !n.override) bits.push('on a smoke break, smoking');
     return bits;
   },
 
@@ -70,7 +70,7 @@ export default {
       case 'clock:pushed': return `you pushed ${CLOCK_NAME[p.clock]} forward: it runs ${p.off} minutes fast 🕐`;
       case 'clock:look': return `${name(p.id)} looks up at ${CLOCK_NAME[p.clock]} 🕐`;
       case 'clock:jump': return `${name(p.id)} believes it: ❗ (now ${p.off} minutes ahead)`;
-      case 'boss:frown': return `the boss frowns at ${name(p.at)}'s empty desk ❓`;
+      case 'boss:frown': return `the boss turns to ${name(p.at)}'s empty desk: where is ${name(p.at)}? ❓${p.gone ? ' (gone home)' : ''}`;
       case 'boss:herd': return 'the boss sees the empty desks ❗ and packs up';
       case 'boss:left': return 'ding: the elevator doors close behind the boss';
       case 'lin:left': return 'ding: the elevator doors close behind Lin';

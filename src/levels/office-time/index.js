@@ -1,8 +1,8 @@
 // "Office Time": your bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
 // Everyone lives by the wall clock in their zone (clocks.js), and you can climb the stepladder under a clock and
 // push it forward. Push the boss's clock and he lives his afternoon early (Lin watches it through the glass). Push the
-// open-plan clock and Lin and Kev go home early; the boss sees two empty desks and follows the herd (Kev's coffee
-// run jumps forward too). You cheat time inside a time loop.
+// open-plan clock and Lin and Kev go home early (they go at 4:51 by it, right after the boss); the boss turns to each
+// empty desk, decides it must be 4:50 and follows the herd. You cheat time inside a time loop.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';

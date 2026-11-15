@@ -2,8 +2,8 @@
 // person BELIEVES it is: his home clock (clocks.js). He looks up at it on each schedule entry and on each of his
 // LOOK_UPS (silent beats: a glance at the clock with nothing else to do).
 //
-// The normal day: the boss is back from lunch at 3:15, smokes 3:40-3:55 and leaves at 4:50. Lin and Kev leave at
-// 4:40. Your bus is at 4:30, and nobody leaves before the boss.
+// The normal day: the boss is back from lunch at 3:15, smokes 3:40-3:55 and leaves at 4:50 sharp. Nobody leaves
+// before him: Lin and Kev wave and go at 4:51 by their clock, right after him. Your bus is at 4:30.
 import { at, deg } from '../../config.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -12,7 +12,7 @@ const s = (time, entry) => ({ at: at(time, START), ...entry });
 export const CAST = [
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss',
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'boss_desk',
@@ -29,7 +29,7 @@ export const CAST = [
   },
   {
     id: 'lin',
-    icon: '👓',
+    icon: '@lin',
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
@@ -39,13 +39,13 @@ export const CAST = [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
       s('3:20', { do: 'away', spot: 'restroom' }),
       s('3:30', { do: 'sit', spot: 'lin_desk', arrive: 'lookUp' }),
-      s('4:38', { do: 'say', icons: ['👋'], kind: 'speech' }),
-      s('4:40', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { linGone: true }, event: 'lin:left' } }),
+      s('4:50', { do: 'say', icons: ['👋'], kind: 'speech' }), // he has gone: home time
+      s('4:51', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { linGone: true }, event: 'lin:left' } }),
     ],
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '@kev',
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'kev_desk',
@@ -57,8 +57,8 @@ export const CAST = [
       s('3:07', { do: 'sit', spot: 'kev_desk', arrive: 'lookUp' }),
       s('3:35', { do: 'visit', spot: 'coffee' }),
       s('3:41', { do: 'sit', spot: 'kev_desk', arrive: 'lookUp' }),
-      s('4:38', { do: 'say', icons: ['👋'], kind: 'speech' }),
-      s('4:40', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { kevGone: true }, event: 'kev:left' } }),
+      s('4:50', { do: 'say', icons: ['👋'], kind: 'speech' }),
+      s('4:51', { do: 'leave', spot: 'elevator', anim: 'leaving', gone: { set: { kevGone: true }, event: 'kev:left' } }),
     ],
   },
 ];

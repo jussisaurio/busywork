@@ -89,6 +89,26 @@ function figure(t, scale, dir, extra) {
   return Object.assign(p, extra);
 }
 
+// A backpack on the back of a person drawn at (x, y) at scale sc, walking right: drawn before the person, so the body
+// covers its front. Going home, drawn (nothing in a hand or on a back is an emoji).
+const PACK = ['#7a4b2a', '#5b361d'];
+function backpack(ctx, x, y, sc, color = PACK) {
+  const w = 6.5 * sc;
+  const h = 10 * sc;
+  const x0 = x - 9.5 * sc;
+  const y0 = y - 9 * sc;
+  ctx.fillStyle = color[1];
+  rrect(ctx, x0, y0, w + 3 * sc, h, 2.2 * sc);
+  ctx.fill();
+  ctx.fillStyle = color[0];
+  rrect(ctx, x0 + 0.6 * sc, y0 + 0.4 * sc, w + 2 * sc, h - 1.6 * sc, 2 * sc);
+  ctx.fill();
+  ctx.fillStyle = color[1]; // the flap and its buckle
+  ctx.fillRect(x0 + 0.6 * sc, y0 + 3.2 * sc, w + 2 * sc, 0.8 * sc);
+  ctx.fillStyle = '#d9c38a';
+  ctx.fillRect(x0 + 1.8 * sc, y0 + 3 * sc, 1.4 * sc, 1.4 * sc);
+}
+
 // Walk-in: x eased from x0 to x1 over dur seconds of the card.
 const walkIn = (e, x0, x1, dur) => x0 + (x1 - x0) * easeOutCubic(e / dur);
 
@@ -111,9 +131,10 @@ function sceneClock(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, 260, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, 260, 104);
   clockAndLadder(ctx, 280, 30, 110, 0.34, 104, 64);
-  const b = figure(t, 2.3, 0, { pose: 'walk', moving: true, phase: t * 7, arms: 'carry', item: '🎒' });
+  const b = figure(t, 2.3, 0, { pose: 'walk', moving: true, phase: t * 7 });
   b.head = 0.9;
   const bx = walkIn(e, 230, 360, 2.4);
+  backpack(ctx, bx, 284, 2.3);
   drawPerson(ctx, game.level.looks.boss, b, bx, 284);
   if (e > 0.6) bubble(ctx, ['👋'], bx + 6, 210, e - 0.6);
   street(ctx, TAB.x + 274, TAB.w - 274, 64, 286);
@@ -138,8 +159,9 @@ function sceneHerd(ctx, game, t, e) {
   }
   const dx = walkIn(e, -40, 0, 2.6);
   const walker = (id, x, head) => {
-    const p = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 7 + x, arms: 'carry', item: '🎒' });
+    const p = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 7 + x });
     p.head = head;
+    backpack(ctx, x + dx, 292, 1.9);
     drawPerson(ctx, game.level.looks[id], p, x + dx, 292);
   };
   walker('boss', 250, -2.4); // looking back at the empty chairs
@@ -293,8 +315,7 @@ function sceneBlamed(ctx, game, t, e) {
   ctx.beginPath();
   ctx.rect(w0, top + h * 0.16, 52, h * 0.34);
   ctx.clip();
-  const b = figure(t, 1.6, Math.PI / 2, { arms: 'cheer', smug: true, item: '🎒' });
-  b.item = null;
+  const b = figure(t, 1.6, Math.PI / 2, { arms: 'cheer', smug: true });
   drawPerson(ctx, game.level.looks.boss, b, w0 + 26, top + h * 0.5 + 16);
   ctx.restore();
   bubble(ctx, ['👋'], w0 + 26, top - 16, e);
@@ -306,11 +327,11 @@ function sceneBlamed(ctx, game, t, e) {
 export const END_SCENES = {
   kindOf: (o) => (o?.result === 'win' ? (o.routes?.includes?.('herd') ? 'herd' : 'clock') : o?.result ?? 'fail'),
   scenes: {
-    clock: { win: true, icons: ['🕐', '🎒', '🚌'], draw: sceneClock },
-    herd: { win: true, icons: ['🕐', '🎒', '🎒', '🎒', '🚌'], draw: sceneHerd },
-    fail: { win: false, icons: ['🕐', '🚌', '💨'], draw: sceneFail },
-    caught: { win: false, icons: ['🕐', '👉', '😠'], draw: sceneCaught },
-    blamed: { win: false, icons: ['👋', '🚌', '💨'], draw: sceneBlamed },
+    clock: { win: true, icons: ['🕐', '@boss', '👋', '🚌', '@player'], draw: sceneClock },
+    herd: { win: true, icons: ['@lin', '@kev', '👋', '@boss', '❓', '❗', '🚌'], draw: sceneHerd },
+    fail: { win: false, icons: ['@boss', '🕐', '@player', '😩', '🚌', '💨'], draw: sceneFail },
+    caught: { win: false, icons: ['@boss', '👉', '@player', '🕐', '😠'], draw: sceneCaught },
+    blamed: { win: false, icons: ['@boss', '👋', '🚌', '💨', '@player', '😳'], draw: sceneBlamed },
   },
 };
 
