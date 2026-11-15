@@ -1058,7 +1058,7 @@ export function drawWorldDynamic(ctx, game, t) {
   const minute = game.clock ? game.clock.minute : 0;
 
   const decor = decorOf(game.level);
-  drawWallClock(ctx, map, minute, decor.clock);
+  drawWallClock(ctx, map, minute, decor.clock, game.level.day.start);
 
   // Furniture with moving parts (decor.props), in order, each showing what its state(world, game) says.
   const props = decor.props || NONE;
@@ -1157,7 +1157,7 @@ export function sparkle(ctx, x, y, r, color) {
   ctx.fill();
 }
 
-function drawWallClock(ctx, map, minute, clock) {
+function drawWallClock(ctx, map, minute, clock, start) {
   // Analog wall clock showing the game time.
   if (!clock) return;
   const { x, y } = clock;
@@ -1166,7 +1166,7 @@ function drawWallClock(ctx, map, minute, clock) {
   const cy = frontY(y) + FRONT / 2 - 1;
   fillCircle(ctx, cx, cy, 6.5, '#1f1814');
   fillCircle(ctx, cx, cy, 5.3, C.cream);
-  clockHands(ctx, cx, cy, minute, 3, 1.4, 4.6, 0.9, C.tomatoDark);
+  clockHands(ctx, cx, cy, minute, 3, 1.4, 4.6, 0.9, C.tomatoDark, start);
 }
 
 function drawBeam(ctx, info, p, t) {

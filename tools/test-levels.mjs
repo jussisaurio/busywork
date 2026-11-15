@@ -30,6 +30,7 @@ const CASES = [
   ['no title', without(M, 'title'), 'meeting', /title: missing/],
   ['no initialWorld', without(M, 'initialWorld'), 'meeting', /initialWorld: not a function/],
   ['map: a letter not in the legend', { ...M, map: { ...M.map, rows: [M.map.rows[0].replace('#', 'Z'), ...M.map.rows.slice(1)] } }, 'meeting', /map: map row 0: unknown tile 'Z'/],
+  ['day start not a minute-of-day', { ...M, day: { ...M.day, start: 2230 } }, 'meeting', /day\.start: 2230 is not a minute-of-day/],
   ['spot off the map', { ...M, spots: { ...M.spots, far: { x: 99, y: 2 } } }, 'meeting', /spots\.far: \(99, 2\) is off the map/],
   ['spot on a wall', { ...M, spots: { ...M.spots, inwall: { x: 0, y: 0 } } }, 'meeting', /spots\.inwall: \(0, 0\) is a solid tile/],
   ['cast meetingSpot', { ...M, cast: castWith(M, 1, { meetingSpot: 'meeting_kevv' }) }, 'meeting', /cast\[1\] \(kev\)\.meetingSpot: no spot 'meeting_kevv'/],

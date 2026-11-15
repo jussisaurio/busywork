@@ -150,9 +150,10 @@ export function drawPaper(ctx, w, h, lines) {
   for (let i = 0; i < lines; i++) ctx.fillRect(-w / 2 + 1, -h / 2 + 2 + i * 2, i === 2 ? w - 3.5 : w - 2, 0.7);
 }
 
-// Analog clock hands at (cx, cy) for a game minute: hour hand in ink, minute hand in mColor.
-export function clockHands(ctx, cx, cy, minute, hLen, hW, mLen, mW, mColor) {
-  const total = DAY_START + fin(minute);
+// Analog clock hands at (cx, cy) for a game minute of a day starting at `start` (level.day.start): hour hand in
+// ink, minute hand in mColor.
+export function clockHands(ctx, cx, cy, minute, hLen, hW, mLen, mW, mColor, start = DAY_START) {
+  const total = start + fin(minute);
   const mA = ((total % 60) / 60) * Math.PI * 2 - Math.PI / 2;
   const hA = (((total / 60) % 12) / 12) * Math.PI * 2 - Math.PI / 2;
   ctx.lineCap = 'round';

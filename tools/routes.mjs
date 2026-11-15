@@ -21,7 +21,7 @@ function makeCtx(h) {
   const transcript = [];
   const run = (cmd) => {
     const r = h.run(cmd);
-    transcript.push(`[${formatClock(g.clock.minute)}] > ${cmd} :: ${r.text.replace(/\n/g, ' / ')}`);
+    transcript.push(`[${formatClock(g.clock.minute, g.level.day.start)}] > ${cmd} :: ${r.text.replace(/\n/g, ' / ')}`);
     for (const l of describeEvents(r.events, { level: g.level })) transcript.push(l);
     if (!r.ok) throw new Error(r.text);
     return r;
@@ -71,7 +71,7 @@ for (const level of LEVELS) {
     const okRoutes = !sc.expect.routes || (o && sc.expect.routes.every((r) => o.routes.includes(r)));
     const pass = !err && okResult && okRoutes;
     if (!pass) failed++;
-    console.log(`${pass ? 'PASS' : 'FAIL'}  ${level.id}: ${sc.name}  → ${o ? `${o.result} [${o.routes.join(',')}] @ ${formatClock(o.minute)}` : 'no outcome'}${err ? `  (error: ${err.message})` : ''}`);
+    console.log(`${pass ? 'PASS' : 'FAIL'}  ${level.id}: ${sc.name}  → ${o ? `${o.result} [${o.routes.join(',')}] @ ${formatClock(o.minute, level.day.start)}` : 'no outcome'}${err ? `  (error: ${err.message})` : ''}`);
     if (verbose || !pass) console.log(ctx.transcript.map((l) => '      ' + l).join('\n'));
   }
 }

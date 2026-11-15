@@ -5,7 +5,7 @@ import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
 import { findPath } from '../src/sim/nav.js';
 import { updateFx } from '../src/core/fx.js';
 import { advanceClock } from '../src/game/loop.js';
-import { FIXED_DT, DAY_START, at, formatClock } from '../src/config.js';
+import { FIXED_DT, DAY_START, at, formatClock, clockArg } from '../src/config.js';
 import { inZone } from '../src/game/perception.js';
 import { levels } from '../src/levels/index.js';
 
@@ -121,8 +121,14 @@ const common = (R, tag) => {
   ok(bad.length === 0, `nav: all spots mutually reachable${bad.length ? ' — ' + bad.slice(0, 4).join(', ') : ''}`);
   const badRoute = Object.entries(ROUTES).flatMap(([r, pts]) => pts.filter(([x, y]) => !g.map.isWalkable(x, y)).map((q) => `${r}:${q}`));
   ok(badRoute.length === 0, 'nav: route points are floor');
-  // at() and formatClock() still count from config.js DAY_START: the level's day must agree.
-  ok(LEVEL.day.start === DAY_START, 'level day.start matches config DAY_START');
+  // Level 1 writes its times as at('3:10'), which counts from the default start (DAY_START): its day must agree.
+  ok(LEVEL.day.start === DAY_START, 'level day.start matches the default start its at() times count from');
+  // Clocks read the level's start: an afternoon day (2:30 PM) and a morning one (9:00 AM).
+  ok(at('2:30') === 0 && at('4:00') === 90 && formatClock(90) === '4:00 PM' && clockArg(90) === '4:00', 'clock: 2:30 PM day (the default)');
+  const AM = 9 * 60;
+  ok(at('9:30', AM) === 30 && at('12:15', AM) === 195 && at('13:05', AM) === 245, "clock: 9:00 AM day reads '9:30' as AM, '12:15' as noon, '13:05' as 24-hour");
+  ok(formatClock(0, AM) === '9:00 AM' && formatClock(245, AM) === '1:05 PM', 'clock: 9:00 AM day formats');
+  ok([0, 30, 179, 180, 245, 600].every((m) => at(clockArg(m, AM), AM) === m) && [0, 89, 90].every((m) => at(clockArg(m)) === m), 'clock: clockArg reads back through at() in both days');
   const routeIds = LEVEL.routes.map((r) => r.id);
   ok(LEVEL.outcomeOrder.length === routeIds.length && LEVEL.outcomeOrder.every((id) => routeIds.includes(id)), 'level outcomeOrder lists each route once');
 }

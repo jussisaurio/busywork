@@ -62,6 +62,7 @@ export function createHarness({ level = defaultLevel } = {}) {
   const input = createScriptedInput();
   const game = createGame({ input, level: typeof level === 'string' ? getLevel(level) : level });
   const H = game.level.harness ?? {};
+  const clock = (minute) => formatClock(minute, game.level.day.start); // "2:30 PM": the level's day, not level 1's
   const LANDMARKS = H.landmarks ?? {};
   const hardStop = new Set([...HARD_STOP, ...(H.stops?.hard ?? [])]);
   const softStop = new Set([...SOFT_STOP, ...(H.stops?.soft ?? [])]);
@@ -107,13 +108,13 @@ export function createHarness({ level = defaultLevel } = {}) {
     runUntil(() => !(game.clock.forced > 0 || game.player.locked), { soft: false });
     if (game.phase !== 'day') return null; // the meeting/caught beat ran to the end of the day
     return working
-      ? `(you were stuck at your desk doing assigned work from ${formatClock(from)} to ${formatClock(game.clock.minute)})`
-      : `(you couldn't move from ${formatClock(from)} to ${formatClock(game.clock.minute)})`;
+      ? `(you were stuck at your desk doing assigned work from ${clock(from)} to ${clock(game.clock.minute)})`
+      : `(you couldn't move from ${clock(from)} to ${clock(game.clock.minute)})`;
   }
 
   function parseDuration(tokens) {
     if (tokens[0] === 'until') {
-      const target = at(tokens[1] ?? '');
+      const target = at(tokens[1] ?? '', game.level.day.start);
       if (!Number.isFinite(target)) throw new Error(`bad time '${tokens[1]}' (use e.g. until 3:10)`);
       return { done: () => game.clock.minute >= target, label: `until ${tokens[1]}` };
     }
@@ -244,11 +245,11 @@ export function createHarness({ level = defaultLevel } = {}) {
       if (game.phase === 'day' && !game.outcome) return { text: 'the day is still going (use restart to give up)' };
       while (game.phase === 'day') frame(); // let the end-of-day beat finish
       startLoop(game);
-      return { text: `--- LOOP ${game.persist.loop} begins: 2:30 PM, at your desk ---` };
+      return { text: `--- LOOP ${game.persist.loop} begins: ${clock(0)}, at your desk ---` };
     }
     if (cmd === 'restart') {
       startLoop(game);
-      return { text: `--- gave up. LOOP ${game.persist.loop} begins: 2:30 PM, at your desk ---` };
+      return { text: `--- gave up. LOOP ${game.persist.loop} begins: ${clock(0)}, at your desk ---` };
     }
     if (game.phase !== 'day') return { text: 'the day is over: use continue' };
 
@@ -393,8 +394,8 @@ export function observe(game, { map = true, debug = false } = {}) {
   const H = game.level.harness ?? {};
   // Same as the HUD: one slot per route, blank until found.
   const routes = game.level.routes.map(({ id, icon }) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
-  const meetingAt = game.level.day.meetingAt;
-  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute)} (meeting at ${formatClock(meetingAt)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
+  const { meetingAt, start } = game.level.day;
+  out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute, start)} (meeting at ${formatClock(meetingAt, start)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
 
   if (game.phase === 'end' && game.outcome) {
     const o = game.outcome;
@@ -486,7 +487,7 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
   let lastText = null;
   let repeats = 0;
   for (const e of events) {
-    const t = formatClock(e.minute);
+    const t = formatClock(e.minute, level.day.start);
     const p = e.payload ?? {};
     let s = H.describe?.(e, memo);
     if (s === undefined) switch (e.name) {

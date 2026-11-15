@@ -314,7 +314,7 @@ export function drawEnd(ctx, game, t, mem) {
   loopIcon(ctx, 226, by, 9, C.ink, 3);
   text(ctx, String(Math.max(0, fin(o.loop) | 0)), 242, by + 1, font(24, MONO_FAMILY, 'bold'), C.ink, 'left');
   emoji(ctx, '🕓', 404, by, 22);
-  text(ctx, clockDigits(fin(o.minute)), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
+  text(ctx, clockDigits(fin(o.minute), game.level.day.start), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
   if (e > 0.6) playKey(ctx, 700, by, 110, 38, t);
   ctx.restore();
 }

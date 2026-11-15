@@ -20,7 +20,8 @@
 //               a prelude's with a spot; meetingSpot a spot; meetingArrive a behaviour; voice (optional) a name
 //               in the engine's voices or level.voices
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
-//   day         start, gatherAt, meetingAt numbers, gatherAt <= meetingAt; the cosmetic times numbers if present
+//   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
+//               the cosmetic times numbers if present
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
@@ -197,6 +198,7 @@ export function levelProblems(level, key) {
   if (!isObj(day)) bad('day', 'missing');
   else {
     for (const f of ['start', 'gatherAt', 'meetingAt']) if (!isNum(day[f])) bad(`day.${f}`, 'not a number');
+    if (isNum(day.start) && !(day.start >= 0 && day.start < 24 * 60)) bad('day.start', `${day.start} is not a minute-of-day (0..1439; 2:30 PM is 870)`);
     for (const f of DAY_EXTRA) if (day[f] !== undefined && !isNum(day[f])) bad(`day.${f}`, 'not a number');
     if (isNum(day.gatherAt) && isNum(day.meetingAt) && day.gatherAt > day.meetingAt) bad('day.gatherAt', 'after day.meetingAt');
   }

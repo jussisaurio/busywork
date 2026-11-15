@@ -61,7 +61,8 @@ export default {
   patrols: ROUTES,
   cast: NPC_DEFS,
   day: {
-    start: 14 * 60 + 30, // 2:30 PM as minute-of-day (at() and formatClock() still use config.js DAY_START)
+    start: 14 * 60 + 30, // 2:30 PM as minute-of-day. The clock reads it; the at('3:10') times here count from
+    // at()'s default start, config.js DAY_START, the same 2:30 PM (another start passes it: at('9:30', START))
     gatherAt: at('3:54'), // everyone still on the floor heads to their meeting seat (sim)
     meetingAt: at('4:00'), // the meeting: the day's outcome (scenario)
     // Cosmetic cues: separate times, not rules (none of them follows from gatherAt or meetingAt).
