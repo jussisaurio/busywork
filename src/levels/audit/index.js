@@ -8,6 +8,7 @@
 import { at } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
+import { SPOTS, LAPTOPS } from './spots.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
@@ -22,7 +23,7 @@ const MAP = [
   '#..TTT..G..TTTTTT..#....TTT..#', // 3   the boss's desk (x3-5): he sits south of it, facing his window
   '#.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
-  '#GGGGGDGG#####D#######DD######', // 6   glass: Lin, at her desk, looks straight into the boss's office
+  '#GGGGGDGG##C##D#######DD######', // 6   glass: Lin, at her desk, looks straight into the boss's office; C the hallway coffee machine
   '#............................#', // 7   the hallway the auditor walks
   '#..TTT......TPT......TTT.....#', // 8   Lin's desk (x3-5), yours (x12-14), Kev's (x21-23)
   '#............................#', // 9
@@ -43,33 +44,6 @@ const LEGEND = {
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
   R: { kind: 'restroom', solid: true, opaque: true },
   E: { kind: 'elevator', solid: true, opaque: true },
-};
-
-const LAPTOPS = ['laptop_boss', 'laptop_lin', 'laptop_kev'];
-
-// Desks take any laptop. A desk's spot is where its owner sits; the laptop lies on the desk tile it faces.
-const SPOTS = {
-  player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
-  your_desk: { x: 14, y: 9, face: 'N', accepts: LAPTOPS }, // beside your seat: the east end of your desk
-  boss_desk: { x: 4, y: 4, face: 'N', accepts: LAPTOPS }, // he sits with his back to the glass
-  lin_desk: { x: 4, y: 9, face: 'N', accepts: LAPTOPS },
-  kev_desk: { x: 22, y: 9, face: 'N', accepts: LAPTOPS },
-
-  // Where the auditor stands to tick each desk off, facing it.
-  audit_boss: { x: 4, y: 2, face: 'S' },
-  audit_lin: { x: 4, y: 7, face: 'S' },
-  audit_you: { x: 13, y: 7, face: 'S' },
-  audit_kev: { x: 22, y: 7, face: 'S' },
-
-  // Places to stand.
-  office_door: { x: 6, y: 7, face: 'N' }, // outside the boss's door
-  hallway_west: { x: 5, y: 7, face: 'S' }, // beside where he stands to tick Lin's desk
-  hallway_mid: { x: 15, y: 8, face: 'W' }, // the east end of your desk, from the hallway side
-  door_in: { x: 4, y: 12, face: 'S' },
-  restroom: { x: 25, y: 12, face: 'S' },
-  smoke: { x: 7, y: 15, face: 'N' }, // the lobby: the boss smokes facing the glass
-  elevator: { x: 2, y: 15, face: 'S' },
-  kitchen: { x: 25, y: 2, face: 'N' },
 };
 
 const ZONES = {
@@ -93,9 +67,7 @@ const laptop = (owner, spot) => ({
   icon: '💻',
   place: `laptop_${owner}`,
   contraband: 'auditor', // company property on audit day: seen carrying one, you're caught
-  ...(owner === 'kev' ? {} : {
-    owner: { id: owner, says: [{ say: ['😠', '💻'] }], reclaim: backTo(`laptop_${owner}`, spot) },
-  }),
+  owner: { id: owner, says: [{ say: ['😠', '💻'] }], reclaim: backTo(`laptop_${owner}`, spot) },
 });
 
 // Four desks passed, so one laptop was counted on two of them.
@@ -104,7 +76,7 @@ const twice = (w, type) => w.audited && [w.atBoss, w.atLin, w.atYou, w.atKev].fi
 const ITEMS = {
   laptop_boss: laptop('boss', 'boss_desk'),
   laptop_lin: laptop('lin', 'lin_desk'),
-  laptop_kev: laptop('kev', 'kev_desk'), // Kev went home: nobody minds it
+  laptop_kev: laptop('kev', 'kev_desk'),
 };
 
 // Unplugging a laptop from a desk is sneaky: anyone who sees you at it minds (the auditor catches you). Replaces
@@ -130,14 +102,14 @@ const ROLES = {
 
 const INSPECTIONS = [{
   npc: 'auditor',
-  at: at('3:20', START), // out of the lift
+  at: at('3:30', START), // as the card says (he's out of the lift at 3:25, at the coffee machine)
   override: 'audit',
   plan: 'audit',
   label: 'laptop audit',
   sign: 'item',
   checks: [
     { item: LAPTOPS, spot: 'boss_desk', from: 'audit_boss', look: 2, record: 'atBoss' },
-    { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: 2, record: 'atLin' },
+    { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: 3.5, record: 'atLin' }, // her desk takes him longer
     { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: 2, record: 'atYou' },
     { item: LAPTOPS, spot: 'kev_desk', from: 'audit_kev', look: 2, record: 'atKev' },
   ],
@@ -154,12 +126,12 @@ export default {
   cast: CAST,
   day: {
     start: START,
-    gatherAt: at('3:39', START), // he signs off at your desk
-    meetingAt: at('3:40', START),
-    clockRedAt: at('3:27', START),
-    clockTickAt: at('3:27', START),
-    tockAt: at('3:37', START),
-    halfMinuteAt: at('3:39', START),
+    gatherAt: at('3:44', START), // he signs off at your desk
+    meetingAt: at('3:46.5', START), // he's back at your desk to sign off
+    clockRedAt: at('3:30', START),
+    clockTickAt: at('3:30', START),
+    tockAt: at('3:42', START),
+    halfMinuteAt: at('3:44', START),
   },
   interactions: INTERACTIONS,
   items: ITEMS,
@@ -186,7 +158,6 @@ export default {
     atLin: null,
     atYou: null,
     atKev: null,
-    kevGone: false,
     items: [itemOn(SPOTS, 'boss_desk', 'laptop_boss'), itemOn(SPOTS, 'lin_desk', 'laptop_lin'), itemOn(SPOTS, 'kev_desk', 'laptop_kev')],
   }),
   harness,

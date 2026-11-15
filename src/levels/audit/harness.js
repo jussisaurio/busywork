@@ -79,7 +79,9 @@ export default {
       case 'auditor:suspicious': return 'the auditor eyes you ❓ (a meter over his head starts filling)';
       case 'auditor:workAssigned': return `the auditor sends you to your desk 📄 (${p.reason})`;
       case 'laptop:reclaimed': return `${name(p.by)} took ${WHOSE[p.type]} laptop back 😠💻`;
-      case 'kev:left': return 'ding: the elevator doors close behind Kev';
+      case 'kev:fetched': return 'Kev picks his laptop up off your desk';
+      case 'kev:plugged': return 'Kev plugs his laptop back in at his own desk';
+      case 'lin:missing': return 'Lin looks at her empty desk';
       case 'meeting:gather': return 'the auditor heads to your desk to sign off';
       default: return undefined;
     }

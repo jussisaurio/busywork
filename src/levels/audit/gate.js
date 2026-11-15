@@ -4,7 +4,7 @@ export default {
   mustUse: [{ id: 'put', event: 'item:put' }, { id: 'recount', event: 'inspect:moved' }],
   targets: ['boss_desk', 'lin_desk', 'kev_desk', 'your_desk', 'hallway_west', 'hallway_mid', 'office_door', 'my_seat', 'entrance', 'kitchen'],
   interactable: ['boss_desk', 'lin_desk', 'kev_desk', 'your_desk', 'hallway_west', 'hallway_mid'],
-  renderEvents: ['inspect:start', 'inspect:pass', 'inspect:fail', 'inspect:done', 'laptop:reclaimed', 'kev:left', 'auditor:workAssigned'],
+  renderEvents: ['inspect:start', 'inspect:pass', 'inspect:fail', 'inspect:done', 'laptop:reclaimed', 'kev:fetched', 'kev:plugged', 'lin:missing', 'auditor:workAssigned'],
   milestones: {
     'item:pickup': (p) => `took:${p.type.slice(7)}`,
     'laptop:reclaimed': () => 'reclaimed',

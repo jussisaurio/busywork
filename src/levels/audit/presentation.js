@@ -67,6 +67,7 @@ export const LOOKS = {
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'audit' && !n.moving, arms: 'carry', item: '🧾' }, // clipboard up
+    { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '☕' }, // the auditor, before 3:30
     { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
   ],
   marks: [
@@ -119,7 +120,7 @@ export const SOUNDS = {
     'inspect:fail': { sfx: 'doom', who: 'auditor' },
     'audit:passed': { sfx: 'relief' },
     'laptop:reclaimed': { sfx: 'swish' },
-    'kev:left': { sfx: 'elevator' },
+    'kev:fetched': { sfx: 'swish' },
   },
   signs: {},
   contraband: {},
