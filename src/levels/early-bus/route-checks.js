@@ -92,8 +92,7 @@ export default [
     play(ctx) {
       const { run, log } = ctx;
       run('goto boss_clock pretend');
-      run('interact');
-      run('interact');
+      until(ctx, 'interact', (g) => g.world.bossClock > 0); // her shout stops the first try or two
       sit(ctx);
       finish(ctx);
       need(log, 'witness:tattle', 'Lin never tattled', (p) => p.by === 'lin');

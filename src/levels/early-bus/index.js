@@ -28,7 +28,7 @@ const MAP = [
   '#......HG.........H#H........#', // 5
   '#GGGGGDGG#O###D#######DD######', // 6
   '#............................#', // 7
-  '#..TTT...TTTTPT..............#', // 8
+  '#....TTT.TTTTPT..............#', // 8
   '#............................#', // 9
   '#............................#', // 10
   '#..TTT......TTT......TTT.....#', // 11
@@ -56,7 +56,7 @@ const LEGEND = {
 const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
   boss_desk: { x: 4, y: 2, face: 'S' }, // his back to his clock: glancing aside, he never sees the stepladder behind him
-  lin_desk: { x: 4, y: 9, face: 'N' }, // facing the glass, and the boss's clock beyond it
+  lin_desk: { x: 6, y: 9, face: 'N' }, // facing the glass, the boss's clock beyond it; the open-plan clock near her
   kev_desk: { x: 10, y: 9, face: 'N' }, // right under the open-plan clock, facing it
   boss_clock_chair: { x: 4, y: 1, face: 'N' }, // the stepladder under Q, right behind his seat
   open_clock_chair: { x: 10, y: 7, face: 'N' }, // ... and O, on the boss's way back from the kitchen
@@ -95,7 +95,7 @@ const HUNTS = [
   {
     npc: 'boss', override: 'hunting', plan: 'hunt', label: 'looking for you', route: 'boss_hunt',
     look: { angle: 0.9, time: 0.7 },
-    start: { event: 'boss:hunt', says: [{ say: ['@player', '❓'], kind: 'thought', ttl: 1.4 }], wait: 0.8 },
+    start: { event: 'boss:hunt', says: [], wait: 0.8 }, // his @player ❓ is clocks.js deskCheck's, clear of his clock
     found: huntOver,
     end: { says: [] },
   },
@@ -108,7 +108,7 @@ export default {
   zones: ZONES,
   patrols: {
     // The boss looking for you: his office, the open plan past your desk, the lobby, the bus stop.
-    boss_hunt: [[6, 4], [6, 8], [13, 10], [4, 12], [6, 15], [11, 14]],
+    boss_hunt: [[6, 4], [6, 7], [13, 10], [4, 12], [6, 15], [11, 14]],
   },
   cast: CAST,
   day: {

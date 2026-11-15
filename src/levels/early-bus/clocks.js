@@ -156,6 +156,16 @@ function reads(game, npc) {
   return c === 'boss' ? npc.id === 'boss' : c === 'open' && npc.id !== 'boss';
 }
 
+// A bubble by a clock (its face and ❗, a frown or a shrug; the boss's ❓ at his desk): beside his head on the side
+// away from the clock when he stands under it, so it never hides the clock.
+const SIDE = { boss: 1, open: -1 };
+function clockSay(game, npc, clock, icons, kind, ttl) {
+  const c = game.level.spots[CLOCKS[clock].spot];
+  const under = Math.abs(npc.x - 0.5 - c.x) < 2 && npc.y - 0.5 - c.y < 3.5;
+  const owner = under ? { x: npc.x + SIDE[clock] * (0.7 + 0.5 * icons.length), y: npc.y + 0.8 } : npc.id;
+  say(game, owner, icons, { kind, voice: npc.voice, ttl });
+}
+
 // He turns to his zone's clock for a second and thinks its time; he adopts it.
 function lookUp(game, npc, sim) {
   const st = npc._clk;
@@ -170,10 +180,10 @@ function lookUp(game, npc, sim) {
     const ahead = off > st.off;
     st.off = off;
     st.beat = beatAt(npc, believed(game, npc, st)); // (no second look for the jump itself)
-    sim.speak(game, npc, [{ say: [face, '❗'], kind: 'alert', ttl: LOOK_S + 0.3 }]);
+    clockSay(game, npc, clock, [face, '❗'], 'alert', LOOK_S + 0.3);
     game.events.emit('clock:jump', { id: npc.id, clock: c.id, off, ahead });
   } else {
-    say(game, npc.id, [face], { kind: 'thought', voice: npc.voice, ttl: LOOK_S });
+    clockSay(game, npc, clock, [face], 'thought', LOOK_S);
   }
   // The boss: his clock, then your desk.
   if (npc.id === 'boss' && clock === 'boss') st.timers.push({ t: LOOK_S, fn: () => deskGlance(game, npc, sim) });
@@ -198,6 +208,7 @@ function deskCheck(game, npc, sim) {
   if (npc.override || !npc.active || leaving(npc) || playerAtDesk(game)) return;
   if (game.phase !== 'day' || game.caught || game.outcome) return;
   sim.startHunt(game, npc);
+  clockSay(game, npc, 'boss', ['@player', '❓'], 'thought', 1.4); // where are you? (index.js HUNTS start)
 }
 
 // The hunt is over: you are at your desk (or sent back to it), he sees you working inside, or it is his home time.
@@ -217,7 +228,7 @@ function frown(game, npc, sim, st) {
     if (st.saw[id]) continue;
     st.saw[id] = true;
     sim.lookAt(game, npc, `${id}_desk`, FROWN_S);
-    say(game, npc.id, [`@${id}`, '❓'], { kind: 'thought', voice: npc.voice, ttl: FROWN_S + 0.2 });
+    clockSay(game, npc, 'boss', [`@${id}`, '❓'], 'thought', FROWN_S + 0.2);
     game.events.emit('boss:frown', { at: id, gone: !!game.world[`${id}Gone`] });
   }
 }
@@ -238,7 +249,7 @@ function fixRow(clock) {
       if (!w.bossClock && !w.openClock) w.fix = false;
       npc._reachUntil = game.loopTime + REACH_S;
       sim.holdFor(npc, REACH_S);
-      sim.speak(game, npc, [{ say: [faceFor(game.clock.minute), '😠'], kind: 'speech', ttl: REACH_S + 0.3 }]);
+      clockSay(game, npc, clock, [faceFor(game.clock.minute), '😠'], 'speech', REACH_S + 0.3);
       game.events.emit('clock:reset', { clock });
     },
   };
@@ -282,11 +293,11 @@ export const CLOCK_BEHAVIOURS = {
         st.beat = beatAt(npc, game.clock.minute + st.off);
         game.world.herd = true;
         game.world.herdShown = time; // the end card's clock
-        sim.speak(game, npc, [{ say: [face, '❗'], kind: 'alert', ttl: LOOK_S + 0.4 }]);
+        clockSay(game, npc, 'open', [face, '❗'], 'alert', LOOK_S + 0.4);
         game.events.emit('boss:herd', { shown: time });
       } else {
         npc._shrugUntil = game.loopTime + LOOK_S + 0.4;
-        sim.speak(game, npc, [{ say: [face, '🤷'], kind: 'thought', ttl: LOOK_S + 0.4 }]);
+        clockSay(game, npc, 'open', [face, '🤷'], 'thought', LOOK_S + 0.4);
         game.events.emit('boss:shrug', { shown: time });
       }
     },
