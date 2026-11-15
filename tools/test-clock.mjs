@@ -1,5 +1,5 @@
 // Headless tests for the per-NPC clock seam (src/sim/npcs.js, level.clockFor): the minute each NPC's schedule
-// reads. Drives the sim alone (updateNpcs + advanceClock) on the fixture's cast, and level 1's for the identity check.
+// reads; and the hook API's lookAt, which a clock-reading level uses to look up. Drives the sim alone (updateNpcs + advanceClock) on the fixture's cast, and level 1's for the identity check.
 //
 //   node tools/test-clock.mjs
 import { FIXED_DT, at } from '../src/config.js';
@@ -79,6 +79,36 @@ ok(near(firstSay(f.log, 'doreen', '🎂'), at('2:45')), `Gus +5: Doreen's 2:45 b
   ok(same, `level 1 with clockFor = game clock: the same ${a.length} events, at the same minutes`);
   const pos = (g) => g.npcs.map((n) => `${n.id}@${n.x},${n.y},${n.dir}`).join(' ');
   ok(pos(ra.game) === pos(rb.game), 'and every NPC ends the day at the same position and facing');
+}
+
+// 6. The hook API's lookAt (a clock-reading level's look up): mid-glance, Doreen looks at the door for 1 s. The
+// glance ends, no new one starts, she turns to the door and stands still, then turns back to her desk.
+{
+  let api = null;
+  const spy = { ...fx, clockFor: (game, npc, sim) => { api = sim; return game.clock.minute; } };
+  const game = createGame({ level: spy });
+  game.npcs = createNpcs(game);
+  game.phase = 'day';
+  const d = game.npcs.find((n) => n.id === 'doreen');
+  const step = () => { updateNpcs(game, FIXED_DT); advanceClock(game, FIXED_DT); };
+  for (let i = 0; i < 60 * 30 && Math.abs(d.glance.offset) < 0.5; i++) step();
+  const midGlance = Math.abs(d.glance.offset) >= 0.5;
+  const back = d._faceTarget;
+  const [x, y] = [d.x, d.y];
+  const door = fx.spots.door;
+  const want = Math.atan2(door.y + 0.5 - d.y, door.x + 0.5 - d.x);
+  api.lookAt(game, d, 'door', 1.0);
+  let headStill = true;
+  let faced = false;
+  for (let i = 0; i < 60; i++) {
+    step();
+    if (i >= 18 && d.glance.offset !== 0) headStill = false; // 0.3 s to bring the head back, then no glance
+    if (Math.abs(d.dir - want) < 1e-6) faced = true;
+  }
+  ok(midGlance && headStill, `lookAt: a running glance ends and none starts for the look (${midGlance ? 'was mid-glance' : 'never glanced'})`);
+  ok(faced && d.x === x && d.y === y, 'lookAt: she turns to the spot and stands still');
+  for (let i = 0; i < 30; i++) step();
+  ok(Math.abs(d.dir - back) < 1e-6 && d._stare === null, 'lookAt: after it she turns back to her old facing');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');
