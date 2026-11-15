@@ -3,9 +3,11 @@
 //             and in Lin's arms (looks.js poses '#sandwich')
 //   popper    the keycard win's party popper (end-scenes.js)
 //   cricket   the failed meeting's lone cricket (end-scenes.js)
+//   emptyBag  a decor prop (decor.js; render/world.js PROP_PAINTERS signature): the empty coffee bag on the counter
+//             east of the machine, rolled open and flat. Why the pot's cup is the last one today
 // Each is a things.js painter (ctx, x, y, size, t): centred on (x, y), about `size` px tall, in the 16 px box.
 import { box } from '../../render/things.js';
-import { fillEllipse, fillCircle, rrect, fin } from '../../render/util.js';
+import { fillEllipse, fillCircle, rrect, fin, T } from '../../render/util.js';
 
 // A sandwich from the side: two slices of bread, ham, a frill of lettuce and a smear of mustard.
 export function sandwich(ctx, x, y, size) {
@@ -131,4 +133,44 @@ export function cricket(ctx, x, y, size) {
   ctx.fill();
   fillCircle(ctx, -4.6, -0.4, 1.9, '#6b6a2a'); // head
   fillCircle(ctx, -5.4, -0.9, 0.6, '#1f1a12'); // eye
+}
+
+// The coffee bag, empty: a kraft bag tipped on its side, its top torn open, flat as paper, two lone beans by it.
+export function emptyBag(ctx, info, at) {
+  const x = (at.x + 1) * T + T / 2 - 1;
+  const y = at.y * T + T / 2 + 3;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-0.25);
+  fillEllipse(ctx, 0.8, 4.2, 7.6, 1.6, 'rgba(25,15,8,0.25)');
+  ctx.fillStyle = '#b98a55'; // kraft paper, flat
+  ctx.beginPath();
+  ctx.moveTo(-7, -2.6);
+  ctx.lineTo(4, -3.2);
+  ctx.lineTo(7.4, -1.6); // the torn mouth, jagged
+  ctx.lineTo(6.2, -0.4);
+  ctx.lineTo(7.6, 0.8);
+  ctx.lineTo(6.4, 2);
+  ctx.lineTo(7.2, 3.2);
+  ctx.lineTo(4, 3.4);
+  ctx.lineTo(-7, 3);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#8a6237'; // the crease down its middle, and the folded bottom
+  ctx.fillRect(-7, -0.1, 11, 0.8);
+  ctx.fillRect(-7, -2.6, 1.6, 5.6);
+  ctx.fillStyle = '#3b2412'; // the open mouth: dark, nothing in it
+  ctx.beginPath();
+  ctx.moveTo(5.2, -2.2);
+  ctx.lineTo(6.6, -0.6);
+  ctx.lineTo(5.6, 2.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#f3e6c8'; // the label
+  rrect(ctx, -4, -1.9, 5, 3.6, 0.8);
+  ctx.fill();
+  fillCircle(ctx, -1.5, -0.1, 1.1, '#5a3a1e'); // a bean on the label
+  ctx.restore();
+  fillEllipse(ctx, x + 9.5, y + 2.5, 1.2, 0.8, '#4a2c16'); // two stray beans: all that's left
+  fillEllipse(ctx, x + 8, y + 4.6, 1.1, 0.75, '#4a2c16');
 }

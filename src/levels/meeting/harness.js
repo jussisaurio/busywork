@@ -31,6 +31,7 @@ export default {
     boss_desk: 'boss_desk',
     lin_desk: 'lin_desk',
     kev_desk: 'kev_desk',
+    my_desk_spot: 'my_desk', // beside your seat: where you set things down on your desk
     boss_office_door: 'boss_door',
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
@@ -41,7 +42,7 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'sandwich:returned', 'coffee:confiscated'],
+    soft: ['boss:suspicious', 'sandwich:returned', 'coffee:kevTook'],
   },
 
   names: NAME,
@@ -65,7 +66,6 @@ export default {
 
   npcText(game, n) {
     const bits = [];
-    if (n.override === 'lockedOut') bits.push('stuck outside the entrance');
     if (n.override === 'fixing') bits.push(`fixing the projector ${Math.round(game.world.fixProgress * 100)}%`);
     if (n.override === 'hunting' && n.id === 'boss') bits.push('searching the office, peering at every desk');
     if (n.carry) bits.push(`holding ${n.carry === 'coffee' ? 'a coffee ☕' : n.carry}`);
@@ -78,8 +78,8 @@ export default {
     const rack = w.jacket === 'rack' ? `the boss's jacket${w.keycard === 'rack' ? ' (a keycard clipped to it)' : ''}` : 'nothing';
     const loose = w.items.filter((i) => !i.spot);
     const floor = loose.length ? `; on the floor: ${loose.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}` : '';
-    const put = w.items.filter((i) => i.spot).map((i) => `; the empty ${i.type} ☕ sits on ${SPOT[i.spot] ?? i.spot}`).join('');
-    const pot = w.coffee === 'pot' ? 'a full pot of coffee' : 'an empty pot';
+    const put = w.items.filter((i) => i.spot).map((i) => `; ${i.type === 'coffee' ? 'a full cup of coffee' : `the empty ${i.type}`} ☕ sits on ${SPOT[i.spot] ?? i.spot}`).join('');
+    const pot = `${w.coffee === 'pot' ? 'one last cup in the pot' : 'an empty pot'}, an empty coffee bag beside it`;
     return `WORLD: projector ${PROJECTOR[w.projector] ?? w.projector}; coffee machine: ${pot}; coat rack holds ${rack}${floor}${put}`;
   },
 
@@ -93,7 +93,11 @@ export default {
           : `${name(p.by)} shouts and points at you ${p.reason === 'evidence' ? '🥪❗👉' : '❗👉'}${p.heard ? ' (the boss heard)' : ' (the boss is away… for now)'}`;
       case 'coffee:taken': return p.by === 'player' ? 'you poured the coffee ☕ (the pot is empty now)' : `${name(p.by)} poured the coffee ☕ (the pot is empty now)`;
       case 'coffee:missing': return `${name(p.by)} found the coffee pot empty`;
-      case 'coffee:confiscated': return `${name(p.by)} took the coffee off you ☕`;
+      case 'coffee:kevTook': return `Kev spots the cup on ${SPOT[p.spot] ?? p.spot}, unattended, and takes it 🤤☕ … 😌`;
+      case 'coffee:asked': return 'Kev eyes the cup in your hand ☕🥺❓ (he asks; he doesn\'t grab)';
+      case 'keycard:takenBack': return 'the boss takes his keycard back off you 🪪';
+      case 'boss:badge': return 'beep: the boss badges back in at the glass door 🪪';
+      case 'meeting:calledOff': return 'the boss points at the dead projector 📽️💥🙅 and waves everyone out 👋🚪';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'projector:broken': return 'the projector is broken 💥';
@@ -107,13 +111,7 @@ export default {
       case 'sandwich:returned': return 'Lin took her sandwich back';
       case 'sandwich:missing': return 'Lin found the fridge empty';
       case 'boss:jacket': return 'the boss put on his jacket and walks off';
-      case 'boss:lockedOut': return 'the boss is locked out at the entrance!';
-      case 'boss:bang': // one line per 3 game minutes of banging
-        if (e.minute - (memo.lastBang ?? -Infinity) > 3) {
-          memo.lastBang = e.minute;
-          return 'the boss bangs on the glass';
-        }
-        return null;
+      case 'boss:lockedOut': return null; // at the street gate: nobody upstairs sees it (clocks.js)
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
       case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';
       case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗, then glares at Kev 😠'

@@ -26,33 +26,67 @@ export default [
     },
   },
   {
-    name: 'projector too early, hang around the room → Kev makes the leap → desk work → fail',
-    expect: { result: 'fail' },
+    name: 'projector too early, hang around the room → Kev makes the leap → the boss hears → caught',
+    expect: { result: 'caught' },
     play({ run, waitFor, log }) {
       run('goto coffee_machine busy');
       run('interact');
       run('goto projector busy');
       run('interact');
       try { run('goto meeting_seat busy'); } catch { /* Kev may stop us on the way */ }
-      waitFor(() => log.some((e) => e.name === 'boss:workAssigned'), { maxSec: 30 }); // pretending doesn't help in the room
-      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 60 }); // pretending doesn't help in the room
       const t = log.find((e) => e.name === 'witness:tattle');
       if (!(t && t.payload.by === 'kev' && t.payload.reason === 'scene' && t.payload.heard)) throw new Error('no scene tattle from Kev');
     },
   },
   {
-    name: 'pour early, then stand by the empty pot openly → Kev ☕❓😩, spots your cup, takes it back → fail',
+    name: 'pour early, carry it openly past the empty pot → Kev asks ☕🥺❓, never takes it → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');
       run('interact');
       if (g.player.held !== 'coffee') throw new Error('no coffee poured');
       run('goto kev_desk busy'); // walk right past him: he doesn't care yet
-      if (g.player.held !== 'coffee') throw new Error('Kev took the coffee before he knew it was gone');
+      if (log.some((e) => e.name === 'coffee:asked')) throw new Error('Kev asked before he knew the pot was empty');
       run('goto coffee_machine busy');
-      waitFor((g) => log.some((e) => e.name === 'coffee:confiscated'), { busy: false, maxSec: 40 });
+      waitFor(() => log.some((e) => e.name === 'coffee:asked'), { busy: false, maxSec: 40 });
       if (!log.some((e) => e.name === 'coffee:missing')) throw new Error('Kev never found the pot empty');
-      if (g.player.held === 'coffee') throw new Error('Kev let you keep his coffee');
+      if (g.player.held !== 'coffee') throw new Error('Kev took the cup out of your hand');
+      run('busy until 4:00');
+      if (log.some((e) => e.name === 'coffee:kevTook')) throw new Error('Kev took a cup you never set down');
+    },
+  },
+  {
+    name: 'pour early, leave the cup on the machine → Kev finds it there, takes it as free 🤤☕ → fail',
+    expect: { result: 'fail' },
+    play({ run, waitFor, g, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('put coffee');
+      run('sit busy');
+      waitFor(() => log.some((e) => e.name === 'coffee:kevTook'), { busy: true, maxSec: 120 });
+      if (g.world.items.some((i) => i.type === 'coffee')) throw new Error('the cup is still on the machine');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'pour early, set it down on your own desk, type → Kev leaves it be, goes home → spill → blamed (mug in hand)',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto my_desk_spot busy');
+      run('put my_desk');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone, { busy: true });
+      if (log.some((e) => e.name === 'coffee:asked' || e.name === 'coffee:kevTook')) throw new Error('Kev went for the cup on your desk');
+      if (log.some((e) => e.name === 'boss:workAssigned')) throw new Error('typing with the cup set down still drew desk work');
+      run('goto my_desk_spot busy');
+      run('interact');
+      if (g.player.held !== 'coffee') throw new Error(`picked up ${g.player.held}, not the cup`);
+      run('goto projector busy');
+      run('interact');
+      run('goto meeting_seat busy');
       run('busy until 4:00');
     },
   },
@@ -70,7 +104,7 @@ export default [
   },
   {
     // The teaching fail: the act is over, the evidence isn't. The boss looks in on his 3:12 walk.
-    name: 'pour before Kev\'s coffee run, hide it, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 at you, blamed',
+    name: 'pour before Kev\'s coffee run, set it on your desk, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 at you, blamed',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');
@@ -125,15 +159,22 @@ export default [
     },
   },
   {
-    name: 'same, but hide the mug on your own desk → the hunting boss finds it there → caught',
+    name: 'same, but leave the mug on your own desk while he hunts elsewhere → back from his smoke he sees it there → caught',
     expect: { result: 'caught' },
-    play({ run, g }) {
+    play({ run, waitFor, npc, g }) {
       run('goto coffee_machine busy');
       run('interact');
+      run('goto my_desk_spot busy');
+      run('put my_desk'); // on your desk while you type
       run('sit busy');
-      run('busy until 3:01'); // Kev's on his way to the elevator: done before the boss's 3:12 walk
+      waitFor((g) => g.world.kevGone, { busy: true }); // done before the boss's 3:12 walk
+      run('goto my_desk_spot busy');
+      run('interact');
       run('goto projector busy');
       run('interact');
+      run('goto kitchen_table busy'); // out of the way of the boss's 3:12 walk
+      waitFor(() => !npc('boss').active, { busy: true, maxSec: 120 }); // in the restroom
+      run('goto my_desk_spot busy');
       run('put my_desk busy');
       run('goto meeting_seat busy');
       run('busy until 4:00');
@@ -173,8 +214,8 @@ export default [
     },
   },
   {
-    name: 'combo, but eat it at the fridge and sit at your desk → hunting Lin sees the mustard 🥪❗👉 → fail',
-    expect: { result: 'fail' },
+    name: 'combo, but eat it at the fridge and sit at your desk → hunting Lin sees the mustard 🥪❗👉, the boss hears → caught',
+    expect: { result: 'caught' },
     play({ run, waitFor, npc, g, log }) {
       waitFor(() => g.clock.minute >= 16);
       run('goto fridge busy');
@@ -191,14 +232,14 @@ export default [
     },
   },
   {
-    name: 'combo: sandwich before 3:00, hide it, eat it in the boss\'s corner → keycard in the gap → win',
+    name: 'combo: sandwich before 3:00, keep it in your lap at your desk, eat it in the boss\'s corner → keycard in the gap → win',
     expect: { result: 'win', routes: ['keycard'] },
     play({ run, waitFor, npc, g }) {
       waitFor(() => g.clock.minute >= 16); // after Kev's coffee run (2:38–2:44) is over
       run('goto fridge busy');
       run('interact');
       run('goto my_seat busy');
-      run('sit busy'); // typing hides what's in your hands
+      run('sit busy'); // seated and typing, the sandwich is in your lap under the desk
       waitFor(() => npc('lin').override === 'hunting');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
       run('goto boss_office_door busy');
@@ -228,6 +269,20 @@ export default [
       run('sit');
       run('busy until 4:00');
       if (!log.some((e) => e.name === 'keycard:recovered')) throw new Error('boss never recovered the card');
+    },
+  },
+  {
+    name: 'take the keycard while Lin looks this way → she shouts ❗👉, the boss hears → caught, and he takes his card back',
+    expect: { result: 'caught' },
+    play({ g, run, waitFor, npc }) {
+      run('busy until 3:11');
+      waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+      run('goto boss_office_door busy');
+      run('goto coat_rack busy');
+      waitFor(() => { const l = npc('lin'); return l.active && Math.abs(l.glance.offset) < 0.3; }, { busy: true, maxSec: 30 });
+      run('interact');
+      run('wait 10s');
+      if (!g.world.cardBack) throw new Error('caught at the jacket, but the boss did not take his card back');
     },
   },
   {

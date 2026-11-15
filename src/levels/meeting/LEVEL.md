@@ -15,8 +15,9 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `map.js` | `MAP`, `LEGEND`, `SPOTS`, `ZONES`, `ROUTES` (the level's `patrols`) |
 | `cast.js` | `NPC_DEFS`: the boss, Kev, Lin, in that order (the order is behaviour) |
 | `interactions.js`, `items.js`, `roles.js` | the player's actions, the four items, the office rules' cast |
-| `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt and the boss's mug hunt (hunts), the boss's lockout (a door) |
-| `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
+| `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt and the boss's mug hunt (hunts) |
+| `clocks.js` | `level.clockFor`: the boss's smoke and lockout (downstairs, out of sight), Kev and the cup, the card taken back |
+| `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `badgeIn`, `presenter` |
 | `verdict.js` | the 4:00 room's judgement of the mug (`meeting.verdict`) |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
@@ -46,9 +47,9 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | 3:22 | desk (sits ~3:29), looking in again on the way back (`peekBack`) | | |
 | 3:30 | | restroom (gone 3:35–3:37) | |
 | 3:33 | 🚬❓ (a mug hunt, if one runs, ends 3:34) | | |
-| 3:35 | jacket (and keycard) from the rack (`fetchJacket`), then smokes in the lobby | | |
+| 3:35 | jacket (and keycard) from the rack (`fetchJacket`), then down the lift for a smoke in the street | | |
 | 3:37 | | desk | |
-| 3:48 | comes back in through the glass entrance | | |
+| 3:48 | with the card: comes back in, badging in at the glass entrance (`badgeIn`). Without it: never comes back | | |
 | 3:54 | everyone walks to the meeting room (`day.gatherAt`) | | |
 | 4:00 | **MEETING** (`day.meetingAt`) | | |
 
@@ -56,15 +57,18 @@ Schedule times are *departure* times. Walks take 2–6 game minutes, so the wind
 run, not read off this table.
 
 ## The office rules, cast
-- **Authority:** the boss. Off duty while `lockedOut` or at the `meeting`; helpless while locked out; deaf in the
-  lobby (`outside`).
-- **Tattling:** Lin or Kev catching you at something sneaky shout ❗👉. The boss on the floor hears it. While he is in
-  the restroom or the lobby, they wait and tell him when he is back (👉🪪).
+- **Authority:** the boss. Off duty at the `meeting`; gone for the day once locked out (his `leave` entry).
+- **Tattling:** Lin or Kev catching you at something sneaky shout ❗👉. The boss on the floor hears it, and a heard
+  tattle is a catch (`roles.js` `tattle: 'caught'`). While he is away, they wait and tell him when he is back (👉🪪).
+  Caught over the keycard (holding it, or with your hand on it at the jacket), he takes it back (`world.cardBack`,
+  `keycard:takenBack`); the caught end card shows it on his pocket (😠🪪).
 - **Owners.** Only Lin knows the sandwich is hers: taking or eating it is sneaky only to her. To Kev and the boss it
   is just lunch (but eating where the boss sees you fills his ❓). She takes it back on sight (😠🥪): to the fridge,
-  or, if she is hunting, that ends her hunt. Kev claims the coffee only after he finds the pot empty (☕❓😩). From
-  then on he yawns 🥱☕ every 6 real seconds (about 4 game minutes) and grabs the cup off you, even on his way out
-  (🤤☕ … 😌, with a slurp). Before that, a colleague with a cup is nothing to him.
+  or, if she is hunting, that ends her hunt. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
+  bag beside the machine is empty). From then on (`clocks.js`): the cup in your hand is yours, and he asks for it
+  (☕🥺❓, at most every 20 real seconds, within 4 tiles); set down on the machine or on his desk it looks free, and he
+  takes it (🤤☕ … 😌, `coffee:kevTook`); on your desk it is yours and he leaves it alone. Before that, a colleague
+  with a cup is nothing to him.
 - **Evidence.** Eating the sandwich leaves mustard down your sweater for the loop. If Lin sees it while she hunts
   (pretending doesn't hide a stain), she knows: 🥪❗👉, a tattle like any other, and her hunt ends. Not hunting, she
   doesn't look. Kev and the boss never care.
@@ -76,30 +80,34 @@ run, not read off this table.
 - **Contraband.** The boss seeing you hold the keycard (not pretending) means caught. A dropped keycard he sees goes
   back in his pocket. Once the boss has seen the dead projector, the mug is his business too: holding it in his
   view (not pretending) means caught, and so does the mug on your own desk (your spot, his find).
-- **One cup of coffee per loop.** The pot holds the day's only cup. Kev pours it at 2:38 if it's still there and
-  carries it around ☕. Pour it first and he finds the pot empty. There is no refill.
+- **One cup of coffee per loop.** The pot holds the day's last cup, and the coffee bag beside the machine is empty
+  (decor `emptyBag`). Kev pours it at 2:38 if it's still there and carries it around ☕. Pour it first and he finds
+  the pot empty. There is no refill.
+- **The full cup** is `bulky` (no pretending while you hold it, so no typing at your desk) and `keep` (only a put gets
+  it out of your hand). To work at your desk with it, set it down on your desk (`put my_desk`).
 - **Caught** end card: fired, carrying a box of your things out.
 
 ## Routes
 1. **Projector** 📽️ (`world.projector === 'broken'`). Pour the coffee (kitchen), carry it to the meeting room and
    spill it on the projector (it has a ☕🚫 sticker). Kev runs over and fixes it if he is still in the building, even
    if he is walking out. After the elevator dings (about 3:06), nobody can fix it. But Kev drinks the only cup at
-   2:38, so you must pour it before then and keep it hidden (pretend: a cup held to your ear) until he's gone.
+   2:38, so you must pour it before then and keep it from him until he's gone: in your hand (he asks, never takes) or on your desk.
    Lesson: timing, twice.
    - **The mug** (BATCH1). The spill leaves the empty mug in your hand, and at 4:00 the boss looks from the dead
      projector to the ☕ to whoever has it: in your hand (pretending or not), you're BLAMED, the whole table pointing
      at you. Before that, on his 3:12 and 3:22 walks he looks in at the meeting-room door; a dead projector starts his
      mug hunt (📽️💥 … ☕❓) along the hallway, the coffee machine, Kev's desk and yours, until 3:34.
    - Ways out: put it back on the coffee machine (he shrugs ☕🤷), or plant it on Kev's desk (☕❗, then 😠 and Kev's face;
-     at 4:00 the table stares at Kev's empty chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
+     at 4:00 the table stares at Kev's empty olive chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
      caught; unseen until 4:00, BLAMED. Lesson: evidence outlives the act.
 2. **Keycard** 🪪 (`world.bossLockedOut`). Steal the keycard from the boss's jacket on the coat rack, behind the boss,
-   in view of Lin through the glass. The boss takes the jacket at 3:35, but the card isn't in it. At 3:48 he is
-   locked out at the glass entrance and bangs on it 😠🚪🪪 while the meeting fails to happen.
+   in view of Lin through the glass. The boss takes the jacket at 3:35 and goes down for a smoke, but the card isn't in
+   it: the street gate won't let him back up. You see him leave; you never see him stuck. The end card shows him at the
+   gate (🚬🪪❓). With the card, at 3:48 you see him badge in at the glass entrance (🪪, a beep): that teaches the card.
    - Windows: Lin is away ~2:58–3:11 and ~3:30–3:36 (but the boss is at his desk and glances every 3–5.5 s, about
      half of them west at the rack). The boss is out of his office ~3:14–3:28 (but Lin is watching, so wait for her
-     to glance away; her glance is about 1.5 s and the action is 1.0 s). A failed try there costs the loop: she tells
-     him when he's back (~3:23), and the 20 minutes at your desk run past his 3:35 jacket pick-up.
+     to glance away; her glance is about 1.5 s and the action is 1.0 s). A failed try there costs the loop: her shout
+     stops your hand, she tells him when he's back (~3:23), and you are caught; he takes his card back.
    - **Combo (stretch):** steal Lin's sandwich before 3:00. When she finds the fridge empty, she hunts for it around
      the open plan until 3:24. That covers the boss's walk to the restroom and gives a clean keycard window. During
      the hunt she must not see the sandwich, in your hands or on your sweater. You can't put it down (with it in hand
@@ -124,8 +132,10 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   at each point, until 3:24, or until she has it back or saw the mustard. Then 😤 and her schedule.
 - **The jacket** (`fetchJacket`, the boss's 3:35 prelude). He walks to the rack, takes the jacket
   (`world.jacket = 'boss'`, `boss:jacket`), and the keycard with it if it is still there. Then he goes to smoke.
-- **Lockout** (door). Walking back in at 3:48 without the keycard, he stops at `door_out`: `world.bossLockedOut = true`,
-  `boss:lockedOut`, then every ~2.5 s 😠🚪🪪 / 🪪❓ / 👊🚪 with `boss:bang` and a small shake. He stays out all day.
+- **Lockout** (`clocks.js` `bossClock`). Once he has his jacket and the card isn't in it, his clock jumps to his
+  `leave` entry (`cast.js` `LOCKOUT_AT`): the same walk to the lift, out for the day. At the lift:
+  `world.bossLockedOut = true`, `boss:lockedOut` (silent on purpose: it happens downstairs).
+- **Badge in** (`badgeIn`, his 3:48 prelude, only with the card). At `door_out`: 🪪, `boss:badge` (a reader beep).
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.
@@ -136,8 +146,8 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 - **The verdict** (`verdict.js`, at the gather, only with the projector broken and the boss in the room). The mug in
   your hand (`why: 'mug'`) or on your desk (`why: 'desk'`): BLAMED, the table staring at you. On Kev's desk with you
   in the room: still a win (`why: 'kev'`), the table staring at Kev's empty chair. End scenes `mug` and `kev`.
-- **Meeting** (gather at 3:54). The boss sits at the head (`presenter`): projector broken, 📽️💥🤷; otherwise he looks
-  at `meeting_presenter` 📊👀. A locked-out boss stays outside.
+- **Meeting** (gather at 3:54). The boss sits at the head (`presenter`): projector broken, he points at it 📽️💥, then
+  🙅📊, then 👋🚪 (`meeting:calledOff`); otherwise he looks at `meeting_presenter` 📊👀. A locked-out boss is gone.
 
 ## World and events
 `initialWorld()`:
@@ -152,15 +162,17 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 | `sandwich` | `'fridge'` \| `'player'` \| `'dropped'` \| `'lin'` \| `'eaten'` |
 | `coffee` | `'pot'` \| `'taken'` (the poured cup is just held or carried) |
 | `kevGone`, `linKnows` | bool |
+| `cardBack` | bool: caught over the keycard, the boss took it back |
 | `mug` | `null` \| `'player'` (after the spill) \| `'coffee'` \| `'kev_desk'` \| `'my_desk'` (the put spot) |
 | `items` | floor and put-down items (engine) |
 
 Level events (all `{}` unless shown): `projector:broken`, `kev:alerted`, `projector:fixing`, `projector:fixed`,
 `keycard:taken`, `sandwich:taken`, `sandwich:returned`, `sandwich:missing`, `coffee:taken {by}`,
-`coffee:missing {by}`, `boss:jacket`, `boss:lockedOut`, `boss:bang`, `kev:left`, `boss:mugHunt`, `mug:found {spot}`.
+`coffee:missing {by}`, `coffee:kevTook {spot}`, `coffee:asked`, `boss:jacket`, `boss:lockedOut`, `boss:badge`,
+`keycard:takenBack`, `kev:left`, `boss:mugHunt`, `mug:found {spot}`, `meeting:calledOff`.
 The engine's `item:put {type, spot}` fires for the mug. `outcome.why` carries the verdict's reason. With the boss as authority and these
 items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered`,
-`sandwich:eaten` and `coffee:confiscated`.
+and `sandwich:eaten`.
 
 ## Sightlines
 - From the boss's desk (4,2) facing south, the coat rack (1,1) is behind his left shoulder. Only a westward glance sees

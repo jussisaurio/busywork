@@ -550,7 +550,7 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
     ['witness:tattle', { by: 'lin', reason: 'action', heard: true }],
     ['witness:tattle', { by: 'kev', reason: 'contraband', heard: false }],
     ['coffee:taken', { by: 'kev' }],
-    ['coffee:confiscated', { by: 'kev' }],
+    ['coffee:kevTook', { spot: 'coffee' }],
     ['boss:suspicious', {}],
     ['boss:workAssigned', { reason: 'idle' }],
     ['work:done', {}],
@@ -565,8 +565,7 @@ const baseline = ctx.created; // buses + compressor (music chain is built on fir
     ['sandwich:returned', {}],
     ['sandwich:missing', {}],
     ['boss:jacket', {}],
-    ['boss:lockedOut', {}],
-    ['boss:bang', {}],
+    ['boss:badge', {}], // (boss:lockedOut is silent on purpose: it happens downstairs)
     ['kev:left', {}],
     ['npc:vanish', { id: 'lin' }],
     ['npc:appear', { id: 'lin' }],

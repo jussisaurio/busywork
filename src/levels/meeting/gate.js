@@ -20,20 +20,21 @@
 //                fuzzer's plan language never does (raw movement, several loops)
 
 export default {
-  // pretend: no win without it in 30k days (design-jam/FUZZ.md); the phone pose hides what you carry.
+  // pretend: no win without it (fuzz, 20k days): a slacker on the move gets desk work. It hides nothing you carry
+  // (the cup is bulky, items.js): hiding is putting things down out of sight.
   // put: the mug (items.js) leaves your hand only by a put, and at 4:00 it blames whoever holds it (verdict.js).
   // A projector win that never put it down is a bug; the keycard route never touches the mug.
   mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'put', event: 'item:put', routes: ['projector'] }],
   targets: [
     'coffee_machine', 'projector', 'coat_rack', 'fridge',
-    'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'kitchen_table', 'entrance',
+    'boss_desk', 'lin_desk', 'kev_desk', 'my_desk_spot', 'boss_office_door', 'kitchen_table', 'entrance',
     'restroom_door', 'meeting_room', 'meeting_seat',
   ],
   interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge'],
   renderEvents: [
-    'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:bang', 'boss:lockedOut', 'boss:workAssigned',
-    'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'coffee:confiscated', 'kev:alerted',
-    'item:put', 'boss:mugHunt', 'mug:found',
+    'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:workAssigned',
+    'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'keycard:takenBack', 'coffee:kevTook',
+    'coffee:asked', 'kev:alerted', 'item:put', 'boss:mugHunt', 'mug:found', 'meeting:calledOff',
   ],
   milestones: {
     'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
@@ -46,7 +47,9 @@ export default {
     'sandwich:eaten': () => 'ate',
     'sandwich:missing': () => 'hunt',
     'sandwich:returned': () => 'sandwichBack',
-    'coffee:confiscated': () => 'coffeeBack',
+    'coffee:kevTook': () => 'kevTook',
+    'coffee:asked': () => 'asked',
+    'keycard:takenBack': () => 'cardBack',
     'witness:tattle': (p) => (p.reason === 'contraband' ? null : 'tattle'),
     'boss:workAssigned': () => 'work',
     'boss:mugHunt': () => 'mugHunt',

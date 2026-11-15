@@ -38,18 +38,16 @@ export const SOUNDS = {
     'sandwich:taken': { sfx: 'fridgeClose', spot: 'fridge' },
     'sandwich:eaten': { sfx: 'munch', who: 'player' },
     'sandwich:returned': { sfx: 'swish', who: 'player' },
-    'coffee:confiscated': { sfx: 'swish', who: 'player' },
+    'coffee:kevTook': { sfx: 'slurp', who: 'kev' }, // 🤤☕ … 😌 a cup left out: Kev's at last
     'coffee:taken': { sfx: 'machineBeep', spot: 'coffee', when: (p) => !!(p?.by && p.by !== 'player') }, // someone else got the last cup
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },
     'boss:jacket': { sfx: 'rustle', who: 'boss' },
-    'boss:lockedOut': { sfx: 'rattle', spot: 'door_out' },
-    'boss:bang': { sfx: 'bang', spot: 'door_out' },
+    'boss:badge': { sfx: 'machineBeep', spot: 'door_out' }, // back from his smoke, card to the reader
+    // boss:lockedOut is silent on purpose: it happens at the street gate, out of earshot (clocks.js).
     'kev:left': { sfx: 'elevator' },
   },
   // The failed meeting's 🦗 sign gets real crickets.
   signs: { '🦗': { sfx: 'crickets' } },
-  // Kev is delighted to get a coffee at last.
-  contraband: { kev: { sfx: 'slurp' } },
   drops: { keycard: 'card', sandwich: 'soft', coffee: 'mug' },
   repeats: {
     // Kev's repair: a soft clank every so often.

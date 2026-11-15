@@ -219,6 +219,9 @@ section('brew -> carry -> spill');
   ok(p().focus?.id !== 'coffee_machine', 'empty pot: the machine offers nothing');
   input.press('interact'); run(0.4); // pick it back up
   ok(p().held === 'coffee', 'picked the cup back up');
+  input.hold('busy'); step();
+  ok(!p().busy && p().busyPose === null, 'the full cup is bulky (level 1): busy gives no phone pose');
+  input.release('busy'); step();
   violations = 0;
   ok(walk(COFFEE_TO_PROJECTOR), 'carries coffee to the projector');
   ok(violations === 0, 'no wall overlap on the way');
@@ -236,7 +239,14 @@ section('brew -> carry -> spill');
 }
 
 section('cancel on movement, drop / pick-up, E while busy');
+// The busy pose resuming is an engine path: pin the cup as not bulky for it (player.js reads the flag live), not
+// level 1's bulky cup, so it tests the engine whatever the level decides. The cup still keeps (`keep`): it goes
+// down only on a spot, here the machine. (Drop at the feet: the keycard, below.)
 {
+  const cupFlags = game.level.items.coffee;
+  const cupBulky = cupFlags.bulky;
+  delete cupFlags.bulky;
+  try {
   newDay();
   walk(DESK_TO_COFFEE);
   step();
@@ -259,12 +269,12 @@ section('cancel on movement, drop / pick-up, E while busy');
   input.release('busy');
   step();
 
-  ok(p().focus?.kind === 'self' && p().focus.icon === '⬇️', 'holding coffee at the machine: focus = drop ⬇️');
+  ok(p().focus?.action === 'put', 'holding coffee at the machine: focus = put it back (no drop: the cup keeps)');
   input.press('interact');
   step();
   const items = game.world.items;
-  ok(!p().held && items.length === 1 && items[0].type === 'coffee' && near(items[0].x, p().x), 'dropped coffee at the feet');
-  ok(evs('item:drop').some((e) => e.payload.type === 'coffee'), 'item:drop {type:coffee}');
+  ok(!p().held && items.length === 1 && items[0].type === 'coffee' && items[0].spot === 'coffee', 'the cup set down on the machine');
+  ok(evs('item:put').some((e) => e.payload.type === 'coffee' && e.payload.spot === 'coffee'), "item:put {type:coffee, spot:'coffee'}");
   step();
   ok(p().focus?.kind === 'item' && p().focus.icon === '✋', 'floor item beats the farther coffee machine (✋)');
   input.press('interact');
@@ -278,6 +288,9 @@ section('cancel on movement, drop / pick-up, E while busy');
   input.press('interact');         // pressed during pick-up: must not drop right after
   run(0.5);
   ok(p().held === 'coffee', 'E pressed mid-action is swallowed (no instant re-drop)');
+  } finally {
+    cupFlags.bulky = cupBulky;
+  }
 }
 
 section('keycard: steal behind the boss (facing S)');
@@ -334,7 +347,11 @@ section('keycard: boss facing the player -> caught');
 }
 
 section('witnesses: Lin tattles; the boss hears -> forced work');
-{
+// Engine paths: pin the authority to the engine default (a heard tattle = forced work; locked out = helpless), not
+// level 1's choice (its tattle is 'caught'), so this tests the engine whatever the level decides. Restored below.
+const authSaved = game.level.roles.authority;
+game.level.roles.authority = { ...authSaved, tattle: undefined, helpless: ['lockedOut'], offDuty: ['lockedOut', 'meeting'] };
+try {
   // Boss away (restroom): Lin's shout lands on nobody. She only interrupts.
   const away = fakeNpc('boss', 'boss_desk', { active: false });
   const lin = fakeNpc('lin', 'lin_desk');
@@ -375,7 +392,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   input.release('busy');
 
   // A boss smoking in the lobby can't be told; once he's back inside, she tells.
-  const smoker = fakeNpc('boss', 'smoke');
+  const smoker = fakeNpc('boss', 'door_out');
   newDay([smoker, fakeNpc('lin', 'lin_desk')]);
   place(2.5, 1.5);
   step();
@@ -388,7 +405,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   ok(evs('witness:tattle').some((e) => e.payload.late) && evs('boss:workAssigned').length === 1, 'boss back inside: Lin tells, work assigned');
 
   // Locked out for good: the grudge never lands.
-  const locked = fakeNpc('boss', 'smoke', { override: 'lockedOut' });
+  const locked = fakeNpc('boss', 'door_out', { override: 'lockedOut' });
   newDay([locked, fakeNpc('lin', 'lin_desk')]);
   place(2.5, 1.5);
   step();
@@ -397,7 +414,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   ok(evs('witness:tattle').length === 1 && evs('boss:workAssigned').length === 0, 'boss locked out: nobody to tell');
 
   // Boss in the lobby (smoke break): still can't hear.
-  newDay([fakeNpc('boss', 'smoke'), fakeNpc('lin', 'lin_desk')]);
+  newDay([fakeNpc('boss', 'door_out'), fakeNpc('lin', 'lin_desk')]);
   place(2.5, 1.5);
   step();
   input.press('interact');
@@ -464,8 +481,10 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
     ok(calls.length === 1 && calls[0].by === 'lin' && calls[0].reason === 'action' && !game.caught && !game.rules.sent,
       'tattle: a function: the level answers it ({ by, reason })');
   } finally {
-    delete authRole.tattle;
+    authRole.tattle = undefined;
   }
+} finally {
+  game.level.roles.authority = authSaved;
 }
 
 section('Kev at the scene: the projector is broken, who did it?');
@@ -482,7 +501,7 @@ section('Kev at the scene: the projector is broken, who did it?');
   run(0.6);
   let t = evs('witness:tattle');
   ok(t.length === 1 && t[0].payload.by === 'kev' && t[0].payload.reason === 'scene' && t[0].payload.heard, "in the room (even pretending): Kev tattles {reason:'scene'}, heard");
-  ok(evs('boss:workAssigned')[0]?.payload.reason === 'tattle', 'sent to the desk');
+  ok(game.caught?.by === 'boss' && evs('boss:workAssigned').length === 0, "the boss hears: caught on Kev's word (level 1: roles.authority.tattle 'caught')");
   input.release('busy');
 
   // Just outside the door, walking: he makes the leap.
@@ -541,7 +560,7 @@ section('boss suspicion');
   const wa = evs('boss:workAssigned');
   ok(wa.length === 1 && wa[0].payload.reason === 'idle', "full meter -> boss:workAssigned {reason:'idle'}");
   ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.icons.join('') === '📄👉@player'), 'boss says 📄👉 you');
-  ok(game.world.items.some((i) => i.type === 'coffee' && near(i.x, 4.5) && near(i.y, 5.5)), 'held coffee dropped where the player stood');
+  ok(p().held === 'coffee' && !game.world.items.some((i) => i.type === 'coffee'), 'the held cup stays in your hand (it keeps: it goes down only on a spot)');
   ok(game.rules.sent && !game.rules.sent.by && game.suspicion.boss === 0 && near(game.clock.forced, WORK_PENALTY_MIN, 0.05), 'sent to the desk, meter reset, forced work');
   run(4);
   ok(p().seated && near(p().x, 13.5) && !game.rules.sent, 'walked there and sat down');
@@ -560,8 +579,8 @@ section('boss suspicion');
   ok(game.suspicion.boss === 0, 'meter decays while busy again');
   input.release('busy');
 
-  // Override 'meeting' / 'lockedOut' / inactive: ignored.
-  for (const extra of [{ override: 'meeting' }, { override: 'lockedOut' }, { active: false }]) {
+  // Override 'meeting' / inactive (in the lift, out for good): ignored.
+  for (const extra of [{ override: 'meeting' }, { active: false }]) {
     newDay([fakeNpc('boss', 'boss_desk', extra)]);
     place(4.5, 5.5);
     p().held = 'keycard';
@@ -661,7 +680,7 @@ section('contraband');
     run(0.5);
     input.release('busy');
     const t = evs('witness:tattle');
-    ok(t.length === 1 && t[0].payload.reason === 'evidence' && t[0].payload.heard === true && evs('boss:workAssigned')[0]?.payload.reason === 'tattle', 'hunting Lin sees the mustard (even pretending): 🥪❗👉, boss hears -> work');
+    ok(t.length === 1 && t[0].payload.reason === 'evidence' && t[0].payload.heard === true && game.caught?.by === 'boss', 'hunting Lin sees the mustard (even pretending): 🥪❗👉, boss hears -> caught');
     ok(game.world.linKnows === true, 'world.linKnows (ends her hunt)');
     ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '🥪❗👉@player'), 'Lin says 🥪❗👉 and your face');
   }
@@ -676,7 +695,7 @@ section('contraband');
     away.active = true;
     run(2);
     const late = evs('witness:tattle').find((e) => e.payload.late);
-    ok(late?.payload.icon === '🥪' && evs('boss:workAssigned').length === 1, 'boss back: Lin points you out 👉🥪 -> work');
+    ok(late?.payload.icon === '🥪' && game.caught?.by === 'boss', 'boss back: Lin points you out 👉🥪 -> caught');
   }
   { // not hunting (before 3:00 or after she gives up): a stain is just a stain
     newDay([fakeNpc('lin', 'lin_desk')]);
@@ -728,28 +747,17 @@ section('contraband');
   run(1);
   ok(p().held === 'coffee' && !kev.carry && evs('witness:tattle').length === 0, 'Kev ignores your coffee until he has seen the empty pot');
 
-  // After ☕❓😩 at the empty pot he knows someone has his cup: he takes it off you on sight (pretending hides it).
+  // After ☕❓😩 at the empty pot he wants that cup, but the one in your hand is yours: the office rules never take it
+  // off you (no owner, no contraband). He asks for it now and then; that, and taking a cup left where it's anyone's,
+  // is the level's sim clock (clocks.js), checked by the routes, not here.
   newDay([kev]);
   kev.wants = 'coffee';
   place(22.5, 7.5);
   p().held = 'coffee';
   game.world.coffee = 'taken';
-  run(0.5);
-  ok(!p().held && kev.carry === 'coffee' && evs('coffee:confiscated')[0]?.payload.by === 'kev', 'Kev sees the coffee: confiscated (npc.carry)');
-  ok(evs('witness:tattle')[0]?.payload.reason === 'contraband' && evs('boss:workAssigned').length === 0, 'contraband only: no tattle, no work');
-  ok(evs('say').some((e) => e.payload.owner === 'kev' && e.payload.icons.join('') === '🤤☕'), 'Kev says 🤤☕ (a coffee!)');
-  ok(kev._sayQ.some((q) => q.icons.join('') === '😌'), '… then 😌 (queued for the sim)');
-  ok(kev.wants === null, 'and is satisfied (wants cleared)');
-
-  const kev2 = fakeNpc('kev', 'kev_desk', { wants: 'coffee' });
-  newDay([kev2]);
-  place(22.5, 7.5);
-  p().held = 'coffee';
-  game.world.coffee = 'taken';
-  input.hold('busy');
   run(2);
-  ok(p().held === 'coffee' && !kev2.carry && evs('coffee:confiscated').length === 0, 'coffee to the ear: Kev fooled');
-  input.release('busy');
+  ok(p().held === 'coffee' && !kev.carry && evs('witness:tattle').length === 0, 'Kev wants the cup: still in your hand, no tattle (he asks: the sim)');
+  ok(evs('boss:workAssigned').length === 0 && !game.caught, 'no work, not caught');
 
   // Lin doesn't care about coffee.
   newDay([fakeNpc('lin', 'lin_desk')]);

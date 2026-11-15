@@ -1,5 +1,5 @@
 // Headless tests for the per-NPC clock seam (src/sim/npcs.js, level.clockFor): the minute each NPC's schedule
-// reads; and the hook API's lookAt, which a clock-reading level uses to look up. Drives the sim alone (updateNpcs + advanceClock) on the fixture's cast, and level 1's for the identity check.
+// reads; and the hook API's lookAt, which a clock-reading level uses to look up. Drives the sim alone (updateNpcs + advanceClock) on the fixture's cast.
 //
 //   node tools/test-clock.mjs
 import { FIXED_DT, at } from '../src/config.js';
@@ -69,14 +69,15 @@ ok(near(firstSay(f.log, 'doreen', '🎂'), at('2:45')), `Gus +5: Doreen's 2:45 b
   ok(near(j.log.find((e) => e.name === 'meeting:gather')?.m, fx.day.gatherAt, 0.02), 'jump: the gather is at the true gatherAt');
 }
 
-// 5. An identity clockFor on level 1 gives exactly the day without one (the default path is the game clock).
+// 5. An identity clockFor gives exactly the day without one (the default path is the game clock). On the fixture,
+// not on a real level: a level may have a clock of its own (level 1 does), and a test must not read its state.
 {
-  const until = levels.meeting.day.meetingAt + 0.5;
-  const ra = run(levels.meeting, until);
-  const rb = run({ ...levels.meeting, clockFor: (game) => game.clock.minute }, until);
+  const until = fx.day.meetingAt + 0.5;
+  const ra = run({ ...fx, clockFor: undefined }, until);
+  const rb = run({ ...fx, clockFor: (game) => game.clock.minute }, until);
   const [a, b] = [ra.log, rb.log];
   const same = a.length === b.length && a.every((e, i) => e.name === b[i].name && e.m === b[i].m && JSON.stringify(e.p) === JSON.stringify(b[i].p));
-  ok(same, `level 1 with clockFor = game clock: the same ${a.length} events, at the same minutes`);
+  ok(same, `with clockFor = game clock: the same ${a.length} events, at the same minutes`);
   const pos = (g) => g.npcs.map((n) => `${n.id}@${n.x},${n.y},${n.dir}`).join(' ');
   ok(pos(ra.game) === pos(rb.game), 'and every NPC ends the day at the same position and facing');
 }

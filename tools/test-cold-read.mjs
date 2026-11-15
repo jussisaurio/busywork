@@ -94,8 +94,10 @@ const THINGS = '## Things in the office\n\nTHINGS-PROSE: a coffee machine, becau
 function tempRoot(name, prose = false) {
   const root = join(TMP, name);
   execFileSync('mkdir', ['-p', root]);
-  copyFileSync(join(levelDir('meeting'), 'premise.md'), join(root, 'premise.md'));
-  if (prose) writeFileSync(join(root, 'premise.md'), `${readFileSync(join(root, 'premise.md'), 'utf8').trimEnd()}\n\n${WHO}\n${THINGS}`);
+  // The level's premise.md without its prose sections, whatever the live file has: the test makes its own state.
+  const bare = readFileSync(join(levelDir('meeting'), 'premise.md'), 'utf8')
+    .replace(/^## (Who does what|Things in the office)\n[\s\S]*?(?=^## |(?![\s\S]))/gm, '').trimEnd();
+  writeFileSync(join(root, 'premise.md'), prose ? `${bare}\n\n${WHO}\n${THINGS}` : `${bare}\n`);
   return root;
 }
 // A reply that passes every pass: a works verdict, and one good item line in each narrow pass's words.
@@ -181,13 +183,14 @@ try {
   // --- staleness ---
   let s = await stageStatus('meeting', 'premise', { root });
   ok(s.ok && s.fresh && s.verdict === 'works', 'status: works and fresh right after the run');
+  const premise0 = readFileSync(join(root, 'premise.md'), 'utf8'); // as the run read it
   writeFileSync(join(root, 'premise.md'), readFileSync(join(root, 'premise.md'), 'utf8') + '\nOne more line.\n');
   s = await stageStatus('meeting', 'premise', { root });
   ok(!s.ok && s.fresh === false && s.changed.join() === 'premise.md', 'status: an edit to premise.md makes premise stale, and says so');
   writeFileSync(join(root, 'premise.md'), readFileSync(join(root, 'premise.md'), 'utf8').replace('You made none.', 'You made one.'));
   s = await stageStatus('meeting', 'premise', { root });
   ok(!s.ok && /'## Card' must hold the card's lines/.test(s.error ?? ''), 'status: a premise.md whose card is not the level\'s is an error');
-  copyFileSync(join(levelDir('meeting'), 'premise.md'), join(root, 'premise.md'));
+  writeFileSync(join(root, 'premise.md'), premise0);
   ok((await stageStatus('meeting', 'premise', { root })).ok, 'status: fresh again when premise.md is back');
   const prompts = join(TMP, 'prompts');
   cpSync(PROMPTS, prompts, { recursive: true });
@@ -432,7 +435,7 @@ try {
   }
 
   // --- a pass whose premise.md section is missing says so, and never crashes ---
-  const bare = tempRoot('bare'); // meeting's premise.md has no '## Who does what' (no level has, yet)
+  const bare = tempRoot('bare'); // meeting's premise.md with its '## Who does what' taken out
   if (has('motives')) {
     s = await stageStatus('meeting', 'motives', { root: bare });
     ok(!s.ok && s.verdict === null && /premise\.md has no '## Who does what' section, which the motives pass reads \(docs\/COLD-READ\.md/.test(s.error ?? ''),
@@ -440,9 +443,11 @@ try {
     threw = '';
     try { await runStage('meeting', 'motives', { runner: fakeRunner({}).runner, root: bare, log: silent, ...fixed }); } catch (e) { threw = e.message; }
     ok(/has no '## Who does what' section/.test(threw) && !existsSync(recordFile(bare)), 'missing section: a run stops with that message and records nothing');
-    const cliRun = spawnSync('node', [join(ROOT, 'tools/cold-read.mjs'), '--level', 'meeting', '--pass', 'motives', '--bundle-only'], { encoding: 'utf8' });
-    ok(cliRun.status === 1 && /^cold-read: .*has no '## Who does what' section/m.test(cliRun.stderr) && !/\n\s+at /.test(cliRun.stderr),
-      'missing section: the command line prints it in one line, no stack');
+    // The command line reads the live level folder, so it is shown an input error the repo is sure to have: the
+    // fixture level has no premise.md at all.
+    const cliRun = spawnSync('node', [join(ROOT, 'tools/cold-read.mjs'), '--level', 'fixture', '--pass', 'motives', '--bundle-only'], { encoding: 'utf8' });
+    ok(cliRun.status === 1 && /^cold-read: .*no \S*premise\.md/m.test(cliRun.stderr) && !/\n\s+at /.test(cliRun.stderr),
+      `an input error: the command line prints it in one line, no stack (${cliRun.stderr.trim().split('\n')[0]})`);
   }
   ok(Object.keys(SECTIONS).join() === 'ways,who,things' && SECTIONS.who[0] === 'Who does what' && SECTIONS.things[0] === 'Things in the office', 'the prose sections the text passes read');
 

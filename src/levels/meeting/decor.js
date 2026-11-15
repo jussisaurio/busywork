@@ -3,9 +3,11 @@
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
+import { emptyBag } from './painters.js';
 
 const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
 const MUSTARD = ['#d6a23a', '#a97b22'];
+const TOMATO = [C.tomato, C.tomatoDark]; // yours: your sweater's red (desk and meeting seat)
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
@@ -13,17 +15,17 @@ export const DECOR = {
   // Static chairs in draw order, at a spot or a tile.
   chairs: [
     { spot: 'boss_desk', face: 'S', color: OXBLOOD },
-    { spot: 'player_desk', face: 'N', color: MUSTARD },
+    { spot: 'player_desk', face: 'N', color: TOMATO },
     { spot: 'lin_desk', face: 'N', color: TEAL },
     { spot: 'kev_desk', face: 'N', color: OLIVE },
     { x: 13, y: 12, face: 'N', color: MUSTARD },
     { x: 22, y: 12, face: 'N', color: TEAL },
     { spot: 'meeting_head', face: 'E', color: OXBLOOD },
-    // meeting table, south side; your seat is the odd one out: mustard, like your desk chair
+    // meeting table, south side; your seat is the odd one out: red, like your desk chair (and Kev's olive, like his)
     { x: 12, y: 5, face: 'N', color: TEAL },
     { x: 14, y: 5, face: 'N', color: TEAL },
-    { x: 15, y: 5, face: 'N', color: TEAL },
-    { spot: 'meeting_player', face: 'N', color: MUSTARD },
+    { spot: 'meeting_kev', face: 'N', color: OLIVE },
+    { spot: 'meeting_player', face: 'N', color: TOMATO },
     // meeting table, north side
     { x: 12, y: 2, face: 'S', color: TEAL },
     { x: 14, y: 2, face: 'S', color: TEAL },
@@ -67,7 +69,8 @@ export const DECOR = {
           || (game.phase === 'end' && game.outcome && game.outcome.result === 'fail')),
       }),
     },
-    { tile: 'C', draw: 'carafe', state: (w) => ({ full: w.coffee !== 'taken' }) }, // full until the one cup is taken
+    { tile: 'C', draw: 'carafe', state: (w) => ({ full: w.coffee !== 'taken' }) }, // full until the last cup is taken
+    { tile: 'C', draw: emptyBag, state: () => ({}) }, // why it's the last: the coffee bag beside the machine is empty
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
@@ -83,8 +86,6 @@ export const DECOR = {
     kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
     lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
   },
-  // Lobby ashtray, on the tile east of this spot.
-  ashtray: { spot: 'smoke' },
   // The lift doors (the map's elevator tiles) open as an active NPC comes within 1.6 tiles of this spot.
   elevator: { spot: 'elevator' },
   // Floor zones flooded from one tile in each room (walls, glass and doors stop the flood).
