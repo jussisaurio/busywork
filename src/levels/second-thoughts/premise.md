@@ -3,7 +3,7 @@
 ## Card
 
 3:00 PM. Your angry resignation letter is in the boss's tray.
-He goes through it at 3:40.
+He goes through his tray at 3:40.
 
 ## Name
 

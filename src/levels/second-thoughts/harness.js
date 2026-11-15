@@ -8,7 +8,7 @@ const MACHINE = { brewing: ' is brewing (its green lamp blinking)', brewed: ' ha
 const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
 
 export default {
-  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through it at 3:40.",
+  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through his tray at 3:40.",
 
   landmarks: {
     boss_desk: 'boss_desk',

@@ -9,8 +9,8 @@ export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He goes through it at 3:40.'],
-  badge: ['✉️', '@boss'],
+  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He goes through his tray at 3:40.'],
+  badge: ['✉️', '@boss', '📦'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
