@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, deskClockProp, drawerProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, deskClockProp, drawerProp, puddleProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -54,6 +54,11 @@ export const DECOR = {
   // pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse is out, and
   // a scorch mark for the rest of the day. (The switch and the fuse box: darkness.controls.)
   props: [
+    { // where you threw up (keyed on your desk; drawn where it happened)
+      tile: 'P',
+      draw: puddleProp,
+      state: (w, game) => ({ at: w.puddle, k: w.sickAt === null ? 1 : ((game?.loopTime ?? 0) - w.sickAt) / 0.5 }),
+    },
     {
       tile: 'P',
       draw: drawerProp,
@@ -101,6 +106,7 @@ export const DECOR = {
 const dreading = (n, w, act) => n.id === 'boss' && w.bossAct === act;
 export const POSES = {
   arms: [
+    { when: (n, w) => n.id === 'lin' && (w.letter === 'lin' || n.override === 'pinching'), arms: 'holdout' }, // at arm's length
     { when: (n) => n.override === 'fixing' || n.override === 'switching', arms: 'reach' },
     { when: (n, w) => n.id === 'boss' && w.pullAt !== null && w.trayPull < 1 && n.pose === 'sit', arms: 'reach' },
     { when: (n, w) => dreading(n, w, 'sigh'), arms: 'shrug' },
@@ -139,7 +145,10 @@ export const SOUNDS = {
     'fuse:fixed': { sfx: 'fixed', spot: 'fuse_box' },
     'switch:fixed': { sfx: 'clank', spot: 'office_switch' },
     'letter:taken': { sfx: 'jingle', who: 'player', opts: { gain: 0.5 } },
-    'letter:eaten': { sfx: 'munch', who: 'player' },
+    'letter:eaten': { sfx: 'rustle', who: 'player' },
+    'player:sick': { sfx: 'splashZap', who: 'player', opts: { gain: 0.8 } },
+    'lin:pinches': { sfx: 'pickup', who: 'lin' },
+    'lin:files': { sfx: 'drop', who: 'lin', opts: { soft: true } },
     'letter:stashed': { sfx: 'shuffle', who: 'player', opts: { gain: 0.5 } },
   },
   signs: {},

@@ -5,7 +5,7 @@ const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
 const MACHINE = { brewing: ' is brewing (its green lamp blinking)', brewed: ' has brewed (green lamp, the pot full and steaming)', shorted: ' is scorched (it shorted)', cold: ' is off' };
-const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten', drawer: 'in your desk drawer' };
+const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten (in your stomach)', drawer: 'in your desk drawer', lin: "held at arm's length by Lin" };
 
 export default {
   mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He goes through his tray at 3:40.",
@@ -44,7 +44,9 @@ export default {
     const bits = [];
     if (game.level.darkness && isDark(game, p.x, p.y)) bits.push('standing in the dark');
     if (p.switched) bits.push('you flipped his light switch');
-    if (p.smeared) bits.push('ink on your chin');
+    const w = game.world;
+    if (w.queasy && !w.sick) bits.push('your face has gone green 🤢');
+    else if (w.sick) bits.push('you threw up 🤢');
     return bits;
   },
 
@@ -73,7 +75,9 @@ export default {
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
     const machine = MACHINE[w.coffee] ?? '';
     const jug = w.rigged ? 'the water jug lies tipped over it, water down its front and a puddle in front' : 'a full water jug stands beside it';
-    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}; the coffee machine${machine}: ${jug}`;
+    const soggy = w.soggy ? ' (soggy: it came back up)' : '';
+    const puddle = w.puddle ? '; a green puddle of sick on the floor where you threw up' : '';
+    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${soggy}${floor}${puddle}; the coffee machine${machine}: ${jug}`;
   },
 
   describe(e) {
@@ -105,6 +109,11 @@ export default {
       case 'letter:taken': return 'you took your letter back ✉️';
       case 'letter:snatched': return null;
       case 'letter:eaten': return 'you ate your resignation letter';
+      case 'player:queasy': return 'your face goes green 🤢';
+      case 'player:sick': return 'you throw up: a green puddle at your feet, your letter soggy in it; everyone turns';
+      case 'lin:sees': return 'Lin sees the puddle 🤢 and comes over';
+      case 'lin:pinches': return "Lin picks your soggy letter out of the puddle between two fingers and holds it at arm's length";
+      case 'lin:files': return "Lin drops your soggy letter in the boss's tray";
       case 'letter:stashed': return 'you put your letter in your desk drawer and sit down';
       case 'letter:recovered': return 'the boss picks your letter up off the floor ✉️❗';
       default: return undefined;

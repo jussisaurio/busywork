@@ -14,7 +14,7 @@
 //             the fuse box (its door hangs open, its red lamp blinking) and resets it.
 //   breaker   pull the breaker yourself. Kev comes to the fuse box with his torch: don't be there.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at, deg } from '../../config.js';
+import { at, deg, EAT_TIME } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { isDark } from '../../game/darkness.js';
 import { sitAtDesk } from '../../play/player.js';
@@ -81,6 +81,9 @@ const SPOTS = {
   kitchen_table: { x: 25, y: 4, face: 'N' },
   restroom: { x: 25, y: 12, face: 'S' },
   elevator: { x: 2, y: 15, face: 'S' },
+  // Where you threw up: moved there when you do (index.js sick), so Lin can come and pick your letter out of it. A
+  // placeholder till then (the engine has no lure spot that follows a thing).
+  puddle: { x: 13, y: 10, face: 'N' },
 };
 
 const ZONES = {
@@ -162,6 +165,22 @@ const INTERACTIONS = {
   // Once Lin's coffee has brewed, the full pot pours a cup (DESIGN.md "A thing that looks usable is usable"). The cup
   // leads nowhere: it only fills your hands.
   pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'brewed' && w.fuse === 'on' },
+  // Eating your letter (hold E, as any edible thing): paper, not food, so no 😋 but a wince, and bits of paper, not
+  // crumbs. Ten minutes later it comes back up (index.js sick). Replaces the engine's eat_letter.
+  eat_letter: {
+    on: 'self', text: 'eat your letter', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '✉️',
+    can: (p) => p.held === 'letter',
+    done(game) {
+      const w = game.world;
+      const p = game.player;
+      p.held = null;
+      w.letter = 'eaten';
+      w.eatenAt = game.clock.minute;
+      burst(game, 'paper', p.x, p.y, 5, { speed: 0.8, ttl: 0.6 });
+      say(game, 'player', ['😖'], { kind: 'thought', ttl: 1.5 });
+      game.events.emit('letter:eaten', {});
+    },
+  },
   pull_breaker: {
     on: 'fuse_box', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
@@ -232,6 +251,84 @@ const LURES = [
   },
 ];
 
+// Ten minutes after you ate it, your letter comes back up (index.js sick); Lin, unless the boss saw it, picks it out
+// of the puddle between two fingers and carries it at arm's length to his tray.
+const SICK_AFTER = 10; // game minutes
+const QUEASY = 0.6; // game minutes of green face before it comes up
+const nearPuddle = (w) => w.puddle && w.items.some((i) => i.type === 'letter' && Math.hypot(i.x - w.puddle.x, i.y - w.puddle.y) < 1);
+LURES.push(
+  {
+    npc: 'lin',
+    when: (w) => w.sick && w.letter === 'dropped' && nearPuddle(w),
+    override: 'mopping',
+    plan: 'puddle',
+    label: 'the sick',
+    spot: 'puddle',
+    react: { wait: 1.0, says: [{ say: ['🤢'], ttl: 2 }], event: 'lin:sees' },
+    work: {
+      override: 'pinching',
+      minutes: 0.3,
+      progress: 'pinchProgress',
+      start: { set: { letter: 'dropped' }, says: [{ say: ['🤢'], ttl: 1.4 }] }, // she gives up if you take it first
+      done: { set: { letter: 'lin' }, event: 'lin:pinches' },
+    },
+  },
+  {
+    npc: 'lin',
+    when: (w) => w.letter === 'lin',
+    override: 'filing',
+    plan: 'tray',
+    label: 'his tray',
+    spot: 'in_front',
+    react: { wait: 0.2 },
+    work: {
+      override: 'dropping',
+      minutes: 0.2,
+      progress: 'fileProgress',
+      start: { set: { letter: 'lin' } },
+      done: { set: { letter: 'tray' }, event: 'lin:files' },
+    },
+  },
+);
+
+// Your letter comes back up: green first, then a puddle at your feet with the soggy letter in it, a noise all over the
+// floor (everyone turns), the screen shakes. On the floor it is the boss's to pocket if he sees it (rules.js
+// contraband); otherwise Lin's lure (above) takes it to his tray.
+function sick(game) {
+  const w = game.world;
+  const p = game.player;
+  if (w.eatenAt === null || w.sick || game.outcome || game.caught) return;
+  const m = game.clock.minute - w.eatenAt;
+  if (m >= SICK_AFTER - QUEASY && !w.queasy) {
+    w.queasy = true;
+    say(game, 'player', ['🤢'], { kind: 'thought', ttl: 2.5 });
+    game.events.emit('player:queasy', {});
+  }
+  if (m < SICK_AFTER) return;
+  w.sick = true;
+  w.sickAt = game.loopTime;
+  w.puddle = { x: p.x - 0.7, y: p.y - 1 }; // he turns away from the desk: on the open floor behind his chair
+  SPOTS.puddle = { x: Math.floor(w.puddle.x), y: Math.floor(w.puddle.y), face: 'N' };
+  w.items.push({ type: 'letter', x: w.puddle.x + 0.15, y: w.puddle.y });
+  w.letter = 'dropped';
+  w.soggy = true;
+  burst(game, 'sweat', w.puddle.x, w.puddle.y, 14, { speed: 1.6, ttl: 0.6 });
+  shake(game, 0.1, 0.3);
+  say(game, 'player', ['🤢'], { kind: 'speech', ttl: 2.5 });
+  game.events.emit('player:sick', {}); // level.noises: everyone on the floor turns to it
+}
+
+// Lin holds the letter while she carries it (the lure's done sets world.letter; the thing in her hand is hers to show).
+function linCarries(game) {
+  const w = game.world;
+  const lin = game.npcs.find((n) => n.id === 'lin');
+  if (!lin) return;
+  if (w.letter === 'lin' && lin.carry !== 'letter') {
+    w.items = w.items.filter((i) => i.type !== 'letter');
+    lin.carry = 'letter';
+  } else if (w.letter !== 'lin' && lin.carry === 'letter') lin.carry = null;
+}
+
 const gotIt = (w) => w.letter === 'player' || w.letter === 'drawer' || w.letter === 'eaten';
 
 // The level's own clock work, once a step (from clockFor, on the boss's turn: he is first in the cast).
@@ -263,6 +360,8 @@ function tick(game) {
   }
   // Whoever had you sent to your desk (a tattle: the shout's sightline is still up; else the boss himself), for the
   // 3:40 card.
+  sick(game);
+  linCarries(game);
   if (game.rules?.working && !w.deskwork) w.deskwork = game.fx?.lines?.find((l) => l && l.kind === 'tattle')?.from ?? 'boss';
 }
 
@@ -343,6 +442,7 @@ export default {
   items: ITEMS,
   roles: ROLES,
   lures: LURES,
+  noises: { 'player:sick': { at: 'puddle', radius: 40, ripple: true } }, // a retch heard all over the floor
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
@@ -372,8 +472,13 @@ export default {
   // with it, you got away with it (never 'blamed').
   meeting: {
     override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'called_in',
-    verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' }
-      : result === 'fail' && game.world.deskwork === 'kev' && game.world.letter !== 'eaten' ? { why: 'deskwork' } : null),
+    verdict: (game, { result }) => {
+      const w = game.world;
+      if (result === 'blamed') return { result: 'win', why: w.letter === 'eaten' ? 'eaten' : undefined };
+      if (result === 'win') return w.letter === 'eaten' ? { why: 'eaten' } : null; // still in you: he finds an empty tray
+      if (w.soggy && (w.letter === 'tray' || w.letter === 'boss')) return { why: 'soggy' }; // it came back up
+      return w.deskwork === 'kev' ? { why: 'deskwork' } : null;
+    },
   },
   // A route's icon names your move: you flip his light 💡, you soak Lin's coffee machine ☕, you pull the breaker ⚡.
   routes: [
@@ -405,6 +510,14 @@ export default {
     trayRead: false, // he looked in it
     stashAt: null, // loop seconds when you put it in your drawer
     linCoffee: false,
+    eatenAt: null, // the game minute you ate it
+    queasy: false, // your face went green
+    sick: false, // it came back up
+    sickAt: null, // loop seconds when
+    soggy: false, // the letter has been through you
+    puddle: null, // where: { x, y } in tiles
+    pinchProgress: 0,
+    fileProgress: 0,
     deskwork: null, // who had you sent to your desk with a pile of work: 'kev' | 'lin' | 'boss'
     items: [],
   }),

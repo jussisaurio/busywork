@@ -28,8 +28,57 @@ export function paintLetter(ctx, x, y, s = 1, rot = 0) {
 
 // The letter as an item's look (items.letter.draw; render/things.js calls it as (ctx, x, y, size, t)): in your hand,
 // in the boss's, on the floor and in the HUD slot. `size` is how big an emoji there would be.
-export function letter(ctx, x, y, size) {
-  paintLetter(ctx, x, y, size / 14); // as wide as an emoji of that size
+// Once it has come back up it is soggy: stained sick-green, sagging, dripping.
+export function letter(ctx, x, y, size, t, game) {
+  const s = size / 14; // as wide as an emoji of that size
+  if (game?.world?.soggy) return soggyLetter(ctx, x, y, s, t ?? 0);
+  paintLetter(ctx, x, y, s);
+}
+
+// The soggy letter: the envelope, a green-brown stain over it, its corner curled, drops falling off its bottom edge.
+export function soggyLetter(ctx, x, y, s = 1, t = 0, rot = 0) {
+  paintLetter(ctx, x, y, s, rot);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(s, s);
+  ctx.fillStyle = 'rgba(132,160,52,0.6)';
+  ctx.beginPath();
+  ctx.ellipse(-1, 0.5, 6.5, 4, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(96,120,30,0.55)';
+  ctx.beginPath();
+  ctx.ellipse(3, 2, 3, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (let i = 0; i < 3; i++) { // drips
+    const k = (t * 1.3 + i / 3) % 1;
+    fillCircle(ctx, -4 + i * 4, 4.5 + k * 6, 1.1 * (1 - k * 0.4), `rgba(150,180,60,${0.9 * (1 - k)})`);
+  }
+  ctx.restore();
+}
+
+// Where you threw up: a cartoon puddle, lumpy, sick-green, a shine on it. It spreads out over half a second.
+export function puddleProp(ctx, info, at, shown) {
+  if (!shown.at) return;
+  const k = Math.min(1, shown.k ?? 1);
+  const x = shown.at.x * T;
+  const y = shown.at.y * T;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(0.4 + 0.6 * k, 0.4 + 0.6 * k);
+  ctx.fillStyle = '#9dbb3c';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 15, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (const [dx, dy, r] of [[-12, -3, 5], [11, 3, 6], [4, -6, 5], [-5, 6, 4]]) fillCircle(ctx, dx, dy, r, '#9dbb3c');
+  fillCircle(ctx, -3, 1, 2, '#7d9a28'); // lumps
+  fillCircle(ctx, 5, -1, 1.6, '#7d9a28');
+  fillCircle(ctx, 9, 4, 1.3, '#c8a74a');
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; // shine
+  ctx.beginPath();
+  ctx.ellipse(-6, -3, 4, 1.4, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
 
 // The in-tray: a chrome wire basket, 22 x 12, centred on (x, y). The desk shows through its mesh, so an empty one

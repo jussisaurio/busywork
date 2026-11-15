@@ -5,7 +5,9 @@
 //   breaker   thing that went dark: the coffee machine you soaked, scorched, its jug lying in a puddle (blackout); the
 //             fuse box, shut again (breaker).
 //   fail      3:40: he holds your letter up, furious; you stand in front of his desk.
-//   deskwork  the same, but Kev told on you and you sit at your desk behind a pile of paperwork.
+//   eaten     3:40, the letter still in you: he holds up his empty tray, baffled; you sit green at your desk.
+//   soggy     it came back up and reached his tray: he holds the dripping letter out at arm's length, furious.
+//   deskwork  as fail, but Kev told on you and you sit at your desk behind a pile of paperwork.
 //   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (by
 //             his desk, or under the switch you flipped). Each of you stands where you were; the letter is where it
 //             was (your hand, his tray, the floor).
@@ -358,6 +360,28 @@ function sceneWin(route) {
   };
 }
 
+// You, green in the face (the letter is still in you, or just came back up).
+const green = (look) => ({ ...look, skin: '#a9cf6e', skinDark: '#86ad4b' });
+
+// 3:40, the letter still inside you: he holds up his empty tray, baffled. You sit at your desk outside his glass
+// office, green in the face, hand on your stomach.
+function sceneEaten(ctx, game, t, e) {
+  office(ctx);
+  glassWall(ctx, GLASS_X);
+  lamp(ctx, 420, true, t);
+  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
+  chair(ctx, 420, 252);
+  const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + 0.45 + Math.sin(t * 3) * 0.05 });
+  drawPerson(ctx, game.level.looks.boss, b, 420, 228);
+  desk(ctx, 420, 252);
+  const p = person(t);
+  Object.assign(p, { dir: Math.PI / 2, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, sweat: true, scale: 2.4 });
+  drawPerson(ctx, green(game.level.looks.player), p, 720, 262 - Math.abs(Math.sin(t * 1.1)) * 3);
+  yourDesk(ctx, 720, 280);
+  if (e > 0.5) bubble(ctx, ['❓'], 446, 150, e - 0.5);
+  if (e > 0.9) bubble(ctx, ['🤢'], 660, 168, e - 0.9, 'thought');
+}
+
 // ---- Losses -------------------------------------------------------------------------------------------------------
 
 // 3:40, he read it: the letter held up, furious; the tray it came out of empty. You stand in front of his desk, where
@@ -394,6 +418,22 @@ function sceneDeskwork(ctx, game, t, e) {
   drawPerson(ctx, game.level.looks.player, p, 744, 262);
   yourDesk(ctx, 720, 280, { pile: 9 });
   if (e > 0.4) bubble(ctx, ['@player', '😠'], 450, 150, e - 0.4, 'alert');
+}
+
+// 3:40, he read it after it came back up: he holds the soggy, dripping letter out at arm's length, furious and
+// queasy; you stand in front of his desk, still a bit green.
+function sceneSoggy(ctx, game, t, e) {
+  office(ctx);
+  lamp(ctx, 440, true, t);
+  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
+  const b = boss(t, { arms: 'holdout', item: '#letter', angry: true, head: Math.PI / 2 - 0.4 + Math.sin(t * 6) * 0.06 });
+  drawPerson(ctx, game.level.looks.boss, b, 440, 238);
+  desk(ctx, 440, 252);
+  tray(ctx, 496, 252, false);
+  const p = person(t);
+  Object.assign(p, { dir: Math.PI - 0.5, head: Math.PI - 0.5, sweat: true, scale: 2.4 });
+  drawPerson(ctx, green(game.level.looks.player), p, 640, 306);
+  if (e > 0.4) bubble(ctx, ['✉️', '🤢', '😠'], 470, 170, e - 0.4, 'alert');
 }
 
 // Where someone stood in his office (tiles), in the picture: the switch's corner top left, his desk (tiles 3..5 of row
@@ -456,12 +496,14 @@ function sceneCaught(ctx, game, t, e) {
 // verdict makes it a win), but scores the same.
 const ROUTE_SCENE = { breaker: 'breaker', blackout: 'blackout' };
 export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' || o?.result === 'blamed' ? ROUTE_SCENE[o.routes?.[0]] ?? 'switch'
-    : o?.why === 'deskwork' ? 'deskwork' : o?.result ?? 'fail'),
+  kindOf: (o) => (o?.why === 'eaten' || o?.why === 'soggy' || o?.why === 'deskwork' ? o.why
+    : o?.result === 'win' || o?.result === 'blamed' ? ROUTE_SCENE[o.routes?.[0]] ?? 'switch' : o?.result ?? 'fail'),
   scenes: {
     switch: { win: true, icons: ['💡', '@boss', '❓', '✉️'], draw: sceneWin('switch') }, // his light, him baffled, the letter yours
     blackout: { win: true, icons: ['@lin', '☕', '⚡', '✉️'], draw: sceneWin('blackout') }, // Lin's coffee machine shorted the power, the letter
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneWin('breaker') }, // the fuse box, Kev fixed it, the letter
+    eaten: { win: true, icons: ['✉️', '🤢', '@boss', '❓'], draw: sceneEaten }, // you ate it; he finds his tray empty
+    soggy: { win: false, icons: ['🤢', '✉️', '@boss', '😠'], draw: sceneSoggy }, // it came back up, and back to his tray
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
     deskwork: { win: false, icons: ['@kev', '👉', '📄', '✉️'], draw: sceneDeskwork }, // Kev told; buried in work, you never got it back
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he finds you: in the light or in his torch

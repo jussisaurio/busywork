@@ -148,6 +148,38 @@ export default [
     },
   },
   {
+    name: 'breaker, then eat it after 3:30 → still inside you at 3:40 → win (eaten)',
+    expect: { result: 'win', routes: ['breaker'] },
+    play({ run, g, log }) {
+      run('goto fuse_box pretend'); run('interact'); run('goto desk_side pretend'); run('interact');
+      took(log, 'breaker');
+      run('goto my_seat pretend'); run('goto my_seat pretend');
+      for (let i = 0; i < 3; i++) run('wait until 3:32');
+      run('move S 0.4s'); // at your desk E is the drawer
+      run('eat');
+      if (g.world.letter !== 'eaten') throw new Error('never ate it');
+      for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
+      if (g.outcome?.why !== 'eaten') throw new Error(`end card ${g.outcome?.why}, not eaten`);
+    },
+  },
+  {
+    name: 'breaker, then eat it early → it comes back up, Lin pinches it into his tray → fail (soggy)',
+    expect: { result: 'fail' },
+    play({ run, g, log }) {
+      run('goto fuse_box pretend'); run('interact'); run('goto desk_side pretend'); run('interact');
+      run('goto my_seat pretend'); run('goto my_seat pretend');
+      run('move S 0.4s');
+      run('eat');
+      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:23');
+      if (!g.world.sick || g.world.letter !== 'dropped') throw new Error('it never came back up');
+      run('move E 0.6s'); // step off the puddle and let Lin deal with it
+      for (let i = 0; i < 6 && !log.some((e) => e.name === 'lin:files'); i++) run('wait 5s');
+      if (g.world.letter !== 'tray') throw new Error(`Lin left it ${g.world.letter}`);
+      for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
+      if (g.outcome?.why !== 'soggy') throw new Error(`end card ${g.outcome?.why}, not soggy`);
+    },
+  },
+  {
     name: 'in the light: take it from beside his desk → he sees you → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, g }) {
