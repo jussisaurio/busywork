@@ -477,7 +477,7 @@ game = {
   `{ isDown(action), pressed(action), axis() → {x,y} (normalised or 0), destroy() }`.
   Actions: `up down left right interact busy restart pause mute cones slower faster start`.
   `pressed()` is consume-on-read, and an unconsumed press expires after 0.2 s.
-  Keys: WASD/arrows; E/Space/Enter = interact (Enter/Space/E also = start); Shift or P = busy (shown as "pretend");
+  Keys: WASD/arrows; E = interact (E/Space/Enter = start); Shift or P = busy (shown as "pretend");
   R; Esc = pause; M; V; `[` `]`. Arrows and space don't scroll the page. Any object with the same interface works
   in tests (`src/agent/scripted-input.js`).
 - `updatePlayer(game, dt)`: movement with tile collision (circle `PLAYER_RADIUS`, sliding along walls), pretend
