@@ -90,6 +90,22 @@ export function trayProp(ctx, info, at, shown) {
   paintTray(ctx, at.x * T + T / 2 - 11 * k, at.y * T + T / 2 - 1 - 4 * k, shown.letter);
 }
 
+// Your desk's drawer, on the side you sit at: slid open while you put the letter in (`open` 0..1), and once it's
+// shut, the letter's corner sticking out of it for the rest of the day.
+export function drawerProp(ctx, info, at, shown) {
+  if (!shown.stashed) return;
+  const k = shown.open ?? 0;
+  const x = at.x * T + T - 4; // right of your chair
+  const y = at.y * T + T - 7 + k * 7;
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fillRect(x, y + 1, 16, 7);
+  ctx.fillStyle = '#9a7246';
+  ctx.fillRect(x, y, 16, 6);
+  ctx.fillStyle = '#c9a86a';
+  ctx.fillRect(x + 6, y + 2, 4, 1.5);
+  paintLetter(ctx, x + 12, y - 1 + (k > 0 ? -2 : 1), 0.55, -0.35); // its corner
+}
+
 // The boss's desk clock, on the west end of his desk two tiles from the tray (keyed on the tray's tile: the first
 // desk tile on the map is the kitchen counter). A brass alarm clock, its hands on the real time. While he checks it,
 // a glint off its face; when it chimes 3:39, it rattles and rings.
@@ -295,18 +311,19 @@ export function machineProp(ctx, info, at, shown, t) {
   const ly = py + 11;
   if (shown.lamp === 'brewed' || (shown.lamp === 'brewing' && Math.sin(t * 6) > 0)) {
     const big = shown.lamp === 'brewed';
-    const r = big ? 9 : 5;
+    const r = big ? 13 : 5;
     const g = ctx.createRadialGradient(lx, ly, 0.2, lx, ly, r);
     g.addColorStop(0, 'rgba(150,255,140,0.9)');
     g.addColorStop(1, 'rgba(150,255,140,0)');
     ctx.fillStyle = g;
     ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
-    fillCircle(ctx, lx, ly, big ? 2.6 : 1.6, '#e2ffd8');
+    if (big) fillCircle(ctx, lx, ly, 4, '#2f9a3c'); // a big round lamp, lit
+    fillCircle(ctx, lx, ly, big ? 3 : 1.6, '#e2ffd8');
   }
   if (shown.steam) {
-    for (let i = 0; i < 3; i++) {
-      const k = (t * 0.5 + i / 3) % 1;
-      fillCircle(ctx, px + 14.5 + Math.sin(t * 1.7 + i * 2.1) * 3 * k, py + 10 - k * 20, 2 + k * 4, `rgba(255,255,255,${0.55 * (1 - k)})`);
+    for (let i = 0; i < 5; i++) { // a tall plume off the hot pot
+      const k = (t * 0.5 + i / 5) % 1;
+      fillCircle(ctx, px + 14.5 + Math.sin(t * 1.7 + i * 2.1) * 4 * k, py + 10 - k * 28, 2.5 + k * 6, `rgba(255,255,255,${0.75 * (1 - k)})`);
     }
   }
   if (!shown.smoke) return;

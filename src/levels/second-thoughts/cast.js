@@ -27,7 +27,7 @@ export const CAST = [
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
-    vision: { fov: deg(90), radius: 7 },
+    vision: { fov: deg(90), radius: 6 },
     coneTint: [120, 220, 205],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),

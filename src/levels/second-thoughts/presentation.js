@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, deskClockProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, deskClockProp, drawerProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -54,6 +54,14 @@ export const DECOR = {
   // pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse is out, and
   // a scorch mark for the rest of the day. (The switch and the fuse box: darkness.controls.)
   props: [
+    {
+      tile: 'P',
+      draw: drawerProp,
+      state: (w, game) => ({
+        stashed: w.letter === 'drawer',
+        open: w.stashAt === null ? 0 : Math.max(0, 1 - Math.max(0, (game?.loopTime ?? 0) - w.stashAt - 0.6) / 0.6),
+      }),
+    },
     { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray', pull: w.trayPull }) },
     {
       tile: 'Y',
@@ -132,6 +140,7 @@ export const SOUNDS = {
     'switch:fixed': { sfx: 'clank', spot: 'office_switch' },
     'letter:taken': { sfx: 'jingle', who: 'player', opts: { gain: 0.5 } },
     'letter:eaten': { sfx: 'munch', who: 'player' },
+    'letter:stashed': { sfx: 'shuffle', who: 'player', opts: { gain: 0.5 } },
   },
   signs: {},
   contraband: {},

@@ -17,6 +17,7 @@
 import { at, deg } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { isDark } from '../../game/darkness.js';
+import { sitAtDesk } from '../../play/player.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
 import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -74,7 +75,8 @@ const SPOTS = {
   fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
   coffee_machine: { x: 21, y: 2, face: 'N' }, // in front of M: Kev sees it from his desk, through the kitchen door
   desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, by the side door: his torch never rests here
-  in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk: where you're summoned at 3:40 if he reads it
+  in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk
+  called_in: { x: 5, y: 5, face: 'N' }, // where you're summoned at 3:40 if he reads it: a step back from his desk
   boss_door: { x: 6, y: 7, face: 'N' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
   restroom: { x: 25, y: 12, face: 'S' },
@@ -117,9 +119,21 @@ const INTERACTIONS = {
       game.player.held = 'letter';
       w.letter = 'player';
       w.snatched = howDark(game, a.x, a.y) ?? (w.officeLight === 'starting' ? 'switch' : 'light'); // a blink is still his dark
-      say(game, 'player', ['😊'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('letter:taken', { how: w.snatched });
       if (w.snatched !== 'light') game.events.emit('letter:snatched', { how: w.snatched });
+    },
+  },
+  // Your desk while you hold the letter: it goes in your drawer and you sit down (out of everyone's sight for good).
+  stash_letter: {
+    on: 'own_desk', text: 'put your letter in your drawer', instant: true,
+    can: (p) => p.held === 'letter',
+    done(game) {
+      const w = game.world;
+      game.player.held = null;
+      w.letter = 'drawer';
+      w.stashAt = game.loopTime;
+      sitAtDesk(game);
+      game.events.emit('letter:stashed', {});
     },
   },
   flip_switch: {
@@ -207,7 +221,7 @@ const LURES = [
     plan: 'fuse',
     label: 'fuse box',
     spot: 'fuse_box',
-    react: { wait: 1.2, says: [{ say: ['❓'], kind: 'thought' }], event: 'kev:fuse' },
+    react: { wait: 1.2, says: [{ say: ['❓'], kind: 'thought', ttl: 1 }, { say: ['🔧'], kind: 'thought', after: 1.1, ttl: 2.4 }], event: 'kev:fuse' },
     work: {
       override: 'fixing',
       minutes: 3,
@@ -218,7 +232,7 @@ const LURES = [
   },
 ];
 
-const gotIt = (w) => w.letter === 'player' || w.letter === 'eaten';
+const gotIt = (w) => w.letter === 'player' || w.letter === 'drawer' || w.letter === 'eaten';
 
 // The level's own clock work, once a step (from clockFor, on the boss's turn: he is first in the cast).
 const SURGE = 1.2; // s: the short runs down the wiring from the coffee machine to the fuse box
@@ -242,6 +256,14 @@ function tick(game) {
   }
   if (w.coffee === 'brewing' && w.fuse === 'on' && game.clock.minute - w.brewAt >= BREW_MIN) w.coffee = 'brewed';
   dread(game);
+  // 3:05: Lin gets up for her afternoon coffee, and thinks of it.
+  if (game.clock.minute >= 5 && !w.linCoffee) {
+    w.linCoffee = true;
+    say(game, 'lin', ['☕'], { kind: 'thought', ttl: 2.2 });
+  }
+  // Whoever had you sent to your desk (a tattle: the shout's sightline is still up; else the boss himself), for the
+  // 3:40 card.
+  if (game.rules?.working && !w.deskwork) w.deskwork = game.fx?.lines?.find((l) => l && l.kind === 'tattle')?.from ?? 'boss';
 }
 
 // The boss dreads his tray. Acting only: his facing and his cone never change. A fixed five-minute round from 3:01,
@@ -338,7 +360,8 @@ export default {
     // Up and walking, his beam goes where he looks.
     torch: {
       when: (n, w) => w.fuse !== 'on' || (w.officeLight !== 'on' && inOffice(n)), fov: deg(60), radius: 7,
-      aim: (n) => (n.id === 'boss' && atBossDesk(n) ? 'boss_door' : null),
+      aim: (n) => (n.id === 'boss' && atBossDesk(n) ? 'boss_door'
+        : n.id === 'kev' && (n.override === 'fuse' || n.override === 'fixing') ? 'fuse_box' : null),
     },
     controls: [
       { tile: 'S', kind: 'switch', on: (w) => w.officeLight !== 'off' }, // its amber lamp lights while it's off
@@ -348,8 +371,9 @@ export default {
   // 3:40 is no meeting: he goes through his tray at his desk. Nobody knows the letter ever existed, so wherever you are
   // with it, you got away with it (never 'blamed').
   meeting: {
-    override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
-    verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' } : null),
+    override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'called_in',
+    verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' }
+      : result === 'fail' && game.world.deskwork === 'kev' && game.world.letter !== 'eaten' ? { why: 'deskwork' } : null),
   },
   // A route's icon names your move: you flip his light 💡, you soak Lin's coffee machine ☕, you pull the breaker ⚡.
   routes: [
@@ -379,6 +403,9 @@ export default {
     pullAt: null, // the game minute he started dragging the tray over
     trayPull: 0, // how far he has dragged it (0..1)
     trayRead: false, // he looked in it
+    stashAt: null, // loop seconds when you put it in your drawer
+    linCoffee: false,
+    deskwork: null, // who had you sent to your desk with a pile of work: 'kev' | 'lin' | 'boss'
     items: [],
   }),
   harness,
