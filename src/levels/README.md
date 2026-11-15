@@ -15,6 +15,7 @@ rm src/levels/stapler/golden.json src/levels/stapler/golden-render.json
 - In `src/levels/stapler/index.js`, set `id: 'stapler'`. The id must equal the folder name: the tools find a level's
   goldens by it.
 - In `src/levels/index.js`, add `import stapler from './stapler/index.js';` and `stapler,` in `levels`.
+- Run `node tools/test-levels.mjs`: it lists each load problem with its field path.
 
 | File | What it holds |
 |---|---|
@@ -22,19 +23,23 @@ rm src/levels/stapler/golden.json src/levels/stapler/golden-render.json
 | `cast.js` | the people, their schedules (sorted by `at`) and their behaviour hooks |
 | `presentation.js` | the mission card (`TITLE`), decor, looks, end scenes |
 | `harness.js` | what the AI harness prints: event lines (`describe`), `landmarks`, names, map key |
-| `gate.js` | what the fuzzer and the gate need: targets, milestones, `mustUse`, golden plans |
+| `gate.js` | what the fuzzer and the gate need: targets, milestones, `mustUse`, `renderEvents`, golden plans |
+| `route-checks.js` | scripted plays and the outcome each must reach (`tools/routes.mjs`). Rewrite the copied ones. |
 
 `src/levels/fixture-inspection/index.js` is the smallest level, all in one file.
 
-A level that runs needs all of these. Most have no default, and a missing one fails late, in a tool, not at load:
+A level needs all of these. The validator rejects a level without them at load:
+- `id`, and `title` (two mission lines and a badge).
 - `map` of at most 30×17 tiles. There is no camera: a smaller map draws at the top left, a larger one is cut off.
-- `spots.player_desk` (you start there), and `my_seat` in `harness.landmarks` (the fuzzer's `sit` walks to it).
-- `day.gatherAt`, `day.meetingAt` and the cue times `clockRedAt`, `clockTickAt`, `tockAt`, `halfMinuteAt`.
-- `cast`, `zones`, and `meeting` (its `room` is a zone).
-- `routes`, and `outcomeOrder` with every route id in it.
-- `roles.authority` as `{ id, offDuty, helpless, deafIn }`. `helpless` has no default.
+- `spots.player_desk` (you start there; `sit` and `goto my_seat` go there).
+- `day.start`, `day.gatherAt`, `day.meetingAt` (the cue times, such as `clockRedAt`, have defaults).
+- `cast`, `zones`, `interactions` (`{}` is fine), and `meeting` (its `room` is a zone).
+- `routes`, and `outcomeOrder` with every route id in it once.
 - `initialWorld()` that returns `items: []` and every world field the level reads.
-- `gate`, and `itemIcons` for each item type (without it the item draws as ❔).
+- an `icon` for each item type.
+
+The tools also need `gate` and `route-checks.js`. `roles.authority` is optional: without one, nobody assigns work
+and only an inspection can catch you.
 
 ## 2. Add a mechanic by data
 
@@ -66,11 +71,14 @@ const LURES = [{
 | attention | `noise` on an interaction, `noises` | `src/levels/fixture-attention/index.js` |
 
 The header of each file in `src/sim/mechanics/` lists its fields. When a mechanic's event matters, add it to
-`gate.milestones` (so the fuzzer can tell runs apart) and give it a line in `harness.js` `describe`.
+`gate.milestones` (so the fuzzer can tell runs apart), to `gate.renderEvents` if it changes the picture, and give
+it a line in `harness.js` `describe`. The put-down and inspection events have engine milestones already.
 
 ## 3. Goldens and the gate
 
 ```sh
+node tools/test-levels.mjs                                      # every level loads
+node tools/routes.mjs --level stapler                           # your route checks
 node tools/fuzz.mjs --level stapler --json fuzz.json            # about 3 s
 node tools/golden.mjs --level stapler --write --from fuzz.json  # writes golden.json
 node tools/golden-render.mjs --level stapler --write            # writes golden-render.json
@@ -89,7 +97,7 @@ The gate fuzzes 30000 days and fails (exit 1) on any of these:
 
 | Check | Fails when |
 |---|---|
-| `routes` | no plan wins one of the routes. This is the route check for every level (`tools/routes.mjs` is level 1 only). |
+| `routes` | no plan wins one of the routes |
 | `easy` | a win takes 3 plan steps or fewer |
 | `random` | random plans win more than 1% of days |
 | `crash` | a command throws, or a day never ends |
@@ -118,6 +126,13 @@ name it in `mustUse` (the fixture's list is empty).
 - **No `Math.random`, `Date` or `performance.now` in gameplay.** The same inputs must give the same day.
 - **Event names and payloads are digested.** Renaming an event changes the goldens.
 - **Name each voice after its cast id.** A `say()` with no voice uses the owner's id as the voice name.
+- **`at()` counts from 2:30 PM.** Another start: `at('9:30', START)`, with 24-hour times after noon.
+- **Templated events go in `gate.renderEvents` by hand** (`<authority>:workAssigned`, `<type>:eaten`, ...).
+- **Desk looks depend on `decor.zoneSeeds` names.** A desk in zone `kitchen` is a kitchen table, in `office` an
+  executive desk, elsewhere a work desk. With no `decor.deskOwners` spot facing it, it faces a sitter to its south.
+- **`decor.props` find their tile by map letter**, not by draw or kind.
+- **The harness map shows your map letters**, marks seen floor `*` only on `.`, `:` and `D`, and its default key
+  names only the base letters. Explain yours in `harness.mapKey`.
 
 ## The design rule
 
