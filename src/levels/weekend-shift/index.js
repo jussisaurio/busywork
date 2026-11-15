@@ -6,8 +6,9 @@
 //   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s
 //     (long enough to notice it while fast-forwarding at your pretend, let go, and still finish writing).
 //     The board is on the west side: be there when it dings.
-//   - your desk phone rings the boss's: he answers it at his window, his back to the office, for 5 minutes. Lin
-//     still watches the board, except while she heats her fish at the microwave (4:30-4:37): ring then.
+//   - your desk phone (its own tile on your desk) rings the boss's, on a side table in the corner of his office: he
+//     answers it standing there, facing the window, his back to the office, for 5 minutes. Lin still watches the
+//     board, except while she heats her fish at the microwave (4:30-4:37): ring then.
 //   - the trap: a paper clip jams the copier, and it beeps until Kev fixes it. Every head turns toward it, and
 //     the board stands between the copier and both watchers: at the beeping, it's in plain view.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
@@ -23,10 +24,11 @@ const DING_S = 10; // s from starting the microwave to the ding (6 game minutes 
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier   R the Saturday roster (a whiteboard on a stand)
-//   M microwave   C coffee machine   S sink   F fridge   P your desk   H plant   T desk/table   G glass   D door
+//   M microwave   C coffee machine   S sink   F fridge   P your desk   Q your desk phone   H plant   T desk/table
+//   B the boss's phone, on a side table   G glass   D door
 const MAP = [
   '##############################', // 0
-  '#.....#.............#........#', // 1
+  '#.....#............B#........#', // 1
   '#.....#.............#........#', // 2
   '#.....#.............#..TTTT..#', // 3
   '#.....#.....TTT.....#........#', // 4
@@ -38,7 +40,7 @@ const MAP = [
   '#...........................S#', // 10
   '#...........................F#', // 11
   '#............................#', // 12
-  '#...TPT...TTT....TTT.........#', // 13
+  '#...TPQ...TTT....TTT.........#', // 13
   '#H..........................H#', // 14
   '#............................#', // 15
   '##############################', // 16
@@ -52,6 +54,10 @@ const LEGEND = {
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // the counter and sink: props.js draws them
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  // the phone on your desk (props.js draws it): the call lights it, not your seat
+  Q: { kind: 'desk_phone', solid: true, opaque: false, draw: 'desk', interactable: 'desk_phone' },
+  // the boss's phone, on a side table in his corner (props.js draws both): he takes calls standing beside it
+  B: { kind: 'phone_table', solid: true, opaque: false },
 };
 
 const SPOTS = {
@@ -62,7 +68,7 @@ const SPOTS = {
   copier: { x: 4, y: 8, face: 'N' }, // Kev repairs from here
   copier_boss: { x: 5, y: 7, face: 'W' }, // the boss photocopying, his back to the board
   microwave: { x: 27, y: 9, face: 'E' },
-  boss_window: { x: 19, y: 1, face: 'N' }, // the boss on the phone, his back to the office, the board out of sight
+  boss_window: { x: 18, y: 1, face: 'N' }, // beside his phone (B): on a call, his back to the office, the board out of sight
   board_boss: { x: 8, y: 10, face: 'E' }, // beside the board, facing the room: he reads the roster out from here
   board_look: { x: 10, y: 8, face: 'W' }, // past the board's face, seen from board_boss: what he turns to, to read it
   meeting_lin: { x: 11, y: 10, face: 'W' },
@@ -98,8 +104,8 @@ const INTERACTIONS = {
     },
   },
   call_boss: {
-    on: 'own_desk', icon: '📞', text: "ring the boss's desk phone", duration: 1.0, sneaky: false,
-    can: (p, w) => !!p.seated && w.phone === 'idle',
+    on: 'desk_phone', icon: '📞', text: "ring the boss's phone", duration: 1.0, sneaky: false,
+    can: (p, w) => w.phone === 'idle', // in reach from your seat, too: ringing at 4:00 is the obvious first try
     done(game) {
       game.world.phone = 'ringing';
       game.events.emit('phone:ringing', {});
@@ -138,12 +144,13 @@ const NOISES = {
     while: (w) => w.copier === 'jammed' || w.copier === 'fixing',
     ripple: { color: '#e0533d' }, sfx: 'machineBeep',
   },
-  // The boss's desk phone rings until he answers it. He doesn't stare at it, he goes for it (the lure): only the
-  // others turn to a ringing phone, and they're out of earshot at their desks.
+  // The boss's phone, in the corner of his office, rings until he answers it. He doesn't stare at it, he goes for it
+  // (the lure): only the others turn to a ringing phone, and they're out of earshot at their desks. (It sounds from
+  // where he stands to answer it: a noise is at a spot, and the phone's table is solid.)
   'phone:ringing': {
-    at: 'boss_desk', radius: 6, every: 1.5, turn: 1.5, npcs: ['lin', 'kev'],
+    at: 'boss_window', radius: 6, every: 1.5, turn: 1.5, npcs: ['lin', 'kev'],
     while: (w) => w.phone === 'ringing',
-    ripple: { color: '#f3e6c8' }, sfx: 'jingle',
+    ripple: { color: '#f3e6c8' }, sfx: 'phoneRing',
   },
 };
 
@@ -168,7 +175,7 @@ const LURES = [
       done: { set: { copier: 'fixed' }, event: 'copier:fixed', says: [{ say: ['😊'] }] },
     },
   },
-  { // The desk phone: the boss takes the call at his window, his back to the office.
+  { // The phone: the boss takes the call standing at it, in the corner by his window, his back to the office.
     npc: 'boss',
     when: (w) => w.phone === 'ringing',
     override: 'phone',
@@ -234,7 +241,7 @@ export default {
     rosterLocked: false, // the boss is at the board (from about 4:51): no more writing on it
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     fixProgress: 0,
-    phone: 'idle', // the boss's desk phone: 'idle' | 'ringing' | 'talking' | 'done'
+    phone: 'idle', // the boss's phone (B): 'idle' | 'ringing' | 'talking' (in his hand) | 'done'
     callProgress: 0,
     noodles: 'cold', // 'cold' | 'cooking' (dings at dingAt, a game minute)
     dingAt: null,

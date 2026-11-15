@@ -7,11 +7,12 @@
 //             Step 2: those readings, which check each run was, and premise.md's ways to win and lose.
 // Each step is a fresh `claude -p` (tools: Read and Glob) whose working folder is a new temp folder that holds only
 // that step's bundle. Its reply is captured from stdout. The prompt is prompts/common.md plus the step's own prompt
-// (tools/cold-read/prompts/).
+// (tools/cold-read/prompts/); the premise review also gets prompts/engine.md, the rules the engine holds every level to.
 //
 // The result goes in src/levels/<id>/cold-read.md, one section per stage, replaced when the stage runs again: the
 // verdict (the first line of the last step's reply), the date, the commit, a hash of the stage's inputs, and every
-// step's reply verbatim. A stage is fresh while its inputs hash to the recorded value:
+// step's reply verbatim. A stage is fresh while its inputs hash to the recorded value (every stage's inputs include
+// the full text of every prompt its readers get):
 //   premise   the card and premise.md
 //   pictures  the card, the shots list (names, commands, intents) and the PNG bytes of every shot
 //   replay    the card, the route checks, premise.md's ways to win and lose, and every frame and caption
@@ -55,6 +56,7 @@ const rel = (p) => relative(ROOT, p) || '.';
 const PART_NAMES = {
   card: 'the card', premise: 'premise.md', shots: 'shots.js', pictures: 'the rendered shots',
   checks: 'route-checks.js', ways: 'premise.md\'s ways to win and lose', frames: 'the replay strips',
+  prompts: 'the stage\'s prompts',
 };
 
 // sha256 over parts (strings or Buffers), each length-prefixed so no two lists hash alike.
@@ -99,7 +101,8 @@ export function levelSources(id) {
 
 // Everything the stage's readers see, built once: { id, stage, card, hash, parts, ... }. root: where premise.md and
 // cold-read.md live (the level's folder). shots, checks: stand-ins for shots.js and route-checks.js. lib: the canvas.
-export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, checks } = {}) {
+// prompts: the folder the prompts come from (tests only).
+export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, checks, prompts = PROMPTS } = {}) {
   if (!STAGES.includes(stage)) throw new Error(`no stage '${stage}' (${STAGES.join(', ')})`);
   const level = getLevel(id);
   const pf = join(root, 'premise.md');
@@ -111,7 +114,7 @@ export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, 
   if (off.length) throw new Error(`${rel(pf)}: '## Card' must hold the card's lines exactly as the level has them: ${off.map((l) => JSON.stringify(l)).join(', ')}`);
   const card = cardText(level, P.name);
   const parts = { card: sha(card) };
-  const inp = { id, stage, level, root, card, premise, parts };
+  const inp = { id, stage, level, root, card, premise, parts, prompts };
   if (stage === 'premise') {
     parts.premise = sha(premise);
     inp.src = levelSources(id);
@@ -131,6 +134,8 @@ export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, 
     parts.ways = sha(inp.ways);
     parts.frames = sha(...inp.runs.flatMap((r) => r.frames.flatMap((f) => [f.png, f.caption])));
   }
+  // Every prompt the stage's readers get, so a prompt change makes the stage stale too.
+  parts.prompts = sha(...new Set(stageSteps(inp).map((s) => stepPrompt(s, prompts))));
   inp.hash = sha(...Object.entries(parts).map(([k, v]) => `${k}=${v}`));
   return inp;
 }
@@ -151,15 +156,15 @@ export function batchRuns(runs, max = REPLAY_BATCH) {
 
 const prefixed = (pre, obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [pre + k, v]));
 
-// The stage's steps, in order: { id, prompt (file in PROMPTS), reply (what its reply is called), needs: [step ids],
-// files(replies) → { path in the bundle: string | Buffer } }.
+// The stage's steps, in order: { id, prompt (file in PROMPTS), extra (more files in PROMPTS, put before it),
+// reply (what its reply is called), needs: [step ids], files(replies) → { path in the bundle: string | Buffer } }.
 export function stageSteps(inp, { batch = REPLAY_BATCH } = {}) {
   const { card } = inp;
   if (inp.stage === 'premise') {
     return [
       { id: '1-card', prompt: 'premise-1-card.md', reply: 'first-read.md', needs: [], files: () => ({ 'card.txt': card }) },
       {
-        id: '2-review', prompt: 'premise-2-review.md', reply: 'report.md', needs: ['1-card'],
+        id: '2-review', prompt: 'premise-2-review.md', extra: ['engine.md'], reply: 'report.md', needs: ['1-card'],
         files: (r) => ({ 'card.txt': card, 'first-read.md': r['1-card'], 'premise.md': inp.premise, ...prefixed('src/', inp.src) }),
       },
     ];
@@ -194,8 +199,10 @@ export function stageSteps(inp, { batch = REPLAY_BATCH } = {}) {
   }];
 }
 
-// A step's full prompt: the common preamble, then its own.
-export const promptText = (file) => `${readFileSync(join(PROMPTS, 'common.md'), 'utf8').trim()}\n\n${readFileSync(join(PROMPTS, file), 'utf8').trim()}\n`;
+// A step's full prompt: the common preamble, then any extra files (the engine rules), then its own.
+export const promptText = (file, extra = [], dir = PROMPTS) =>
+  ['common.md', ...extra, file].map((f) => readFileSync(join(dir, f), 'utf8').trim()).join('\n\n') + '\n';
+export const stepPrompt = (s, dir = PROMPTS) => promptText(s.prompt, s.extra, dir);
 
 // The verdict on a report's first line: 'works' | 'fixable' | 'broken', or null when the line is not a verdict.
 // Markdown emphasis around it (**Verdict: works**) is forgiven; anything else on the line is not.
@@ -278,7 +285,7 @@ export async function runStage(id, stage, opts = {}) {
         writeFiles(cwd, s.files(replies));
         log(`cold-read: ${id} ${stage} step ${s.id}: reading ${cwd}`);
         const t0 = Date.now();
-        const out = await runner({ prompt: promptText(s.prompt), cwd, model, step: s.id });
+        const out = await runner({ prompt: stepPrompt(s, inp.prompts), cwd, model, step: s.id });
         const ms = Date.now() - t0;
         replies[s.id] = out.text;
         results[s.id] = { id: s.id, reply: s.reply, text: out.text, ms, costUsd: out.costUsd ?? null };
@@ -454,7 +461,7 @@ export async function bundleOnly(id, stage, opts = {}) {
       if (!m.dir || !existsSync(m.dir)) {
         m.dir = bundleDir(id, stage, s.id);
         writeFiles(m.dir, s.files(replies));
-        writeFileSync(m.prompt, promptText(s.prompt));
+        writeFileSync(m.prompt, stepPrompt(s, inp.prompts));
       }
       m.state = 'ready';
     } else m.state = 'waiting';

@@ -4,7 +4,8 @@
 //   the photocopier: a green light, or a red one, a beep and paper sticking out of it while it's jammed; its front
 //     open and a spanner turning in it while Kev fixes it
 //   the microwave: the noodles (or Lin's fish) turning in a lit window, and the seconds left to the DING
-//   the desk phones: yours off the hook and the boss's shaking, with the call between them, while it rings
+//   the phones: yours on your desk, off the hook while it rings the boss's, shaking on a side table in the corner
+//     of his office, with the call between them; while he talks, its handset at his ear on a coiled cord
 // The painters are plain functions (a decor.props draw may be the level's own). The end cards (end-scenes.js) draw
 // the board and the photos too.
 import { T, rrect, fillCircle, fillEllipse, font, text, hash } from '../../render/util.js';
@@ -372,7 +373,8 @@ function drawCounter(ctx, tx, ty0, ty1) {
   fillCircle(ctx, x + 17, sy + 8.5, 1.2, '#9aa3aa');
 }
 
-// A desk phone at (cx, cy): its base, and its handset on it unless lifted. ring: shaking, with sound marks.
+// A desk phone at (cx, cy): its base, and its handset on it unless lifted. ring: shaking, with sound marks; gone:
+// the handset is off the base (in the boss's hand: drawHandset).
 function drawPhone(ctx, cx, cy, { lifted = false, ring = false, gone = false } = {}, t) {
   fillEllipse(ctx, cx, cy + 5, 8, 2.5, 'rgba(0,0,0,0.2)');
   ctx.fillStyle = '#2c2a28';
@@ -414,6 +416,72 @@ function drawPhone(ctx, cx, cy, { lifted = false, ring = false, gone = false } =
   }
 }
 
+// The handset off the base, upright at an ear (cx, cy: the hand holding it).
+function drawHandset(ctx, cx, cy) {
+  ctx.fillStyle = '#3a3734';
+  rrect(ctx, cx - 2.6, cy - 9, 5.2, 13, 2.4);
+  ctx.fill();
+  fillCircle(ctx, cx, cy - 8, 3.2, '#3a3734');
+  fillCircle(ctx, cx, cy + 3.5, 3, '#3a3734');
+}
+
+// The coiled cord from a phone's base (x0, y0) to its handset (x1, y1): loops along a slack curve.
+function drawCord(ctx, x0, y0, x1, y1) {
+  const len = Math.hypot(x1 - x0, y1 - y0) || 1;
+  const nx = -(y1 - y0) / len;
+  const ny = (x1 - x0) / len;
+  const cx = (x0 + x1) / 2 + Math.abs(nx) * 2;
+  const cy = Math.max(y0, y1) + 6; // the slack hangs down
+  const loops = Math.max(4, Math.round(len / 3.2));
+  ctx.strokeStyle = '#2c2a28';
+  ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  for (let i = 0; i <= loops * 10; i++) {
+    const s = i / (loops * 10);
+    const px = (1 - s) * (1 - s) * x0 + 2 * (1 - s) * s * cx + s * s * x1;
+    const py = (1 - s) * (1 - s) * y0 + 2 * (1 - s) * s * cy + s * s * y1;
+    const a = s * loops * Math.PI * 2;
+    const r = 2.2 * Math.min(1, s * 6, (1 - s) * 6); // tight at both ends
+    const x = px + Math.cos(a) * r * 0.8;
+    const y = py + Math.sin(a) * r;
+    if (i) ctx.lineTo(x, y);
+    else ctx.moveTo(x, y);
+  }
+  ctx.stroke();
+}
+
+// A little side table, square, against the wall (x, y: its tile's corner).
+function drawSideTable(ctx, x, y) {
+  fillEllipse(ctx, x + 16, y + 24, 12, 3.5, 'rgba(25,15,8,0.22)');
+  ctx.fillStyle = '#5a3b26';
+  ctx.fillRect(x + 7, y + 14, 2.4, 10);
+  ctx.fillRect(x + 22.6, y + 14, 2.4, 10);
+  ctx.fillStyle = '#8a5a3a';
+  rrect(ctx, x + 4, y + 2, 24, 15, 2.5);
+  ctx.fill();
+  ctx.fillStyle = '#a06d48';
+  rrect(ctx, x + 4, y + 2, 24, 12, 2.5);
+  ctx.fill();
+}
+
+// A manila folder, a sheet sticking out of it (x, y: its top-left corner).
+function drawFolder(ctx, x, y) {
+  ctx.fillStyle = 'rgba(25,15,8,0.2)';
+  rrect(ctx, x + 1, y + 2, 15, 11, 1.5);
+  ctx.fill();
+  ctx.fillStyle = '#f4f1e6';
+  ctx.fillRect(x + 2.5, y, 11, 3);
+  ctx.fillStyle = '#d9b46a';
+  rrect(ctx, x, y + 1.5, 15, 10.5, 1.5);
+  ctx.fill();
+  ctx.fillStyle = '#c49b52';
+  rrect(ctx, x + 1, y + 0.5, 6, 2.5, 1);
+  ctx.fill();
+}
+
+// Where the boss's phone sits on its table (at: the table's tile).
+const cornerPhone = (at) => ({ x: at.x * T + 16, y: at.y * T + 9 });
+
 // While the boss's phone rings: the call, a line of dashes running from your phone to his.
 function drawCall(ctx, ax, ay, bx, by, t) {
   const mx = (ax + bx) / 2 - 30;
@@ -449,14 +517,30 @@ export function paintMicrowave(ctx, info, at, shown, t) {
   drawMicrowave(ctx, at.x * T + 2, at.y * T + 4, shown.noodles, shown.left, t, shown.fish);
 }
 
-// { phone, boss: {x, y} the boss's desk tile }: your desk phone, his, and the call between them.
-export function paintPhones(ctx, info, at, shown, t) {
-  const ax = at.x * T + T + 14;
+// { phone, to: the boss's phone's tile }: your desk phone (on its own tile, at), off the hook while it rings his, and
+// the call: dashes from yours to his. His (paintBossPhone) draws after, over the end of them.
+export function paintMyPhone(ctx, info, at, shown, t) {
+  const ax = at.x * T + 14;
   const ay = at.y * T + 13;
-  const bx = shown.boss.x * T - T + 14;
-  const by = shown.boss.y * T + 11;
   const ringing = shown.phone === 'ringing';
-  if (ringing) drawCall(ctx, ax, ay - 4, bx, by - 4, t);
+  if (ringing && shown.to) {
+    const b = cornerPhone(shown.to);
+    drawCall(ctx, ax, ay - 4, b.x, b.y - 4, t);
+  }
   drawPhone(ctx, ax, ay, { lifted: ringing }, t);
-  drawPhone(ctx, bx, by, { ring: ringing, gone: shown.phone === 'talking' }, t);
+}
+
+// { phone, hand: px | null }: the boss's phone on its side table (at), shaking while it rings, and none on his desk. While he talks its
+// handset is at his ear (hand: where the renderer puts his phone hand), on a coiled cord from the base: plainly the
+// same phone. Drawn under him: his arm and hand go over the handset.
+export function paintBossPhone(ctx, info, at, shown, t) {
+  // his desk (render/world.js draws a phone of its own at its top-left corner): a folder lies there instead
+  const desk = info.desks.find((d) => d.kind === 'exec');
+  if (desk) drawFolder(ctx, desk.x0 * T + 5, desk.y0 * T + 4);
+  drawSideTable(ctx, at.x * T, at.y * T);
+  const b = cornerPhone(at);
+  const inHand = shown.phone === 'talking' && shown.hand;
+  if (inHand) drawCord(ctx, b.x - 7, b.y + 2, shown.hand.x, shown.hand.y + 3);
+  drawPhone(ctx, b.x, b.y, { ring: shown.phone === 'ringing', gone: shown.phone === 'talking' }, t);
+  if (inHand) drawHandset(ctx, shown.hand.x, shown.hand.y);
 }
