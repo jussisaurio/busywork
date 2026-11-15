@@ -20,7 +20,7 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'boss:coffee'],
+    soft: ['boss:suspicious', 'boss:coffee', 'lin:sees', 'lin:tells'],
   },
 
   names: NAME,
@@ -48,7 +48,7 @@ export default {
     if (n.id === 'kev' && w.kevUp) bits.push('carrying his bag');
     if (n.id === 'boss' && w.coffee === 'done') bits.push('holding a coffee');
     if (n.id === 'boss' && n.override === 'pointOut') bits.push('coming for you');
-    if (n.id === 'lin' && n.override === 'toTell') bits.push('walking to the kitchen to tell the boss');
+    if (n.id === 'lin' && n.override === 'toTell') bits.push('getting up to go and tell the boss');
     if (n.id === 'lin' && w.linPhone === 'hand') bits.push('reading her mobile, turned away');
     return bits;
   },
@@ -69,11 +69,10 @@ export default {
   describe(e) {
     const p = e.payload ?? {};
     switch (e.name) {
-      case 'witness:tattle': return p.late
-        ? `${name(p.by)} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
-        : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the boss heard)' : ''}`;
+      case 'lin:sees': return 'Lin sees you crossing your face out; she thinks of the list with her own face on it 😨';
+      case 'lin:tells': return 'Lin points you out to the boss 👉🖥️';
       case 'meeting:gather': return 'the boss turns round in his chair and ticks the list off against the floor 📧';
-      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and looks at your desk' : 'the boss ticks the sheet name by name 📋✔️';
+      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and looks at your desk' : 'the boss frowns at the sheet, shrugs and goes on 📋🤨🤷';
       case 'boss:checks': return 'the boss checks his screen and puts your face back on the list 😠';
       case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';

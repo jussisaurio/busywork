@@ -211,7 +211,7 @@ export const BEHAVIOURS = {
         sim.speak(game, npc, [{ say: game.player.named ? ['👉', '@player', '😠'] : ['@player', '✔️'], after: 0.9 }]);
       } else {
         sim.lookAt(game, npc, 'screen', 2.6);
-        sim.speak(game, npc, [{ say: ['📋', '✔️'], after: 0.9 }]);
+        sim.speak(game, npc, [{ say: ['📋', '🤨', '🤷'], after: 0.9 }]); // one face short? It's Friday: he sends it
       }
       game.events.emit('boss:headCount', { on: w.list === 'on' });
     },

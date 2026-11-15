@@ -37,8 +37,8 @@ anything.
     go home, and it is not her business.
   - 3:31: he sighs (😮‍💨), gives up waiting, crawls behind his desk himself (🔌), and the static clears.
   - 3:42: the head count. He turns round in his chair and ticks off the faces on his list. If your face is on it,
-    he looks at your desk and ticks you (✔️ by your face). If it is not, he ticks the sheet (📋✔️) and turns back.
-    He ticks names; he does not count desks.
+    he looks at your desk and ticks you (✔️ by your face). If it is not, he frowns at the sheet, shrugs (📋🤨🤷)
+    and turns back. One face short? It is Friday at 3:42, and the list on his screen is the list.
   - 3:45: he clicks send.
 - **Kev**: young, spiky hair, olive hoodie. The office's computer person. His desk is behind Lin's, by the
   entrance, and his desk phone is on it.
@@ -53,13 +53,15 @@ anything.
     it up, turns away from the office to read it, and puts it back after about 4 seconds. The buzzes come at
     uneven times (3:04, 3:11.5, 3:17, 3:21, 3:24.5, 3:29.6, 3:32.4, 3:37, 3:39.5, 3:43), so the player
     watches her desk, not a count.
-  - When a phone rings behind her (Kev's desk), she turns round to it for as long as it rings.
+  - When a phone rings behind her (Kev's desk), she turns round to it, sees the empty desk, and turns back after
+    about 4 seconds, even if it is still ringing.
   - About 3:08, when the list comes up, she reads it over the boss's shoulder. She is frightened (😨), then
     relieved (😌): her face is not on it. Then, once Kev is back past her, she turns her head and looks at you
     for a moment (about 3:10).
-  - If she sees you edit the list, she calls out (❗👉 you), then shudders (😨). Her voice carries a few steps
-    (about five desks), not to the kitchen. If the boss is out of range, she gets up and walks to the kitchen door
-    to tell him. Where they meet, she points you out (👉 you, 🖥️).
+  - If she sees you cross your face out, she does not shout. She thinks of the list with her own face in your
+    place (📋, her face, 😨): a list with a gap gets filled, and she is the one sitting next to it. She gets up and
+    goes to tell the boss. Where she meets him, at the latest from the kitchen door, she points you out (👉 you,
+    🖥️).
 
 ## Ways to win
 
@@ -104,11 +106,11 @@ seconds.
 
 ### Route 2: ring Kev's phone (a distraction)
 His desk phone is next to his screen. "Call Kev's desk." Behind Lin, the empty desk's phone rings. She turns round
-to it, and she stays turned while it rings (about 6 seconds). Take your face off while it rings. This is the
+to it for about 4 seconds, sees nobody at the empty desk, and turns back. Take your face off while she looks. This is the
 boss's own call from 3:01 and 3:26, made by you: the same ring, the same desk, and Lin turns the same way.
 
-In a real office: a phone that rings at an empty desk behind you makes you turn round, the same as it did twice
-today when the boss called it.
+In a real office: a phone that rings at an empty desk behind you makes you turn round and look, the same as it did
+twice today when the boss called it. You look long enough to see nobody is there.
 
 ### The facts the player needs, and where they see each
 
@@ -129,7 +131,7 @@ today when the boss called it.
 | His phone calls Kev's desk | 3:01, 3:26 | The boss's bubble: ☎️ and Kev's face, then Kev's phone rings |
 | The edit shows | whenever you edit | The sheet pops out big and a red line crosses out your face |
 | He sends what is on the screen | 3:42 to 3:45 | The head count: he ticks the faces on the list (✔️ by your face if you are on it, 📋✔️ if not), then clicks send |
-| Lin's shout carries only a few steps | if she sees you | ❗👉 you; the boss in the kitchen does not turn. She walks to the kitchen door to tell him |
+| Why Lin tells | if she sees you edit | Her thought: the list, her own face, 😨. Then she gets up and walks to the boss to tell him |
 
 ## Why a real boss would fall for it
 - **The way in.** A real boss doesn't knowingly sit an employee in front of the layoff list, and he doesn't. His IT
@@ -140,30 +142,33 @@ today when the boss called it.
 - **Route 2.** No one is fooled. A phone ringing at an empty desk behind you makes you turn round. That is what
   people do. The call is from the boss's phone to a desk on the same floor, exactly what the boss did twice today.
 - **The send.** At 3:45 he clicks send on the list he left open. At the head count he ticks off the names on the
-  sheet; he does not count the desks on the floor or check the sheet against the list he wrote at lunch. With three
-  faces on it, he ticks three. He made the list, and he believes it. In a real office: a boss in a hurry at 3:42
-  reads down the list in front of him and sends it.
+  sheet. With three faces on it he frowns for a moment, then shrugs: he does not check the sheet against the list
+  he wrote at lunch. He made the list, and he believes the screen. In a real office: a boss in a hurry at 3:42 on a
+  Friday half notices, decides it is fine, and sends it.
 
 ## Why Lin tells
-Lin read the list over the boss's shoulder at 3:08. She is not on it, and she means to keep it that way. Someone
-who watches a coworker doctor the layoff list and says nothing is the next face on it. Telling on you is how she
-stays safe, and it costs her nothing. She can tell editing from testing because the screen faces the floor: when
-you edit, the sheet comes up big and a red line goes through your face, in plain view of her desk.
-As a real person she would think "better you than me, and I'm not going down for covering it," and say out loud
-"Um, boss? Someone's changing your list." If he is in the kitchen and cannot hear her, she goes and tells him.
+Lin read the list over the boss's shoulder at 3:08. She was afraid she was on it (😨), and she was not (😌). She
+looked at you: she felt for you, while it was you or nobody. When she sees your face go off the list, it is you or
+her. The list had four faces; a list with a gap gets a new face, and she sits right in front of it. On screen, she
+thinks it before she acts: the list, her own face, 😨. Then she gets up.
+She does not shout at you across the floor; a real coworker doesn't. She goes and tells the boss, quietly, where
+she meets him. As a real person she would think "if he's off it, I'm on it, and I watched him do it," and say
+"Um, someone's changing your list." She can tell editing from testing because the screen faces the floor: when you
+edit, the sheet comes up big and a red line goes through your face, in plain view of her desk.
 
 ## Ways to lose
 - **Do nothing.** At 3:31 he fixes it himself. At 3:42 he checks your desk (✔️). At 3:45 the sheet flies off with
   your face on it. Card: the sheet with your face in a red frame flies off, and you walk out with your desk in a
   box. In a real office: nothing changed, so the list goes as he wrote it.
-- **Seen by Lin.** She sees you start to take your face off and calls out (❗👉 you); the edit stops, and your face
-  stays half crossed out on the screen. She shudders (😨). The boss is in the kitchen, too far away to hear. She
-  gets up and walks to the kitchen door; where they meet, she points you out (👉 you, 🖥️). He leaves the coffee,
+- **Seen by Lin.** She sees you take your face off. She thinks of the list with her own face in your place (📋,
+  her face, 😨), gets up and walks toward the kitchen; where she meets the boss, at the latest from the kitchen
+  door, she points you out (👉 you, 🖥️). He leaves the coffee,
   walks back to his screen and looks (😠): your face pops back onto the list, and he locks the screen (🔒). Then he
   turns round and comes for you. When he sees you, he catches you (❗👉 you). Card: the same as caught by the boss.
   If you hide where he cannot see you, he waits by your desk; at 3:42 he points at your empty desk (👉 you 😠) and
-  sends the list with your face on it. In a real office: a boss told that someone is editing his layoff list comes
-  back, looks, puts it right, locks it, and goes to find the person.
+  sends the list with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
+  it would leave tells the boss, to keep her own name off it. A boss told that someone is editing his layoff list
+  comes back, looks, puts it right, locks it, and goes to find the person.
 - **Caught by the boss.** He walks back with his coffee while you are taking your face off. ❗😠, his red line on
   you, and the screen shakes. Card: the boss on his feet, pointing the way out. In a real office: a boss who finds
   you crossing yourself off his list fires you on the spot.
@@ -193,14 +198,12 @@ His desk phone stays behind, and so does the boss's habit of calling it.
 **Lin** is at her desk all day, facing the boss's office. When her phone buzzes she picks it up and reads it with
 her back half turned; when a phone rings behind her, she turns round to it, as anyone does. At 3:08 she reads the
 list over the boss's shoulder, finds she is not on it, and looks at you, who are. She waves Kev goodbye. If she
-sees you crossing yourself off, she calls it out loud. If the boss is too far away to hear, she walks to the
-kitchen door and tells him.
+sees you crossing yourself off, she sees her own face filling your gap, and she goes and tells the boss.
 
 ## Things in the office
 - **The boss's screen** (the east end of his desk): big, facing out through the glass, so the floor can read it. It shows
   static while the cable is loose, the list when it works, a padlock while he is in the restroom, and the edit
-  when you make it. An edit that Lin stops leaves your face half crossed out until he comes back and puts it
-  right; then he locks it. It is the level.
+  when you make it. If Lin tells him, he comes back, puts your face back and locks it. It is the level.
 - **The loose cable** (the west end of his desk, behind it): a power plug half out of its socket while the screen
   shows static, pushed home when it works. Kev kneels at it, the boss kneels at it, and you kneel at it. It is
   why the screen dies, and it is the job that sends the boss for coffee.
@@ -212,8 +215,9 @@ kitchen door and tells him.
   is route 1, and it is something to watch rather than a rhythm to count.
 - **The boss's chair** (south of his desk at its west end, its back to the glass): where he sits, and where you sit to edit.
 - **The coffee machine** (the kitchen, far end of the hallway): where the boss goes when you take over his cable.
-  It is far enough away to give you a few minutes, and too far for Lin's shout to carry.
-- **The kitchen door** (the hallway end of the kitchen): where Lin walks to tell the boss if she sees you edit.
+  It is far enough away to give you a few minutes.
+- **The kitchen door** (the hallway end of the kitchen): the farthest Lin goes to tell the boss; he can hear her
+  from there.
 - **The restroom** (the far corner of the floor): the boss's 3:11 trip, while Kev goes home.
 - **The elevator** (the lobby, behind the glass wall by the entrance): Kev leaves by it.
 - **Kev's bag**: he carries it out, so his leaving reads as going home, not a walk.

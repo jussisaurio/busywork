@@ -108,16 +108,16 @@ export default [
   {
     name: 'told-on',
     cmds: [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact'],
-    intent: "Lin, facing the office, sees your face being struck off the list on the big sheet beside the screen. She points at you (❗, a pointing hand, your face). The boss is far off in the kitchen at the coffee machine: nobody hears her.",
+    intent: "Lin, facing the office, sees your face being struck off the list on the big sheet beside the screen. Her thought: the list, her own face, frightened. The boss is far off in the kitchen at the coffee machine.",
   },
   {
     name: 'lin-goes-to-tell',
-    cmds: [...TOLD, 'wait until 3:36.9'],
-    intent: "Lin has left her desk and walks along the hallway towards the kitchen, where the boss is. You are still in his office; on his screen your face is half crossed out in red.",
+    cmds: [...TOLD, 'wait until 3:37.6'],
+    intent: "Lin has left her desk and walks along the hallway towards the kitchen, where the boss is. On the boss's screen your face is gone: three faces.",
   },
   {
     name: 'lin-tells-him',
-    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:45'], // stops as she tells him
+    cmds: [...TOLD, 'wait until 3:45'], // stops as she tells him
     intent: "In the hallway, Lin points the boss to you (a pointing hand, your face, a screen). A line runs from her to him.",
   },
   {
@@ -127,7 +127,7 @@ export default [
   },
   {
     name: 'comes-for-you',
-    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45', 'pretend until 3:45'],
+    cmds: [...TOLD, 'wait until 3:45', 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45'],
     beat: true,
     intent: "The boss has left his office and stops on the floor, pointing at you at your desk (❗, a pointing hand, your face): caught. His screen behind him shows a padlock.",
   },

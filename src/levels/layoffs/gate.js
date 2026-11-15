@@ -3,13 +3,13 @@ export default {
   mustUse: [{ id: 'cable', event: 'pc:fixedByYou' }], // every win plugs his cable back in and gets him out
   targets: ['boss_pc', 'boss_cable', 'boss_phone', 'behind_his_desk', 'his_screen', 'his_chair', 'lin_desk', 'kev_desk', 'boss_office_door', 'coffee', 'restroom_door'],
   interactable: ['boss_pc', 'boss_cable', 'boss_phone'],
-  renderEvents: ['pc:fixed', 'pc:fixedByYou', 'boss:coffee', 'phone:ring', 'lin:reads', 'list:edited', 'boss:headCount', 'kev:bye', 'boss:checks'],
+  renderEvents: ['pc:fixed', 'pc:fixedByYou', 'boss:coffee', 'phone:ring', 'lin:reads', 'list:edited', 'boss:headCount', 'kev:bye', 'boss:checks', 'lin:sees'],
   milestones: {
     'pc:fixedByYou': () => 'fixed',
     'boss:wavesOff': () => 'wavedOff',
     'phone:called': () => 'called',
     'list:edited': (p) => (p.via === 'unseen' ? 'editedUnseen' : 'edited'),
-    'witness:tattle': () => 'tattle',
+    'lin:tells': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },

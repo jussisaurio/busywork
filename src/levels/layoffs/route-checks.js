@@ -58,7 +58,7 @@ export default [
       mustSay(log, 'boss', ['😤']); // fed up with the static
       mustSay(log, 'boss', ['☕', '👉', '@player']);
       mustFire(log, 'phone:called');
-      mustSay(log, 'boss', ['📋', '✔️']); // he ticks the sheet name by name: no face of yours to look up for
+      mustSay(log, 'boss', ['📋', '🤨', '🤷']); // a face short? he shrugs and sends it
     },
   },
   {
@@ -70,13 +70,14 @@ export default [
     },
   },
   {
-    name: 'edit while Lin is looking → ❗👉 you; too far for him to hear, she goes to tell him; he checks his screen, puts your face back, comes for you → caught',
+    name: 'edit while Lin is looking → she thinks of her own face on the list (📋 her 😨) and goes to tell him; he checks his screen, puts your face back, comes for you → caught',
     expect: { result: 'caught' },
     play({ run, log, g }) {
-      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'goto my_seat pretend']) run(c);
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'wait until 3:37.5', 'goto my_seat pretend']) run(c); // interact pauses as she sees you: finish the edit
       for (let i = 0; i < 6 && !g.caught; i++) run('pretend until 3:45'); // (her telling him stops a pretend)
-      mustSay(log, 'lin', ['❗', '👉', '@player']);
-      if (log.some((e) => e.name === 'witness:tattle' && e.payload.heard && !e.payload.late)) throw new Error('he heard her shout from the kitchen');
+      mustSay(log, 'lin', ['📋', '@lin', '😨']); // why she tells, before she does
+      if (log.some((e) => e.name === 'witness:tattle')) throw new Error('Lin shouted: she should tell him, not the floor');
+      mustFire(log, 'list:edited'); // she lets you finish: your face comes off, then goes back on
       mustSay(log, 'lin', ['👉', '@player', '🖥️']); // she told him to his face
       mustFire(log, 'boss:checks');
       mustFire(log, 'boss:checked');

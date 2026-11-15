@@ -13,15 +13,15 @@
 //   - While he's at the coffee machine, make Lin look away for the 3 s the edit takes: ring Kev's empty desk from
 //     the boss's desk phone (she turns round to it: the ring route), or wait for her mobile to buzz (she picks it
 //     up and turns away: the phone route).
-// Seen by Lin: she shouts ❗👉 you. The boss hears her only from a few steps away (roles.authority.earshot): with him
-// at the coffee machine she gets up, walks to the kitchen door and points you out to him (the engine's grudge). He
-// leaves his coffee, comes back, checks his screen, puts your face back, locks it, and comes looking for you: the
-// moment he sees you, caught (roles.evidence: Lin named you). Seen by the boss himself at his screen: caught.
+// Seen by Lin: she doesn't shout. Your face off his list leaves a gap, and the next face in it could be hers: a
+// thought (📋, her face, 😨), then she gets up and goes to tell him (linWatch, the linTells lure), at the latest from
+// the kitchen door. He leaves his coffee, comes back, checks his screen, puts your face back, locks it, and comes
+// looking for you: the moment he sees you, caught (roles.evidence: Lin named you). Seen by the boss himself: caught.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
-import { say } from '../../core/fx.js';
-import { spotPos, findNpc } from '../../game/perception.js';
+import { say, sightline } from '../../core/fx.js';
+import { spotPos, findNpc, npcSees } from '../../game/perception.js';
 import { endOverride, npcSayLater } from '../../sim/override.js';
 import { CAST, BEHAVIOURS, START, SECS, ringKev } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
@@ -97,6 +97,9 @@ const ZONES = {
 // Kev's desk phone, on his desk (V): where it rings from, and where Lin turns to.
 const KEV_PHONE = { x: 5.5, y: 11.4 };
 const RING_SECS = 6; // a call to Kev's empty desk rings this long, then gives up
+const RING_LOOK = 3.2; // Lin looks round at it this long (she turns back about a second after): she saw Kev go
+const LIN_NOTICE = 0.4; // seconds of your edit in her sight before she takes it in
+const TELL_RANGE = 5.5; // tiles: she tells the boss once she is this close (the kitchen door to his machine is 5)
 const EDIT_SECS = 3.0;
 
 // The cable is at the floor behind his desk: you reach it from behind (row 2), not from his chair.
@@ -135,14 +138,15 @@ const INTERACTIONS = {
     },
   },
   strike_name: {
-    on: 'boss_pc', text: 'take your face off the list', duration: EDIT_SECS, sneaky: true, saw: '🖥️',
+    on: 'boss_pc', text: 'take your face off the list', duration: EDIT_SECS, sneaky: true, owner: 'boss', saw: '🖥️',
+    // owner: only the boss catches you at it in the engine. Lin's reaction is her own (linClock): she doesn't shout.
     can: (p, w) => w.list === 'on' && w.pc === 'free' && !w.locked && !w.glitch && atScreen(p),
     done(game, a) {
       const w = game.world;
       const lin = game.npcs.find((n) => n.id === 'lin');
       w.list = 'off';
       w.listOffAt = game.clock.minute; // your face drops off his screen (list.js)
-      w.offVia = w.ringing || lin?._heard ? 'ring' : w.linPhone === 'hand' ? 'phone' : 'unseen';
+      w.offVia = w.linSaw ? 'seen' : w.ringing || lin?._heard ? 'ring' : w.linPhone === 'hand' ? 'phone' : 'unseen';
       game.events.emit('list:edited', { via: w.offVia, x: a.x, y: a.y });
     },
   },
@@ -159,12 +163,13 @@ function toldOn(game) {
   const boss = findNpc(game, 'boss');
   if (boss && (boss.override === 'toCoffee' || boss.override === 'brewing')) endOverride(boss);
   const lin = findNpc(game, 'lin');
-  if (lin && lin.override === 'toTell') endOverride(lin); // she's said it: back to her desk
+  if (lin && (lin.override === 'toTell' || lin.override === 'telling')) endOverride(lin); // she's said it: back to her desk
 }
 
 const ROLES = {
-  // earshot: Lin's desk to his chair is 5 tiles; from the coffee machine, or the hallway, he can't hear her shout.
-  authority: { id: 'boss', offDuty: ['toCheck', 'checking', 'pointOut', 'waiting'], helpless: [], deafIn: null, earshot: 5.5, tattle: toldOn },
+  // Lin is not an engine witness (strike_name's owner is the boss): she tells him herself (linClock), and toldOn
+  // is what her word costs you.
+  authority: { id: 'boss', offDuty: ['toCheck', 'checking', 'pointOut', 'waiting'], helpless: [], deafIn: null },
   evidence: { by: 'boss', while: 'pointOut', mark: 'named', knows: 'bossKnows', icon: '🖥️' },
 };
 
@@ -199,8 +204,8 @@ const LURES = [
     react: { wait: 0.4 },
     work: { override: 'waiting', minutes: SECS(3), progress: 'waitProgress', start: { set: { waiting: true } }, done: { set: { waiting: false, pointed: true } } },
   },
-  // Lin shouted and he didn't hear: she gets up and goes to tell him at the kitchen door (the grudge tells him once
-  // she is within earshot; toldOn sends her back).
+  // Lin saw you cross your face out: she gets up and goes to tell him. She tells him where she meets him, at the
+  // latest from the kitchen door (linClock, within TELL_RANGE of him); toldOn sends her back to her desk.
   {
     npc: 'lin',
     when: (w) => w.linTells === 'go' && !w.bossTold,
@@ -208,10 +213,10 @@ const LURES = [
     plan: 'tell',
     label: 'tell the boss',
     spot: 'kitchen_door',
-    react: { wait: 0.7 },
+    react: { wait: 1.0 },
     work: {
       override: 'telling', minutes: SECS(2), progress: 'tellProgress',
-      start: { set: { telling: true }, says: [{ say: ['@boss', '❗'] }] },
+      start: { set: { telling: true } },
       done: { set: { telling: false, linTells: 'done' } },
     },
   },
@@ -229,9 +234,9 @@ const LURES = [
 ];
 
 const NOISES = {
-  // Kev's desk phone ringing: Lin, beside it, turns round to it while it rings.
+  // Kev's desk phone ringing: Lin, beside it, turns round to it, sees the empty desk and turns back (ringLook).
   'phone:ring': {
-    at: KEV_PHONE, radius: 6, npcs: ['lin'], every: 1.1, turn: 1.4, while: (w) => w.ringing,
+    at: KEV_PHONE, radius: 6, npcs: ['lin'], every: 1.1, turn: 1.4, while: (w) => w.ringLook,
     ripple: { color: '#f3e6c8' }, sfx: 'phoneRing',
   },
 };
@@ -257,29 +262,12 @@ function stare(npc, sim, dir, s) {
   sim.holdFor(npc, s);
 }
 
-// The tattle (play/rules.js) as world state: Lin saw you at his screen, and the boss heard.
+// The boss's check as world state.
 const listening = new WeakSet();
 function listen(game) {
   if (listening.has(game.events)) return;
   listening.add(game.events);
   const ours = () => game.level?.id === 'layoffs' && game.phase === 'day';
-  game.events.on('witness:tattle', (p) => {
-    if (!ours() || p.by !== 'lin') return;
-    const w = game.world;
-    if (!p.late) {
-      // Your face half crossed out: if it goes, the next name on his list could be hers (😨). Not heard, she goes to
-      // tell him.
-      const lin = findNpc(game, 'lin');
-      if (lin) npcSayLater(lin, 0.6, ['😨'], 'thought', 1.2);
-      if (!p.heard && !w.bossTold && w.linTells === 'none') w.linTells = 'go';
-    }
-    w.linSaw = true;
-    if (p.heard || p.late) w.told = true;
-  });
-  // Lin stopped you mid-edit: your face stays half crossed out on his screen until he puts it back (list.js).
-  game.events.on('action:cancel', (p) => {
-    if (ours() && p.type === 'strike_name' && p.reason === 'witnessed') game.world.struck = Math.max(0.25, game.world.strikeT);
-  });
   // He puts your face back: the list pops out again with you on it.
   game.events.on('boss:checks', () => {
     if (!ours()) return;
@@ -302,6 +290,9 @@ function bossClock(game, npc, sim) {
   const st = (npc._lay ??= {});
   listen(game);
   if (w.ringing && w.ringUntil != null && now >= w.ringUntil) w.ringing = false;
+  if (!w.ringing) w.ringFrom = null;
+  else if (w.ringFrom == null) w.ringFrom = now;
+  w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
   // 3:31, the static still there and nobody came: a sigh, then he kneels at the cable himself (cast.js selfFix).
@@ -390,7 +381,40 @@ function linClock(game, npc, sim) {
       game.events.emit('lin:looksAtYou', {});
     }
   }
+  linWatch(game, npc, now, st);
   return now;
+}
+
+// Lin watches his office. If she sees you crossing your face out, your gap on the list could be filled with hers:
+// a thought (📋, her face, 😨), then she gets up and goes to tell him (the linTells lure). No shout: she tells him.
+function linWatch(game, npc, now, st) {
+  const w = game.world;
+  const p = game.player;
+  const dt = st.last == null ? 0 : now - st.last;
+  st.last = now;
+  if (w.linTells === 'none' && !w.bossTold) {
+    if (p.action?.type === 'strike_name' && free(npc) && npcSees(game, npc, p.x, p.y)) {
+      st.sawFor = (st.sawFor ?? 0) + dt;
+      if (st.sawFor >= SECS(LIN_NOTICE)) {
+        w.linTells = 'go';
+        w.linSaw = true;
+        say(game, 'lin', ['📋', '@lin', '😨'], { kind: 'thought', ttl: 1.8 });
+        sightline(game, 'lin', 'notice', 1.0);
+        game.events.emit('lin:sees', {});
+      }
+    } else st.sawFor = 0;
+  }
+  // Up and on her way: she tells him where she meets him.
+  if (w.linTells === 'go' && !w.bossTold && (npc.override === 'toTell' || npc.override === 'telling')) {
+    const boss = findNpc(game, 'boss');
+    if (boss?.active && Math.hypot(boss.x - npc.x, boss.y - npc.y) <= TELL_RANGE) {
+      say(game, 'lin', ['👉', '@player', '🖥️'], { kind: 'speech', ttl: 1.6 });
+      sightline(game, 'lin', 'tattle', 1.4);
+      w.linTells = 'done';
+      game.events.emit('lin:tells', {});
+      toldOn(game);
+    }
+  }
 }
 
 const CLOCKS = { boss: bossClock, kev: kevClock, lin: linClock };
@@ -424,7 +448,7 @@ export default {
   meeting: { override: 'send', room: 'floor', chair: 'player_desk' },
   routes: [
     { id: 'ring', icon: '☎️', achieved: (w) => w.list === 'off' && w.offVia === 'ring' },
-    { id: 'phone', icon: '📱', achieved: (w) => w.list === 'off' && w.offVia !== 'ring' }, // 'unseen': the gate flags it
+    { id: 'phone', icon: '📱', achieved: (w) => w.list === 'off' && w.offVia !== 'ring' && w.offVia !== 'seen' }, // 'unseen': the gate flags it
   ],
   outcomeOrder: ['ring', 'phone'],
   initialWorld: () => ({
@@ -432,11 +456,13 @@ export default {
     listUpAt: null, // the game minute the list came up on his screen (list.js pops it out)
     linReadAt: null, // the game minute Lin read it over his shoulder (about 3:08, Kev fixed it)
     listOffAt: 0, // the game minute your face came off (list.js animates it)
-    offVia: null, // what Lin was doing meanwhile: 'ring' | 'phone' | 'unseen'
+    offVia: null, // what Lin was doing meanwhile: 'ring' | 'phone' | 'unseen' | 'seen' (she watched: he'll be told)
     glitch: true, // static: his cable has worked loose (3:00 until Kev fixes it; again 3:26 until it's plugged in)
     pc: 'boss', // 'boss' (he's at it) | 'kev' (Kev at his cable) | 'free' (he's out)
     locked: false, // he locked it for the restroom (3:10 to 3:19)
     ringing: false, // Kev's desk phone is ringing
+    ringFrom: null, // the game minute it started ringing
+    ringLook: false, // Lin is looking round at it (the first RING_LOOK seconds)
     ringUntil: null, // the game minute it gives up (null: until Kev picks up)
     kevCall: false, // Kev has the handset at his ear
     bossPhoneUntil: null, // the game minute the boss puts his handset down
@@ -448,8 +474,8 @@ export default {
     brewProgress: 0,
     buzzAt: null, // the game minute Lin's mobile last buzzed
     linPhone: 'desk', // 'desk' | 'hand' (she's reading it, turned away)
-    linSaw: false, // Lin saw you at his screen and shouted
-    told: false, // ...and the boss heard (at once, or when she walked over to tell him)
+    linSaw: false, // Lin saw you crossing your face out
+    told: false, // ...and she told the boss (where she met him)
     linTells: 'none', // 'none' | 'go' (out of his earshot, she walks to the kitchen to tell him) | 'done'
     telling: false,
     tellProgress: 0,
