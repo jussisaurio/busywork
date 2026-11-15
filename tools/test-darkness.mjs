@@ -265,6 +265,18 @@ function day(level) {
   ok(fake.errors.length === 0, `no canvas errors${fake.errors.length ? `: ${fake.errors.slice(0, 3).join('; ')}` : ''}`);
 }
 
+// The controls' lamps read at a glance: the shut breaker's green lamp and the switch's amber one are big dots, the
+// breaker's on its door's centre line.
+{
+  const { paintBreaker, paintSwitch } = await import('../src/render/darkness.js');
+  const stub = new Proxy({}, { get: (o, k) => (k in o ? o[k] : () => ({ addColorStop() {} })), set: (o, k, v) => { o[k] = v; return true; } });
+  const shut = paintBreaker(stub, 50, 50, true, 0);
+  ok(shut.idle && shut.r >= 2 && shut.x === 50, 'a shut breaker: a big green lamp on its door, centred');
+  const open = paintBreaker(stub, 50, 50, false, 0);
+  ok(open.r >= 2 && !open.idle, 'an open breaker: a big red lamp, blinking');
+  ok(paintSwitch(stub, 50, 50, false).r >= 1.8 && paintSwitch(stub, 50, 50, true).color === null, 'a switch off: a big amber lamp; on: none');
+}
+
 if (fails) {
   console.log(`\n${fails} FAILED`);
   process.exit(1);

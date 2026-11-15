@@ -140,7 +140,7 @@ export function paintSwitch(ctx, x, y, on) {
   ctx.fillStyle = '#7d7262'; // two screws
   ctx.fillRect(x - 0.5, y - h / 2 + 1, 1, 1);
   ctx.fillRect(x - 0.5, y + h / 2 - 2, 1, 1);
-  return { x, y: y + 4.5, color: on ? null : [255, 176, 64], r: 1.3 };
+  return { x, y: y + 4.5, color: on ? null : [255, 176, 64], r: 1.8 };
 }
 
 // A breaker panel centred at (x, y): a grey metal box. On, its door is shut (a yellow lightning sticker, a green
@@ -160,36 +160,39 @@ export function paintBreaker(ctx, x, y, on, t) {
   if (on) {
     ctx.fillStyle = '#b6bec5'; // the door
     ctx.fillRect(l + 1, top + 1, w - 2, h - 2);
-    ctx.fillStyle = '#7e868e'; // hinge side, handle
-    ctx.fillRect(l + 1, top + 1, 1, h - 2);
-    ctx.fillRect(l + w - 4, y - 1, 2, 4);
-    // the sticker: a yellow triangle with a black bolt
-    const cy = y + 1;
+    ctx.fillStyle = '#6f777f'; // its seam, all the way round, and the hinge side
+    ctx.fillRect(l + 1, top + 1, w - 2, 0.8);
+    ctx.fillRect(l + 1, top + h - 1.8, w - 2, 0.8);
+    ctx.fillRect(l + 1, top + 1, 0.8, h - 2);
+    ctx.fillRect(l + w - 1.8, top + 1, 0.8, h - 2);
+    ctx.fillStyle = '#7e868e'; // hinges, handle
+    ctx.fillRect(l + 1.8, top + 4, 1, 2);
+    ctx.fillRect(l + 1.8, top + h - 6, 1, 2);
+    ctx.fillRect(l + w - 4.5, y - 1, 1.6, 4);
+    // a small sticker low on the door: a yellow triangle with a black bolt
+    const cy = y + 5;
     ctx.beginPath();
-    ctx.moveTo(x - 0.5, cy - 6);
-    ctx.lineTo(x + 5, cy + 4);
-    ctx.lineTo(x - 6, cy + 4);
-    ctx.closePath();
-    ctx.fillStyle = '#1d1d1d';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(x - 0.5, cy - 4.4);
-    ctx.lineTo(x + 3.7, cy + 3.2);
-    ctx.lineTo(x - 4.7, cy + 3.2);
+    ctx.moveTo(x - 1, cy - 3.6);
+    ctx.lineTo(x + 2.6, cy + 2.6);
+    ctx.lineTo(x - 4.6, cy + 2.6);
     ctx.closePath();
     ctx.fillStyle = '#f2c230';
     ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(x, cy - 2.8);
-    ctx.lineTo(x - 1.8, cy + 0.6);
-    ctx.lineTo(x - 0.2, cy + 0.6);
-    ctx.lineTo(x - 1.2, cy + 2.8);
-    ctx.lineTo(x + 1.6, cy - 0.6);
-    ctx.lineTo(x, cy - 0.6);
+    ctx.moveTo(x - 0.6, cy - 1.8);
+    ctx.lineTo(x - 1.8, cy + 0.4);
+    ctx.lineTo(x - 0.9, cy + 0.4);
+    ctx.lineTo(x - 1.5, cy + 2);
+    ctx.lineTo(x + 0.2, cy - 0.4);
+    ctx.lineTo(x - 0.7, cy - 0.4);
     ctx.closePath();
     ctx.fillStyle = '#1d1d1d';
     ctx.fill();
-    return { x: l + w - 3, y: top + 3, color: null, r: 1.2, idle: '#5fd36a' };
+    ctx.fillStyle = '#2b3036'; // the lamp's bezel
+    ctx.beginPath();
+    ctx.arc(x, top + 5, 2.9, 0, Math.PI * 2);
+    ctx.fill();
+    return { x, y: top + 5, color: null, r: 2.1, idle: '#5fd36a' };
   }
   ctx.fillStyle = '#23272c'; // the open box
   ctx.fillRect(l + 1, top + 1, w - 2, h - 2);
@@ -211,7 +214,7 @@ export function paintBreaker(ctx, x, y, on, t) {
   ctx.fillStyle = '#7e868e';
   ctx.fill();
   const blink = Math.sin(fin(t) * 7) > -0.2;
-  return { x: l + w - 3, y: top + 2.5, color: blink ? [255, 70, 60] : null, r: 1.3 };
+  return { x: l + w - 3, y: top + 2.5, color: blink ? [255, 70, 60] : null, r: 2 };
 }
 
 function drawControl(ctx, k, game, t) {
