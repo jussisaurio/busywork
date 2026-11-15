@@ -4,9 +4,9 @@
 // Nobody lets you at his computer as yourself. But clothes are who you are, to people who don't know better
 // (src/play/disguise.js):
 //   - Kev gets hot, and goes home while the boss is in the restroom (so the boss doesn't know). He waves to Lin
-//     first, so she knows, then leaves his hoodie on his chair on the way out. In the hoodie, the boss sees Kev 🔧👍, and Kev may
-//     fix his computer: he steps aside and watches. Lin sees through it (🔧❓, then ❗👉), so go while she's in the
-//     restroom (3:32).
+//     first, so she knows, then leaves his hoodie on his chair on the way out. In the hoodie, the boss sees Kev (👋),
+//     and Kev may fix his computer: he steps aside and watches. Lin sees through it (🧥❓, then ❗👉), so go while
+//     she's in the restroom (3:32).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
@@ -93,7 +93,7 @@ const INTERACTIONS = {
     },
   },
   hang_jacket: {
-    on: 'coat_rack', icon: '🧥', text: 'hang his jacket back up', instant: true,
+    on: 'coat_rack', icon: '👔', text: 'hang his jacket back up', instant: true,
     can: (p) => p.held === 'jacket',
     done(game) {
       game.player.held = null;
@@ -106,7 +106,7 @@ const INTERACTIONS = {
     can: (p, w) => p.held === 'hoodie' && w.pc === 'boss' && w.fix === 'none',
     done(game, a) {
       game.world.fix = 'asked';
-      say(game, 'player', ['🔧', '🖥️'], { ttl: 1.5 });
+      say(game, 'player', ['🖥️', '❓'], { ttl: 1.5 }); // "trouble with your computer?"
       game.events.emit('pc:asked', { x: a.x, y: a.y });
     },
   },
@@ -122,9 +122,8 @@ const INTERACTIONS = {
       if (w.fix === 'asked') { // "Kev" is done: the boss thanks him and takes his chair back
         w.fix = 'done';
         w.pc = 'boss';
-        say(game, 'boss', ['😊', '🙏'], { voice: 'boss', ttl: 2.5 });
+        say(game, 'boss', ['😊', '👋'], { voice: 'boss', ttl: 2.5 });
       }
-      say(game, 'player', ['😇'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('review:deleted', { as });
     },
   },
@@ -134,8 +133,12 @@ const ITEMS = {
   hoodie: {
     icon: '🧥',
     place: 'hoodie',
-    // Hood up, red sweater and all: Kev, to anyone who didn't see him go home.
-    disguise: { as: 'kev', look: { hood: true, hoodColor: C.oliveDark, hair: C.olive, hairStyle: 'cap' }, greet: [{ say: ['🔧', '👍'] }] },
+    // Kev's olive hoodie, hood up: Kev, to anyone who didn't see him go home.
+    disguise: {
+      as: 'kev',
+      look: { body: C.olive, bodyDark: C.oliveDark, torso: 'hoodie', hood: true, hoodColor: C.oliveDark, hair: C.olive, hairStyle: 'cap' },
+      greet: [{ say: ['👋'] }],
+    },
   },
   jacket: {
     icon: '👔',
@@ -143,7 +146,7 @@ const ITEMS = {
     disguise: {
       as: 'boss',
       look: { body: C.navy, bodyDark: C.navyDark, torso: 'suit', shirt: '#d7e4ee', shirtDark: '#a9bccb', tie: '#9c2a22' },
-      greet: [{ say: ['😬', '👋'] }],
+      greet: [{ say: ['😳', '👋'] }],
     },
   },
 };
@@ -160,13 +163,13 @@ const LURES = [
     plan: 'aside',
     label: 'let Kev fix it',
     spot: 'boss_aside',
-    react: { wait: 0.4, says: [{ say: ['🔧', '🙏'] }], event: 'boss:stepsAside' },
+    react: { wait: 0.4, says: [{ say: ['😊', '🖥️'] }], event: 'boss:stepsAside' },
     work: {
       override: 'watching',
       minutes: 4,
       progress: 'fixProgress',
       start: { set: { pc: 'free' }, event: 'pc:free' },
-      done: { set: { pc: 'boss', fix: 'done' }, event: 'boss:impatient', says: [{ say: ['⌛', '😤'] }] },
+      done: { set: { pc: 'boss', fix: 'done' }, event: 'boss:impatient', says: [{ say: ['😠'] }] },
     },
   },
 ];
@@ -196,7 +199,7 @@ export default {
   behaviours: BEHAVIOURS,
   meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'review_chair' },
   routes: [
-    { id: 'hoodie', icon: '🔧', achieved: (w) => w.review === 'deleted' && w.deletedAs === 'kev' },
+    { id: 'hoodie', icon: '🧥', achieved: (w) => w.review === 'deleted' && w.deletedAs === 'kev' },
     { id: 'jacket', icon: '👔', achieved: (w) => w.review === 'deleted' && w.deletedAs !== 'kev' }, // also a plain delete: the gate flags one
   ],
   outcomeOrder: ['hoodie', 'jacket'],

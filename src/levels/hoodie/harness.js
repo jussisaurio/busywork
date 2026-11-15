@@ -67,15 +67,15 @@ export default {
       case 'meeting:gather': return 'the boss sits down at his computer to send it 📧';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
-      case 'boss:stepsAside': return 'the boss gets up and lets "Kev" at his computer 🔧';
-      case 'boss:impatient': return 'the boss has waited long enough ⌛ and takes his chair back';
+      case 'boss:stepsAside': return 'the boss gets up and lets "Kev" at his computer';
+      case 'boss:impatient': return 'the boss has waited long enough and takes his chair back';
       case 'jacket:taken': return "you put on the boss's suit jacket 👔";
       case 'jacket:hung': return 'you hang his jacket back on the rack';
-      case 'pc:asked': return 'you offer to fix his computer 🔧🖥️';
+      case 'pc:asked': return 'you offer to fix his computer';
       case 'review:deleted': return 'you deleted your review 🗑️';
       case 'review:sending': return 'the boss clicks SEND 📧';
-      case 'review:missing': return 'the boss looks for your review 📧❓ and shrugs';
-      case 'kev:hoodieOff': return 'Kev takes off his hoodie and leaves it on his chair 🥵';
+      case 'review:missing': return 'the boss looks for your review and shrugs';
+      case 'kev:hoodieOff': return 'Kev takes off his hoodie and leaves it on his chair';
       case 'kev:left': return 'the elevator doors close behind Kev';
       case 'disguise:fooled': case 'disguise:knows': case 'kev:bye': case 'pc:free': return null; // the lines people say show it
       default: return undefined;

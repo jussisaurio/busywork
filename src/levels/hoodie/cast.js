@@ -23,7 +23,7 @@ export const CAST = [
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '🧥', // his hoodie: what a double take questions (play/disguise.js shows the as NPC's icon)
     color: '#5f6b3a',
     voice: 'kev',
     meetingSpot: 'kev_desk',
@@ -31,7 +31,6 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:05', { do: 'sit', spot: 'kev_desk' }),
-      s('3:13', { do: 'say', icons: ['🥵'], kind: 'thought' }),
       // Home, once the boss is out of sight: a wave to Lin (she waves back), the hoodie off onto his chair, out.
       s('3:19', {
         do: 'leave', spot: 'elevator', prelude: ['waveLin', 'shedHoodie'], gone: { set: { kevGone: true }, event: 'kev:left' },
@@ -70,7 +69,7 @@ export const BEHAVIOURS = {
       if (game.world.pc === 'boss') game.world.pc = 'free';
     },
   },
-  // Too hot: on his way out, the hoodie comes off and stays on his chair.
+  // On his way out, the hoodie comes off and stays on his chair.
   shedHoodie: {
     spot: 'kev_desk',
     pending: (npc) => !npc._shed,
@@ -80,7 +79,6 @@ export const BEHAVIOURS = {
       w.hoodie = 'chair';
       w.items.push({ type: 'hoodie', x: npc.x, y: npc.y });
       sim.holdFor(npc, 1.0);
-      sim.speak(game, npc, [{ say: ['😮‍💨'], after: 0.6 }]);
       game.events.emit('kev:hoodieOff', {});
     },
   },
@@ -90,7 +88,7 @@ export const BEHAVIOURS = {
     pending: (npc) => !npc._waved,
     arrive(game, npc, sim) {
       npc._waved = true;
-      sim.speak(game, npc, [{ say: ['🎒', '👋'] }]);
+      sim.speak(game, npc, [{ say: ['👋'] }]);
       const lin = game.npcs.find((n) => n.id === 'lin');
       if (lin?.active && !lin.override) sim.speak(game, lin, [{ say: ['👋'], after: 0.9 }]);
       sim.holdFor(npc, 1.8);
@@ -104,10 +102,10 @@ export const BEHAVIOURS = {
       if (npc._sent) return;
       npc._sent = true;
       if (game.world.review === 'queued') {
-        sim.speak(game, npc, [{ say: ['📧', '😈'] }]);
+        sim.speak(game, npc, [{ say: ['📧', '😊'] }]); // the 📧 on his screen: off it goes
         game.events.emit('review:sending', {});
       } else {
-        sim.speak(game, npc, [{ say: ['📧', '❓'], kind: 'thought', ttl: 1.4 }, { say: ['🤷'], after: 1.4 }]);
+        sim.speak(game, npc, [{ say: ['❓'], kind: 'thought', ttl: 2.5 }]); // and he shrugs (presentation.js POSES)
         game.events.emit('review:missing', {});
       }
     },
