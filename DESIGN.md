@@ -24,6 +24,9 @@ Audit, Layoff List, Weekend Shift). Never name a mechanic, a tool or a route. A 
 win by turning the lights off gives away the solution before the first move. Test: if knowing the name narrows down
 how to win, rename it. The level's folder and id are its name too, because the level picker shows them.
 
+**The first time on the card is now**: the loop's start time. A card that opens with the deadline ("5:00 PM. …") is
+read as the current time.
+
 ## Design principle: no hand-holding
 In the spirit of Jonathan Blow's games, the game explains nothing beyond the mission card. Figuring out how it works
 *is* the game: the time loop, the office rules, what each object is for, and how many ways there are to win.
@@ -42,6 +45,8 @@ In the spirit of Jonathan Blow's games, the game explains nothing beyond the mis
 - Coworkers are tattletales. Only the authority (the boss) can end your day.
 - Speech is pictograms in bubbles plus Sims-style gibberish babble. Each NPC has a voice.
 - Every ending gets a short in-world beat and an end card with a picture, never a paragraph.
+- **The end card shows the day as it ended**: what you hold and wear, where each person is. A card that contradicts
+  the last thing the player saw makes them distrust every card.
 
 ## Visual language: people speak emoji, the world is drawn
 **Characters can speak emoji, but emoji are never objects in the level.** A glyph on a tile makes the player guess
