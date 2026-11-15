@@ -19,7 +19,7 @@ import { createRng } from '../core/rng.js';
 import { say } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
-import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
+import { setOverride, npcSayLater, holdFor, speak, faceSpot, applyEffect, spotLeg } from './override.js';
 import { mechanicsFor, mechanicOf, startHunt } from './mechanics/index.js';
 import { listenForNoises, resetNoises, tickNoises, heardFacing, heardHead, tickAttention } from './mechanics/attention.js';
 
@@ -88,7 +88,7 @@ export function createNpc(game, def, now = 0) {
     _said: sched.map((e) => e.do === 'say' && e.at < now), // schedule 'say' entries fire once
     _plan: null,
     _wait: 0, // s to stand still before continuing the plan
-    _sayQ: [], // delayed bubbles: { t, icons, kind, ttl }
+    _sayQ: [], // delayed bubbles: { t, icons, kind, ttl, face }
     _faceTarget: p.dir,
     _look: null, // look-around (a hunt's): { t, angle }
     _heard: null, // a noise holding his attention (mechanics/attention.js)
@@ -196,10 +196,7 @@ const HOOK_API = {
   speak,
   want,
   startHunt,
-  faceSpot(game, npc, name) {
-    const p = spotPos(game, name);
-    npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
-  },
+  faceSpot,
 };
 
 function hook(game, name) {
@@ -229,7 +226,9 @@ function tickSayQueue(game, npc, dt) {
   for (const q of npc._sayQ) q.t -= dt;
   while (npc._sayQ.length && npc._sayQ[0].t <= 0) {
     const q = npc._sayQ.shift();
-    if (npc.active) say(game, npc.id, q.icons, { kind: q.kind, voice: npc.voice, ttl: q.ttl });
+    if (!npc.active) continue;
+    if (q.face) faceSpot(game, npc, q.face);
+    say(game, npc.id, q.icons, { kind: q.kind, voice: npc.voice, ttl: q.ttl });
   }
 }
 
