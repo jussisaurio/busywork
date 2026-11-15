@@ -92,10 +92,10 @@ function isOn(k, game) {
   try { return !!k.on(game.world); } catch { return true; }
 }
 
-// A wall switch: a cream plate with a rocker, up when on. Its locator lamp (amber) is lit while it is off.
+// A wall switch centred at (x, y): a cream plate with a rocker, up when on. Its locator lamp (amber) is lit while it
+// is off. Returns the lamp ({ x, y, r, color: [r, g, b] while lit, else null }). Exported for end scenes.
 const SWITCH = { w: 9, h: 13 };
-function drawSwitch(ctx, k, on) {
-  const { x, y } = anchor(k, SWITCH.w, SWITCH.h);
+export function paintSwitch(ctx, x, y, on) {
   const { w, h } = SWITCH;
   ctx.fillStyle = 'rgba(0,0,0,0.35)';
   ctx.fillRect(x - w / 2 + 1, y - h / 2 + 1, w, h);
@@ -115,11 +115,11 @@ function drawSwitch(ctx, k, on) {
   return { x, y: y + 4.5, color: on ? null : [255, 176, 64], r: 1.3 };
 }
 
-// A breaker panel: a grey metal box. On, its door is shut (a yellow lightning sticker, a green lamp). Off, its door
-// hangs open on a dark row of breakers with the red main lever down, and its lamp blinks red.
+// A breaker panel centred at (x, y): a grey metal box. On, its door is shut (a yellow lightning sticker, a green
+// lamp). Off, its door hangs open on a dark row of breakers with the red main lever down, and its lamp blinks red.
+// Returns the lamp, as paintSwitch (idle: the colour of an unlit lamp's dot). Exported for end scenes.
 const BREAKER = { w: 16, h: 20 };
-function drawBreaker(ctx, k, on, t) {
-  const { x, y } = anchor(k, BREAKER.w, BREAKER.h);
+export function paintBreaker(ctx, x, y, on, t) {
   const { w, h } = BREAKER;
   const l = x - w / 2;
   const top = y - h / 2;
@@ -188,16 +188,18 @@ function drawBreaker(ctx, k, on, t) {
 
 function drawControl(ctx, k, game, t) {
   const on = isOn(k, game);
-  const lamp = k.kind === 'breaker' ? drawBreaker(ctx, k, on, t) : drawSwitch(ctx, k, on);
+  const size = k.kind === 'breaker' ? BREAKER : SWITCH;
+  const { x, y } = anchor(k, size.w, size.h);
+  const lamp = k.kind === 'breaker' ? paintBreaker(ctx, x, y, on, t) : paintSwitch(ctx, x, y, on);
   if (lamp.idle) fillCircle(ctx, lamp.x, lamp.y, lamp.r, lamp.idle);
   return lamp;
 }
 
-// A lit lamp: the dot and a soft glow around it, brighter when the room it looks into is dark.
-function drawLamp(ctx, game, k, lamp, t) {
+// A lit lamp: the dot and a soft glow around it, brighter when the room it looks into is dark. Exported for end
+// scenes (dark: draw the bright glow).
+export function paintLamp(ctx, lamp, dark, t) {
   if (!lamp.color) return;
   const [r, g, b] = lamp.color;
-  const dark = k.room && isDark(game, k.room.x, k.room.y);
   const a = (dark ? 0.55 : 0.28) * (0.8 + 0.2 * Math.sin(fin(t) * 3));
   const rad = dark ? 11 : 6;
   const grad = ctx.createRadialGradient(lamp.x, lamp.y, 0.5, lamp.x, lamp.y, rad);
@@ -217,7 +219,7 @@ export function drawDarkness(ctx, game, t) {
   const lamps = controls.map((k) => drawControl(ctx, k, game, t));
   const zones = darkZones(game);
   if (zones.length) drawVeil(ctx, game, map, zones, t);
-  controls.forEach((k, i) => drawLamp(ctx, game, k, lamps[i], t));
+  controls.forEach((k, i) => paintLamp(ctx, lamps[i], !!k.room && isDark(game, k.room.x, k.room.y), t));
 }
 
 function drawVeil(ctx, game, map, zones, t) {
