@@ -25,6 +25,8 @@
 // An item (items.js) with `put: s` is evidence you don't set down in front of people: putting it down is a timed
 // sneaky action of s seconds instead (to everyone: the authority who sees it catches her, anyone else tells and
 // stops it; moving stops it too). The focus carries the timing (focus.timed; interactions.js startAction).
+// An item with `keep: true` leaves your hand only by a put: there is no drop for it, and assigned work (rules.js)
+// sends you to your desk still holding it.
 // Events: item:put { type, spot }; item:found { type, spot, by } when a cast owner finds it (on a spot with
 // `unseen`: { type, spot, by, seen }, seen: whether he saw who put it there).
 import { INTERACT_RADIUS } from '../../config.js';

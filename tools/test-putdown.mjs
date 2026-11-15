@@ -138,5 +138,46 @@ const AWAY = [...WRITE, 'put tray pretend', 'goto own_desk pretend', 'pretend un
   ok(/spots\.tray\.unseen/.test(msg), `validator: ${msg.split('\n').find((l) => /tray\.unseen/.test(l))?.trim()}`);
 }
 
+// --- `keep`: an item that leaves your hand only by a put ---------------------------------------------------
+
+// The note as a plain item (not contraband, so the boss doesn't catch you for it), with or without `keep`.
+const plain = (extra = {}) => ({ ...FP, items: { note: { icon: '📝', place: 'note', ...extra } } });
+// Away from every spot that takes it, standing right under the boss's nose when he's back: he sends you to your desk.
+const IDLE = [...WRITE, 'goto 3,6', ...Array(40).fill('wait 1s')];
+
+// 12. Without `keep` you can drop it; with it, there's no drop (and nothing else to do with it here).
+{
+  const a = play(plain(), [...WRITE, 'goto 9,8']).h;
+  const b = play(plain({ keep: true }), [...WRITE, 'goto 9,8']).h;
+  ok(a.game.player.focus?.action === 'drop' && b.game.player.focus === null, `focus: ${a.game.player.focus?.action} / with keep: ${b.game.player.focus?.action ?? 'none'}`);
+  b.game.input.press('interact');
+  b.frame();
+  ok(b.game.player.held === 'note' && !b.log.some((e) => e.name === 'item:drop'), 'pressing interact drops nothing');
+}
+
+// 13. Assigned work drops what you carry where you stood; a `keep` item stays in your hand, at your desk.
+{
+  const work = (h) => h.log.some((e) => e.name === 'boss:workAssigned');
+  const idle = (level) => {
+    const h = createHarness({ level });
+    h.begin();
+    for (const c of IDLE) if (!work(h)) h.run(c);
+    return h;
+  };
+  const a = idle(plain());
+  const b = idle(plain({ keep: true }));
+  ok(work(a) && a.game.world.note === 'dropped' && a.game.player.held === null, `no keep: work, the note dropped (${a.game.world.note})`);
+  ok(work(b) && b.game.world.note === 'player' && b.game.player.held === 'note' && b.game.player.seated, `keep: work, still holding it at the desk (${b.game.world.note})`);
+  b.run('wait until 3:10');
+  ok(b.game.player.held === 'note' && b.game.world.items.length === 0, 'and after the work, still holding it');
+}
+
+// 14. The validator wants a boolean.
+{
+  let msg = '';
+  try { validateLevel(plain({ keep: 'yes' }), 'bad-keep'); } catch (e) { msg = e.message; }
+  ok(/items\.note\.keep/.test(msg), `validator: ${msg.split('\n').find((l) => /items\.note\.keep/.test(l))?.trim()}`);
+}
+
 console.log(fails ? `\n${fails} FAILED` : '\nall passed');
 process.exit(fails ? 1 : 0);

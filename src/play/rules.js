@@ -276,7 +276,7 @@ function assignWork(game, reason) {
   // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
   // ends as 'idle'. Told on (a tattle): 'witnessed'.
   cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
-  dropHeld(game); // whatever you carried stays where you stood
+  if (!itemFlags(game, p.held)?.keep) dropHeld(game); // whatever you carried stays where you stood (`keep`: in your hand)
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
   sitAtDesk(game);
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
