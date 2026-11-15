@@ -72,10 +72,13 @@ function popOf(w, game, into) {
 }
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
-const SHOWN = { glitch: false, locked: false, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
+const SHOWN = { glitch: false, locked: false, jolt: 0, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
   SHOWN.locked = !!w.locked && !w.glitch;
+  // You tried his locked screen (index.js try_locked): the padlock jolts and flashes red for a moment. 1 → 0.
+  const since = w.lockJolt == null ? Infinity : game.clock.minute - w.lockJolt;
+  SHOWN.jolt = since < 0.45 ? 1 - since / 0.45 : 0;
   popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
   // Your edit saved, you close the sheet as the pop goes back in: his screen is back on his email to HR, the sheet
@@ -146,7 +149,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
       ctx.stroke();
     }
   }
-  if (shown.locked) drawLock(ctx, sx, sy, sw, sh);
+  if (shown.locked) drawLock(ctx, sx, sy, sw, sh, shown.jolt);
   ctx.fillStyle = 'rgba(255,255,255,0.10)'; // glare
   ctx.beginPath();
   ctx.moveTo(sx, sy);
@@ -192,10 +195,11 @@ function drawEmail(ctx, x, y, w, h) {
 }
 
 // Locked: the sheet hidden behind a dark lock screen with a padlock in the middle.
-function drawLock(ctx, sx, sy, sw, sh) {
-  ctx.fillStyle = '#1d2a36';
+function drawLock(ctx, sx, sy, sw, sh, jolt = 0) {
+  ctx.fillStyle = jolt > 0 ? `rgb(${29 + Math.round(120 * jolt)},42,54)` : '#1d2a36'; // tried: a red flash
   ctx.fillRect(sx, sy, sw, sh);
-  const cx = sx + sw / 2;
+  const cx = sx + sw / 2 + (jolt > 0 ? Math.sin(jolt * 40) * 2.5 * jolt : 0); // and the padlock shakes
+
   const cy = sy + sh / 2 + 2;
   ctx.strokeStyle = '#d8d2c4';
   ctx.lineWidth = 2;
@@ -288,11 +292,23 @@ function drawSheet(ctx, x, y, w, h, shown, t, throb = 0) {
     ctx.fillStyle = mine ? C.tomato : '#a7a39a';
     ctx.fillRect(mid - slot * 0.32, y + h - 3, slot * 0.64, 1.2); // the name
     if (mine && shown.strike > 0) {
+      // A thick red X drawn across your face: the first stroke, then the second.
       ctx.strokeStyle = C.tomatoDark;
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 2.6;
+      ctx.lineCap = 'round';
+      const l = mid - slot / 2 + 1.5;
+      const r = mid + slot / 2 - 1.5;
+      const top = fy - face * 0.4;
+      const bot = fy + face * 0.4;
+      const a = clamp(shown.strike * 2, 0, 1);
+      const b = clamp(shown.strike * 2 - 1, 0, 1);
       ctx.beginPath();
-      ctx.moveTo(mid - slot / 2 + 1, fy + face * 0.35);
-      ctx.lineTo(mid - slot / 2 + 1 + (slot - 2) * shown.strike, fy + face * 0.35 - (face * 0.7) * shown.strike);
+      ctx.moveTo(l, top);
+      ctx.lineTo(l + (r - l) * a, top + (bot - top) * a);
+      if (b > 0) {
+        ctx.moveTo(r, top);
+        ctx.lineTo(r - (r - l) * b, top + (bot - top) * b);
+      }
       ctx.stroke();
     }
     ctx.restore();

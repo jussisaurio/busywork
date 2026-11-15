@@ -20,14 +20,14 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'boss:coffee', 'lin:sees', 'lin:tells'],
+    soft: ['boss:suspicious', 'lin:sees', 'lin:tells'],
   },
 
   names: NAME,
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance,",
-    "     Q the boss's screen (it faces the floor), W the end of his desk his cable runs down from, F his desk phone,",
+    "     Q the boss's screen (it faces the floor), W the floor socket behind his desk his cable plugs into, F his desk phone,",
     "     M Lin's desk with her mobile, V Kev's desk with his desk phone, C coffee machine, P your desk, R restroom,",
     '     E elevator, @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
@@ -77,8 +77,8 @@ export default {
       case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
-      case 'boss:wavesOff': return "the boss waves you off his cable: that's Kev's job 🙅";
-      case 'boss:coffee': return "the boss leaves you to it and goes for a coffee ☕👉";
+      case 'boss:coffee': return 'the boss gives up waiting for Kev and goes for a coffee, his screen still static ☕';
+      case 'pc:triedLocked': return "the boss's screen is locked: the padlock jolts 🔒";
       case 'boss:hasCoffee': return 'the boss has his coffee and heads back';
       case 'phone:ring': return "Kev's desk phone rings ☎️";
       case 'phone:called': return "you call Kev's desk from the boss's phone";

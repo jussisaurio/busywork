@@ -7,57 +7,63 @@ const mustFire = (log, name) => {
   if (!log.some((e) => e.name === name)) throw new Error(`${name} never fired`);
 };
 
-// 3:26: his screen is static again and Kev went home. Kneel at the plug behind his desk while he sits there: he
-// leaves you to it (☕👉 you) and goes for a coffee.
-const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact'];
+// About 3:23 his screen is static again and Kev went home. Nobody answers Kev's phone: he gives up and goes for a
+// coffee, the screen dead. Then kneel at the plug behind his desk and push it home.
+const FIX = ['pretend until 3:28.8', 'goto behind_his_desk', 'interact'];
 
 export default [
   {
-    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → 🧥📧 → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), nobody answers at his desk (❓), he goes for a coffee (😮‍💨☕) and fixes it himself when back (🔌) → 🧥📧 → fail',
     expect: { result: 'fail' },
-    play({ run, log }) {
+    play({ run, log, g }) {
       run('pretend until 3:45');
       mustSay(log, 'boss', ['☎️', '@kev']);
       mustSay(log, 'lin', ['😨']);
       mustSay(log, 'lin', ['😌']);
       mustSay(log, 'kev', ['👋', '🏠']);
       mustSay(log, 'lin', ['👋']);
-      mustSay(log, 'boss', ['@kev', '❓']); // 3:26: he rang Kev's desk, and nobody picked up
+      mustSay(log, 'boss', ['@kev', '❓']); // he rang Kev's desk, and nobody picked up
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
-      mustSay(log, 'boss', ['😮‍💨']); // 3:31: a sigh, then down to the cable himself
-      mustSay(log, 'boss', ['🔌']);
+      mustSay(log, 'boss', ['😮‍💨', '☕']); // he gives up and goes for a coffee
+      mustSay(log, 'boss', ['🔌']); // back to a dead screen: down to the cable himself
+      const fixed = log.find((e) => e.name === 'pc:selfFixed');
+      if (!fixed || fixed.minute >= g.level.day.gatherAt) throw new Error('he was not back from coffee to fix it before 3:42');
       mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
     },
   },
   {
-    name: "his cable while Kev is still here → 🙅 Kev's job",
-    expect: { result: 'fail' },
-    play({ run, log, g }) {
-      for (const c of ['goto behind_his_desk pretend', 'interact']) run(c);
-      mustSay(log, 'boss', ['🙅', '@kev']);
-      if (!g.world.glitch) throw new Error('the cable was fixed by you while Kev was here');
-      run('goto my_seat pretend');
-      run('pretend until 3:45');
-    },
-  },
-  {
-    name: 'his screen while he is in the restroom → locked: nothing to do',
+    name: 'his cable while he sits at the static → nothing to do there (he sends you back to work)',
     expect: { result: 'fail' },
     play({ run, g }) {
-      for (const c of ['pretend until 3:17', 'goto his_screen pretend', 'interact']) run(c);
-      if (g.world.list !== 'on') throw new Error('edited a locked screen');
+      for (const c of ['pretend until 3:20.5', 'goto behind_his_desk', 'interact']) run(c);
+      if (!g.world.glitch) throw new Error('plugged his cable in under his nose');
       run('goto my_seat pretend');
       run('pretend until 3:45');
     },
   },
   {
-    name: "ring: plug his cable in (☕👉 you), ring Kev's empty desk (Lin turns round to it), edit → win",
+    name: 'his screen while he is in the restroom → locked: the padlock jolts (🔒), nothing to do',
+    expect: { result: 'fail' },
+    play({ run, g, log }) {
+      for (const c of ['pretend until 3:13', 'goto his_screen pretend', 'interact']) run(c);
+      if (g.world.list !== 'on') throw new Error('edited a locked screen');
+      mustFire(log, 'pc:triedLocked');
+      run('goto my_seat pretend');
+      run('pretend until 3:45');
+    },
+  },
+  {
+    name: "ring: he's gone for coffee, plug his cable in, ring Kev's empty desk (Lin turns round to it), edit → win",
     expect: { result: 'win', routes: ['ring'] },
     play({ run, log }) {
-      for (const c of [...FIX, 'goto boss_phone', 'interact', 'goto his_screen', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
-      mustSay(log, 'boss', ['🔌', '🚪']); // plug it in and get out
-      mustSay(log, 'boss', ['☕', '👉', '@player']);
+      for (const c of [...FIX, 'goto boss_phone', 'wait until 3:33', 'interact', 'goto his_screen', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      mustFire(log, 'pc:fixedByYou');
       mustFire(log, 'phone:called');
+      // She really turned round to it, before the edit was done (not saved by a buzz of her mobile).
+      const look = log.find((e) => e.name === 'say' && e.payload.owner === 'lin' && e.payload.icons.join('') === '👀☎️');
+      const edit = log.find((e) => e.name === 'list:edited');
+      if (!look || !edit || look.minute > edit.minute) throw new Error('Lin never turned round to the ring before the edit');
+      if (log.some((e) => e.name === 'lin:reads' && e.minute >= look.minute - 0.5 && e.minute <= edit.minute)) throw new Error('her mobile turned her away, not the ring');
       mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it unread
     },
   },
@@ -65,7 +71,7 @@ export default [
     name: 'phone: plug his cable in, wait for Lin\'s mobile to buzz (she turns away to read it), edit → win',
     expect: { result: 'win', routes: ['phone'] },
     play({ run, log }) {
-      for (const c of [...FIX, 'goto his_screen', 'wait until 3:32.75', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:34.1', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
       mustFire(log, 'lin:reads');
     },
   },

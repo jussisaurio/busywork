@@ -25,11 +25,12 @@ export const CAST = [
       s('3:00.8', { do: 'sit', spot: 'boss_desk', arrive: 'callKev' }), // ☎️ Kev's desk: it rings behind Lin
       s('3:03.6', { do: 'visit', spot: 'boss_aside' }), // he stands over Kev while Kev plugs the cable back in
       s('3:08.3', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
-      s('3:11', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // he locks his screen: the list is on it
-      s('3:19', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
-      s('3:26', { do: 'sit', spot: 'boss_desk', arrive: 'actsUp' }), // static again; he calls Kev, who went home
-      s('3:31', { do: 'sit', spot: 'cable', arrive: 'selfFix' }), // nobody came: he kneels at the cable himself
-      s('3:32', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
+      s('3:10', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // he locks his screen: the list is on it
+      s('3:15', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
+      s('3:19', { do: 'sit', spot: 'boss_desk', arrive: 'actsUp' }), // static again; he calls Kev, who went home,
+      // then gives up and goes for a coffee (index.js clockFor, the coffee lure). Back from it: still dead, he kneels
+      // at the plug himself on the way to his chair.
+      s('3:35', { do: 'sit', spot: 'boss_desk', prelude: 'selfFix', arrive: 'atDesk' }),
     ],
   },
   {
@@ -73,6 +74,10 @@ export function ringKev(game, secs = null) {
   const w = game.world;
   w.ringing = true;
   w.ringUntil = secs == null ? null : game.clock.minute + SECS(secs);
+  // Set now, not on the next frame (index.js bossClock): the ring's noise asks ringLook on its first sound, and a
+  // false there drops it for good: Lin would never turn round.
+  w.ringFrom = game.clock.minute;
+  w.ringLook = true;
   game.events.emit('phone:ring', {});
 }
 
@@ -144,7 +149,7 @@ export const BEHAVIOURS = {
       game.events.emit('pc:fixed', {});
     },
   },
-  // 3:26: the static is back. He bangs on it; then he calls Kev's desk (index.js clockFor: the ring, the ❓).
+  // About 3:23: the static is back. He bangs on it; then he calls Kev's desk (index.js clockFor: the ring, the ❓, coffee).
   actsUp: {
     arrive(game, npc, sim) {
       const w = game.world;
@@ -152,17 +157,24 @@ export const BEHAVIOURS = {
       if (st.actedUp || w.coffee !== 'none') return;
       st.actedUp = true;
       st.callAt = game.clock.minute + SECS(1.6);
+      w.pc = 'boss'; // back in his chair from the restroom: he unlocked it (atDesk), and it dies on him
+      w.locked = false;
       w.glitch = true;
       sim.speak(game, npc, [{ say: ['😠'] }]);
       game.events.emit('pc:actsUp', {});
     },
   },
-  // 3:31: nobody came. He kneels at his cable himself and pushes the plug home.
+  // Back from coffee to a dead screen: he kneels at his cable himself and pushes the plug home.
   selfFix: {
+    spot: 'cable',
+    pending: (npc) => !!npc._lay?.dead, // index.js bossClock: the screen is dead
     arrive(game, npc, sim) {
       const w = game.world;
       if (!w.glitch) return;
       w.glitch = false;
+      w.pc = 'boss'; // he is at it: it's his again, whether or not he reaches his chair before 3:42
+      w.locked = false;
+      w.listUpAt = game.clock.minute;
       sim.speak(game, npc, [{ say: ['🔌'] }]);
       sim.holdFor(npc, 1.0);
       game.events.emit('pc:selfFixed', {});
@@ -202,7 +214,7 @@ export const BEHAVIOURS = {
       const w = game.world;
       w.pc = 'boss';
       w.glitch = false;
-      w.locked = false;
+      if (w.check !== 'done') w.locked = false; // told: he locked it after putting you back, and sends it locked
       // Lin named you: he glares across the floor at your desk (whatever he says, it waits for Monday).
       sim.lookAt(game, npc, game.player.named ? 'player_desk' : 'screen', 2.6);
       if (game.player.named) sim.speak(game, npc, [{ say: ['👉', '@player', '😠'], after: 0.9 }]);

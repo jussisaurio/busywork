@@ -5,16 +5,17 @@
 // shoulder. To edit it you need (1) the boss away from a working, unlocked screen, and (2) Lin looking away:
 //   - 3:00: his cable has worked loose (static). He phones Kev's desk; Kev kneels at the plug and fixes it while the
 //     boss stands over him. The list comes up: your face is on it (😨); Lin's isn't (her 😨, then 😌, then a look at
-//     you). At 3:11 he goes to the restroom and locks the screen. Kev goes home about 3:15 (👋🏠 to Lin).
-//   - 3:26: the static is back. He phones Kev's desk again, but Kev went home: it just rings (❓). Kneel at his cable
-//     and plug it back in while he's there, and he leaves you to it (☕👉 you, 🔌🚪: I'm getting coffee; plug it
-//     in and get out). The screen comes back on after he's gone, the list open, unlocked: there was nothing to
-//     lock when he left.
-//     Left alone, he plugs it back in himself at 3:31 (🔌) and sits there until he sends it.
-//   - While he's at the coffee machine, make Lin look away for the 3 s the edit takes: ring Kev's empty desk from
-//     the boss's desk phone (she turns round to it: the ring route), or wait for her mobile to buzz (she picks it
-//     up and turns away: the phone route). When the edit ends the sheet closes, saved, back to the email to HR:
-//     at 3:45 he sends that saved file (list.js drawEmail).
+//     you). At 3:10 he goes to the restroom and locks the screen (try it: the padlock jolts, 🔒). Kev goes home
+//     about 3:15 (👋🏠 to Lin).
+//   - About 3:20, back at his desk: the static is back. He phones Kev's desk again, but Kev went home: it just rings
+//     (❓). He gives up (😮‍💨☕) and goes for a coffee, his screen dead: there is nothing to lock. He walks the length
+//     of the floor to the kitchen and is out of sight from about 3:28.
+//   - Then kneel at the socket behind his desk and push the plug home: the list comes back on, unlocked.
+//     Left alone, he comes back with his coffee to a dead screen and plugs it in himself (🔌) about 3:42.
+//   - Before he is back on the floor (about 3:36), make Lin look away for the 3 s the edit takes: ring Kev's empty
+//     desk from the boss's desk phone (she turns round to it, 👀☎️: the ring route), or wait for her mobile to
+//     buzz (she picks it up and turns away, 📱: the phone route). When the edit ends the sheet closes, saved, back
+//     to the email to HR: at 3:45 he sends that saved file (list.js drawEmail).
 // Seen by Lin: she doesn't shout. Your face off his list leaves a gap, and the next face in it could be hers: a
 // thought (📋, her face, 😨), then she gets up and goes to tell him (linWatch, the linTells lure), at the latest from
 // the kitchen door. He leaves his coffee, comes back, checks his screen, puts your face back and locks it. At 3:45 he
@@ -35,13 +36,13 @@ import gate from './gate.js';
 //  ------------------------------ hallway (row 7) --------------------------------------------
 //  Open plan: Lin's desk (x3-5, row 8, her mobile M) with Kev's behind it (row 11, his phone V), your desk P (x12-14)
 //  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R
-// The boss's desk (row 3): W the end his cable runs down from to the floor socket behind it, F his desk phone, Q his
-// screen, facing the floor. He sits south of it (row 4), his back to the glass.
+// The boss's desk (row 3): F his desk phone, Q his screen, facing the floor. W, behind it on the floor (row 2): the
+// socket his cable runs down to. He sits south of the desk (row 4), his back to the glass.
 const MAP = [
   '##############################', // 0
   '#.......G..........#TTCT.....#', // 1
-  '#.......G..........#.........#', // 2
-  '#..WFQ..G..TTJTTT..#....TTT..#', // 3
+  '#.W.....G..........#.........#', // 2
+  '#..TFQ..G..TTJTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
   '#GGGGGDGG#####D#######DD######', // 6
@@ -58,7 +59,7 @@ const MAP = [
 ];
 
 const LEGEND = {
-  W: { kind: 'boss_cable', solid: true, opaque: false, interactable: 'boss_cable', draw: 'desk' }, // the loose plug: behind the desk
+  W: { kind: 'boss_cable', solid: true, opaque: false, interactable: 'boss_cable', draw: 'floor' }, // the floor socket behind his desk: the loose plug
   F: { kind: 'boss_phone', solid: true, opaque: false, interactable: 'boss_phone', draw: 'desk' }, // his desk phone
   Q: { kind: 'boss_pc', solid: true, opaque: false, interactable: 'boss_pc', draw: 'desk' }, // his screen
   M: { kind: 'lin_mobile', solid: true, opaque: false, draw: 'desk' }, // Lin's desk, her mobile on it
@@ -74,7 +75,7 @@ const LEGEND = {
 const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
   boss_desk: { x: 3, y: 4, face: 'N' }, // his chair: facing his desk, his back to the glass, his screen up and right
-  cable: { x: 3, y: 2, face: 'S' }, // behind his desk, down at the socket: where Kev, you and he plug it back in
+  cable: { x: 3, y: 2, face: 'W' }, // behind his desk, down at the floor socket: where Kev, you and he plug it back in
   boss_aside: { x: 6, y: 3, face: 'W' }, // where he stands over Kev
   screen: { x: 5, y: 4, face: 'N' }, // in front of his screen
   lin_desk: { x: 4, y: 9, face: 'N' }, // facing his office: she reads his screen through the glass
@@ -97,8 +98,9 @@ const ZONES = {
 
 // Kev's desk phone, on his desk (V): where it rings from, and where Lin turns to.
 const KEV_PHONE = { x: 5.5, y: 11.4 };
-const RING_SECS = 6; // a call to Kev's empty desk rings this long, then gives up
-const RING_LOOK = 3.2; // Lin looks round at it this long (she turns back about a second after): she saw Kev go
+const RING_SECS = 6; // your call to Kev's empty desk rings this long, then gives up
+const BOSS_RING = 1.8; // the boss's 3:24 call rings this long before he gives up on Kev
+const RING_LOOK = 4.2; // Lin looks round at it this long (she turns back about a second after): she saw Kev go
 const LIN_NOTICE = 0.4; // seconds of your edit in her sight before she takes it in
 const TELL_RANGE = 5.5; // tiles: she tells the boss once she is this close (the kitchen door to his machine is 5)
 const EDIT_SECS = 3.0;
@@ -109,20 +111,11 @@ const behindDesk = (p) => p.y < 3;
 const atScreen = (p) => p.y >= 3;
 
 const INTERACTIONS = {
-  // While Kev is still here, the cable is his job: the boss waves you off it.
-  try_cable: {
-    on: 'boss_cable', text: 'plug his cable back in', instant: true,
-    can: (p, w) => w.glitch && !w.kevGone && !w.wavedOff && behindDesk(p),
-    done(game) {
-      game.world.wavedOff = true;
-      say(game, 'boss', ['🙅', '@kev'], { voice: 'boss', ttl: 1.8 }); // no: Kev does that
-      game.events.emit('boss:wavesOff', {});
-    },
-  },
-  // Kev has gone home: anyone may push the plug back in. Not sneaky: the boss is glad of it (index.js clockFor).
+  // He has gone for coffee and left his screen dead: anyone may push the plug back in. While he sits there, the
+  // cable is his business, and you have no reason to be behind his desk (the engine sends you back to work).
   fix_cable: {
-    on: 'boss_cable', text: 'plug his cable back in', duration: 4.0, sneaky: false,
-    can: (p, w) => w.glitch && w.kevGone && behindDesk(p),
+    on: 'boss_cable', text: 'plug his cable back in', duration: 1.5, sneaky: false,
+    can: (p, w) => w.glitch && w.pc === 'free' && behindDesk(p),
     done(game) {
       const w = game.world;
       w.glitch = false;
@@ -138,6 +131,16 @@ const INTERACTIONS = {
       game.events.emit('phone:called', {});
     },
   },
+  // His screen locked (the restroom): nothing gets past the padlock; it jolts (list.js).
+  try_locked: {
+    on: 'boss_pc', text: 'take your face off the list', instant: true,
+    can: (p, w) => w.locked && !w.glitch && w.list === 'on' && atScreen(p),
+    done(game) {
+      game.world.lockJolt = game.clock.minute;
+      say(game, 'player', ['🔒'], { kind: 'thought', ttl: 1.4 });
+      game.events.emit('pc:triedLocked', {});
+    },
+  },
   strike_name: {
     on: 'boss_pc', text: 'take your face off the list', duration: EDIT_SECS, sneaky: true, owner: 'boss', saw: '🖥️',
     // owner: only the boss catches you at it in the engine. Lin's reaction is her own (linClock): she doesn't shout.
@@ -147,7 +150,7 @@ const INTERACTIONS = {
       const lin = game.npcs.find((n) => n.id === 'lin');
       w.list = 'off';
       w.listOffAt = game.clock.minute; // your face drops off his screen (list.js)
-      w.offVia = w.linSaw ? 'seen' : w.ringing || lin?._heard ? 'ring' : w.linPhone === 'hand' ? 'phone' : 'unseen';
+      w.offVia = w.linSaw ? 'seen' : lin?._heard ? 'ring' : w.linPhone === 'hand' ? 'phone' : w.ringing ? 'ring' : 'unseen';
       game.events.emit('list:edited', { via: w.offVia, x: a.x, y: a.y });
     },
   },
@@ -159,7 +162,7 @@ function toldOn(game) {
   w.told = true;
   w.bossTold = true;
   game.player.named = true; // he knows it was you (cast.js sendList; meeting.verdict: caught)
-  if (w.coffee === 'asked') w.coffee = 'told'; // he leaves the machine to it
+  if (w.coffee === 'going') w.coffee = 'told'; // he leaves the machine to it
   w.brewing = false;
   const boss = findNpc(game, 'boss');
   if (boss && (boss.override === 'toCoffee' || boss.override === 'brewing')) endOverride(boss);
@@ -173,9 +176,9 @@ const ROLES = {
   authority: { id: 'boss', offDuty: ['toCheck', 'checking'], helpless: [], deafIn: null },
 };
 
-// You plug his cable back in while he sits there: he leaves you to it and gets a coffee (clockFor sets w.coffee).
-// The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule, about 3:42.
-const BREW_UNTIL = at('3:35.5', START);
+// Kev didn't answer: he gives up on him and goes for a coffee, his screen still dead (clockFor sets w.coffee). There
+// was nothing to lock: static. The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule.
+const BREW_UNTIL = at('3:35.2', START);
 const LURES = [
   // Told on: he goes straight to his screen (😠), puts your face back (index.js listen: 'boss:checks') and locks it.
   {
@@ -210,13 +213,13 @@ const LURES = [
   },
   {
     npc: 'boss',
-    when: (w) => w.coffee === 'asked',
+    when: (w) => w.coffee === 'going',
     override: 'toCoffee',
     plan: 'coffee',
     label: 'get a coffee',
     spot: 'coffee',
-    // fed up with the static, he doesn't look at the screen again: I'm getting coffee; you, plug it in and get out
-    react: { wait: 0.9, says: [{ say: ['☕', '👉', '@player'] }, { say: ['🔌', '🚪'], after: 0.5 }], event: 'boss:coffee' },
+    // fed up with the static and nobody coming: a sigh, and he goes for a coffee while he waits
+    react: { wait: 0.6, says: [{ say: ['😮‍💨', '☕'], kind: 'thought' }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
 ];
@@ -231,7 +234,7 @@ const NOISES = {
 
 // Lin's mobile buzzes on her desk at uneven times; a beat later she picks it up and turns away to read it (about
 // 4 s). Each buzz is visible (presentation.js: the phone shakes on her desk) before she looks away.
-const BUZZ = ['3:04', '3:11.5', '3:17', '3:21', '3:24.5', '3:29.6', '3:32.4', '3:37', '3:39.5', '3:43'].map((t) => at(t, START));
+const BUZZ = ['3:04', '3:11.5', '3:17', '3:21', '3:24.5', '3:30.2', '3:33.6', '3:37.5', '3:40', '3:43'].map((t) => at(t, START));
 const PICK_UP = SECS(0.6);
 const READ_FOR = 4.0; // s
 const AWAY = (3 * Math.PI) / 4; // down and to her left: turned away from his office
@@ -283,35 +286,33 @@ function bossClock(game, npc, sim) {
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
-  // 3:31, the static still there and nobody came: a sigh, then he kneels at the cable himself (cast.js selfFix).
-  if (!st.sighed && now >= at('3:31', START) && w.glitch && free(npc)) {
-    st.sighed = true;
-    sim.speak(game, npc, [{ say: ['😮‍💨'] }]);
-  }
-  // 3:26 (cast.js actsUp): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
+  st.dead = !!w.glitch; // cast.js selfFix: back from coffee to a dead screen, he kneels at the plug himself
+  // About 3:23 (cast.js actsUp): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
   if (st.callAt != null && now >= st.callAt) {
     st.callAt = null;
     if (w.glitch && free(npc)) {
       sim.speak(game, npc, [{ say: ['☎️', '@kev'] }]);
-      w.bossPhoneUntil = now + SECS(RING_SECS); // the handset at his ear while it rings out
-      ringKev(game, RING_SECS);
-      st.askAt = now + SECS(RING_SECS + 0.4);
+      w.bossPhoneUntil = now + SECS(BOSS_RING); // the handset at his ear while it rings out
+      ringKev(game, BOSS_RING);
+      st.askAt = now + SECS(BOSS_RING + 0.4);
     }
   }
   if (st.askAt != null && now >= st.askAt) {
     st.askAt = null;
-    if (w.glitch && free(npc)) sim.speak(game, npc, [{ say: ['@kev', '❓'], kind: 'thought' }]);
+    if (w.glitch && free(npc)) {
+      sim.speak(game, npc, [{ say: ['@kev', '❓'], kind: 'thought' }]);
+      st.goAt = now + SECS(0.8);
+    }
     const lin = findNpc(game, 'lin');
     if (free(lin)) say(game, 'lin', ['🤷'], { kind: 'thought', ttl: 1.2 }); // not her business where Kev went
   }
-  // You kneel at his cable while he sits there with the static: he leaves you to it (the coffee lure).
-  if (w.coffee === 'none' && w.glitch && game.player.action?.type === 'fix_cable' && free(npc) && seated(game, npc, 'boss_desk')) {
-    w.coffee = 'asked';
-    w.pc = 'free';
-    st.askAt = null;
-    if (w.ringing) w.ringing = false; // he hangs up on Kev's empty desk
-    w.bossPhoneUntil = null;
-    npc._sayQ.length = 0;
+  // Nobody is coming: he leaves the dead screen and goes for a coffee (the coffee lure).
+  if (st.goAt != null && now >= st.goAt) {
+    st.goAt = null;
+    if (w.glitch && w.coffee === 'none' && free(npc)) {
+      w.coffee = 'going';
+      w.pc = 'free';
+    }
   }
   if (npc.override === 'brewing') {
     st.brewFrom ??= now;
@@ -345,12 +346,18 @@ function linClock(game, npc, sim) {
       w.linPhone = 'hand';
       st.down = now + SECS(READ_FOR);
       stare(npc, sim, AWAY, READ_FOR);
+      say(game, 'lin', ['📱'], { kind: 'thought', ttl: READ_FOR * 0.8 }); // her back to his office, reading
       game.events.emit('lin:reads', {});
     }
   }
   if (st.down != null && now >= st.down) {
     st.down = null;
     w.linPhone = 'desk';
+  }
+  // Your call rings Kev's empty desk: she turns round to it (NOISES), her back to his office.
+  if (w.ringLook && w.pc === 'free' && npc._heard && st.rangFor !== w.ringFrom) {
+    st.rangFor = w.ringFrom;
+    say(game, 'lin', ['👀', '☎️'], { kind: 'thought', ttl: 1.6 });
   }
   // The list comes up (cast.js pcFixed): she reads it over his shoulder. Her face isn't on it (😨, then 😌), and
   // she looks round at you: yours is.
@@ -460,8 +467,8 @@ export default {
     bossPhoneUntil: null, // the game minute the boss puts his handset down
     kevUp: false, // Kev has his bag: going home
     kevGone: false,
-    wavedOff: false, // the boss waved you off his cable (Kev's job)
-    coffee: 'none', // 'none' | 'asked' (he left you to it) | 'done' (he has his cup)
+    coffee: 'none', // 'none' | 'going' (he gave up on Kev and left his dead screen) | 'done' (he has his cup) | 'told'
+    lockJolt: null, // the game minute you tried his locked screen (list.js jolts the padlock)
     brewing: false,
     brewProgress: 0,
     buzzAt: null, // the game minute Lin's mobile last buzzed

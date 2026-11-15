@@ -7,8 +7,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "b1c3189f5df23550",
-    "d0c17a593b969071"
+    "7f8c9f7c02730c07",
+    "c35c9e186a5674a3"
    ]
   },
   {
@@ -17,326 +17,134 @@
    ],
    "summary": "fail",
    "digests": [
-    "c8517d0aacf7b9e9",
-    "c741cb6981401b30"
+    "60a35c989c298537",
+    "749108e0e32c33b6"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:19",
+    "pretend 8s",
+    "goto boss_phone pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "afc58ff149b7e2a8",
+    "ed3762e9b74505da",
+    "3848a2ac15bb6b35",
+    "7c4606f24ea61aa7",
+    "bdd28a6a159cd5ab"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "388d0061755814ee",
+    "3923fb486d514735"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
     "goto behind_his_desk",
     "interact",
     "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "4eeb908b5c1ecd73",
-    "ead3d19ddc54d661",
-    "301943c9dfeb2e92",
-    "6cb1596481f1d449",
-    "6dbbbad89e9e9898"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "7e48e8227764cc39",
+    "ab64cd8e8a3d194b"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:19",
+    "pretend until 3:30",
+    "goto boss_phone pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "25f833a8065de78f",
+    "298fc8f23ce72392",
+    "935338e2a2adefd4",
+    "9307f81789fec1d8",
+    "ab987dc2535c6bfa"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
     "goto behind_his_desk",
     "interact",
     "pretend until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "4eeb908b5c1ecd73",
-    "ead3d19ddc54d661",
-    "301943c9dfeb2e92",
-    "f18486919914ae91",
-    "76970b1c186b6af2"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "4d4a3998c3407957",
+    "428001725ee84717"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "baf8ded02fb022c3",
-    "be76103f4c78c39d",
-    "56103e4016d98395"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:25",
+    "pretend until 3:32",
     "goto behind_his_desk",
     "interact",
-    "pretend until 3:45"
+    "interact",
+    "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "d296a9df2a87f545",
-    "c92bc9f90c125507",
-    "bffe73a59e7f2fcf",
-    "6604e6936f4e7391",
-    "b7660d1f728d81f5"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "ef8ae959cdca2fc6",
+    "db1ec089ebe154a8"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:25",
+    "pretend until 3:32",
     "goto behind_his_desk",
     "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "d296a9df2a87f545",
-    "c92bc9f90c125507",
-    "bffe73a59e7f2fcf",
-    "20edce99a16fe140",
-    "028026a15aec6a13"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "ab350d52f9fd6f39",
-    "e13ac7944e74d1d1",
-    "ba16786f628a6bdb",
-    "389f9ce6fa990337"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c53de42c129627af",
-    "b6b7d9ad6c9ddebf",
-    "a5133b4f5a5f7ce3",
-    "6cf69c9fb39b7c0a",
-    "dd14db7696e5c5db",
-    "164f7e0837d7d21b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:28",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "goto restroom_door pretend",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c53de42c129627af",
-    "7919c477113ab571",
-    "d1ba2fd05602d0a4",
-    "6616922cc8f276d7",
-    "fee889730cb2345a",
-    "2bd1aec3df285e27",
-    "cbb652d826ac0d3a",
-    "1e00569d1b42714d",
-    "d94c5458cb13906d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "ab350d52f9fd6f39",
-    "e13ac7944e74d1d1",
-    "e366ce3a2b33c76c",
-    "99e2c6ef578f4474",
-    "bfebb7e8945a18c4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:28",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "goto coffee",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c53de42c129627af",
-    "7919c477113ab571",
-    "d1ba2fd05602d0a4",
-    "a22ee42bada82215",
-    "9e0573a5459446a2",
-    "b556199e3d6d7692",
-    "df52610b92af21de",
-    "02166466e5b70b91"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "4fe96030751df51e",
-    "ece59c9745e7317b",
-    "b2f52719685c721a",
-    "8176fb87e1892d85",
-    "e521425683ff92fa",
-    "70e6910975242c62",
-    "79ed2b1271ec7b6d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "wait until 3:38",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "f383a8b30967611f",
-    "f0bcd6d04083848c",
-    "91086ef99316718a",
-    "b2b32d40e7603725",
-    "74b3284f8819ee27"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
     "goto his_screen pretend",
     "interact",
     "wait until 3:45"
    ],
-   "summary": "win phone",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "ab350d52f9fd6f39",
-    "e13ac7944e74d1d1",
-    "913260a55aa5912d",
-    "f053db885c3933cc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:28",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
    "summary": "caught",
    "digests": [
-    "c53de42c129627af",
-    "7919c477113ab571",
-    "d1ba2fd05602d0a4",
-    "a22ee42bada82215",
-    "9e0573a5459446a2",
-    "bef5ef63992816b4",
-    "5d5284d22fe95626"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "0bcdef4524468cda",
+    "58e0945ce8e5e84b",
+    "3d382ba1b779d7d9",
+    "6400b4924939e2d7"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win ring",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "baf8ded02fb022c3",
-    "fc1fe873512bb0c3",
-    "a22de2e6ac2a0275",
-    "c484a4bd51e28b05",
-    "d693081d0ebb8d61"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:23",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "dd47f53ea863c4b9",
-    "612819eeea6bdcbb",
-    "8fc119e5614af382",
-    "279f91b249206b0e",
-    "1f2aa18baa2fcfc1",
-    "b43ef05f5455dbd6",
-    "183c4356b13bc504"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto behind_his_desk pretend",
+    "pretend until 3:32",
+    "goto behind_his_desk",
     "interact",
     "interact",
     "goto his_screen pretend",
@@ -345,338 +153,42 @@
    ],
    "summary": "caught",
    "digests": [
-    "4fe96030751df51e",
-    "ece59c9745e7317b",
-    "b2f52719685c721a",
-    "5ed5b3c1faf5b7fc",
-    "e8148d4596062d24",
-    "0e116b37b7a8c802",
-    "5ceb8eeaab856026",
-    "cf19bcc6622ad332"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "6106cb7e312fffca",
+    "f14c4867e8b03b8a",
+    "a9ba84e8e14f5da7",
+    "515f0caf7ac0b07f"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:26",
-    "goto behind_his_desk pretend",
-    "interact",
+    "pretend until 3:32",
+    "goto behind_his_desk",
     "interact",
     "goto his_screen pretend",
     "interact",
-    "goto boss_phone pretend",
+    "goto behind_his_desk pretend",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "4fe96030751df51e",
-    "ece59c9745e7317b",
-    "b2f52719685c721a",
-    "5ed5b3c1faf5b7fc",
-    "e8148d4596062d24",
-    "0e116b37b7a8c802",
-    "519aaf16b5eab450",
-    "330de3a5c553b602",
-    "51d9d32a15accfcf"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "0bcdef4524468cda",
+    "58e0945ce8e5e84b",
+    "d4c65c2baf801a5a",
+    "1af0fef1878cc135",
+    "1f6bc8f08b686f87"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:23",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "dd47f53ea863c4b9",
-    "612819eeea6bdcbb",
-    "8fc119e5614af382",
-    "279f91b249206b0e",
-    "1f2aa18baa2fcfc1",
-    "eb6d567f2b955e35",
-    "a898007135986729"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "goto boss_phone pretend",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "4fe96030751df51e",
-    "ece59c9745e7317b",
-    "b2f52719685c721a",
-    "8176fb87e1892d85",
-    "e521425683ff92fa",
-    "c702bf7aa211b161",
-    "a8f5e755cb646362",
-    "69cdccedd48aa24a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win ring",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "baf8ded02fb022c3",
-    "fc1fe873512bb0c3",
-    "a22de2e6ac2a0275",
-    "bf274d5e48367214",
-    "b9d0ca4e69b556bb"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:23",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "dd47f53ea863c4b9",
-    "612819eeea6bdcbb",
-    "8fc119e5614af382",
-    "279f91b249206b0e",
-    "1f2aa18baa2fcfc1",
-    "1719f05a1f80d1c1",
-    "bbe6dbc9ebddd8d5",
-    "ec4a3e9d7d416fe4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:26",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "c53de42c129627af",
-    "86d583bb5b0a5f3b",
-    "bebdf22e453a35d4",
-    "ab350d52f9fd6f39",
-    "e13ac7944e74d1d1",
-    "e366ce3a2b33c76c",
-    "6933bba969710de0",
-    "ebf3e80fed336ad6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:28",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c53de42c129627af",
-    "7919c477113ab571",
-    "d1ba2fd05602d0a4",
-    "6616922cc8f276d7",
-    "fee889730cb2345a",
-    "2bd1aec3df285e27",
-    "ea86b52f3478433d",
-    "f9346cf33266af5f"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:23",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "dd47f53ea863c4b9",
-    "612819eeea6bdcbb",
-    "8fc119e5614af382",
-    "279f91b249206b0e",
-    "1f2aa18baa2fcfc1",
-    "1719f05a1f80d1c1",
-    "4dd9014a376e4f6d",
-    "aad6d0bb4eb6c436"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:28",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "pretend 2s",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c53de42c129627af",
-    "7919c477113ab571",
-    "d1ba2fd05602d0a4",
-    "6616922cc8f276d7",
-    "fee889730cb2345a",
-    "05f54aff28d87929",
-    "253b8cb58d8bb45f",
-    "40ff629d6d138f1e",
-    "cc781f23804ce94c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_cable pretend",
-    "wait 5s",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen",
-    "pretend 2s",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "ebbf26f516b0f4e8",
-    "714e6b76d15ce17f",
-    "b0f8641e3ea9b9d8",
-    "528c046f2fa4e813",
-    "7b9e6bf5d2463f80",
-    "6ca3f329412e57e7",
-    "0990490c3d19beba",
-    "5d3362f8bf9b886b",
-    "5b4f9e755a711683"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_cable pretend",
-    "wait 5s",
-    "goto behind_his_desk pretend",
-    "interact",
-    "interact",
-    "goto his_screen pretend",
-    "pretend 2s",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "ebbf26f516b0f4e8",
-    "714e6b76d15ce17f",
-    "b0f8641e3ea9b9d8",
-    "528c046f2fa4e813",
-    "af4a06db69744765",
-    "f76436977a52eafa",
-    "f3009cb03f3d12f7",
-    "782c3ccfdb3048dc",
-    "42cb275841759f49",
-    "1f12d45c5b81fb59"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "3c33b80af4b5838b",
-    "cd2a89dd3a5eb2e9"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "3bdde4e24202123f",
-    "ec77d5ba2ac15640"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "wait 2.25s",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "21376c2168fe479f",
-    "0c2a7e0272ca29dc",
-    "fda5591cbc54eb6c",
-    "dfb23da59b92e410",
-    "1ab21197e91a24a6",
-    "ed7c4c64e443ceb4",
-    "d2fd1ea70cb8d39a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
+    "pretend until 3:32",
+    "goto behind_his_desk",
     "interact",
     "interact",
     "goto his_screen",
@@ -685,80 +197,42 @@
    ],
    "summary": "win ring",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "d7012a19d6c6df97",
-    "b9eee910ca1406bb",
-    "c67e390c0321e27b",
-    "646432178a7f5ef2",
-    "38f4c692c61b2254"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "3d66c02b5cdf20dc",
+    "0dbff72480c71d03",
+    "1d6239679cd78fd0",
+    "7a7f83d4510b36e6"
    ]
   },
   {
    "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
+    "pretend until 3:32",
     "goto behind_his_desk pretend",
-    "wait 2.25s",
     "interact",
-    "goto his_screen",
+    "interact",
+    "goto his_screen pretend",
     "interact",
     "wait until 3:45"
    ],
-   "summary": "win phone",
+   "summary": "caught",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "59c72e0c6fa3e45d",
-    "095a5293c7cbadba",
-    "00a22e4e49d5f760",
-    "a6d6fe69a6dd89e6"
+    "31ced3aaeaf9cbeb",
+    "4287df9dfab8a26a",
+    "5bd362351ba1a642",
+    "ccfbbd56f76bd19b",
+    "d6340de425e1dc70",
+    "b1abc70869c59bab",
+    "1fe8fa2a99883f26",
+    "23aa21f87a9a5893"
    ]
   },
   {
    "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "b365bbbab8c22c70",
-    "d102df0ac2767eab"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
+    "pretend until 3:32",
+    "goto behind_his_desk",
     "interact",
     "interact",
     "goto his_screen",
@@ -767,202 +241,354 @@
    ],
    "summary": "win ring",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "d7012a19d6c6df97",
-    "b9eee910ca1406bb",
-    "c67e390c0321e27b",
-    "7da6d54e170dc64d",
-    "7bf8ff766281d83f"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "3d66c02b5cdf20dc",
+    "0dbff72480c71d03",
+    "a65e4466afbae19f",
+    "62e06eaed1a33a12"
    ]
   },
   {
    "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
+    "pretend until 3:26",
+    "goto behind_his_desk",
     "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
+    "goto his_screen pretend",
     "interact",
-    "pretend until 3:45"
+    "wait until 3:45"
    ],
-   "summary": "fail",
+   "summary": "win phone",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "cc58cc8ebdb118e3",
-    "4e2557c6ed641c67"
+    "a41c37783ca73849",
+    "28bbbd51e7c3c0f1",
+    "ea9495121fa8fcb9",
+    "3f41181711c55b43",
+    "9a5a2a4992844eca",
+    "d07384e8834c20c6",
+    "f0c298278e741247"
    ]
   },
   {
    "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
     "interact",
     "goto behind_his_desk pretend",
-    "wait 1.5s",
+    "goto boss_cable",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "0bcdef4524468cda",
+    "58e0945ce8e5e84b",
+    "d4c65c2baf801a5a",
+    "4764eb08d0cf653b",
+    "cb6ba6786a082daa",
+    "7e3e5de27acb1dc3"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk pretend",
     "interact",
-    "goto boss_office_door pretend",
-    "goto coffee",
-    "goto his_screen",
-    "interact",
+    "goto his_screen pretend",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "79ebfe9febfc5cf0",
-    "83165ba94f94941d",
-    "d40966280b463942",
-    "bd862292be10c4f3",
-    "897ff02947b1df82",
-    "64bd312ef38c6fc7",
-    "519b5eca5451335b"
+    "31ced3aaeaf9cbeb",
+    "4287df9dfab8a26a",
+    "5bd362351ba1a642",
+    "333716568de522b7",
+    "c0bd6bee88b7fb1a",
+    "3016874d12684aa3",
+    "b26e4e6b7c688527"
    ]
   },
   {
    "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
+    "interact",
+    "goto his_screen pretend",
     "interact",
     "goto behind_his_desk pretend",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "6106cb7e312fffca",
+    "f14c4867e8b03b8a",
+    "f16d9c9f3efb4977",
+    "4c4ab3b148770ed5",
+    "f73d939ca352cd2f"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "0bcdef4524468cda",
+    "58e0945ce8e5e84b",
+    "3d382ba1b779d7d9",
+    "5a189136dce308b5",
+    "4692f1bce97d58da"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:26",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "a41c37783ca73849",
+    "28bbbd51e7c3c0f1",
+    "ea9495121fa8fcb9",
+    "3f41181711c55b43",
+    "9a5a2a4992844eca",
+    "3905e8735b112006",
+    "5057890976743b66"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:30",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "25f833a8065de78f",
+    "09d0a62bc58d83cc",
+    "c1718e7f89bb960c",
+    "89eea731c10ca54d",
+    "0fc229ba5232dcb6",
+    "e5dba3872a88038d",
+    "08a95f3e1c220bdf",
+    "76cfa8c898db81bb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:26",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "a41c37783ca73849",
+    "28bbbd51e7c3c0f1",
+    "ea9495121fa8fcb9",
+    "3f41181711c55b43",
+    "9a5a2a4992844eca",
+    "d5699c123a87fd5b",
+    "75d529c2c76980d9",
+    "9b3dc9e8f610ea00"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:30",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "25f833a8065de78f",
+    "09d0a62bc58d83cc",
+    "c1718e7f89bb960c",
+    "89eea731c10ca54d",
+    "0fc229ba5232dcb6",
+    "1004bb1ce7097d0a",
+    "e141493b5d11aed7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:30",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "25f833a8065de78f",
+    "09d0a62bc58d83cc",
+    "c1718e7f89bb960c",
+    "89eea731c10ca54d",
+    "0fc229ba5232dcb6",
+    "e5dba3872a88038d",
+    "9eb5d74e73476de9",
+    "e27042638a78380a"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:30",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "25f833a8065de78f",
+    "09d0a62bc58d83cc",
+    "c1718e7f89bb960c",
+    "89eea731c10ca54d",
+    "0fc229ba5232dcb6",
+    "6abf90e11c16cb8a",
+    "0e40f24b926b9307"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
     "wait 1.5s",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "6106cb7e312fffca",
+    "f14c4867e8b03b8a",
+    "a9ba84e8e14f5da7",
+    "d1347efee2ba7331",
+    "a712d791b3d19d3c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:26",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "a41c37783ca73849",
+    "28bbbd51e7c3c0f1",
+    "ea9495121fa8fcb9",
+    "3f41181711c55b43",
+    "9a5a2a4992844eca",
+    "d5699c123a87fd5b",
+    "e9505742999c8014",
+    "3ef50a434304417d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk",
     "interact",
     "interact",
     "goto his_screen pretend",
+    "interact",
     "goto behind_his_desk pretend",
+    "goto boss_cable",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "6106cb7e312fffca",
+    "f14c4867e8b03b8a",
+    "f16d9c9f3efb4977",
+    "52405b6beddc0e5a",
+    "9601fa4f2d8862f8",
+    "f701eb7c6b1475dd"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:32",
+    "goto behind_his_desk",
+    "interact",
     "interact",
     "goto his_screen pretend",
     "interact",
-    "goto boss_phone pretend",
+    "wait 1.5s",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "d7012a19d6c6df97",
-    "d8cbed9dd424e66c",
-    "34795e49f42893eb",
-    "1a6b8cd42536a505",
-    "bfb0b72767a74887",
-    "88489c47364adda9",
-    "872ffc870b967358",
-    "8ab6fd865558d587",
-    "9dc7434af58d269e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
-    "interact",
-    "goto boss_phone pretend",
-    "goto his_screen",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "65fa277f06bc2240",
-    "e5ccd9625ac92431",
-    "6f514f3bef3e72dc",
-    "7302200386da693b",
-    "ccbb507685559832"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "wait 1.5s",
-    "goto behind_his_desk pretend",
-    "interact",
-    "goto his_screen",
-    "interact",
-    "pretend 1s",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "ce340b65036dab30",
-    "fe715901b83c6d0d",
-    "2ea02a1d816703e9",
-    "2094aa8fdc7384d9",
-    "be3cfcb480a45784",
-    "011bc20a26bab73f",
-    "621347d4d0663498",
-    "9dbb0d20e05b0e36"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_phone pretend",
-    "goto boss_pc pretend",
-    "pretend until 3:25",
-    "interact",
-    "goto behind_his_desk pretend",
-    "wait 1.5s",
-    "interact",
-    "goto his_screen",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "e9426fa12e28df7b",
-    "6bd26bb270a140e7",
-    "8a21d2df0150d302",
-    "8a65ec67a86de197",
-    "7ccbec85c4598d47",
-    "cedac0d4df2f8ff6",
-    "74b1a87c79a44e1c",
-    "59c72e0c6fa3e45d",
-    "095a5293c7cbadba",
-    "64be33dc7dc92686",
-    "8035c625dbbfffde"
+    "31ced3aaeaf9cbeb",
+    "38901943079b4b1f",
+    "fe399690767e26a3",
+    "01240ec5e19c79ef",
+    "6106cb7e312fffca",
+    "f14c4867e8b03b8a",
+    "a9ba84e8e14f5da7",
+    "e63e180ef13ac675",
+    "341e72c9017b07ee",
+    "7368264f2ed5abe9",
+    "d2a5be2548ebd4b0",
+    "261d9010be8061e3",
+    "07627c7a45223a86"
    ]
   },
   {
@@ -972,72 +598,76 @@
     "wait 2s",
     "goto behind_his_desk",
     "interact",
+    "pretend until 3:13",
+    "goto his_screen",
+    "interact",
     "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "7066c241799fb1d8",
-    "0d826447d722cfa4",
-    "7673428b42922502",
-    "5c7488d413bbaadc",
-    "41312267caa3cbef",
-    "0cfcc187b9a4c562",
-    "f855c47ba6845e3e"
+    "79e542ed339184b5",
+    "386bdfb3e59b8ba2",
+    "c48a23d64975bfec",
+    "aaa3efbc87faa886",
+    "903ee6aa37f61324",
+    "942402863e381243",
+    "2464bd7345a5b826",
+    "1b5059432b948069",
+    "2363fb14a13c34ab",
+    "293b25aca8595da5"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:25.5",
-    "goto behind_his_desk pretend",
+    "pretend until 3:28.8",
+    "goto behind_his_desk",
     "interact",
-    "wait 4.5s",
     "goto boss_phone",
+    "wait until 3:33",
     "interact",
     "goto his_screen",
     "interact",
     "goto my_seat",
     "wait until 3:45"
    ],
-   "summary": "caught",
+   "summary": "win ring",
    "digests": [
-    "68acca007a84d8f2",
-    "9ae13675ed68aed6",
-    "db3bb14ccfc32aff",
-    "d382d6bd49df2009",
-    "397c5695c434f65a",
-    "633bb3a54b32efa5",
-    "87f40a457835cf0c",
-    "e60dd8451a424ed1",
-    "e79f07c772e4f9ed",
-    "6dbe02a71e86925f",
-    "7b4c9f0fbbe13fe4"
+    "eb6cc2490de872e5",
+    "c55f8d6accf8a298",
+    "9ec1b6db6dd8487b",
+    "4aab0d55306adb5b",
+    "13518117d4a7a081",
+    "b7cc8e50225c5ad1",
+    "73eeb838a8ac73d6",
+    "63b60fac7d1e2e90",
+    "4b6688bee80391d1",
+    "4d5016eab5694277",
+    "d9a68d4bba31dea7"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:25.5",
-    "goto behind_his_desk pretend",
+    "pretend until 3:28.8",
+    "goto behind_his_desk",
     "interact",
-    "wait 4.5s",
     "goto his_screen",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "68acca007a84d8f2",
-    "9ae13675ed68aed6",
-    "db3bb14ccfc32aff",
-    "d382d6bd49df2009",
-    "e99848c2623e9dfc",
-    "2e8d56be914ef245",
-    "15ffde1416ba9d15",
-    "e72c02e80e373ec5"
+    "eb6cc2490de872e5",
+    "c55f8d6accf8a298",
+    "9ec1b6db6dd8487b",
+    "f9160da70b5f492b",
+    "68895a8feb66ddc2",
+    "4dc880d5def08cba",
+    "07b0666848c3b1ce"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
+    "goto behind_his_desk",
     "interact",
     "restart",
     "pretend until 3:13",
@@ -1051,18 +681,18 @@
    ],
    "summary": "fail",
    "digests": [
-    "c53de42c129627af",
-    "cd861ebfafc6a8af",
-    "29cd98fee581189a",
-    "f9269ddb9349ca7f",
-    "3f9d8b7d02047ce5",
-    "b226f52132fffa30",
-    "47922d40ab874163",
-    "c8c9ff65b0254124",
-    "c7d7f3b6f4062adb",
-    "4e24eef63f85833c",
-    "e6588aa964737ec6",
-    "428e9a56da83bd22"
+    "ca3d88f71fe4b55c",
+    "07901f728e6f11d7",
+    "befceff5f70e98ee",
+    "02dae0d3074b3eb1",
+    "e76de3de9dfdbdb2",
+    "a3dc855dee03909a",
+    "cc2d18dbba03339b",
+    "6a4f7d97c2b17eca",
+    "a1e72cb4bc5c43e4",
+    "cbebe4b3d505a73b",
+    "0c9df41b41f3995c",
+    "bffec8ef57caa6bd"
    ]
   }
  ]
