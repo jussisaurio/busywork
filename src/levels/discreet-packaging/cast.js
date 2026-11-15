@@ -71,7 +71,7 @@ function stand(npc) {
 
 export const BEHAVIOURS = {
   // Lin at the pigeonholes, 3:50: she takes what is on the parcel shelf and reads the labels. Bob's box is always
-  // there; no pink box today, she wonders.
+  // there. With no pink box on the shelf she just takes Bob's: she never knew there was another.
   collectMail: {
     arrive(game, lin, sim) {
       if (lin._collected) return;
@@ -80,7 +80,6 @@ export const BEHAVIOURS = {
       if (w.brown === 'shelf') w.brown = 'lin';
       if (w.parcel !== 'shelf') {
         w.mailEmpty = true;
-        sim.speak(game, lin, [{ say: ['💝', '❓'], kind: 'thought' }]);
         game.events.emit('parcel:missing', {});
         return;
       }

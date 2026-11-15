@@ -1,6 +1,6 @@
 // Discreet Packaging's things, drawn: no emoji stands in for an object. Mum's
 // pink parcel and Bob's plain brown one, the pigeonholes they wait in, Bob's monitor and the wall camera that feeds
-// it, the power strip with the monitor's plug, the broom and your desk drawer. The furniture painters are
+// it, the power strip with the camera's plug, the broom and your desk drawer. The furniture painters are
 // presentation.js DECOR.props draw functions ((ctx, info, at, shown, t), map px); the things you can carry (the
 // parcel, the broom) are items[type].draw painters (render/things.js), and the things only bubbles and poses show
 // (Bob's box, Lin's armful of post, static) are DECOR.things; the end scenes (end-scenes.js) reuse them all.
@@ -490,23 +490,30 @@ function leaf(ctx, x, y, len, rot, color) {
 
 // --- the power strip (tile O) ------------------------------------------------------------------------------------------
 
-// The monitor's cable runs off the back of the counter to a power strip in the corner. shown: { plugged }.
-// Pulled: the plug lies on the floor beside the strip, a spark at its pins now and then.
+// The camera's cable: from the camera's bracket on the north wall it runs along the top of the wall, behind the plant,
+// and down the east wall to a power strip on the floor by the counter's far end. Pulled, the camera's light goes out,
+// Bob's screen gets no picture (static), and the plug lies on the floor beside the strip, a spark at its pins now and
+// then. shown: { plugged }.
 export function socket(ctx, info, at, shown, t) {
   const sx = at.x * T + 6;
   const sy = at.y * T + 14;
-  const mx = 16 * T + T - 1; // the monitor's back (tile M (16,10), monitor() above)
   const plugX = shown.plugged ? sx + 3 : sx - 4;
   const plugY = shown.plugged ? sy + 3 : sy + 13;
+  const wallX = (at.x + 1) * T - 3; // down the east wall, just inside it
+  const topY = 5 * T + 1; // along the foot of the north wall
+  const camX = 19.5 * T + 4; // the camera's bracket (CAMERAS in index.js; drawWallCamera)
   ctx.strokeStyle = '#2a2622';
   ctx.lineWidth = 1.6;
   ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
   ctx.beginPath();
-  ctx.moveTo(mx - 2, 10 * T + 8);
-  ctx.lineTo(mx + 4, 10 * T + 2);
-  ctx.lineTo(at.x * T - 10, 10 * T + 2);
-  ctx.quadraticCurveTo(at.x * T - 2, 10 * T + 2, plugX - 3, plugY + 1);
+  ctx.moveTo(camX, 5 * T - 8);
+  ctx.lineTo(camX, topY);
+  ctx.lineTo(wallX, topY);
+  ctx.lineTo(wallX, sy - 6);
+  ctx.quadraticCurveTo(wallX, plugY + 1, plugX + 3, plugY + 1);
   ctx.stroke();
+  ctx.lineJoin = 'miter';
   ctx.lineCap = 'butt';
   // the strip
   fillEllipse(ctx, sx + 10, sy + 7, 12, 2.5, 'rgba(0,0,0,0.2)');
