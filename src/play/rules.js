@@ -273,7 +273,7 @@ function react(game, s, npc, offence) {
   say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉', '@player'] : ['❗', '👉', '@player']), { kind: 'alert', ttl: 1.6 });
   const heard = authorityHears(game, authorityNpc(game));
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
-  if (heard) assignWork(game, 'tattle', npc.id);
+  if (heard) tattleHeard(game, npc.id, offence);
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
 }
 
@@ -284,7 +284,20 @@ function tellLate(game, s, w) {
   sightline(game, w.id, 'tattle', 1.4);
   say(game, w.id, ['👉', '@player', g.icon], { kind: 'alert', ttl: 1.6 });
   game.events.emit('witness:tattle', { by: w.id, reason: g.reason, heard: true, late: true, icon: g.icon });
-  assignWork(game, 'tattle', w.id);
+  tattleHeard(game, w.id, g.reason);
+}
+
+// What the authority does on a tattle he hears (level.roles.authority.tattle): 'work' (the default) sends you to your
+// desk; 'caught' ends the day on her word; a function (game, { by, reason }) is the level's own answer (he walks
+// over and checks, say). Her shout runs to him first, whatever he does (a 'relay' line).
+function tattleHeard(game, by, reason) {
+  const auth = roles(game).authority;
+  const how = auth.tattle ?? 'work';
+  if (how === 'work') return assignWork(game, 'tattle', by);
+  const boss = findNpc(game, auth.id);
+  if (boss && boss.active) sightline(game, by, 'relay', 1.0, undefined, auth.id);
+  if (how === 'caught') caught(game, reason, auth.id);
+  else how(game, { by, reason });
 }
 
 // The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes. by: the witness who told

@@ -69,6 +69,7 @@ const CASES = [
   ['inspection fail.then hunt without a hunt', { ...FI, inspections: [{ ...FI.inspections[0], fail: { then: 'hunt' } }] }, 'fixture-inspection', /inspections\[0\]\.fail\.then: no hunt for 'auditor'/],
   ['noise at a spot', { ...FA, noises: { 'donut:eaten': { at: 'kitchen', radius: 4 } } }, 'fixture-attention', /noises\['donut:eaten'\]\.at: no spot 'kitchen'/],
   ['noise on the noise event', { ...FA, noises: { noise: { at: 'printer', radius: 4 } } }, 'fixture-attention', /noises\['noise'\]: would make a noise forever/],
+  ['authority tattle', { ...M, roles: { ...M.roles, authority: { ...M.roles.authority, tattle: 'fire' } } }, 'meeting', /roles\.authority\.tattle: not 'work', 'caught' or a function/],
   ['interaction noise at a spot', { ...FA, interactions: { ...FA.interactions, print: { ...FA.interactions.print, noise: { at: 'copier', radius: 5 } } } }, 'fixture-attention', /interactions\.print\.noise\.at: no spot 'copier'/],
 ];
 for (const [what, level, key, re] of CASES) {

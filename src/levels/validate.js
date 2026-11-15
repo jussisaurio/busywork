@@ -33,7 +33,8 @@
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
 //               cast ids; put seconds; keep a boolean; disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
-//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
+//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
+//               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
@@ -305,6 +306,8 @@ export function levelProblems(level, key) {
       if (roles.authority) {
         npc('roles.authority.id', roles.authority.id);
         if (roles.authority.deafIn != null) zone('roles.authority.deafIn', roles.authority.deafIn);
+        const tt = roles.authority.tattle;
+        if (tt !== undefined && tt !== 'work' && tt !== 'caught' && !isFn(tt)) bad('roles.authority.tattle', "not 'work', 'caught' or a function (what a heard tattle costs)");
       }
       if (roles.evidence) npc('roles.evidence.by', roles.evidence.by);
       if (roles.scene) {

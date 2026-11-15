@@ -427,6 +427,31 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   ok(evs('work:done').length === 1 && !p().locked && game.clock.forced === 0, 'work:done, unlocked');
   input.hold('right'); step(); input.release('right');
   ok(!p().seated && p().x > 13.5, 'can stand up after the work is done');
+
+  // What a heard tattle costs is the level's call (roles.authority.tattle): 'caught' ends the day on her word; a
+  // function answers it itself. Her shout runs to him either way.
+  const authRole = game.level.roles.authority;
+  const tattleTo = (how) => {
+    authRole.tattle = how;
+    newDay([fakeNpc('boss', 'boss_desk', { dir: DIRS.E, vision: { ...VISION.boss, radius: 0.1 } }), fakeNpc('lin', 'lin_desk')]);
+    place(2.5, 1.5);
+    step();
+    input.press('interact');
+    step();
+    run(0.5);
+  };
+  try {
+    tattleTo('caught');
+    ok(game.caught?.by === 'boss' && game.caught.reason === 'action' && !game.rules.sent && game.clock.forced === 0
+      && evs('boss:workAssigned').length === 0, "tattle: 'caught': caught on her word, no work");
+    ok(game.fx.lines.some((l) => l.from === 'lin' && l.to === 'boss' && l.kind === 'relay'), "tattle: 'caught': her shout runs to him");
+    const calls = [];
+    tattleTo((g, e) => calls.push(e));
+    ok(calls.length === 1 && calls[0].by === 'lin' && calls[0].reason === 'action' && !game.caught && !game.rules.sent,
+      'tattle: a function: the level answers it ({ by, reason })');
+  } finally {
+    delete authRole.tattle;
+  }
 }
 
 section('Kev at the scene: the projector is broken, who did it?');
