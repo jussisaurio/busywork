@@ -28,8 +28,8 @@
 //               noise.at (optional) a spot
 //   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
 //               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a
-//               boolean; disguise { as (a cast id), look? (an object of look fields), greet? (a list of lines) }
+//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep and
+//               bulky booleans; disguise { as (a cast id), look? (an object of look fields), greet? (a list of lines) }
 //               (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
@@ -276,6 +276,7 @@ export function levelProblems(level, key) {
     }
     if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
     if (it.keep !== undefined && typeof it.keep !== 'boolean') bad(`items.${type}.keep`, 'not true or false (true: it leaves your hand only by a put)');
+    if (it.bulky !== undefined && typeof it.bulky !== 'boolean') bad(`items.${type}.bulky`, 'not true or false (true: no pretending while you hold it)');
   }
   const roles = level.roles;
   if (roles !== undefined) {
