@@ -63,8 +63,8 @@ const SPOTS = {
   copier_boss: { x: 5, y: 7, face: 'W' }, // the boss photocopying, his back to the board
   microwave: { x: 27, y: 9, face: 'E' },
   boss_window: { x: 19, y: 1, face: 'N' }, // the boss on the phone, his back to the office, the board out of sight
-  board_boss: { x: 9, y: 11, face: 'E' }, // a step back from the board, facing the room: he reads the roster from here (and his bubble doesn't hide it)
-  roster_board: { x: 9, y: 10, face: 'N' }, // just south of the board: what the boss turns to when he reads it out
+  board_boss: { x: 8, y: 10, face: 'E' }, // beside the board, facing the room: he reads the roster out from here
+  board_look: { x: 10, y: 8, face: 'W' }, // past the board's face, seen from board_boss: what he turns to, to read it
   meeting_lin: { x: 11, y: 10, face: 'W' },
   meeting_kev: { x: 11, y: 8, face: 'W' },
   meeting_player: { x: 12, y: 9, face: 'W' }, // your empty spot, stared at if you're elsewhere at 5:00
@@ -125,6 +125,7 @@ function write(game, who) {
   const w = game.world;
   w.roster = who;
   w.wrote = w.phone === 'ringing' || w.phone === 'talking' ? 'phone' : 'ding';
+  w.wroteAt = game.clock.minute; // the ink glints a while (presentation.js)
   say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.5 }); // whistling, innocent
   game.events.emit('roster:changed', { to: who });
 }
@@ -212,7 +213,14 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  meeting: { override: 'meeting', room: 'roster_area', chair: 'meeting_player', presenter: 'meeting_presenter' },
+  // verdict: the engine's rule stands; it only records whose face the board showed (the end scenes draw them at the desk)
+  meeting: {
+    override: 'meeting',
+    room: 'roster_area',
+    chair: 'meeting_player',
+    presenter: 'meeting_presenter',
+    verdict: (game) => ({ why: game.world.roster }),
+  },
   // How you got a name onto the board unseen (the end card shows whose: world.roster).
   routes: [
     { id: 'ding', icon: '🍜', achieved: (w) => w.roster !== 'player' && w.wrote === 'ding' },
@@ -222,6 +230,7 @@ export default {
   initialWorld: () => ({
     roster: 'player', // whose face is in Saturday's slot: 'player' | 'boss' | 'kev'
     wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' (see write())
+    wroteAt: null, // game minute of the last write
     rosterLocked: false, // the boss is at the board (from about 4:51): no more writing on it
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     fixProgress: 0,

@@ -8,7 +8,7 @@ const s = (time, entry) => ({ at: at(time, START), ...entry });
 export const CAST = [
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss',
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'board_boss',
@@ -25,7 +25,7 @@ export const CAST = [
   },
   {
     id: 'lin',
-    icon: '👓',
+    icon: '@lin',
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'meeting_lin',
@@ -39,22 +39,24 @@ export const CAST = [
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '@kev',
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'meeting_kev',
-    meetingArrive: 'handSheet',
     vision: { fov: deg(90), radius: 7 },
     coneTint: [214, 230, 140],
     schedule: [
-      s('4:00', { do: 'sit', spot: 'kev_desk' }), // he never leaves his tray, unless something needs fixing
-      s('4:52', { do: 'visit', spot: 'kev_tray', arrive: 'takeSheet' }), // the sign-off sheet, for the boss
+      s('4:00', { do: 'sit', spot: 'kev_desk' }), // he gets up when a machine needs fixing (index.js lures)
     ],
   },
 ];
 
-// s until just before 5:00: he has usually been at the board since 4:50, so the gather sits him down at 4:55
-const lastMoment = (game) => Math.max(0, (game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC - 2.4);
+// The reading: READ_S s before 5:00 the boss turns to the board and points at it (presentation.js poses, and the
+// board's slot throbs); POINT_S s later he turns to whoever's face is on it, and that person reacts.
+export const READ_S = 2.4;
+export const POINT_S = 1.1;
+// s from now to the reading (he has usually been at the board since 4:50, so the gather sits him down at 4:55)
+const lastMoment = (game) => Math.max(0, (game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC - READ_S);
 
 export const BEHAVIOURS = {
   // The boss at the copier: it works, or it doesn't.
@@ -64,7 +66,7 @@ export const BEHAVIOURS = {
       if (c === 'jammed' || c === 'fixing') sim.speak(game, n, [{ say: ['😠'] }]);
     },
   },
-  // Lin heats her fish: she carries it there and back, and it turns in the microwave meanwhile (presentation.js).
+  // Lin heats her fish: it turns in the lit microwave while she waits in front of it, her back to the room (props.js).
   fish: {
     arrive() {},
   },
@@ -84,17 +86,9 @@ export const BEHAVIOURS = {
       game.world.rosterLocked = true; // he stands guard by it: his cone covers it
     },
   },
-  // 4:52: Kev takes the sign-off sheet out of his tray, for the boss.
-  takeSheet: {
-    arrive(game, n, sim) {
-      const w = game.world;
-      if (w.sheet !== 'tray') return;
-      w.sheet = 'kev';
-      sim.holdFor(n, 0.6);
-      game.events.emit('sheet:taken', {});
-    },
-  },
-  // At the board: the boss reads out the Saturday name. His own, Kev's (off the sheet), or yours.
+  // At the board, before 5:00: the boss reads out the face in Saturday's slot. He turns to the board and points at
+  // it (📢: hear this), then turns to whose face it is: Kev's (he groans), yours (at 5:00 you stand up, there's
+  // no way out), or his own (he goes red).
   readRoster: {
     state: { _read: false },
     arrive(game, n, sim) {
@@ -103,26 +97,18 @@ export const BEHAVIOURS = {
       if (n._read) return;
       n._read = true;
       const t = lastMoment(game);
-      if (w.roster === 'boss') {
-        sim.faceSpot(game, n, 'meeting_presenter');
-        sim.speak(game, n, [{ say: ['❓'], kind: 'thought', ttl: 1.6, after: t }, { say: ['😳'], after: t + 1.6 }]);
-      } else if (w.sheetName === 'kev') {
-        sim.faceSpot(game, n, 'meeting_kev'); // and points (presentation.js)
-        sim.speak(game, n, [{ say: ['❗'], after: t }]);
+      const at = t + POINT_S;
+      const lines = [{ say: ['📢'], ttl: POINT_S, after: t, face: 'board_look' }];
+      if (w.roster === 'boss') lines.push({ say: ['@boss', '😳'], ttl: 2.4, after: at, face: 'meeting_player' });
+      else if (w.roster === 'kev') {
+        lines.push({ say: ['👉', '@kev'], ttl: 2, after: at, face: 'meeting_kev' });
+        const kev = game.npcs.find((k) => k.id === 'kev');
+        if (kev) sim.speak(game, kev, [{ say: ['😩'], ttl: 2.2, after: at + 0.7, face: 'board_look' }]);
       } else {
-        sim.faceSpot(game, n, 'meeting_player');
-        sim.speak(game, n, [{ say: ['❗'], after: t }]);
+        lines.push({ say: ['👉', '@player'], ttl: 1.3, after: at, face: 'meeting_player' });
+        lines.push({ say: ['👉'], ttl: 1.6, after: t + READ_S + 0.1, face: 'meeting_presenter' }); // where 5:00 stands you
       }
-    },
-  },
-  // Kev hands over the sheet, and reads whose name is on it.
-  handSheet: {
-    state: { _handed: false },
-    arrive(game, n, sim) {
-      if (n._handed) return;
-      n._handed = true;
-      const w = game.world;
-      if (w.sheetName === 'kev' && w.roster !== 'boss') sim.speak(game, n, [{ say: ['😳'], after: Math.max(2.2, lastMoment(game) + 1.2) }]);
+      sim.speak(game, n, lines);
     },
   },
 };

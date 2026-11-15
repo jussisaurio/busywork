@@ -4,7 +4,8 @@
 import { C } from '../../render/palette.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
-import './props.js'; // the board, the copier, the tray, the microwave and the phones (decor.props' painters)
+import { READ_S, POINT_S } from './cast.js';
+import { paintRoster, paintCopier, paintMicrowave, paintPhones } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
@@ -23,6 +24,17 @@ const dingIn = (w, game) => (w.noodles === 'cooking' && w.dingAt !== null ? (w.d
 
 // Lin stands at the microwave with her fish in it (4:30-4:37): the window lights up with a fish going round
 const linHeatsFish = (game) => !!(game?.npcs || []).find((n) => n.id === 'lin' && n.anim === 'fishIn' && !n.moving && !n.override);
+
+// The reading (cast.js readRoster): READ_S s before 5:00 the boss turns to the board and points at it; at POINT_S
+// he turns to whoever's face is on it. readS: s into it, else null.
+const boss = (game) => (game?.npcs || []).find((n) => n.id === 'boss');
+function readS(game) {
+  const b = boss(game);
+  if (!b || !b._read || b.moving || !game.clock) return null;
+  const s = (game.clock.minute - (game.level.day.meetingAt - READ_S * GAME_MIN_PER_SEC)) / GAME_MIN_PER_SEC;
+  return s >= 0 ? s : null;
+}
+const WROTE_FRESH_MIN = 3; // game minutes the ink glints after you write
 
 export const DECOR = {
   chairs: [
@@ -51,19 +63,29 @@ export const DECOR = {
     { x: 27, y: 6, variant: 1 },
   ],
   clock: { x: 22, y: 6 },
-  // drawn by props.js: who works Saturday is a photo, on the board and on the sheet
+  // drawn by props.js: who works Saturday is a face on the board
   props: [
-    { tile: 'R', draw: 'weekend-shift/roster', state: (w, game) => ({ rows: [look(game, w.roster), null, null], fresh: w.roster === 'boss' }) },
-    { tile: 'K', draw: 'weekend-shift/tray', state: (w, game) => ({ look: w.sheet === 'tray' ? look(game, w.sheetName) : null }) },
-    { tile: 'X', draw: 'weekend-shift/copier', state: (w) => ({ copier: w.copier }) },
+    {
+      tile: 'R',
+      draw: paintRoster,
+      state: (w, game) => {
+        const s = readS(game);
+        return {
+          look: look(game, w.roster),
+          fresh: w.wroteAt !== null && (game?.clock?.minute ?? 0) - w.wroteAt < WROTE_FRESH_MIN,
+          pulse: s !== null && s < POINT_S, // the boss is reading it out
+        };
+      },
+    },
+    { tile: 'X', draw: paintCopier, state: (w) => ({ copier: w.copier }) },
     {
       tile: 'M',
-      draw: 'weekend-shift/microwave',
+      draw: paintMicrowave,
       state: (w, game) => ({ noodles: w.noodles, left: dingIn(w, game), fish: linHeatsFish(game) }),
     },
     {
       tile: 'P',
-      draw: 'weekend-shift/phones',
+      draw: paintPhones,
       state: (w, game) => {
         const b = game?.level?.spots?.boss_desk;
         return { phone: w.phone, boss: { x: b?.x ?? 0, y: (b?.y ?? 0) + 1 } }; // his desk, south of his chair
@@ -73,7 +95,7 @@ export const DECOR = {
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null }, // his in-tray stands there (props.js)
+    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
     lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
   },
   zoneSeeds: [
@@ -85,22 +107,19 @@ export const DECOR = {
 
 export const LOOKS = LEVEL1_LOOKS;
 
-// level.poses (level 1's looks.js documents the fields).
-// The roster is read out 2.4 s before the meeting ends (cast.js lastMoment): from then the boss points at whose name
-// it is, or stands red-faced at his own.
-const reading = (n, game) => n.id === 'boss' && n.override === 'meeting' && n._read && !n.moving
-  && game.clock.minute >= game.level.day.meetingAt - 2.4 * GAME_MIN_PER_SEC;
-
+// level.poses (level 1's looks.js documents the fields). Things in hand are drawn by the renderer from emoji, so
+// nobody holds anything here: Kev reaches into the copier (props.js draws his spanner in it), the boss holds the
+// phone to his ear (the renderer draws a handset), and pointing is the arm.
 export const POSES = {
   arms: [
-    { when: (n, w, game) => reading(n, game) && w.roster !== 'boss', arms: 'point', item: '👉' },
-    { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
-    { when: (n) => n.override === 'onPhone', arms: 'puff', item: '📞' },
-    { when: (n) => n.id === 'lin' && !n.override && n.anim === 'fish', arms: (n) => (n.moving ? 'carry' : 'puff'), item: '🐟' },
-    { when: (n, w) => n.id === 'kev' && w.sheet === 'kev' && (n.moving || n.override === 'meeting'), arms: 'carry', item: '📝' }, // the sheet, to the boss
+    // the reading: he points at the board, then at whoever's face is on it; at his own, he spreads his hands
+    { when: (n, w, game) => n.id === 'boss' && readS(game) !== null && (w.roster !== 'boss' || readS(game) < POINT_S), arms: 'point' },
+    { when: (n, w, game) => n.id === 'boss' && readS(game) !== null, arms: 'shrug' },
+    { when: (n) => n.override === 'fixing', arms: 'reach' },
+    { when: (n) => n.override === 'onPhone', arms: 'phone' },
   ],
   marks: [
-    { when: (n, w, game) => reading(n, game) && w.roster === 'boss', angry: true },
+    { when: (n, w, game) => n.id === 'boss' && w.roster === 'boss' && readS(game) >= POINT_S, angry: true }, // red to the ears
   ],
 };
 
@@ -137,8 +156,8 @@ export const SOUNDS = {
       start_microwave: { sfx: 'machineBeep', spot: 'microwave', opts: { gain: 0.5 } },
       jam_copier: { sfx: 'scratch', spot: 'copier' },
       call_boss: { sfx: 'clockTick', who: 'player', opts: { gain: 0.6 } },
-      fix_roster: { sfx: 'scratch', spot: 'meeting_presenter', opts: { gain: 0.5 } },
-      swap_sheet: { sfx: 'rustle', spot: 'kev_tray', opts: { gain: 0.5 } },
+      write_boss: { sfx: 'scratch', spot: 'meeting_presenter', opts: { gain: 0.5 } },
+      write_kev: { sfx: 'scratch', spot: 'meeting_presenter', opts: { gain: 0.5 } },
     },
   },
   events: {
@@ -150,7 +169,6 @@ export const SOUNDS = {
     'copier:fixed': { sfx: 'fixed', spot: 'copier' },
     'phone:answered': { sfx: 'pickup', who: 'boss' },
     'phone:hungUp': { sfx: 'drop', who: 'boss', opts: { gain: 0.5 } },
-    'sheet:taken': { sfx: 'rustle', who: 'kev' },
   },
   repeats: {
     repair: { while: (w) => w.copier === 'fixing', every: [1.1, 2.0], sfx: 'clank', spot: 'copier', opts: { soft: true, gain: 0.7 } },
