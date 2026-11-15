@@ -203,8 +203,8 @@ export const BEHAVIOURS = {
       w.pc = 'boss';
       w.glitch = false;
       w.locked = false;
-      sim.lookAt(game, npc, 'screen', 2.6);
-      // Lin named you and he never found you: he glares at your empty desk on his way out.
+      // Lin named you: he glares across the floor at your desk (whatever he says, it waits for Monday).
+      sim.lookAt(game, npc, game.player.named ? 'player_desk' : 'screen', 2.6);
       if (game.player.named) sim.speak(game, npc, [{ say: ['👉', '@player', '😠'], after: 0.9 }]);
       else sim.speak(game, npc, [{ say: ['🧥', '📧'], after: 0.9 }]);
       game.events.emit('boss:packsUp', {});

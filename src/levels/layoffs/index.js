@@ -7,19 +7,21 @@
 //     boss stands over him. The list comes up: your face is on it (😨); Lin's isn't (her 😨, then 😌, then a look at
 //     you). At 3:11 he goes to the restroom and locks the screen. Kev goes home about 3:15 (👋🏠 to Lin).
 //   - 3:26: the static is back. He phones Kev's desk again, but Kev went home: it just rings (❓). Kneel at his cable
-//     and plug it back in while he's there, and he leaves you to it (☕👉 you: fix it, I'm getting coffee). The
-//     screen comes back on after he's gone, the list open, unlocked: there was nothing to lock when he left.
+//     and plug it back in while he's there, and he leaves you to it (☕👉 you, 🔌🚪: I'm getting coffee; plug it
+//     in and get out). The screen comes back on after he's gone, the list open, unlocked: there was nothing to
+//     lock when he left.
 //     Left alone, he plugs it back in himself at 3:31 (🔌) and sits there until he sends it.
 //   - While he's at the coffee machine, make Lin look away for the 3 s the edit takes: ring Kev's empty desk from
 //     the boss's desk phone (she turns round to it: the ring route), or wait for her mobile to buzz (she picks it
-//     up and turns away: the phone route).
+//     up and turns away: the phone route). When the edit ends the sheet closes, saved, back to the email to HR:
+//     at 3:45 he sends that saved file (list.js drawEmail).
 // Seen by Lin: she doesn't shout. Your face off his list leaves a gap, and the next face in it could be hers: a
 // thought (📋, her face, 😨), then she gets up and goes to tell him (linWatch, the linTells lure), at the latest from
-// the kitchen door. He leaves his coffee, comes back, checks his screen, puts your face back, locks it, and comes
-// looking for you: the moment he sees you, caught (roles.evidence: Lin named you). Seen by the boss himself: caught.
+// the kitchen door. He leaves his coffee, comes back, checks his screen, puts your face back and locks it. At 3:45 he
+// sends it and you are out (meeting.verdict: caught, no hunt: he knows who did it). Seen by the boss himself: caught.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at, GAME_MIN_PER_SEC, NPC_SPEED } from '../../config.js';
+import { at } from '../../config.js';
 import { say, sightline } from '../../core/fx.js';
 import { spotPos, findNpc, npcSees } from '../../game/perception.js';
 import { endOverride, npcSayLater } from '../../sim/override.js';
@@ -85,7 +87,6 @@ const SPOTS = {
   restroom: { x: 25, y: 12, face: 'S' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
   kitchen_door: { x: 22, y: 7, face: 'N' }, // in the hallway at the kitchen door: Lin calls him from here
-  by_your_desk: { x: 13, y: 10, face: 'N' }, // told on, he comes over to your desk
 };
 
 const ZONES = {
@@ -157,7 +158,7 @@ function toldOn(game) {
   const w = game.world;
   w.told = true;
   w.bossTold = true;
-  game.player.named = true; // roles.evidence: the moment he sees you now, he knows it was you
+  game.player.named = true; // he knows it was you (cast.js sendList; meeting.verdict: caught)
   if (w.coffee === 'asked') w.coffee = 'told'; // he leaves the machine to it
   w.brewing = false;
   const boss = findNpc(game, 'boss');
@@ -169,8 +170,7 @@ function toldOn(game) {
 const ROLES = {
   // Lin is not an engine witness (strike_name's owner is the boss): she tells him herself (linClock), and toldOn
   // is what her word costs you.
-  authority: { id: 'boss', offDuty: ['toCheck', 'checking', 'pointOut', 'waiting'], helpless: [], deafIn: null },
-  evidence: { by: 'boss', while: 'pointOut', mark: 'named', knows: 'bossKnows', icon: '🖥️' },
+  authority: { id: 'boss', offDuty: ['toCheck', 'checking'], helpless: [], deafIn: null },
 };
 
 // You plug his cable back in while he sits there: he leaves you to it and gets a coffee (clockFor sets w.coffee).
@@ -191,19 +191,6 @@ const LURES = [
       start: { set: { checking: true }, event: 'boss:checks', says: [{ say: ['😠'] }] },
       done: { set: { checking: false, check: 'done', locked: true }, event: 'boss:checked', says: [{ say: ['🔒'] }] },
     },
-  },
-  // Then he turns round on you and comes over to your desk: the moment he sees you, caught (roles.evidence, while
-  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 pack-up, unless 3:45 would find him still on
-  // it (bossClock: then he goes back to his desk and sends it).
-  {
-    npc: 'boss',
-    when: (w) => w.check === 'done' && !w.pointed && !w.bossKnows,
-    override: 'pointOut',
-    plan: 'point',
-    label: 'come for you',
-    spot: 'by_your_desk',
-    react: { wait: 0.4 },
-    work: { override: 'waiting', minutes: SECS(3), progress: 'waitProgress', start: { set: { waiting: true } }, done: { set: { waiting: false, pointed: true } } },
   },
   // Lin saw you cross your face out: she gets up and goes to tell him. She tells him where she meets him, at the
   // latest from the kitchen door (linClock, within TELL_RANGE of him); toldOn sends her back to her desk.
@@ -228,8 +215,8 @@ const LURES = [
     plan: 'coffee',
     label: 'get a coffee',
     spot: 'coffee',
-    // fed up with the static, he doesn't look at the screen again: fix it, I'm getting coffee
-    react: { wait: 0.9, says: [{ say: ['😤'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
+    // fed up with the static, he doesn't look at the screen again: I'm getting coffee; you, plug it in and get out
+    react: { wait: 0.9, says: [{ say: ['☕', '👉', '@player'] }, { say: ['🔌', '🚪'], after: 0.5 }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
 ];
@@ -294,19 +281,6 @@ function bossClock(game, npc, sim) {
   if (!w.ringing) w.ringFrom = null;
   else if (w.ringFrom == null) w.ringFrom = now;
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
-  // Out of time: if 3:45 would find him still coming for you, he gives up and goes back to his desk to send it
-  // (the gather's 'send' takes over), so the list never goes with nobody at the desk. The walk back is estimated
-  // at the meeting hurry (npcs.js MEETING_HURRY_MAX, 1.3), plus a tile and a margin.
-  if ((npc.override === 'pointOut' || npc.override === 'waiting') && !w.pointed) {
-    const desk = spotPos(game, 'boss_desk');
-    const tiles = Math.abs(desk.x - npc.x) + Math.abs(desk.y - npc.y) + 1;
-    const left = (game.level.day.meetingAt - now) / GAME_MIN_PER_SEC;
-    if (left <= tiles / (NPC_SPEED * 1.3) + 0.3) {
-      w.pointed = true;
-      w.waiting = false;
-      endOverride(npc);
-    }
-  }
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
   // 3:31, the static still there and nobody came: a sigh, then he kneels at the cable himself (cast.js selfFix).
@@ -458,8 +432,12 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  // He sends from his desk wherever you are; the fail plays where you stand.
-  meeting: { override: 'send', room: 'floor', chair: 'player_desk' },
+  // He sends from his desk wherever you are; the fail plays where you stand. Told on: he put your face back and
+  // locked it, and he knows who did it: he sends it, and that's you caught.
+  meeting: {
+    override: 'send', room: 'floor', chair: 'player_desk',
+    verdict: (game) => (game.world.check === 'done' ? { result: 'caught', why: 'told' } : null),
+  },
   routes: [
     { id: 'ring', icon: '☎️', achieved: (w) => w.list === 'off' && w.offVia === 'ring' },
     { id: 'phone', icon: '📱', achieved: (w) => w.list === 'off' && w.offVia !== 'ring' && w.offVia !== 'seen' }, // 'unseen': the gate flags it
@@ -499,10 +477,6 @@ export default {
     checkProgress: 0,
     strikeT: 0, // how far your edit got (0..1)
     struck: 0, // your face half crossed out on his screen: Lin stopped you there (until he checks)
-    pointed: false, // he came over to your desk and you weren't there
-    waiting: false,
-    waitProgress: 0,
-    bossKnows: false, // he saw you after Lin named you: caught
     items: [],
   }),
   harness,

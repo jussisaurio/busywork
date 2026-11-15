@@ -69,8 +69,8 @@ anything.
   red frame that throbs. You shudder (😨). Then it shrinks back onto his screen, readable from your desk.
 - While you take your face off, the sheet pops out large again and stays out: a red line crosses out your face,
   big enough to read from anywhere on the floor. When it is done, your face falls out of the row. Three faces
-  remain.
-- At 3:45 he clicks send: the sheet shrinks and flies off his screen. The win card shows that sheet without your
+  remain. Then the sheet closes, saved, and his screen shows the email to HR again, the file attached.
+- At 3:45 he clicks send: he sends the saved file, and the email flies off his screen. The win card shows that sheet without your
   face. The lose cards show it with your face framed in red.
 
 ### The way in: fix his computer, and he goes for coffee
@@ -80,7 +80,7 @@ Steps, the same for both routes:
 2. At 3:26 the static comes back, and nobody answers the phone. Before he gives up (3:31), go into his office,
    kneel behind his desk where Kev knelt, and start on the cable ("plug his cable back in": 4 seconds of play, a couple of minutes on the office clock, with
    the plug behind the desk and the screen still dead).
-3. As you start, he has had enough: 😤 at the static, then ☕ 👉 you. Fix it, he is getting a coffee. He hangs up on Kev's empty desk,
+3. As you start, he has had enough: ☕ 👉 you, then 🔌 🚪. He is getting a coffee; you, plug it in and get out. He hangs up on Kev's empty desk,
    gets up and walks out to the kitchen while the screen is still dead.
 4. The screen comes back on after he has gone, and the list is open on it. He locked his screen at 3:11 because
    it was working and he was leaving it. At coffee there was nothing to lock: it was static, and you were fixing
@@ -123,13 +123,14 @@ twice today when the boss called it. You look long enough to see nobody is there
 | Kev went home, and the boss doesn't know | about 3:15 | The boss is walking away. Kev says goodbye to Lin (👋, 🏠). She waves and watches him leave |
 | The boss wants Kev, and nobody comes | 3:26 to 3:31 | Static, the banging, ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
 | The static does not last | 3:31 | He kneels behind his desk himself, 🔌, and it clears |
-| Fixing it sends him for coffee | when you start | 😤 at the static, ☕ 👉 you, and he walks to the kitchen. The screen comes on with the list open |
+| Fixing it sends him for coffee | when you start | ☕ 👉 you, then 🔌 🚪, and he walks to the kitchen. The screen comes on with the list open |
 | Lin watches his office | all day | Her view cone covers the office |
 | Lin's phone turns her away | all day, at uneven times | The phone shakes on her desk, she picks it up and her cone swings off the office for about 4 s |
 | A ring at Kev's desk turns Lin round | 3:01, and 3:26 | The ringing phone (rings spread from it), and Lin turned round to it |
 | His phone calls Kev's desk | 3:01, 3:26 | The boss's bubble: ☎️ and Kev's face, then Kev's phone rings |
 | The edit shows | whenever you edit | The sheet pops out big and a red line crosses out your face |
-| He sends what is on the screen | 3:42 to 3:45 | Back at his desk with his coat on (🧥📧), he clicks send on the open email without opening the attachment |
+| The edit is saved | when the edit ends | The sheet closes, and his screen is back on the email to HR with the list attached |
+| He sends what is on the screen | 3:42 to 3:45 | Back at his desk with his coat on (🧥📧), he clicks send on the open email without opening the attachment. The attachment is the file as it was last saved |
 | Why Lin tells | if she sees you edit | Her thought: the list, her own face, 😨. Then she gets up and walks to the boss to tell him |
 
 ## Why a real boss would fall for it
@@ -162,12 +163,11 @@ edit, the sheet comes up big and a red line goes through your face, in plain vie
 - **Seen by Lin.** She sees you take your face off. She thinks of the list with her own face in your place (📋,
   her face, 😨), gets up and walks toward the kitchen; where she meets the boss, at the latest from the kitchen
   door, she points you out (👉 you, 🖥️). He leaves the coffee,
-  walks back to his screen and looks (😠): your face pops back onto the list, and he locks the screen (🔒). Then he
-  turns round and comes for you. When he sees you, he catches you (❗👉 you). Card: the same as caught by the boss.
-  If you keep out of his sight, he runs out of time: just before 3:45 he gives up, goes back to his desk and sends the
-  list with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
+  walks back to his screen and looks (😠): your face pops back onto the list, and he locks the screen (🔒). He
+  stays at his desk and glares out at you (👉 you 😠). At 3:45 he sends the list with your face on it, and you
+  are out. Card: the same as caught by the boss. In a real office: a coworker who has just escaped the list and sees the gap
   it would leave tells the boss, to keep her own name off it. A boss told that someone is editing his layoff list
-  comes back, looks, puts it right, locks it, and goes to find the person.
+  comes back, looks, puts it right, locks it, and sends it. He knows who did it; he does not need to chase you.
 - **Caught by the boss.** He walks back with his coffee while you are taking your face off. ❗😠, his red line on
   you, and the screen shakes. Card: the boss on his feet, pointing the way out. In a real office: a boss who finds
   you crossing yourself off his list fires you on the spot.
@@ -184,10 +184,10 @@ the restroom; he locks his screen as he gets up, because the list is open on it.
 floor to the restroom and back, and while he is away from his office he never sees Kev leave. At 3:26 the screen
 dies again. He bangs on it, phones Kev's desk, and waits for Kev, who has gone home. At 3:31 he kneels and fixes it
 himself. If you get there first and start on the cable, he gives up waiting: he hangs up, points at you, says he is
-getting a coffee, and goes to the kitchen while the screen is still dead. He makes his coffee slowly and walks back. At
+getting a coffee and you should plug it in and get out, and goes to the kitchen while the screen is still dead. He makes his coffee slowly and walks back. At
 3:42 he is back at his desk with his coat on, and at 3:45 he clicks send on the open email and goes. If Lin tells him
 you are editing his list, he leaves the coffee, comes back, checks his screen, puts your face back, locks the
-screen and comes for you.
+screen, and at 3:45 sends it with you on it.
 
 **Kev** is the office's computer person and wants to go home. At 3:01 his desk phone rings; it is the boss. He goes
 in, kneels behind the boss's desk, finds the cable loose and plugs it back in. Back at his desk, he waits until

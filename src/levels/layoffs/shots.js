@@ -78,7 +78,7 @@ export default [
   {
     name: 'he-left-you-to-it',
     cmds: FIX,
-    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: coffee, pointing at you) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
+    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: coffee, pointing at you, then a plug and a door: plug it in and get out) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
   },
   {
     name: 'list-up-alone',
@@ -102,8 +102,8 @@ export default [
   },
   {
     name: 'phone-edit',
-    cmds: [...PHONE, 'interact', 'wait 1.5s'],
-    intent: "You struck your face off while Lin read her mobile: the sheet beside the boss's screen shows three faces. Lin has put her mobile down and faces the office again; she never saw. The boss is at the coffee machine.",
+    cmds: [...PHONE, 'interact', 'wait 3s'],
+    intent: "You struck your face off while Lin read her mobile, and closed the sheet: the boss's screen shows his email again (a white window, a little attached sheet with a red top, a blue send button), with no faces on it. Lin has put her mobile down and faces the office again; she never saw. The boss is at the coffee machine.",
   },
   {
     name: 'told-on',
@@ -113,7 +113,7 @@ export default [
   {
     name: 'lin-goes-to-tell',
     cmds: [...TOLD, 'wait until 3:37.6'],
-    intent: "Lin has left her desk and walks along the hallway towards the kitchen, where the boss is. On the boss's screen your face is gone: three faces.",
+    intent: "Lin has left her desk and walks along the hallway towards the kitchen, where the boss is. The boss's screen shows his email again: you closed the sheet.",
   },
   {
     name: 'lin-tells-him',
@@ -126,10 +126,9 @@ export default [
     intent: "The boss is back at his screen, angry (😠). The list pops out of it again with your face on it, the red line gone: he has put you back.",
   },
   {
-    name: 'comes-for-you',
-    cmds: [...TOLD, 'wait until 3:37.5', 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45'],
-    beat: true,
-    intent: "The boss, at his office door, stops and points at you in the hallway on your way back to your desk (❗, a pointing hand, your face): caught. A red line runs from him to you.",
+    name: 'he-knows',
+    cmds: [...TOLD, 'wait until 3:37.5', 'goto my_seat pretend', 'pretend until 3:44.1', 'pretend until 3:44.1', 'pretend until 3:44.1'],
+    intent: "The boss sits back at his desk, the list open on his screen again with your face back on it, and looks out across the floor at you: a pointing hand, your face, angry. He doesn't get up.",
   },
   {
     name: 'caught',
