@@ -611,6 +611,13 @@ export function gitCommit() {
 export async function runStage(id, stage, opts = {}) {
   const { runner = claudeRunner(), model = null, keep = false, log = (s) => console.error(s), batch } = opts;
   const inp = await stageInputs(id, stage, opts);
+  // skipFresh (the CLI's default): a pass whose inputs are unchanged since its record is not read again. A second
+  // read of the same inputs is not a new round: the ledger would find every open problem "still there" (nothing
+  // could have changed) and promote them all to blockers.
+  if (opts.skipFresh) {
+    const meta = readRecord(inp.root)[stage]?.meta;
+    if (meta?.hash === inp.hash) return { stage, verdict: meta.verdict, skipped: true, commit: meta.commit, steps: [] };
+  }
   const steps = stageSteps(inp, { batch });
   // The ledger: the open problems of the pass's earlier record, for the last step. Not an input (not hashed): the
   // record it comes from changes with every run. A calibration run (ledger: false) reads cold.
@@ -861,7 +868,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const argv = process.argv.slice(2);
   const arg = (name) => { const i = argv.indexOf(`--${name}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (name) => argv.includes(`--${name}`);
-  const usage = `usage: node tools/cold-read.mjs --level <id> --pass <pass>[,<pass>...] | text | all [--model <m>] [--keep]
+  const usage = `usage: node tools/cold-read.mjs --level <id> --pass <pass>[,<pass>...] | text | all [--model <m>] [--keep] [--again]
        node tools/cold-read.mjs --level <id> --pass <pass> --bundle-only | --record <report.md>
        node tools/cold-read.mjs --level <reference id> --pass <pass>[,...] --calibrate [--model <m>]
        node tools/cold-read.mjs --status
@@ -909,7 +916,10 @@ passes: ${STAGES.join(', ')}`;
       // --calibrate: a run on a reference level (one the user is happy with), read cold (no ledger), recorded in
       // tools/.shots/<id>/calibrate.md, not the level's record. A reference level that can't get works means the
       // prompt is wrong, not the level.
-      const cal = has('calibrate') ? { ledger: false, recordTo: join(SHOTS_DIR, id, 'calibrate.md') } : {};
+      // --again: read a pass whose inputs are unchanged anyway (a re-roll). It reads cold (no ledger), because the
+      // same inputs can't show whether anything was fixed.
+      const cal = has('calibrate') ? { ledger: false, recordTo: join(SHOTS_DIR, id, 'calibrate.md') }
+        : has('again') ? { ledger: false } : { skipFresh: true };
       if (cal.recordTo) mkdirSync(dirname(cal.recordTo), { recursive: true });
       const cache = new Map();
       const t0 = Date.now();
@@ -923,10 +933,12 @@ passes: ${STAGES.join(', ')}`;
       }));
       for (const rec of recs) {
         const cost = rec.steps.reduce((a, s) => a + (s.costUsd ?? 0), 0);
+        if (rec.skipped) { console.log(`cold-read: ${id} ${rec.stage}: skipped, inputs unchanged since ${rec.commit} (${rec.verdict}); --again to read it anyway`); continue; }
         console.log(`cold-read: ${id} ${rec.stage}: Verdict: ${rec.verdict}${rec.note ? ` (${rec.note})` : ''}${rec.steps.length ? ` ($${cost.toFixed(2)})` : ''}`);
         if (cal.recordTo) for (const p of (rec.open ?? []).filter((x) => x.grade === 'blocker')) console.log(`  blocker: ${p.text}`);
       }
-      console.log(`cold-read: ${list.length} pass${list.length === 1 ? '' : 'es'} in ${Math.round((Date.now() - t0) / 1000)} s. Recorded in ${cal.recordTo ?? recordFile(levelDir(id))}`);
+      const ran = recs.filter((r) => !r.skipped).length;
+      console.log(`cold-read: ${ran} pass${ran === 1 ? '' : 'es'} read (${list.length - ran} skipped) in ${Math.round((Date.now() - t0) / 1000)} s. Recorded in ${cal.recordTo ?? recordFile(levelDir(id))}`);
       if (cal.recordTo) console.log('cold-read: a calibration run. A reference level that gets a blocker means the prompt is wrong: read each blocker, and fix the prompt if a real office would shrug at it.');
       if (recs.some((r) => r.verdict === 'unreadable' || r.verdict === 'not run')) process.exitCode = 1;
     }
