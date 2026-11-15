@@ -155,8 +155,25 @@ function textPass(id, needs, answers, about) {
 // A step: { id, prompt (file in PROMPTS), base (the preamble: common.md by default), extra (more files, put before
 // the prompt), reply (what its reply is called), needs: [step ids], files(replies) → { bundle path: string | Buffer } }.
 export const PASSES = [
+  {
+    id: 'title', kind: 'text', needs: ['ways'], about: 'does the name or the card hint at the way out?',
+    answers: { good: ['miss'], meh: ['near'], bad: ['leak'] },
+    steps: (inp) => [
+      { id: '1-guess', base: 'text.md', prompt: 'title-1-guess.md', reply: 'guesses.md', needs: [], files: () => ({ 'card.txt': inp.card }) },
+      {
+        id: '2-judge', base: 'text.md', prompt: 'title-2-judge.md', reply: 'report.md', needs: ['1-guess'],
+        files: (r) => ({ 'card.txt': inp.card, 'guesses.md': r['1-guess'], 'ways.md': inp.ways }),
+      },
+    ],
+  },
   textPass('sense', ['ways'], { good: ['sensible'], meh: ['stretch'], bad: ['nonsense'] },
     'would every route, winning and losing, get past a real, half-awake boss?'),
+  textPass('motives', ['who'], { good: ['motivated', 'binds'], meh: ['thin'], bad: ['unmotivated', 'contradicts', 'only-you'] },
+    'does every NPC act for a reason shown first, keep his own rules, and does the card\'s rule bind coworkers too?'),
+  textPass('props', ['things'], { good: ['fits'], meh: ['odd'], bad: ['pointless', 'misleading'] },
+    'why is each thing in this office, and does it look usable when it is (and only then)?'),
+  textPass('joke', ['ways'], { good: ['funny', 'payoff'], meh: ['mild'], bad: ['chore', 'flat'] },
+    'what is the joke in each route, is any a dull chore, is there a payoff at the end?'),
   {
     id: 'premise', kind: 'text', broad: true, needs: ['premise'], answers: null,
     about: 'the card alone, then the whole premise and the level\'s source files',
@@ -179,6 +196,51 @@ export const PASSES = [
         files: (r) => ({ 'reading.md': r['1-read'], 'intents.md': verbsIntents(inp.verbs), ...sheetFiles(inp.verbs, 'labelled') }),
       },
     ],
+  },
+  {
+    id: 'faces', kind: 'pictures', needs: ['checks', 'faces'], about: 'what does each bubble say, alone and in its frame?',
+    answers: { good: ['clear'], meh: ['vague'], bad: ['misread'] },
+    steps: (inp) => [
+      {
+        id: '1-read', base: 'focus.md', prompt: 'faces-1-read.md', reply: 'reading.md', needs: [],
+        files: () => Object.fromEntries(inp.faces.map((f, i) => [`bubbles/${pad2(i + 1)}.png`, f.solo])),
+      },
+      {
+        id: '2-judge', base: 'focus.md', prompt: 'faces-2-judge.md', reply: 'report.md', needs: ['1-read'],
+        files: (r) => ({
+          'reading.md': r['1-read'], 'card.txt': inp.card, 'frames.md': facesIndex(inp.faces),
+          ...Object.fromEntries(inp.faces.flatMap((f, i) => [[`bubbles/${pad2(i + 1)}.png`, f.solo], [`frames/${pad2(i + 1)}.png`, f.png]])),
+        }),
+      },
+    ],
+  },
+  {
+    id: 'tells', kind: 'pictures', needs: ['checks', 'tells'], about: 'can you see what each of the player\'s actions changed?',
+    answers: { good: ['visible'], meh: ['faint'], bad: ['invisible'] },
+    steps: (inp) => {
+      const pics = Object.fromEntries(inp.tells.map((t) => [`tells/${t.file}`, t.png]));
+      return [
+        { id: '1-read', base: 'focus.md', prompt: 'tells-1-read.md', reply: 'reading.md', needs: [], files: () => ({ 'captions.md': tellsCaptions(inp.tells), ...pics }) },
+        {
+          id: '2-judge', base: 'focus.md', prompt: 'tells-2-judge.md', reply: 'report.md', needs: ['1-read'],
+          files: (r) => ({ 'reading.md': r['1-read'], 'tells.md': tellsIndex(inp.tells), ...pics }),
+        },
+      ];
+    },
+  },
+  {
+    id: 'outcomes', kind: 'pictures', needs: ['checks', 'ways', 'ends'], about: 'does each run\'s end look like what happened?',
+    answers: { good: ['clear'], meh: ['unclear'], bad: ['wrong'] },
+    steps: (inp) => {
+      const runs = runFiles(inp.ends, inp.ends);
+      return [
+        { id: '1-read', base: 'focus.md', prompt: 'outcomes-1-read.md', reply: 'reading.md', needs: [], files: () => ({ 'card.txt': inp.card, ...runs }) },
+        {
+          id: '2-judge', base: 'focus.md', prompt: 'outcomes-2-judge.md', reply: 'report.md', needs: ['1-read'],
+          files: (r) => ({ 'reading.md': r['1-read'], 'runs.md': runsIndex(inp.ends), 'ways.md': inp.ways, ...runs }),
+        },
+      ];
+    },
   },
   {
     id: 'pictures', kind: 'pictures', broad: true, needs: ['shots'], answers: null,
@@ -805,7 +867,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 passes: ${STAGES.join(', ')}`;
   try {
     if (has('status')) {
-      for (const l of await statusLines()) console.log(l);
+      // One write, and exit once it is flushed: process.exit right after console.log cuts a piped stdout short
+      // (the gate and the tests read --status through a pipe, and 13 passes x 8 levels is past the pipe's buffer).
+      const out = (await statusLines()).join('\n') + '\n';
+      await new Promise((done) => process.stdout.write(out, done));
       process.exit(0);
     }
     const id = arg('level');

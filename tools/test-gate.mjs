@@ -73,7 +73,7 @@ ok(failed(r, null) === 'cold-read', 'a level whose cold reads were not checked f
 ok(!/ready for a human playtest/.test(gateReport(r, checkGate(r, L))), 'without cold reads the report never says "ready for a human playtest"');
 const cold = coldOk();
 const PIC = STAGES.indexOf('pictures'), REP = STAGES.indexOf('replay');
-ok(STAGES[0] === 'sense' && STAGES.includes('replay'), 'the gate checks every cold-read pass, the narrow text passes first');
+ok(STAGES[0] === 'title' && STAGES.includes('sense') && STAGES.length >= 12, 'the gate checks every cold-read pass, the narrow text passes first');
 cold[PIC] = { name: 'cold-read:pictures', ok: false, text: 'no cold read yet', detail: ['run: node tools/cold-read.mjs --level meeting --pass pictures'] };
 cold[REP] = { name: 'cold-read:replay', ok: false, text: 'works (2026-11-01, abc1234), but stale: the replay strips changed since', detail: ['run: node tools/cold-read.mjs --level meeting --pass replay'] };
 ok(failed(r, cold) === 'cold-read:pictures,cold-read:replay', 'a missing pass and a stale pass each fail');

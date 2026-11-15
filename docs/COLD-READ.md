@@ -18,14 +18,20 @@ that question: other passes check the rest. A pass is a small spec in `PASSES` i
 its steps and prompts, the answer it gives per item, and its verdict rule. Each pass records its own section in
 `cold-read.md`, with its own input hash.
 
-More narrow passes will follow `sense` and `verbs` (title, motives, props, joke, faces, tells, outcomes). The text
-passes come first. They are cheap (no code, no pictures) and catch design errors before any picture is made.
+The text passes come first. They are cheap (no code, no pictures) and catch design errors before any picture is made.
 
 | Pass | The reader sees | The question | Per item | The past failure it must catch |
 |---|---|---|---|---|
+| **title** | Step 1: the card alone. Step 2: the card, step 1's guesses, the ways to win and lose. | Does the name or the card hint at the way out? | miss / near / **leak** | Early Bus: "Early" in the name gave away "make someone early". |
 | **sense** | The card and the ways to win and lose, as prose. | Would every route, winning and losing, get past a real, half-awake boss? Does every NPC act for a reason a real person would have? | sensible / stretch / **nonsense** | Layoffs' hoodie route: the boss takes you for Kev, who he knows went home. |
+| **motives** | The card and `## Who does what`. | Does every NPC act for a reason shown before it happens, and keep his own rules? Does the card's rule bind coworkers too? | motivated, binds / thin / **unmotivated, contradicts, only-you** | The boss walks under his own clock without looking at it. |
+| **props** | The card and `## Things in the office`. | Why is each thing in this office? Does it look usable exactly when it is? | fits / odd / **pointless, misleading** | Early Bus: stepladders with no reason to be there; a coffee machine that looked usable and wasn't. |
+| **joke** | The card and the ways to win and lose. | What is the joke in each route? Is any a dull chore? Is there a payoff? | funny, payoff / mild / **chore, flat** | A route that is only fetch, wait, carry. |
 | **premise** (broad) | Step 1: the card alone. Step 2: the card, step 1's reading, `premise.md` and the level's own source files (not `shots.js`), with the engine rules (`engine.md`). | Stakes, motivation, deducibility, consistency, the name: is it legible to an implementer? | (none: problems only) | "Kev's Hoodie": the stakes meant nothing. |
 | **verbs** | Step 1: the verb sheets alone, panels numbered. Step 2: the reading, the sheets labelled, the engine's account of each panel. | Does each verb make sense for its item, and look like it? | fits / odd / **wrong** | Eating the resignation letter left mustard. |
+| **faces** | Step 1: every distinct bubble, cropped, alone. Step 2: the reading, each bubble and its frame, where it came up. | What does each bubble say, alone and in its moment? | clear / vague / **misread** | The clock glyph; 🤷 read as a blob; the face-❓ bubbles. |
+| **tells** | Step 1: for each of the player's actions in the route checks, the frame before and after, side by side, captioned with the clock and where the player stands. Step 2: the reading and what the engine says was done. | Can you see what changed without being told? | visible / faint / **invisible** | The crooked clock; the boss's glance. |
+| **outcomes** | Step 1: the card and the last 3 frames (with the end card) of every route check. Step 2: the reading, how each run really ended, the ways to win and lose. | Does a win look like a win and a catch like a catch? Does the end card match the last frame? Does a loss show which step broke? | clear / unclear / **wrong** | Early Bus, run 6: the end card did not match what happened. |
 | **pictures** (broad) | Step 1: the card and the screenshots from `shots.js`, numbered, no names, no intents. Step 2: the reading against the intents. | Does each picture say what it must? What would you try? | reads / partly / misread (per shot) | |
 | **replay** (broad) | Step 1: the card and one strip of frames per route check, captioned with the clock and what the player knows. Step 2: the readings against the runs and the ways to win and lose. | Could a player tell why each loop ended, and which of their actions caused it? | explained / partly / unexplained (per run) | |
 
@@ -35,6 +41,18 @@ passes come first. They are cheap (no code, no pictures) and catch design errors
 - **Items.** A narrow pass's reply starts `Verdict: works | fixable | broken`, then one line per item:
   `- <item>: <answer> — <one line why>`. The record keeps the tally. A bold-listed (last column) answer is a blocker.
   A narrow report with no item lines is `unreadable`.
+- **The tells limit.** The tells pass shows the player's own actions (interact, put, sit). State changes made by
+  NPCs (a lure pulling someone, a glance) are the replay pass's to show.
+
+Each step is a separate fresh reader, so nothing the reader learns later can colour their first read.
+
+The premise reviewer reads the level's files, not the engine's, so `tools/cold-read/prompts/engine.md` gives them the
+engine's rules (pretending hides what you carry, a schedule time is when someone sets off, and so on). Keep it to
+rules that hold in every level, true to DESIGN.md and the engine, and never a level's solution. Add a rule when a
+review reports an engine behaviour as missing or wrong.
+
+Verdicts are `works`, `fixable` or `broken` (see the grades above). A reply without its verdict line or its
+`## Problems` is recorded as `unreadable`, which the gate treats as a failure. The gate needs `works` from every pass, for the current inputs.
 
 ## Grades and the ledger
 Every pass's last step ends its prompt with `prompts/grades.md`, so every pass uses the same scale. (It is a file of
@@ -60,17 +78,8 @@ its own, not part of `common.md`, because the text passes never get `common.md`.
   records them in `tools/.shots/<id>/calibrate.md`, never the level's record. If that level can't get `works`, the
   prompt is wrong: read each blocker, and fix the prompt when a real office would shrug at it.
 
-Each step is a separate fresh reader, so nothing the reader learns later can colour their first read.
-
-The premise reviewer reads the level's files, not the engine's, so `tools/cold-read/prompts/engine.md` gives them the
-engine's rules (pretending hides what you carry, a schedule time is when someone sets off, and so on). Keep it to
-rules that hold in every level, true to DESIGN.md and the engine, and never a level's solution. Add a rule when a
-review reports an engine behaviour as missing or wrong.
-
-Verdicts are `works`, `fixable` or `broken` (see the grades above). An `unreadable` record is a failure too. The gate needs `works` from every pass, for the current inputs.
-
 ## Setup
-The picture passes (verbs, pictures, replay) draw with `@napi-rs/canvas`. Install it once, into a folder git ignores:
+The picture passes (verbs, faces, tells, outcomes, pictures, replay) draw with `@napi-rs/canvas`. Install it once, into a folder git ignores:
 ```
 npm install --prefix tools/.deps @napi-rs/canvas
 ```
@@ -79,9 +88,10 @@ npm install --prefix tools/.deps @napi-rs/canvas
 ## Running it
 ```
 node tools/cold-read.mjs --level <id> --pass sense         # build the bundles, run the readers, record the result
-node tools/cold-read.mjs --level <id> --pass sense,verbs   # a list, at the same time
-node tools/cold-read.mjs --level <id> --pass all           # every pass, at the same time
+node tools/cold-read.mjs --level <id> --pass text          # the five narrow text passes, at the same time
+node tools/cold-read.mjs --level <id> --pass faces,tells   # a list, at the same time
 node tools/cold-read.mjs --level <ref> --pass sense --calibrate   # a reference level, read cold: should come out works
+node tools/cold-read.mjs --level <id> --pass all           # every pass, at the same time
 node tools/cold-read.mjs --status                          # every non-fixture level: each pass's verdict, fresh or stale
 node tools/shots.mjs --level <id>                          # look at the shots yourself: tools/.shots/<id>/ (and each one's clock)
 node tools/shots.mjs --level <id> --replay                 # and the replay strips: tools/.shots/<id>/replay/
@@ -125,14 +135,19 @@ holds:
 A pass is fresh while its inputs still hash to the recorded value. Every pass's inputs include the card and the full
 text of the prompts its readers get (`tools/cold-read/prompts/`), so changing a prompt makes the passes that use it
 stale. The other inputs are:
-- **sense**: `premise.md`'s ways to win and lose
+- **title**, **sense**, **joke**: `premise.md`'s ways to win and lose
+- **motives**: `premise.md`'s `## Who does what`
+- **props**: `premise.md`'s `## Things in the office`
 - **premise**: `premise.md`
 - **verbs**: the bytes of every verb sheet, numbered and labelled, and the panels' intents
+- **faces**: `route-checks.js`, and every bubble (alone and in its frame) with where it came up
+- **tells**: `route-checks.js`, and every before/after picture with what the engine says was done
+- **outcomes**: `route-checks.js`, the ways to win and lose, and each run's last frames and captions
 - **pictures**: `shots.js` (names, commands, intents) and the bytes of every rendered shot
 - **replay**: `route-checks.js`, the ways to win and lose, and every frame and caption
 
-So an edit to `## The joke` stales only premise (which reads the whole file), and an edit to `## Ways to lose` stales
-sense, replay and premise.
+So an edit to `## The joke` stales none of the narrow passes, and an edit to `## Ways to lose` stales title, sense,
+joke, outcomes and replay (and premise, which reads the whole file).
 
 The PNG bytes are the same on every run on one machine. Fonts and the canvas version change them, so a pass recorded
 on another machine can show as stale. Run it again there.
@@ -148,6 +163,14 @@ The name, and why it is the name. It names the trouble, never the way out.
 Who you are. What you want. What happens at the deadline if you fail. Why succeeding prevents it.
 ## Cast
 For each person: who they are, then each beat of their routine with its everyday reason (lunch, a smoke, a habit).
+## Who does what
+Each person's afternoon, in plain prose, as a story: what they do, when, and why, and where the player sees the
+reason before the act. Say how the card's rule binds them too. No commands, ids or code: the motives reader is an
+ordinary person.
+## Things in the office
+Every item and piece of furniture the player can see: why it is in an ordinary office today, whether the player can
+use it, and what it looks like. Say so when something looks usable and isn't. No ids or code: the props reader is an
+ordinary person.
 ## Ways to win
 For each route:
 - the steps
@@ -163,7 +186,8 @@ The funniest moment, described as a picture.
 - The first heading is the level's name. `card.txt`, which every step 1 reader gets, holds that name, the card's two
   lines and the card's icons (the badge). Nothing else from `premise.md` goes in it.
 - `## Card` must hold the card's lines exactly as the level has them. If not, no pass runs.
-- sense and replay need `## Ways to win` and `## Ways to lose`. Without its section a pass does not run, and `--status` and the gate
+- title, sense, joke, outcomes and replay need `## Ways to win` and `## Ways to lose`; motives needs `## Who does
+  what`; props needs `## Things in the office`. Without its section a pass does not run, and `--status` and the gate
   say which section is missing.
 - The text passes see the sections as prose, without the rest of the file. Write them so they stand alone.
 
@@ -260,8 +284,8 @@ Both `shots.mjs` and the replay strips draw each effect as a player at normal sp
 The game itself is not changed: the harness's own effects age as they always do. The harness gives
 `createHarness({ level, onFrame })` a hook that runs after every frame, for this.
 ## The gate
-`node tools/gate.mjs --level <id>` adds one check per pass: `cold-read:sense`, `cold-read:premise`,
-`cold-read:verbs`, `cold-read:pictures`, `cold-read:replay`. Each passes only when the record says `works` and the pass is still fresh. A failing check says
+`node tools/gate.mjs --level <id>` adds one check per pass: `cold-read:title`, `cold-read:sense`, ... ,
+`cold-read:replay`. Each passes only when the record says `works` and the pass is still fresh. A failing check says
 why (no cold read yet, the verdict, what changed since, or the missing `premise.md` section) and gives the command to
 run. The gate reads only the record and the current inputs. It never runs a reader. Checking the picture passes'
 freshness draws what they show, so it needs the canvas. The gate also fails on a picture file at the repo root

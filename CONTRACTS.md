@@ -89,7 +89,9 @@ A level is one folder, `src/levels/<id>/`, whose `index.js` default-exports one 
 `game.level` and never imports level files. The folder name must equal `id`: the tools find the goldens at
 `src/levels/<id>/golden.json` and `golden-render.json`, and the route checks at `route-checks.js` (see Tools).
 Every level but the fixtures also has `premise.md`, `shots.js` and `cold-read.md`, for its cold reads
-(`docs/COLD-READ.md`). Register the level with one line in `src/levels/index.js`.
+(`docs/COLD-READ.md`). `premise.md` holds, besides the card, the situation, the cast and the ways to win and lose, two
+prose sections the narrow text passes read: `## Who does what` (each person's afternoon and why) and `## Things in
+the office` (each prop and why it is there). Register the level with one line in `src/levels/index.js`.
 
 Examples used below:
 - `fixture`: `src/levels/fixture/` ("Happy Birthday to Nobody"): one room, an authority, an owner, one lure.
@@ -673,8 +675,8 @@ exits 2 and lists the registry.
   - `<lesson id>`: a win that skips a `mustUse` lesson.
   - `drawn`: the level is on the legacy list (`src/levels/legacy.js`), or its winning plans draw an emoji as an
     object in the world (`tools/lib/drawn.mjs`; DESIGN.md "Visual language").
-  - `cold-read:<pass>` (every level but the fixtures): a cold-read pass (`sense`, `premise`, `verbs`, `pictures`,
-    `replay`) not recorded `works` in
+  - `cold-read:<pass>` (every level but the fixtures): a cold-read pass (`title`, `sense`, `motives`, `props`,
+    `joke`, `premise`, `verbs`, `faces`, `tells`, `outcomes`, `pictures`, `replay`) not recorded `works` in
     `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and never runs the readers.
     It prints what is missing or stale (or the `premise.md` section a pass needs) and the command to run
     (`docs/COLD-READ.md`).
@@ -691,12 +693,13 @@ exits 2 and lists the registry.
   (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
   `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
 - **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
-  level in narrow passes (`PASSES`: the cheap text passes first; `sense` and `verbs` so far) and three broad
-  ones (premise, pictures, replay), and record a verdict and input hash per pass in `cold-read.md`. `--pass` takes one
+  level in many narrow passes (`PASSES`: the cheap text passes first, then the picture passes) and three broad ones
+  (premise, pictures, replay), and record a verdict and input hash per pass in `cold-read.md`. `--pass` takes one
   pass, a list, `text` or `all`; several run at the same time. `--status` lists every level's passes. Every report
   lists all its problems graded blocker, should or nit (`prompts/grades.md`, no quota); the verdict counts blockers
   only. A rerun's reader first marks the earlier record's open problems (the ledger), and one still there becomes a
-  blocker. `--calibrate` runs a pass on a reference level without touching its record. `tools/test-cold-read.mjs` tests it with a fake reader; `tools/test-verb-sheet.mjs` tests that the sheets cover
+  blocker. `--calibrate` runs a pass on a reference level without touching its record. `tools/test-cold-read.mjs`
+  tests it with a fake reader; `tools/test-verb-sheet.mjs` tests that the sheets cover
   every item and verb. See `docs/COLD-READ.md`.
 - **Crop** (`tools/crop.mjs`): zooms into part of a picture, with named, checked arguments; it never writes into the
   repo except `tools/.shots/`. `tools/test-stray.mjs` tests it and the gate's `stray` check.

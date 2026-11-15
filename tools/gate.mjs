@@ -9,7 +9,7 @@
 //             binds only the wins that include one of them)
 //   drawn     a level on the legacy list, or an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
 //   cold-read:<pass>  for every level but the fixtures: a cold-read pass (every one in tools/cold-read.mjs PASSES:
-//             sense, premise, verbs, pictures, replay) that has
+//             title, sense, motives, props, joke, premise, verbs, faces, tells, outcomes, pictures, replay) that has
 //             not been recorded `works` in src/levels/<id>/cold-read.md for the level as it is now
 //             (docs/COLD-READ.md). The gate reads the record; it never runs the readers. Checking freshness draws
 //             what the picture passes show, so it needs @napi-rs/canvas (npm install --prefix tools/.deps @napi-rs/canvas).

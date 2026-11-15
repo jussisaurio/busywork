@@ -99,6 +99,17 @@ function tempRoot(name, prose = false) {
   return root;
 }
 // A reply that passes every pass: a works verdict, and one good item line in each narrow pass's words.
+// Every pass's last prompt grades its problems, with no quota and no private works/fixable rule of its own.
+{
+  const files = readdirSync(PROMPTS);
+  const last = PASSES.map((p) => files.find((f) => f === `${p.id}.md`) ?? files.filter((f) => f.startsWith(`${p.id}-`)).sort().at(-1));
+  ok(last.every(Boolean), 'grades: every pass has its prompts');
+  const bad = last.filter((f) => {
+    const t = readFileSync(join(PROMPTS, f), 'utf8');
+    return !/graded as below/.test(t) || /`(works|fixable)`:/.test(t) || /up to \d/i.test(t);
+  });
+  ok(!bad.length, `grades: every pass's last prompt lists its problems graded, no quota, no works/fixable of its own${bad.length ? ` (${bad.join(', ')})` : ''}`);
+}
 const GOOD = PASSES.filter((p) => p.answers).map((p) => `- item ${p.id}: ${p.answers.good[0]} — fine`).join('\n');
 const worksReply = (step) => (/^(2|1-judge)/.test(step) ? `Verdict: works\n\n${GOOD}\n\n## Problems\n- none` : 'r');
 const has = (pass) => STAGES.includes(pass);
