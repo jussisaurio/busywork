@@ -14,6 +14,7 @@
 // A name nothing draws shows as text (and is a world emoji in a migrated level: the runtime check catches it).
 // End scenes and level painters call drawThing(ctx, game, name, x, y, size, held) directly; box() sets up the
 // 16 px design box the engine's painters draw in.
+import { DAY_START, dayCue } from '../config.js';
 import { setThingPainter, fillCircle, fillEllipse, ellipse, rrect, drawPaper, fin } from './util.js';
 import { C } from './palette.js';
 import { lookFor } from './characters.js';
@@ -258,9 +259,12 @@ export const THINGS = {
     rrect(ctx, -4.6, 0, 9.2, 2.2, 0.6);
     ctx.fill();
   },
-  // A wall clock face at four o'clock (the 🕓 it replaces).
-  clock(ctx, x, y, size) {
-    drawClock(ctx, x, y, size);
+  // A wall clock face at the level's deadline (config.js dayCue 'deadlineAt': day.meetingAt unless the level says;
+  // four o'clock without a level): the 🕓 it replaces.
+  clock(ctx, x, y, size, t, game) {
+    const d = game?.level?.day;
+    if (d && Number.isFinite(d.meetingAt)) clockFace(ctx, x, y, size, dayCue(d, 'deadlineAt'), d.start);
+    else drawClock(ctx, x, y, size);
   },
   // A loudspeaker with a line through it (sound off).
   muted(ctx, x, y, size) {
@@ -311,6 +315,11 @@ export function drawClock(ctx, x, y, size, minute = 60) {
   hand((((3 + minute / 60) % 12) / 12) * Math.PI * 2, 3.4, 1.5, C.ink);
   hand((minute / 60) * Math.PI * 2, 5, 1, C.tomatoDark);
   fillCircle(ctx, 0, 0, 0.9, C.ink);
+}
+
+// drawClock at game minute `minute` of a day starting at `start` (level.day.start, a minute-of-day).
+export function clockFace(ctx, x, y, size, minute, start = DAY_START) {
+  drawClock(ctx, x, y, size, fin(start, DAY_START) + fin(minute) - 15 * 60);
 }
 
 // The painter that draws `name` in this level (the lookup order above), or null.

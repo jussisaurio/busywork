@@ -180,7 +180,7 @@ function drawClock(ctx, minute, t, day) {
 }
 
 // Mission icons only: 🕓 📊❌.
-// The mission: the 🕓 deadline, then the level's title.badge [main icon, small overlay icon], drawn as the title
+// The mission: the 🕓 deadline (render/things.js clock: the level's deadline on its face), then the level's title.badge [main icon, small overlay icon], drawn as the title
 // screen draws it (screens.js).
 const NO_BADGE = [];
 function drawGoal(ctx, badge) {
