@@ -19,11 +19,12 @@
 // better; disguise:fooled { by, as } on a fooled NPC's first sight of her.
 // State: NPC fields _knowsAs (as id -> true) and _greeted / _unmasked (once per loop); game.rules.worn (the disguise
 // item type she wore last step, so putting it on or taking it off is seen).
+import { DOUBLE_TAKE } from '../config.js';
 import { npcSees, findNpc } from '../game/perception.js';
 import { leaving } from '../sim/npcs.js';
 import { speak } from '../sim/override.js';
 
-export const DOUBLE_TAKE = 0.8; // seconds of sight before a knowing NPC objects (rules.js uses it for 'disguise')
+export { DOUBLE_TAKE }; // config.js: seconds of sight before a knowing NPC objects (rules.js uses it for 'disguise')
 
 // The cast ids the level's disguise items pass for (cached per level: the rules ask every step).
 const asCache = new WeakMap();

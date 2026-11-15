@@ -12,7 +12,7 @@
 // once he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
 // A disguise (disguise.js) changes who you are to them: fooled, they object to nothing; knowing better, they object
 // to the disguise itself.
-import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
+import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN, NOTICE } from '../config.js';
 import { say, shake, sightline } from '../core/fx.js';
 import { npcSees, seenVia, findNpc, inZone } from '../game/perception.js';
 import { SCREEN_ICON } from '../sim/mechanics/camera.js';
@@ -23,7 +23,7 @@ import { setBusy, sendToDesk } from './player.js';
 import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
 
 // Module tunables.
-export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts
+export { NOTICE }; // config.js: seconds of continuous sight before a witness reacts
 const NOTICE_BUBBLE_GAP = 1.0; // min seconds between ❓ bubbles from the same NPC
 const TELL_DELAY = 1.2; // seconds after the authority is back on the floor before a witness tells on you
 // The scene's investigator blames whoever he sees in its zone, or within this many tiles of its door (unless

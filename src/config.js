@@ -80,5 +80,7 @@ export const GLANCE_TURN_TIME = 0.25; // head turn tween, gives a tiny telegraph
 
 // --- Rules -----------------------------------------------------------------
 export const SUSPICION_FILL_SEC = 1.6; // boss sees you idle this long -> work assigned
+export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts (play/rules.js; render: her eye)
+export const DOUBLE_TAKE = 0.8; // seconds of sight before a knowing NPC objects to a disguise (play/disguise.js)
 export const SUSPICION_DECAY_SEC = 3.0;
 export const CAUGHT_DELAY = 1.6; // seconds of "busted" beat before the end screen
