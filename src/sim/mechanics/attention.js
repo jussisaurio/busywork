@@ -25,7 +25,9 @@
 //              delayed noise with it is cancelled if the world changes meanwhile; without it a repeat goes all day
 //   turn       s heads stay turned (default TURN_TIME)
 // Show (optional): ripple   true or { color }: rings spread from the noise to its earshot each time it sounds
-//                           (core/fx.js ripple; render only, game.fx)
+//                           (core/fx.js ripple; render only, game.fx). They start on the machine that makes it: a
+//                           noise `at` a spot named after an interactable (spot 'copier', the place you stand at
+//                           the copier) ripples from that interactable's tile; heads still turn to the spot
 //                  sfx      a recipe name in audio/sfx.js (e.g. 'machineBeep'): audio plays it at the noise each
 //                           time it sounds (the 'noise' event carries it)
 // A waiting or repeating noise belongs to the loop: a new loop (createNpcs) drops it.
@@ -47,9 +49,10 @@ const HEAD_SPEED = GLANCE_ANGLE[1] / GLANCE_TURN_TIME; // rad/s: as quick as a g
 
 // Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME). `ripple`: show it;
 // `sfx`: the sound audio plays for it.
-export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, sfx }) {
+// `from`: { x, y } where the ripple starts (default the noise itself).
+export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, sfx, from }) {
   game.events.emit('noise', sfx ? { x, y, radius, sfx } : { x, y, radius });
-  if (ripple && game.fx) showRipple(game, x, y, radius, ripple === true ? {} : ripple);
+  if (ripple && game.fx) showRipple(game, from?.x ?? x, from?.y ?? y, radius, ripple === true ? {} : ripple);
   const auth = game.level.roles?.authority;
   for (const npc of game.npcs) {
     if (npcs && !npcs.includes(npc.id)) continue;
@@ -83,8 +86,27 @@ export function setNoise(game, n, x, y) {
 }
 function sound(game, n, x, y) {
   if (n.while && !n.while(game.world)) return false;
-  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple, sfx: n.sfx });
+  const from = n.ripple ? machineAt(game, n.at, x, y) : null;
+  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple, sfx: n.sfx, from });
   return true;
+}
+
+// The machine a noise's spot is named after: the nearest interactable of that type (or id) within MACHINE_REACH
+// tiles of (x, y), as { x, y } its tile's centre; null if none.
+const MACHINE_REACH = 1.6;
+function machineAt(game, at, x, y) {
+  if (!at) return null;
+  let best = null;
+  let bd = MACHINE_REACH + 1e-9;
+  for (const it of game.map.interactables || []) {
+    if (it.type !== at && it.id !== at) continue;
+    const d = Math.hypot(it.cx - x, it.cy - y);
+    if (d < bd) {
+      bd = d;
+      best = it;
+    }
+  }
+  return best && { x: best.cx, y: best.cy };
 }
 
 // Every step of the day, before the NPCs move (npcs.js updateNpcs): the waiting noises count down and sound, in

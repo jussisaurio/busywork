@@ -62,11 +62,12 @@ export function sightline(game, from, kind = 'notice', ttl = 0.8, via, to = 'pla
   game.fx.lines.push(line);
 }
 
-// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl.
-// opts.color: a CSS colour (default the renderer's).
+// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl
+// (default: 1 s, longer for a wide earshot, so the rings visibly travel from the source). opts.color: a CSS colour
+// (default the renderer's).
 export function ripple(game, x, y, radius, opts = {}) {
   const list = game.fx.ripples ?? (game.fx.ripples = []);
-  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? 1 });
+  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? Math.max(1, radius / 12) });
 }
 
 export function shake(game, amount = 0.15, t = 0.3) {

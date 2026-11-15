@@ -290,10 +290,25 @@ export function drawParticles(ctx, game, t) {
 }
 
 // --- ripples -------------------------------------------------------------------
-// game.fx.ripples: [{ x, y, radius, color, age, ttl }] (core/fx.js ripple). Three rings, a beat apart, spread from
-// the noise to its earshot and fade: who is inside the last ring heard it.
+// game.fx.ripples: [{ x, y, radius, color, age, ttl }] (core/fx.js ripple). The noise starts at its source: a flash
+// there, then short bold rings pulse out of it for as long as it sounds. Three earshot rings, a beat apart, leave
+// the source on the first frame and spread to its earshot, fading as they go: who is inside the last ring heard it.
 const RIPPLE_RINGS = 3;
-const RIPPLE_GAP = 0.12; // s between rings
+const RIPPLE_GAP = 0.12; // s between earshot rings
+const SOURCE_SPAN = 0.42; // s a source ring lives
+const SOURCE_GAP = 0.16; // s between source rings
+const SOURCE_R = 1.3 * T; // px a source ring reaches
+function ring(ctx, x, y, r, a, w, color) {
+  ctx.globalAlpha = a * 0.4;
+  ctx.strokeStyle = 'rgb(30,20,14)'; // a dark under-stroke: it reads on carpet and on tile
+  ctx.lineWidth = w + 2;
+  circle(ctx, x, y, r);
+  ctx.stroke();
+  ctx.globalAlpha = a;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w;
+  ctx.stroke();
+}
 export function drawRipples(ctx, game) {
   const list = game.fx && game.fx.ripples;
   if (!Array.isArray(list) || !list.length) return;
@@ -304,16 +319,25 @@ export function drawRipples(ctx, game) {
     const y = fin(r && r.y, NaN) * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     const R = Math.max(0.5, fin(r.radius, 3)) * T;
-    const span = Math.max(0.1, fin(r.ttl, 1) - RIPPLE_GAP * (RIPPLE_RINGS - 1));
-    ctx.strokeStyle = typeof r.color === 'string' ? r.color : C.cream;
+    const ttl = Math.max(0.1, fin(r.ttl, 1));
+    const age = Math.max(0, fin(r.age));
+    const color = typeof r.color === 'string' ? r.color : C.cream;
+    if (age < 0.15) { // the flash at the source
+      ctx.globalAlpha = 0.85 * (1 - age / 0.15);
+      fillCircle(ctx, x, y, 6 + 40 * age, color);
+    }
+    for (let k = 0; k * SOURCE_GAP <= ttl - SOURCE_SPAN; k++) {
+      const q = (age - k * SOURCE_GAP) / SOURCE_SPAN;
+      if (q < 0) break;
+      if (q >= 1) continue;
+      ring(ctx, x, y, 5 + q * (SOURCE_R - 5), 0.95 * (1 - q), 1 + 3 * (1 - q), color);
+    }
+    const span = Math.max(0.1, ttl - RIPPLE_GAP * (RIPPLE_RINGS - 1));
     for (let k = 0; k < RIPPLE_RINGS; k++) {
-      const q = (fin(r.age) - k * RIPPLE_GAP) / span;
-      if (q <= 0 || q >= 1) continue;
+      const q = (age - k * RIPPLE_GAP) / span;
+      if (q < 0 || q >= 1) continue;
       const e = 1 - (1 - q) * (1 - q); // fast out, slow at the edge
-      ctx.globalAlpha = 0.75 * (1 - q);
-      ctx.lineWidth = 1 + 2.5 * (1 - q);
-      circle(ctx, x, y, 6 + e * (R - 6));
-      ctx.stroke();
+      ring(ctx, x, y, 6 + e * (R - 6), 0.7 * (1 - q), 1 + 2 * (1 - q), color);
     }
   }
   ctx.restore();

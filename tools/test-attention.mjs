@@ -368,6 +368,21 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   ok(probs.some((p) => p.includes(`noises['test:x'].ripple`)), 'validator: ripple is true or { color }');
 }
 
+// 13b. A noise at a spot named after a machine (spot 'copier': where you stand at the copier) ripples from the
+// machine's tile; the noise itself, and the heads it turns, stay at the spot.
+{
+  const { game, log } = day(BASE);
+  const it = game.map.interactables[0];
+  setNoise(game, { at: it.type, radius: 6, ripple: true }, it.cx, it.cy + 1);
+  const r = game.fx.ripples.at(-1);
+  const e = log.filter((q) => q.name === 'noise').at(-1).payload;
+  ok(r.x === it.cx && r.y === it.cy && e.x === it.cx && e.y === it.cy + 1, `the ripple starts on the ${it.type}, the noise is at the spot`);
+  setNoise(game, { at: 'nothing_here', radius: 6, ripple: true }, it.cx, it.cy + 1);
+  ok(game.fx.ripples.at(-1).y === it.cy + 1, 'a spot named after no machine: the ripple starts at the noise');
+  setNoise(game, { at: it.type, radius: 6, ripple: true }, it.cx, it.cy + 3);
+  ok(game.fx.ripples.at(-1).y === it.cy + 3, 'the machine too far from the spot: the ripple starts at the noise');
+}
+
 // 14. sfx: the noise event names its sound only when the noise has one (audio plays it: tools/test-audio.mjs).
 {
   const { game, log } = day(BASE);
