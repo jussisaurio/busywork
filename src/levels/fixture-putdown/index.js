@@ -90,7 +90,7 @@ export default {
   harness: {
     mission: 'MISSION: 3:00 PM meeting. The boss does whatever the suggestion box says.',
     landmarks: {
-      my_seat: 'player_desk', boss_desk: 'boss_desk', box: 'box', restroom_door: 'restroom',
+      boss_desk: 'boss_desk', box: 'box', restroom_door: 'restroom',
       meeting_room: 'meeting_presenter', meeting_seat: 'meeting_player',
     },
   },

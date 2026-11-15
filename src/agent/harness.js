@@ -9,6 +9,7 @@
 // The level's own words (goto landmarks, stop events, the WORLD line, event lines) come from
 // game.level.harness (src/levels/meeting/harness.js documents the shape).
 
+import { ENGINE_LANDMARKS } from '../levels/validate.js';
 import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
 import { startLoop, tick, frameMult } from '../game/loop.js';
@@ -39,7 +40,7 @@ function wrap(words, width) {
 // The command reference for a level (its goto targets: interactables, then landmarks).
 export function helpText(level = defaultLevel) {
   const ids = parseMap(level.map.rows, level.map.legend).interactables.map((i) => i.id);
-  const targets = [...wrap(ids, 62), ...wrap(Object.keys(level.harness?.landmarks ?? {}), 62)];
+  const targets = [...wrap(ids, 62), ...wrap(Object.keys({ ...ENGINE_LANDMARKS, ...level.harness?.landmarks }), 62)];
   targets[targets.length - 1] += ' | x,y (tile)';
   return `Commands (one per call or several in a row):
   look                         observe without acting
@@ -63,7 +64,7 @@ export function createHarness({ level = defaultLevel } = {}) {
   const game = createGame({ input, level: typeof level === 'string' ? getLevel(level) : level });
   const H = game.level.harness ?? {};
   const clock = (minute) => formatClock(minute, game.level.day.start); // "2:30 PM": the level's day, not level 1's
-  const LANDMARKS = H.landmarks ?? {};
+  const LANDMARKS = { ...ENGINE_LANDMARKS, ...H.landmarks }; // my_seat: built in, a level needn't name it
   const hardStop = new Set([...HARD_STOP, ...(H.stops?.hard ?? [])]);
   const softStop = new Set([...SOFT_STOP, ...(H.stops?.soft ?? [])]);
   const log = []; // { loop, minute, name, payload }

@@ -72,7 +72,7 @@ export default {
   harness: {
     mission: 'MISSION: 3:00 PM meeting. Inventory day: the auditor counts two laptops. There is one.',
     landmarks: {
-      my_seat: 'player_desk', dave_desk: 'dave_desk', auditor_desk: 'auditor_desk',
+      dave_desk: 'dave_desk', auditor_desk: 'auditor_desk',
       meeting_room: 'meeting_presenter', meeting_seat: 'meeting_player',
     },
   },

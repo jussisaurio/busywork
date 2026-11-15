@@ -11,7 +11,8 @@
 //   title       { mission: [line, line], badge: [icon, overlay] }
 //   map         { rows, legend? }: parseMap accepts it (equal row lengths, every letter in the legend); each legend
 //               entry has a kind and boolean solid/opaque; its `draw` (optional) one of render/world.js TILE_DRAWS
-//   spots       each { x, y } inside the map on a tile an NPC can stand on, face (optional) N/E/S/W
+//   spots       each { x, y } inside the map on a tile an NPC can stand on, face (optional) N/E/S/W; player_desk
+//               present (the engine's: you start there, `sit` and the harness's my_seat go there)
 //   zones       each { x0, y0, x1, y1 } with x0 < x1, y0 < y1, inside the map
 //   patrols     optional; each a list of [x, y] inside the map
 //   cast        a list; ids unique strings, not 'player'; schedule non-empty with `at` in order, `do` one of sit,
@@ -34,8 +35,9 @@
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
 //   initialWorld  a function returning an object with an `items` list
-//   harness     optional; landmarks name spots
-//   gate        optional; targets are interactable ids, landmarks or "x,y"; interactable targets; mustUse
+//   harness     optional; landmarks name spots (my_seat is built in: ENGINE_LANDMARKS)
+//   gate        optional; targets are interactable ids, landmarks (the level's or the engine's) or "x,y";
+//               interactable targets; mustUse
 //               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
@@ -55,6 +57,9 @@ const DAY_EXTRA = ['clockRedAt', 'clockTickAt', 'tockAt', 'halfMinuteAt', 'beamA
 const ROW_TARGETS = new Set(['self', 'item', 'spot']); // besides the map's interactable types
 const FAIL_THEN = new Set(['caught', 'stare', 'hunt']);
 const SCENE_RESULTS = ['caught', 'fail'];
+
+// goto names every level has, on top of its harness.landmarks (agent/harness.js): your own desk.
+export const ENGINE_LANDMARKS = { my_seat: 'player_desk' };
 
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
 const isFn = (v) => typeof v === 'function';
@@ -120,6 +125,7 @@ export function levelProblems(level, key) {
 
   // --- spots, zones, patrols --------------------------------------------------------------------
   if (!isObj(level.spots)) bad('spots', 'missing');
+  else if (!has(spots, 'player_desk')) bad('spots.player_desk', "missing (you start there; `sit` and my_seat walk there)");
   for (const [name, s] of Object.entries(spots)) {
     const path = `spots.${name}`;
     if (!isObj(s) || !Number.isInteger(s.x) || !Number.isInteger(s.y)) { bad(path, 'not { x, y } in whole tiles'); continue; }
@@ -312,8 +318,9 @@ export function levelProblems(level, key) {
   }
 
   // --- tools: harness and gate ------------------------------------------------------------------
-  const landmarks = isObj(level.harness?.landmarks) ? level.harness.landmarks : {};
-  for (const [name, s] of Object.entries(landmarks)) spot(`harness.landmarks.${name}`, s);
+  const own = isObj(level.harness?.landmarks) ? level.harness.landmarks : {};
+  for (const [name, s] of Object.entries(own)) spot(`harness.landmarks.${name}`, s);
+  const landmarks = { ...ENGINE_LANDMARKS, ...own };
   const gate = level.gate;
   if (gate !== undefined) {
     const targets = list('gate.targets', gate.targets);

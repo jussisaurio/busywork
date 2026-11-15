@@ -48,6 +48,8 @@ const CASES = [
   ['item without an icon (drew as ❔)', { ...M, items: { ...M.items, keycard: { ...M.items.keycard, icon: undefined } } }, 'meeting', /items\.keycard\.icon: missing/],
   ['item contraband npc', { ...M, items: { ...M.items, keycard: { ...M.items.keycard, contraband: 'security' } } }, 'meeting', /items\.keycard\.contraband: no cast member 'security'/],
   ['roles authority', { ...M, roles: { ...M.roles, authority: { ...M.roles.authority, id: 'ceo' } } }, 'meeting', /roles\.authority\.id: no cast member 'ceo'/],
+  ['outcomeOrder names no route (crashed the outcome)', { ...M, outcomeOrder: [...M.outcomeOrder, 'stapler'] }, 'meeting', /outcomeOrder: no route 'stapler'/],
+  ['no player_desk spot', { ...M, spots: Object.fromEntries(Object.entries(M.spots).filter(([k]) => k !== 'player_desk')) }, 'meeting', /spots\.player_desk: missing/],
   ['outcomeOrder misses a route', { ...M, outcomeOrder: ['keycard'] }, 'meeting', /outcomeOrder: lists route 'projector' 0 times/],
   ['harness landmark', { ...M, harness: { ...M.harness, landmarks: { ...M.harness.landmarks, sofa: 'sofa' } } }, 'meeting', /harness\.landmarks\.sofa: no spot 'sofa'/],
   ['gate target', { ...M, gate: { ...M.gate, targets: [...M.gate.targets, 'sofa'] } }, 'meeting', /gate\.targets\[\d+\]: 'sofa' is no interactable id, landmark or x,y/],

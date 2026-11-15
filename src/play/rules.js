@@ -78,7 +78,7 @@ function offenceFor(game, s, npc) {
   const r = roles(game);
   if (p.action && p.action.sneaky && (!p.action.owner || p.action.owner === npc.id)) {
     // A locked-out boss is outside banging on the glass: he can't do anything about it.
-    if (npc.id === r.authority?.id && r.authority.helpless.includes(npc.override)) return null;
+    if (npc.id === r.authority?.id && (r.authority.helpless ?? []).includes(npc.override)) return null;
     return 'action';
   }
   if (atScene(game, s, npc)) return 'scene';

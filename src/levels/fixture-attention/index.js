@@ -114,7 +114,7 @@ export default {
   initialWorld: () => ({ donut: 'box', items: [] }),
   harness: {
     mission: 'MISSION: the 2:40 meeting is the boss and the last donut. Eat it. He has not blinked since 2:30.',
-    landmarks: { my_seat: 'player_desk', boss: 'boss_chair', printer: 'printer', doorway: 'doorway', meeting_room: 'meeting_presenter' },
+    landmarks: { boss: 'boss_chair', printer: 'printer', doorway: 'doorway', meeting_room: 'meeting_presenter' },
     stops: { hard: ['boss:workAssigned'], soft: ['boss:suspicious'] },
     names: NAME,
     mapKey: ['MAP (# wall, T desk, O the donut, X printer, W workstation, Q water cooler, P your desk, @ you, b boss, * floor he can see right now):'],
