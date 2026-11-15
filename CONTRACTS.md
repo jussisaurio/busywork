@@ -691,7 +691,8 @@ exits 2 and lists the registry.
   [--batch 288] [--workers N] [--verbose] [--json out.json]`. The output depends only on level, seed, budget and
   batch. A report for a designer, not a test.
 - **Gate** (`tools/gate.mjs`): the pass/fail filter a level must pass before a human plays it. It fuzzes
-  (`--budget 30000`, about 30 s) and exits 1 on any failed check:
+  (`--budget 30000`, about 30 s; without `--budget`, the level's `gate.budget` when it has one, so a level whose
+  rarest win needs more days needs no flag) and exits 1 on any failed check:
   - `routes`: a route no plan wins.
   - `easy`: a win in 3 plan steps or fewer (the final stance held until the meeting is not a step).
   - `random`: random plans win more than 1% of the time.
