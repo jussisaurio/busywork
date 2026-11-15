@@ -60,8 +60,6 @@ export default {
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
     : 'FAIL: the meeting happened and you presented a blank slide 🦗'),
 
-  playerText: (game) => (game.player.smeared ? ['mustard down your sweater'] : []),
-
   // Only what a player would see: the ❓ meter over the boss's head (when it shows).
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),
 

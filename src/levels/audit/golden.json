@@ -5,5608 +5,3120 @@
    "cmds": [
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "87fb6d24bebcd8f3",
-    "90a688c7e133b308"
+    "908927704befd214",
+    "b96eb2db5dd08578"
    ]
   },
   {
    "cmds": [
     "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "f68a7c75f89cbff5",
-    "2f91e87a85919fcb"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:36",
-    "goto boss_desk pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b248589f1230f9cd",
-    "51e26ac82aad60db",
-    "d09d3495ed10200a",
-    "726513c2d943b71f",
-    "c210cd306b347256"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "785fcbaff695f724",
-    "e11a67797ab72144",
-    "d80cdee7e08fb811",
-    "8c148749626f9107",
-    "6f0c3c3bf7123dcb"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:36",
-    "goto hallway_west pretend",
-    "interact",
-    "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "b248589f1230f9cd",
-    "ce55fa4c66c14d34",
-    "213c59706cb855a5",
-    "624807c024afdcfd",
-    "c648f42632c8c49c"
+    "079c02acc4665b17",
+    "3fbe41f814169cc2"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:35",
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "655fb4882445e24c",
-    "fd91395db7ae7033",
-    "83bb521b51d356d5",
-    "65a33e938c98fd4f",
-    "bc17bb952b2c4b4e",
-    "14b775e0368c4477",
-    "5594df98fe2bf954"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:19",
-    "interact",
-    "put kev_desk",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c79aff19ab8a5527",
-    "f5b08b49a77d5636",
-    "5efcd64650a214f8",
-    "d45db8fed3627512",
-    "2f4c55042981bbf8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
+    "wait 3s",
     "goto hallway_west pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "35f5d5bc66cdaabb",
-    "4a3b2e24fdeb7693"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "interact",
-    "goto boss_desk",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "a2f2e7f90f917930",
-    "934d95d478dfdb3b",
-    "5029431b87cf0ec1",
-    "1799af76bd6ef387",
-    "24b5d72125423915"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend 5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3d9f5f1b3df0bdda",
-    "f06067579e1f8f9f",
-    "e3b59551df58a580",
-    "78dd2803af8fa641"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:29",
-    "wait until 3:40",
-    "goto hallway_west pretend",
-    "interact",
-    "sit pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "29d73c5bb18e4c23",
-    "75548ad8f5541ea5",
-    "c4d1cb7293ce3ff1",
-    "0f49b8485037de77",
-    "04bdcd3bf4900bee",
-    "05c13007fe52cdda",
-    "3be7fd718727362d",
-    "cc9a3ee9cca9660b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "57434fb711a1f0c2",
-    "735beefe8105bb00"
-   ]
-  },
-  {
-   "cmds": [
-    "goto hallway_west pretend",
-    "interact",
-    "pretend 5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "217c01b92954484b",
-    "da4a04e551983e60",
-    "84e6726e36d86055",
-    "2a1f93a262006d7f",
-    "da98c42036b24632",
-    "eb4bc2345e1c5476"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:13",
-    "goto hallway_west",
-    "interact",
-    "goto hallway_mid",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3e80365b7af080f9",
-    "f8209f4d3c059860",
-    "ee27dbc4b2680101",
-    "014d56f11e45b7b4",
-    "beadaf7d5de07b72",
-    "30cb114629bf8aa3",
-    "23591ec465317d2e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "8355ccc22b699630",
-    "a40d7b9cb673548f",
-    "dc44f92d632902ca"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:15",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "06850431acdc1b32",
-    "396213e45cc3cf36",
-    "9ac6cc5d60fe4351",
-    "88eaa680d53dbb0b"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:36",
-    "goto hallway_west",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b248589f1230f9cd",
-    "e945e1221620abe6",
-    "ac9f231fa56f289e",
-    "445d61a6047bb0c5",
-    "2e4b3bf1760d3fa3"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:13",
-    "goto boss_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "efb147745b11dedb",
-    "a2773fc468e93703",
-    "acf214966f7908f3",
-    "53063ed17ba4daa6",
-    "f2a4cdb9a6cff4e9"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:15",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "06850431acdc1b32",
-    "396213e45cc3cf36",
-    "4d85731ccc08df9c",
-    "d6e71feba091c951",
-    "ea7d6370510622c5"
-   ]
-  },
-  {
-   "cmds": [
-    "goto lin_desk pretend",
-    "pretend 8s",
-    "pretend until 3:24",
-    "goto your_desk",
-    "interact",
-    "pretend until 3:33",
-    "goto office_door",
-    "goto office_door",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "4ac2c0fb001401c2",
-    "26c0b657b9f45fdd",
-    "d2ceb6a8c3d002db",
-    "8b6954514af4be6f",
-    "0d55f29539121eb2",
-    "98afca6a83d88b40",
-    "eb67ed24b2f3450a",
-    "12747fe99e725259",
-    "3284ab509b5d5ef2",
-    "26aebe6bd981b759"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "8355ccc22b699630",
-    "d5ace170b60943e2",
-    "5302293145bccbe5"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend 5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3d9f5f1b3df0bdda",
-    "f06067579e1f8f9f",
-    "adb4f4f316ad2ed0",
-    "ab0f27ba5d5db751"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "put your_desk",
-    "goto hallway_west pretend",
-    "interact",
-    "put your_desk pretend",
-    "goto kev_desk pretend",
-    "pretend until 3:14",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "06a17ff3b8ca9409",
-    "505747cb8193af65",
-    "d2a0e6f0a983606a",
-    "6cc6ddf48c8371af",
-    "04a81e996120af11",
-    "7c676fc2ccbbb57c",
-    "a5a99dea6973e048",
-    "ee2a9be73cc584a4"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:24",
-    "goto lin_desk",
-    "goto hallway_west",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "72332f69a7fec8f9",
-    "8d9f9e043837b97e",
-    "9ba0c5b8768c9ab3",
-    "c57ac9fd61fea3eb",
-    "4782625be7690c47",
-    "fdb4d73295527369"
+    "58717912bf02bed6",
+    "242fa293b28c1ebc",
+    "a9a8ac5470507add",
+    "b92a8803b4e8046d",
+    "a312bb94e8bdb7bb"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:32",
-    "goto your_desk pretend",
+    "wait until 3:10",
+    "goto hallway_west pretend",
     "interact",
-    "goto lin_desk pretend",
+    "goto boss_desk pretend",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "9824453a8e946b76",
-    "089126a17496b786",
-    "a57ae9d0b9a60bbe",
-    "ab2d318dedbf6e3b",
-    "dc417bdcf5e5bd32",
-    "fd97071f259e3af0",
-    "1866fb09e120dd67"
+    "ce5af2835e8d61f0",
+    "186a8e4444a918c4",
+    "39437a02d660798c",
+    "ead940cec8fe36ec",
+    "045cb43669f3cd7f",
+    "976ceb43afc22d85",
+    "34e0275fe3221e2d"
    ]
   },
   {
    "cmds": [
-    "wait until 3:15",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "06850431acdc1b32",
-    "396213e45cc3cf36",
-    "734a62b5e602c08f",
-    "90a688c7e133b308"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:36",
-    "goto hallway_west",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "b248589f1230f9cd",
-    "e945e1221620abe6",
-    "ac9f231fa56f289e",
-    "f2340a1bd01c38d5",
-    "c7c7d9e1ada6bddd",
-    "df73625f2633463f"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "pretend until 3:35",
-    "interact",
-    "goto hallway_west pretend",
+    "pretend until 3:25",
+    "goto kev_desk pretend",
     "interact",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "57a2f85738ee7537",
-    "d41210c595809165",
-    "dfe4e92f24809126",
-    "a5d50ae3e371625b",
-    "0d70cf5f93d1b0a0",
-    "c7a54333c4c6dd8a"
+    "6f681976b6118d11",
+    "b89a557307a3d8ea",
+    "6a72c962b6501855",
+    "c058e142dede558b",
+    "f43c1f45a304ae55"
    ]
   },
   {
    "cmds": [
-    "goto boss_desk pretend",
-    "pretend until 3:14",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "4c242aadb2892fd6",
-    "631d3b70d67862de",
-    "8855bfe9c905b22d",
-    "66d96cfcbcf40ba5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:05",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a84b47a01b2654f8",
-    "652dd20f9497a8e9",
-    "b9c68100bf6734d2",
-    "bab6e9d161dbef2d",
-    "19ae20c80676a643",
-    "628a4476eb574a13"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:43",
-    "goto kev_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "8740842ae509545d",
-    "0c78f48b88b7a750",
-    "907ec67480854f78",
-    "e17b822394bb12ef",
-    "23124af20f77d4ac"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "8355ccc22b699630",
-    "ef0aea05218ec91f",
-    "a82dbf5002465226",
-    "d13fd64e15d36322"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "785fcbaff695f724",
-    "e11a67797ab72144",
-    "d80cdee7e08fb811",
-    "766a0b50ce4a501d",
-    "fc8134038d993ebf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine pretend",
-    "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
     "goto kev_desk pretend",
-    "wait until 3:29",
+    "pretend until 3:16",
     "interact",
     "interact",
     "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "965fed67fd9b0456",
-    "4645cf873ab0bda1",
-    "6edfec4eca857d07",
-    "0fb21676340b6a23",
-    "e5a8ef234e0670a5",
-    "5b867e9bf2469257",
-    "bfc06b5fa4c0c027",
-    "9599a4089daacc2f",
-    "028efa86c5f8d8b3",
-    "e53322b69aa0ba26"
-   ]
-  },
-  {
-   "cmds": [
-    "goto hallway_west",
-    "wait until 3:27",
-    "pretend until 3:34",
-    "interact",
-    "goto coffee_machine pretend",
-    "interact",
-    "interact",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "68d0ef20ad59543a",
-    "741134a1ca8e41c0",
-    "85bb33b65b1485ff",
-    "a6d941841ec63128",
-    "426a5b2cac4e0b33",
-    "31d70d9f1b2caaeb",
-    "f008b59d2ca0914f",
-    "17b2c5dcd055ee95",
-    "531bc5f80b8d0d61",
-    "531bc5f80b8d0d61",
-    "531bc5f80b8d0d61"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "goto coffee_machine pretend",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "ed749253aa531efa",
-    "04d510458346419c",
-    "5f54ca9c542cd9de",
-    "393d0d3a12a4c0d9",
-    "695be216bcb6697c"
-   ]
-  },
-  {
-   "cmds": [
-    "put lin_desk pretend",
-    "goto entrance",
-    "goto lin_desk",
-    "interact",
-    "interact",
-    "pretend 5s",
-    "interact",
-    "pretend 1s",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1935647033e401da",
-    "2405305cc0657796",
-    "fe1b2517d0cc841e",
-    "aadead7d1792f0cd",
-    "f1400c9bbc13d25e",
-    "5d45f2a47dfcc1bf",
-    "bc523f19998eb5c4",
-    "0e3595e57d9a8183",
-    "840762b83e6ba35d",
-    "d72daf81c41075ff"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:42",
-    "goto hallway_west pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "cb49b61a1037eb5c",
-    "81b41851b15e3921",
-    "d2eb51c012c85a97",
-    "e1576b35fcd68ff6",
-    "f5c47dd8148582d3"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:06",
-    "goto office_door pretend",
-    "wait 8s",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "put kev_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "0be6eca27c720c4e",
-    "db79f7b9c940b65b",
-    "42fdc5cf790dde66",
-    "e493e1e2aea5799e",
-    "94b4e0d71ff6ca96",
-    "1bf3c25f2cb45dc4",
-    "0031f8d14ceca556",
-    "538794b492a7723c",
-    "6a7ea449eb4c879e",
-    "f5ef44f7c4b83d4e",
-    "06eeeb4f40edd26f"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:36",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "b248589f1230f9cd",
-    "9933f437eed58762",
-    "36a7e5727343333f",
-    "2aeab1a0fff65fbf",
-    "97868c16ad914d9c",
-    "d6f068a171a4b560"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "c7450e25a2cc7c5e",
-    "f034c47a20c3510c",
-    "4f6a1efab9bb9e0e",
-    "ca1f6968c1158c80",
-    "b09962db9b738bda",
-    "f87190ddd1972ee7"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:19",
-    "interact",
-    "put kev_desk",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c79aff19ab8a5527",
-    "f5b08b49a77d5636",
-    "5efcd64650a214f8",
-    "2bdf2a899982ed45",
-    "03384a5194a48b03"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk pretend",
-    "interact",
-    "sit pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "2cdc0b76cb908009",
-    "f79fbfa6e98df8d7",
-    "6707575e7b979a54",
-    "83d0af61d8d25668",
-    "29a82c2d689d5a04",
-    "f02b06455770af58"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "put kev_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "26cefe4904c76912",
-    "294023204e141b8f",
-    "96a38edbcc696be1",
-    "c054f3f17af08eb3"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "7d49bc82b5c6fb34",
-    "e11a67797ab72144",
-    "d80cdee7e08fb811",
-    "03fad6992709a4cf",
-    "e4f6199265ed995a",
-    "e53322b69aa0ba26"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:34",
-    "goto hallway_west",
-    "goto hallway_west",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "913d2c2288fc21ba",
-    "6640488e8fe58efd",
-    "936e20b4e93159fe",
-    "769d2d72dd59c3b2",
-    "505d88b4a116a163",
-    "735beefe8105bb00"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine pretend",
-    "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "965fed67fd9b0456",
-    "4645cf873ab0bda1",
-    "6edfec4eca857d07",
-    "0fb21676340b6a23",
-    "02f3e21fffb23cc5",
-    "5e00cca60d90d986",
-    "5b36c83a7bd33362",
-    "e826ba8bd90b59fd",
-    "0d0ac4c27e18ea11",
-    "7701a9830a306d0d",
-    "a6eec5fc510486e6",
-    "3d61a2184aeba444"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:06",
-    "goto office_door pretend",
-    "wait 8s",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "wait 2s",
-    "interact",
-    "interact",
-    "put kev_desk pretend",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "0be6eca27c720c4e",
-    "db79f7b9c940b65b",
-    "42fdc5cf790dde66",
-    "e493e1e2aea5799e",
-    "94b4e0d71ff6ca96",
-    "1bf3c25f2cb45dc4",
-    "04e2c729ab4bc97a",
-    "ba45503f3d465725",
-    "35dcbe10dbe3c870",
-    "ecd28e39cf5de790",
-    "335a84e421e0b43b",
-    "be26b6c415f90556"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:15",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "06850431acdc1b32",
-    "396213e45cc3cf36",
-    "4d85731ccc08df9c",
-    "853b621614d3eb18",
-    "ab0f27ba5d5db751"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 8s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "48ab7018124d005a",
-    "0862c6424dbf5300",
-    "521e67fec773b1f3",
-    "89d70a0bb4cc4d47",
-    "b5c2d40650386066",
-    "b84dc342568ea945"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "96240e6e35628dc6",
-    "dc621297ead0fcdd",
-    "217d34dfcd8e51a6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto lin_desk pretend",
-    "pretend 8s",
-    "goto kev_desk",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "pretend until 3:33",
-    "goto office_door",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "4ac2c0fb001401c2",
-    "26c0b657b9f45fdd",
-    "3562b3a49edb520c",
-    "5abe0583daaadf2c",
-    "caf8e911df0370db",
-    "5325d81bd058534e",
-    "cc94f827e1c32544",
-    "a535ce24b733e5c7",
-    "bacc89785cc3fa05",
-    "bc4271788d88f745"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto hallway_west pretend",
-    "interact",
-    "put boss_desk pretend",
-    "goto boss_desk",
-    "interact",
-    "pretend until 3:34",
-    "sit pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "78e3f46db998ac13",
-    "8383f2e774dc7ebd",
-    "4612a56885540ba7",
-    "e849ad2a31e49b8a",
-    "f5f98fb0d14c8dad",
-    "8f5eb0df314470f9",
-    "3a7e8ea80edc3331",
-    "0a46a63b8c388ef4",
-    "2017ed7e90ff8519",
-    "1cfe8ffb8c5b71fc",
-    "d29ebfa981f8f051"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "goto your_desk pretend",
-    "goto hallway_mid pretend",
-    "pretend 4.5s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "760b4e0ce11fc957",
-    "be1f6de32dbe4a93",
-    "7722c5e9ed4861d1",
-    "b28c7775911dac8e",
-    "a157d5a2d446f458",
-    "6d710dc270df94a3",
-    "ba022c93339fb82c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "pretend until 3:37",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "192593e7337273d0",
-    "d959ff1fe3517a7e",
-    "165eabfadb66eec9",
-    "98a3e7f722bc797b",
-    "c443c128b0cfa020",
-    "923ad64d01b0e2dd"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:39",
-    "pretend until 3:04",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "0dbf3ed77b46c3fb",
-    "22856cfcafcc4512",
-    "9df7884c98dd1208",
-    "be35d54c4b9d03f1",
-    "195df9226c483f8a",
-    "ba84b214402cb08b",
-    "546bf00827ad33a1",
-    "8a13978c944bb1eb",
-    "1438d9e5757067b0",
-    "1ec15a7fddbb36b3"
+    "26963791d87df2a0",
+    "fa1358df240ec479",
+    "42e8799e0c5910da",
+    "e0473825c544949e",
+    "5d067fce09683147",
+    "389d1dbc30f82317"
    ]
   },
   {
    "cmds": [
     "goto boss_desk pretend",
-    "sit pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend 10s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "1f28a3fc8a8b6c99",
-    "f2aff6a576f988f4",
-    "b82c446356be2397",
-    "ed430974b7fa7b29",
-    "a13118c559339bea",
-    "d1ad7221bbe3bf32",
-    "f5663cd17e6814a9"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "blamed kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "96240e6e35628dc6",
-    "557676d69eb0466c",
-    "828c7c4ceea34472",
-    "8af6f26de140f807"
-   ]
-  },
-  {
-   "cmds": [
-    "sit pretend",
-    "wait until 3:15",
-    "interact",
-    "pretend until 3:35",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "61aea8f59f81f23f",
-    "b4c1e0b2ce237c7d",
-    "06850431acdc1b32",
-    "945ea7b59929ec16",
-    "7fbf1c2f4eded4ee",
-    "ce5742a28e669804",
-    "febaeffa83dfeff8",
-    "0b12aa0d1a2503f7",
-    "d0ac9e20a1ad3b23"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "pretend until 3:40",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "3fa26f5b87605810",
-    "e5b42abfa41155be",
-    "10fed19cc9d8c169",
-    "579b612544be83a2",
-    "10b188820998e4d1",
-    "a58ff7d686930cae"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "5c8c61ab78ac053d",
-    "04b270243855d8e2"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
     "wait until 3:33",
     "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aff5016a7c3a3fe9",
+    "8b446f21f433fd1f",
+    "4d8412096052a2bc",
+    "702857cf7552d6ff",
+    "a7d340b3bbd636d2"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:15",
+    "goto kev_desk",
+    "interact",
+    "sit pretend",
+    "goto your_desk pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a89ee964b1a776c6",
+    "01c9265f141de0c4",
+    "25332daa2a0ebe81",
+    "c3ba623831396096",
+    "9a880be61b65c5ac",
+    "489980a706444af5",
+    "6c5540a80144480e",
+    "ddd2097a44ad416f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_desk",
+    "wait until 3:15",
+    "interact",
     "interact",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "bf4d93edbf7a57bd",
-    "d194f21d0e803126",
-    "5085e795bba3031b",
-    "5d9cd6019fea9a9d",
-    "11547a48fd95bfc5",
-    "11547a48fd95bfc5"
+    "f30c0aadf6daba95",
+    "022a82e44e86b785",
+    "e962457be73ada52",
+    "272395c17a75b3dc",
+    "812b219161f46bd5",
+    "d24e74cb40b78764"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
+    "goto hallway_west pretend",
     "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
+    "pretend until 3:20",
     "interact",
     "pretend until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "a4b33fca8cec4ab5",
-    "3a9363b9c9fbf5d6",
-    "5eb50b701c0ac585"
+    "f97355d7f7332e56",
+    "47dc90cef00e0f9f",
+    "19b6046f492d2803",
+    "75390bb7653228db",
+    "01e1e1b1a1ee5591",
+    "b358fafaa60201eb"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine pretend",
-    "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
     "goto kev_desk pretend",
-    "wait until 3:29",
     "interact",
-    "put kev_desk",
+    "wait until 3:17",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "965fed67fd9b0456",
-    "4645cf873ab0bda1",
-    "6edfec4eca857d07",
-    "0fb21676340b6a23",
-    "fae5a2305932dfda",
-    "b49bdd33705a8117",
-    "b5c2c84cddf39756",
-    "18a8a497f3c1f79c",
-    "4077feb2d5ce34a9",
-    "c25b3822f77472e6",
-    "f835251cab6fb954",
-    "751bba77c50c54f1"
+    "26963791d87df2a0",
+    "93d12fae93be72cc",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "748c22c364702e41",
+    "43432b807953f09b"
    ]
   },
   {
    "cmds": [
-    "wait until 3:17",
-    "wait until 3:40",
+    "pretend until 3:24",
     "goto kev_desk",
+    "interact",
+    "put your_desk",
+    "pretend until 3:47"
+   ],
+   "summary": "win kev",
+   "digests": [
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "85b9b763bea3c966",
+    "47d9dd53acb5d441",
+    "8b84e6a7be66630f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_desk pretend",
+    "pretend until 3:33",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aff5016a7c3a3fe9",
+    "f3d798700dc85078",
+    "9cbfcb90dea7497d",
+    "c687e5d93260ad32",
+    "fa19a308d3a5b2ff"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 0.5s",
+    "goto hallway_west pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1dd07d700733de70",
+    "b6cb81d30ea6cdea",
+    "d810a6141589074d",
+    "795d5703788c40d7",
+    "ee50a03d49b19eed",
+    "729f27357e903027"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk pretend",
+    "interact",
+    "wait until 3:17",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "26963791d87df2a0",
+    "93d12fae93be72cc",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "c8934f28efeb6308",
+    "f8ef676d5cf1c23a",
+    "5cd9d22613f161cf"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto kev_desk",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "764729e2882f6283",
+    "e6a5c2f994976437",
+    "96739351cf8fd855",
+    "c6e35e38db1e8e10"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:12",
+    "goto boss_desk",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "727967f56955e6fc",
+    "db9ac42d344b2b60",
+    "a4818ba0d5c6fe96",
+    "777076b24de51f29",
+    "4146c90911dd9922"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:03",
+    "goto hallway_west",
+    "interact",
+    "sit pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d1bafdcbbc132545",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "489a0290d1763b84",
+    "60373a9c0d198082",
+    "4f543aa7af516542",
+    "45fc227121bdc273"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:29",
+    "goto kev_desk pretend",
     "interact",
     "goto hallway_west pretend",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "9c354f630e5aaafe",
-    "c63f48a7c1987a0f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "a559778543eb4b06",
-    "50cb2f5510a4a369"
+    "908927704befd214",
+    "dcc1c6d72a654eb3",
+    "ad3ac242480a8473",
+    "ed3249ba7cc397d0",
+    "bef156cc51f0e19d",
+    "e0a7130e5295287d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "win boss",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "6316c8b62f586128",
+    "a0ee9d4403cb6a63",
+    "fd84ccd93ea39412",
+    "5154aee00bcd7e29"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto lin_desk",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "d2f77d51ced1dace",
+    "f36ed2e4896c26db",
+    "876717a4f97104c4",
+    "060eb38661408a64",
+    "95c608604063b3c8",
+    "c896c70e717fd255"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_desk pretend",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "put your_desk pretend",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aff5016a7c3a3fe9",
+    "c3d26cdb9385b121",
+    "d3dc883f82cf8d52",
+    "7e8faf35889392b0",
+    "624ac6819fbcafe7",
+    "e61e58b84c58d63a",
+    "f41833dd80f80210"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto kev_desk",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "win kev",
+   "digests": [
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "8ebb6c7d4767e63b",
+    "3f8baf85d51e4548",
+    "411c16cefa7d00aa",
+    "b2f86d9ae52b3cdb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:03",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "7d5a863b0a17ca41",
+    "54e61bd0a4d847e7",
+    "99e39901a9756819",
+    "e4100be26ce1515c",
+    "afac2a9eae3a083a",
+    "3d64781e6022bea4"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:23",
+    "goto hallway_west pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "9f87b1b0b6ecd99f",
+    "c43ccfb5217fe7aa",
+    "e4b733f80775e56b",
+    "d81783a4324fa5bd",
+    "b1ee96dc77b63607"
    ]
   },
   {
    "cmds": [
     "interact",
-    "pretend until 3:32",
-    "goto entrance pretend",
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "f278c7efc54fa0c3",
+    "f147d87f22cdec27",
+    "84eb40872b18b3e6",
+    "6802677505866581",
+    "98b4f1369d91efdf"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e8300b836d1daa5d",
+    "70ef4baf8efce7e3",
+    "ff5a2712db1fa034",
+    "b68d8ce3ae154076",
+    "c44498263937bbb9",
+    "7b117ad19609db0a",
+    "0245b5f1fba72da1"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto kev_desk",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "961400b38caef185",
+    "18247e471ef11c83",
+    "f86b0f8b54172bad"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:33",
+    "goto boss_desk pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "32e142ea1c9813f9",
+    "139a700472e053bd",
+    "f482e1f877b8442d",
+    "b2f8ad7c2c02df3d",
+    "7622f90c30eb866d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:36",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2683bb401613a575",
+    "ed5cf196239fbb91",
+    "002ef4c193b377a8",
+    "adfdab455afae00c",
+    "4b805043403b612d",
+    "8d5d93b55c956820"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dc8abc1548193483",
+    "56f2c53c2df0698d",
+    "4cb022d0c6e4b4cc",
+    "2c1332b04b12fc62",
+    "68023530b135e7b7"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 4.5s",
+    "interact",
+    "wait until 3:39",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "4064a273b4ebac26",
+    "16818bbccf7eeab8",
+    "a4746acd2ee5b3d7",
+    "855dbec962fd8cfc",
+    "078a961e415e5183",
+    "8b3db8db57a8eabd",
+    "8b3db8db57a8eabd"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:03",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "7d5a863b0a17ca41",
+    "54e61bd0a4d847e7",
+    "99e39901a9756819",
+    "e4100be26ce1515c",
+    "5339cc2f3a1329bc",
+    "b49fed18dbfbd910",
+    "8ebae912bbc89e38"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:12",
+    "goto boss_desk",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "727967f56955e6fc",
+    "db9ac42d344b2b60",
+    "a4818ba0d5c6fe96",
+    "09d24f685550d2ac",
+    "c334e8291963749c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto hallway_mid",
     "goto lin_desk pretend",
     "interact",
     "pretend 1s",
-    "wait until 3:03",
-    "put your_desk pretend",
-    "goto office_door",
+    "goto boss_desk",
     "interact",
+    "goto your_desk",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c2e8988693dc4239",
+    "4062969f9ae15ae9",
+    "cdc74d92c387d67f",
+    "d257b5ddae5df542",
+    "54ef12f9deb3c49e",
+    "7ee4a7fdf155eacb",
+    "633c7382c91b767a",
+    "ace4530e7892428d",
+    "c463b39288a317b3",
+    "8c698085921be8f6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto entrance pretend",
+    "goto hallway_west pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "d8e8ceb1024c8a17",
+    "e00e0709b4749bda",
+    "1ef91e08fcaae70c",
+    "5e2e59b0fe370cf7",
+    "40dcbd083b7c6206"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto lin_desk",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "d2f77d51ced1dace",
+    "f36ed2e4896c26db",
+    "876717a4f97104c4",
+    "060eb38661408a64",
+    "3fd5d0b716681b04",
+    "e5dc38b0e7aec3af"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:10",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "a726c7510c4cb096",
+    "5671faba631bef5e",
+    "06634359e8fb1a26",
+    "622cb091642e8681",
+    "622ae69f1fdca2f9",
+    "320f709447b13fcb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto boss_desk pretend",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "put boss_desk",
+    "interact",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "4040145a291282a6",
+    "e4b07981ba0e6f6b",
+    "b3bcbea90daeb873",
+    "9c7726aab99d3fde",
+    "f506710ee2fc086f",
+    "899f144aacf09c1a",
+    "95911e4a975869e0",
+    "fd35fc60c6c8324e"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "win boss",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "6316c8b62f586128",
+    "a0ee9d4403cb6a63",
+    "9c39f7b72700773f",
+    "e2b36d4618c011eb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto boss_desk pretend",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "interact",
+    "put boss_desk",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "4040145a291282a6",
+    "6322b9ea809a7425",
+    "cb79e5a785897e7b",
+    "efd23138cbec873b",
+    "a954aa25eeef966e",
+    "ed850adbf408e6d0",
+    "5dec5de781c47c81",
+    "5337b497c25df4cc"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "win lin",
+   "digests": [
+    "dc8abc1548193483",
+    "56f2c53c2df0698d",
+    "4cb022d0c6e4b4cc",
+    "6945f88839aed719",
+    "c2d64255f9fb8bd0",
+    "c68935d871c0b7d5",
+    "aba35c8f9a64c378"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "6316c8b62f586128",
+    "a0ee9d4403cb6a63",
+    "6803ee61604f3215",
+    "1819956f76287abe",
+    "7ccb35cbdda5ae84"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dc8abc1548193483",
+    "56f2c53c2df0698d",
+    "4cb022d0c6e4b4cc",
+    "ac5b4664509266fe",
+    "05bbf384fb9c7f00",
+    "729f27357e903027"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto lin_desk",
+    "goto hallway_west pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "6d5e601bd36f433f",
+    "83fe3afec6461c07",
+    "4326036208dfe2a1",
+    "12ff40f4d27f1adb",
+    "8442c6deb619a324",
+    "21e32e62505d46fa"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "win lin",
+   "digests": [
+    "dc8abc1548193483",
+    "56f2c53c2df0698d",
+    "4cb022d0c6e4b4cc",
+    "6945f88839aed719",
+    "c2d64255f9fb8bd0",
+    "8c2c8ac0fea57c1b",
+    "bf77a10ab3f6f003"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 0.5s",
+    "goto hallway_west pretend",
+    "put lin_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1dd07d700733de70",
+    "b6cb81d30ea6cdea",
+    "c2f73156a45f3a7f",
+    "d688ca02b772b162",
+    "83d9ec1aac9380d7",
+    "0c76e3d5127a4579",
+    "b1e8430a32dc31a2",
+    "a312bb94e8bdb7bb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk pretend",
+    "interact",
+    "wait until 3:17",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "26963791d87df2a0",
+    "93d12fae93be72cc",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "c8934f28efeb6308",
+    "d286149695afacde",
+    "748c22c364702e41",
+    "43432b807953f09b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto kev_desk",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "ef3657b59c3b0209",
+    "3ac6504d9c8f2bde",
+    "f13599e5f60fa37d",
+    "a986c45b070faa23",
+    "69c90dc449589909"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "pretend until 3:18",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "056ff011f8b1195f",
+    "8468b0a7136ff3df",
+    "576ef8c5f391eec2",
+    "563e9854c591f4cf",
+    "1aed6c1e14149680",
+    "96859a814fb71f42",
+    "6231ccc82ac3ed2f"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "pretend until 3:34",
+    "goto hallway_west pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "c6837feda46e959e",
+    "3cdbd92046bd53dc",
+    "b67c02edfced191f",
+    "2f7c78f59fe8373f",
+    "d53d1b148bd3311d",
+    "d4530756e8f70c29",
+    "ab06ea3f3d56e985",
+    "eacf0172b24be145"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "goto lin_desk",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:08",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "33944a73acf4278f",
+    "3975bbb06743722d",
+    "86cd371df8242a9a",
+    "0a03b3c25110cd84",
+    "3976836b773df850",
+    "3c68e3a11087d685",
+    "36637fe3c880a7fa",
+    "428624748106ea44"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk pretend",
+    "wait until 3:17",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "26963791d87df2a0",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "c8934f28efeb6308",
+    "d286149695afacde",
+    "748c22c364702e41",
+    "8d945c44a1673142"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "9814a6456f6929fb",
+    "e83628cf1d414f44"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:10",
+    "goto hallway_west pretend",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "186a8e4444a918c4",
+    "885d70b51e2eb2df",
+    "a0ba94486ae0b42f",
+    "5662812112b5c644",
+    "52d02fef39f46220",
+    "b8fa6158197dd52c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto kev_desk",
+    "interact",
+    "goto hallway_mid",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "8ebb6c7d4767e63b",
+    "86dc02a703c25168",
+    "7a6ea2200ff45131"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk pretend",
+    "interact",
+    "wait until 3:17",
+    "interact",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "26963791d87df2a0",
+    "93d12fae93be72cc",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "c8934f28efeb6308",
+    "d286149695afacde",
+    "6433b1280c2b3357",
+    "3a191a226d6c2ef2",
+    "664e7d6fdc631ccd"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "goto boss_desk pretend",
+    "pretend 1.5s",
+    "interact",
+    "goto my_seat",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "908927704befd214",
+    "dc8ac1c22ed5fc15",
+    "e57f2f47c2b2f9bc",
+    "2addd7d969f39ef2",
+    "dd6d0fa24bd27b62",
+    "9ff7dbba90b83cab",
+    "d183933180972e95",
+    "2c48cb608a8de068"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "056ff011f8b1195f",
+    "bfbea12da6e9a9f8",
+    "ddbc190c8922aeb5",
+    "2d4af010cbe8a9e5",
+    "4247068ce68e9e82",
+    "b18a7caf8db13f26",
+    "b48ff55ef84b50d7",
+    "f36af5d54d1641d0",
+    "abcb5cb58f182ff3",
+    "173892f90839bdfb",
+    "721513fc02698dc9",
+    "2bd12689c8de2f9a"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "goto lin_desk",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "de63c81a907e9095",
+    "c5a83d9499718fbb",
+    "38eef1a1b4cdbc9e",
+    "054bb33e3c447539"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto boss_desk pretend",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "interact",
+    "put boss_desk",
+    "interact",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "pretend until 3:41",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "4040145a291282a6",
+    "6322b9ea809a7425",
+    "cb79e5a785897e7b",
+    "efd23138cbec873b",
+    "a954aa25eeef966e",
+    "9ac3dde14b969f4f",
+    "ff1bbd717d10ad06",
+    "ee5029cedebabae6",
+    "d3722b27dab024e3",
+    "f897a72870d29b45"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto lin_desk",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "f7b7a1e35c24ed70",
+    "ee1c95d51d224539",
+    "bef3f1cf4a341326"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto hallway_west",
+    "wait 5s",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "goto kev_desk pretend",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "73625df91499c048",
+    "bc235cb4ee06fe99",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "3e1b1add4dcec136",
+    "bc8f169825466bbd",
+    "052ba489f54b589b",
+    "060260e8ed8f25c0",
+    "19727cc1b7c232e3",
+    "59af25e2d5ed0cc0",
+    "45565af66ca390c3",
+    "8f7118a2b54d04ca"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "sit pretend",
+    "goto kev_desk",
+    "interact",
+    "put your_desk pretend",
+    "sit pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "161b044bd583f50b",
+    "6f972bcab7ee4443",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "75dd2b722b44d913",
+    "98dd468f269ac9c6",
+    "a7f84b0b7c001991",
+    "6fc3dc67e6a11c88",
+    "3e8821cbb83b507c",
+    "f43c1f45a304ae55"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "sit pretend",
+    "pretend until 3:19",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "056ff011f8b1195f",
+    "bfbea12da6e9a9f8",
+    "ddbc190c8922aeb5",
+    "2d4af010cbe8a9e5",
+    "4247068ce68e9e82",
+    "b18a7caf8db13f26",
+    "b48ff55ef84b50d7",
+    "4a49042bef5b8cb0",
+    "3364b7106368bffc",
+    "824d2962a7ba58a1",
+    "95b3873951d64860",
+    "c6e784d8bfb358f7",
+    "5268ac5850b012e1"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "pretend until 3:35",
+    "goto hallway_west pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "goto kitchen",
+    "pretend 3s",
     "pretend until 3:47"
    ],
    "summary": "blamed lin",
    "digests": [
-    "1935647033e401da",
-    "38850fc247d8c843",
-    "95cc31ab4096227e",
-    "a217966b6e2f0c23",
-    "685bbc75f6f5da39",
-    "68a77a8f9967cb17",
-    "f2dddd570a07c641",
-    "2048177b22fef2a1",
-    "78d0d4deb5355007",
-    "1430a23e2c482d11",
-    "13cd2f43590d941c",
-    "0ad125d5f29df013"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "02718588fb2f4a3d",
-    "c10b2e07983f1cc8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto boss_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "1041961be202cd23",
-    "421602018ee5d40b",
-    "4e918426dd5feb23"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:13",
-    "goto hallway_mid pretend",
-    "interact",
-    "put kev_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "38d05d3d46e3a00b",
-    "acd6645e914c0d55",
-    "30821c7421e3eeb6",
-    "da02dd4cd2de686b",
-    "ac57caaea403d5d0",
-    "e60783d8ffcbe410",
-    "55246f895fa886cb",
-    "2f92d601da1b4858",
-    "6adf452a54f0a945"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "goto hallway_mid pretend",
-    "interact",
-    "put kev_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "b9ce81bceefb596f",
-    "15f8fa2c6514a0cc",
-    "2f82eadac220442a",
-    "e48ba4cccb6c6eb6",
-    "7b6bdf2cc1df07e8",
-    "966d0c5e811077ee"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "interact",
-    "goto coffee_machine",
-    "interact",
-    "goto entrance",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "785fcbaff695f724",
-    "e11a67797ab72144",
-    "d80cdee7e08fb811",
-    "03fad6992709a4cf",
-    "837c6d86ac5f3eb2",
-    "d5d5a249d4b59b91",
-    "0b1200e99e7f4d79",
-    "8b0f4c1f13cbe395",
-    "966d0c5e811077ee"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 9s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "5bc24b369bd45b93",
-    "04f1b4520c8a40ff",
-    "b39c97d8358de60e",
-    "de9e29e7351d6aac"
+    "13f4469e232d38e7",
+    "f278c7efc54fa0c3",
+    "f147d87f22cdec27",
+    "84eb40872b18b3e6",
+    "d982af3f4c70458a",
+    "bc0beab0132c811c",
+    "1652080f64801be0",
+    "b8a24b4d1f996d0f",
+    "03f753069875be3c",
+    "55c6aa3a8f2f8c5a"
    ]
   },
   {
    "cmds": [
     "wait until 3:15",
-    "interact",
     "goto kev_desk",
     "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "05a2457c5f2e1e13",
-    "06850431acdc1b32",
-    "8635556afa0a7ef0",
-    "da497bcd790537e7",
-    "13871d0f9720246b",
-    "1509befc5989b560",
-    "899e259c3710f622"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "920132a77164855c",
-    "52350c60620cdea6",
-    "fe1cbc9b0aedfcee",
-    "21d4b4d82e606952",
-    "203173b2cb432470"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "pretend until 3:41",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "ca27de4766cadf8d",
-    "22f58dd848ce41b2",
-    "a2b12559a1e5e13f",
-    "1f90fdab1a081217",
-    "96c7e74baa372239",
-    "d826934139ee99d5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:14",
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
     "sit pretend",
-    "wait 0.5s",
-    "goto lin_desk pretend",
     "interact",
+    "goto hallway_west pretend",
     "interact",
-    "interact",
-    "sit pretend",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "73908a224ff8db2a",
-    "734a62b5e602c08f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "454466ed665fe323",
-    "e5e56350aa57b616",
-    "c1aec4a4e78f3081",
-    "72f2fea1810ba445",
-    "aa31b3e9544d0297",
-    "382a9da90d146bde",
-    "a6fcfdf76f57afa0",
-    "a6fcfdf76f57afa0",
-    "a6fcfdf76f57afa0",
-    "a6fcfdf76f57afa0"
+    "a89ee964b1a776c6",
+    "01c9265f141de0c4",
+    "25332daa2a0ebe81",
+    "c3ba623831396096",
+    "718a59ff96e59f8b",
+    "86235f9ec2cc5900",
+    "bf1075ec014c55a2",
+    "cb7cec137347cf5b",
+    "776448275fca0120"
    ]
   },
   {
    "cmds": [
-    "interact",
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
+    "wait until 3:36",
     "pretend 1.5s",
-    "put your_desk pretend",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "c862ed42489cd80d",
+    "ccd334dc1cffec2d",
+    "89310fb52375d24c",
+    "4388c9b7dc3668b6"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:10",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "1935647033e401da",
-    "38850fc247d8c843",
-    "95cc31ab4096227e",
-    "a217966b6e2f0c23",
-    "685bbc75f6f5da39",
-    "68a77a8f9967cb17",
-    "ca65ccdbbc6c6999",
-    "f28d780930bd94dd",
-    "6e1d0ad205b42317",
-    "c59c8ab9b36feea7"
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "a726c7510c4cb096",
+    "5671faba631bef5e",
+    "d1c9e48788498c1d",
+    "3ab5d9a5ea4416ea"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:06",
-    "goto office_door pretend",
-    "wait 6s",
-    "interact",
+    "pretend until 3:08",
+    "goto kev_desk pretend",
     "goto boss_desk pretend",
     "interact",
     "interact",
-    "interact",
-    "put kev_desk pretend",
     "goto lin_desk",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "0be6eca27c720c4e",
-    "db79f7b9c940b65b",
-    "a3981387a59c4ed1",
-    "186f6d1cf793ee9d",
-    "2c79996261cf7e66",
-    "98093660e2605b97",
-    "91efd5d9c0bc5b03",
-    "4699d05b0b4c8afe",
-    "3d1b01001dbd7b6b",
-    "ebef8076ae9ed0e5",
-    "f31722b845c59994",
-    "afa63f7b5859de82",
-    "111976896e1d7341"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "29a5855847c19c96",
+    "ae17f7ebee77f48b",
+    "6b2ef61019c8b769",
+    "b95946ef36779ef8",
+    "7af25d51abfe9bfe",
+    "9f2d7d2a6caa6237",
+    "8990b651213c16de"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
+    "wait until 3:10",
     "goto boss_desk pretend",
     "interact",
     "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "put your_desk pretend",
+    "put kev_desk",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "edeeb8146ef4073e",
+    "fa6e0e990844f7cf",
+    "61905e40a0256372",
+    "34d240a6fc057c4f",
+    "a49a9114b458773b",
+    "d9a019582bdff394"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "cc64115d05ae92fb",
+    "0c33037754efe72d",
+    "678efedbb8f1a00e",
+    "dbe499544772886c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "63a594c2132dba00",
+    "4498f78d502f7fba",
+    "065580a322ba2cee",
+    "9dfd363203b0295b"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "put boss_desk",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto my_seat",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "3f1ff3e278193978",
+    "9c4b088f11a99741",
+    "a90ed61e9d6abd3f",
+    "4376f8d39563a01d",
+    "ec85a0d7e2e134c1",
+    "025652b65b0d62a5",
+    "4f1c27e631049a38",
+    "c219ab16e4b1e3f9"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
     "goto hallway_mid pretend",
     "interact",
     "interact",
-    "pretend until 3:47"
+    "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "c3535acd9cdc5369",
-    "0be7a7b5daa551c1",
-    "6f0c3c3bf7123dcb"
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "6316c8b62f586128",
+    "149c4fe8834c1666",
+    "a84f02093d5c2299",
+    "f2fa42125ed132a3",
+    "cd26eac3f6532bf0",
+    "aae3ebf42464d8d4"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
+    "pretend until 3:24",
     "goto kev_desk",
     "interact",
     "goto hallway_mid pretend",
-    "goto lin_desk",
-    "pretend 4.5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "969c0c615c16c120",
-    "ca617099c0be285c",
-    "8c1c76819e2cbbd3",
-    "573dc865ff4c5293",
-    "5f50520461453e29",
-    "ad708ef5647baabf",
-    "ebf94452c38265de",
-    "4758a9d70329f7dd"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:06",
-    "pretend 8s",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "wait 0.56s",
-    "interact",
-    "interact",
-    "goto lin_desk pretend",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "0be6eca27c720c4e",
-    "916e5ab9ce5f5300",
-    "ebc40a011ab661e9",
-    "383d84af7544b757",
-    "fee3a18275076678",
-    "6cc6af14079f0aba",
-    "9bfd5eeeff2cd95e",
-    "59d4848ae33fc627",
-    "c3101c3a6a7f7fb9",
-    "c440527527730137",
-    "e3d1322e02a71dd5"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
-    "goto kev_desk pretend",
-    "wait until 3:29",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "put boss_desk",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "9824453a8e946b76",
-    "2012fe1aec71197a",
-    "4b70f43542262f12",
-    "7f971051ea478858",
-    "9ea6b9f7a5762a0a",
-    "c7e0dbade3759467",
-    "017aced023fc60be",
-    "5c1cb5683215a126",
-    "0393cd46eb30eddd",
-    "eadfb0100e2a9595",
-    "41419aeba4e61f24",
-    "41419aeba4e61f24"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine pretend",
-    "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "wait until 3:29",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "965fed67fd9b0456",
-    "4645cf873ab0bda1",
-    "6edfec4eca857d07",
-    "0fb21676340b6a23",
-    "fae5a2305932dfda",
-    "b49bdd33705a8117",
-    "b5c2c84cddf39756",
-    "18a8a497f3c1f79c",
-    "4077feb2d5ce34a9",
-    "786a61f1af816332",
-    "a903964677f0cf40"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto hallway_west pretend",
-    "put boss_desk pretend",
-    "interact",
-    "goto boss_desk",
-    "interact",
-    "pretend until 3:34",
-    "sit pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "78e3f46db998ac13",
-    "cf59e5a05cf8ab84",
-    "ecbc28e7cfef5b61",
-    "e849ad2a31e49b8a",
-    "f5f98fb0d14c8dad",
-    "8f5eb0df314470f9",
-    "3a7e8ea80edc3331",
-    "855bf80e2fa5511b",
-    "6f6a2dee4f0dafd8",
-    "f1c670e2d38a67d9",
-    "69d6bf5081e55f2c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "pretend until 3:37",
     "interact",
     "goto hallway_west pretend",
-    "interact",
-    "interact",
     "pretend until 3:47"
    ],
    "summary": "blamed kev",
    "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "b583e59710b035a4",
-    "94dc144ebba8aa28",
-    "00742234c693d46d",
-    "537da9a35ee3991e",
-    "018c80fadf239066",
-    "2dfdff98a0e9f96e",
-    "a9c4ef0bb21046ab"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:39",
-    "wait until 3:44",
-    "goto lin_desk pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "0dbf3ed77b46c3fb",
-    "8a7e83780c180830",
-    "532e72d20875cdd5",
-    "3d49a304ee4f98dd",
-    "62d9eeb9d67ae912",
-    "78e196f812c4ca90",
-    "03d5478d67d46b58",
-    "bedd35202d7b7f2f",
-    "060765a0fba300dc",
-    "13d7793dcab135a0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "920132a77164855c",
-    "52350c60620cdea6",
-    "fe1cbc9b0aedfcee",
-    "2618299e2389bd96",
-    "90499033f5678b0a",
-    "1e753e85ee3cfa08"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "c3535acd9cdc5369",
-    "48288af9aa08a3d6",
-    "1e753e85ee3cfa08"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "goto boss_desk",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "1714eeca56e7000f",
-    "8538197106f0dd46",
-    "f9bfa03b743075df",
-    "0b9a6739450c1fb9",
-    "1e33f31ac694347a",
-    "0f58b60337265749",
-    "b19ad99b65fedcb6"
+    "161b044bd583f50b",
+    "f68d20834194ee87",
+    "92e5eeef8fa59976",
+    "ef3657b59c3b0209",
+    "3ac6504d9c8f2bde",
+    "f62c6d19d7cccf46",
+    "e0ce34baa55f6374",
+    "df0d315b1dfea532"
    ]
   },
   {
    "cmds": [
     "goto kev_desk",
-    "goto coffee_machine",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "wait until 3:21",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "056ff011f8b1195f",
+    "bfbea12da6e9a9f8",
+    "ddbc190c8922aeb5",
+    "2d4af010cbe8a9e5",
+    "4247068ce68e9e82",
+    "b18a7caf8db13f26",
+    "2f9d9f9324e2e8f8",
+    "6b004e6475e1c317",
+    "b26015b54deb4eb1",
+    "0239b062be33de05",
+    "374003a91c9efeaa"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
     "goto boss_desk pretend",
     "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "e73ce794a1a0e210",
+    "010d1a46af07d069",
+    "d24e74cb40b78764"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
     "interact",
     "goto hallway_mid",
     "interact",
-    "pretend 4.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a0b4df0aecaebb00",
-    "dc37d4442e940e92",
-    "46b78a896633bf44",
-    "5402e6be128e8728",
-    "60d07db350707ca5",
-    "5725c82e1190ff1c",
-    "d1510c941e6c3b8a",
-    "9bb5da1edf5965d0",
-    "b9bb2d7257e49559",
-    "5003b2e13cac7ebb",
-    "23d19efd7d7c3154"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "pretend until 3:35",
-    "pretend until 3:33",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "0b536feba77e7d7a",
-    "929ad3faf34136c3",
-    "248ce0931066ef41",
-    "28255dfba9f7f5be",
-    "86582a1f5da679ac",
-    "cfa8324d4a7a9c5d",
-    "03384a5194a48b03"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "wait until 3:33",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "dbe23a91d2e66308",
-    "548fb50d55af7ba1",
-    "dcb99be5d9e5b01c",
-    "b92f050f73370fff",
-    "48259de4f4cad00b",
-    "a993c7d409f1c3e6",
-    "2a428da73fcf9dd4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
     "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 2s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "920132a77164855c",
-    "52350c60620cdea6",
-    "f3ed443769e9c3c3",
-    "fa9750677c827264",
-    "ac2af5f163d9fd9c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "interact",
-    "goto boss_desk",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "640f3fa345896d9c",
-    "a2f2e7f90f917930",
-    "934d95d478dfdb3b",
-    "079ac74f7450e07f",
-    "6caea3f8fdab7f0d"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:01",
-    "interact",
-    "pretend until 3:41",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "put your_desk pretend",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a1f5acc01221e107",
-    "3eec7c1a2cd1c4ef",
-    "ce5901fdad14f462",
-    "49e63bd076803cb7",
-    "863281ec6e47d197",
-    "47af49b4546be57a",
-    "056f36ccc3d16c09",
-    "6f45d89acfae320f",
-    "a041aea17f282062"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:24",
-    "goto hallway_west",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "72332f69a7fec8f9",
-    "356c5085e14bf17c",
-    "126379dcbf7038d3",
-    "506df25a49564563",
-    "959ae76960f4fdb2"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "c907278185debddb",
+    "a45d826c6144d7c7",
+    "728438cbc035c4cb",
+    "a44c24996f8c5722",
+    "c4f4a3bc5e84d3bd",
+    "b55f0f822837b47a"
    ]
   },
   {
    "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 3s",
-    "goto boss_desk",
-    "wait until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "1714eeca56e7000f",
-    "8538197106f0dd46",
-    "6b20da114dc66e2b",
-    "ad51e0f3cb60a9b5",
-    "cfca6790e2f18db3",
-    "d379a9cd1062517e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 9s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "a4b33fca8cec4ab5",
-    "3a9363b9c9fbf5d6",
-    "e5f554941d74ab76",
-    "4212ba21f2fd40d0",
-    "23d19efd7d7c3154"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend 0.5s",
-    "pretend until 3:39",
-    "wait until 3:44",
-    "goto hallway_west",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_mid",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "8828968880724461",
-    "15d1c7780d895e74",
-    "8a7e83780c180830",
-    "d5f4c70c3a2737cc",
-    "cf94e61a18388211",
-    "5fd3f287d2b58654",
-    "ac14da217c12f01a",
-    "e473a784ea629a81",
-    "dc020e57d5d91b95",
-    "c49e9f17cff59ae6",
-    "910adb59a8d384ad",
-    "82827f70cd79e544"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto boss_desk",
-    "pretend 8s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "785fcbaff695f724",
-    "96d61dfe7c0527fd",
-    "8ec77b58da1a2bab",
-    "16299981bc39755d",
-    "c210cd306b347256"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "9f5429ff7389f1d2",
-    "f5eb8677672a95ea",
-    "e6a76aa7b7624e17",
-    "ee21a360815e1a57",
-    "3e678f5255c15d4e",
-    "68439aa5e46b86ba",
-    "90499033f5678b0a",
-    "1e753e85ee3cfa08"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "e8df1b3e34a00360",
-    "5d0ee8992de2cd97",
-    "8b9505c05c804575",
-    "abc85d48b72588b8"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "put kev_desk",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "put kev_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "blamed kev",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "f833e80447ca9a01",
-    "c7ee761d655f9983",
-    "0c978bf2609da49e",
-    "a2e779abdf9526a9",
-    "05089a7a923c2c7a",
-    "48930d4519c39967",
-    "7fa82b4d56ec36ee",
-    "3c59e0ff2ecead4f",
-    "ab53d7758832a38d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "sit pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend 5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "1f28a3fc8a8b6c99",
-    "f2aff6a576f988f4",
-    "b82c446356be2397",
-    "50392c18fa52632d",
-    "9ef5192ab6b4432f",
-    "0fe8b4ccd24c2e18",
-    "2a91b8acf923bd3b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto hallway_west",
-    "wait until 3:27",
-    "pretend until 3:36",
-    "interact",
-    "goto coffee_machine pretend",
-    "interact",
-    "interact",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "68d0ef20ad59543a",
-    "741134a1ca8e41c0",
-    "a82a81fc16feec2b",
-    "c7e073c8946ca497",
-    "5b55d61ce0d643f4",
-    "edcda6592957f352",
-    "a30b7ca64db3cc41",
-    "1414ec30417779b7",
-    "b7c9056fae415721",
-    "b7c9056fae415721",
-    "b7c9056fae415721"
-   ]
-  },
-  {
-   "cmds": [
-    "put your_desk pretend",
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1935647033e401da",
-    "730c58a7b1478fb0",
-    "73681836dccea599",
-    "a62feaffcd3fc242",
-    "619be3d35ed772d1",
-    "ca34b73ecea0c8ce",
-    "25d5b011a1dc1796",
-    "ae2afc9df638bd61"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 3:40",
-    "interact",
-    "interact",
-    "wait until 3:30",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "bbc027c9536d008a",
-    "aae249ec76311c9a",
-    "5eec23f08b78843d",
-    "92a641be650dc426",
-    "777fc291eacd481f",
-    "4acc06c98792684f",
-    "4acc06c98792684f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "41aaa074a7a2bdbd",
-    "2979f080b4034ae0",
-    "e1c40422f1628f8d",
-    "2d46eaa3c02c1012",
-    "e680d7d6be35ca2d",
-    "710b7dae119e5f80"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend until 3:19",
-    "interact",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "ee0626410287ae54",
-    "561b1bd119921eb9",
-    "8fe82e44544398a9",
-    "f65142041b5652e0",
-    "8112207267f8bd9f",
-    "186d7c6f19d4206e",
-    "d70ea9f5bf3acec8",
-    "52f445c487906f5a",
-    "6c72021e3b2b6218",
-    "98f5bdafacc76232"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "pretend 6.75s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "760b4e0ce11fc957",
-    "be1f6de32dbe4a93",
-    "b8c599bd9c7f5ca6",
-    "40b0bfd1666519fd",
-    "9974a3e4cb3e99b5",
-    "611d4aa169aa8915",
-    "e16ebd6eebd55c46",
-    "f87df52cc9c46edf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto hallway_mid pretend",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:27",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "bbc027c9536d008a",
-    "a2e4c2d6be373ab9",
-    "820e916e1f41714d",
-    "e9cac348e88a79ed",
-    "d146d823f994014b",
-    "712306fc5c6b88fd",
-    "fcf375e97cf0ee0d",
-    "d2186aeda1d46183",
-    "937bafc75a13b075"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto hallway_mid pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "cda88ba3d6acbee2",
-    "a1b7b9ced1f17984",
-    "47b9d0ef8865fa8b",
-    "96b6541b268699c5",
-    "5134b49bc7d2979f",
-    "97d59c733868c8a7",
-    "52567f8cbae9af61",
-    "b6618bb872806f40",
-    "ada773c048053da7",
-    "26aebe6bd981b759"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "wait until 3:14",
     "pretend 1.5s",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "put kev_desk",
-    "interact",
-    "put your_desk",
-    "interact",
-    "put lin_desk",
-    "interact",
-    "goto kev_desk",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "97f24af4ef5b0c7d",
-    "725922d60436554b",
-    "185d82d4a6177399",
-    "c76649add77ffcdd",
-    "30bc78703ae8c2f8",
-    "dcc7f6c98fcae20e",
-    "a8f7ac477aa87cba",
-    "2972ad72073d16fc",
-    "415a5d79af164404",
-    "8b3f78d1d52eb4aa",
-    "e0d7b56c2f46e534",
-    "1b58527c061035b7",
-    "1b58527c061035b7",
-    "1b58527c061035b7",
-    "1b58527c061035b7",
-    "1b58527c061035b7",
-    "1b58527c061035b7"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "pretend until 3:35",
-    "wait until 3:33",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "interact",
-    "goto coffee_machine",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "5094062fbf60326f",
-    "0b536feba77e7d7a",
-    "a474d567dae87387",
-    "da6032e5b95e736c",
-    "4bcda4f769664625",
-    "c31cdf33816e7103",
-    "2dce2c909d50f797",
-    "76db005b40184b4d",
-    "c5e69051672a1f3c",
-    "e39c862291e5cfa4",
-    "fa85bb70c1f4af2c",
-    "4516bc0129420187",
-    "88060ec0d7b97cac",
-    "192c37724967cb43"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "wait until 3:32",
-    "goto entrance pretend",
-    "wait 8s",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend 1s",
-    "put your_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "1935647033e401da",
-    "1eda872a5d283d73",
-    "58326bb5ed8be4f3",
-    "4c93a036cfe51a5a",
-    "aec44e4539d48968",
-    "9f23e04f8054fb40",
-    "79c2494bf1807050",
-    "be49f888bb613d49",
-    "5dd08d177caa23fb",
-    "b1ef29f7c7ac23ea",
-    "bb52e2daefebc0d3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "wait until 3:06",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "f1feecae0a8241b5",
-    "844212f575118bfd",
-    "0b0cbc72fae2cc81",
-    "d5cb6c446c7a655a",
-    "52d1711301b179d4",
-    "126f093dd43e442a",
-    "55aff4d02d514521",
-    "5642c53de1aa6921",
-    "1388bcffffe529f0",
-    "c273077224d4d710"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "interact",
     "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
     "interact",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "1df649b6dafad1cd",
-    "631c6f9dbabe4009",
-    "d3d62ba6afdbce11",
-    "a9084ac699366ec7"
+    "e8300b836d1daa5d",
+    "70ef4baf8efce7e3",
+    "ff5a2712db1fa034",
+    "b68d8ce3ae154076",
+    "c44498263937bbb9",
+    "9ef4098882eccc4f",
+    "92cd36630eb333f2",
+    "585c7ba6fb9409fb"
    ]
   },
   {
    "cmds": [
-    "goto entrance pretend",
-    "put your_desk",
-    "goto hallway_west pretend",
-    "interact",
-    "put your_desk pretend",
-    "goto coffee_machine pretend",
-    "pretend until 3:22",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "06a17ff3b8ca9409",
-    "505747cb8193af65",
-    "d2a0e6f0a983606a",
-    "6cc6ddf48c8371af",
-    "5715ca3ee5f3acee",
-    "e2047ea944d317e7",
-    "c2d2ac55a3c8e71c",
-    "ebc5abcf0ec9a2d2"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend 0.5s",
-    "pretend until 3:39",
-    "wait until 3:44",
-    "goto hallway_west",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "8828968880724461",
-    "15d1c7780d895e74",
-    "8a7e83780c180830",
-    "d5f4c70c3a2737cc",
-    "cf94e61a18388211",
-    "5fd3f287d2b58654",
-    "ac14da217c12f01a",
-    "e473a784ea629a81",
-    "810db31c8343d02c",
-    "85c06284738a2480",
-    "50625351a1fc04a8"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "put kev_desk",
-    "interact",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "interact",
-    "interact",
-    "put kev_desk",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "ad11be99c0439a20",
-    "a38111e4abeaf06a",
-    "e91338215d9865f3",
-    "faa243ce28783899",
-    "f8d8b7209375a8a5",
-    "2dde72d8b646fa33",
-    "d54a1a070cfc0c54",
-    "71e7e5dc2e903192",
-    "fa2dc122299aa657",
-    "c8592678f609d9cd",
-    "c8592678f609d9cd"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend 0.75s",
-    "wait until 3:03",
-    "put your_desk pretend",
-    "pretend until 3:45",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "win lin",
-   "digests": [
-    "9824453a8e946b76",
-    "39b6302f81790994",
-    "6ce75dd767ddb34c",
-    "3ee353942e53b0a7",
-    "7719dff8595bd0cd",
-    "457dbf8d1d1ccab8",
-    "97856fdf572a5472",
-    "0475bd9bbba39444",
-    "ea95b77c8966570a",
-    "6e5576ef02de645c",
-    "ec4131e16cf41027"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto your_desk",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
     "pretend 3s",
-    "goto boss_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "bdf4a00a1be3b0dc",
-    "359517531cc9eabb",
-    "eac3b3e34e09ac85",
-    "81586a55de5db56f",
-    "9ac0a2834a769be9",
-    "1487948f0444126c",
-    "3fd52ab3af11e76d",
-    "413fec3ca6b84343",
-    "6fc70c48f49b0132",
-    "90a61cc7b8adffaf",
-    "672d60e85e0f4b59"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
     "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
     "interact",
     "goto hallway_mid pretend",
     "interact",
-    "pretend 6s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "920132a77164855c",
-    "52350c60620cdea6",
-    "fe1cbc9b0aedfcee",
-    "2618299e2389bd96",
-    "a4dc1f4482afb17a",
-    "c99fdd31da0c703a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "interact",
-    "interact",
-    "put your_desk pretend",
-    "sit pretend",
-    "interact",
-    "pretend until 3:15",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "dc8e4ff88879293b",
-    "7a99db75a68f68fd",
-    "17db0f681b9edb9a",
-    "102effcb6167f575",
-    "4e53908295c4ff2b",
-    "c8bca8b69be7a426",
-    "c03c22e9617efd2b",
-    "f5deb97d23d34036"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4.5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "e8df1b3e34a00360",
-    "5d0ee8992de2cd97",
-    "718067a53052ee21",
-    "487f456e44ec3b64"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto hallway_mid pretend",
-    "pretend until 3:37",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:27",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "bbc027c9536d008a",
-    "a2e4c2d6be373ab9",
-    "69b43790c1720ceb",
-    "4ca016a8448f6221",
-    "bed9d2cbfc5aa627",
-    "06f9239035d25a46",
-    "1d57989f0ce50885",
-    "8f46f193644169bf",
-    "8f46f193644169bf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kev_desk pretend",
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "pretend until 3:35",
-    "wait until 3:33",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "goto boss_desk",
-    "interact",
-    "interact",
-    "interact",
-    "goto coffee_machine",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6dd21e0a6791a46e",
-    "7e25f30627b0c5e4",
-    "a5c6ec2ace9afc38",
-    "039fe7b120d730d8",
-    "6b8a492a29d821ff",
-    "16bb3f262ec4e5c3",
-    "6789a65991ba6c62",
-    "04afe1d61b988c24",
-    "cf89d6529479164d",
-    "ae7ddf71752fad14",
-    "29afd6845ffeb912",
-    "e7a00aeb147b97b2",
-    "1a7bef88fdaa89f3",
-    "074a82184748c811",
-    "2abdfde17e7d500e",
-    "c25cd1211d902715",
-    "6da85bff6b8afdb4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine pretend",
-    "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "wait until 3:29",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "965fed67fd9b0456",
-    "4645cf873ab0bda1",
-    "6edfec4eca857d07",
-    "0fb21676340b6a23",
-    "fae5a2305932dfda",
-    "6f5b35c4145d971f",
-    "647ddb94f59bc81e",
-    "5b867e9bf2469257",
-    "bfc06b5fa4c0c027",
-    "66f91a5e7b8feb8b",
-    "f71133fae81491a0",
-    "9c9f22a38a09a722",
-    "c5ae9c1776292bba"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "wait until 3:35",
-    "put your_desk",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "pretend 6s",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "2b1e9440c7f13b03",
-    "45101c7906c29dfc",
-    "db15755f12f1826b",
-    "f0168266600d85b7",
-    "a04b1384afe9723b",
-    "a04b1384afe9723b",
-    "a04b1384afe9723b",
-    "a04b1384afe9723b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 3s",
-    "goto boss_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "4042d795dd0907be",
-    "9f9d394fb8de3e27",
-    "323a61a1d37d7137",
-    "9aecb2c0c104ebbf",
-    "c82d5dd405d22afb",
-    "b0d73d0211ebc988",
-    "a5c9249c8fec854c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "sit pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend 5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "1f28a3fc8a8b6c99",
-    "f2aff6a576f988f4",
-    "b82c446356be2397",
-    "50392c18fa52632d",
-    "9ef5192ab6b4432f",
-    "20bc2595c50b00d2",
-    "243823cda589eaa2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend until 3:16",
-    "interact",
-    "goto entrance pretend",
-    "sit pretend",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "put kev_desk",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "f1ec32a4736b00ea",
-    "f078ef1830225d11",
-    "74b8093602f8cff1",
-    "e44d2bddb51c75b4",
-    "34ee28004a64bbca",
-    "a2f116a88ed4bd5f",
-    "b2281b8a0146c3fe",
-    "76c74c6b1ce8b96d",
-    "ce928ce8f6fcd2ef",
-    "8469014c56722a3a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "put kev_desk",
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "ad11be99c0439a20",
-    "af134f730f47d812",
-    "de832af85dadd3dd",
-    "730f3a9e7ef9cc70",
-    "04ccc01ee67b5b28",
-    "1992240b76250811",
-    "61e6bfd54263cc01",
-    "335eb45176d3899a",
-    "54f5dda22fb80b5a",
-    "4b1905b1e8513618",
-    "9ba9dc0ff3312b96",
-    "9ba9dc0ff3312b96"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "96240e6e35628dc6",
-    "95fef72b243faee4",
-    "43805486a68cb4be",
-    "3f605662e9b0bd8e",
-    "d46fea16eb86773a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "interact",
-    "interact",
-    "put boss_desk pretend",
-    "goto boss_desk",
-    "interact",
-    "pretend until 3:33",
-    "sit pretend",
-    "goto lin_desk pretend",
-    "goto kitchen",
-    "interact",
-    "pretend 3s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "a2f2e7f90f917930",
-    "396213e45cc3cf36",
-    "b2076cf3ae7fb891",
-    "ce18111d70f8fc3f",
-    "18ea2ab786ad5396",
-    "3395336189dcca2d",
-    "e61e4e805de24f35",
-    "08dfc9a23148f6e7",
-    "0b813bb63f9c4326",
-    "3864418f7d5183cf",
-    "3b05f11a5b2518f7",
-    "579ac68839fbf9a6",
-    "579ac68839fbf9a6"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "sit pretend",
-    "put kev_desk",
-    "interact",
-    "sit pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "goto coffee_machine pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5d90f6990972a467",
-    "f833e80447ca9a01",
-    "c7ee761d655f9983",
-    "3a89419c8df9c3d0",
-    "4dafd945abfef439",
-    "0226c912fd545375",
-    "db9b7c9dc647e2fe",
-    "4ed6ed23a958296b",
-    "858ac7af2d9ca25f",
-    "1bc8de09a5de868b",
-    "70ee6d4725f682bb",
-    "62f65bb727795a0a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
-    "goto lin_desk",
-    "interact",
-    "put kev_desk",
     "interact",
     "put boss_desk",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "pretend until 3:41",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "9824453a8e946b76",
-    "2012fe1aec71197a",
-    "4b70f43542262f12",
-    "7f971051ea478858",
-    "66f50646f78a244a",
-    "401c6f3669ed9357",
-    "b6ea7efaa25806f8",
-    "b17f93fde560196c",
-    "ec52f3059a62ce83",
-    "525a9d807a7906cb",
-    "525a9d807a7906cb"
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "4040145a291282a6",
+    "6322b9ea809a7425",
+    "cb79e5a785897e7b",
+    "efd23138cbec873b",
+    "f8e86fc3fb375372",
+    "8924665c34cd598f",
+    "b6a3b818ad4c0b64",
+    "e950f4d91755ebfa",
+    "b38a9da0fe30736b"
    ]
   },
   {
    "cmds": [
-    "wait until 3:16",
-    "interact",
-    "pretend until 3:35",
-    "interact",
+    "pretend until 3:37",
     "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "blamed kev",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "57a2f85738ee7537",
-    "d41210c595809165",
-    "dfe4e92f24809126",
-    "a5d50ae3e371625b",
-    "1e37487574fda8ae",
-    "dd33b51bca16e9ff"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto hallway_west pretend",
-    "put boss_desk pretend",
-    "interact",
-    "goto boss_desk",
-    "put kev_desk",
-    "pretend until 3:34",
-    "sit pretend",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "78e3f46db998ac13",
-    "cf59e5a05cf8ab84",
-    "ecbc28e7cfef5b61",
-    "e849ad2a31e49b8a",
-    "159307d60c5d901d",
-    "9c343777a1e7fa28",
-    "65658130958af2c5",
-    "a0e7a481b062ca3a",
-    "2409fd22134584e3",
-    "f0cae611a4a4f338",
-    "8f46f193644169bf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend until 3:15",
-    "goto boss_desk",
-    "interact",
-    "sit pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "4042d795dd0907be",
-    "9f9d394fb8de3e27",
-    "ccbd26294241c3da",
-    "4f07c05b25f8b7a2",
-    "2449a5e46897dee5",
-    "5c0504e226325f5c",
-    "1d33513768a5a13f",
-    "c6a5efbf169b206a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:35",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "win boss",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "d5f003d4b174f499",
-    "a5d631ca2732782c",
-    "46f9a00a9a34ecc4",
-    "0c41197a6f804503",
-    "82aebe784d86675c",
-    "0a58c8adada48835",
-    "cf5af00bb7b59f4d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend until 3:19",
-    "interact",
-    "put lin_desk",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "put kev_desk",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "ee0626410287ae54",
-    "561b1bd119921eb9",
-    "8fe82e44544398a9",
-    "253a52e8b350d508",
-    "39acf8fe7f57d569",
-    "dc6a23777a393ad2",
-    "e91dc1425c79847b",
-    "fb1636118f54ba87",
-    "eff75d27840b72cd",
-    "6c1ab44c09949669"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "66d51f90c0ea4ac8",
-    "7e6ea75f264ba225",
-    "18623415582ba095",
-    "dfe78c9d38da797a",
-    "dfec62cf972bd739",
-    "0ae2fd3dbf3ed8c1",
-    "2e6be6a688f54f34",
-    "1e7b1ab2e6b8a22a",
-    "0ba68e4a81e19824",
-    "379c617fb153ea25",
-    "d608295eef5434b0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "put kev_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "8859d2f0cf7ff4e6",
-    "9a65f071c13b7388",
-    "920132a77164855c",
-    "52350c60620cdea6",
-    "eab9f6b4d29a626e",
-    "0c720aa3d93bdffb",
-    "ab06664aa40dec06",
-    "aab6df810e9839fa"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "wait until 3:08",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "f1feecae0a8241b5",
-    "844212f575118bfd",
-    "0b0cbc72fae2cc81",
-    "d5cb6c446c7a655a",
-    "52d1711301b179d4",
-    "126f093dd43e442a",
-    "55aff4d02d514521",
-    "5642c53de1aa6921",
-    "26fb95bf417a6349",
-    "2ba3d896ff32ecd6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
     "interact",
     "interact",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "b9ce81bceefb596f",
-    "2195d23edf74bd40",
-    "bf9c343771986cde",
-    "297a62339d3da30c",
-    "943dd6483a43aa91",
-    "18a87d01526d5c75",
-    "8d2f2909b061673e",
-    "f2b6bc1adc18758e"
+    "55da82f8cf60575c",
+    "99ce32a0b44898d2",
+    "082e9eef4707a645",
+    "a927ec654b27b6df",
+    "afa8b6deb1a31483",
+    "b2f1f31220e1ccb1",
+    "1275145fdc088ec9"
    ]
   },
   {
    "cmds": [
-    "goto kev_desk",
     "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
     "goto boss_desk pretend",
     "interact",
-    "put lin_desk",
-    "goto kev_desk pretend",
-    "sit pretend",
-    "goto boss_desk pretend",
-    "put kev_desk",
     "interact",
     "pretend until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "a0b4df0aecaebb00",
-    "a9d197c994f32d0c",
-    "845004c0515557b3",
-    "4400a268470903ec",
-    "91541886f2391118",
-    "1fef485d6a939a87",
-    "07794750922986f4",
-    "f245cacdbf20b54d",
-    "92b270450288b908",
-    "2537edecbd258029",
-    "03be66c5c462a5c2",
-    "23d19efd7d7c3154"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "e73ce794a1a0e210",
+    "90225e999f881bb1",
+    "8d5d93b55c956820"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
+    "wait 3s",
+    "pretend until 3:11",
     "goto kev_desk pretend",
     "interact",
+    "interact",
+    "goto boss_desk",
+    "interact",
+    "put your_desk pretend",
+    "goto lin_desk pretend",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "58717912bf02bed6",
+    "f3a83cfe9420e199",
+    "ce58cdabd3647f8f",
+    "bc29e54ff305ecac",
+    "c3f0418556e377ca",
+    "16006bf4ebe600a1",
+    "061dfcb54ee4d0e8",
+    "9b562e72e49ed472",
+    "fa80555cc932f7bb",
+    "e577558ed4e41a95",
+    "a8049c77f87adc0b"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "goto lin_desk pretend",
     "interact",
     "goto hallway_mid pretend",
     "interact",
-    "pretend 3.38s",
-    "pretend until 3:47"
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "sit pretend",
+    "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "760b4e0ce11fc957",
-    "be1f6de32dbe4a93",
-    "3e1717c117cbd3ba",
-    "0714d5e573833af4",
-    "edf3fd0074bb441d",
-    "e6d00f1da4d7279b",
-    "c1f93fc4683d31cb",
-    "d46f1839d97aaa73"
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "4bfeaf57231d7f4b",
+    "36df836064fc60fb",
+    "00b42154a65de14d",
+    "c0b322dd02c87c7a",
+    "efd1006b53d1ba9e",
+    "92df7bfb477bb7fa",
+    "a97d9bfcf4074c83",
+    "4a22562f58777d6c",
+    "5520d00c1e6ff5f7",
+    "3f534247ce8c9d96"
    ]
   },
   {
    "cmds": [
-    "wait until 3:14",
-    "wait until 3:40",
-    "goto kev_desk",
     "interact",
+    "pretend until 3:35",
+    "goto hallway_west",
     "goto hallway_west pretend",
-    "sit pretend",
-    "put kev_desk",
     "interact",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "put kev_desk",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "73908a224ff8db2a",
-    "734a62b5e602c08f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "ad11be99c0439a20",
-    "a38111e4abeaf06a",
-    "e91338215d9865f3",
-    "faa243ce28783899",
-    "f8d8b7209375a8a5",
-    "0173a838e2d6d451",
-    "4dd1dcb18ebede2a",
-    "9acae5bb95cd1be2",
-    "9a4655b56124a5bf",
-    "2552885c90ebdf26",
-    "c210cd306b347256"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "0aeece2097a9b2fc",
-    "6d6200473e63de7c",
-    "0bb67a473e176e0c",
-    "f2b6bc1adc18758e"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
     "goto lin_desk",
     "interact",
-    "put kev_desk",
-    "goto hallway_west pretend",
-    "interact",
-    "wait 8s",
-    "pretend until 3:47"
+    "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "9824453a8e946b76",
-    "2012fe1aec71197a",
-    "4b70f43542262f12",
-    "7f971051ea478858",
-    "66f50646f78a244a",
-    "401c6f3669ed9357",
-    "b6ea7efaa25806f8",
-    "9035085c4bcdb34e",
-    "50e5a89718ecf47a",
-    "363defd563dd3cc8",
-    "d519943d13889624",
-    "2fc4f0a65095bfe2"
+    "13f4469e232d38e7",
+    "f278c7efc54fa0c3",
+    "406cdcd1512d0168",
+    "fd2d18cc34257510",
+    "3de41252a91a7c9b",
+    "6209d4f1ce9d1c67",
+    "76f6ee889fcdb8bf",
+    "a589fbcc4b75e977",
+    "6f009dd540f06806"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
     "interact",
     "interact",
+    "goto hallway_west",
     "interact",
-    "goto hallway_mid pretend",
-    "pretend 4.5s",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "773ac6ced5689497",
-    "2ba47f04854f9320",
-    "c4faabffffecbed8",
-    "2e8e9dfbf17c205d"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "993a591490070fcf",
+    "335db4271673be5a",
+    "0042d63ff56636ce",
+    "81200c171024a25d",
+    "889dd0e4fe39c8ea",
+    "ba38d1f86b8bc75b",
+    "9c94254fba15fcba",
+    "3d64781e6022bea4"
    ]
   },
   {
    "cmds": [
+    "wait until 3:15",
+    "goto kev_desk",
+    "interact",
+    "sit pretend",
+    "interact",
+    "goto hallway_west pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "a89ee964b1a776c6",
+    "01c9265f141de0c4",
+    "25332daa2a0ebe81",
+    "c3ba623831396096",
+    "718a59ff96e59f8b",
+    "86235f9ec2cc5900",
+    "bf1075ec014c55a2",
+    "c16f6b692f2a6fc2",
+    "a312bb94e8bdb7bb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
     "goto boss_desk pretend",
+    "interact",
+    "goto hallway_mid pretend",
+    "wait 1s",
+    "interact",
+    "interact",
+    "put boss_desk",
+    "interact",
+    "pretend until 3:41",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "1976216c04f8bdc1",
+    "c5214f87b7f7bc83",
+    "98d4e97c0b5639f1",
+    "6bca89efc52c6ad2",
+    "c37ab66352b2a814",
+    "56c30024f5e36bd6",
+    "1598676f9416e950",
+    "f26f929177b98657"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "goto boss_desk pretend",
+    "put boss_desk pretend",
+    "interact",
+    "goto lin_desk",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "d2f77d51ced1dace",
+    "6251f5c3794b2280",
+    "0e92c37ad8a32421",
+    "0a63cca2bc9f2bd5",
+    "580ad4af6ed4eb5a",
+    "7efc9293d3205885",
+    "e1d9a552b271c06d",
+    "015134824397684d"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:10",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "put kev_desk",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "e7d4566fd300a7d8",
+    "3e2d1c31b2765d38",
+    "1698bd76e30b0e1a",
+    "a13ee299ff13d05b",
+    "ffd11e8e9881d6a1",
+    "c36f53619dd407b7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "goto boss_desk pretend",
+    "put boss_desk pretend",
+    "interact",
+    "goto lin_desk",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "d2f77d51ced1dace",
+    "6251f5c3794b2280",
+    "0e92c37ad8a32421",
+    "0a63cca2bc9f2bd5",
+    "580ad4af6ed4eb5a",
+    "7efc9293d3205885",
+    "eadc7cd1f80fb220",
+    "d5a6029473b39615",
+    "e5dc38b0e7aec3af"
+   ]
+  },
+  {
+   "cmds": [
     "pretend until 3:13",
+    "goto hallway_west",
     "interact",
-    "put lin_desk",
-    "pretend 5s",
-    "goto kev_desk pretend",
     "sit pretend",
     "interact",
-    "put kev_desk",
     "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "7a78211f022df6e5",
+    "a34eee275019bf63",
+    "4238e1a71c98b028",
+    "290119eb2dbea319",
+    "52bead18c57bfe7c",
+    "7216bd92a72d8551",
+    "ef7bd69f9a0daf49",
+    "67df0662ab5269e2"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto hallway_west",
+    "wait 5s",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "interact",
+    "goto your_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "73625df91499c048",
+    "bc235cb4ee06fe99",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "7bd5314407354e24",
+    "c71a74d943f93874",
+    "3419db69ff94ef94",
+    "4c6eb06f140ac55f",
+    "8341c1f78afcb7a5",
+    "a197dfd0305289c2",
+    "7816eb8635c14eea",
+    "cbdcec70aeee618c",
+    "77afadeaf69ede0c",
+    "aef73a17b5b5151e",
+    "d714407ca72028c2"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "sit pretend",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "ee0626410287ae54",
-    "e117089108e72ea6",
-    "8821b6a8b2838a4e",
-    "00800a9cba52a8fd",
-    "adcecb746ce0680c",
-    "9943c819b6ad3b3f",
-    "d32663dbe18b9234",
-    "266b2e33db0c81bd",
-    "37f3ccf8c5b15f7a",
-    "fd3000c28cdd055b",
-    "8cc4b2d589cae15f",
-    "473a4f576b87a439"
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "fb5ebb1860b85180",
+    "e0f6084a60efd959",
+    "d6dc615c2944e27b",
+    "df5ea298cbd2bb80",
+    "bb6a86928b95e7a7"
    ]
   },
   {
    "cmds": [
-    "wait until 3:14",
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "put kev_desk",
+    "wait until 3:10",
+    "goto boss_desk pretend",
     "interact",
     "interact",
+    "goto boss_desk pretend",
     "interact",
     "goto kev_desk pretend",
-    "interact",
-    "goto boss_desk pretend",
-    "goto hallway_west",
-    "interact",
-    "put kev_desk",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "73908a224ff8db2a",
-    "734a62b5e602c08f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "ad11be99c0439a20",
-    "a38111e4abeaf06a",
-    "e91338215d9865f3",
-    "faa243ce28783899",
-    "f8d8b7209375a8a5",
-    "0173a838e2d6d451",
-    "4dd1dcb18ebede2a",
-    "464861fe88c44cb7",
-    "029ea0dd4a937e86",
-    "146df13f87723826",
-    "fbd00f9058131535",
-    "f5c47dd8148582d3"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:15",
-    "goto hallway_mid pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "cda88ba3d6acbee2",
-    "a1b7b9ced1f17984",
-    "47b9d0ef8865fa8b",
-    "96b6541b268699c5",
-    "5134b49bc7d2979f",
-    "97d59c733868c8a7",
-    "52567f8cbae9af61",
-    "e93e5a37fbb8f4bf",
-    "37a8c366fed6f3c6"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "pretend until 3:15",
-    "goto boss_desk",
-    "sit pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "1a3416ed7c17da52",
-    "a608119bea4eedc7",
-    "6fba1872d636e5f3",
-    "14227d5d91b402e1",
-    "bf83002a5323bee7",
-    "91aa859df52036d5",
-    "360b377cce66f57a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
     "put your_desk pretend",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "7be01900602eeee3",
-    "81c161cebc4cddc9",
-    "6f9ab39569032d3e",
-    "abdf6da2557aed4f",
-    "b6a3d531315666de",
-    "fec0443751f596f3",
-    "fec0443751f596f3",
-    "fec0443751f596f3"
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "e7d4566fd300a7d8",
+    "3e2d1c31b2765d38",
+    "1698bd76e30b0e1a",
+    "9abcc971687451c5",
+    "b98a381af48b1bf7",
+    "4339770fb4eefdb9",
+    "73239d3784350208"
    ]
   },
   {
    "cmds": [
-    "goto my_seat",
-    "wait until 3:16",
+    "pretend until 3:08",
+    "goto kev_desk pretend",
     "interact",
-    "pretend until 3:41",
     "interact",
-    "goto hallway_west pretend",
+    "pretend 3s",
+    "interact",
+    "interact",
+    "put your_desk pretend",
+    "wait until 3:47"
+   ],
+   "summary": "win kev",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "0585cd78f646c8f8",
+    "3fecc5d7e1c5fec9",
+    "d68bf306b3709f76",
+    "20fe0fe4038cfca1",
+    "e0f845f90d3763e0",
+    "aadd09ee63cf1b50"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "5bc5cccca2c31af7",
-    "25224a763f14f67c",
-    "8c986dc6a785675b",
-    "9d2c1aeb5db80c3c",
-    "28556ba5947e309c",
-    "476a07ed82c05e9d",
-    "7948fe642325d3ef",
-    "7af80fcc9d9988a6",
-    "036fd28233fe2cde"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "87f403d78ce763bf",
+    "0ebb9a145e59be93",
+    "e73ce794a1a0e210",
+    "162c617fd7ff8ae9",
+    "afc1db4b2467b75e",
+    "9dfdb7d22d6834ea",
+    "8990b651213c16de"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
+    "pretend until 3:08",
+    "goto kev_desk pretend",
     "interact",
     "goto hallway_mid pretend",
     "interact",
-    "interact",
-    "pretend 4.5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "41aaa074a7a2bdbd",
-    "2979f080b4034ae0",
-    "590cfaae5f528fa2",
-    "773ac6ced5689497",
-    "2ba47f04854f9320",
-    "c4faabffffecbed8",
-    "2e8e9dfbf17c205d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
+    "goto boss_desk",
     "interact",
     "interact",
-    "goto kev_desk pretend",
-    "wait until 3:06",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "8355ccc22b699630",
-    "9cace29b77f9977d",
-    "360b80d293f60f74",
-    "3a2a17ee5b3e07b0",
-    "50141bba0e27d103",
-    "6333073e9b20c2ab",
-    "727ce08fc6b5b212",
-    "9af4f1ec752fa4e0",
-    "c555579f90e82f9f",
-    "37a8c366fed6f3c6"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
-    "interact",
-    "goto lin_desk",
-    "put kev_desk",
-    "interact",
-    "put boss_desk",
     "pretend until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "9824453a8e946b76",
-    "2012fe1aec71197a",
-    "4b70f43542262f12",
-    "7f971051ea478858",
-    "b7c04d9a055cd4dd",
-    "b25831dcc189535c",
-    "38fbb5d6789bef81",
-    "0d6cddb450b05321",
-    "f609fd12e12bfb10",
-    "8d62cc3269944399",
-    "8d62cc3269944399"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "28a29908dff8261f",
+    "d2fbcce3e46ec336",
+    "b75a9dd2e93a1694",
+    "398393c9e0a4013d",
+    "59e834e8b46a8912",
+    "79e9a0d910a15073",
+    "f359c50e3d277b03"
    ]
   },
   {
    "cmds": [
-    "wait until 3:16",
+    "wait until 3:10",
+    "goto boss_desk pretend",
     "interact",
-    "pretend until 3:35",
+    "interact",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "put your_desk pretend",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "edeeb8146ef4073e",
+    "b931c683bf27aa41",
+    "c3f2cf6667deba90",
+    "aae2ce6354d5b3d4",
+    "77544e688c979ff3",
+    "df3f64a019f50469",
+    "c71bd17456f6049c",
+    "c0477e521d430531"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:25",
+    "goto kev_desk",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "pretend until 3:33",
+    "goto boss_desk pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6f681976b6118d11",
+    "b125bd1a8a7248a8",
+    "91146fe073d5e32c",
+    "9f46e5899fb1eaf3",
+    "49f9dbe916145352",
+    "68bd7aee247f02ef",
+    "f59f5ffbeb072960",
+    "30c324edd73a3d2f",
+    "dedd541700a3028f",
+    "6c80cf6ad4d17884"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:17",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "put your_desk pretend",
+    "pretend until 3:47"
+   ],
+   "summary": "win kev",
+   "digests": [
+    "3e86e2ef0a07aaee",
+    "a30e0f2485a46943",
+    "09d9068c40c28b0e",
+    "eeaf18e390f792f7",
+    "91869f79b6cf00da",
+    "dd79b6207fd92f54",
+    "64433509f4c89fac",
+    "db23313cb7ff5451"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto hallway_west",
+    "wait 5s",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "interact",
+    "goto your_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "goto kev_desk pretend",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "73625df91499c048",
+    "bc235cb4ee06fe99",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "7bd5314407354e24",
+    "c71a74d943f93874",
+    "3419db69ff94ef94",
+    "4c6eb06f140ac55f",
+    "8341c1f78afcb7a5",
+    "a197dfd0305289c2",
+    "7816eb8635c14eea",
+    "9a992b1fe9149576",
+    "f61f590544869a4e",
+    "113a5a77206f9c56"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "goto lin_desk pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:08",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "4bfeaf57231d7f4b",
+    "36df836064fc60fb",
+    "631d34ce9e8e462e",
+    "11a52891a64e8f6e",
+    "80628bafad001740",
+    "cc4d437618c92631",
+    "0ade6821d572456d",
+    "a4c09bc750437b4d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "29a5855847c19c96",
+    "ae17f7ebee77f48b",
+    "6b2ef61019c8b769",
+    "0ebb9a145e59be93",
+    "ef97049ef64d7b63",
+    "c334e8291963749c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk pretend",
+    "interact",
+    "wait until 3:17",
+    "interact",
+    "interact",
+    "interact",
+    "put your_desk",
+    "goto lin_desk pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "26963791d87df2a0",
+    "93d12fae93be72cc",
+    "e7ed88f954f9ae8d",
+    "cfb536656f83b89c",
+    "c8934f28efeb6308",
+    "d286149695afacde",
+    "a4e0581b8b397e2b",
+    "4cc323739af7086e",
+    "28ac93a4948d85d5",
+    "031a4fba15460486"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 3s",
+    "goto boss_desk pretend",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "put boss_desk",
+    "interact",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "4f68f6f1ad5247ae",
+    "a042db268bfe4fcd",
+    "dfef51dbc687d83b",
+    "78ae8650ebffd6d0",
+    "4040145a291282a6",
+    "e4b07981ba0e6f6b",
+    "b3bcbea90daeb873",
+    "9c7726aab99d3fde",
+    "f506710ee2fc086f",
+    "899f144aacf09c1a",
+    "f94d51678278cce0",
+    "387148c6ad5244d5"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
+    "interact",
+    "put boss_desk pretend",
+    "interact",
+    "sit pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "win boss",
+   "digests": [
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "c862ed42489cd80d",
+    "2621cfc3ced948a5",
+    "c7fe60b6b5dece9d",
+    "82fd9109cc522f2b",
+    "9c39f7b72700773f",
+    "e2b36d4618c011eb"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "goto hallway_mid",
     "interact",
     "goto boss_desk",
     "interact",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "c907278185debddb",
+    "a45d826c6144d7c7",
+    "3b9d4e9171d6559c",
+    "eb8da0deaf490c85",
+    "03caa288d58bea80",
+    "14bc29ee84d218b5",
+    "70f962008fa6b179",
+    "5a827a293d1acaea"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "pretend until 3:25",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "pretend until 3:33",
+    "goto boss_desk pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "blamed kev",
+   "digests": [
+    "056ff011f8b1195f",
+    "db7b3cddcf2dc42a",
+    "8ca73d1bb9f8df69",
+    "3fca1dbfef6ad196",
+    "8d4c25a7d8b0afb8",
+    "e4b56cf6faf95f28",
+    "d608d7e2093466c1",
+    "48872d68450a5e78",
+    "26f3b2543623d002",
+    "c7e718bd69e7f851"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "goto boss_desk",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "7c1cb1ca551b9bc2",
+    "a00f23eb5183eac0",
+    "6c179027b7d98785",
+    "896d8dc08e6c8255",
+    "5f5392a5a909f214",
+    "d71b7d48e08ec914",
+    "369e399971d01677",
+    "f2418161c20e5e79",
+    "5a827a293d1acaea"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:25",
+    "goto kev_desk",
+    "interact",
+    "interact",
+    "goto hallway_mid",
+    "pretend until 3:33",
+    "goto boss_desk pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6f681976b6118d11",
+    "b125bd1a8a7248a8",
+    "91146fe073d5e32c",
+    "a1a1532925113cb8",
+    "6854022604892e09",
+    "3759fb1c5a79dad6",
+    "3806a64693496478",
+    "b693a29d990351ff",
+    "1ef052d32f45c31a",
+    "f102f62a6cc090db"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 3s",
+    "pretend until 3:11",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "put your_desk pretend",
+    "goto lin_desk pretend",
     "pretend until 3:47"
    ],
    "summary": "blamed kev",
    "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "57a2f85738ee7537",
-    "d41210c595809165",
-    "93ca7acdb6a428d0",
-    "9804b5aeb1d5a824",
-    "80a4238265872dc9",
-    "dae7e8026cee8de7"
+    "58717912bf02bed6",
+    "f3a83cfe9420e199",
+    "ce58cdabd3647f8f",
+    "bc29e54ff305ecac",
+    "c3f0418556e377ca",
+    "180aaee7cbb11cec",
+    "671ed610fcb59552",
+    "74f80148d7992911",
+    "37584a69b1db7bb9",
+    "e3b914c8d0cbfc9b",
+    "6933d18daa66b558"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "put your_desk",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "wait 1s",
-    "put your_desk pretend",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "55824d7dc47111b0",
-    "50aa3ecf4e56f8f7",
-    "85d6a66eaf9f1f58",
-    "61bed5a6db46b463",
-    "ee03e8cbe6648b46",
-    "632577149f2b2619",
-    "365af8b0e2c4bbcd",
-    "e138769e254aacd5",
-    "3f004f6227e8fe03",
-    "0ebd3bd4dc713036",
-    "d72870afe79fd3a7",
-    "cfac1575b50134c6",
-    "f3a108beaf8f9da6",
-    "89ff77607ba3e377"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "pretend 9s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "e16342f5fdf841b5",
-    "8f797170f8eaf6e6",
-    "431ae7033a7f5cb8",
-    "d675eda72be1b968"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "pretend 3.38s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "dd9b468fbd345da9",
-    "899120ad63999dbb",
-    "8f57c09f3bc1566c",
-    "bc5282d4f438969b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto my_seat",
-    "wait until 3:16",
-    "interact",
-    "pretend until 3:41",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "put lin_desk pretend",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "5bc5cccca2c31af7",
-    "25224a763f14f67c",
-    "8c986dc6a785675b",
-    "9d2c1aeb5db80c3c",
-    "28556ba5947e309c",
-    "0aa3bb51ebd57538",
-    "acbe465052cfc003",
-    "02cae63abdbb7565",
-    "08a23606db38c050",
-    "7316bc6b18a8592e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "wait 2s",
-    "goto my_seat",
-    "wait until 3:16",
-    "interact",
-    "interact",
-    "goto entrance",
-    "pretend until 3:41",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "fb7b0ad61056ae59",
-    "b9b5110654340bdd",
-    "61c4637eae418d64",
-    "248eacbcf660e39d",
-    "04e22e2e6f67ab9b",
-    "96ed75629dd16dca",
-    "a314889bd0fbca59",
-    "6f0897c04b78f843",
-    "976ace3597e2acc4",
-    "993d41e27d810143",
-    "7594d6de50fc8aca",
-    "d50c2f9c40b5e864"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend 1s",
-    "wait until 3:03",
-    "put your_desk pretend",
-    "pretend until 3:17",
-    "pretend until 3:47"
-   ],
-   "summary": "win lin",
-   "digests": [
-    "9824453a8e946b76",
-    "39b6302f81790994",
-    "6ce75dd767ddb34c",
-    "3ee353942e53b0a7",
-    "7719dff8595bd0cd",
-    "457dbf8d1d1ccab8",
-    "97856fdf572a5472",
-    "1c3fdf9d470bee3f",
-    "1806a1c54d0a8ab9",
-    "022e7a791be199a8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto lin_desk",
-    "interact",
-    "wait 2s",
-    "pretend until 3:35",
-    "put your_desk pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "2ca5a8e41b56fdbe",
-    "b52fe40217c6c629",
-    "b37b15d7349fd45a",
-    "698207dce47fa8db",
-    "f9f9c8d18955a217",
-    "e8ffa7feb336c21a",
-    "64249c446534e849",
-    "5acead4562790831",
-    "b5cb368dc2f8fc4a",
-    "798180e7dfd950f5",
-    "7a7d7f9f4064b25b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend 1.5s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "9f5429ff7389f1d2",
-    "f5eb8677672a95ea",
-    "e6a76aa7b7624e17",
-    "ee21a360815e1a57",
-    "3e678f5255c15d4e",
-    "5facdc0583954469",
-    "428b83a2ab8a0f97",
-    "01861f5607003568",
-    "1fa074cbce728015"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "wait until 3:32",
-    "goto entrance pretend",
-    "wait 8s",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend 1s",
-    "wait until 3:03",
-    "interact",
-    "put your_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1935647033e401da",
-    "1eda872a5d283d73",
-    "58326bb5ed8be4f3",
-    "4c93a036cfe51a5a",
-    "aec44e4539d48968",
-    "9f23e04f8054fb40",
-    "79c2494bf1807050",
-    "a9db4783f06389e8",
-    "906c126f8b54d8c1",
-    "dbea385448c02403",
-    "6a9c23fa8543fcbf",
-    "87556c346a8dcba5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:14",
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "goto boss_desk pretend",
-    "goto hallway_west",
-    "interact",
-    "put kev_desk",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "73908a224ff8db2a",
-    "734a62b5e602c08f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "dd589c05a22838ce",
-    "396f372d45fbd652",
-    "f1b4397df24f5984",
-    "ba0499e875a67e00",
-    "959c84582757fe22",
-    "a82ba4e263269679",
-    "282b814fa70670a0",
-    "3285b25d49af82cf",
-    "6cf5be9ab4609766",
-    "fe8a094950dae901",
-    "38337edab9ea7603",
-    "f5c47dd8148582d3"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "sit pretend",
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "goto coffee_machine pretend",
     "pretend until 3:08",
-    "goto boss_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "66d51f90c0ea4ac8",
-    "7e6ea75f264ba225",
-    "18623415582ba095",
-    "dfe78c9d38da797a",
-    "dfec62cf972bd739",
-    "0ae2fd3dbf3ed8c1",
-    "2e6be6a688f54f34",
-    "2d78cdde0ab07faa",
-    "df19e0422dbecc63",
-    "ca2050fb0520164a",
-    "a46d103fc04ec44b",
-    "45219dbdaa4b61e2",
-    "45219dbdaa4b61e2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend 1.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "win kev",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "8e785af5f41b0fc3",
-    "e910fc46f3be27da",
-    "5996a77770138458",
-    "725f913d7f81e12a",
-    "c5090549cc7e8a4c",
-    "12a0e2d6cb9c0263",
-    "9962a53fcb73a22f",
-    "5f7a6fd1aade059b",
-    "60d640248868546e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "put your_desk",
-    "goto boss_desk pretend",
-    "interact",
     "goto kev_desk pretend",
-    "wait 1s",
-    "put your_desk pretend",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6.75s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "55824d7dc47111b0",
-    "50aa3ecf4e56f8f7",
-    "85d6a66eaf9f1f58",
-    "61bed5a6db46b463",
-    "ee03e8cbe6648b46",
-    "632577149f2b2619",
-    "365af8b0e2c4bbcd",
-    "e138769e254aacd5",
-    "3f004f6227e8fe03",
-    "0ebd3bd4dc713036",
-    "dff6c3fd715eeb98",
-    "69f01ece25510825",
-    "f2ce3953a7ddb3ee",
-    "ecc9cdde4a47f689"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "wait until 3:06",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "wait until 3:24",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "f1feecae0a8241b5",
-    "844212f575118bfd",
-    "0b0cbc72fae2cc81",
-    "d5cb6c446c7a655a",
-    "52d1711301b179d4",
-    "126f093dd43e442a",
-    "795e536971435b15",
-    "052e9e68f05b7b39",
-    "735beefe8105bb00"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 4.5s",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "4042d795dd0907be",
-    "9f9d394fb8de3e27",
-    "323a61a1d37d7137",
-    "9697ea8c77052220",
-    "af3bf6c7f1718ac7",
-    "2a3a86c00a8d2842",
-    "df57bf6126699577"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "goto kev_desk pretend",
-    "pretend 3s",
-    "goto boss_desk",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "ccf67d9229427237",
-    "6118730d571bd666",
-    "a46a29396104714c",
-    "dd48d0c1bb29c2aa",
-    "d0a445ca0b0d7057",
-    "75ae1f56962423a3",
-    "91485c24f474af0a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:16",
-    "interact",
-    "wait until 3:35",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "6862021c32d1f6ba",
-    "8c986dc6a785675b",
-    "853b621614d3eb18",
-    "d80f8d5bf798e5e0",
-    "ec7178a203344f53",
-    "438652a87bed6428",
-    "93203dfc89d78fe6",
-    "2cdc4421dc46524b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk pretend",
-    "interact",
-    "interact",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "put your_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "223bcaee5ff48e92",
-    "99dccafa95f2aad4",
-    "a927b55af3540469",
-    "1217700ae0c04e4e",
-    "c17eb256af8e66bc",
-    "fb72557d4085e0d7",
-    "39c502a3fa854fd9",
-    "15aafae79f4f0383",
-    "20a0a6e9a3453672",
-    "3636fd88656d59ae"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kitchen",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6.75s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "175db3dd0570dd30",
-    "7089bacf2b49b5ae",
-    "83e9e4338ac4cf93",
-    "3334ec4a89f5086d",
-    "e2182fe910dd6aa3",
-    "e31467a14913d650",
-    "80139d326d594cbe",
-    "19473f4317053091"
-   ]
-  },
-  {
-   "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:38",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 9s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "1a3416ed7c17da52",
-    "668e7afe2d4c7d26",
-    "b17f009071f41c88",
-    "e514001222b25239",
-    "d5416ec823d17e43",
-    "65ddce7fea9167a7",
-    "4360d3e9692b2da2",
-    "1a1ce085ab6c3a25",
-    "1a1ce085ab6c3a25",
-    "1a1ce085ab6c3a25"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 9s",
-    "pretend 1.5s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "3913ec2fdde39617",
-    "fbdb84518f1535ba",
-    "b70cf5f05c926161",
-    "cd8f965c94a9828f",
-    "d55225e270f22cce",
-    "3b45289694d26f1d",
-    "a38b2c362fda88de",
-    "3c4d6b640ef5e6b9",
-    "3c4d6b640ef5e6b9"
-   ]
-  },
-  {
-   "cmds": [
-    "put lin_desk pretend",
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto hallway_mid pretend",
-    "pretend until 3:40",
-    "pretend until 3:25",
-    "interact",
-    "wait until 3:27",
-    "goto hallway_west pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1935647033e401da",
-    "eff55c1740a9bf37",
-    "505747cb8193af65",
-    "d2a0e6f0a983606a",
-    "784b5581ef486172",
-    "a27653053d2b428f",
-    "a33d81d6f89aec4c",
-    "4fc55767c57e26a2",
-    "353955ac2b7a7305",
-    "fec22d58fb1d1657",
-    "a724360df2ba5bc6",
-    "d2a6aeaf59d4b7a9",
-    "f2bb62f5e0c98b92"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto hallway_mid pretend",
-    "pretend until 3:45",
-    "pretend until 3:25",
-    "interact",
-    "wait until 3:27",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "bbc027c9536d008a",
-    "a2e4c2d6be373ab9",
-    "b7d4d729cefbe123",
-    "f0e7cc4e7e03fe54",
-    "c014035f02e0de8f",
-    "cc39d7ec2686fd1e",
-    "a0b9e08ba0962dad",
-    "f2eeb1cbd0a6cc25",
-    "b7b9429d50316471"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_desk",
-    "interact",
-    "pretend 5s",
-    "goto hallway_mid pretend",
-    "goto lin_desk",
-    "pretend 3.38s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "969c0c615c16c120",
-    "ca617099c0be285c",
-    "ea5f3e3665b7933c",
-    "356743662f7554d8",
-    "649482484676c518",
-    "138f2906a02e4959",
-    "a0d63c59e0234b69",
-    "f85f1818d2cfb16c",
-    "5803eecb10cd32fb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "pretend until 3:35",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend until 3:47"
-   ],
-   "summary": "win boss",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "23028d72c433e142",
-    "679a997707acb2fe",
-    "332cce28d93c8058",
-    "384750b9048de2cc",
-    "5d68c40e286cac4e",
-    "ebafe44befe7b8a3",
-    "574f9076364daba4",
-    "b75e92fd5ae8d0eb",
-    "4ed1c6f4e31dad77",
-    "8cabdaa48175ff5d",
-    "8cabdaa48175ff5d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_mid pretend",
-    "wait 8s",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend 0.5s",
-    "wait until 3:03",
-    "interact",
-    "put your_desk pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "daed8e12baf7dd99",
-    "b72c39b81b3cb36d",
-    "8235d5d4de7c92d5",
-    "77d2b5aa29b9af05",
-    "178518d1d48aef6f",
-    "cd12878668040fb8",
-    "d3fdcdabc80381c5",
-    "879b7e651aa9998e",
-    "1f7606e6139b9958",
-    "c273077224d4d710"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "wait until 3:08",
-    "pretend until 3:34",
-    "pretend until 3:25",
-    "interact",
-    "interact",
-    "wait until 3:24",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "8355ccc22b699630",
-    "9cace29b77f9977d",
-    "360b80d293f60f74",
-    "438c4f7a2bd8b568",
-    "36d40be2484b1a00",
-    "7b30a45f23098435",
-    "3756b78fff40eeea",
-    "a297ca1eda5737b0",
-    "43a2844ce3e1c2ac",
-    "03384a5194a48b03"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend 1.5s",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "9f5429ff7389f1d2",
-    "f5eb8677672a95ea",
-    "e6a76aa7b7624e17",
-    "ee21a360815e1a57",
-    "3e678f5255c15d4e",
-    "5facdc0583954469",
-    "6bc36148439e16f0",
-    "a9da77e94bdaf816",
-    "b3f27de123ddcab5",
-    "6b37d37dde443101",
-    "e0a392d15241e9e3"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "sit pretend",
-    "goto boss_desk pretend",
-    "interact",
-    "put lin_desk",
-    "interact",
-    "goto lin_desk",
-    "put kev_desk",
-    "interact",
-    "put boss_desk",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "7d510ab1127012a4",
-    "c6fcbe38292c4f9a",
-    "0260c86412343f0c",
-    "66bd0ccc6c9f8484",
-    "1aaeadb61c557bd9",
-    "5b168eb3cf0ccf96",
-    "c10bcf2dc7e72527",
-    "c5cbc689e5ca4447",
-    "1bb577f882b608a0",
-    "1bb577f882b608a0",
-    "1bb577f882b608a0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend 1.5s",
-    "wait until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "9f5429ff7389f1d2",
-    "f5eb8677672a95ea",
-    "e6a76aa7b7624e17",
-    "ee21a360815e1a57",
-    "3e678f5255c15d4e",
-    "5facdc0583954469",
-    "e3b1b30bd0d34d75",
-    "a69e6920517a3da9"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "wait until 3:28",
-    "goto kev_desk",
-    "interact",
-    "pretend 5s",
-    "put your_desk pretend",
-    "goto hallway_mid pretend",
-    "goto lin_desk",
-    "pretend 3.38s",
-    "interact",
-    "wait until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "cd2dff3c72b7cf71",
-    "bc02969a25d35c35",
-    "58d2a975a2249c26",
-    "d0c3a4cb7a634060",
-    "7b3301e086c929e1",
-    "715ef3dab8e902ec",
-    "9bbb758bf2c9a497",
-    "4abd66f9519b7084",
-    "57cb08f43cb9bffc",
-    "073907ef25029c13",
-    "073907ef25029c13"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto hallway_west",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "6d71dce95249c411",
-    "8e785af5f41b0fc3",
-    "e910fc46f3be27da",
-    "5996a77770138458",
-    "725f913d7f81e12a",
-    "c5090549cc7e8a4c",
-    "83b5d273ecf462d2",
-    "2d18482d16e3e057",
-    "3335cf7c92ee949e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto entrance pretend",
-    "goto hallway_west pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 3:37",
-    "interact",
-    "interact",
-    "wait until 3:30",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "54a34fbec97c868a",
-    "77e10d2f8df189d7",
-    "b77859c14e0d7020",
-    "bbc027c9536d008a",
-    "2557e62b53592890",
-    "91669797915c17e3",
-    "424bbb7a20bbe9b1",
-    "94cf4d8c5d2c8b33",
-    "722d869708c7fe91",
-    "722d869708c7fe91"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "put your_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "1935647033e401da",
-    "5f963853462e3f6e",
-    "50aa3ecf4e56f8f7",
-    "85d6a66eaf9f1f58",
-    "62dc72c243f90d20",
-    "f5a36e1bbf74eb96",
-    "4da0f2d3279efd21",
-    "acea6e547bc84530",
-    "ba4d3f45d714d066",
-    "0dad3ee29ee2e177",
-    "d81de830ef8a6d8f",
-    "5cfd198a9e02ee0b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:33",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "caught",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "93cba9cd01ca39aa",
-    "1aaa990e25b6a62d",
-    "519bc03ccbc478a5",
-    "0df0affc2f5be7bc",
-    "893409a59bba641c",
-    "893409a59bba641c",
-    "893409a59bba641c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:40",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
     "interact",
     "goto hallway_mid",
     "interact",
-    "pretend 3s",
-    "goto boss_desk",
+    "goto boss_desk pretend",
     "interact",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "d56459b965571597",
-    "d198b73777026331",
-    "79a9b42c1844207d",
-    "2c84d4edaf326cb2",
-    "ba7e1d05fa8c142f",
-    "6b5064fae12012e2",
-    "1bf21a794030987c"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "c907278185debddb",
+    "a45d826c6144d7c7",
+    "728438cbc035c4cb",
+    "a44c24996f8c5722",
+    "7d7b717e26ebbc39",
+    "98a22e13e7059bed"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:15",
+    "wait until 3:08",
+    "goto kev_desk pretend",
+    "goto boss_desk pretend",
     "interact",
+    "put your_desk",
+    "interact",
+    "goto lin_desk",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "02a01b5ae1d2699b",
+    "2b9fe64ef1b5a259",
+    "05c1499bb507735e",
+    "d55d30a5d25521d6",
+    "696872f226bd3a02",
+    "c2e6c2f004c50dea",
+    "4aa656c47a5e392b",
+    "d13c0d8e697ad582",
+    "2f9180eb43bdc3ed",
+    "a91385a2c6162e24"
+   ]
+  },
+  {
+   "cmds": [
+    "wait 1.5s",
+    "wait until 3:36",
+    "pretend 1.5s",
+    "goto boss_desk pretend",
     "interact",
     "put boss_desk pretend",
-    "goto boss_desk",
     "interact",
-    "pretend until 3:36",
     "sit pretend",
     "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "640f3fa345896d9c",
-    "a2f2e7f90f917930",
-    "396213e45cc3cf36",
-    "b2076cf3ae7fb891",
-    "ce18111d70f8fc3f",
-    "18ea2ab786ad5396",
-    "535cf30e994972ef",
-    "295b17c9a85f55f9",
-    "1e0f4ea7b70ffc6d",
-    "f67f80a901a6c1a4",
-    "6ad3389dca5c1ee3"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:41",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "interact",
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
-    "interact",
-    "put your_desk pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "87fb6d24bebcd8f3",
-    "1a38e72a8f67b7c5",
-    "a2b5884044517078",
-    "3e82bb07d99ce332",
-    "a70da94058670724",
-    "c5f4660e7f2c3c15",
-    "2e7ff6fbeceb9834",
-    "14c229e1d4128a08",
-    "c0769a2ef55df203",
-    "0ce0bf5fd8f2f833",
-    "1a1ce085ab6c3a25",
-    "1a1ce085ab6c3a25",
-    "1a1ce085ab6c3a25"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:38",
-    "goto kev_desk",
-    "interact",
-    "put kev_desk",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 3s",
-    "goto coffee_machine",
-    "goto boss_desk",
     "interact",
     "wait until 3:47"
    ],
    "summary": "caught",
    "digests": [
-    "87fb6d24bebcd8f3",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "5f7c2b23f8749900",
-    "545a100b71876a69",
-    "1714eeca56e7000f",
-    "8538197106f0dd46",
-    "6b20da114dc66e2b",
-    "9ead151c6ba5b550",
-    "2bb1fd354d234d25",
-    "ddb07c419af7ef12",
-    "2b8f8a2c1c97ed38",
-    "8322fd9dd4625a81"
+    "6460009b236f2364",
+    "fbc68afd9480047a",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "c862ed42489cd80d",
+    "2621cfc3ced948a5",
+    "c7fe60b6b5dece9d",
+    "82fd9109cc522f2b",
+    "035c178078449e53",
+    "7cd7884e76dd3cb6",
+    "7c4f73cda8e6de64"
    ]
   },
   {
    "cmds": [
-    "goto your_desk pretend",
-    "goto coffee_machine",
-    "goto boss_desk pretend",
     "interact",
-    "goto your_desk",
-    "interact",
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:14",
-    "goto hallway_mid pretend",
-    "goto boss_desk",
-    "interact",
-    "sit pretend",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "235832131c309245",
-    "c02ff2337962f5f1",
-    "4e6d58403896c057",
-    "3bc24102122c7ac3",
-    "12a4a70edc28f459",
-    "1cd9039fbce08526",
-    "f48fa501bbb2b968",
-    "a90c4aa0c15452ff",
-    "21fe7ee50893a7f7",
-    "df9a0298375f226a",
-    "bb545f20e4b4d175",
-    "7cb23ef561cc48f6",
-    "aec9059577b032e1",
-    "0368cef3f84b4b3e",
-    "4cb88a1f274294a8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
-    "interact",
-    "goto your_desk pretend",
-    "interact",
-    "interact",
-    "interact",
+    "wait 5s",
     "goto hallway_west",
     "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "goto lin_desk pretend",
+    "interact",
     "goto hallway_mid pretend",
+    "pretend until 3:09",
     "interact",
-    "pretend 6s",
-    "pretend 1.5s",
-    "interact",
-    "pretend until 3:47"
+    "sit pretend",
+    "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "223bcaee5ff48e92",
-    "99dccafa95f2aad4",
-    "a927b55af3540469",
-    "9f2edd65fb96fd73",
-    "7689730f24ccb87d",
-    "4ee36b0a7e3a8bee",
-    "240281ed858286f6",
-    "370a7749cf81f082",
-    "b7420e6a10899ac9",
-    "f2195ebb3cb143c5",
-    "79d70aa585c3ab52",
-    "17e3998294b62bcb",
-    "ed9d7956f313ca84"
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "4bfeaf57231d7f4b",
+    "36df836064fc60fb",
+    "00b42154a65de14d",
+    "0c6a971353b48305",
+    "f7991041b2c8939b",
+    "f35399d930be2969",
+    "68cd8aa94b5615c8",
+    "45fc227121bdc273"
    ]
   },
   {
    "cmds": [
-    "wait until 3:14",
-    "wait until 3:40",
-    "goto kev_desk",
     "interact",
+    "pretend until 3:35",
+    "goto hallway_west",
     "goto hallway_west pretend",
-    "sit pretend",
-    "interact",
-    "put kev_desk",
     "interact",
     "interact",
+    "goto lin_desk",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "f278c7efc54fa0c3",
+    "406cdcd1512d0168",
+    "fd2d18cc34257510",
+    "3de41252a91a7c9b",
+    "7db62e96247b13c8",
+    "6ebd767470f03025",
+    "8f5de562711672ce",
+    "dafb7df88fd6379c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:08",
     "goto kev_desk pretend",
     "interact",
-    "goto boss_desk pretend",
-    "goto hallway_west",
+    "interact",
     "goto boss_desk",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
     "interact",
     "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "73908a224ff8db2a",
-    "734a62b5e602c08f",
-    "4a5e5b3603739930",
-    "2015740c12e3b8ed",
-    "52fda15e2be615d8",
-    "ea36f17a2834641c",
-    "dd589c05a22838ce",
-    "396f372d45fbd652",
-    "f1b4397df24f5984",
-    "ba0499e875a67e00",
-    "959c84582757fe22",
-    "a82ba4e263269679",
-    "282b814fa70670a0",
-    "3285b25d49af82cf",
-    "a1a885a65c7c4df1",
-    "e0807da504cc410d",
-    "d1f884979a2fa9e8",
-    "c210cd306b347256"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "93c3003c56a068e2",
+    "2482b73050723c4e",
+    "f6181a3b813b6194",
+    "5ac0c0429cdcc013",
+    "10bacb9fbe1ddbe1",
+    "2e6e5ee7c1a76775",
+    "9b560ae39d5cac55",
+    "c334e8291963749c"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
-    "goto boss_desk pretend",
+    "pretend until 3:08",
+    "goto kev_desk pretend",
     "interact",
-    "interact",
-    "pretend until 3:35",
-    "put your_desk",
-    "interact",
-    "goto hallway_mid",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "d5f003d4b174f499",
-    "a5d631ca2732782c",
-    "46f9a00a9a34ecc4",
-    "e65973e9676558d7",
-    "2731a04bd3b1e4bf",
-    "c8f480468d45f5d1",
-    "4d033db3c99cbf7b",
-    "7292acd8f8a9ba16",
-    "8981d59cdaf0ef5e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coffee_machine",
+    "pretend 5s",
     "interact",
     "goto boss_desk pretend",
     "interact",
-    "pretend until 3:35",
-    "put your_desk",
-    "pretend until 3:40",
-    "interact",
-    "goto hallway_mid pretend",
-    "interact",
-    "pretend 6s",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1fe5e1200acca5f8",
-    "23028d72c433e142",
-    "679a997707acb2fe",
-    "332cce28d93c8058",
-    "384750b9048de2cc",
-    "5d68c40e286cac4e",
-    "c13a1a31cc25bce4",
-    "3fb4124e24d327ef",
-    "8d6358627725992d",
-    "f4ed2be3fff36535",
-    "e3e26db063e04f55",
-    "845981280bb10a31",
-    "845981280bb10a31"
-   ]
-  },
-  {
-   "cmds": [
-    "goto hallway_west pretend",
-    "interact",
-    "pretend until 3:15",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_desk",
-    "pretend until 3:33",
-    "sit pretend",
     "goto lin_desk pretend",
-    "goto kitchen",
     "interact",
-    "pretend 3s",
-    "pretend until 3:47"
+    "wait until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "217c01b92954484b",
-    "da4a04e551983e60",
-    "40d69a6e137aea11",
-    "73d537f0cb87765f",
-    "b6aca4fc4ab2d1f3",
-    "f847d2e52fff4a07",
-    "25ff3d41f31f9f48",
-    "b64afff1066d159a",
-    "95d13994f7f06b40",
-    "d529ccb16c33bd64",
-    "7390f530d57ae5df",
-    "30730bccd3db53c7",
-    "30730bccd3db53c7",
-    "30730bccd3db53c7",
-    "30730bccd3db53c7"
+    "1d54492c3bd7d12f",
+    "80d16c102724a097",
+    "2133a63bca2fb4c3",
+    "466b21d9a8aea011",
+    "05369e411f05b676",
+    "4867f2a13f81b648",
+    "ed159f3c45ce4d32",
+    "93b23db74456e106",
+    "ebc22f9880c2322b",
+    "8287ef58c6a9723b",
+    "a1515e9a429da30f"
    ]
   },
   {
    "cmds": [
-    "goto coffee_machine",
+    "wait until 3:36",
+    "pretend 1.5s",
     "goto boss_desk pretend",
     "interact",
+    "put boss_desk pretend",
     "interact",
-    "pretend until 3:35",
-    "interact",
-    "goto hallway_mid pretend",
+    "sit pretend",
     "interact",
     "pretend until 3:47"
    ],
    "summary": "win boss",
    "digests": [
-    "1fe5e1200acca5f8",
-    "0fd7e03912d14647",
-    "9549310bc7090cf6",
-    "5014d98ffb48d09b",
-    "d5f003d4b174f499",
-    "71482e636481f27a",
-    "a612c0d5cd5d49ba",
-    "154dc33e203d8387",
-    "b6ca19059de64f97",
-    "cf5af00bb7b59f4d"
+    "908927704befd214",
+    "2adca7dd0ffbdedb",
+    "5c963d9e35419707",
+    "928cf5dafac262fe",
+    "c862ed42489cd80d",
+    "2621cfc3ced948a5",
+    "c7fe60b6b5dece9d",
+    "82fd9109cc522f2b",
+    "29053633621deca0",
+    "5154aee00bcd7e29"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:32",
-    "goto entrance pretend",
-    "goto lin_desk pretend",
+    "wait 3s",
+    "pretend until 3:11",
+    "goto kev_desk pretend",
     "interact",
-    "pretend 1s",
+    "interact",
+    "put kev_desk pretend",
+    "interact",
     "put your_desk pretend",
     "pretend until 3:47"
    ],
-   "summary": "win lin",
+   "summary": "caught",
    "digests": [
-    "9824453a8e946b76",
-    "39b6302f81790994",
-    "6ce75dd767ddb34c",
-    "3ee353942e53b0a7",
-    "7719dff8595bd0cd",
-    "0e10e69118af6f08",
-    "c2bb5c6d4337ad54",
-    "0b099a47f3cf2163"
+    "58717912bf02bed6",
+    "f3a83cfe9420e199",
+    "ce58cdabd3647f8f",
+    "bc29e54ff305ecac",
+    "c3f0418556e377ca",
+    "010d5564eb041fdf",
+    "4849e2156d02ba25",
+    "c3205b940fe6a1d7",
+    "1a55efde31be419a",
+    "3c6ffefb0643344d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto hallway_west",
+    "interact",
+    "interact",
+    "pretend 1s",
+    "goto kitchen",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "056ff011f8b1195f",
+    "bfbea12da6e9a9f8",
+    "ddbc190c8922aeb5",
+    "2d4af010cbe8a9e5",
+    "96e9f01ecf12b2be",
+    "8e177ec3aac36ba0",
+    "d08b50575b825cce",
+    "1bea5f455a4685c5",
+    "86799a843affbaa0",
+    "63c68f842e33f315",
+    "29ef52cb8e269be9",
+    "4f47e6b415a12008",
+    "938efac4131f6575"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "wait 5s",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "goto your_desk pretend",
+    "put lin_desk pretend",
+    "goto lin_desk pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:08",
+    "interact",
+    "goto hallway_mid pretend",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "win kev",
+   "digests": [
+    "13f4469e232d38e7",
+    "2aa9d1f84cc5b0c4",
+    "7754fd4e8473b1b8",
+    "99e39901a9756819",
+    "7240e1e4f0a83e3f",
+    "2f7de80800b6f930",
+    "199030ac77efba5a",
+    "9547919ccd2fbfe3",
+    "092d794c69839526",
+    "2d66956e6c14a987",
+    "b593dfaccdc79f83",
+    "c0815fd78d9a0fcc",
+    "c52f5c6e104e0262",
+    "227b5f1c1738ff1f",
+    "c92cc9bb6dfff9db",
+    "3eae1595714865ae",
+    "a07f039ff4ec3c65",
+    "1a24676f5cc51f44"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:10",
+    "sit pretend",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "ce5af2835e8d61f0",
+    "97f0575ecdbcfd94",
+    "40492e313ee58ed7",
+    "8e799763033399e4",
+    "540071c480d3130f",
+    "a726c7510c4cb096",
+    "5671faba631bef5e",
+    "06634359e8fb1a26",
+    "622cb091642e8681",
+    "479bb0a8200b448e",
+    "49d4dd6f815573bc"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:25",
+    "goto kev_desk",
+    "interact",
+    "goto hallway_mid",
+    "interact",
+    "pretend until 3:33",
+    "goto boss_desk pretend",
+    "interact",
+    "interact",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6f681976b6118d11",
+    "b125bd1a8a7248a8",
+    "91146fe073d5e32c",
+    "9f46e5899fb1eaf3",
+    "49f9dbe916145352",
+    "68bd7aee247f02ef",
+    "f59f5ffbeb072960",
+    "30c324edd73a3d2f",
+    "2a8b5a4bda4f1140",
+    "fbba8e0b9624c223",
+    "bc7eb8e875e8c476"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto hallway_west",
+    "wait 5s",
+    "interact",
+    "goto hallway_mid pretend",
+    "pretend 3s",
+    "interact",
+    "interact",
+    "goto your_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "goto kev_desk pretend",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "73625df91499c048",
+    "bc235cb4ee06fe99",
+    "99e39901a9756819",
+    "97c66540d08584d6",
+    "899e93543e760688",
+    "7addf6385cb13672",
+    "53908113af24f3fd",
+    "d45b78fd567a7bfa",
+    "3b6fe8b31b0d2dee",
+    "268ac13f4ff3cf67",
+    "deba5282bde5a240",
+    "7361af44e06678b9",
+    "ddb6ede78f0209c2",
+    "ca52a427239b1d5b",
+    "e09523307bf7b156",
+    "113a5a77206f9c56"
+   ]
+  },
+  {
+   "cmds": [
+    "interact",
+    "goto hallway_west",
+    "interact",
+    "pretend 3s",
+    "interact",
+    "interact",
+    "goto your_desk pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "pretend until 3:09",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "sit pretend",
+    "wait until 3:47"
+   ],
+   "summary": "caught",
+   "digests": [
+    "13f4469e232d38e7",
+    "73625df91499c048",
+    "d19221a62c311eb0",
+    "0c4eeed7172f8244",
+    "6e60e1cc9ebf9c93",
+    "2519712c2ce99833",
+    "d5ef95505a7ffb52",
+    "7b54922b582df47b",
+    "ef307822da9791ed",
+    "2b1aa7db3fd66a1c",
+    "cdd4776619eb5d16",
+    "5ec0ad7a6fda4b14",
+    "9b638e97539915e4",
+    "a2ff8e3804f60eaa",
+    "6f86b3efd95a61c2",
+    "a027c8e6e4216abf"
    ]
   },
   {
@@ -5618,15 +3130,15 @@
     "wait until 3:20",
     "pretend until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "6ec65f52c460a3fd",
-    "0107c35b74b3676a",
-    "a5c26b1deff162aa",
-    "981b550e62c5c814",
-    "034f892819590eb9",
-    "f88894ac8ba72af7",
-    "4a89776f11d4931a"
+    "0b91ba4fc6466947",
+    "68913c5fe5471365",
+    "1995debc292e22cf",
+    "2d239833fb699165",
+    "b07f31e5285d40cc",
+    "7fbe9138cb5f922e",
+    "393184022359103c"
    ]
   },
   {
@@ -5639,40 +3151,16 @@
     "wait until 3:26",
     "pretend until 3:47"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "217c01b92954484b",
-    "88b1edbed66a1a9c",
-    "a201cc01613a7f41",
-    "7e303450d16613c4",
-    "855570ef8023f034",
-    "c8406825fa505f21",
-    "10c1b43e039405fa",
-    "439b9db525e747e5"
-   ]
-  },
-  {
-   "cmds": [
-    "goto hallway_coffee",
-    "interact",
-    "pretend until 3:24",
-    "goto kev_desk pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:47"
-   ],
-   "summary": "fail",
-   "digests": [
-    "2b4080b0e128a024",
-    "f3b189f82b08c96d",
-    "2139379c58327067",
-    "0416f13348d49037",
-    "d1add8862f660d0b",
-    "2d0f9bc102d91245",
-    "f281d422d7f8f90b",
-    "97e8abbfc0052f5b",
-    "26aebe6bd981b759"
+    "f97355d7f7332e56",
+    "27874ff56d1b836f",
+    "addc3f1a587a3b72",
+    "eee80d6d5e1fe754",
+    "576f6369b59e3707",
+    "b108c4248a3e8970",
+    "fc01f52df1f87201",
+    "729f27357e903027"
    ]
   },
   {
@@ -5682,7 +3170,7 @@
     "interact",
     "restart",
     "goto hallway_west pretend",
-    "pretend until 3:36.4",
+    "pretend until 3:36.1",
     "interact",
     "put your_desk pretend",
     "goto my_seat pretend",
@@ -5691,22 +3179,22 @@
     "move E 1s",
     "wait 2s"
    ],
-   "summary": "blamed lin",
+   "summary": "caught",
    "digests": [
-    "fdf542bec2ef4d3c",
-    "c95b3b90cdd77d96",
-    "cb097ab42f989056",
-    "bcc6e7f0496eb128",
-    "e9879a4884e2439c",
-    "a7020ed450ef51ab",
-    "c8abe23a93f90c32",
-    "8edb80d822287ca7",
-    "86a265de9bc07e73",
-    "12a59089de734882",
-    "777511f015bbe563",
-    "7314d41359740461",
-    "4e87b12b93a05b19",
-    "0f8ba58605f6cb21"
+    "161b044bd583f50b",
+    "9ca111cfadb485a9",
+    "b7c38c892d5f2ca7",
+    "4e1044c76dfc56a6",
+    "bd599a7d406ee993",
+    "c6576325472e3af6",
+    "bea8bff3eeeefb60",
+    "dc13ac90344211cf",
+    "d71ed7ccc7d0cda6",
+    "e4619d2a21413033",
+    "2f61ca35e2942da7",
+    "7474071896967b50",
+    "573b7118e68f7156",
+    "4c0962ee111f1c45"
    ]
   }
  ]

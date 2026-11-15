@@ -45,10 +45,11 @@ export function resetLoop(game) {
     busy: false,
     busyPose: null,
     seated: true,
-    smeared: false, // ate an edible item (play/interactions.js eat_<type>); a role's evidence `mark` may name it
+    smeared: false, // what eating left on you: a config.js MARKS name (play/interactions.js eat_<type>); a role's evidence `mark` may name it
     action: null,
     locked: false,
     focus: null,
+    hold: null, // E down on a target with a hold verb: { verb, t } until it is let go (the tap) or held HOLD_TIME
   };
   game.npcs = [];
   game.world = game.level.initialWorld();
@@ -57,6 +58,8 @@ export function resetLoop(game) {
   game.watch = {}; // npc id -> the offence he has in sight; play/rules.js publishes it every step, render reads it
   game.caught = null;
   game.outcome = null;
-  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null, worn: null }; // rules.js only: who saw what, the grudge, the disguise worn (disguise.js)
-  game.scenario = { beatT: 0, crickets: false }; // scenario.js only: the end beat
+  // rules.js: who saw what, the grudge, the disguise worn (disguise.js); sent: the walk to your desk after an order
+  // (player.js steps it; render reads it), workFrom: forced minutes left when you sat down (the desk stack's height).
+  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null, worn: null, sent: null, workFrom: 0 };
+  game.scenario = { beatT: 0, crickets: false, walk: null, arrivedAt: 0, endAt: 0 }; // scenario.js only: the end beat (walk: to the front)
 }

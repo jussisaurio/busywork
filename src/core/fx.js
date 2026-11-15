@@ -1,12 +1,12 @@
 // Shared visual-effect state helpers. Gameplay/sim code calls these; the renderer
 // draws game.fx; audio listens to the 'say' event.
 //
-// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [] }
+// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [], turns: [] }
 
 let bubbleSeq = 0;
 
 export function createFx() {
-  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [] };
+  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [], turns: [] };
 }
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
@@ -50,21 +50,32 @@ export function burst(game, kind, x, y, n = 8, opts = {}) {
 
 // A sightline flash: "this NPC is looking at you, from there". Drawn from the NPC's eyes to
 // the player (both live positions), fading out over ttl.
-// kind: 'notice' (first sight, faint) | 'tattle' (a witness shouts) | 'caught' (the boss)
+// kind: 'notice' (first sight, faint) | 'tattle' (a witness shouts) | 'caught' (the boss) | 'relay' (her shout
+// reaching the authority: to = his id, a pulse runs along it) | 'order' (the authority sends you to your desk)
 // via: { screen: {x, y}, lens: {x, y} } (tile units) when he saw you on a camera's screen: the line runs from his
 // eyes to the screen, then from the camera's lens to you (play/rules.js; sim/mechanics/camera.js).
-export function sightline(game, from, kind = 'notice', ttl = 0.8, via) {
-  game.fx.lines = game.fx.lines.filter((l) => l.from !== from);
-  const line = { from, to: 'player', kind, age: 0, ttl };
+// to: 'player' or an NPC id. A new line replaces the one with the same from and to.
+export function sightline(game, from, kind = 'notice', ttl = 0.8, via, to = 'player') {
+  game.fx.lines = game.fx.lines.filter((l) => l.from !== from || l.to !== to);
+  const line = { from, to, kind, age: 0, ttl };
   if (via) line.via = via;
   game.fx.lines.push(line);
 }
 
-// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl.
-// opts.color: a CSS colour (default the renderer's).
+// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl
+// (default: 1 s, longer for a wide earshot, so the rings visibly travel from the source). opts.color: a CSS colour
+// (default the renderer's).
 export function ripple(game, x, y, radius, opts = {}) {
   const list = game.fx.ripples ?? (game.fx.ripples = []);
-  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? 1 });
+  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? Math.max(1, radius / 12) });
+}
+
+// A head turned to a noise: NPC `id` was looking along `from` (rad, his view direction) and turns to (x, y) (tiles).
+// The renderer draws the swing, from the old direction to where he looks now, fading out over ttl.
+export function turned(game, id, from, x, y, ttl = 1.2) {
+  const list = game.fx.turns ?? (game.fx.turns = []);
+  for (let i = list.length - 1; i >= 0; i--) if (list[i].id === id) list.splice(i, 1);
+  list.push({ id, from, x, y, age: 0, ttl });
 }
 
 export function shake(game, amount = 0.15, t = 0.3) {
@@ -89,6 +100,10 @@ export function updateFx(game, dt) {
   if (fx.ripples?.length) {
     for (const r of fx.ripples) r.age += dt;
     fx.ripples = fx.ripples.filter((r) => r.age < r.ttl);
+  }
+  if (fx.turns?.length) {
+    for (const r of fx.turns) r.age += dt;
+    fx.turns = fx.turns.filter((r) => r.age < r.ttl);
   }
   if (fx.shake.t > 0) fx.shake.t = Math.max(0, fx.shake.t - dt);
   else fx.shake.amount = 0;

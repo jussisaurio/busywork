@@ -96,7 +96,7 @@ const ITEMS = {
     icon: '🎂', // what people say for it; draw: how it looks in a hand, on the floor and in the HUD (painters.js)
     draw: cake,
     place: 'cake',
-    edible: true, // eat_cake: sneaky to Gus, and Doreen reads it as slacking
+    edible: { leaves: 'splat' }, // eat_cake: sneaky to Gus, and Doreen reads it as slacking; frosting down your front
     owner: {
       id: 'gus',
       says: [{ say: ['😠', '🎂'] }],

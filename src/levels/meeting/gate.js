@@ -62,7 +62,7 @@ export default {
     // Grabbing the keycard in plain view.
     ['goto coat_rack', 'interact', 'wait until 4:00'],
     // Lin's sandwich, eaten, then walking into her hunt.
-    ['goto fridge pretend', 'interact', 'interact', 'pretend until 3:10', 'goto lin_desk', 'wait 5s', 'pretend until 4:00'],
+    ['goto fridge pretend', 'interact', 'eat', 'pretend until 3:10', 'goto lin_desk', 'wait 5s', 'pretend until 4:00'],
     // The mug planted on Kev's desk before the boss's hunt, then raw movement past him with it gone.
     ['goto coffee_machine pretend', 'interact', 'sit', 'pretend until 3:01', 'goto projector pretend', 'interact', 'put kev_desk pretend', 'move S 1s', 'wait until 3:20', 'goto meeting_seat pretend', 'pretend until 4:00'],
     // Several loops: restart mid-day, a full day, continue into the next one.

@@ -3,13 +3,17 @@
 //
 // The actions are the level's (level.interactions, keyed by verb; see levels/meeting/interactions.js for the
 // row fields), then one per edible item, then the generic ones every level has:
-//   holding an edible item                       -> eat_<type> (sneaky to its owner; leaves player.smeared)
+//   holding an edible item                       -> eat_<type> (a hold row; sneaky to its owner; leaves its mark)
 //   own_desk (not seated)                        -> sit (instant)
 //   holding anything, no level 'self' row valid  -> drop (instant; not an item with `keep`)
 //   empty hands, dropped item within ITEM_RADIUS -> pick_up (an item on a spot: within INTERACT_RADIUS)
 //   holding what a free spot takes               -> put (instant, or timed for an item with `put`; putdown.js)
-// The nearest valid target wins; 'self' targets only apply when nothing else is valid.
-import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
+// The nearest valid target wins; 'self' targets only apply when nothing else is valid. Of the 'self' rows, a tap
+// does the first valid one without `hold` (a level's own, else drop) and holding E for HOLD_TIME the first valid
+// `hold` row (eating), so eating never takes the drop key; with no tap row (an item with `keep`) a tap eats.
+// Every 'self' row names a `preview`: the arm pose (render/characters.js ARM_POSES) the player strikes while it
+// is what E would do, and while doing it.
+import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME, HOLD_TIME } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 import { actionNoise } from '../sim/mechanics/attention.js';
@@ -20,7 +24,8 @@ const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 // Generic rows. instant: done at once, no timed action (and so never witnessed in progress).
 const GENERIC = {
   sit: { on: 'own_desk', icon: '🪑', text: 'sit down', instant: true, can: (p) => !p.seated, done: sitAtDesk },
-  drop: { on: 'self', icon: '⬇️', text: null, instant: true, can: (p) => !!p.held, done: dropHeld }, // the harness names what is dropped
+  // the harness names what is dropped; preview: the arm held out over the floor
+  drop: { on: 'self', icon: '⬇️', text: null, instant: true, preview: 'holdout', can: (p) => !!p.held, done: dropHeld },
   pick_up: {
     on: 'item', icon: '✋', text: 'pick it up', duration: PICK_UP_TIME, sneaky: false,
     can: (p, w, item) => !p.held && w.items.includes(item),
@@ -29,17 +34,20 @@ const GENERIC = {
   put: PUT_ROW, // holding what a free spot in reach takes (mechanics/putdown.js; instant)
 };
 
-// Eating an edible item you hold: the boss reads it as slacking, its owner (if any) as theft, and the mustard
-// (player.smeared) stays on you for the loop.
+// Eating an edible item you hold (hold E): the boss reads it as slacking, its owner (if any) as theft, and what
+// it leaves on you (edible.leaves, a config.js MARKS name, or null) stays for the loop as player.smeared.
+// preview: the item lifted toward the mouth.
 function eatRow(type, item) {
   const owner = item.owner?.id ?? null;
+  const leaves = item.edible?.leaves ?? null;
   return {
     on: 'self', icon: '😋', text: `eat the ${type}`, duration: EAT_TIME, sneaky: !!owner, owner, idle: true, saw: item.icon,
+    hold: true, preview: 'lift',
     can: (p) => p.held === type,
     done(game) {
       const p = game.player;
       p.held = null;
-      p.smeared = true; // the evidence is now on you
+      if (leaves) p.smeared = leaves; // the evidence is now on you
       if (item.place) game.world[item.place] = 'eaten';
       burst(game, 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
       say(game, 'player', ['😋'], { kind: 'thought', ttl: 1.5 });
@@ -120,11 +128,27 @@ function findFocus(game) {
     }
   }
   best = putFocus(game, bestD, rows.put) ?? best;
-  if (!best) {
-    const e = possibleRow(game, rows.self);
-    if (e) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: e.row.icon, action: e.verb };
+  return best ?? selfFocus(game, rows.self);
+}
+
+// What E does to you and what you hold, when nothing else is in reach: action, the tap's row; hold, the row
+// holding E does instead (null: none, or the tap is it). preview / holdPreview: their arm poses (the renderer).
+function selfFocus(game, list) {
+  const p = game.player;
+  let tap = null;
+  let hold = null;
+  for (const e of list) {
+    if (e.row.hold ? hold : tap) continue;
+    if (!e.row.can(p, game.world, null)) continue;
+    if (e.row.hold) hold = e;
+    else tap = e;
   }
-  return best;
+  if (!tap) [tap, hold] = [hold, null];
+  if (!tap) return null;
+  return {
+    kind: 'self', id: 'self', x: p.x, y: p.y, icon: tap.row.icon, action: tap.verb, preview: tap.row.preview ?? null,
+    hold: hold?.verb ?? null, holdPreview: hold?.row.preview ?? null,
+  };
 }
 
 export function updateInteractions(game, dt) {
@@ -134,6 +158,7 @@ export function updateInteractions(game, dt) {
   if (playerLocked(game)) {
     if (p.action) cancelAction(game, game.caught ? 'caught' : 'locked');
     p.focus = null;
+    p.hold = null;
     return;
   }
 
@@ -150,7 +175,28 @@ export function updateInteractions(game, dt) {
   }
 
   p.focus = findFocus(game);
-  if (p.focus && input.pressed('interact')) startAction(game, p.focus);
+  const f = p.focus;
+  if (p.hold) {
+    // E is down on a target with two verbs: let go for the tap's, keep holding (standing still) for the other.
+    input.pressed('interact');
+    if (!f || f.hold !== p.hold.verb) p.hold = null; // the target changed under the key: nothing
+    else if (!input.isDown('interact')) {
+      p.hold = null;
+      startAction(game, f);
+    } else {
+      const ax = input.axis();
+      p.hold.t = ax.x || ax.y ? 0 : p.hold.t + dt;
+      if (p.hold.t >= HOLD_TIME) {
+        p.hold = null;
+        startAction(game, { ...f, action: f.hold });
+      }
+    }
+    return;
+  }
+  if (f && input.pressed('interact')) {
+    if (f.hold && input.isDown('interact')) p.hold = { verb: f.hold, t: 0 }; // tap or hold: decided on release
+    else startAction(game, f);
+  }
 }
 
 function startAction(game, focus) {
@@ -185,6 +231,7 @@ function startAction(game, focus) {
     x: focus.x,
     y: focus.y,
     item: focus.item ?? null,
+    pose: focus.kind === 'self' ? row.preview ?? null : null, // an action on yourself shows its preview pose
   };
   game.events.emit('action:start', { type: verb, targetId: focus.id });
 }
