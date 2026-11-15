@@ -295,7 +295,7 @@ function sceneStop(ctx, game, t, e) {
 }
 
 // The fail: 4:30 and the boss still at his desk in his shirtsleeves, his coat on its rack, under his clock (the
-// time it shows, crooked if you pushed it), so you are still in the office. Out of the window your bus drives off.
+// time it shows, crooked if you pushed it), so you are still at your desk. Out of the window your bus drives off.
 function sceneFail(ctx, game, t, e) {
   const w = game.world || {};
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
@@ -316,10 +316,11 @@ function sceneFail(ctx, game, t, e) {
   ctx.fillStyle = C.walnutTop;
   rrect(ctx, 222, 274, 156, 38, 10);
   ctx.fill();
-  // you, at the window, hands on the glass
-  const p = figure(t, 2.4, -Math.PI / 2, { arms: 'bang', sweat: true });
-  p.head = -Math.PI / 2 + Math.sin(t * 2) * 0.15;
-  drawPerson(ctx, game.level.looks.player, p, 634, 262);
+  // you, at your desk (where the day's last frame leaves you), looking out at the bus
+  const p = figure(t, 2.3, -Math.PI / 2 + 0.4, { pose: 'sit', arms: 'idle', sweat: true });
+  p.head = -Math.PI / 2 + 0.3 + Math.sin(t * 2) * 0.15;
+  drawPerson(ctx, game.level.looks.player, p, 640, 268);
+  desk(ctx, 570, 288, 150);
   bubble(ctx, ['😩'], 660, 190, e, 'thought');
 }
 

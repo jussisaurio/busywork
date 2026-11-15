@@ -66,6 +66,49 @@ you are at the stop. The day is a time loop: when you lose, it is 3:00 again.
     you back to your desk with 20 minutes of work and the push you were doing does not count. If he is out, they tell
     him when he walks back in (finger, clock), and he sets his clock right.
 
+## Who does what
+The caretaker is there before you can do anything. At 3:00 he stands on the stepladder under the boss's clock and
+puts a new battery in it. He did the open-plan clock first. He leaves both stepladders where they stand and goes out
+through the lobby by 3:09. He does not care what anyone else does.
+
+The boss is out at a long lunch when the day starts. At about 3:15 he walks back along the street, past the bus stop
+and in through the lobby. He sits down in his glass office at about 3:22 with his back to his clock. He turns round to
+it, then looks out at your desk. He does that again at 3:35, at about 4:00, at 4:10 and at 4:25. If your chair is
+empty, he gets up and looks for you. At 3:40 he goes for a coffee. He reads the open-plan clock on his way to the
+kitchen, pours a coffee at the pot at 3:47 and reads the clock again on his way back. At 4:50 by the clock in front of
+him, he takes his coat off the rack in the hallway, waves and goes home over the zebra crossing.
+
+Lin works at the desk below the boss's glass wall. She faces it, so she sees his stepladder through the glass. She
+looks up at the open-plan clock every quarter of an hour or so. At 3:20 she goes to the restroom and comes back at
+about 3:35. If she sees someone on a stepladder, she shouts and points. She tells the boss at once if he is in, or
+when he walks back in. At her 4:50 she stands up and looks at the coat rack. She sits down again while the coat is
+there, and she follows the boss out when it has gone.
+
+Kev works at the desk right under the open-plan clock, facing it. At 3:01 he goes to the kitchen for a coffee and comes
+back at about 3:10. At 3:13 he picks up his laptop to go home, sees the boss's coat on the rack, puts the laptop down
+and sits down again. At 3:25 he goes for another coffee and comes back at about 3:34. Like Lin, he tells on anyone
+he sees on a stepladder. At his 4:50 he looks at the coat rack and does what Lin does.
+
+## Things in the office
+- **The boss's wall clock**, in his office behind his chair. He keeps the time by it. It is the clock of route 1.
+- **The open-plan clock**, on the hallway wall over Kev's desk and on the boss's way to the kitchen. Lin and Kev keep
+  the time by it, and the boss reads it when he walks under it. It is the clock of route 2.
+- **Two stepladders**, one under each clock. The caretaker leaves them there after the battery change. They are how
+  you reach a clock, and anyone on one is easy to see.
+- **The coat rack and the boss's coat**, in the hallway by his office door. The coat on the rack means he is in. It
+  shows the rule (Kev at 3:13, Lin and Kev at their 4:50) and shows when he has gone.
+- **The glass wall** of the boss's office. He sees your desk through it, and Lin sees his stepladder through it.
+- **The desks**: the boss's desk, yours, Lin's and Kev's. Your empty chair is what makes him look for you. The empty
+  desks at the sides make the office feel real.
+- **The kitchen** with the coffee pot, the fridge and a table. Kev goes there at 3:01, which is your time on the
+  open-plan clock. The boss goes there on his break, which takes him under that clock.
+- **The restroom.** Lin goes there at 3:20, which is your time on the boss's clock.
+- **The plants.** They make the office feel real and do nothing else.
+- **The lobby, the glass door, the bus stop sign, the road and the zebra crossing.** The bus stops at the sign at 4:30.
+  The boss comes back from lunch past it and goes home over the crossing, so he sees anyone waiting at the stop
+  before he has gone.
+- **The bus.** It pulls in at about 4:26 and leaves at 4:30.
+
 ## Ways to win
 You win when the boss has gone home before 4:30 and you are at the bus stop at 4:30. The bus pulls in at 4:26 and you
 get on. You see the stop at the start (a bus stop sign by the road, outside the lobby's glass door) and the bus at the
@@ -81,6 +124,9 @@ Steps:
    an hour early: he skips his coffee, takes his coat at about 4:21 and walks out through the lobby; he is over the
    crossing by about 4:28.
 5. Follow him out, behind him, and wait at the stop.
+
+In a real office: if someone sets the office clock half an hour fast, a boss who goes home by his wall clock goes home
+half an hour early. A boss who sees you next to his clock as it jumps knows what you did.
 
 The facts, and when you see them:
 - **The clocks are set by somebody else.** At 3:00 the caretaker is up the boss's stepladder with a battery (shot
@@ -118,6 +164,9 @@ skips the restroom today). At about 3:43 the boss walks under the open-plan cloc
 (🧥😬): the coat still hangs there, because he is in the kitchen on his break, so they stay. At about 3:58 the boss
 walks back under the open-plan clock, reads 4:58 and believes it (😮). He takes his coat at about 4:00 and waves; Lin
 and Kev see the rack empty, wave and follow him out. All three are gone by about 4:09. Go out to the stop after them.
+
+In a real office: if the hallway clock says it is home time, people look up and believe it, and so does a boss who walks
+past it with a coffee in his hand. Nobody checks a wall clock against his phone.
 
 The facts, and when you see them:
 - **Lin and Kev go by the open-plan clock.** At 3:01 Kev looks up at it with a clock thought before he gets up (shot
