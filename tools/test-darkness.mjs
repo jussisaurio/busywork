@@ -116,26 +116,46 @@ function day(level) {
 {
   const { createFakeCanvas } = await import('./lib/fake-canvas.mjs');
   const calls = [];
-  const fake = createFakeCanvas({ onCall: (label, method, args) => { if (label === 'main') calls.push(method); } });
+  const sets = [];
+  const fake = createFakeCanvas({
+    onCall: (label, method) => { if (label === 'main') calls.push(method); },
+    onSet: (label, prop, value) => { if (label === 'main' && (prop === 'fillStyle' || prop === 'strokeStyle')) sets.push(String(value)); },
+  });
   fake.installDom({ innerWidth: 960, innerHeight: 600, devicePixelRatio: 1 });
   const { createRenderer } = await import('../src/render/renderer.js');
   const frame = (game) => {
     const r = createRenderer(fake.makeCanvas('main'), { strict: true });
     calls.length = 0;
+    sets.length = 0;
     r.render(game);
+    frame.sets = sets.slice();
     return calls.slice();
   };
   frame(day(M)); // warm the text-measure cache
   const plain = frame(day(M));
   const level = darkLevel({ rooms: [ROOM], torch: TORCH });
   const lit = frame(day(level));
+  const litSets = frame.sets;
   ok(JSON.stringify(lit) === JSON.stringify(plain), 'every light on: the same draw calls as a level without darkness');
   const game = day(level);
   game.world.officeLight = 'off';
   const off = frame(game);
+  const offSets = frame.sets;
+  // In the dark everyone is redrawn in night colours, so each person stays recognisable (shirt, hair) but dim.
+  const { nightColor } = await import('../src/render/darkness.js');
+  const { lookFor } = await import('../src/render/characters.js');
+  const bossNpc = findNpc(game, 'boss');
+  const bossLook = lookFor(level.looks, 'boss', bossNpc.color);
+  const count = (list, c) => list.filter((v) => v === c).length;
+  ok(nightColor(bossLook.tie) !== bossLook.tie && offSets.includes(nightColor(bossLook.tie)), 'lights off: people are redrawn in night colours');
+  ok(!litSets.includes(nightColor(bossLook.tie)), 'every light on: no night colours');
   ok(off.filter((m) => m === 'clip').length > plain.filter((m) => m === 'clip').length, 'lights off: the dark is clipped and veiled');
   game.world.torches = true;
   const torch = frame(game);
+  const torchSets = frame.sets;
+  // A torch lights its holder: he is drawn again in full colour inside his pool, and his arm holds the phone.
+  ok(count(torchSets, bossLook.tie) > count(offSets, bossLook.tie), 'a torch on: its holder is drawn in full colour');
+  ok(count(torchSets, bossLook.bodyDark) > count(offSets, bossLook.bodyDark), 'a torch on: his sleeve reaches out to the phone');
   ok(torch.filter((m) => m === 'clip').length > off.filter((m) => m === 'clip').length, 'a torch on: its beam is cut out of the veil');
   // The torch is drawn in his hand: one glow per holder, none for a holder who faces away (his body hides it).
   const glows = (calls) => calls.filter((m) => m === 'createRadialGradient').length;
@@ -146,6 +166,12 @@ function day(level) {
   holder.dir = facing;
   ok(glows(torch) === glows(away) + 1, 'a torch on: the phone shows in his hand, but not while he faces away');
   ok(glows(torch) > glows(off), 'a torch on: the beam and the phone glow');
+  // A seated holder keeps his torch: sitting lowers the phone but does not hide it.
+  const wasPose = holder.pose;
+  holder.pose = 'sit';
+  const seated = frame(game);
+  holder.pose = wasPose;
+  ok(glows(seated) === glows(torch), 'a torch on: a seated holder still shows the phone');
   game.player.x = 3.5;
   game.player.y = 4.5;
   frame(game);
