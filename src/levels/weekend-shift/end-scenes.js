@@ -142,6 +142,7 @@ function workDesk(ctx, look, x, y, t, opts = {}) {
     ctx.fillStyle = i % 2 ? '#e9e4d6' : C.white;
     ctx.fillRect(x + 42 + Math.sin(i * 1.7) * 2, y + 2 - i * 5, 36, 5);
   }
+  if (opts.noMug) return;
   ctx.fillStyle = '#d8d4cc';
   rrect(ctx, x - 70, y - 8, 14, 15, 3);
   ctx.fill();
@@ -165,13 +166,14 @@ const DESK_Y = TAB.y + 196;
 const BUBBLE_Y = DESK_Y - 82; // over the worker's head
 const SEAT = { boss: ['#6b2f24', '#4e2019'], kev: ['#5f6b3a', '#47512a'], player: ['#d6a23a', '#a97b22'], lin: ['#2f8f83', '#22675f'] };
 
-// Win: the boss, or Kev, works Saturday. Their face on the board, them at the desk, the sun outside.
+// Win: the boss, or Kev, works Saturday (Kev: sad about it). Their face on the board, them at the desk, the sun outside.
 function sceneWin(ctx, game, t, e, o) {
   const who = written(game, o);
   room(ctx, t);
   board(ctx, looks(game)[who], t);
-  workDesk(ctx, looks(game)[who], DESK_X, DESK_Y, t, { seat: SEAT[who], red: who === 'boss' });
-  bubble(ctx, ['😩'], DESK_X, BUBBLE_Y, e, 'speech', 1.3);
+  workDesk(ctx, looks(game)[who], DESK_X, DESK_Y, t, { seat: SEAT[who], red: who === 'boss', sweat: who === 'kev' });
+  // the boss is cross; Kev, who did nothing, is sad (the cost of framing him)
+  bubble(ctx, [who === 'kev' ? '😢' : '😩'], DESK_X, BUBBLE_Y, e, 'speech', 1.3);
 }
 
 // Fail: your face stayed on the board; you're the one at the desk.
@@ -188,7 +190,7 @@ function sceneCaught(ctx, game, t, e) {
   room(ctx, t);
   const sc = scribbleOf(game);
   board(ctx, looks(game).player, t, sc ? { scribble: sc, tray: false } : {});
-  workDesk(ctx, looks(game).player, DESK_X, DESK_Y, t, { seat: SEAT.player, sweat: true });
+  workDesk(ctx, looks(game).player, DESK_X, DESK_Y, t, { seat: SEAT.player, sweat: true, noMug: true }); // (nothing by his hand)
   const b = person(t);
   b.dir = -0.12;
   b.head = b.dir + Math.sin(t * 2.4) * 0.06;
@@ -250,11 +252,11 @@ function meetingSeat(ctx, look, seat, x, y, dir, at, t, phase) {
   return p;
 }
 
-// Blamed: Friday, 5:00, everyone in their chairs round the board, as the day ended. The board shows the face you
-// wrote; the boss read it out, looked for you, and points at your chair: empty, your outline on it. Lin and Kev have
-// turned round to look at it.
+// Blamed: Friday, 5:00, everyone in their chairs round the board, as the day ended. The boss read out the face you
+// wrote, looked for you, wiped it and drew yours: the board shows your face, and he points at your chair: empty, its
+// outline on it. Lin and Kev have turned round to look at it.
 function sceneBlamed(ctx, game, t, e, o) {
-  const who = written(game, o);
+  const who = 'player';
   const L = looks(game);
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_H);
@@ -301,7 +303,7 @@ export const END_SCENES = {
   kindOf,
   scenes: {
     winBoss: { win: true, icons: ['✏️', '@boss', '@player', '🏖️'], draw: sceneWin }, // his Saturday; your weekend
-    winKev: { win: true, icons: ['✏️', '@kev', '@player', '🏖️'], draw: sceneWin },
+    winKev: { win: true, icons: ['✏️', '@kev', '😢'], draw: sceneWin }, // his Saturday, and he did nothing
     fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
     caught: { win: false, icons: ['✏️', '😠', '@player'], draw: sceneCaught },
     blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },

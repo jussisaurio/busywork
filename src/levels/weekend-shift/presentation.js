@@ -1,16 +1,17 @@
-// How Weekend Shift looks and sounds: title card, set dressing, poses, the end card, voices and sounds (level 1's
+// How Saturday (id weekend-shift) looks and sounds: title card, set dressing, poses, the end card, voices and sounds (level 1's
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
 import { C } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
+import { inZone } from '../../game/perception.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
-import { READ_S, ANNOUNCE_S, POINT_S, CLAP_S } from './cast.js';
-import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
+import { READ_S, ANNOUNCE_S, CLAP_S, REDRAW_AT, REDRAW_S } from './cast.js';
+import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ["Friday, 4:00 PM. You're down for Saturday.", 'At 5:00 the boss reads it out.'],
+  mission: ["Your face is on Saturday's board.", 'At 5:00 the boss reads it out.'],
   badge: ['🗓️', '@player'], // the roster's week, and you down for it
 };
 
@@ -33,6 +34,14 @@ function lunch(game) {
   if (n._ate) return 'hot';
   return n.anim === 'fishIn' || n.anim === 'fish' ? 'away' : 'cold';
 }
+// Away from her desk: from 4:30 until she's sat back down with her fish (her chair pushed out, turned)
+function linAway(game) {
+  const n = lin(game);
+  if (!n) return false;
+  const d = game?.level?.spots?.lin_desk;
+  const home = d && !n.moving && Math.hypot(n.x - (d.x + 0.5), n.y - (d.y + 0.5)) < 0.6;
+  return !home;
+}
 // She carries it while she isn't standing at the microwave with it inside
 function linAtMicrowave(n, game) {
   const m = game?.level?.spots?.lin_wait;
@@ -40,7 +49,7 @@ function linAtMicrowave(n, game) {
 }
 
 // The reading (cast.js readRoster): READ_S s before 5:00 the boss announces it to the room; at ANNOUNCE_S he turns
-// and points the marker at the face on the board; at POINT_S, whose it is. readS: s into it, else null.
+// and points the marker at the face on the board, to 5:00. readS: s into it, else null.
 const boss = (game) => (game?.npcs || []).find((n) => n.id === 'boss');
 function readS(game) {
   const b = boss(game);
@@ -54,6 +63,27 @@ const reading = (game, from) => {
 };
 // He has the board's marker from 4:50 (the board is his now): in his hand, gone from the tray
 const bossHasMarker = (n, w) => n.id === 'boss' && !!w.rosterLocked && n.override !== 'onPhone';
+// 5:00, the end beat (index.js punchline): the result, and s into the beat
+const result = (game) => game?.outcome?.result ?? null;
+const beatT = (game) => game?.scenario?.beatT ?? 0;
+// his own face read out to a full room: he goes red, they clap
+const ownFace = (game) => result(game) === 'win' && game.world.roster === 'boss';
+// he points the marker: from ANNOUNCE_S into the reading to the end (blamed: from his turn back to the board)
+function pointing(game) {
+  const r = result(game);
+  if (!r) return reading(game, ANNOUNCE_S);
+  return r !== 'blamed' || beatT(game) >= REDRAW_AT;
+}
+// blamed: s into his redraw of the slot (0..1), else null; after it, 1
+function redrawK(game) {
+  if (result(game) !== 'blamed') return null;
+  return Math.max(0, Math.min(1, (beatT(game) - REDRAW_AT) / REDRAW_S));
+}
+// whose face the board shows: blamed, yours once he's redrawn it
+function boardFace(game, w) {
+  const k = redrawK(game);
+  return k !== null && k >= 1 ? 'player' : w.roster;
+}
 const WROTE_FRESH_MIN = 3; // game minutes the ink glints after you write
 const sinceMin = (game, m) => (m === null || m === undefined ? null : ((game?.clock?.minute ?? 0) - m) / GAME_MIN_PER_SEC);
 // s into the beat a new face pops up off the board, else null
@@ -80,13 +110,39 @@ function kevHears(game) {
   if (!n || n.override !== 'alerted') return null; // from the ❗ until he kneels at it
   return { x: n.x * T, y: n.y * T - 18 };
 }
-// Your place round the board, outlined on the floor: only once you're blamed for not being in it
+// The boss at his desk, looking at the beeping copier: his head (px), for a dashed line from it to the copier, through
+// the board (props.js paintCopier), else null
+function bossGaze(game, w) {
+  if (w.copier !== 'jammed' && w.copier !== 'fixing') return null;
+  const b = boss(game);
+  const d = game?.level?.spots?.boss_desk;
+  if (!b || !d || b.moving || b.override || Math.hypot(b.x - (d.x + 0.5), b.y - (d.y + 0.5)) > 0.6) return null;
+  return { x: b.x * T, y: b.y * T - 14 };
+}
+// Your place round the board, outlined on the floor: from the gather (everyone else sits down round the board) while
+// you aren't in it, and hot once you're blamed for not being in it
 function emptyPlace(game) {
-  return game?.outcome?.result === 'blamed';
+  if (game?.outcome) return game.outcome.result === 'blamed';
+  const p = game?.player;
+  const day = game?.level?.day;
+  if (!p || !day || !game.clock || game.clock.minute < day.gatherAt) return false;
+  return !inZone(game, game.level.meeting.room, p.x, p.y);
 }
 function placePx(game) {
   const s = game?.level?.spots?.[game.level.meeting.chair];
   return s ? { x: s.x * T + T / 2, y: s.y * T + T / 2 } : null;
+}
+
+// You're at the board, in reach of it
+function nearBoard(game) {
+  const p = game?.player;
+  const r = game?.map?.find?.('R')?.[0];
+  return !!p && !!r && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 1)) < 1.6;
+}
+// Blamed: the boss's redraw, your face going over the slot (drawBoard's scribble), while he draws it
+function redrawOf(game, w) {
+  const k = redrawK(game);
+  return k !== null && k > 0 && k < 1 ? { look: look(game, 'player'), k } : null;
 }
 
 // Where the renderer puts the boss's hand at his ear, on the phone (render/characters.js 'phone' arms, standing):
@@ -104,7 +160,7 @@ export const DECOR = {
   chairs: [
     { spot: 'boss_desk', face: 'S', color: OXBLOOD },
     { spot: 'player_desk', face: 'N', color: MUSTARD },
-    { spot: 'lin_desk', face: 'N', color: TEAL },
+    // (Lin's desk chair: props.js paints it, pushed out while she's away)
     { spot: 'kev_desk', face: 'N', color: OLIVE },
     // round the roster: everyone pulls up a chair at 5:00; yours is the mustard one
     { spot: 'board_boss', face: 'E', color: OXBLOOD },
@@ -135,20 +191,21 @@ export const DECOR = {
       state: (w, game) => {
         const s = readS(game);
         return {
-          look: look(game, w.roster),
+          look: look(game, boardFace(game, w)),
           fresh: w.wroteAt !== null && (game?.clock?.minute ?? 0) - w.wroteAt < WROTE_FRESH_MIN,
           glow: s !== null && s >= ANNOUNCE_S, // the boss points the marker at it
           pop: popS(w, game), // a new face, just written
           popSide: popSide(game), // ... drifting away from you
           place: placePx(game),
           empty: emptyPlace(game),
-          hot: true,
+          hot: game?.outcome?.result === 'blamed',
           tray: !w.rosterLocked && !scribbleOf(game), // the marker: in his hand from 4:50, in yours while you write
-          scribble: scribbleOf(game), // a write in progress, half drawn (and left so if you're caught at it)
+          lift: !w.rosterLocked && !scribbleOf(game) && nearBoard(game), // ... lifting off its tray when you're at the board
+          scribble: redrawOf(game, w) ?? scribbleOf(game), // a write in progress, half drawn (and left so if you're caught at it)
         };
       },
     },
-    { tile: 'X', draw: paintCopier, state: (w, game) => ({ copier: w.copier, beep: beepS(w, game), kev: kevHears(game) }) },
+    { tile: 'X', draw: paintCopier, state: (w, game) => ({ copier: w.copier, beep: beepS(w, game), kev: kevHears(game), gaze: bossGaze(game, w) }) },
     {
       tile: 'M',
       draw: paintMicrowave,
@@ -157,8 +214,9 @@ export const DECOR = {
     { tile: 'Q', draw: paintMyPhone, state: (w, game) => ({ phone: w.phone, to: game?.map?.find?.('B')?.[0] ?? null }) },
     { tile: 'B', draw: paintBossPhone, state: (w, game) => ({ phone: w.phone, hand: bossPhoneHand(game) }) },
     { tile: 'L', draw: paintLunch, state: (w, game) => ({ lunch: lunch(game) }) },
+    { tile: 'L', draw: paintLinChair, state: (w, game) => ({ away: linAway(game), color: TEAL, at: game?.level?.spots?.lin_desk ?? null }) },
   ],
-  things: THINGS, // '#handset', '#lunchbox', '#lunchhot', '#spot', '#microwave', '#deskphone', '#marker' (props.js)
+  things: THINGS, // '#handset', '#lunchbox', '#lunchhot', '#spot', '#microwave', '#deskphone', '#marker', '#spanner' (props.js)
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
@@ -180,20 +238,22 @@ export const LOOKS = LEVEL1_LOOKS;
 // pointing is the arm.
 export const POSES = {
   arms: [
-    // the reading: he points the marker at the face on the board (and, if it's Kev's, at Kev); at his own, he
-    // spreads his hands, and Lin and Kev clap
-    { when: (n, w, game) => n.id === 'boss' && reading(game, ANNOUNCE_S) && (w.roster !== 'boss' || readS(game) < POINT_S), arms: 'point', item: '#marker' },
-    { when: (n, w, game) => n.id === 'boss' && w.roster === 'boss' && reading(game, POINT_S), arms: 'shrug', item: '#marker' },
-    { when: (n, w, game) => (n.id === 'lin' || n.id === 'kev') && w.roster === 'boss' && reading(game, POINT_S) && readS(game) < POINT_S + CLAP_S, arms: 'bang' },
+    // the reading: he points the marker at the face on the board (and at 5:00, if it's Kev's, at Kev; blamed, he
+    // redraws it and points at your chair); at his own, he spreads his hands, and Lin and Kev clap
+    { when: (n, w, game) => n.id === 'boss' && ownFace(game), arms: 'shrug', item: '#marker' },
+    { when: (n, w, game) => n.id === 'boss' && pointing(game), arms: 'point', item: '#marker' },
+    { when: (n, w, game) => (n.id === 'lin' || n.id === 'kev') && ownFace(game) && beatT(game) < CLAP_S, arms: 'bang' },
+    // 4:50: out to the board head down in his folder
+    { when: (n) => n.id === 'boss' && n.anim === 'folder' && n.moving, arms: 'folder' },
     { when: (n, w) => bossHasMarker(n, w), arms: 'mug', item: '#marker' },
-    { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
+    { when: (n) => n.override === 'fixing', arms: 'reach', item: '#spanner', crank: true },
     { when: (n) => n.override === 'onPhone', arms: 'phone', item: '#handset' },
     // 4:30 she stands up with her lunch box and takes it to the microwave; 4:37 she brings it back, open, hot
     { when: (n, w, game) => n.id === 'lin' && n.anim === 'fishIn' && !n._ate && !linAtMicrowave(n, game), arms: 'mug', item: '#lunchbox' },
     { when: (n, w, game) => n.id === 'lin' && n.anim === 'fish' && !n._ate, arms: 'mug', item: '#lunchhot' },
   ],
   marks: [
-    { when: (n, w, game) => n.id === 'boss' && w.roster === 'boss' && reading(game, POINT_S), angry: true }, // red to the ears
+    { when: (n, w, game) => n.id === 'boss' && ownFace(game), angry: true }, // red to the ears
   ],
 };
 

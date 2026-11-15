@@ -1,22 +1,24 @@
-// "Weekend Shift": level 1's office, an hour later. At 5:00 the boss reads the Saturday roster: a whiteboard with
-// one face in Saturday's slot (yours, at 4:00), and that person works this weekend. Write someone else's name in
-// it: the boss's (he reads out his own name) or, write again, Kev's. Both watchers face the board, so you have to
-// make them look away: level 1 taught "wait for a glance"; this one teaches "make one". The routes are the two
-// ways to make one (sim/mechanics/attention.js), and a third that backfires:
-//   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s
-//     (long enough to notice it while fast-forwarding at your pretend, let go, and still finish writing).
-//     The board is on the west side: be there when it dings.
+// "Saturday" (id weekend-shift): level 1's office, an hour later. At 5:00 the boss reads the Saturday roster: a
+// whiteboard with one face in Saturday's slot (yours, at 4:00), and that person works this weekend. Write someone
+// else's name in it: the boss's (he reads out his own name) or, write again, Kev's. Both watchers face the board, so
+// you have to make them look away: level 1 taught "wait for a glance"; this one teaches "make one". The routes are
+// the two ways to make one (sim/mechanics/attention.js), and a third that backfires:
+//   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s, and
+//     everyone thinks of noodles (long enough to notice it while fast-forwarding at your pretend, let go, and still
+//     finish writing). The board is on the west side: be there when it dings.
 //   - the phone in the supply room (behind a wall, out of the boss's sight; his desk has none) rings his, on a
-//     side table in the corner of his office: he answers it standing there, facing the window, his back to the
-//     office, for 5 minutes. Lin still watches the board, except while she heats her fish at the microwave
-//     (4:30-4:37), her back to the board: ring then.
+//     side table in the corner of his office. He walks over and answers it standing there, facing the window, his
+//     back to the office: "Hello? ... Hello?" into a silent line, a few seconds, then he slams it down. The ring and
+//     the walk and the hellos are your window. Lin still watches the board, except while she heats her fish at the
+//     microwave (4:30-4:37), her back to the board: ring then.
 // Nothing is in reach of your seat (DESIGN.md): you start with nothing lit.
 //   - the trap: a paper clip jams the copier, and it beeps until Kev fixes it. Every head turns toward it, and
 //     the copier sits on the line from the boss's desk through the board: his look at it crosses the board.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { burst } from '../../core/fx.js';
-import { CAST, BEHAVIOURS } from './cast.js';
+import { speak, npcSayLater } from '../../sim/override.js';
+import { CAST, BEHAVIOURS, CLAP_S, REDRAW_AT, REDRAW_S } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
@@ -25,10 +27,11 @@ const START = 16 * 60; // 4:00 PM
 const DING_S = 10; // s from starting the microwave to the ding (6 game minutes of noodles)
 const DING_TURN = 6; // s every head in earshot stays turned to the ding
 const WRITE_S = 2.5; // s a write takes: longer than any glance away
+const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he slams it down
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier (on the line from the boss's desk through the board)   R the Saturday roster (a whiteboard on a stand)
-//   M microwave   C coffee machine   S sink   F fridge   P your desk   H plant   T desk/table
+//   M microwave   C counter (the noodle cup)   S sink   F fridge   P your desk   H plant   T desk/table
 //   Q the supply room's phone, behind the wall where the boss can't see it   L Lin's desk, where her lunch box sits
 //   B the boss's phone, on a side table (his desk has none)   G glass   D door
 const MAP = [
@@ -98,6 +101,8 @@ const INTERACTIONS = {
       const w = game.world;
       w.noodles = 'cooking';
       w.dingAt = game.clock.minute + DING_S * GAME_MIN_PER_SEC;
+      // at the DING every head thinks of the noodles, all at once (the ripple is the noise's)
+      for (const n of game.npcs) npcSayLater(n, DING_S, ['🍜'], 'thought', 1.8);
       game.events.emit('microwave:started', {});
     },
   },
@@ -108,6 +113,9 @@ const INTERACTIONS = {
       game.world.copier = 'jammed';
       game.world.jamAt = game.clock.minute; // its beacon flashes in time with the beeps (presentation.js)
       burst(game, 'puff', a.x, a.y, 6, { speed: 0.4, lift: 0.6, ttl: 1.0 });
+      // at the first beep both watchers think of the copier (the boss's look at it: a dashed line through the board,
+      // props.js paintCopier)
+      for (const n of game.npcs) if (n.id === 'boss' || n.id === 'lin') npcSayLater(n, 1.0, ['🖨️'], 'thought', 2);
       game.events.emit('copier:jammed', {});
     },
   },
@@ -145,6 +153,32 @@ function write(game, who) {
   w.wrote = w.phone === 'ringing' || w.phone === 'talking' ? 'phone' : dinged ? 'ding' : null;
   w.wroteAt = m; // the face settles into the slot (presentation.js)
   game.events.emit('roster:changed', { to: who });
+}
+
+// 5:00, the end beat (2 s): who the board says it is. The boss has been pointing the marker at the face in
+// Saturday's slot since 4:58 (cast.js readRoster), saying whose. Now: his own (he goes red, the room claps), Kev's
+// (he points at Kev, Kev groans), yours with you here (fail: he waves you up front), or anyone's with your chair
+// empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room stare at it).
+function punchline(game, result) {
+  const get = (id) => game.npcs.find((n) => n.id === id && n.active);
+  const boss = get('boss');
+  if (!boss) return;
+  if (result === 'blamed') {
+    npcSayLater(boss, REDRAW_AT, ['✏️'], 'speech', REDRAW_S, 'board_look');
+    npcSayLater(boss, REDRAW_AT + REDRAW_S, ['👉', '@player'], 'speech', 2 - REDRAW_AT - REDRAW_S, game.level.meeting.chair);
+  } else if (result === 'fail') {
+    speak(game, boss, [{ say: ['👈'], ttl: 2, face: game.level.meeting.presenter }]);
+  } else if (game.world.roster === 'boss') {
+    speak(game, boss, [{ say: ['@boss', '😳'], ttl: 2, face: 'board_look' }]);
+    for (const id of ['lin', 'kev']) {
+      const o = get(id);
+      if (o) speak(game, o, [{ say: ['👏'], ttl: CLAP_S }]);
+    }
+  } else {
+    speak(game, boss, [{ say: ['👉', '@kev'], ttl: 2, face: 'meeting_kev' }]);
+    const kev = get('kev');
+    if (kev) speak(game, kev, [{ say: ['😩'], ttl: 1.4, after: 0.6, face: 'board_look' }]);
+  }
 }
 
 // level.noises: an event sets off a noise at a spot (sim/mechanics/attention.js).
@@ -187,7 +221,8 @@ const LURES = [
       done: { set: { copier: 'fixed' }, event: 'copier:fixed', says: [{ say: ['😊'] }] },
     },
   },
-  { // The phone: the boss takes the call standing at it, in the corner by his window, his back to the office.
+  { // The phone: the boss takes the call standing at it, in the corner by his window, his back to the office. Anyone
+    // answers his own ringing phone; nobody's there, so "Hello? ... Hello?" for a few seconds, and he slams it down.
     npc: 'boss',
     when: (w) => w.phone === 'ringing',
     override: 'phone',
@@ -197,12 +232,12 @@ const LURES = [
     react: { wait: 1.0, says: [{ say: ['☎️', '❗'], kind: 'alert' }], event: 'boss:phone' },
     work: {
       override: 'onPhone',
-      minutes: 5,
+      minutes: CALL_MIN,
       progress: 'callProgress',
       start: {
         set: { phone: 'talking' },
         event: 'phone:answered',
-        says: [{ say: ['❓'] }], // nobody on the line
+        says: [{ say: ['❓'], ttl: 1.6 }, { say: ['❓', '❓'], ttl: 1.8, after: 2.2 }], // hello? ... hello??
       },
       done: { set: { phone: 'done' }, event: 'phone:hungUp', says: [{ say: ['😠'] }] },
     },
@@ -234,8 +269,9 @@ export default {
   behaviours: BEHAVIOURS,
   // verdict: the board decides: someone else's face there is a win if you're in your place (blamed if you aren't),
   // however you got it there (a write with no route still counts; the engine's rule would call it a fail). It records
-  // whose face the board showed (the end scenes draw them). Blamed: whoever isn't here gets Saturday. Every head
-  // turns to your empty place (outlined on the floor: presentation.js), wonders where you are, and points it out.
+  // whose face the board showed (the end scenes draw them), and plays the reading's punchline (punchline()).
+  // Blamed: every head turns to your empty place (outlined on the floor: presentation.js) and wonders where you are;
+  // the boss wipes Saturday's slot and draws your face in it, and points it out: the board still decides.
   meeting: {
     override: 'meeting',
     room: 'roster_area',
@@ -243,10 +279,11 @@ export default {
     presenter: 'meeting_presenter',
     verdict: (game, { present }) => {
       const result = game.world.roster === 'player' ? 'fail' : present ? 'win' : 'blamed';
+      punchline(game, result);
       return {
         result,
         why: game.world.roster,
-        ...(result === 'blamed' ? { stare: { think: ['@player', '❓'], say: ['👉', '@player'] } } : {}),
+        ...(result === 'blamed' ? { stare: { think: ['@player', '❓'], say: ['👉', '@player'] } } : {}), // (the boss's own lines run first)
       };
     },
   },
