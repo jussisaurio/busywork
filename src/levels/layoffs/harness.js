@@ -47,6 +47,8 @@ export default {
     if (n.id === 'kev' && w.pc === 'kev') bits.push("kneeling behind the boss's desk at the plug");
     if (n.id === 'kev' && w.kevUp) bits.push('carrying his bag');
     if (n.id === 'boss' && w.coffee === 'done') bits.push('holding a coffee');
+    if (n.id === 'boss' && n.override === 'pointOut') bits.push('coming for you');
+    if (n.id === 'lin' && n.override === 'toTell') bits.push('walking to the kitchen to tell the boss');
     if (n.id === 'lin' && w.linPhone === 'hand') bits.push('reading her mobile, turned away');
     return bits;
   },
@@ -54,7 +56,8 @@ export default {
   // Only what is visible on screen.
   worldText(game) {
     const w = game.world;
-    const people = w.list === 'on' ? 'a row of four faces, yours framed in red' : 'three faces; yours is gone';
+    const people = w.list === 'off' ? 'three faces; yours is gone'
+      : w.struck ? 'a row of four faces, yours framed in red and half crossed out' : 'a row of four faces, yours framed in red';
     const screen = w.glitch ? 'static; behind his desk, a plug hangs half out of the floor socket'
       : w.locked ? 'a lock screen with a padlock' : `the layoff list: ${people}`;
     const bits = [`WORLD: the boss's screen shows ${screen}`];
@@ -69,8 +72,10 @@ export default {
       case 'witness:tattle': return p.late
         ? `${name(p.by)} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
         : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the boss heard)' : ''}`;
-      case 'meeting:gather': return 'the boss turns round in his chair and counts the list against the floor 📧';
-      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and you at your desk ✔️' : 'the boss shrugs: the list matches 🤷';
+      case 'meeting:gather': return 'the boss turns round in his chair and ticks the list off against the floor 📧';
+      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and looks at your desk' : 'the boss ticks the sheet name by name 📋✔️';
+      case 'boss:checks': return 'the boss checks his screen and puts your face back on the list 😠';
+      case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'boss:wavesOff': return "the boss waves you off his cable: that's Kev's job 🙅";

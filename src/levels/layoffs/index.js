@@ -13,13 +13,16 @@
 //   - While he's at the coffee machine, make Lin look away for the 3 s the edit takes: ring Kev's empty desk from
 //     the boss's desk phone (she turns round to it: the ring route), or wait for her mobile to buzz (she picks it
 //     up and turns away: the phone route).
-// Seen by Lin, she shouts it across the floor and the boss hears (the engine's tattle: desk work). Seen by the boss
-// on his way back with his coffee: caught.
+// Seen by Lin: she shouts ❗👉 you. The boss hears her only from a few steps away (roles.authority.earshot): with him
+// at the coffee machine she gets up, walks to the kitchen door and points you out to him (the engine's grudge). He
+// leaves his coffee, comes back, checks his screen, puts your face back, locks it, and comes looking for you: the
+// moment he sees you, caught (roles.evidence: Lin named you). Seen by the boss himself at his screen: caught.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
 import { say } from '../../core/fx.js';
-import { spotPos } from '../../game/perception.js';
+import { spotPos, findNpc } from '../../game/perception.js';
+import { endOverride, npcSayLater } from '../../sim/override.js';
 import { CAST, BEHAVIOURS, START, SECS, ringKev } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -81,6 +84,8 @@ const SPOTS = {
   coffee: { x: 22, y: 2, face: 'N' }, // at the coffee machine
   restroom: { x: 25, y: 12, face: 'S' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
+  kitchen_door: { x: 22, y: 7, face: 'N' }, // in the hallway at the kitchen door: Lin calls him from here
+  by_your_desk: { x: 13, y: 10, face: 'N' }, // told on, he comes over to your desk
 };
 
 const ZONES = {
@@ -143,14 +148,73 @@ const INTERACTIONS = {
   },
 };
 
+// What Lin's word costs you: he comes back and checks his screen first (the checkList lure), then looks for you.
+function toldOn(game) {
+  const w = game.world;
+  w.told = true;
+  w.bossTold = true;
+  game.player.named = true; // roles.evidence: the moment he sees you now, he knows it was you
+  if (w.coffee === 'asked') w.coffee = 'told'; // he leaves the machine to it
+  w.brewing = false;
+  const boss = findNpc(game, 'boss');
+  if (boss && (boss.override === 'toCoffee' || boss.override === 'brewing')) endOverride(boss);
+  const lin = findNpc(game, 'lin');
+  if (lin && lin.override === 'toTell') endOverride(lin); // she's said it: back to her desk
+}
+
 const ROLES = {
-  authority: { id: 'boss', offDuty: [], helpless: [], deafIn: null },
+  // earshot: Lin's desk to his chair is 5 tiles; from the coffee machine, or the hallway, he can't hear her shout.
+  authority: { id: 'boss', offDuty: ['toCheck', 'checking', 'pointOut', 'waiting'], helpless: [], deafIn: null, earshot: 5.5, tattle: toldOn },
+  evidence: { by: 'boss', while: 'pointOut', mark: 'named', knows: 'bossKnows', icon: '🖥️' },
 };
 
 // You plug his cable back in while he sits there: he leaves you to it and gets a coffee (clockFor sets w.coffee).
 // The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule, about 3:42.
 const BREW_UNTIL = at('3:35.5', START);
 const LURES = [
+  // Told on: he goes straight to his screen (😠), puts your face back (index.js listen: 'boss:checks') and locks it.
+  {
+    npc: 'boss',
+    when: (w) => w.bossTold && w.check === 'none',
+    override: 'toCheck',
+    plan: 'check',
+    label: 'check his screen',
+    spot: 'screen',
+    react: { wait: 0.3 }, // (her 👉 is still up: no bubble of his own over it)
+    work: {
+      override: 'checking', minutes: SECS(1.5), progress: 'checkProgress',
+      start: { set: { checking: true }, event: 'boss:checks', says: [{ say: ['😠'] }] },
+      done: { set: { checking: false, check: 'done', locked: true }, event: 'boss:checked', says: [{ say: ['🔒'] }] },
+    },
+  },
+  // Then he turns round on you and comes over to your desk: the moment he sees you, caught (roles.evidence, while
+  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 head count.
+  {
+    npc: 'boss',
+    when: (w) => w.check === 'done' && !w.pointed && !w.bossKnows,
+    override: 'pointOut',
+    plan: 'point',
+    label: 'come for you',
+    spot: 'by_your_desk',
+    react: { wait: 0.4 },
+    work: { override: 'waiting', minutes: SECS(3), progress: 'waitProgress', start: { set: { waiting: true } }, done: { set: { waiting: false, pointed: true } } },
+  },
+  // Lin shouted and he didn't hear: she gets up and goes to tell him at the kitchen door (the grudge tells him once
+  // she is within earshot; toldOn sends her back).
+  {
+    npc: 'lin',
+    when: (w) => w.linTells === 'go' && !w.bossTold,
+    override: 'toTell',
+    plan: 'tell',
+    label: 'tell the boss',
+    spot: 'kitchen_door',
+    react: { wait: 0.7 },
+    work: {
+      override: 'telling', minutes: SECS(2), progress: 'tellProgress',
+      start: { set: { telling: true }, says: [{ say: ['@boss', '❗'] }] },
+      done: { set: { telling: false, linTells: 'done' } },
+    },
+  },
   {
     npc: 'boss',
     when: (w) => w.coffee === 'asked',
@@ -158,7 +222,8 @@ const LURES = [
     plan: 'coffee',
     label: 'get a coffee',
     spot: 'coffee',
-    react: { wait: 0.4, says: [{ say: ['☕', '👉', '@player'] }], event: 'boss:coffee' }, // fix it, I'm getting coffee
+    // fed up with the static, he doesn't look at the screen again: fix it, I'm getting coffee
+    react: { wait: 0.9, says: [{ say: ['😤'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
 ];
@@ -197,10 +262,37 @@ const listening = new WeakSet();
 function listen(game) {
   if (listening.has(game.events)) return;
   listening.add(game.events);
+  const ours = () => game.level?.id === 'layoffs' && game.phase === 'day';
   game.events.on('witness:tattle', (p) => {
-    if (game.level?.id !== 'layoffs' || game.phase !== 'day' || p.by !== 'lin') return;
-    game.world.linSaw = true;
-    if (p.heard || p.late) game.world.told = true;
+    if (!ours() || p.by !== 'lin') return;
+    const w = game.world;
+    if (!p.late) {
+      // Your face half crossed out: if it goes, the next name on his list could be hers (😨). Not heard, she goes to
+      // tell him.
+      const lin = findNpc(game, 'lin');
+      if (lin) npcSayLater(lin, 0.6, ['😨'], 'thought', 1.2);
+      if (!p.heard && !w.bossTold && w.linTells === 'none') w.linTells = 'go';
+    }
+    w.linSaw = true;
+    if (p.heard || p.late) w.told = true;
+  });
+  // Lin stopped you mid-edit: your face stays half crossed out on his screen until he puts it back (list.js).
+  game.events.on('action:cancel', (p) => {
+    if (ours() && p.type === 'strike_name' && p.reason === 'witnessed') game.world.struck = Math.max(0.25, game.world.strikeT);
+  });
+  // He puts your face back: the list pops out again with you on it.
+  game.events.on('boss:checks', () => {
+    if (!ours()) return;
+    const w = game.world;
+    w.list = 'on';
+    w.struck = 0;
+    w.offVia = null;
+    w.listUpAt = game.clock.minute;
+  });
+  // Locked: he turns round on you.
+  game.events.on('boss:checked', () => {
+    const b = ours() && findNpc(game, 'boss');
+    if (b) b._faceTarget = Math.atan2(game.player.y - b.y, game.player.x - b.x);
   });
 }
 
@@ -210,6 +302,13 @@ function bossClock(game, npc, sim) {
   const st = (npc._lay ??= {});
   listen(game);
   if (w.ringing && w.ringUntil != null && now >= w.ringUntil) w.ringing = false;
+  const a = game.player.action;
+  if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
+  // 3:31, the static still there and nobody came: a sigh, then he kneels at the cable himself (cast.js selfFix).
+  if (!st.sighed && now >= at('3:31', START) && w.glitch && free(npc)) {
+    st.sighed = true;
+    sim.speak(game, npc, [{ say: ['😮‍💨'] }]);
+  }
   // 3:26 (cast.js actsUp): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
   if (st.callAt != null && now >= st.callAt) {
     st.callAt = null;
@@ -223,6 +322,8 @@ function bossClock(game, npc, sim) {
   if (st.askAt != null && now >= st.askAt) {
     st.askAt = null;
     if (w.glitch && free(npc)) sim.speak(game, npc, [{ say: ['@kev', '❓'], kind: 'thought' }]);
+    const lin = findNpc(game, 'lin');
+    if (free(lin)) say(game, 'lin', ['🤷'], { kind: 'thought', ttl: 1.2 }); // not her business where Kev went
   }
   // You kneel at his cable while he sits there with the static: he leaves you to it (the coffee lure).
   if (w.coffee === 'none' && w.glitch && game.player.action?.type === 'fix_cable' && free(npc) && seated(game, npc, 'boss_desk')) {
@@ -319,8 +420,8 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  // Wherever you are on the floor he counts you; the fail beat stands you at your own desk.
-  meeting: { override: 'send', room: 'floor', chair: 'player_desk', presenter: 'player_desk' },
+  // Wherever you are on the floor he ticks you off; the fail plays where you stand.
+  meeting: { override: 'send', room: 'floor', chair: 'player_desk' },
   routes: [
     { id: 'ring', icon: '☎️', achieved: (w) => w.list === 'off' && w.offVia === 'ring' },
     { id: 'phone', icon: '📱', achieved: (w) => w.list === 'off' && w.offVia !== 'ring' }, // 'unseen': the gate flags it
@@ -348,7 +449,20 @@ export default {
     buzzAt: null, // the game minute Lin's mobile last buzzed
     linPhone: 'desk', // 'desk' | 'hand' (she's reading it, turned away)
     linSaw: false, // Lin saw you at his screen and shouted
-    told: false, // ...and the boss heard
+    told: false, // ...and the boss heard (at once, or when she walked over to tell him)
+    linTells: 'none', // 'none' | 'go' (out of his earshot, she walks to the kitchen to tell him) | 'done'
+    telling: false,
+    tellProgress: 0,
+    bossTold: false, // he heard: he comes back to check his screen (toldOn)
+    check: 'none', // 'none' | 'done': he checked his screen, put your face back and locked it
+    checking: false,
+    checkProgress: 0,
+    strikeT: 0, // how far your edit got (0..1)
+    struck: 0, // your face half crossed out on his screen: Lin stopped you there (until he checks)
+    pointed: false, // he came over to your desk and you weren't there
+    waiting: false,
+    waitProgress: 0,
+    bossKnows: false, // he saw you after Lin named you: caught
     items: [],
   }),
   harness,

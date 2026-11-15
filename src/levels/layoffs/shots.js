@@ -5,6 +5,7 @@
 const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact']; // 3:26 static: you kneel at his plug
 const RING = [...FIX, 'goto boss_phone', 'interact']; // he's off for coffee: ring Kev's empty desk
 const RING_EDIT = [...RING, 'goto his_screen', 'interact'];
+const TOLD = [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact']; // Lin sees you at it, the boss in the kitchen
 const PHONE = [...FIX, 'goto his_screen', 'wait until 3:32.75']; // Lin's mobile buzzes at 3:32.4: she turns to read it
 const END = ['goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45']; // to your desk, then the end card
 
@@ -107,7 +108,28 @@ export default [
   {
     name: 'told-on',
     cmds: [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact'],
-    intent: "Lin, facing the office, sees your face being struck off the list on the big sheet beside the screen. She points at you (❗, a pointing hand, your face): she tells.",
+    intent: "Lin, facing the office, sees your face being struck off the list on the big sheet beside the screen. She points at you (❗, a pointing hand, your face). The boss is far off in the kitchen at the coffee machine: nobody hears her.",
+  },
+  {
+    name: 'lin-goes-to-tell',
+    cmds: [...TOLD, 'wait until 3:36.9'],
+    intent: "Lin has left her desk and walks along the hallway towards the kitchen, where the boss is. You are still in his office; on his screen your face is half crossed out in red.",
+  },
+  {
+    name: 'lin-tells-him',
+    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:45'], // stops as she tells him
+    intent: "In the hallway, Lin points the boss to you (a pointing hand, your face, a screen). A line runs from her to him.",
+  },
+  {
+    name: 'face-back',
+    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:42.4', 'pretend until 3:42.4', 'pretend until 3:42.4'],
+    intent: "The boss is back at his screen, angry (😠). The list pops out of it again with your face on it, the red line gone: he has put you back.",
+  },
+  {
+    name: 'comes-for-you',
+    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45', 'pretend until 3:45'],
+    beat: true,
+    intent: "The boss has left his office and stops on the floor, pointing at you at your desk (❗, a pointing hand, your face): caught. His screen behind him shows a padlock.",
   },
   {
     name: 'caught',
@@ -118,7 +140,7 @@ export default [
   {
     name: 'head-count',
     cmds: [...RING_EDIT, 'goto my_seat pretend', 'pretend until 3:43'],
-    intent: "3:43: the boss, back at his desk with his coffee, turns in his chair to look over the floor before he sends the list, and shrugs: your face isn't on it, nothing to check.",
+    intent: "3:43: the boss, back at his desk with his coffee, turns in his chair to his screen and ticks the sheet (a sheet, a tick): he goes down it name by name, and your face isn't on it, so he has no reason to look at your desk.",
   },
   {
     name: 'end-win-ring',

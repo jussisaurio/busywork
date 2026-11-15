@@ -23,6 +23,8 @@ export default [
       mustSay(log, 'kev', ['👋', '🏠']);
       mustSay(log, 'lin', ['👋']);
       mustSay(log, 'boss', ['@kev', '❓']); // 3:26: he rang Kev's desk, and nobody picked up
+      mustSay(log, 'lin', ['🤷']); // not her business where Kev went
+      mustSay(log, 'boss', ['😮‍💨']); // 3:31: a sigh, then down to the cable himself
       mustSay(log, 'boss', ['🔌']);
       mustSay(log, 'boss', ['@player', '✔️']);
     },
@@ -53,9 +55,10 @@ export default [
     expect: { result: 'win', routes: ['ring'] },
     play({ run, log }) {
       for (const c of [...FIX, 'goto boss_phone', 'interact', 'goto his_screen', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      mustSay(log, 'boss', ['😤']); // fed up with the static
       mustSay(log, 'boss', ['☕', '👉', '@player']);
       mustFire(log, 'phone:called');
-      mustSay(log, 'boss', ['🤷']);
+      mustSay(log, 'boss', ['📋', '✔️']); // he ticks the sheet name by name: no face of yours to look up for
     },
   },
   {
@@ -67,13 +70,17 @@ export default [
     },
   },
   {
-    name: 'edit while Lin is looking → ❗👉 you, the boss hears → desk work → fail',
-    expect: { result: 'fail' },
+    name: 'edit while Lin is looking → ❗👉 you; too far for him to hear, she goes to tell him; he checks his screen, puts your face back, comes for you → caught',
+    expect: { result: 'caught' },
     play({ run, log, g }) {
-      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'pretend until 3:45']) run(c);
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'goto my_seat pretend']) run(c);
+      for (let i = 0; i < 6 && !g.caught; i++) run('pretend until 3:45'); // (her telling him stops a pretend)
       mustSay(log, 'lin', ['❗', '👉', '@player']);
-      mustFire(log, 'boss:workAssigned');
-      if (!g.world.told) throw new Error('the boss never heard Lin');
+      if (log.some((e) => e.name === 'witness:tattle' && e.payload.heard && !e.payload.late)) throw new Error('he heard her shout from the kitchen');
+      mustSay(log, 'lin', ['👉', '@player', '🖥️']); // she told him to his face
+      mustFire(log, 'boss:checks');
+      mustFire(log, 'boss:checked');
+      if (g.caught?.reason !== 'evidence') throw new Error(`caught for ${g.caught?.reason}, not on Lin's word`);
     },
   },
   {
