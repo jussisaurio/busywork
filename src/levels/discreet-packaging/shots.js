@@ -120,7 +120,17 @@ export default [
   {
     name: 'end-caught-camera',
     cmds: ['goto pigeonholes pretend', 'interact', ...END],
-    intent: "Lose: Bob, at his counter, jabs a finger past his monitor, which shows you at the pigeonholes with the pink box, at you (angry, @you); you go red. Icons: screen, pointing, you.",
+    intent: "Lose: Bob, at his counter, jabs a finger at his monitor (angry, @you). On it you stand empty-handed at the pigeonholes, the pink box still on its shelf beside you (and Bob's own back at his counter). You stand behind him and go red. Icons: screen, pointing, you.",
+  },
+  {
+    name: 'end-caught-relabel',
+    cmds: ['goto label_printer', 'interact', 'goto pigeonholes pretend', 'interact', ...END],
+    intent: "Lose: Bob jabs a finger at his monitor (angry, @you). On it you stand at the pigeonholes beside the pink box with a white label in your hand. You stand behind him and go red, holding the label with Bob's face. Icons: screen, pointing, you.",
+  },
+  {
+    name: 'end-caught-broom',
+    cmds: [...BROOM, 'pretend 0.5s', 'interact', ...END],
+    intent: 'Lose: Bob jabs a finger at his monitor (angry, @you). On it you stand right under the lens with the broom raised at the camera, its bristles big at the top of the picture. You stand behind him and go red, the broom in your hands. Icons: screen, pointing, you.',
   },
   {
     name: 'end-caught',

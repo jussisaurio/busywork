@@ -86,7 +86,7 @@ The facts, and when you see them:
 - **The camera watches the pigeonholes, and Bob watches its monitor.** From the start you see the camera's fan
   sweep the back office over the pigeonholes, in Bob's colour, and the monitor glow on his counter (shot `start`).
   Up close at the shelf, the monitor shows you on it (shot `parcel-on-the-shelf`). Take the box with the camera live
-  and Bob points at you, past the monitor that shows you with it (shot `end-caught-camera`).
+  and Bob jabs a finger at the monitor, which shows you at the shelf (shot `end-caught-camera`).
 - **The monitor needs its plug.** The plug runs from the power strip by the counter, and the strip lights up to show
   you can use it (shot `power-strip`). Pull it and the monitor shows static (shot `static`).
 - **Static sends Bob to the camera, not the plug, at first.** He frowns at the static and gets up (shot `static`),
@@ -142,8 +142,11 @@ The facts, and when you see them:
 ## Ways to lose
 - **The mail call.** Lin collected your box and holds it up high (box, your face). Bob turns to look, and you go red
   (shot `end-mail`).
-- **Caught on camera.** Bob saw you take the box (or relabel it, or poke the camera) on his monitor. The end card:
-  Bob at his counter jabs a finger past the monitor, which shows you with the box (shot `end-caught-camera`).
+- **Caught on camera.** Bob saw you on his monitor: taking the box, relabelling it, or poking the camera. The end
+  card shows the monitor's picture frozen at the moment he saw you, with Bob at his counter jabbing a finger at it.
+  You stand behind him holding what you held, and you go red. On the screen you are at the shelf beside the box
+  (shot `end-caught-camera`), at the shelf with the white label in your hand (shot `end-caught-relabel`), or right
+  under the lens with the broom raised at it (shot `end-caught-broom`).
 - **Caught in person.** Bob saw you with the box, or at something sneaky, with his own eyes: in the lobby, or in the
   back office on his way to the power strip. The end card: Bob points at you as you hold the box (shot
   `end-caught`).

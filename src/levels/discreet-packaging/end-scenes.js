@@ -8,8 +8,7 @@ import { drawPerson, itemGlyph } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
-import { angleDiff } from '../../core/vision.js';
-import { drawParcel, drawPicture, PINK, PINK_TOP, heart } from './painters.js';
+import { drawParcel, drawPicture, caughtPicture, PINK, PINK_TOP, heart } from './painters.js';
 
 const WALL_Y = 196; // the back wall's foot
 const WOOD = '#7a4a2a';
@@ -339,25 +338,12 @@ function foundScene(ctx, game, t, e) {
   bubble(ctx, ['😳'], 620, 224, e - 0.4, 'thought');
 }
 
-// Where the camera sees a point on the map, as the monitor draws it (u across, v near to far).
-function project(cam, x, y) {
-  const u = angleDiff(Math.atan2(y - cam.y, x - cam.x), cam.dir) / (cam.fov / 2);
-  return { u: clamp(u, -1, 1), v: Math.min(1, Math.hypot(x - cam.x, y - cam.y) / cam.radius) };
-}
-
-// caught on camera: Bob, behind his counter, jabs a finger at his monitor; on it, you, at the pigeonholes. You stand
-// in the back office behind him, frozen, with what you were holding.
+// caught on camera: Bob, behind his counter, jabs a finger at his monitor; on it, the picture he caught you in (you
+// at the pigeonholes, or right up at the lens with the broom, holding what you held: painters.js caughtPicture). You
+// stand in the back office behind him, frozen, with what you were holding.
 function caughtOnCamera(ctx, game, t, e) {
   backRoom(ctx);
-  const cam = game.level.cameras[0];
-  const pl = game.player;
-  const me = project(cam, pl.x, pl.y);
-  const shown = {
-    feed: 'live',
-    blips: [{ u: me.u, v: me.v, color: C.tomato }],
-    cabinet: { ...project(cam, 13.6, 7.9), full: game.world.parcel === 'shelf' },
-    parcels: [],
-  };
+  const shown = caughtPicture(game.world, game);
   you(ctx, game, t, 660, 270, { sweat: true, red: true, head: Math.PI / 2 + 0.5 });
   const b = person(t);
   b.dir = Math.PI - 0.45;

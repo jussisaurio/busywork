@@ -124,19 +124,45 @@ function project(view, x, y) {
 
 const CABINET = { x: 13.6, y: 7.9 }; // the pigeonholes, as the camera aims at them
 
-// What the screen shows: the feed ('live' | 'wall' | 'static'), and in a live picture who is on it, the pigeonholes
-// (with the pink box on the shelf or not) and any parcel on the floor in view.
+// What the screen shows: the feed ('live' | 'wall' | 'static'), and in a live picture who is on it (you with what you
+// carry: the box, Bob's label, the broom), the pigeonholes (with the pink box on the shelf or not) and any parcel on
+// the floor in view.
 export function monitorState(w, game) {
   const feed = cameraFeed(game, CAM_ID);
-  const out = { feed: feed.feed, blips: feed.blips, cabinet: null, parcels: [] };
+  const held = game.player?.held ?? null;
+  const blips = feed.blips.map((b) => (b.id === 'player' && held ? { ...b, held } : b));
+  const out = { feed: feed.feed, blips, cabinet: null, parcels: [] };
   if (feed.feed !== 'live') return out;
   const cam = game.level.cameras.find((c) => c.id === CAM_ID);
-  const view = cameraViewer(game, cam);
+  return { ...out, ...fixtures(w, game, cameraViewer(game, cam)) };
+}
+
+// The pigeonholes and any parcel on the floor, as `view` sees them.
+function fixtures(w, game, view) {
+  const out = { cabinet: null, parcels: [] };
   if (canSee(game.map, view, CABINET.x, CABINET.y)) out.cabinet = { ...project(view, CABINET.x, CABINET.y), full: w.parcel === 'shelf' };
   for (const it of w.items) {
     if (it.type === 'parcel' && !it.spot && canSee(game.map, view, it.x, it.y)) out.parcels.push(project(view, it.x, it.y));
   }
   return out;
+}
+
+// The picture Bob caught you in, for the caught-on-camera end card: the camera turned from the middle of its sweep just
+// far enough to have you on it, with what you held. (The live sweep moves on in the second between Bob seeing you and
+// the card, and keeps moving under it; this frame holds still.)
+export function caughtPicture(w, game) {
+  const cam = game.level.cameras.find((c) => c.id === CAM_ID);
+  const p = game.player;
+  const toYou = Math.atan2(p.y - cam.y, p.x - cam.x);
+  const lim = (cam.fov / 2) * 0.75; // you near the edge, the pigeonholes still on it
+  const view = { x: cam.x, y: cam.y, dir: toYou + clamp(angleDiff(cam.dir, toYou), -lim, lim), fov: cam.fov, radius: cam.radius };
+  const blips = [];
+  for (const n of game.npcs) {
+    if (n.active && canSee(game.map, view, n.x, n.y)) blips.push({ id: n.id, ...project(view, n.x, n.y), color: n.color });
+  }
+  blips.push({ id: 'player', ...project(view, p.x, p.y), color: null, held: p.held ?? null }); // he saw you: you're on it
+  blips.sort((a, b) => b.v - a.v);
+  return { feed: 'live', blips, ...fixtures(w, game, view) };
 }
 
 // A grey CRT on the counter, its screen turned to us: the camera's picture, one leaf, or static.
@@ -229,10 +255,26 @@ function drawRoomPicture(ctx, x, y, w, h, shown, t, k) {
     ctx.fillStyle = b.color ?? C.tomato;
     ctx.fillRect(p.px - 1.6 * p.s, p.py - 4.6 * p.s, 3.2 * p.s, 4.6 * p.s);
     fillCircle(ctx, p.px, p.py - 5.8 * p.s, 1.3 * p.s, '#e8c4a0');
+    if (b.held) blipHolds(ctx, b.held, p.px, p.py, p.s);
   } });
   things.sort((a, b) => b.v - a.v);
   for (const th of things) th.draw();
   if (Math.floor(t * 1.5) % 2 === 0) fillCircle(ctx, x + 2.2 * k, y + 2.2 * k, 1.1 * k, '#ff3b30'); // REC
+}
+
+// What a person on the screen carries, in front of them (feet at px, py, scale s): the pink box hugged to the chest,
+// Bob's white label held up, or the broom raised at the lens.
+function blipHolds(ctx, held, px, py, s) {
+  if (held === 'parcel') {
+    ctx.fillStyle = PINK;
+    ctx.fillRect(px - 2.1 * s, py - 3.9 * s, 4.2 * s, 2.6 * s);
+    fillCircle(ctx, px, py - 2.6 * s, 0.6 * s, HEART);
+  } else if (held === 'label') {
+    ctx.fillStyle = LABEL;
+    ctx.fillRect(px + 0.4 * s, py - 4.4 * s, 2.4 * s, 1.8 * s);
+  } else if (held === 'broom') {
+    drawBroom(ctx, px + 1.6 * s, py - 1.2 * s, px + 3.6 * s, py - 11 * s, s * 0.45);
+  }
 }
 
 // The camera shoved round into the potted plant: the whole picture is one leaf.
