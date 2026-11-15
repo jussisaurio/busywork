@@ -156,6 +156,9 @@ These came from playtests of level 1 (details in its `LEVEL.md`).
   Otherwise he looks like a thief.
 - **No deliberate red herrings.** In a 2.5-minute loop with two or three routes, a dead end costs a whole loop.
   Toys that react visibly and teach NPC behaviour are fine.
+- **The authority catches the crime the level is about.** If the trouble invites a nasty act (moving laptops in an
+  audit), the authority seeing you at it ends your day, and a witness telling on you costs you something you can see.
+  An act that is nasty in the story but free in the rules reads as broken, not clever.
 - **A thing that looks usable is usable, in every level.** What a thing looks like is a promise the player carries
   from level to level: level 1's full coffee pot means a cup you can take. A level that borrows a usable thing as set
   dressing draws it spent or leaves it out: an empty coat rack, a coffee machine with no pot.
