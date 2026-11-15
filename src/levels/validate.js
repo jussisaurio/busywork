@@ -26,7 +26,7 @@
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids
+//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
@@ -233,6 +233,7 @@ export function levelProblems(level, key) {
     if (!isStr(it.icon)) bad(`items.${type}.icon`, 'missing (the emoji it draws as)');
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
     if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
+    if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
   }
   const roles = level.roles;
   if (roles !== undefined) {

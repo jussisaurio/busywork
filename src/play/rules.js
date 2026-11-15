@@ -15,7 +15,7 @@ import { say, burst, shake, sightline } from '../core/fx.js';
 import { npcSees, findNpc, inZone } from '../game/perception.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { judge } from '../sim/mechanics/index.js';
-import { cancelAction, dropHeld, actionRow } from './interactions.js';
+import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
 
 // Module tunables.
@@ -220,7 +220,7 @@ function react(game, s, npc, offence) {
   }
   const p = game.player;
   // What a late tattle points at (the thing the witness saw you at).
-  const icon = offence === 'action' ? actionRow(game, p.action.type)?.saw : offence === 'scene' ? r.scene.icon : offence === 'evidence' ? r.evidence.icon : undefined;
+  const icon = offence === 'action' ? p.action.saw ?? undefined : offence === 'scene' ? r.scene.icon : offence === 'evidence' ? r.evidence.icon : undefined;
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
   if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)

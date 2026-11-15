@@ -18,6 +18,9 @@
 //
 // The player's action is the generic 'put' row (instant; play/interactions.js): the nearest free spot that takes
 // what she holds, within INTERACT_RADIUS of where the item would lie. Harness: `put [spot] [pretend]`.
+// An item (items.js) with `put: s` is evidence you don't set down in front of people: putting it down is a timed
+// sneaky action of s seconds instead (to everyone: the authority who sees it catches her, anyone else tells and
+// stops it; moving stops it too). The focus carries the timing (focus.timed; interactions.js startAction).
 // Events: item:put { type, spot }; item:found { type, spot, by } when a cast owner finds it.
 import { INTERACT_RADIUS } from '../../config.js';
 import { DIRS } from '../../core/vision.js';
@@ -64,7 +67,7 @@ export const PUT_ROW = {
 };
 
 // The ✋ target for putting down: the nearest free spot in reach that takes what she holds, if nearer than
-// `than`; else null. row: the level's 'put' row.
+// `than`; else null. row: the level's 'put' row. An item with `put: s` makes it a timed sneaky action (focus.timed).
 export function putFocus(game, than, row) {
   const p = game.player;
   if (!p.held || !row) return null;
@@ -75,6 +78,8 @@ export function putFocus(game, than, row) {
     than = d;
     best = { kind: 'spot', id: e.name, x: e.x, y: e.y, icon: row.icon, action: 'put', item: e };
   }
+  const flags = best && game.level.items?.[p.held];
+  if (flags?.put) best.timed = { duration: flags.put, sneaky: true, owner: null, saw: flags.icon };
   return best;
 }
 

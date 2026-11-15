@@ -7,7 +7,7 @@
 //   own_desk (not seated)                        -> sit (instant)
 //   holding anything, no level 'self' row valid  -> drop (instant)
 //   empty hands, dropped item within ITEM_RADIUS -> pick_up (an item on a spot: within INTERACT_RADIUS)
-//   holding what a free spot takes               -> put (instant; mechanics/putdown.js)
+//   holding what a free spot takes               -> put (instant, or timed for an item with `put`; putdown.js)
 // The nearest valid target wins; 'self' targets only apply when nothing else is valid.
 import { INTERACT_RADIUS, PICK_UP_TIME, EAT_TIME } from '../config.js';
 import { say, burst } from '../core/fx.js';
@@ -153,7 +153,10 @@ function startAction(game, focus) {
   const row = actionRow(game, verb);
   if (focus.kind !== 'self') p.dir = Math.atan2(focus.y - p.y, focus.x - p.x);
 
-  if (row.instant) {
+  // A target can make its row a timed action of its own: { duration, sneaky, owner, saw } (putting down an item
+  // with `put`: mechanics/putdown.js).
+  const timed = focus.timed ?? null;
+  if (row.instant && !timed) {
     row.done(game, focus);
     actionNoise(game, row, focus.x, focus.y); // the row's noise, if it makes one
     p.focus = findFocus(game);
@@ -163,14 +166,16 @@ function startAction(game, focus) {
   // The action replaces the busy pose for its duration.
   setBusy(game, false, null);
   game.clock.ff = false;
+  const r = timed ?? row;
   p.action = {
     type: verb,
     targetId: focus.id,
     t: 0,
-    duration: row.duration,
-    sneaky: !!row.sneaky,
-    owner: row.owner ?? null,
-    idle: !!row.idle,
+    duration: r.duration,
+    sneaky: !!r.sneaky,
+    owner: r.owner ?? null,
+    idle: !!r.idle,
+    saw: r.saw ?? null, // what a late tattle points at (rules.js)
     x: focus.x,
     y: focus.y,
     item: focus.item ?? null,
