@@ -72,7 +72,9 @@ export function drawParcel(ctx, x, y, w, who = null, shadow = true) {
 
 // --- the pigeonholes (tiles Q over S) -----------------------------------------------------------------------------
 
-// A tall oak cabinet against the wall: three rows of cubbies with envelopes, and the big parcel shelf at the bottom.
+// A tall oak cabinet against the wall: three rows of empty cubbies, each with a name tag, and the big parcel shelf at
+// the bottom. The cubbies stay empty: today's post is the box, and envelopes would look like things to take (DESIGN.md:
+// a thing kept only as set dressing is drawn spent), and like mail Lin would have to hand out when she shrugs.
 // shown: { parcel: whose face is on the label of the parcel on the shelf, or null when the shelf is empty }.
 export function pigeonholes(ctx, info, at, shown) {
   const x = at.x * T + 3;
@@ -95,12 +97,10 @@ export function pigeonholes(ctx, info, at, shown) {
       const cy = top + 7 + r * 11;
       ctx.fillStyle = CUBBY;
       ctx.fillRect(cx, cy, cw, 9);
-      if (hash(r, c, 7) > 0.35) { // an envelope or two
-        ctx.fillStyle = hash(r, c, 3) > 0.5 ? C.white : '#e9dcc0';
-        ctx.fillRect(cx + 0.8, cy + 3.5, cw - 1.6, 5);
-        ctx.fillStyle = 'rgba(120,96,62,0.45)';
-        ctx.fillRect(cx + 1.6, cy + 5, cw - 3.2, 0.8);
-      }
+      ctx.fillStyle = 'rgba(0,0,0,0.3)'; // the empty cubby's back wall in shadow
+      ctx.fillRect(cx, cy, cw, 2);
+      ctx.fillStyle = '#efe6d2'; // the name tag on the rail under it
+      ctx.fillRect(cx + cw / 2 - 1.8, cy + 9, 3.6, 1.4);
     }
   }
   // the parcel shelf

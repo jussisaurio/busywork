@@ -12,9 +12,9 @@ the ways out.
 
 ## The situation
 You work in a small office. Mum has sent you a parcel at work: a pink box covered in red hearts, with your face on the
-address label. It waits on the parcel shelf (the bottom shelf) of the pigeonholes in the back office. Lin does the
-post. At 3:50 she collects it from the pigeonholes, and at 4:00 she hands it out in your office, in front of
-everyone. Security Bob comes over for the mail call too. If she still has your box then, she holds it up high for the
+address label. It waits on the parcel shelf (the bottom shelf) of the pigeonholes in the back office; the cubbies
+above it are empty today, the box is the only post. Lin does the post. At 3:50 she collects it from the pigeonholes,
+and at 4:00 she hands it out in your office, in front of everyone. Security Bob comes over for the mail call too. If she still has your box then, she holds it up high for the
 office to see, and you go red (the end card).
 
 So at 4:00 Lin must not hand you that box. Either it goes to somebody else, or there is nothing on the shelf for her
