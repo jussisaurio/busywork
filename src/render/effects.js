@@ -694,7 +694,8 @@ export function drawActionRing(ctx, game, t) {
   }
 }
 
-// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
+// The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id): an outlined gauge that
+// shows only while he has some, with a sliver of fill from the first moment.
 export function drawSuspicion(ctx, game, t, view = FULL_VIEW) {
   const id = game.level?.roles?.authority?.id;
   const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
@@ -711,9 +712,14 @@ export function drawSuspicion(ctx, game, t, view = FULL_VIEW) {
   ctx.fill();
   const r = Math.round(214 + 41 * lvl);
   const g = Math.round(162 - 110 * lvl);
+  const fill = Math.max(4, h * lvl); // never an empty capsule: a sliver from the first moment, growing
   ctx.fillStyle = `rgb(${r},${g},47)`;
-  rrect(ctx, x, y + h * (1 - lvl), 5, h * lvl, 2);
+  rrect(ctx, x, y + h - fill, 5, fill, 2);
   ctx.fill();
+  ctx.strokeStyle = C.cream; // its outline: a gauge, not a prop
+  ctx.lineWidth = 1.5;
+  rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);
+  ctx.stroke();
   const sz = 13 + lvl * 5 + (lvl > 0.75 ? Math.abs(Math.sin(t * 10)) * 2 : 0);
   const was = glyphScope('speech'); // his reaction, not a thing
   emoji(ctx, lvl > 0.75 ? '❗' : '❓', x + 3 + jit * 0.5, y - 9, sz);
