@@ -173,6 +173,22 @@ export default [
     },
   },
   {
+    name: 'breaker, then eat it about 3:28 → it comes up after he sat down to his tray → he finds the tray empty → win (eaten)',
+    expect: { result: 'win', routes: ['breaker'] },
+    play(ctx) {
+      const { run, g, log } = ctx;
+      breakerTake(ctx);
+      run('goto my_seat pretend'); run('goto my_seat pretend');
+      for (let i = 0; i < 3; i++) run('wait until 3:27');
+      run('move S 0.4s');
+      run('eat');
+      if (g.world.letter !== 'eaten') throw new Error('never ate it');
+      for (let i = 0; i < 6 && !g.outcome; i++) run('wait until 3:41');
+      if (!log.some((e) => e.name === 'player:sick')) throw new Error('it never came up before 3:40');
+      if (g.outcome?.why !== 'eaten') throw new Error(`end card ${g.outcome?.why}, not eaten`);
+    },
+  },
+  {
     name: 'breaker, then eat it early → it comes back up, he comes over to see the retching and knows his envelope → caught (soggy)',
     expect: { result: 'caught' },
     play(ctx) {

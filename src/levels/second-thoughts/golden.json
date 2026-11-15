@@ -1622,7 +1622,7 @@
     "eat",
     "pretend until 3:40"
    ],
-   "summary": "fail",
+   "summary": "win switch",
    "digests": [
     "55ee0aecb56ec285",
     "12cb34aabb944b19",
@@ -1632,7 +1632,7 @@
     "baa7252b6b673024",
     "9bc7a8b3e83f405d",
     "ebc5ac4d3796151a",
-    "2129911e6af48d62"
+    "982ccade5b92600b"
    ]
   },
   {
@@ -3760,7 +3760,7 @@
     "eat",
     "wait until 3:40"
    ],
-   "summary": "fail",
+   "summary": "win breaker",
    "digests": [
     "728495b7f884770e",
     "b06f0626ea094c3c",
@@ -3770,7 +3770,7 @@
     "30e35e343d9f14d5",
     "1f140347992327cb",
     "0678c1f9a09579d2",
-    "1978b6346d1f53e3"
+    "88ddf1a9b8d0d6d5"
    ]
   },
   {

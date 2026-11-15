@@ -16,8 +16,9 @@
 // Whenever the whole floor goes dark, the boss gets up with his phone torch and goes out to the fuse box, round the
 // corner from his hallway door, and holds his light on it till Kev has the power back (he doesn't touch fuses). His
 // desk is empty all that time. Whoever he finds at the box pulled it, as at the panel.
-// Eat it, and ten minutes later it comes back up (sick). Before 3:40, the retch brings the boss over to look, and he
-// knows his envelope in the mess: caught, unless you fished it back out first. After 3:40 it's too late to matter.
+// Eat it, and ten minutes later it comes back up (sick). Before he sits down to his tray at 3:38, the retch brings the
+// boss over to look, and he knows his envelope in the mess: caught, unless you fished it back out first. Later than
+// that, he's busy with his empty tray.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, deg, EAT_TIME } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
@@ -340,7 +341,7 @@ LURES.push(
 // The boss comes over to see what the retching was: one look at the puddle (the engine's inspection, started by tick
 // setting `at`). Your envelope still in it: ✉️❌, caught (the end card: 'soggy'); fish it out first and he sees only
 // sick. He comes once he is free (not while he is out at the panel), and not after he sits down to his tray (the
-// gather): then the 3:40 verdict says it (he looks up at the retch and sees it from his desk).
+// gather): then he goes through his tray, finds it empty, and never sees the envelope across the floor.
 const INSPECT = {
   npc: 'boss', at: Infinity, override: 'retch', plan: 'retch', label: 'the retching', look: 1.4,
   checks: [{ item: 'letter', spot: 'puddle', absent: true, icon: '✉️' }],
@@ -385,8 +386,9 @@ function wipedUp(game) {
   if (w.letter === 'puddle') w.letter = 'binned';
 }
 
-const gotIt = (w) => w.letter === 'player' || w.letter === 'drawer' || w.letter === 'eaten' || w.letter === 'binned';
-const gone = (w) => w.letter === 'eaten' || w.letter === 'binned'; // nothing for him to find at 3:40
+// Still in the sick at 3:40: it came up after he sat down to his tray, and he never went over to look.
+const gotIt = (w) => ['player', 'drawer', 'eaten', 'binned', 'puddle'].includes(w.letter);
+const gone = (w) => w.letter === 'eaten' || w.letter === 'binned' || w.letter === 'puddle'; // nothing in his tray at 3:40
 
 // Caught by his look at the puddle (INSPECT) gets the soggy end card. Once per game object (events persist across
 // loops).
@@ -559,7 +561,6 @@ export default {
       const w = game.world;
       if (result === 'blamed') return { result: 'win', why: gone(w) ? 'eaten' : undefined };
       if (result === 'win') return gone(w) ? { why: 'eaten' } : null; // still in you (or binned): an empty tray
-      if (w.letter === 'puddle') return { why: 'soggy' }; // it came up as he sat down: he heard it
       return w.deskwork === 'kev' ? { why: 'deskwork' } : null;
     },
   },
