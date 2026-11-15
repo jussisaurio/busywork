@@ -120,8 +120,10 @@ export const BEHAVIOURS = {
         { say: w.roster === 'boss' ? [face, '😳'] : ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S + 0.2, after: r + LOOK_S, face: 'board_look' },
       ];
       sim.speak(game, n, lines);
-      // His own face: he doesn't know whose it was, but Lin and Kev have looked at that board all week. They point
-      // at you: it was yours (and that's whose he draws back in at 5:00: index.js punchline).
+      // His own face: he doesn't know whose it was, but Lin and Kev have looked at that board all week, and now the
+      // board is plainly wrong he looks to them. They point at you: it was yours (and that's whose he draws back in at
+      // 5:00: index.js punchline). (Kev says the same when it's his face, but then the board looks right, and the
+      // boss believes his board over the man it names.)
       if (w.roster === 'boss') {
         for (const c of game.npcs) {
           if (c.id !== 'lin' && c.id !== 'kev') continue;

@@ -65,7 +65,7 @@ function scrawl(ctx, x, y, w, color, lw, seed) {
 // top, the week in boxes, Saturday's red; under it, a line down to Saturday's slot: a big photo of who works it.
 //   look: whose face is in the slot (null: none)
 //   opts.fresh: a wet-ink glint (just written); opts.glow: the slot lit up (the boss pointing at it)
-//   opts.scribble: { look, k }: a new face half drawn over it, k of the way, the black marker at it
+//   opts.scribble: { look, k }: a new face going in, k of the way: the old one wiped off, then the new one drawn
 //   opts.tray: false: the black marker is gone from the tray (in the boss's hand, or in yours)
 //   opts.lift: the black marker lifts off its tray (you're at the board, it's there for the taking)
 export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
@@ -180,32 +180,63 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
     ctx.fillStyle = INK;
     ctx.fillRect(bx + 16, by + h - 2, 6, 1.6);
   }
+  // the eraser sits at the tray's right end, except while it's wiping the slot
+  if (!(opts.scribble && opts.scribble.k > 0 && opts.scribble.k < WIPE_K)) drawEraser(ctx, bx + 30, by + h - 1.4, 0.75);
   ctx.restore();
 }
 
-// A new face being drawn over the one in the slot (cx, cy, r: the photo's circle), k of the way: line by line from
-// the top, the old face wiped under it, hatched in marker, the black marker at the stroke it's on.
+// A new face going into the slot (cx, cy, r: the photo's circle), k of the way. First the board's eraser wipes the
+// old face off, row by row from the top (k < WIPE_K), leaving clean white; then the black marker draws the new face
+// on the clean board, line by line from the top, in marker hatching. No old face shows through.
 const SCRIBBLE_ROWS = 5;
+export const WIPE_K = 0.35;
 function drawScribble(ctx, look, cx, cy, r, k, t) {
   if (!look || k <= 0) return;
   const k1 = Math.min(1, k);
+  const wiping = k1 < WIPE_K;
+  const kk = wiping ? k1 / WIPE_K : (k1 - WIPE_K) / (1 - WIPE_K);
   const rowH = (2 * r) / SCRIBBLE_ROWS;
-  const row = Math.min(SCRIBBLE_ROWS - 1, Math.floor(k1 * SCRIBBLE_ROWS));
-  const frac = k1 >= 1 ? 1 : k1 * SCRIBBLE_ROWS - row;
+  const row = Math.min(SCRIBBLE_ROWS - 1, Math.floor(kk * SCRIBBLE_ROWS));
+  const frac = kk >= 1 ? 1 : kk * SCRIBBLE_ROWS - row;
   const top = cy - r;
   const left = cx - r;
-  const penX = left + frac * 2 * r;
+  // wiping: rows go left to right, then back (an eraser goes back and forth)
+  const penX = wiping && row % 2 ? left + (1 - frac) * 2 * r : left + frac * 2 * r;
   const penY = top + row * rowH + rowH / 2;
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
+  if (wiping) {
+    // the wiped part: clean white, a few faint streaks left by the felt
+    ctx.beginPath();
+    ctx.rect(left, top, 2 * r, row * rowH);
+    if (row % 2) ctx.rect(penX, top + row * rowH, left + 2 * r - penX, rowH);
+    else ctx.rect(left, top + row * rowH, penX - left, rowH);
+    ctx.clip();
+    ctx.fillStyle = '#fbfcfd';
+    ctx.fillRect(left, top, 2 * r, 2 * r);
+    ctx.strokeStyle = 'rgba(42,47,58,0.08)';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    for (let i = 0; i <= row; i++) {
+      ctx.moveTo(left, top + i * rowH + rowH * 0.5);
+      ctx.lineTo(left + 2 * r, top + i * rowH + rowH * 0.5);
+    }
+    ctx.stroke();
+    ctx.restore();
+    // the eraser at the edge it's wiping, rubbing
+    const jig = Math.sin(t * 30) * 0.9;
+    drawEraser(ctx, penX + jig, penY);
+    return;
+  }
+  // drawing: the whole old face is gone, the new one goes on line by line
+  ctx.fillStyle = '#fbfcfd';
+  ctx.fillRect(left, top, 2 * r, 2 * r);
   ctx.beginPath();
   ctx.rect(left, top, 2 * r, row * rowH);
   ctx.rect(left, top + row * rowH, frac * 2 * r, rowH);
   ctx.clip();
-  ctx.fillStyle = '#fbfcfd';
-  ctx.fillRect(left, top, 2 * r, 2 * r);
   portrait(ctx, look, cx, cy, r, t, '#fbfcfd');
   // the marker's hatching over it
   ctx.strokeStyle = 'rgba(42,47,58,0.45)';
@@ -222,6 +253,19 @@ function drawScribble(ctx, look, cx, cy, r, k, t) {
   // the scribble's leading edge, and the marker at it (jiggling while it draws)
   const jig = Math.sin(t * 40) * 0.8;
   drawMarker(ctx, penX + 0.5, penY + jig, -2.3, 13);
+}
+
+// The board's eraser, centred at (x, y), s times: a dark plastic back on a pale grey felt pad.
+function drawEraser(ctx, x, y, s = 1) {
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  rrect(ctx, x - 4 * s + 0.8, y - 2.2 * s + 1, 8 * s, 4.4 * s, 1.2 * s);
+  ctx.fill();
+  ctx.fillStyle = '#c9ccd0'; // the felt
+  rrect(ctx, x - 4 * s, y - 0.4 * s, 8 * s, 2.6 * s, 1 * s);
+  ctx.fill();
+  ctx.fillStyle = '#3b4250'; // the back
+  rrect(ctx, x - 4 * s, y - 2.2 * s, 8 * s, 2.2 * s, 1 * s);
+  ctx.fill();
 }
 
 // A whiteboard marker, black, its tip at (x, y), pointing along rot (radians), len px long.
@@ -456,10 +500,11 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
 // to the DING while cooking, else null: they count down on the panel, the window lights up, your cup goes round on
 // the turntable steaming. fish: Lin's fish is in it (she stands there): lit, the fish going round, a smell coming off
 // it. ding: the moment of the DING (the end card's badge): rings off it, the cup in it, 00.
+export const BOIL_S = 6; // s the noodles boil over after the ding (index.js DING_TURN: as long as heads stay turned)
 const MW_W = 31;
 const MW_H = 19;
-function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, ding = false) {
-  const cooking = ding || (noodles === 'cooking' && left !== null && left > 0);
+function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, ding = false, boil = 0) {
+  const cooking = ding || boil > 0 || (noodles === 'cooking' && left !== null && left > 0);
   const lit = cooking || fish;
   const wx = x + 2.5; // the window
   const wy = y + 3;
@@ -529,7 +574,7 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, d
   rrect(ctx, px, y + 2.5, 6, 4.6, 1);
   ctx.fill();
   if (cooking) {
-    const sec = ding ? 0 : Math.ceil(left);
+    const sec = ding || boil > 0 ? 0 : Math.ceil(left);
     ctx.fillStyle = 'rgba(125,255,154,0.25)';
     rrect(ctx, px, y + 2.5, 6, 4.6, 1);
     ctx.fill();
@@ -554,6 +599,7 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, d
       ctx.stroke();
     }
   }
+  if (boil > 0) drawBoilOver(ctx, x, y, wx, wy, ww, wh, boil, t);
   if (ding) {
     // DING: rings off it, both sides
     ctx.strokeStyle = 'rgba(255,222,120,0.95)';
@@ -567,6 +613,38 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, d
       }
     }
     ctx.lineCap = 'butt';
+  }
+}
+
+// The noodles boiling over (k: 0..1 through it): the window fogs white, foam froths up out of the cup and down the
+// glass, and steam pours out round the door and up off the top in big billows, thinning out at the end.
+function drawBoilOver(ctx, x, y, wx, wy, ww, wh, k, t) {
+  const strong = k < 0.8 ? 1 : (1 - k) / 0.2;
+  // fog on the window, and foam piled on the cup and running down the inside of the glass
+  ctx.fillStyle = `rgba(250,250,245,${(0.55 * strong + 0.15).toFixed(3)})`;
+  rrect(ctx, wx, wy, ww, wh, 1.6);
+  ctx.fill();
+  ctx.fillStyle = '#fff7e2';
+  for (let i = 0; i < 6; i++) {
+    const fx = wx + 3 + i * 2.6;
+    const drip = 2 + 4 * Math.min(1, k * 3) * hash(i, 7);
+    fillCircle(ctx, fx, wy + wh - 6 + Math.sin(t * 5 + i) * 0.5, 1.8, '#fff7e2');
+    ctx.fillStyle = '#fff7e2';
+    ctx.fillRect(fx - 0.7, wy + wh - 6, 1.4, drip);
+  }
+  // steam: big billows pouring out of the door's edge and off the top, rolling out into the room (west) and up,
+  // each with a soft grey edge so it reads on the pale counter
+  for (let i = 0; i < 9; i++) {
+    const ph = (t * 0.6 + i / 9) % 1;
+    const r = 5 + ph * 14;
+    const a = 0.95 * (1 - ph * ph) * strong;
+    const px = x + 4 + (i % 3) * 9 - ph * 42 + Math.sin(t * 1.3 + i) * 2;
+    const py = y + 2 - ph * 26 - (i % 2) * 5;
+    ctx.fillStyle = `rgba(120,120,125,${(0.35 * a).toFixed(3)})`;
+    ctx.beginPath();
+    ctx.arc(px + 0.8, py + 1.2, r + 0.8, 0, Math.PI * 2);
+    ctx.fill();
+    fillCircle(ctx, px, py, r, `rgba(255,255,255,${a.toFixed(3)})`);
   }
 }
 
@@ -904,7 +982,7 @@ export function scribbleOf(game) {
   const r = game.map?.find?.('R')?.[0];
   const p = game.player;
   if (c && c.reason === 'action' && r && p && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 0.5)) < 1.7) {
-    return { look: looks[NEXT_FACE[w.roster] ?? 'boss'], k: 0.5 };
+    return { look: looks[NEXT_FACE[w.roster] ?? 'boss'], k: 0.6 };
   }
   return null;
 }
@@ -959,11 +1037,15 @@ export function paintCopier(ctx, info, at, shown, t) {
 export function paintMicrowave(ctx, info, at, shown, t) {
   drawCounter(ctx, at.x, at.y - 1, at.y + 2);
   const cooking = shown.noodles === 'cooking' && shown.left !== null && shown.left > 0;
-  drawMicrowave(ctx, at.x * T + 1, at.y * T + 8, cooking ? 'cooking' : 'cold', cooking ? shown.left : null, t, shown.fish && !cooking);
+  // boiling over: from the ding for BOIL_S s, still in the microwave, nobody coming to stop it
+  const since = shown.noodles === 'cooking' && shown.left !== null ? -shown.left : -1;
+  const boil = since >= 0 && since < BOIL_S ? Math.max(0.01, since / BOIL_S) : 0;
+  const inside = cooking || boil > 0;
+  drawMicrowave(ctx, at.x * T + 1, at.y * T + 8, inside ? 'cooking' : 'cold', cooking ? shown.left : null, t, shown.fish && !inside, true, false, boil);
   const cx = at.x * T + 17;
   const cy = (at.y - 1) * T + 26;
-  if (!cooking) drawNoodleCup(ctx, cx, cy, 1.5, shown.noodles === 'cooking');
-  if (shown.noodles === 'cooking' && !cooking) cupSteam(ctx, cx, cy - 18, t, 1);
+  if (!inside) drawNoodleCup(ctx, cx, cy, 1.5, shown.noodles === 'cooking');
+  if (shown.noodles === 'cooking' && !inside) cupSteam(ctx, cx, cy - 18, t, 1);
 }
 
 // { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
