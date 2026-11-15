@@ -1,6 +1,8 @@
 // The dark (level.darkness: src/game/darkness.js), drawn over the people and under the bubbles: a navy
 // veil on every dark room, cut open where a torch beam falls, and eyes for whoever stands in the dark (you also get
-// a red outline, so you can find yourself). Lit rooms and levels without darkness draw nothing here.
+// a red outline, so you can find yourself). Lit rooms and levels without darkness draw nothing here, except the
+// light controls (darkness.controls): a wall switch or a breaker panel on its wall tile, on the face that looks into
+// the room, and the little lamp that glows on it while it is off.
 import { T, fin, clamp, fillCircle, ellipse, circle } from './util.js';
 import { C } from './palette.js';
 import { castRay } from './cones.js';
@@ -46,10 +48,179 @@ function eyes(ctx, game, n, dir) {
   }
 }
 
+// ---- Light controls -------------------------------------------------------------------------------------------
+
+const NEIGHBOURS = [['S', 0, 1], ['E', 1, 0], ['W', -1, 0], ['N', 0, -1]]; // the face that looks into the room
+const placed = new WeakMap(); // map -> [{ kind, on, tx, ty, face }]
+
+// The level's controls, each found on its map letter's first tile and facing its first open neighbour.
+function controlsOf(game) {
+  const list = game.level?.darkness?.controls;
+  const map = game.map;
+  if (!list?.length || !map) return [];
+  let out = placed.get(map);
+  if (out) return out;
+  const rows = game.level.map?.rows ?? [];
+  out = [];
+  for (const c of list) {
+    const ty = rows.findIndex((r) => r.includes(c.tile));
+    if (ty < 0) continue;
+    const tx = rows[ty].indexOf(c.tile);
+    const open = NEIGHBOURS.find(([, dx, dy]) => {
+      const x = tx + dx;
+      const y = ty + dy;
+      return x >= 0 && y >= 0 && x < map.w && y < map.h && !map.isSolid(x, y);
+    });
+    out.push({ kind: c.kind, on: c.on, tx, ty, face: open ? open[0] : 'S', room: open ? { x: tx + open[1] + 0.5, y: ty + open[2] + 0.5 } : null });
+  }
+  placed.set(map, out);
+  return out;
+}
+
+// Where a control of size w x h sits on its tile: on the front face (S), against a side edge of the wall cap (E, W),
+// or at its top edge (N). Returns its centre and scale.
+function anchor(k, w, h) {
+  const px = k.tx * T;
+  const py = k.ty * T;
+  if (k.face === 'S') return { x: px + T / 2, y: py + T - 2 - h / 2, s: 1 };
+  if (k.face === 'E') return { x: px + T - 3 - w / 2, y: py + T / 2, s: 1 };
+  if (k.face === 'W') return { x: px + 3 + w / 2, y: py + T / 2, s: 1 };
+  return { x: px + T / 2, y: py + 2 + h / 2, s: 1 };
+}
+
+function isOn(k, game) {
+  try { return !!k.on(game.world); } catch { return true; }
+}
+
+// A wall switch: a cream plate with a rocker, up when on. Its locator lamp (amber) is lit while it is off.
+const SWITCH = { w: 9, h: 13 };
+function drawSwitch(ctx, k, on) {
+  const { x, y } = anchor(k, SWITCH.w, SWITCH.h);
+  const { w, h } = SWITCH;
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(x - w / 2 + 1, y - h / 2 + 1, w, h);
+  ctx.fillStyle = '#3a2e26';
+  ctx.fillRect(x - w / 2 - 0.5, y - h / 2 - 0.5, w + 1, h + 1);
+  ctx.fillStyle = '#efe6d2';
+  ctx.fillRect(x - w / 2, y - h / 2, w, h);
+  ctx.fillStyle = '#c9bea6'; // the rocker's well
+  ctx.fillRect(x - 2.5, y - 4.5, 5, 7);
+  ctx.fillStyle = '#fffaf0'; // the half pushed out catches the light
+  ctx.fillRect(x - 2, on ? y - 4 : y - 1, 4, 3);
+  ctx.fillStyle = '#a89c84';
+  ctx.fillRect(x - 2, on ? y - 1 : y - 4, 4, 3);
+  ctx.fillStyle = '#7d7262'; // two screws
+  ctx.fillRect(x - 0.5, y - h / 2 + 1, 1, 1);
+  ctx.fillRect(x - 0.5, y + h / 2 - 2, 1, 1);
+  return { x, y: y + 4.5, color: on ? null : [255, 176, 64], r: 1.3 };
+}
+
+// A breaker panel: a grey metal box. On, its door is shut (a yellow lightning sticker, a green lamp). Off, its door
+// hangs open on a dark row of breakers with the red main lever down, and its lamp blinks red.
+const BREAKER = { w: 16, h: 20 };
+function drawBreaker(ctx, k, on, t) {
+  const { x, y } = anchor(k, BREAKER.w, BREAKER.h);
+  const { w, h } = BREAKER;
+  const l = x - w / 2;
+  const top = y - h / 2;
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(l + 1.5, top + 1.5, w, h);
+  ctx.fillStyle = '#2b3036';
+  ctx.fillRect(l - 1, top - 1, w + 2, h + 2);
+  ctx.fillStyle = '#9aa3ab';
+  ctx.fillRect(l, top, w, h);
+  if (on) {
+    ctx.fillStyle = '#b6bec5'; // the door
+    ctx.fillRect(l + 1, top + 1, w - 2, h - 2);
+    ctx.fillStyle = '#7e868e'; // hinge side, handle
+    ctx.fillRect(l + 1, top + 1, 1, h - 2);
+    ctx.fillRect(l + w - 4, y - 1, 2, 4);
+    // the sticker: a yellow triangle with a black bolt
+    const cy = y + 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 0.5, cy - 6);
+    ctx.lineTo(x + 5, cy + 4);
+    ctx.lineTo(x - 6, cy + 4);
+    ctx.closePath();
+    ctx.fillStyle = '#1d1d1d';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x - 0.5, cy - 4.4);
+    ctx.lineTo(x + 3.7, cy + 3.2);
+    ctx.lineTo(x - 4.7, cy + 3.2);
+    ctx.closePath();
+    ctx.fillStyle = '#f2c230';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x, cy - 2.8);
+    ctx.lineTo(x - 1.8, cy + 0.6);
+    ctx.lineTo(x - 0.2, cy + 0.6);
+    ctx.lineTo(x - 1.2, cy + 2.8);
+    ctx.lineTo(x + 1.6, cy - 0.6);
+    ctx.lineTo(x, cy - 0.6);
+    ctx.closePath();
+    ctx.fillStyle = '#1d1d1d';
+    ctx.fill();
+    return { x: l + w - 3, y: top + 3, color: null, r: 1.2, idle: '#5fd36a' };
+  }
+  ctx.fillStyle = '#23272c'; // the open box
+  ctx.fillRect(l + 1, top + 1, w - 2, h - 2);
+  ctx.fillStyle = '#cfd3d6'; // two rows of small breakers
+  for (let i = 0; i < 4; i++) {
+    ctx.fillRect(l + 3 + i * 3, top + 9, 2, 3);
+    ctx.fillRect(l + 3 + i * 3, top + 14, 2, 3);
+  }
+  ctx.fillStyle = '#d0413a'; // the main lever, down
+  ctx.fillRect(l + 3, top + 4, w - 6, 2);
+  ctx.fillRect(x - 1, top + 4, 2, 4);
+  // the door, swung open on its hinge: a thin slanted panel off the left edge
+  ctx.beginPath();
+  ctx.moveTo(l - 1, top - 1);
+  ctx.lineTo(l - 5, top + 2);
+  ctx.lineTo(l - 5, top + h - 1);
+  ctx.lineTo(l - 1, top + h + 1);
+  ctx.closePath();
+  ctx.fillStyle = '#7e868e';
+  ctx.fill();
+  const blink = Math.sin(fin(t) * 7) > -0.2;
+  return { x: l + w - 3, y: top + 2.5, color: blink ? [255, 70, 60] : null, r: 1.3 };
+}
+
+function drawControl(ctx, k, game, t) {
+  const on = isOn(k, game);
+  const lamp = k.kind === 'breaker' ? drawBreaker(ctx, k, on, t) : drawSwitch(ctx, k, on);
+  if (lamp.idle) fillCircle(ctx, lamp.x, lamp.y, lamp.r, lamp.idle);
+  return lamp;
+}
+
+// A lit lamp: the dot and a soft glow around it, brighter when the room it looks into is dark.
+function drawLamp(ctx, game, k, lamp, t) {
+  if (!lamp.color) return;
+  const [r, g, b] = lamp.color;
+  const dark = k.room && isDark(game, k.room.x, k.room.y);
+  const a = (dark ? 0.55 : 0.28) * (0.8 + 0.2 * Math.sin(fin(t) * 3));
+  const rad = dark ? 11 : 6;
+  const grad = ctx.createRadialGradient(lamp.x, lamp.y, 0.5, lamp.x, lamp.y, rad);
+  grad.addColorStop(0, `rgba(${r},${g},${b},${a})`);
+  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(lamp.x - rad, lamp.y - rad, rad * 2, rad * 2);
+  fillCircle(ctx, lamp.x, lamp.y, lamp.r, `rgb(${r},${g},${b})`);
+}
+
+// ---- The dark -----------------------------------------------------------------------------------------------
+
 export function drawDarkness(ctx, game, t) {
   const map = game.map;
-  const zones = map ? darkZones(game) : [];
-  if (!zones.length) return;
+  if (!map) return;
+  const controls = controlsOf(game);
+  const lamps = controls.map((k) => drawControl(ctx, k, game, t));
+  const zones = darkZones(game);
+  if (zones.length) drawVeil(ctx, game, map, zones, t);
+  controls.forEach((k, i) => drawLamp(ctx, game, k, lamps[i], t));
+}
+
+function drawVeil(ctx, game, map, zones, t) {
   const mw = map.w * T;
   const mh = map.h * T;
   const beams = [];

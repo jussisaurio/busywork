@@ -102,6 +102,13 @@ function day(level) {
   ok(has(/^darkness\.rooms\[1\]\.zone\[1\]: no zone 'nope'/), 'a zone list with a bad name');
   ok(has(/^darkness\.near\.radius: not a number/), 'near.radius not a number');
   ok(has(/^darkness\.torch\.when: not a function/) && has(/^darkness\.torch: fov and radius/), 'a torch without when() or radius');
+  const badControls = darkLevel({ rooms: [ROOM], controls: [{ tile: 'Q', kind: 'dimmer' }, { tile: 'R', kind: 'switch', on: () => true }] });
+  const cp = levelProblems(badControls, 'meeting');
+  const chas = (re) => cp.some((p) => re.test(p));
+  ok(chas(/^darkness\.controls\[0\]\.kind: no control 'dimmer'/), 'a control of an unknown kind');
+  ok(chas(/^darkness\.controls\[0\]\.tile: 'Q' is not on the map/), 'a control on a letter not on the map');
+  ok(chas(/^darkness\.controls\[0\]\.on: not a function/), 'a control without on()');
+  ok(!cp.some((p) => p.startsWith('darkness.controls[1]')), 'a good control passes');
 }
 
 // 5. Render (fake canvas): a dark room draws its veil, cones clip to the light, a torch cuts a beam; with every
@@ -133,6 +140,20 @@ function day(level) {
   game.player.x = 3.5;
   game.player.y = 4.5;
   frame(game);
+  // Light controls: drawn with every light on too, and differently in each position.
+  const CONTROLS = [{ tile: 'R', kind: 'switch', on: (w) => w.officeLight !== 'off' }, { tile: 'E', kind: 'breaker', on: (w) => w.fuse !== 'off' }];
+  const withControls = darkLevel({ rooms: [ROOM], torch: TORCH, controls: CONTROLS });
+  ok(levelProblems(withControls, 'meeting').length === 0, 'a level with light controls validates');
+  const cg = day(withControls);
+  const allOn = frame(cg);
+  ok(allOn.length > plain.length, 'every light on: the controls still draw');
+  cg.world.fuse = 'off';
+  const breakerOff = frame(cg);
+  ok(JSON.stringify(breakerOff) !== JSON.stringify(allOn), 'the breaker off draws differently from on');
+  cg.world.fuse = 'on';
+  cg.world.officeLight = 'off';
+  const switchOff = frame(cg);
+  ok(switchOff.filter((m) => m === 'createRadialGradient').length > allOn.filter((m) => m === 'createRadialGradient').length, 'a switch off lights its lamp');
   ok(fake.errors.length === 0, `no canvas errors${fake.errors.length ? `: ${fake.errors.slice(0, 3).join('; ')}` : ''}`);
 }
 
