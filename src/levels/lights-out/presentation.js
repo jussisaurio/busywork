@@ -1,23 +1,21 @@
-// How Lights Out looks and sounds: title card, set dressing, poses, sounds and the end card (level 1's decor.js,
-// looks.js, sounds.js and end-scenes.js document the fields). People look as in level 1 (its looks.js, read-only).
+// How Lights Out looks and sounds: title card, set dressing, poses and sounds (level 1's decor.js, looks.js and
+// sounds.js document the fields). The end cards are in end-scenes.js. People look as in level 1 (its looks.js,
+// read-only).
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS } from '../meeting/looks.js';
 
 export { LOOKS };
+export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ["🔌 Your angry resignation letter is in the boss's tray.", 'Get it back.'],
-  badge: ['✉️', '🔌'],
+  mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He empties it at 3:40. Get it back first.'],
+  badge: ['✉️', '📥'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
-
-const lit = (w) => w.fuse === 'on';
 
 export const DECOR = {
   chairs: [
@@ -48,25 +46,26 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
   ],
   clock: { x: 17, y: 6 },
+  // The in-tray on his desk, your letter on top while it's there. (The switch and the fuse box: darkness.controls.)
   props: [
-    { tile: 'Y', draw: 'icon', state: (w) => ({ icon: w.letter === 'tray' ? '📨' : '📭', size: 16 }) },
-    { tile: 'S', draw: 'icon', state: (w) => ({ icon: lit(w) && w.officeLight === 'on' ? '💡' : '🔲', size: 12 }) },
-    { tile: 'X', draw: 'icon', state: (w) => ({ icon: lit(w) ? '⚡' : '🔌', size: 14 }) },
-    { tile: 'M', draw: 'icon', state: (w) => ({ icon: w.lunch === 'nuked' && !lit(w) ? '💥' : '♨️', size: 16 }) },
+    { tile: 'Y', draw: 'icon', state: () => ({ icon: '📥', size: 20 }) },
+    { tile: 'Y', draw: 'icon', state: (w) => ({ icon: w.letter === 'tray' ? '✉️' : '', size: 13 }) },
+    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) }, // brewed once the power's back
   ],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
   },
-  legendAt: { x: 15, y: 14 },
+  legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
 
 // level.poses (level 1's looks.js documents it): a phone torch held up while the fuse is out, the boss feeling
-// his way along the wall, Kev at the fuse box.
+// his way along the wall, Kev at the fuse box, Lin with her coffee once it has brewed.
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
     { when: (n) => n.override === 'dark' || n.override === 'groping', arms: 'reach' },
     { when: (n, w) => w.fuse !== 'on', arms: 'reach', item: '📱' },
+    { when: (n, w) => n.id === 'lin' && n.pose !== 'sit' && w.coffee === 'tripped', arms: 'mug', item: '☕' },
   ],
   marks: [
     { when: (n) => n.override === 'groping', angry: true },
@@ -89,7 +88,7 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'fuse:tripped': { sfx: 'splashZap', spot: 'microwave' },
+    'fuse:tripped': { sfx: 'splashZap', spot: 'coffee_machine' },
     'fuse:pulled': { sfx: 'splashZap', spot: 'fuse_box', opts: { gain: 0.7 } },
     'fuse:fixing': { sfx: 'clank', spot: 'fuse_box', opts: { soft: true } },
     'fuse:fixed': { sfx: 'fixed', spot: 'fuse_box' },
@@ -129,26 +128,5 @@ export const VOICES = {
     vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
     post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
     pitch: { notice: 440, tattle: 0.84, grumble: 190 },
-  },
-};
-
-// The end card: the carpet, a big emoji, and a small one bobbing beside it.
-const picture = (icon, side) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-  if (side) emoji(ctx, side, TAB.x + TAB.w / 2 + 64, TAB.y + TAB.h / 2 - 30 + Math.sin(t * 3 + 1) * 4, 36);
-};
-
-const ROUTE_SCENE = { breaker: 'breaker', blackout: 'blackout', switch: 'switch' };
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? ROUTE_SCENE[o.routes[0]] ?? 'switch' : o?.result ?? 'fail'),
-  scenes: {
-    switch: { win: true, icons: ['💡', '✉️', '😇'], draw: picture('📭', '🤷') }, // he found the switch, not the letter
-    blackout: { win: true, icons: ['♨️', '🔌', '✉️'], draw: picture('📭', '🍲') },
-    breaker: { win: true, icons: ['🔌', '📱', '✉️'], draw: picture('📭', '🔧') },
-    fail: { win: false, icons: ['📥', '✉️', '😠'], draw: picture('✉️', '😠') }, // he read it
-    caught: { win: false, icons: ['👔', '👉', '✉️'], draw: picture('😠', '✉️') },
-    blamed: { win: false, icons: ['🪑', '👉', '✉️'], draw: picture('🪑', '❓') },
   },
 };

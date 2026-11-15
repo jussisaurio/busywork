@@ -43,7 +43,7 @@ export default [
     },
   },
   {
-    name: 'blackout: wait for Lin\'s microwave, take it from beside his desk (off his torch) → win',
+    name: 'blackout: wait for Lin\'s coffee machine to trip the fuse, take it from beside his desk (off his torch) → win',
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
       run('pretend until 3:11'); // stops on fuse:tripped
