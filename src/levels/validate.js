@@ -33,7 +33,8 @@
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
 //               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
-//               cast ids; put seconds; keep and bulky booleans; disguise { as (a cast id), look? (an object of look
+//               cast ids; put seconds; keep and bulky booleans; edible { leaves } with leaves a config.js MARKS name
+//               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
 //               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
@@ -73,7 +74,7 @@
 // for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
 // icon rows) is never checked.
 import { parseMap } from '../core/map.js';
-import { DAY_CUES } from '../config.js';
+import { DAY_CUES, MARKS } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
 import * as SFX from '../audio/sfx.js';
@@ -312,6 +313,11 @@ export function levelProblems(level, key) {
     if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
     if (it.keep !== undefined && typeof it.keep !== 'boolean') bad(`items.${type}.keep`, 'not true or false (true: it leaves your hand only by a put)');
     if (it.bulky !== undefined && typeof it.bulky !== 'boolean') bad(`items.${type}.bulky`, 'not true or false (true: no pretending while you hold it)');
+    if (it.edible !== undefined) {
+      const marks = Object.keys(MARKS).map(q).join(', ');
+      if (!isObj(it.edible) || !('leaves' in it.edible)) bad(`items.${type}.edible`, `not { leaves }: say what eating leaves on you (${marks}, or null for nothing)`);
+      else if (it.edible.leaves !== null && !Object.hasOwn(MARKS, it.edible.leaves)) bad(`items.${type}.edible.leaves`, `no mark ${q(it.edible.leaves)} (config.js MARKS: ${marks}; or null for nothing)`);
+    }
   }
   const roles = level.roles;
   if (roles !== undefined) {
