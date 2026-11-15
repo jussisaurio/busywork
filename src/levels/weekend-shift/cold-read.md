@@ -62,55 +62,58 @@ Read aloud, the card sounds like a person talking. "Stuck working Saturday", "ma
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"1781ba1","hash":"fe3bc6e8e3ccafa0d03905eb1a20f49977eaebe223dbdb487d3214931e2874c9","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"ef57b2561ab7506b9523fb7cffd181c351027d489472f24b5755d04180268eb4","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":6,"stretch":3,"nonsense":0},"problems":{"blocker":4,"should":1,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit 1781ba1, by claude -p (model: default). Inputs fe3bc6e8e3cc: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 6 sensible, 3 stretch, 0 nonsense.
-Problems: 4 blocker, 1 should, 1 nit.
-Earlier problems: 0 fixed, 2 still there, 0 no longer applies (now blockers).
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"33e81eb","hash":"1e5e1493ae62cf6a2852333199ea5c3dbf5998957ec0ad4aeee8e26f52574921","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","ways":"2242641e51160f4784ef4077665997db939f88c8625a739d44e34d4688135c8c","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":8,"stretch":1,"nonsense":0},"problems":{"blocker":0,"should":3,"nit":1}} -->
+## sense: works
+Recorded 2026-11-15 at commit 33e81eb, by claude -p (model: default). Inputs 1e5e1493ae62: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 8 sensible, 1 stretch, 0 nonsense.
+Problems: 0 blocker, 3 should, 1 nit.
+Earlier problems: 4 fixed, 1 still there, 0 no longer applies.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 56 s | $0.13 |
-| all | | 56 s (the steps add up to 56 s) | $0.13 |
+| 1-judge | report.md | 47 s | $0.12 |
+| all | | 47 s (the steps add up to 47 s) | $0.12 |
 
 ### Ledger
 The earlier record's open problems, as this run's reader marked them.
 
-- E1 still there: In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using. (You no longer loiter at the board, which is fixed. But you're now the one person up and walking away from the kitchen when everyone wonders "whose noodles?" Everyone just watched you go past.)
-- E2 still there: You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style. (The new face is still "scribbled over yours line by line", so the old face shows through on the boss's own board.)
+- E1 fixed: In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using. (recurring: premise-level?) (You are now just walking back past the board when it dings, not hanging about at it.)
+- E2 fixed: You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style. (recurring: premise-level?) (The eraser wipes your face clean before the new face is drawn, and nothing shows through.)
+- E3 still there: The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other. (Kev now says "it was you all week" and the boss points at his board, which is a real reaction. But Lin has watched that board all afternoon and stays quiet, while in the own-face loss she does speak up. "It isn't her Saturday" is a believable reason, so this is a stretch, not nonsense. Fix: have Lin start to speak and the boss cut her off ("I wrote it, it's Kev"). Or have her plainly look busy with her fish, which shows she chose to stay out of it.)
+- E4 fixed: Office workers glance at a microwave ding for about a second. Nobody turns their head and holds it for six seconds over a cup of noodles. — Fix: give them something a real person keeps watching, e.g. the noodle cup boils over and steam or smoke pours out. People keep watching that until someone deals with it, and your walking away from it (not toward it) is your own risk. (A boil-over with steam pouring out is something real people keep watching.)
+- E5 fixed: Office desk phones show the calling extension. A silent call from "Supply Room" at 4:30 on a Friday is something the boss remembers when Kev protests at 5:00. — Fix: make it a real call that needs no explanation, e.g. you call the boss's outside line from your mobile, or the phone has no display. Or have him shrug it off as "probably the copier guy" if he mentions it at all. (His old phone has no screen, so it's just a wrong number.)
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In the ding route, you have to "walk to the board before the ding" and stand there while the boss's cone is still on it. The text says he spends the afternoon watching for people going up to the board, and you are one. A real boss would ask "Can I help you?" Then, when Kev protests at 5:00, he would remember you standing at the board just before the ding. Also, when people wonder whose noodles they are, they look round for whoever is up and about, and the only person standing is you, at the board. — Fix: give you an ordinary reason to be there. Time the 10-second countdown so you are just walking past the board on your way back from the kitchen when it dings. Or put a filing cabinet or water cooler beside the board that you can be using. (recurring: premise-level?)
-- E2 [blocker] You "scribble" the new face "over yours, line by line." On a whiteboard, the old face would still show under the new one. Even a half-awake boss notices a scribbled-over slot on his own rota. — Fix: the marker's eraser wipes your face first, then Kev's face is drawn cleanly in the boss's style. (recurring: premise-level?)
-- E3 [blocker] The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other.
-- E4 [blocker] Office workers glance at a microwave ding for about a second. Nobody turns their head and holds it for six seconds over a cup of noodles. — Fix: give them something a real person keeps watching, e.g. the noodle cup boils over and steam or smoke pours out. People keep watching that until someone deals with it, and your walking away from it (not toward it) is your own risk.
-- E5 [should] Office desk phones show the calling extension. A silent call from "Supply Room" at 4:30 on a Friday is something the boss remembers when Kev protests at 5:00. — Fix: make it a real call that needs no explanation, e.g. you call the boss's outside line from your mobile, or the phone has no display. Or have him shrug it off as "probably the copier guy" if he mentions it at all.
+- E1 [should] The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other. (recurring: premise-level?)
+- E2 [should] When noodles boil over, real coworkers look at the microwave and then look for the owner. Everyone saw you start that microwave six seconds ago, so "nobody is asking whose noodles they are yet" is convenient. Fix: the owner hunt starts after the steam thins ("whose are these?"). That fits the six seconds, and at 5:00 the boss remembers you only as the noodle person, not the person at the board.
+- E3 [should] In the phone route, nobody says where Kev is looking. Kev's own face is going onto the board, so if he can see it, he would protest at 5:00 with "I saw them do it", not "it was you all week". Fix: say that Kev sits with his back to the board, or wears headphones facing his screen, so his protest doesn't contradict what he saw.
 
 ### 1-judge: report.md
 
-Verdict: fixable
-- The ding (win): stretch — nobody stares at a microwave for six seconds, and the person whose noodles they are just walked past them.
-- The phone (win): stretch — a silent call is ordinary, but an internal phone shows which extension is calling.
-- The trap (not a win): sensible — you look at a noise and see whoever is between you and it.
-- Shared ending (win): stretch — the boss trusting his own board is real, but Kev and Lin know whose face was up there all week.
-- Fail (lose): sensible — the boss reads out the schedule he wrote.
-- Caught (lose): sensible — you're seen writing on his board.
-- His own face (lose): sensible — nobody believes he put himself on the weekend, and coworkers remember whose face was there.
-- Told on (lose): sensible — a manager who hears someone was messing with the board goes and looks at it.
-- Blamed (lose): sensible — whoever skips the meeting gets the job nobody wants.
+Verdict: works
+- The ding (win): sensible. Everyone stares at the boil-over and the board is behind them, but walking away from your own noodles is a small stretch.
+- The phone (win): sensible. A silent call on a phone with no screen gets two hellos and is forgotten, and Lin really does go off for her fish.
+- The ending: Kev's face is read out (win): stretch. A boss trusting his own board over Kev is real, but Lin saying nothing is a little convenient.
+- The trap (not a win): sensible. You look at a noise and see whoever is in the way.
+- Fail (lose): sensible. The schedule stands as written.
+- Caught (lose): sensible. Caught with the marker in your hand.
+- His own face (lose): sensible. Nobody believes he put himself down, so he asks, and the others remember.
+- Told on (lose): sensible. Lin reports you, he checks the board and puts you back on it.
+- Blamed (lose): sensible. Whoever misses the meeting gets the job nobody wants.
 
 ## Earlier problems
-- E1: still there — You no longer loiter at the board, which is fixed. But you're now the one person up and walking away from the kitchen when everyone wonders "whose noodles?" Everyone just watched you go past.
-- E2: still there — The new face is still "scribbled over yours line by line", so the old face shows through on the boss's own board.
+- E1: fixed. You are now just walking back past the board when it dings, not hanging about at it.
+- E2: fixed. The eraser wipes your face clean before the new face is drawn, and nothing shows through.
+- E3: still there (should). Kev now says "it was you all week" and the boss points at his board, which is a real reaction. But Lin has watched that board all afternoon and stays quiet, while in the own-face loss she does speak up. "It isn't her Saturday" is a believable reason, so this is a stretch, not nonsense. Fix: have Lin start to speak and the boss cut her off ("I wrote it, it's Kev"). Or have her plainly look busy with her fish, which shows she chose to stay out of it.
+- E4: fixed. A boil-over with steam pouring out is something real people keep watching.
+- E5: fixed. His old phone has no screen, so it's just a wrong number.
 
 ## Problems
-- blocker: The own-face loss says Lin and Kev "have looked at that board all week" and remember whose face was there. The win then has Kev protest while nobody says whose face it really was. A real Kev says "it was them all week", and Lin, who has watched the board all afternoon, backs him up. — Fix: make Kev's protest the real Friday-at-5 one, "I did last Saturday!", and have the boss cut him off with "take it up Monday." In the own-face loss, the boss works out the culprit himself ("whose face is gone?") instead of relying on coworkers' memory. Then the two routes don't contradict each other.
-- blocker: Office workers glance at a microwave ding for about a second. Nobody turns their head and holds it for six seconds over a cup of noodles. — Fix: give them something a real person keeps watching, e.g. the noodle cup boils over and steam or smoke pours out. People keep watching that until someone deals with it, and your walking away from it (not toward it) is your own risk.
-- should: Office desk phones show the calling extension. A silent call from "Supply Room" at 4:30 on a Friday is something the boss remembers when Kev protests at 5:00. — Fix: make it a real call that needs no explanation, e.g. you call the boss's outside line from your mobile, or the phone has no display. Or have him shrug it off as "probably the copier guy" if he mentions it at all.
-- nit: Lin heating fish for five minutes while standing with her back to the room is believable. But "she thinks of her fish" at exactly 4:30 reads like a cue. — Fix: give her a reason anyone would recognise, e.g. she always eats late on Fridays, or she's heating it up to take home.
+- should: When noodles boil over, real coworkers look at the microwave and then look for the owner. Everyone saw you start that microwave six seconds ago, so "nobody is asking whose noodles they are yet" is convenient. Fix: the owner hunt starts after the steam thins ("whose are these?"). That fits the six seconds, and at 5:00 the boss remembers you only as the noodle person, not the person at the board.
+- should: In the phone route, nobody says where Kev is looking. Kev's own face is going onto the board, so if he can see it, he would protest at 5:00 with "I saw them do it", not "it was you all week". Fix: say that Kev sits with his back to the board, or wears headphones facing his screen, so his protest doesn't contradict what he saw.
+- nit: After the boil-over, the noodles are "back on the counter, open and steaming", but nobody put them there. Fix: the mess stays in the microwave until 5:00, or the boss mutters about it afterwards.
 
 <!-- /cold-read:sense -->
 
