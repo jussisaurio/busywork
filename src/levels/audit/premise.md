@@ -125,6 +125,6 @@ gets there (3:43.5): the fourth tick.
 
 ## The joke
 Kev's route. Kev comes back from the kitchen, finds his laptop on your desk again, blames himself, and carries it
-home, humming, a few steps behind the auditor's back. Your desk has just been ticked with it; a minute later Kev's
+home, humming, a few steps ahead of the auditor. Your desk has just been ticked with it; a minute later Kev's
 desk is ticked with it too. The win picture: you smug behind an empty desk, the auditor beaming over four ticks, and
 Kev with the laptop that was counted twice, thanks to him.
