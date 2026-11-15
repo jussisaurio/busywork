@@ -1,6 +1,8 @@
 // The Last Bus's route checks for tools/routes.mjs (format: src/levels/meeting/route-checks.js).
 // At your desk you type ('pretend' while seated); walking about you take a call ('goto ... pretend'): the boss
 // sends anyone he sees standing around back to work.
+// He is out at lunch until 3:40, back past the bus stop, a coffee, and under the open-plan clock (O) to his desk and
+// his own clock (Q) at about 3:57.
 const BUS = 'pretend until 4:30';
 const has = (log, name, f = () => true) => log.some((e) => e.name === name && f(e.payload ?? {}));
 const need = (log, name, what, f) => {
@@ -21,6 +23,12 @@ const sit = (ctx) => {
   ctx.run('sit');
 };
 
+// Push a clock n times from wherever you are.
+const push = (ctx, clock, n) => {
+  ctx.run(`goto ${clock} pretend`);
+  for (let i = 0; i < n; i++) ctx.run('interact');
+};
+
 export default [
   { name: 'do nothing → fail', expect: { result: 'fail' }, cmds: [BUS] },
   {
@@ -37,7 +45,7 @@ export default [
   },
   {
     // Nobody leaves before him: back from lunch through the street, he finds you at the bus stop.
-    name: 'wait at the bus stop from 3:00 → the boss comes back from lunch past it → caught in the street',
+    name: 'wait at the bus stop from 3:00 → the boss comes back from lunch past it at 3:40 → caught in the street',
     expect: { result: 'caught' },
     play(ctx) {
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
@@ -51,7 +59,7 @@ export default [
     name: 'slip out after he is back → his look at your empty chair → he comes looking → caught in the street',
     expect: { result: 'caught' },
     play(ctx) {
-      ctx.run('pretend until 3:23');
+      ctx.run('pretend until 4:00');
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
       need(ctx.log, 'boss:desk', 'he never looked at your empty chair', (p) => p.empty);
@@ -60,37 +68,45 @@ export default [
     },
   },
   {
-    // The teaching fail: he looks up at his clock (a clock face) every quarter hour or so, and it hangs right behind
-    // his chair. You are on the stepladder when he turns round.
-    name: "push the boss's clock behind his back too close to 3:35 → he looks up at it → caught",
+    // The teaching fail: back from his coffee he walks into his office, and you are up the stepladder at his clock.
+    name: "push the boss's clock as he comes back from his coffee → he walks in on you on the stepladder → caught",
     expect: { result: 'caught' },
     play(ctx) {
-      const { run, log } = ctx;
-      run('pretend until 3:29');
-      run('goto boss_clock pretend');
-      run('interact');
-      run('interact');
-      run('interact');
+      ctx.run('pretend until 3:52');
+      ctx.run('goto boss_clock pretend');
+      until(ctx, 'interact', (g) => !!g.caught);
       until(ctx, 'wait 1s', (g) => !!g.caught);
-      const caught = log.find((e) => e.name === 'caught');
-      const look = log.find((e) => e.name === 'clock:look' && e.payload?.id === 'boss' && caught && e.minute <= caught.minute && caught.minute - e.minute < 1);
-      if (!look) throw new Error('caught, but not by his look up at the clock');
+      need(ctx.log, 'caught', 'not caught by the boss', (p) => p.by === 'boss');
     },
   },
   {
-    // Out at the stop while he is still in: he is still looking for you when the bus comes, and you don't get on.
-    name: 'slip out at 4:24 → his look at your empty chair → at 4:30 his coat is still on the rack: back to your desk, the bus goes → fail',
+    // Out at the stop while he is still in: his look at your empty chair, he rings you and comes looking. Still
+    // looking when the bus comes: back to your desk.
+    name: 'slip out at 4:24 → his look at your empty chair → he rings you, comes looking → at 4:30 back to your desk, the bus goes → fail',
     expect: { result: 'fail' },
     play(ctx) {
       ctx.run('pretend until 4:24');
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
       need(ctx.log, 'boss:hunt', 'he never came looking');
+      need(ctx.log, 'boss:call', 'he never rang you');
       if (ctx.g.outcome?.why !== 'stop') throw new Error('not at the stop');
     },
   },
   {
-    // Told about the stepladder, the boss sets the clock right before he sits down again.
+    // After his 4:25 look he looks once more at 4:28, before the bus comes.
+    name: 'slip out right after his 4:25 look → he looks again at 4:28, rings you → fail',
+    expect: { result: 'fail' },
+    play(ctx) {
+      ctx.run('pretend until 4:25');
+      ctx.run('wait 2s'); // his look at the clock, then at your desk: you are there
+      until(ctx, 'goto bus_stop pretend', near('bus_stop'));
+      finish(ctx);
+      need(ctx.log, 'boss:call', 'he never rang you');
+    },
+  },
+  {
+    // Told about the stepladder, the boss sets the clock right when he is back from lunch.
     name: "push the boss's clock while Lin watches it through the glass → she tells him → work, and he sets it right → fail",
     expect: { result: 'fail' },
     play(ctx) {
@@ -105,18 +121,44 @@ export default [
     },
   },
   {
-    // His clock jumps while you are still in his office: he looks from it to you, and sets it right.
-    name: "push the boss's clock, but still in his office when he looks up at 3:35 → he looks at you → sets it right → fail",
+    // Kev, under O all afternoon, sees it jump: he frowns and keeps his own time.
+    name: 'Kev back from his coffee to an open-plan clock 30 minutes on → 🤨, he keeps his own time',
+    expect: { result: 'fail' },
+    play(ctx) {
+      push(ctx, 'open_clock', 3);
+      sit(ctx);
+      ctx.run('pretend until 3:15');
+      need(ctx.log, 'clock:doubt', 'Kev never frowned at the clock', (p) => p.id === 'kev');
+      if (ctx.log.some((e) => e.name === 'clock:jump' && e.payload?.id === 'kev')) throw new Error('Kev believed it');
+      finish(ctx);
+    },
+  },
+  {
+    // Only his own clock: back from lunch he has just read the true time under O. Q disagrees: 🤨, he sets it right.
+    name: "Lin in the restroom: the boss's clock +30 alone → under O he reads the true time → Q disagrees: 🤨, he sets it right → fail",
     expect: { result: 'fail' },
     play(ctx) {
       const { run, log } = ctx;
-      run('pretend until 3:24');
-      run('goto boss_clock pretend');
-      run('interact');
-      run('interact');
-      run('interact');
-      until(ctx, 'pretend until 3:38', (g) => g.clock.minute >= 38);
-      need(log, 'clock:jump', 'his clock never jumped', (p) => p.id === 'boss');
+      run('pretend until 3:22');
+      run('wait 1.3s');
+      push(ctx, 'boss_clock', 3);
+      sit(ctx);
+      finish(ctx);
+      need(log, 'boss:mismatch', 'he never frowned at his clock');
+      need(log, 'clock:reset', 'he never set his clock right', (p) => p.clock === 'boss');
+      if (has(log, 'boss:coat')) throw new Error('he went home early anyway');
+    },
+  },
+  {
+    // His clock moved and you are in his office when he looks up: he looks from it to you, and sets it right.
+    name: "the boss's clock +30, and you are still in his office when he sits down → he looks from his clock to you → sets it right → fail",
+    expect: { result: 'fail' },
+    play(ctx) {
+      const { run, log } = ctx;
+      run('pretend until 3:22');
+      run('wait 1.3s');
+      push(ctx, 'boss_clock', 3);
+      until(ctx, 'pretend until 4:00', (g) => g.clock.minute >= 60);
       need(log, 'boss:suspect', 'he never looked at you');
       need(log, 'clock:reset', 'he never set his clock right', (p) => p.clock === 'boss');
       sit(ctx);
@@ -125,20 +167,35 @@ export default [
     },
   },
   {
-    name: "Lin in the restroom, the boss's back turned: his clock +30, back at your desk before he looks up → he takes his coat at 4:20 → follow him out → win",
+    // Arm's length: the stepladder is right behind his chair, and Lin is watching through the glass.
+    name: "push the boss's clock behind his back while he sits at his desk → Lin shouts, he turns → work → fail",
+    expect: { result: 'fail' },
+    play(ctx) {
+      const { run, log } = ctx;
+      run('pretend until 4:00');
+      push(ctx, 'boss_clock', 1);
+      sit(ctx);
+      finish(ctx);
+      need(log, 'witness:tattle', 'Lin never shouted', (p) => p.by === 'lin');
+      if (ctx.g.world.bossClock) throw new Error('his clock stayed pushed');
+      if (has(log, 'boss:coat')) throw new Error('he went home early anyway');
+    },
+  },
+  {
+    // Route 1: both clocks, so they agree. The first clock he sees after lunch says 4:24, and so does his own.
+    name: "both clocks +30 (O while Kev gets coffee, Q while Lin is in the restroom) → they agree: he takes his coat at 4:20 → follow him out → win",
     expect: { result: 'win', routes: ['clock'] },
     play(ctx) {
       const { run, log, waitFor, npc } = ctx;
+      push(ctx, 'open_clock', 3);
+      sit(ctx);
       run('pretend until 3:22');
       run('wait 1.3s');
-      run('goto boss_clock pretend');
-      run('interact');
-      run('interact');
-      run('interact');
+      push(ctx, 'boss_clock', 3);
       sit(ctx);
-      need(log, 'clock:jump', 'his clock never jumped', (p) => p.id === 'boss');
-      if (has(log, 'boss:suspect')) throw new Error('he saw you in his office');
       waitFor((g) => g.world.coat !== 'hook', { maxSec: 200 });
+      need(log, 'boss:readO', 'he never read the open-plan clock', (p) => p.off === 30);
+      if (has(log, 'boss:mismatch') || has(log, 'boss:suspect')) throw new Error('he doubted his clock');
       need(log, 'boss:coat', 'he never took his coat');
       waitFor(() => npc('boss').y >= 14, { maxSec: 60 }); // out behind him, never in front of him
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
@@ -146,47 +203,44 @@ export default [
     },
   },
   {
-    // Route 2: the open-plan clock while Kev fetches his coffee. On his way back from his own coffee the boss walks
-    // under it, sees home time and goes; Lin and Kev, who have been eyeing his coat, follow him out.
-    name: 'open-plan clock +60 while Kev gets coffee → Lin and Kev eye the coat → the boss reads it after his coffee → all go → win',
+    // Route 2: the open-plan clock while Kev fetches his coffee. Kev frowns at it and keeps his own time; the boss,
+    // back from lunch with his coffee, walks under it: the first clock he has seen for an hour says home time, and
+    // he goes from the hallway, never seeing his own.
+    name: 'open-plan clock +60 while Kev gets coffee → Kev frowns → back from lunch the boss reads 4:54 under it → straight home → win',
     expect: { result: 'win', routes: ['herd'] },
     play(ctx) {
-      const { run, log, waitFor } = ctx;
-      run('goto open_clock pretend');
-      for (let i = 0; i < 6; i++) run('interact');
+      const { run, log, waitFor, npc } = ctx;
+      push(ctx, 'open_clock', 6);
       sit(ctx);
-      waitFor((g) => g.world.bossGone, { maxSec: 200 });
-      need(log, 'coat:seen', 'Lin never looked at his coat while it was there', (p) => p.by === 'lin' && p.coat);
+      waitFor((g) => g.world.coat !== 'hook', { maxSec: 200 });
+      need(log, 'clock:doubt', 'Kev never frowned at the clock', (p) => p.id === 'kev');
       need(log, 'boss:herd', 'he never read home time on the open-plan clock');
-      const left = (id) => log.find((e) => e.name === `${id}:left`);
-      if (!left('boss')) throw new Error('the boss never left');
+      if (log.some((e) => e.name === 'clock:look' && e.payload?.id === 'boss' && e.payload.clock === 'boss_clock')) throw new Error('he looked at his own clock');
+      waitFor(() => npc('boss').y >= 14, { maxSec: 60 });
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
-      for (const id of ['lin', 'kev']) {
-        if (!left(id) || left(id).minute < left('boss').minute) throw new Error(`${id} did not follow him out`);
-      }
     },
   },
   {
     name: 'route 2, but you are still at your desk → blamed',
     expect: { result: 'blamed', routes: ['herd'] },
     play(ctx) {
-      ctx.run('goto open_clock pretend');
-      for (let i = 0; i < 6; i++) ctx.run('interact');
+      push(ctx, 'open_clock', 6);
       sit(ctx);
       finish(ctx);
     },
   },
   {
-    name: 'open-plan clock only +50 → 4:49 when he walks under it → a shrug → fail',
+    name: 'open-plan clock only +50 → he reads 4:44 under it, then his own clock disagrees → 🤨, he sets them right → fail',
     expect: { result: 'fail' },
     play(ctx) {
-      const { run, log } = ctx;
-      run('goto open_clock pretend');
-      for (let i = 0; i < 5; i++) run('interact');
+      const { log } = ctx;
+      push(ctx, 'open_clock', 5);
       sit(ctx);
       finish(ctx);
-      need(log, 'boss:shrug', 'he never shrugged at the open-plan clock');
+      need(log, 'boss:readO', 'he never read the open-plan clock', (p) => p.off === 50);
+      need(log, 'boss:mismatch', 'he never frowned at his clock');
+      need(log, 'clock:reset', 'he never set the open-plan clock right', (p) => p.clock === 'open');
       if (has(log, 'boss:herd')) throw new Error('he went home by it');
     },
   },
@@ -194,9 +248,8 @@ export default [
     name: 'route 2, then straight to the bus stop → the boss, back from lunch, walks past it → caught in the street',
     expect: { result: 'caught' },
     play(ctx) {
-      const { run, log } = ctx;
-      run('goto open_clock pretend');
-      for (let i = 0; i < 6; i++) run('interact');
+      const { log } = ctx;
+      push(ctx, 'open_clock', 6);
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
       need(log, 'caught', 'caught, but not in the street', (p) => p.reason === 'scene');
