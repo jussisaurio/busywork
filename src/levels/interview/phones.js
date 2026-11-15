@@ -291,16 +291,17 @@ export const INTERACTIONS = {
   },
 };
 
-// Every ring is a noise at its phone: heads in earshot turn, and the bell. (Its rings are drawn on the phone
-// itself: painters.js.)
+// Every ring is a noise at the phone itself (its bell): heads in earshot turn, the bell sounds, and the engine's
+// ripple bursts on the phone and rings out to its earshot in the line's colour (the interview in the outside line's
+// red). The phone shakes and its handset hops while it rings (painters.js).
 export const NOISES = {
   ...Object.fromEntries(PHONE_IDS.map((p) => [`ring:${p}`, {
-    at: PHONES[p].at, radius: RING_RADIUS, every: RING_EVERY, turn: 1.1, while: (w) => w[`ring_${p}`] === 'you',
-    sfx: 'phoneRing',
+    at: PHONES[p].bell, radius: RING_RADIUS, every: RING_EVERY, turn: 1.1, while: (w) => w[`ring_${p}`] === 'you',
+    ripple: { color: PHONES[p].lamp }, sfx: 'phoneRing',
   }])),
   'ring:job': {
-    at: 'lin_side', radius: RING_RADIUS, every: JOB_EVERY, turn: 1.1, while: (w) => w.ring_lin === 'job',
-    sfx: 'phoneRing',
+    at: PHONES.lin.bell, radius: RING_RADIUS, every: JOB_EVERY, turn: 1.1, while: (w) => w.ring_lin === 'job',
+    ripple: { color: OUTSIDE }, sfx: 'phoneRing',
   },
 };
 

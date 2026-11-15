@@ -99,6 +99,7 @@ export default {
     start: START,
     gatherAt: at('3:30', START), // the interview calls
     meetingAt: at('3:34', START), // the call is over, one way or another
+    deadlineAt: at('3:30', START), // the time on the card's clock face: the call
     clockRedAt: at('3:25', START),
     clockTickAt: at('3:25', START),
     tockAt: at('3:28', START),

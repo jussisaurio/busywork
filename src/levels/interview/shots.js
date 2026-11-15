@@ -39,7 +39,7 @@ export default [
   {
     name: 'kev-phone-rings',
     cmds: [...KEV, 'wait 0.4s'],
-    intent: "You plugged into Kev's jack: the patch plug is seated in it and his lamp on the switchboard is lit olive; his olive desk phone rings, its handset hopping, in tight olive rings, and Kev, at the coffee machine, hears it and starts (his olive handset, !).",
+    intent: "You plugged into Kev's jack: the patch plug is seated in it and his lamp on the switchboard is lit olive; his olive desk phone rings, its handset hopping, an olive burst on it and olive rings spreading out to its earshot, and Kev, at the coffee machine, hears it and starts (his olive handset, !).",
   },
   {
     name: 'kev-on-hold',
@@ -49,7 +49,7 @@ export default [
   {
     name: 'lin-takes-the-kitchen-phone',
     cmds: [...ANSWERED, 'wait 0.8s'],
-    intent: "Kev is walking off to his own ringing olive phone, so when the red kitchen wall phone rings (tight red rings round it), Lin, the one free person in earshot, gets up from her tea to answer it (the red handset, !).",
+    intent: "Kev is walking off to his own ringing olive phone, so when the red kitchen wall phone rings (a red burst on it, red rings spreading out), Lin, the one free person in earshot, gets up from her tea to answer it (the red handset, !).",
   },
   {
     name: 'boss-on-hold',
@@ -74,17 +74,17 @@ export default [
   {
     name: 'boss-on-lins-phone',
     cmds: [...BUSY, 'wait 3.05s'],
-    intent: "Lin is at her tea and her teal phone rings on her empty desk (tight teal rings, its handset hopping), so the boss comes out of his office door to answer it (Lin's teal handset, !).",
+    intent: "Lin is at her tea and her teal phone rings on her empty desk (a teal burst on it and teal rings spreading out, its handset hopping), so the boss comes out of his office door to answer it (Lin's teal handset, !).",
   },
   {
     name: 'the-call',
     cmds: [...CALL, 'wait 1.5s'],
-    intent: "3:30: Lin's phone rings in red rings, the outside line (its red lamp lit on the switchboard); Lin answers at her desk, delighted (briefcase, smile).",
+    intent: "3:30: Lin's phone rings, red rings spreading from it: the outside line (its red lamp lit on the switchboard); Lin answers at her desk, delighted (briefcase, smile).",
   },
   {
     name: 'the-call-answered',
     cmds: [...ANSWERED, ...SEAT, ...CALL, 'wait 0.5s'],
-    intent: "3:30: Lin's empty desk phone rings, tight red rings round it, its teal handset hopping; Lin is on hold at the red kitchen wall phone (white notes); the boss, the one free person in earshot, starts (Lin's teal handset, !) and gets up to answer it.",
+    intent: "3:30: Lin's empty desk phone rings, red rings spreading from it, its teal handset hopping; Lin is on hold at the red kitchen wall phone (white notes); the boss, the one free person in earshot, starts (Lin's teal handset, !) and gets up to answer it.",
   },
   {
     name: 'the-call-dead',

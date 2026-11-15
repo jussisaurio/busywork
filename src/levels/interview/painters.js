@@ -8,7 +8,7 @@ import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
 import { C } from '../../render/palette.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
-import { PHONES, PHONE_IDS, OUTSIDE, RING_RADIUS, RING_EVERY, JOB_EVERY, SLAM, HOLD } from './phones.js';
+import { PHONES, PHONE_IDS, OUTSIDE, SLAM, HOLD } from './phones.js';
 
 const HOLD_LIN = HOLD.lin.lin; // game minutes Lin holds her own phone (the slam is at SLAM of it)
 
@@ -269,44 +269,8 @@ function kitchenPhone(ctx, info, at, { w, game }, t) {
   if (ringing) arcs(ctx, x + 2, y, colour, t, 12);
 }
 
-// --- Rings and notes ----------------------------------------------------------------------------------
-// A ring spreads from the phone itself, as far as its earshot (phones.js RING_RADIUS), in the line's colour, once
-// a bell (phones.js RING_EVERY: the noise and its sound keep the same beat).
-const RINGS = 3;
-const RING_GAP = 0.12;
-const RING_SPAN = 1 - RING_GAP * (RINGS - 1);
-function rings(ctx, info, at, { w, game }) {
-  for (const p of PHONE_IDS) {
-    const kind = w[`ring_${p}`];
-    if (!kind) continue;
-    const age = sinceMin(game, w[`ringAt_${p}`]);
-    if (!(age >= 0)) continue;
-    const ph = age % (kind === 'job' ? JOB_EVERY : RING_EVERY);
-    const bx = PHONES[p].bell.x * T;
-    const by = PHONES[p].bell.y * T;
-    const R = RING_RADIUS * T;
-    ctx.strokeStyle = ringColour(w, p);
-    // the bell: tight bright rings close round the phone itself
-    for (let k = 0; k < 3; k++) {
-      const q = (age * 2.2 + k / 3) % 1;
-      ctx.globalAlpha = 0.95 * (1 - q);
-      ctx.lineWidth = 2.6 - q;
-      circle(ctx, bx, by, 9 + q * 15);
-      ctx.stroke();
-    }
-    // how far it carries: faint rings out to its earshot, once a bell
-    for (let k = 0; k < RINGS; k++) {
-      const q = (ph - k * RING_GAP) / RING_SPAN;
-      if (q <= 0 || q >= 1) continue;
-      const e = 1 - (1 - q) * (1 - q);
-      ctx.globalAlpha = 0.32 * (1 - q * 0.6);
-      ctx.lineWidth = 1.2;
-      circle(ctx, bx, by, 24 + e * (R - 24));
-      ctx.stroke();
-    }
-  }
-  ctx.globalAlpha = 1;
-}
+// --- Notes --------------------------------------------------------------------------------------------
+// (A ring's rings are the engine's ripple: phones.js NOISES.)
 
 // A note, (x, y) its head: one with a flag, or a beamed pair. s: scale.
 export function note(ctx, x, y, colour, pair = false, s = 1) {
@@ -817,8 +781,8 @@ function yourDesk(ctx, info, at, shown, t) {
   bigMug(ctx, 334, 239, C.tomato, 1, t);
 }
 
-// decor.props entries: the window, one per phone, the switchboard, Lin's cord, your mug; then the rings and the
-// hold tune's notes over all of them (state is the same for all).
+// decor.props entries: the window, one per phone, the switchboard, Lin's cord, your mug; then the hold tune's
+// notes over all of them (state is the same for all).
 const state = (w, game) => ({ w, game });
 export const PHONE_PROPS = [
   { tile: 'B', draw: bossWindow, state },
@@ -831,7 +795,6 @@ export const PHONE_PROPS = [
   { tile: 'V', draw: DESK('kev'), state },
   { tile: 'W', draw: kitchenPhone, state },
   { tile: 'P', draw: yourDesk, state },
-  { tile: '5', draw: rings, state },
   { tile: '5', draw: holdNotes, state },
 ];
 
