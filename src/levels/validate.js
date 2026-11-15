@@ -28,7 +28,9 @@
 //               noise.at (optional) a spot
 //   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
 //               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a boolean
+//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a
+//               boolean; disguise { as (a cast id), look? (an object of look fields), greet? (a list of lines) }
+//               (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
