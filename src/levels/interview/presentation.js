@@ -1,5 +1,6 @@
 // How The Interview looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
+import { at } from '../../config.js';
 import { C } from '../../render/palette.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
 import { PHONE_PROPS, THINGS } from './painters.js';
@@ -59,9 +60,9 @@ export const POSES = {
     { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevReach, arms: 'reach', item: '#mobile' },
     { when: (n, w, game) => n.id === 'kev' && !!w.kevCharge && m(game) >= w.kevCharge && !n.moving, arms: 'carry', item: '#mobile' },
     { when: (n, w, game) => n.id === 'lin' && !n.override && m(game) >= BACK_AT && m(game) < game.level.day.gatherAt, arms: 'folder' },
-    { when: (n, w, game) => n.id === 'lin' && !n.override && n.pose === 'sit' && m(game) >= START + 4 && m(game) < BACK_AT, arms: 'mug', item: '#cup' },
-    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < START + 6, arms: 'mug', item: '#mug' },
-    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < START + 13, arms: 'carry', item: '#mobile' },
+    { when: (n, w, game) => n.id === 'lin' && !n.override && n.pose === 'sit' && m(game) >= at('3:04', START) && m(game) < BACK_AT, arms: 'mug', item: '#cup' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:06', START), arms: 'mug', item: '#mug' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:13', START), arms: 'carry', item: '#mobile' },
     { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < game.level.day.gatherAt, arms: 'mug', item: '#cup' },
   ],
   marks: [],

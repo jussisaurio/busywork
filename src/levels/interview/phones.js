@@ -17,6 +17,7 @@
 //                                         else the nearest free NPC: 💼❓ 🤷, hangs up   'other'  route 'answered'
 //   nobody answers by RING_OUT minutes    'rangOut'                                       route 'ringout'
 // A ring of yours on Lin's phone is let finish before the call.
+import { at } from '../../config.js';
 import { spotPos, inZone } from '../../game/perception.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -28,7 +29,7 @@ const RING_OUT = 2; // game minutes the interviewer lets it ring
 const CHECK_EVERY = 2.6; // game minutes between Lin's checks of her line, before her tea
 const CHECK_FOR = 0.8; // game minutes she holds the receiver to her ear
 const GLANCE_EVERY = 1.7; // game minutes between her glances at the clock after her tea, rehearsing
-export const BACK_AT = START + 21; // from here on Lin is back from her tea (cast.js: 3:22) with her notes
+export const BACK_AT = at('3:21', START); // from here on Lin is back from her tea (cast.js: 3:22) with her notes
 export const NOTES_AFTER = 0.6; // game minutes from picking up to the hold tune
 export const TUNE_ENDS = 0.9; // hold progress where the tune stops; he hangs up when it reaches 1
 export const SLAM = 0.6; // Lin on her own phone: the hold progress where she slams it down (😠)
@@ -57,7 +58,7 @@ export function initialPhones() {
     jobBy: null, // who is going to answer it
     cord: 'in', // Lin's phone cord: 'in' | 'out'
     linCheck: 0, // Lin holds her receiver to her ear until this minute
-    checkAt: START + 0.6, // her next check
+    checkAt: 0.6, // her next check (the clock's minutes count from 3:00)
     glanceAt: 0, // her next glance at the clock, rehearsing
     linFix: false, // she found her line dead: she is going to push the plug back in
     kevAt: 0, // Kev crouched at the socket at this minute (cast.js plugIn)

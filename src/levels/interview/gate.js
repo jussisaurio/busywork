@@ -12,7 +12,7 @@ export default {
     'lin_desk', 'kev_desk', 'boss_office', 'kitchen', 'switchboard', 'my_seat',
   ],
   interactable: ['ring_lin', 'ring_boss', 'ring_kev', 'ring_kitchen', 'lin_socket'],
-  renderEvents: ['switchboard:ring', 'phone:answering', 'cord:out', 'cord:in', 'lin:checks', 'interview:ringing',
+  renderEvents: ['switchboard:ring', 'phone:answering', 'cord:out', 'cord:in', 'lin:checks', 'lin:deadLine', 'interview:ringing',
     'interview:lin', 'interview:other', 'interview:busy', 'interview:dead', 'interview:rangOut', 'boss:workAssigned'],
   milestones: {
     'phone:answering': (p) => `${p.by}@${p.phone}`,
@@ -36,7 +36,7 @@ export default {
     ['move E 1.5s', 'move S 2s pretend', 'move W 1s', 'wait 3s', 'goto switchboard', 'move W 0.5s', 'interact', 'move S 2s', 'wait until 3:22', 'pretend until 3:33'],
     // Unplugging in plain view of Lin and the boss.
     ['goto lin_socket', 'interact', 'wait until 3:34'],
-    // Unplugging before Kev's cable round: he plugs it back in.
+    // Unplugging before Kev's charging stop: he jams it back in (or Lin, checking her line, finds it dead).
     ['wait until 3:05', 'goto lin_socket', 'interact', 'goto my_seat', 'sit', 'pretend until 3:34'],
     // Several loops: restart mid-day, the busy line, continue into the next day and ring out.
     ['goto ring_kitchen', 'interact', 'restart', 'pretend until 3:22', 'goto ring_lin', 'interact', 'goto my_seat', 'sit pretend', 'pretend until 3:34', 'pretend until 3:34', 'wait 3s', 'continue',

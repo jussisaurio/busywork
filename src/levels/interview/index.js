@@ -4,7 +4,8 @@
 // desk, Kev's desk, the kitchen wall phone), each under a card with its owner's face. Plug in and that phone rings:
 // its owner comes to answer it if he hears it, else whoever is nearest in earshot, and gets the hold music
 // (phones.js). The lesson: you can move people. Lin's phone cord runs to a wall socket by her desk: pull it out and
-// her phone can't ring, unless Kev's cable round finds it first.
+// her phone can't ring, unless Lin finds her line dead when she checks it, or Kev, who charges his mobile at that
+// socket, finds her plug in his way and jams it back in.
 //
 // The 3:30 call is the meeting frame (phones.js tick): it settles how the call goes. Be at your desk by the end of
 // it (meeting.room): an empty chair during the call for your job looks bad.

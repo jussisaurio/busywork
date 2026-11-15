@@ -4,6 +4,7 @@
 // Who answered which ring (the phone tick's 'phone:answering').
 const rang = (log, phone, by) => log.some((e) => e.name === 'phone:answering' && e.payload.phone === phone && e.payload.by === by);
 const saw = (log, name) => log.some((e) => e.name === name);
+const kevJammed = (log) => log.some((e) => e.name === 'cord:in' && e.payload.by === 'kev');
 const must = (ok, why) => { if (!ok) throw new Error(why); };
 // goto again after a soft stop (the boss eyeing you, say) until you get there.
 const go = (run, target) => { for (let i = 0; i < 4 && /stopped/.test(run(`goto ${target}`).text); i++); };
@@ -84,9 +85,10 @@ export default [
     },
   },
 
-  // unplugged: the boss is on his own phone with his back to the room, Lin is in the kitchen, and Kev has been past.
+  // unplugged: the boss is on his own phone with his back to the room, Lin is in the kitchen, and Kev has been to the
+  // socket to charge his mobile (about 3:12) and gone.
   {
-    name: "unplugged: ring the boss, pull Lin's cord after Kev's cable round → it never rings → win",
+    name: "unplugged: ring the boss, pull Lin's cord after Kev's charging stop → it never rings → win",
     expect: { result: 'win', routes: ['unplugged'] },
     play({ run, log, g }) {
       run('pretend until 3:12');
@@ -101,7 +103,7 @@ export default [
     },
   },
   {
-    name: "unplugged, teaching fail: ring the boss and pull the cord before Kev's cable round → he plugs it back in → fail",
+    name: "unplugged, teaching fail: ring the boss and pull the cord before Kev's charging stop → he jams it back in → fail",
     expect: { result: 'fail' },
     play({ run, log, g }) {
       run('pretend until 3:02');
@@ -112,7 +114,7 @@ export default [
       run('interact');
       backToDesk(run);
       toTheEnd(run, g);
-      must(saw(log, 'cord:out') && saw(log, 'cord:in'), 'Kev did not plug it back in');
+      must(saw(log, 'cord:out') && kevJammed(log), 'Kev did not jam it back in');
       must(saw(log, 'interview:lin'), 'Lin never took her call');
     },
   },
