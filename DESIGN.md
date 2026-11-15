@@ -113,7 +113,9 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 - **Vision cones.** Each NPC sees a cone (default 90° and 7 tiles; each cast member can differ). Walls block sight;
   glass does not. V shows the cones. Red belongs only to the cone of whoever sees you, ringed at his eyes; no cast
   tint is red. Every cone is as plain as the authority's, since anyone can tell on you; its
-  edge firms up while he has you in sight.
+  edge firms up while he has you in sight. Each time someone looks a new way (a turn, a glance, a noise), a dotted
+  gaze line runs from his eyes to the first thing on it, closed by a viewfinder bracket, so overlapping cones still
+  say what each one is watching.
 - **Seated NPCs work.** At a desk in his own routine a coworker types, silently. His hands stop when he glances,
   turns to a noise or is busy with something else, so a glance reads as a break.
 - **Seated NPCs glance around.** Every 5–9 s (each cast member can differ) they turn their head 60–125° to one side

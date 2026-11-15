@@ -584,6 +584,9 @@ game = {
 - The view: `effects.js` `FULL_VIEW` `{ x0, y0, x1, y1 }` (map px). While the end beat zooms in, the renderer passes
   the smaller rect to `drawBubbles`, `drawSuspicion`, `drawWitnesses` and `drawFocusHint` (last param), and they
   keep inside it; with no room above a head, a bubble goes beside it with its tail on the speaker.
+- Gaze lines (`cones.js` `drawGazes`, drawn with or without V): when a still NPC's view settles a new way (more
+  than 0.35 rad), a dotted line from his eyes to the first solid tile on it (or the `fx.turns` noise point), with a
+  viewfinder bracket, for 1.6 s. Render memory only.
 - Assigned work shows at your desk (`world.js` `drawWorkStack`: one tidy stack lands at `rules.stackAt`, shrinks with
   `clock.forced / rules.workFrom`) and over your head (`characters.js` `drawWorkMeter`), not in the HUD. A witness's eye (`drawWitnesses`) reads `game.watch`,
   `rules.seen` (against `NOTICE`, `DOUBLE_TAKE`) and `rules.grudge`.
