@@ -36,6 +36,8 @@ In the spirit of Jonathan Blow's games, the game explains nothing beyond the mis
 - **Feedback is fine, exposition is not.** The ❓ meter over the authority's head, a coworker pointing ❗👉 with a
   dashed sightline, being marched to your desk: these are consequences you can see. A strike counter or "you were
   seen!" text explains a rule, so it is out.
+- **Nothing lights up on the first frame.** No interaction is in reach of the seat you start in. A target lit before
+  the player has moved points at it, and the player reads it as the way to play.
 - **When a playtester asks for an explanation, make the consequence more visible instead of adding words.**
 - **The AI harness follows the same rule.** It reports only what a player would see on screen.
 
@@ -152,8 +154,22 @@ their desk.
 These came from playtests of level 1 (details in its `LEVEL.md`).
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
-- **No deliberate red herrings.** In a 2.5-minute loop with two or three routes, a dead end costs a whole loop.
-  Toys that react visibly and teach NPC behaviour are fine.
+- **Dead ends show themselves at once.** A thing that leads nowhere is welcome: it stops the player from winning by
+  trying everything, and it makes the office feel real. What is out is a false route, a plan that seems to work and
+  fails only at the deadline: in a 2.5-minute loop that costs a whole loop. A toy shows within seconds that it is only
+  a toy (the cup is just a cup), and the best toys teach an NPC rule on the way.
+- **The authority catches the crime the level is about.** If the trouble invites a nasty act (moving laptops in an
+  audit), the authority seeing you at it ends your day, and a witness telling on you costs you something you can see.
+  An act that is nasty in the story but free in the rules reads as broken, not clever.
+- **The card's rule binds everyone, on screen.** If the card says nobody leaves before the boss, the coworkers keep
+  that rule where the player can see it, and whoever breaks it pays for it on screen. A rule that binds only the
+  player, enforced by nothing in the world, reads as the game cheating.
+- **An NPC keeps his rules.** Once the player has seen what drives someone (the boss lives by his clock), nothing
+  else overrides it. A boss who goes home while his own clock says 4:00 reads as random, however clever the reason
+  in the code.
+- **A thing that looks usable is usable, in every level.** What a thing looks like is a promise the player carries
+  from level to level: level 1's full coffee pot pours a cup, so every full pot pours one. Usable is not useful: the
+  cup may lead nowhere. A thing kept only as set dressing is drawn spent: an empty coat rack, an empty pot.
 - **Move the risk to where the play is.** If a setup step is trivially safe, give it a cost that bites later.
 - **Each route teaches one lesson** (timing, a sightline, a distraction), and the gate checks that a win uses it.
 - **Fast-forward only in place.** ×6 movement is uncontrollable, so the folder stride runs at normal time.
