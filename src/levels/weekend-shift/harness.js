@@ -27,8 +27,8 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday roster (whiteboard),",
-    '     M microwave, C counter, F fridge, P your desk, Q your desk phone (the far end of your desk), L Lin\'s desk (her',
-    '     lunch box sits on it), B the boss\'s phone (side table), i item,',
+    '     M microwave, C counter, F fridge, P your desk, Q a phone on a little table in the supply room, L Lin\'s desk (her',
+    '     lunch box sits on it), B the boss\'s phone (side table; his desk has none), i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 

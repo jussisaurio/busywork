@@ -519,11 +519,11 @@ function drawFolder(ctx, x, y) {
 // Where the boss's phone sits on its table (at: the table's tile).
 const cornerPhone = (at) => ({ x: at.x * T + 16, y: at.y * T + 9 });
 
-// While the boss's phone rings: the call, a dotted line running from your phone to his, bowed out to the east
-// (away from the board and its chairs).
+// The call: a dotted line running from your phone to his, bowed up north (over his office, clear of him at his
+// desk and of the board).
 function drawCall(ctx, ax, ay, bx, by, t) {
-  const mx = (ax + bx) / 2 + 40;
-  const my = Math.min(ay, by) + (Math.abs(ay - by) * 0.35);
+  const mx = (ax + bx) / 2;
+  const my = Math.min(ay, by) - 34;
   ctx.save();
   ctx.strokeStyle = 'rgba(255,240,200,0.9)';
   ctx.lineWidth = 2.6;
@@ -683,17 +683,18 @@ export function paintMicrowave(ctx, info, at, shown, t) {
   drawMicrowave(ctx, at.x * T + 2, at.y * T + 4, shown.noodles, shown.left, t, shown.fish);
 }
 
-// { phone, to: the boss's phone's tile }: your desk phone (on its own tile, at), off the hook while it rings his, and
-// the call: dots from yours to his. His (paintBossPhone) draws after, over the end of them.
+// { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
+// moment you ring his until he hangs up, and the call: dots from yours to his, live the whole time (it's your call).
+// His (paintBossPhone) draws after, over the end of them.
 export function paintMyPhone(ctx, info, at, shown, t) {
-  const ax = at.x * T + 14;
-  const ay = at.y * T + 13;
-  const ringing = shown.phone === 'ringing';
-  if (ringing && shown.to) {
+  drawSideTable(ctx, at.x * T, at.y * T);
+  const a = cornerPhone(at);
+  const live = shown.phone === 'ringing' || shown.phone === 'talking';
+  if (live && shown.to) {
     const b = cornerPhone(shown.to);
-    drawCall(ctx, ax, ay - 4, b.x, b.y - 4, t);
+    drawCall(ctx, a.x, a.y - 4, b.x, b.y - 4, t);
   }
-  drawPhone(ctx, ax, ay, { lifted: ringing }, t);
+  drawPhone(ctx, a.x, a.y, { lifted: live }, t);
 }
 
 // { phone, hand: px | null }: the boss's phone on its side table (at), shaking while it rings, and none on his desk.

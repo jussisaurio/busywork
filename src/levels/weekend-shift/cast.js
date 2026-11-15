@@ -33,7 +33,7 @@ export const CAST = [
     coneTint: [150, 230, 214],
     schedule: [
       s('4:00', { do: 'sit', spot: 'lin_desk' }), // she watches the board all day
-      s('4:30', { do: 'visit', spot: 'microwave', arrive: 'fish', anim: 'fishIn' }), // fish, in the office microwave
+      s('4:30', { do: 'visit', spot: 'lin_wait', arrive: 'fish', anim: 'fishIn' }), // fish, in the office microwave
       s('4:37', { do: 'sit', spot: 'lin_desk', arrive: 'eatFish', anim: 'fish' }),
     ],
   },

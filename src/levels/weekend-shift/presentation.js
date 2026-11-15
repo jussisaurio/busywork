@@ -36,7 +36,7 @@ function lunch(game) {
 }
 // She carries it while she isn't standing at the microwave with it inside
 function linAtMicrowave(n, game) {
-  const m = game?.level?.spots?.microwave;
+  const m = game?.level?.spots?.lin_wait;
   return !!m && !n.moving && Math.hypot(n.x - (m.x + 0.5), n.y - (m.y + 0.5)) < 0.6;
 }
 

@@ -6,12 +6,13 @@
 //   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s
 //     (long enough to notice it while fast-forwarding at your pretend, let go, and still finish writing).
 //     The board is on the west side: be there when it dings.
-//   - your desk phone (at the far end of your desk: stand up and step to it) rings the boss's, on a side table in
-//     the corner of his office: he answers it standing there, facing the window, his back to the office, for 5
-//     minutes. Lin still watches the board, except while she heats her fish at the microwave (4:30-4:37): ring then.
+//   - the phone in the supply room (behind a wall, out of the boss's sight; his desk has none) rings his, on a
+//     side table in the corner of his office: he answers it standing there, facing the window, his back to the
+//     office, for 5 minutes. Lin still watches the board, except while she heats her fish at the microwave
+//     (4:30-4:37), her back to the board: ring then.
 // Nothing is in reach of your seat (DESIGN.md): you start with nothing lit.
 //   - the trap: a paper clip jams the copier, and it beeps until Kev fixes it. Every head turns toward it, and
-//     the board stands between the copier and both watchers: at the beeping, it's in plain view.
+//     the copier sits on the line from the boss's desk through the board: his look at it crosses the board.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { burst } from '../../core/fx.js';
@@ -26,24 +27,25 @@ const DING_TURN = 6; // s every head in earshot stays turned to the ding
 const WRITE_S = 2.5; // s a write takes: longer than any glance away
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
-//   X copier   R the Saturday roster (a whiteboard on a stand)
-//   M microwave   C coffee machine   S sink   F fridge   P your desk   Q your desk phone   H plant   T desk/table
-//   L Lin's desk, where her lunch box sits   B the boss's phone, on a side table   G glass   D door
+//   X copier (on the line from the boss's desk through the board)   R the Saturday roster (a whiteboard on a stand)
+//   M microwave   C coffee machine   S sink   F fridge   P your desk   H plant   T desk/table
+//   Q the supply room's phone, behind the wall where the boss can't see it   L Lin's desk, where her lunch box sits
+//   B the boss's phone, on a side table (his desk has none)   G glass   D door
 const MAP = [
   '##############################', // 0
   '#.....#............B#........#', // 1
   '#.....#.............#........#', // 2
   '#.....#.............#..TTTT..#', // 3
   '#.....#.....TTT.....#........#', // 4
-  '#H....#............H#........#', // 5
+  '#H...Q#............H#........#', // 5
   '###D###GGGGGGDGGGGGG####D#####', // 6
-  '#...X........................#', // 7
+  '#............................#', // 7
   '#...........................C#', // 8
   '#........R..................M#', // 9
   '#...........................S#', // 10
   '#...........................F#', // 11
-  '#............................#', // 12
-  '#...TPTQ..TTL....TTT.........#', // 13
+  '#......X.....................#', // 12
+  '#...TPT...TTL....TTT.........#', // 13
   '#H..........................H#', // 14
   '#............................#', // 15
   '##############################', // 16
@@ -57,8 +59,8 @@ const LEGEND = {
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // the counter and sink: props.js draws them
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  // the phone at the far end of your desk (props.js draws it), out of reach of your seat: you stand up for it
-  Q: { kind: 'desk_phone', solid: true, opaque: false, draw: 'desk', interactable: 'desk_phone' },
+  // the supply room's phone, on a little table (props.js draws both), out of the boss's sight behind the wall
+  Q: { kind: 'desk_phone', solid: true, opaque: false, interactable: 'desk_phone' },
   // the end of Lin's desk, where her lunch box sits until 4:30 (props.js draws it)
   L: { kind: 'desk', solid: true, opaque: false },
   // the boss's phone, on a side table in his corner (props.js draws both): he takes calls standing beside it
@@ -70,20 +72,21 @@ const SPOTS = {
   boss_desk: { x: 13, y: 3, face: 'S' }, // watching the office through the glass
   lin_desk: { x: 11, y: 14, face: 'N' },
   kev_desk: { x: 18, y: 14, face: 'N' }, // too far off to read the board
-  copier: { x: 4, y: 8, face: 'N' }, // Kev repairs from here
-  copier_boss: { x: 5, y: 7, face: 'W' }, // the boss photocopying, his back to the board
+  copier: { x: 8, y: 12, face: 'W' }, // Kev kneels here to fix it, his back to the board; it beeps from here
+  copier_boss: { x: 7, y: 11, face: 'S' }, // the boss photocopying, his back to the board
   microwave: { x: 27, y: 9, face: 'E' },
+  lin_wait: { x: 25, y: 9, face: 'E' }, // Lin waits for her fish a step back from the microwave, facing it
   boss_window: { x: 18, y: 1, face: 'N' }, // beside his phone (B): on a call, his back to the office, the board out of sight
-  board_boss: { x: 8, y: 10, face: 'E' }, // beside the board, facing the room: he reads the roster out from here
-  board_look: { x: 10, y: 8, face: 'W' }, // past the board's face, seen from board_boss: what he turns to, to read it
-  meeting_lin: { x: 11, y: 10, face: 'W' },
-  meeting_kev: { x: 11, y: 8, face: 'W' },
-  meeting_player: { x: 12, y: 9, face: 'W' }, // your empty spot, stared at if you're elsewhere at 5:00
-  meeting_presenter: { x: 10, y: 9, face: 'W' }, // where a failed meeting puts you: in front of your name
+  board_boss: { x: 11, y: 9, face: 'E' }, // from 4:50: his back to the board, facing the room; he turns to read it
+  board_look: { x: 8, y: 9, face: 'W' }, // past the board, seen from board_boss: what he turns to, to read it
+  meeting_lin: { x: 13, y: 10, face: 'W' },
+  meeting_kev: { x: 13, y: 8, face: 'W' },
+  meeting_player: { x: 14, y: 9, face: 'W' }, // your chair; glanced at if you're elsewhere, stared at at 5:00
+  meeting_presenter: { x: 9, y: 10, face: 'N' }, // where a failed meeting puts you: in front of your name
 };
 
 const ZONES = {
-  roster_area: { x0: 6, y0: 7, x1: 14, y1: 13 }, // around the board: be here at 5:00
+  roster_area: { x0: 6, y0: 7, x1: 15, y1: 13 }, // around the board: be here at 5:00
 };
 
 const INTERACTIONS = {
