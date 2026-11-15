@@ -17,13 +17,14 @@ import { findNpc } from '../../game/perception.js';
 import { popper, cricket } from './painters.js';
 
 const B_ANGRY = ['😠'];
-const B_POINT = ['👉'];
+const B_POINT_YOU = ['👉', '@player'];
 const B_WHAT = ['❓'];
-const B_BLAME = ['😠', '👉'];
+const B_BLAME_YOU = ['😠', '👉', '@player'];
+const B_BLAME_KEV = ['😠', '👉', '@kev'];
 const B_PROJ = ['📽️', '💥', '🤷'];
 const B_DOTS = ['📊', '❓'];
-const B_MUG = ['☕', '😠', '👉'];
-const B_KEV = ['☕', '🔧'];
+const B_MUG = ['☕', '😠', '👉', '@player'];
+const B_KEV = ['☕', '@kev'];
 
 function endKind(o) {
   if (!o) return 'fail';
@@ -297,7 +298,7 @@ function tableauBlamed(ctx, game, t, e, o) {
   drawChair(ctx, 0, 0, -Math.PI / 2, C.ochre, C.ochreDark);
   ctx.restore();
   // what they're saying
-  bubble(ctx, lockedOut && !kev ? B_BLAME : B_POINT, 272, 206, e, 'speech', 1.4);
+  bubble(ctx, lockedOut && !kev ? B_BLAME_YOU : B_POINT_YOU, 272, 206, e, 'speech', 1.4);
   if (!lockedOut) bubble(ctx, B_ANGRY, 476, 168, e, 'alert');
   if (kev) bubble(ctx, B_WHAT, 680, 206, e, 'thought', 1.4);
 }
@@ -383,7 +384,7 @@ function tableauMug(ctx, game, t, e, o) {
   }
   drawPerson(ctx, game.level.looks.player, p, 476, 312);
   bubble(ctx, B_MUG, 476, 150, e, 'alert');
-  bubble(ctx, B_POINT, 272, 206, e, 'speech', 1.4);
+  bubble(ctx, B_POINT_YOU, 272, 206, e, 'speech', 1.4);
 }
 
 // The win the mug buys (verdict.js why 'kev'): the boss found it on Kev's desk. Kev went home at 3:00, so the whole
@@ -430,7 +431,7 @@ function tableauKev(ctx, game, t, e) {
   p.smug = true;
   p.scale = 2.4;
   drawPerson(ctx, game.level.looks.player, p, 476, 312);
-  bubble(ctx, B_BLAME, 476, 150, e, 'alert');
+  bubble(ctx, B_BLAME_KEV, 476, 150, e, 'alert');
   bubble(ctx, B_KEV, 272, 206, e, 'thought', 1.4);
 }
 

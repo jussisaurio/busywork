@@ -118,7 +118,7 @@ export default {
         return null;
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
       case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';
-      case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗😠🔧'
+      case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗, then glares at Kev 😠'
         : `the boss spots the empty mug on ${SPOT[p.spot] ?? p.spot} ☕🤷`;
       case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';

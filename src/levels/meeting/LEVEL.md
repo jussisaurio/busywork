@@ -90,8 +90,8 @@ run, not read off this table.
      projector to the ☕ to whoever has it: in your hand (pretending or not), you're BLAMED, the whole table pointing
      at you. Before that, on his 3:12 and 3:22 walks he looks in at the meeting-room door; a dead projector starts his
      mug hunt (📽️💥 … ☕❓) along the hallway, the coffee machine, Kev's desk and yours, until 3:34.
-   - Ways out: put it back on the coffee machine (he shrugs ☕🤷), or plant it on Kev's desk (☕❗😠🔧, and at 4:00
-     the table stares at Kev's empty chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
+   - Ways out: put it back on the coffee machine (he shrugs ☕🤷), or plant it on Kev's desk (☕❗, then 😠 and Kev's face;
+     at 4:00 the table stares at Kev's empty chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
      caught; unseen until 4:00, BLAMED. Lesson: evidence outlives the act.
 2. **Keycard** 🪪 (`world.bossLockedOut`). Steal the keycard from the boss's jacket on the coat rack, behind the boss,
    in view of Lin through the glass. The boss takes the jacket at 3:35, but the card isn't in it. At 3:48 he is
@@ -131,7 +131,8 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   knows (`_knows`), and his mug hunt starts.
 - **The mug hunt** (hunt). 📽️💥 then ☕❓ (`boss:mugHunt`), then he walks `mug_hunt` (meeting door, the coffee
   machine, Kev's desk, your desk) looking around, until 3:34 or until he sees the mug within 3.5 tiles: on Kev's desk
-  ☕❗ 😠🔧, on the machine ☕🤷 (`mug:found {spot}`). On your desk it's put down's business (`my_desk` is yours): caught.
+  ☕❗ then 😠 with Kev's face, on the machine ☕🤷 (`mug:found {spot}`). On your desk it's put down's business
+  (`my_desk` is yours): caught.
 - **The verdict** (`verdict.js`, at the gather, only with the projector broken and the boss in the room). The mug in
   your hand (`why: 'mug'`) or on your desk (`why: 'desk'`): BLAMED, the table staring at you. On Kev's desk with you
   in the room: still a win (`why: 'kev'`), the table staring at Kev's empty chair. End scenes `mug` and `kev`.
