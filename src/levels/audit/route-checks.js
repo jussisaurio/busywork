@@ -81,6 +81,17 @@ export default [
     },
   },
   {
+    name: 'Lin\'s laptop onto Kev\'s desk while he\'s at lunch → back with his own, he puts it in his drawer 💻❓',
+    expect: { result: 'fail' },
+    play(ctx) {
+      const { run, log, npc } = ctx;
+      for (const c of ['pretend until 3:12.5', 'goto hallway_west pretend', 'interact', 'goto kev_desk pretend', 'interact', 'pretend until 3:24']) run(c);
+      if (!ev(log, 'laptop:drawer', { type: 'laptop_kev', by: 'kev' })) throw new Error('Kev, his desk taken, should put his laptop in his drawer');
+      if (npc('kev').carry) throw new Error(`Kev should not hold ${npc('kev').carry}`);
+      sitOut(ctx); // the auditor stands at Kev's desk at 3:44: no laptop in Kev's hands
+    },
+  },
+  {
     name: 'the boss\'s laptop while Lin is in the restroom, onto your desk → he hunts and takes it back 😠💻',
     expect: { result: 'fail' },
     play(ctx) {

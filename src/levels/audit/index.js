@@ -86,7 +86,7 @@ const ITEMS = {
   laptop_lin: laptopItem('lin', 'lin_desk'),
   laptop_kev: laptopItem('kev', 'kev_desk'),
   // A coffee: your hands are full till you drink it (keep: it never lands on the floor, where the laptop row would
-  // offer to "unplug" it). The cost shows at once: no laptop while you hold a cup.
+  // offer to take it). The cost shows at once: no laptop while you hold a cup.
   coffee: { ...COFFEE_CUP, keep: true },
 };
 
@@ -97,12 +97,12 @@ const RECORDS = ['atBoss', 'atLin', 'atYou', 'atKev'];
 // Four desks passed, so one laptop was counted on two of them.
 const twice = (w, type) => RECORDS.every((r) => w[r]) && RECORDS.filter((r) => w[r] === type).length >= 2;
 
-// Unplugging a laptop from a desk is sneaky: anyone who sees you at it minds (the auditor catches you). Replaces
+// Taking a laptop (unplugging it from a desk, or off the floor where it fell) is sneaky: anyone who sees you at it minds (the auditor catches you). Replaces
 // the generic pick_up row (play/interactions.js), whose pick-up anyone may watch. Laptops only (a cup never lies
 // about: ITEMS.coffee keep).
 const INTERACTIONS = {
   pick_up: {
-    on: 'item', text: 'unplug the laptop', duration: 0.5, sneaky: true, saw: '💻',
+    on: 'item', text: 'take the laptop', duration: 0.5, sneaky: true, saw: '💻',
     can: (p, w, item) => !p.held && w.items.includes(item) && LAPTOPS.includes(item.type),
     done(game, a) {
       const p = game.player;
@@ -115,7 +115,7 @@ const INTERACTIONS = {
   },
   pour_coffee: pourCoffee(),
   drink_coffee: {
-    on: 'self', text: 'drink the coffee', duration: 1.2, sneaky: false,
+    on: 'self', icon: '😋', text: 'drink the coffee', duration: 1.2, sneaky: false,
     can: (p) => p.held === 'coffee',
     done(game) {
       game.player.held = null;

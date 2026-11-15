@@ -31,8 +31,8 @@ signs the audit off. Nobody learns that your laptop is gone.
   - 3:25: out of the lift, a few minutes early, with a coffee at the hallway coffee machine.
   - 3:30: the audit. He stands behind each desk, faces it, and a sign goes up over the desk: the boss's at 3:32.8,
     Lin's at 3:36.3, yours at 3:40.2, Kev's at 3:44.9. At Lin's desk he takes longer, and you see why: he goes
-    through the pile of papers on it, then writes on his clipboard. At your desk too, every loop: his pen runs dry.
-    He shakes it, scribbles on the corner of his clipboard, shakes it again, then writes, head down over the
+    through the pile of papers on it, then writes on his clipboard. At your desk too, every loop: his pen runs dry
+    (a thought: pen, question mark). He shakes it, scribbles on the corner of his clipboard, shakes it again, then writes, head down over the
     clipboard, facing your desk (3:40.2-3:42.7). He looks only where his list tells him to look, and walks on facing
     forward.
   - 3:45.2: back to your desk to sign off. He is there at 3:47.7: a smile for four ticks; for a cross, a thought of
@@ -58,6 +58,8 @@ signs the audit off. Nobody learns that your laptop is gone.
     desk. If his laptop lies on your desk again, he waits for the auditor to tick your desk, takes it just after
     (laptop, facepalm) and carries it home along the hallway while the auditor fights his dry pen, out of his sight
     (3:40.8-3:42.4).
+- Anyone who comes home with his laptop and finds another laptop on his desk (you put it there) wonders at it
+  (laptop, question mark) and puts his own in a drawer, out of sight. Nobody holds a laptop at his desk.
 
 Anyone who sees you unplug a laptop points at you, shocked, and you let go. Anyone but its owner tells the auditor
 once he is on the floor (pointing at you, laptop), and he sends you to your desk for twenty minutes of paperwork:
