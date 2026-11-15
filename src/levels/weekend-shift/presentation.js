@@ -2,13 +2,14 @@
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
+import { GAME_MIN_PER_SEC } from '../../config.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
+import './props.js'; // the board, the copier, the tray, the microwave and the phones (decor.props' painters)
+export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
   mission: ['5:00 PM. Someone works this Saturday.', "Make sure it isn't you."],
-  badge: ['📋', '🙅'],
+  badge: ['🗓️', '✏️'], // the roster's week, and writing on it
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -16,7 +17,12 @@ const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
-const cooking = (w, game) => w.noodles === 'cooking' && w.dingAt !== null && (game?.clock?.minute ?? 0) < w.dingAt;
+const look = (game, id) => game?.level?.looks?.[id] ?? null;
+// s to the DING while the noodles cook, else null
+const dingIn = (w, game) => (w.noodles === 'cooking' && w.dingAt !== null ? (w.dingAt - (game?.clock?.minute ?? 0)) / GAME_MIN_PER_SEC : null);
+
+// Lin stands at the microwave with her fish in it (4:30-4:37): the window lights up with a fish going round
+const linHeatsFish = (game) => !!(game?.npcs || []).find((n) => n.id === 'lin' && n.anim === 'fishIn' && !n.moving && !n.override);
 
 export const DECOR = {
   chairs: [
@@ -45,24 +51,29 @@ export const DECOR = {
     { x: 27, y: 6, variant: 1 },
   ],
   clock: { x: 22, y: 6 },
+  // drawn by props.js: who works Saturday is a photo, on the board and on the sheet
   props: [
-    { tile: 'R', draw: 'icon', state: (w) => ({ icon: w.roster === 'boss' ? '👔' : '📋', size: 28 }) },
-    { tile: 'K', draw: 'icon', state: (w) => ({ icon: w.sheet === 'tray' ? '📥' : '🗂️', size: 16 }) },
-    {
-      tile: 'X',
-      draw: 'icon',
-      state: (w) => ({ icon: w.copier === 'jammed' ? '⚠️' : w.copier === 'fixing' ? '🔧' : '🖨️', size: 24 }),
-    },
+    { tile: 'R', draw: 'weekend-shift/roster', state: (w, game) => ({ rows: [look(game, w.roster), null, null], fresh: w.roster === 'boss' }) },
+    { tile: 'K', draw: 'weekend-shift/tray', state: (w, game) => ({ look: w.sheet === 'tray' ? look(game, w.sheetName) : null }) },
+    { tile: 'X', draw: 'weekend-shift/copier', state: (w) => ({ copier: w.copier }) },
     {
       tile: 'M',
-      draw: 'icon',
-      state: (w, game) => ({ icon: cooking(w, game) ? '⏲️' : w.noodles === 'cooking' ? '🍜' : '♨️', size: 16 }),
+      draw: 'weekend-shift/microwave',
+      state: (w, game) => ({ noodles: w.noodles, left: dingIn(w, game), fish: linHeatsFish(game) }),
+    },
+    {
+      tile: 'P',
+      draw: 'weekend-shift/phones',
+      state: (w, game) => {
+        const b = game?.level?.spots?.boss_desk;
+        return { phone: w.phone, boss: { x: b?.x ?? 0, y: (b?.y ?? 0) + 1 } }; // his desk, south of his chair
+      },
     },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
+    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null }, // his in-tray stands there (props.js)
     lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
   },
   zoneSeeds: [
@@ -75,15 +86,21 @@ export const DECOR = {
 export const LOOKS = LEVEL1_LOOKS;
 
 // level.poses (level 1's looks.js documents the fields).
+// The roster is read out 2.4 s before the meeting ends (cast.js lastMoment): from then the boss points at whose name
+// it is, or stands red-faced at his own.
+const reading = (n, game) => n.id === 'boss' && n.override === 'meeting' && n._read && !n.moving
+  && game.clock.minute >= game.level.day.meetingAt - 2.4 * GAME_MIN_PER_SEC;
+
 export const POSES = {
   arms: [
+    { when: (n, w, game) => reading(n, game) && w.roster !== 'boss', arms: 'point', item: '👉' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
     { when: (n) => n.override === 'onPhone', arms: 'puff', item: '📞' },
     { when: (n) => n.id === 'lin' && !n.override && n.anim === 'fish', arms: (n) => (n.moving ? 'carry' : 'puff'), item: '🐟' },
-    { when: (n, w) => n.id === 'kev' && w.sheet === 'kev' && n.moving, arms: 'carry', item: '📝' },
+    { when: (n, w) => n.id === 'kev' && w.sheet === 'kev' && (n.moving || n.override === 'meeting'), arms: 'carry', item: '📝' }, // the sheet, to the boss
   ],
   marks: [
-    { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.roster === 'boss' && !n.moving, angry: true },
+    { when: (n, w, game) => reading(n, game) && w.roster === 'boss', angry: true },
   ],
 };
 
@@ -139,21 +156,4 @@ export const SOUNDS = {
     repair: { while: (w) => w.copier === 'fixing', every: [1.1, 2.0], sfx: 'clank', spot: 'copier', opts: { soft: true, gain: 0.7 } },
   },
   murmur: { spot: 'meeting_presenter' },
-};
-
-// The end card: the carpet and one big face.
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes.includes('roster') ? 'roster' : 'sheet') : o?.result ?? 'fail'),
-  scenes: {
-    roster: { win: true, icons: ['📋', '👔', '😳'], draw: picture('😳') }, // the boss reads out his own name
-    sheet: { win: true, icons: ['📝', '🔧', '😩'], draw: picture('😩') }, // Kev signed up for Saturday
-    fail: { win: false, icons: ['📋', '👉', '😩'], draw: picture('📋') },
-    caught: { win: false, icons: ['👔', '👉', '😠'], draw: picture('😠') },
-    blamed: { win: false, icons: ['🪑', '👉', '📋'], draw: picture('🪑') }, // not there when your name came up
-  },
 };

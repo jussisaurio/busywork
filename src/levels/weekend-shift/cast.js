@@ -33,7 +33,7 @@ export const CAST = [
     coneTint: [150, 230, 214],
     schedule: [
       s('4:00', { do: 'sit', spot: 'lin_desk' }), // she watches the board all day
-      s('4:30', { do: 'visit', spot: 'microwave', arrive: 'fish' }), // fish, in the office microwave
+      s('4:30', { do: 'visit', spot: 'microwave', arrive: 'fish', anim: 'fishIn' }), // fish, in the office microwave
       s('4:37', { do: 'sit', spot: 'lin_desk', arrive: 'eatFish', anim: 'fish' }),
     ],
   },
@@ -53,7 +53,6 @@ export const CAST = [
   },
 ];
 
-const npc = (game, id) => game.npcs.find((n) => n.id === id);
 // s until just before 5:00: he has usually been at the board since 4:50, so the gather sits him down at 4:55
 const lastMoment = (game) => Math.max(0, (game.level.day.meetingAt - game.clock.minute) / GAME_MIN_PER_SEC - 2.4);
 
@@ -62,33 +61,25 @@ export const BEHAVIOURS = {
   photocopy: {
     arrive(game, n, sim) {
       const c = game.world.copier;
-      if (c === 'jammed' || c === 'fixing') sim.speak(game, n, [{ say: ['🖨️', '😠'] }]);
-      else sim.speak(game, n, [{ say: ['🖨️', '📄'], kind: 'thought', ttl: 1.4 }]);
+      if (c === 'jammed' || c === 'fixing') sim.speak(game, n, [{ say: ['😠'] }]);
     },
   },
-  // Lin heats her fish.
+  // Lin heats her fish: she carries it there and back, and it turns in the microwave meanwhile (presentation.js).
   fish: {
-    arrive(game, n, sim) {
-      sim.speak(game, n, [{ say: ['🐟', '⏲️'], kind: 'thought', ttl: 2 }]);
-    },
+    arrive() {},
   },
-  // Back at her desk with it. Kev, next door, smells it.
+  // Back at her desk with it.
   eatFish: {
     arrive(game, n, sim) {
       if (n._ate) return;
       n._ate = true;
-      sim.speak(game, n, [{ say: ['🐟', '😋'], ttl: 1.6 }]);
-      const kev = npc(game, 'kev');
-      if (kev?.active && !kev.override) sim.speak(game, kev, [{ say: ['🤢'], after: 1.6 }]);
+      sim.speak(game, n, [{ say: ['🐟', '😊'], ttl: 1.6 }]);
     },
   },
   // 4:50: the boss comes out to the board. Nobody writes on it under his nose.
   checkRoster: {
     arrive(game, n, sim) {
-      game.world.rosterLocked = true;
-      if (n._checked) return;
-      n._checked = true;
-      sim.speak(game, n, [{ say: ['📋', '🧐'], kind: 'thought', ttl: 1.6 }]);
+      game.world.rosterLocked = true; // he stands guard by it: his cone covers it
     },
   },
   // 4:52: Kev takes the sign-off sheet out of his tray, for the boss.
@@ -111,13 +102,13 @@ export const BEHAVIOURS = {
       const t = lastMoment(game);
       if (w.roster === 'boss') {
         sim.faceSpot(game, n, 'meeting_presenter');
-        sim.speak(game, n, [{ say: ['📋', '👔', '❓'], kind: 'thought', ttl: 1.6, after: t }, { say: ['😳'], after: t + 1.6 }]);
+        sim.speak(game, n, [{ say: ['❓'], kind: 'thought', ttl: 1.6, after: t }, { say: ['😳'], after: t + 1.6 }]);
       } else if (w.sheetName === 'kev') {
-        sim.faceSpot(game, n, 'meeting_kev');
-        sim.speak(game, n, [{ say: ['📝', '👉', '🔧'], after: t }]);
+        sim.faceSpot(game, n, 'meeting_kev'); // and points (presentation.js)
+        sim.speak(game, n, [{ say: ['❗'], after: t }]);
       } else {
         sim.faceSpot(game, n, 'meeting_player');
-        sim.speak(game, n, [{ say: ['📋', '👉'], after: t }]);
+        sim.speak(game, n, [{ say: ['❗'], after: t }]);
       }
     },
   },
@@ -127,8 +118,7 @@ export const BEHAVIOURS = {
       if (n._handed) return;
       n._handed = true;
       const w = game.world;
-      if (w.sheetName === 'kev' && w.roster !== 'boss') sim.speak(game, n, [{ say: ['📝'] }, { say: ['😩'], after: Math.max(2.2, lastMoment(game) + 1.2) }]);
-      else if (w.sheet === 'kev') sim.speak(game, n, [{ say: ['📝', '👍'] }]);
+      if (w.sheetName === 'kev' && w.roster !== 'boss') sim.speak(game, n, [{ say: ['😳'], after: Math.max(2.2, lastMoment(game) + 1.2) }]);
     },
   },
 };
