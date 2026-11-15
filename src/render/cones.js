@@ -105,7 +105,8 @@ const NO_DARK = [];
 // One soft fan: viewer v ({ x, y, dir, fov, radius }), tinted, warmed toward red by `notice` (0..1).
 // dark: the dark zones (game/darkness.js darkZones), [] for the plain path. With any, the fan shows only on lit
 // floor, and in the dark only the near sight `near` (darkness.js nearViewer(v)) shows, within arm's length.
-function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null) {
+// edge: the outline's alpha while nothing is noticed (people's cones keep a faint 0.18; cameras draw a firm one).
+function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null, edge = 0.18) {
   const ox = fin(v.x);
   const oy = fin(v.y);
   const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
@@ -133,7 +134,7 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   fan(ctx, map, ox, oy, dir, fov, radius);
   ctx.fillStyle = grad;
   ctx.fill();
-  ctx.strokeStyle = `rgba(${r},${g},${b},${(0.18 + notice * 0.4 * pulse).toFixed(3)})`;
+  ctx.strokeStyle = `rgba(${r},${g},${b},${clamp(edge + notice * 0.4 * pulse, 0, 1).toFixed(3)})`;
   ctx.lineWidth = notice > 0 ? 1.5 : 1;
   ctx.stroke();
   if (dark.length) {
@@ -154,8 +155,9 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
 
 // level.cameras (sim/mechanics/camera.js): a camera's fan is grey while nobody watches its monitor and takes the
 // watcher's tint while he does, warming like his own cone when the camera has you in view. A dead screen (static)
-// leaves only a faint dashed outline: the lens still turns, but nobody is looking. Camera fans take the plain path
-// even in a dark room: a camera's sight ignores level.darkness (game/perception.js), so its fan does too.
+// leaves a faint grey fan with a dashed outline: the lens still turns, but nobody is looking. A camera's outline is
+// always firm, so where it points reads in every frame, not only the one where it has you. Camera fans take the
+// plain path even in a dark room: a camera's sight ignores level.darkness (game/perception.js), so its fan does too.
 const CAMERA_GREY = [150, 150, 160];
 function drawCameraCones(ctx, game, t) {
   const p = game.player;
@@ -165,7 +167,7 @@ function drawCameraCones(ctx, game, t) {
     if (!feed.live) {
       ctx.save();
       ctx.setLineDash([2, 3]);
-      drawFan(ctx, game.map, v, CAMERA_GREY, 0, 0.03, t);
+      drawFan(ctx, game.map, v, CAMERA_GREY, 0, 0.06, t, NO_DARK, null, 0.45);
       ctx.restore();
       continue;
     }
@@ -173,6 +175,6 @@ function drawCameraCones(ctx, game, t) {
     const tint = watcher ? watcher.coneTint || CONE_TINT_DEFAULT : CAMERA_GREY;
     const onScreen = watcher && p && canSee(game.map, v, p.x, p.y);
     const notice = onScreen ? Math.max(0.35, noticeLevel(game, watcher)) : 0;
-    drawFan(ctx, game.map, v, tint, notice, watcher ? 0.16 : 0.07, t);
+    drawFan(ctx, game.map, v, tint, notice, watcher ? 0.22 : 0.08, t, NO_DARK, null, watcher ? 0.6 : 0.4);
   }
 }
