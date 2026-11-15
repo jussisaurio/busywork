@@ -11,12 +11,12 @@
    ],
    "summary": "caught",
    "digests": [
-    "d1ec8d828402c43d",
-    "055b6e1dbe6f7972",
-    "b7fa8456f7f897a7",
-    "8f8df11ae22c63d8",
-    "58617dc87810d029",
-    "57377c79d0bab11f"
+    "b286d49e7e698d83",
+    "81de4224ee2d122a",
+    "92993ffd0373c6da",
+    "b62f6882e974e910",
+    "fd3f3ed5d53ec153",
+    "4ce235fa3d700872"
    ]
   },
   {
@@ -26,9 +26,9 @@
    ],
    "summary": "fail",
    "digests": [
-    "87c2ccc0faac6b67",
-    "4079195888447bf1",
-    "e4f937f741c47578"
+    "6c5d764fbe35a23d",
+    "69c8e900c5a97e0f",
+    "62aef2a1ccab5c5e"
    ]
   },
   {
@@ -37,8 +37,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "d361486e413345ad",
-    "7792dadae1438bfd"
+    "95496a94a7c87991",
+    "d854cdc0a15ea6b7"
    ]
   },
   {
@@ -49,10 +49,10 @@
    ],
    "summary": "caught",
    "digests": [
-    "87c2ccc0faac6b67",
-    "ed3bec5233b1ded4",
-    "de9195c7f7f8e3f7",
-    "247deda8d163702f"
+    "6c5d764fbe35a23d",
+    "27ecd0323016d16f",
+    "def2ff2d72e62254",
+    "356a3153ca0cc1e7"
    ]
   },
   {
@@ -63,10 +63,10 @@
    ],
    "summary": "fail",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "4e6aeaddff781758",
-    "dc042eafe5082d2a"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "136c8565f8eff0ae",
+    "c895dcbfa01d6901"
    ]
   },
   {
@@ -77,10 +77,10 @@
    ],
    "summary": "caught",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "1c50c25fc12c5357",
-    "4369fcdf4c125ee6"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "1f5d3b5df2eca9c0",
+    "ac76d4fa96dacc6d"
    ]
   },
   {
@@ -92,11 +92,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "1ed6c10eb22eb6cb",
-    "db0132ab07afbbf3",
-    "ccfbf0a8a661d025"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "8083157755b0206e",
+    "b25bfc6c6ab86108",
+    "869d19b98450aa41"
    ]
   },
   {
@@ -112,15 +112,15 @@
    ],
    "summary": "caught",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "6b1b3810622184ee",
-    "d34dbfd411669a23",
-    "e1aeb0c7c71f994a",
-    "5d8e0b7b7fa57786",
-    "345e860702ef1132",
-    "f3df3e9f6e7c78af",
-    "f3df3e9f6e7c78af"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "b25bfc6c6ab86108",
+    "38a07fabec407348",
+    "e7dd60e0cd8e3071",
+    "163b3ab54640a038",
+    "ebbbcf5c1536d13d",
+    "ce2784b718e76967",
+    "ce2784b718e76967"
    ]
   },
   {
@@ -133,12 +133,12 @@
    ],
    "summary": "caught",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "efd3c979961b72d7",
-    "dae6146153fe4137",
-    "c4b43ad491004785",
-    "3676ca0cbe5e4194"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "e2c37928ef3d710b",
+    "78a3d6bf3d897022",
+    "914694e94e687af3",
+    "9267a6d4e58eef99"
    ]
   },
   {
@@ -150,11 +150,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "0107c2deb3e5e55b",
-    "f013d6eff94e4509",
-    "573cbace5412b0b6"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "0e4900fb7c2c3a03",
+    "bcba55f43701a375",
+    "7ab9ef81494a7baf"
    ]
   },
   {
@@ -167,12 +167,12 @@
    ],
    "summary": "caught",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "3ff36a061a5c72b2",
-    "ec36a6baa14560db",
-    "ee40cc7de07d9db0",
-    "38ead85fc9a0b298"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "e21657a3502c9aea",
+    "7173a4d3c44fd988",
+    "0b6c8c5f7713d79e",
+    "537352ba41deec6c"
    ]
   },
   {
@@ -186,13 +186,13 @@
    ],
    "summary": "win switch",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "a3f5330ddeec289d",
-    "13d5b6e2247501f2",
-    "c83d78e06fee93d2",
-    "af6a486720aedae0",
-    "df1e455c6f9c561a"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "b0660c552a5c7607",
+    "5954b62ecf7bcb44",
+    "1a84efef8636e738",
+    "c0dbe8c933f25f5f",
+    "3501a5e71754eba0"
    ]
   },
   {
@@ -205,12 +205,12 @@
    ],
    "summary": "caught",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "8e3a52539cc6b263",
-    "fc7ff6766e40ac32",
-    "c58969a253ca44ea",
-    "1891a4b244e2572f"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "3338b8b1b989d629",
+    "f6480679cc0b0fa4",
+    "0cbfda68fcad4b70",
+    "7e14198bd11ce624"
    ]
   },
   {
@@ -226,15 +226,15 @@
    ],
    "summary": "win switch",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "a3f5330ddeec289d",
-    "13d5b6e2247501f2",
-    "c83d78e06fee93d2",
-    "79575f83983922a3",
-    "1f89b16184087dea",
-    "a1c242d414f4f7f4",
-    "0b2419e774cc1414"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "b0660c552a5c7607",
+    "5954b62ecf7bcb44",
+    "1a84efef8636e738",
+    "ae9607b68f6291fc",
+    "8a437645886451df",
+    "892b1ab2bb844742",
+    "c3000ed9cb49692e"
    ]
   },
   {
@@ -247,12 +247,12 @@
    ],
    "summary": "caught",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "321b7ea162892c98",
-    "1cac66161324047b",
-    "2e4b97513a7d5168",
-    "60b3a7167405d85a"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "249192d7fbfb6955",
+    "203561a476568eaa",
+    "a6445872fe522149",
+    "d6d5a699ccd19e13"
    ]
   },
   {
@@ -266,13 +266,13 @@
    ],
    "summary": "caught",
    "digests": [
-    "2880c903dd8a5a21",
-    "4e3d121570a8d1ed",
-    "5a3391bd6faf69de",
-    "219a03e73cd7bcfa",
-    "ffc8df39f494d7b2",
-    "3df436d89375fdf2",
-    "86aa6bee4b7260ff"
+    "d6bfe74e8e2520a7",
+    "75a60e0172da852b",
+    "16716f4eaef8a931",
+    "166c785807c71275",
+    "f14bd000334d78f3",
+    "31c62bd38eeed0e6",
+    "ce84643293268d85"
    ]
   },
   {
@@ -285,12 +285,12 @@
    ],
    "summary": "fail",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "0107c2deb3e5e55b",
-    "08a9d4c8e16251d7",
-    "a291daf64178d198",
-    "d55267f83eb73b1d"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "0e4900fb7c2c3a03",
+    "56bc39b7c45406c9",
+    "7e2a55ca53617b64",
+    "ebd550fa823fe87f"
    ]
   },
   {
@@ -301,14 +301,14 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "463f678f14eeafc9",
-    "4eb5eeb58e3b822f",
-    "c5dd3b004fa07424",
-    "7d0e9fb38ea19c67"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "c835b437c3650010",
+    "8313e3265e860dde",
+    "48e8d1b04c5a38b9",
+    "547823baf1d7a106"
    ]
   },
   {
@@ -320,15 +320,15 @@
     "goto fuse_box pretend",
     "pretend until 3:40"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "d361486e413345ad",
-    "fdec6e0e36f685a6",
-    "4b37f9d1cf52cd3b",
-    "6d9acf05993a737b",
-    "7c89a814de4be8cc",
-    "725202b393745a33",
-    "1d14aa4e69c1ddf3"
+    "95496a94a7c87991",
+    "76c35347747133c9",
+    "530c372d328acd31",
+    "9ab025ebe8de00c6",
+    "b18f446d2c28ab54",
+    "d4397cc525757155",
+    "89f5a17ef183ec86"
    ]
   },
   {
@@ -344,15 +344,15 @@
    ],
    "summary": "caught",
    "digests": [
-    "2880c903dd8a5a21",
-    "4e3d121570a8d1ed",
-    "5a3391bd6faf69de",
-    "04f3ce005c371230",
-    "52884890cbd1c4eb",
-    "0955313e87839ede",
-    "67b0f6af0eb4c891",
-    "0ef830c938fd3caa",
-    "37cdbca3a470c588"
+    "d6bfe74e8e2520a7",
+    "75a60e0172da852b",
+    "16716f4eaef8a931",
+    "40f095efceec3437",
+    "a200d4343824cdfa",
+    "84576b2ada8fdbc7",
+    "f48ecfc970b96838",
+    "9953387db6d97b06",
+    "76eb7122aaf20357"
    ]
   },
   {
@@ -365,12 +365,12 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "902395ef3a37ec37",
-    "4a1bd6a516e0b016",
-    "621f500769a2202d"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "709dda13d894de61",
+    "bb65aaaf06fa8c61",
+    "52fcf9529f2d3b67"
    ]
   },
   {
@@ -384,13 +384,13 @@
    ],
    "summary": "win breaker",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "321b7ea162892c98",
-    "1cac66161324047b",
-    "e235a4748c0b391f",
-    "2124a9af6ad076bf",
-    "ab82d2c1ac0b3bc9"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "249192d7fbfb6955",
+    "203561a476568eaa",
+    "1ed8890d77d40fe1",
+    "c54c35fc75d1d195",
+    "80a765bcc76827cd"
    ]
   },
   {
@@ -404,17 +404,17 @@
     "wait 8s",
     "pretend until 3:40"
    ],
-   "summary": "blamed blackout",
+   "summary": "win blackout",
    "digests": [
-    "05c978c7ce46be5c",
-    "0d4705122fba3c69",
-    "97623993759e81a2",
-    "f89756d975db6ad4",
-    "6975c30f1365bead",
-    "656f8eab68b04ce3",
-    "86c9767ee25cc198",
-    "ecddf87e4ca6ac43",
-    "be47cb4402535b2e"
+    "fedffa588fc72e5e",
+    "dbcb281446a78eff",
+    "d15c313b6a021df7",
+    "f9886a3966d77fcc",
+    "41ece3276bc2696c",
+    "132e44cee7f2e0ca",
+    "9001d5b336151f07",
+    "ffa7f7049282d2ec",
+    "1ce669acb0d09bc0"
    ]
   },
   {
@@ -426,11 +426,11 @@
    ],
    "summary": "caught",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "ce2b3490361cf46a",
-    "732ce14509a6e5b4"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "ca8be5975b0eb9d2",
+    "c2bdfaed27286f6a"
    ]
   },
   {
@@ -445,14 +445,14 @@
    ],
    "summary": "fail",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "8e3a52539cc6b263",
-    "fc7ff6766e40ac32",
-    "6533b0cddb67fdc2",
-    "fc9f46dfa392f92a",
-    "96bd0601436a6bc7",
-    "d43bd82159307662"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "3338b8b1b989d629",
+    "f6480679cc0b0fa4",
+    "922be747e11b1c8d",
+    "d1724ff5c7200493",
+    "3c1a09b8fa892fe8",
+    "f42fa032964151fc"
    ]
   },
   {
@@ -467,14 +467,14 @@
    ],
    "summary": "caught",
    "digests": [
-    "eee9ec5d983b071d",
-    "bfa52d1d1ef4fda0",
-    "e69de5bbd986fc17",
-    "66994c78e068b1bf",
-    "2c69e22c80edbf53",
-    "0bdb09d98c89f2cf",
-    "4f2eed719bc15ede",
-    "62b9f6b203d686b5"
+    "96fd64c91d63a0a3",
+    "fa2a0948c36d2d2a",
+    "00fe54b028884310",
+    "c8ddfd63da600b28",
+    "a338823557a046ef",
+    "bc24b6a8d1a828fb",
+    "c371a80c7eb694da",
+    "1c3262b466d0dbe4"
    ]
   },
   {
@@ -490,19 +490,19 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "blamed switch",
+   "summary": "win switch",
    "digests": [
-    "eee9ec5d983b071d",
-    "bfa52d1d1ef4fda0",
-    "e69de5bbd986fc17",
-    "66994c78e068b1bf",
-    "2c69e22c80edbf53",
-    "0bdb09d98c89f2cf",
-    "4f2eed719bc15ede",
-    "447cb1a064bbacbf",
-    "fe0f361a002837a3",
-    "4ac0d7579f1c2ec3",
-    "6ec162421489cc25"
+    "96fd64c91d63a0a3",
+    "fa2a0948c36d2d2a",
+    "00fe54b028884310",
+    "c8ddfd63da600b28",
+    "a338823557a046ef",
+    "bc24b6a8d1a828fb",
+    "c371a80c7eb694da",
+    "2b7f47a9b10a7f55",
+    "d1112857607a4e24",
+    "b5de042faf9f05d0",
+    "e7ca8724e51fec3f"
    ]
   },
   {
@@ -517,14 +517,14 @@
    ],
    "summary": "caught",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "f1cd92fc211a3777",
-    "16ee4d6947c1680c",
-    "b7cebb5382f49e7e",
-    "dfbfcae59dc3d5b2",
-    "281ccca8da4d0885",
-    "72abfe2d0ba29c97"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "3189c1d1363cdd2c",
+    "1b71508524e1cc0d",
+    "fa4c3fd75ab3a5e4",
+    "865ae61f36d75de8",
+    "e04f7ca08e8c57f8",
+    "77df510e4d93dc20"
    ]
   },
   {
@@ -538,13 +538,13 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "902395ef3a37ec37",
-    "16714025bc13285d",
-    "9d868fd525dc63e9",
-    "20d00f6de5873d4c"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "709dda13d894de61",
+    "9654c2b48fa47291",
+    "83ab8435492cb429",
+    "3083bb928cdb0855"
    ]
   },
   {
@@ -557,16 +557,16 @@
     "interact",
     "wait until 3:40"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "d37249b121c2e574",
-    "fe87180796eac389",
-    "8d3315b20339e833",
-    "988bbc838fd7c3b0",
-    "f8025de57d5a3064"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "abd5f5b437f77e09",
+    "2a592a81416eb3b7",
+    "b5359aeac699826d",
+    "bf671388e0a265de",
+    "1ff66ba53321943b"
    ]
   },
   {
@@ -578,15 +578,15 @@
     "pretend until 3:36",
     "pretend until 3:40"
    ],
-   "summary": "blamed blackout",
+   "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "902395ef3a37ec37",
-    "4a1bd6a516e0b016",
-    "c73e2c04b9b5800b",
-    "9eb81ea17989e2dc"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "709dda13d894de61",
+    "bb65aaaf06fa8c61",
+    "857ebb6d9efab667",
+    "d8440633735ddfa7"
    ]
   },
   {
@@ -602,19 +602,19 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "blamed switch",
+   "summary": "win switch",
    "digests": [
-    "f8637d6b679bf3aa",
-    "462c3e4c2682ea91",
-    "98a96bfc49a40035",
-    "f8b446a2509fa745",
-    "0739d4e069430a3a",
-    "393bccc7b773c761",
-    "56b2729052a7cfb8",
-    "e0e6edcf809e6664",
-    "1a028f8786ef2014",
-    "faaa7e5c4d7e8af4",
-    "6ec162421489cc25"
+    "a7077fe57931201c",
+    "4dcc0ce90cf50727",
+    "435e022421ae27a1",
+    "64f0d40e76632229",
+    "03030f30aa3ed805",
+    "505f180679a571b1",
+    "088b7f97d6104532",
+    "5c180a98c353dfe8",
+    "0814e53aeec22323",
+    "c9e7e954897b7f70",
+    "e7ca8724e51fec3f"
    ]
   },
   {
@@ -626,15 +626,15 @@
     "pretend until 3:39",
     "pretend until 3:40"
    ],
-   "summary": "blamed breaker",
+   "summary": "win breaker",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "321b7ea162892c98",
-    "1cac66161324047b",
-    "2e4b97513a7d5168",
-    "c62895d9a23d37a5",
-    "38607a338969c2c6"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "249192d7fbfb6955",
+    "203561a476568eaa",
+    "a6445872fe522149",
+    "96752979189703ce",
+    "5aa556f4e546660d"
    ]
   },
   {
@@ -652,17 +652,17 @@
    ],
    "summary": "win switch",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "f28465301e3b7c47",
-    "46317dbe73dbbd64",
-    "fdffba80e9beb5ca",
-    "d4b8a6b6a182b87b",
-    "7c5e9f50aebad949",
-    "746f54d8ca352402",
-    "1034b8da71116ffa",
-    "ef58b5557a4929da",
-    "238bd21d370ba5e4"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "6553c7b179313d3a",
+    "67d21daa6d2705dd",
+    "6643e58107b97194",
+    "077fae7099f2a0c2",
+    "2cce0d2979245fe3",
+    "be56b08a8a9a909e",
+    "1c0a6c608ee6e7f4",
+    "33418a10d912c8a1",
+    "4592474f6ddd3a8e"
    ]
   },
   {
@@ -681,18 +681,18 @@
    ],
    "summary": "win switch",
    "digests": [
-    "87c2ccc0faac6b67",
-    "2e285fc61d460281",
-    "0410b72acfe4561c",
-    "d5521069385ab7f5",
-    "e86efe517ce1a003",
-    "770f77d98b94a542",
-    "df67905db84f4d8a",
-    "56a0ceffb809e41b",
-    "29fcfc951c7e3885",
-    "fa9da810b11fb384",
-    "26aaea7fe16bbc73",
-    "aeb02e26e6ab4319"
+    "6c5d764fbe35a23d",
+    "86de0c3f1da041d5",
+    "37021fdec46e6393",
+    "91a590af38368ed2",
+    "7c8e4ba77c81858e",
+    "7b7fe33a7081cff5",
+    "8c16479b8d40af25",
+    "d08d7c25a0c4bf65",
+    "b60e43cd7999dfa8",
+    "9b692af26bf2ad4f",
+    "4c3e5250803ca127",
+    "3042685412f483af"
    ]
   },
   {
@@ -710,21 +710,21 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "win blackout",
+   "summary": "caught",
    "digests": [
-    "214c450cd83ccfab",
-    "363b5b691e20426a",
-    "24598da01febaa14",
-    "3e15c188aa2bcc26",
-    "bf676a0d24ade07b",
-    "78cfb57ab177a776",
-    "a4e960072d35f697",
-    "4ee92257e74dd474",
-    "1c51dba3e16c5bf4",
-    "8678d10d651fb8d3",
-    "d4c72f946d4bd13d",
-    "e1467fa13fd4d72f",
-    "6883f4b418b4298d"
+    "c9427513688e3c01",
+    "75bb6237dc4b9607",
+    "c88c0226cde7b32a",
+    "5495a397e5e42b47",
+    "21da9336017872d4",
+    "17869bb7115ec774",
+    "566b9c395995af35",
+    "eee37dfad1907bc9",
+    "9f4c4221ba0106ec",
+    "72f53f2fc37f6f05",
+    "48d9b3ca657cb015",
+    "c75ce5c1f8b77449",
+    "8d1f807a2dba0d3b"
    ]
   },
   {
@@ -741,16 +741,16 @@
    ],
    "summary": "caught",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "4255c784721ad910",
-    "6f7b3d8c6705827f",
-    "266f3ce038c7fc8b",
-    "ecc301caa6c62bd7",
-    "cfafe6301076a994",
-    "069f59c1743321d9",
-    "c6ad55d3ca58d1fa",
-    "255b8fa4725f2469"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "6e2f71f0392916e4",
+    "77bf476d84754415",
+    "c758eda1ee093718",
+    "29dc47390ff17823",
+    "b33139c42d239ab0",
+    "f47f58b225c91c11",
+    "1a628b74f3fd1c13",
+    "82a6b8eba68db93d"
    ]
   },
   {
@@ -766,15 +766,15 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "4255c784721ad910",
-    "6f7b3d8c6705827f",
-    "266f3ce038c7fc8b",
-    "ecc301caa6c62bd7",
-    "cfafe6301076a994",
-    "5a4ac35f8693528f",
-    "f25c4f22a9ada544"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "6e2f71f0392916e4",
+    "77bf476d84754415",
+    "c758eda1ee093718",
+    "29dc47390ff17823",
+    "b33139c42d239ab0",
+    "30e213ddb93de2e9",
+    "bdabf4f46afe8f38"
    ]
   },
   {
@@ -786,15 +786,15 @@
     "goto kev_desk pretend",
     "pretend until 3:40"
    ],
-   "summary": "blamed blackout",
+   "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "0cc04fc1fddc959f",
-    "9b3095cca95837c7",
-    "3852871a7bb98d3f",
-    "41719f3d0d73b568",
-    "6ca56ee1aff09386"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "8a275545d8f332ea",
+    "23edd44fdc55de7c",
+    "b38d2a6af6c54f8e",
+    "8fff633fe9e3c0f7",
+    "fa3de118b0d5adb5"
    ]
   },
   {
@@ -809,14 +809,14 @@
    ],
    "summary": "fail",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "a3f5330ddeec289d",
-    "13d5b6e2247501f2",
-    "1e99905993dd67dc",
-    "d3e7f9550706d516",
-    "c70984a928c2ae78",
-    "463a1a3355471f2a"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "b0660c552a5c7607",
+    "5954b62ecf7bcb44",
+    "edefefe298f287f8",
+    "de48f2994dfd0004",
+    "2bbdac6eea696632",
+    "7c43ca132aeb9036"
    ]
   },
   {
@@ -829,12 +829,12 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "52b1e5ed0c9d703b",
-    "df04d6039ce75e77",
-    "8756ffba5ffbd7a1",
-    "4d1552031fd2c0bf",
-    "d2d7184bb25e96a5"
+    "95496a94a7c87991",
+    "d6e037c0747cd13e",
+    "ce1e13b742eea1c2",
+    "48238dc838456128",
+    "50e945d6879d0f6c",
+    "f368e6108cd53844"
    ]
   },
   {
@@ -850,15 +850,15 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "4255c784721ad910",
-    "6f7b3d8c6705827f",
-    "70683ea1fc3f6c16",
-    "76ef514cf075f0ce",
-    "ddec575615f7c06b",
-    "87dfffdf765a8a84",
-    "d9ec9815f656d56e"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "6e2f71f0392916e4",
+    "77bf476d84754415",
+    "c96d8e4720994375",
+    "cb283011ccedcd78",
+    "a6f45d3b09df7992",
+    "1732347b067f732a",
+    "03277d92c60c447f"
    ]
   },
   {
@@ -872,13 +872,13 @@
    ],
    "summary": "win breaker",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "321b7ea162892c98",
-    "1cac66161324047b",
-    "cbdb881f215f3f4c",
-    "16ac127d3ae4801b",
-    "6e73e98fc2d841eb"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "249192d7fbfb6955",
+    "203561a476568eaa",
+    "e792e04c141d3910",
+    "9a5ea6bfe7881a4a",
+    "21598fbd926f0b18"
    ]
   },
   {
@@ -896,21 +896,21 @@
     "goto tray pretend",
     "pretend until 3:40"
    ],
-   "summary": "blamed blackout",
+   "summary": "win blackout",
    "digests": [
-    "214c450cd83ccfab",
-    "363b5b691e20426a",
-    "24598da01febaa14",
-    "3e15c188aa2bcc26",
-    "472a3fa308cae81c",
-    "fea141ffb90c580e",
-    "49ad307ec3fb3109",
-    "76f5b01e89c8a04b",
-    "4df830efba6197ae",
-    "2f08823e44472ae7",
-    "d4ffc08b20dfe576",
-    "5d825f7a39fe8ce6",
-    "360a154425f337bd"
+    "c9427513688e3c01",
+    "75bb6237dc4b9607",
+    "c88c0226cde7b32a",
+    "5495a397e5e42b47",
+    "94cee70fdcfba1c4",
+    "a9f7035f7ef48261",
+    "3586457ed5635a1d",
+    "294c95d522e28b92",
+    "33805c75b253ecc0",
+    "91e9b6a9ab8ad49e",
+    "abcb1c0a28e45baf",
+    "5e847061557e3cd1",
+    "296c1a31f0c733a3"
    ]
   },
   {
@@ -927,16 +927,16 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "6f9287ef6d3a1be6",
-    "5c57c80d612cb699",
-    "c0d5d53e0dd29e1d",
-    "a87ef9a55c8193a2",
-    "b076ae6f607599e4",
-    "e470ca864386bfa4",
-    "88bfe4b55bf4ab39",
-    "5dd516f1ca108769"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "96c73d4de4b5d027",
+    "1eaea9b72c35df04",
+    "cc121aab750a69b4",
+    "585fbc2b4f4337d5",
+    "5a70cabef4ed692e",
+    "0556606bb40912fd",
+    "464b35d1ac9518a3",
+    "ec1736bc89a06a45"
    ]
   },
   {
@@ -954,17 +954,17 @@
    ],
    "summary": "win switch",
    "digests": [
-    "87c2ccc0faac6b67",
-    "2e285fc61d460281",
-    "0410b72acfe4561c",
-    "d5521069385ab7f5",
-    "e86efe517ce1a003",
-    "697c76cfe30054b9",
-    "1e73ec4abb83bc6f",
-    "cb0b466b7e22cf02",
-    "c4e472dba0ff45dd",
-    "ed5076ace84c9355",
-    "5398950aa2b33a10"
+    "6c5d764fbe35a23d",
+    "86de0c3f1da041d5",
+    "37021fdec46e6393",
+    "91a590af38368ed2",
+    "7c8e4ba77c81858e",
+    "77a23adfa1d857e8",
+    "27e2b3b74ba82db8",
+    "8be8d4f1f2d7525c",
+    "d01795ec1ddef477",
+    "750d7ba2697a4c60",
+    "03ea03d40b05084e"
    ]
   },
   {
@@ -978,17 +978,17 @@
     "goto kitchen_table pretend",
     "pretend until 3:40"
    ],
-   "summary": "blamed switch",
+   "summary": "win switch",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "a3f5330ddeec289d",
-    "13d5b6e2247501f2",
-    "1e99905993dd67dc",
-    "c84bab31bdef841c",
-    "421719cbff3a7ba8",
-    "daff74f099a34b7b",
-    "d1d6ab9a4f6a3dec"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "b0660c552a5c7607",
+    "5954b62ecf7bcb44",
+    "edefefe298f287f8",
+    "e44f475c0c568b21",
+    "5e758c776a0393d6",
+    "93bae4c8342edebf",
+    "95c0f9c39517c998"
    ]
   },
   {
@@ -1001,16 +1001,16 @@
     "interact",
     "wait until 3:40"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "a3f5330ddeec289d",
-    "13d5b6e2247501f2",
-    "f5eb1dd942b03905",
-    "96fa9943e8660188",
-    "742314e79078b3a3",
-    "5b118c17aae305f3"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "b0660c552a5c7607",
+    "5954b62ecf7bcb44",
+    "a1c4e49c80544af2",
+    "f74f503b2caa4605",
+    "d68b2937da0dc06e",
+    "095835d8de32c778"
    ]
   },
   {
@@ -1024,13 +1024,13 @@
    ],
    "summary": "win switch",
    "digests": [
-    "05c978c7ce46be5c",
-    "56016dd110c235a5",
-    "efd3c979961b72d7",
-    "dae6146153fe4137",
-    "b3b06269b1014212",
-    "c9fa5ed1c2fefc51",
-    "eff067e177194d25"
+    "fedffa588fc72e5e",
+    "39dad24962b6fca7",
+    "e2c37928ef3d710b",
+    "78a3d6bf3d897022",
+    "f511ec1dd59c1c2f",
+    "38524c8174031b9b",
+    "b1360d20f7d1f683"
    ]
   },
   {
@@ -1044,17 +1044,17 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "blamed switch",
+   "summary": "win switch",
    "digests": [
-    "eee9ec5d983b071d",
-    "bfa52d1d1ef4fda0",
-    "e69de5bbd986fc17",
-    "b87a3b1fd3eda757",
-    "bf348efefee58488",
-    "8b5b8fda447bebbc",
-    "43a4896412d2454a",
-    "500bf901001e4b6d",
-    "cbb65ec5f5056fe3"
+    "96fd64c91d63a0a3",
+    "fa2a0948c36d2d2a",
+    "00fe54b028884310",
+    "d10c66af07080ad6",
+    "6ec7a82ede9c2588",
+    "620ca3af50477f38",
+    "c824512d85058373",
+    "5d376cb5173a9f70",
+    "e9d00f6422701557"
    ]
   },
   {
@@ -1071,16 +1071,16 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "4255c784721ad910",
-    "6f7b3d8c6705827f",
-    "266f3ce038c7fc8b",
-    "ecc301caa6c62bd7",
-    "cfafe6301076a994",
-    "252faf22c12dafec",
-    "b246e7457cb47a50",
-    "f43f9f2bda18d1cf"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "6e2f71f0392916e4",
+    "77bf476d84754415",
+    "c758eda1ee093718",
+    "29dc47390ff17823",
+    "b33139c42d239ab0",
+    "cc7369ce301f0213",
+    "e89b73235c76d923",
+    "5651b321e15f39ee"
    ]
   },
   {
@@ -1096,15 +1096,15 @@
    ],
    "summary": "win breaker",
    "digests": [
-    "2880c903dd8a5a21",
-    "c6f2d07171e2d612",
-    "bd95320ef0ca695c",
-    "2371f079a105e243",
-    "487a49dcb4eeb56e",
-    "7f6d23ff21a6f724",
-    "7adf418e67bae705",
-    "071a219787a499fb",
-    "e169cc3385c9546f"
+    "d6bfe74e8e2520a7",
+    "5511bfd4b6612b3b",
+    "688053dfca2ff4be",
+    "d00663decfc5c117",
+    "6c67527077457a85",
+    "c802e0d0fba74935",
+    "5099e08f9e35af96",
+    "2175e9f6682f52de",
+    "74a2f33b5a7105bd"
    ]
   },
   {
@@ -1119,14 +1119,14 @@
    ],
    "summary": "caught",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "8e3a52539cc6b263",
-    "fc7ff6766e40ac32",
-    "d5fe4d0bf8690165",
-    "b9bae2f546958f89",
-    "8f484d6086bc8a93",
-    "536d09abb73a3338"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "3338b8b1b989d629",
+    "f6480679cc0b0fa4",
+    "57fdea4dc1cee7f6",
+    "5b348c6c5fb656f3",
+    "c761e60db2a71a0d",
+    "3bde7fe08ab5b92f"
    ]
   },
   {
@@ -1146,23 +1146,23 @@
     "goto fuse_box pretend",
     "pretend until 3:40"
    ],
-   "summary": "blamed switch",
+   "summary": "win switch",
    "digests": [
-    "87c2ccc0faac6b67",
-    "2e285fc61d460281",
-    "0410b72acfe4561c",
-    "d5521069385ab7f5",
-    "e86efe517ce1a003",
-    "770f77d98b94a542",
-    "df67905db84f4d8a",
-    "56a0ceffb809e41b",
-    "29fcfc951c7e3885",
-    "5fe5587cba8cfa91",
-    "d4901ae3c69cda4a",
-    "243f99a306b7344a",
-    "dfd5c1f4e3a25c45",
-    "78130b47f983791d",
-    "60af7e5580e391cf"
+    "6c5d764fbe35a23d",
+    "86de0c3f1da041d5",
+    "37021fdec46e6393",
+    "91a590af38368ed2",
+    "7c8e4ba77c81858e",
+    "7b7fe33a7081cff5",
+    "8c16479b8d40af25",
+    "d08d7c25a0c4bf65",
+    "b60e43cd7999dfa8",
+    "fc836b45c5d1b9d8",
+    "eef2a4afcc72bc76",
+    "73a164663e07ae42",
+    "721d09dbab2fe2c2",
+    "65853d8445b86fb7",
+    "b33d30b5473c4dc3"
    ]
   },
   {
@@ -1179,20 +1179,20 @@
     "wait 8s",
     "pretend until 3:40"
    ],
-   "summary": "blamed blackout",
+   "summary": "win blackout",
    "digests": [
-    "05c978c7ce46be5c",
-    "0d4705122fba3c69",
-    "97623993759e81a2",
-    "e48386835028d41c",
-    "366264d09a58fc84",
-    "aeb83da3eb8de231",
-    "0c5aac5825c80f1d",
-    "b0e6c1586151d8bd",
-    "9b936f0ec0e5e209",
-    "62a20afbd4873f2a",
-    "01edf1693953de9c",
-    "d67c9cfbad9ef9c6"
+    "fedffa588fc72e5e",
+    "dbcb281446a78eff",
+    "d15c313b6a021df7",
+    "991c10a6bc66a2a2",
+    "55b4ab61a0b9cfe3",
+    "bb1b19d51c52947a",
+    "2d457b5fc0ae5716",
+    "027b26b42f006939",
+    "ab75c870f87acc8b",
+    "da25a8d9ae021785",
+    "5ff4ab27fce0d1b7",
+    "a1c4aff439f61ec1"
    ]
   },
   {
@@ -1209,20 +1209,20 @@
     "interact",
     "pretend until 3:40"
    ],
-   "summary": "win blackout",
+   "summary": "caught",
    "digests": [
-    "214c450cd83ccfab",
-    "363b5b691e20426a",
-    "24598da01febaa14",
-    "3e15c188aa2bcc26",
-    "472a3fa308cae81c",
-    "fea141ffb90c580e",
-    "984bfca52b57bcf0",
-    "243d667bacdfcc43",
-    "684d3bb418651d1d",
-    "1b549dbccfa1f36b",
-    "db2f287391b071e7",
-    "4c2fdc2d8af0f14a"
+    "c9427513688e3c01",
+    "75bb6237dc4b9607",
+    "c88c0226cde7b32a",
+    "5495a397e5e42b47",
+    "94cee70fdcfba1c4",
+    "a9f7035f7ef48261",
+    "3f485bc092a42beb",
+    "5c088dcd6af0c876",
+    "dc0b1459c0fcc57b",
+    "e4a8dc910597e643",
+    "aafdb9c3e69055e8",
+    "bb6aaccac3612c59"
    ]
   },
   {
@@ -1242,19 +1242,19 @@
    ],
    "summary": "caught",
    "digests": [
-    "2880c903dd8a5a21",
-    "4e3d121570a8d1ed",
-    "5a3391bd6faf69de",
-    "04f3ce005c371230",
-    "3a73d604a2093653",
-    "93adc152413abada",
-    "8b9f588b04649e97",
-    "df83d08382ae54ef",
-    "9485df4281458a04",
-    "68ae471c4efec968",
-    "131dc37eb2351096",
-    "8803c037c9b656c5",
-    "9f5e3f40d46339d5"
+    "d6bfe74e8e2520a7",
+    "75a60e0172da852b",
+    "16716f4eaef8a931",
+    "40f095efceec3437",
+    "d67350529d9e6fa3",
+    "97c7bebac45febcd",
+    "2505347b09f6a0e3",
+    "8936aa0e471a734d",
+    "0a5cb998cc6aea9d",
+    "1feb14d920d85ce5",
+    "f50480ebb0993be4",
+    "fa9eea795a865fad",
+    "5330628f08470ff2"
    ]
   },
   {
@@ -1272,17 +1272,17 @@
    ],
    "summary": "win switch",
    "digests": [
-    "eee9ec5d983b071d",
-    "bfa52d1d1ef4fda0",
-    "e69de5bbd986fc17",
-    "66994c78e068b1bf",
-    "2c69e22c80edbf53",
-    "0bdb09d98c89f2cf",
-    "f92224faad432426",
-    "a2e8927160d6a8ac",
-    "2db496957994c068",
-    "2db496957994c068",
-    "2db496957994c068"
+    "96fd64c91d63a0a3",
+    "fa2a0948c36d2d2a",
+    "00fe54b028884310",
+    "c8ddfd63da600b28",
+    "a338823557a046ef",
+    "bc24b6a8d1a828fb",
+    "273d7dc90a0a87c5",
+    "15dac5a4fee1fa9d",
+    "b07f229e676c916a",
+    "b07f229e676c916a",
+    "b07f229e676c916a"
    ]
   },
   {
@@ -1296,17 +1296,17 @@
     "pretend until 3:24",
     "pretend until 3:40"
    ],
-   "summary": "blamed breaker",
+   "summary": "win breaker",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "321b7ea162892c98",
-    "e682a952fd64032f",
-    "d6158e5594a230fa",
-    "ed581795538b39a0",
-    "c651c3b4a2aae09d",
-    "4bf625d2d6e81f6a",
-    "83078febc97a84f9"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "249192d7fbfb6955",
+    "5887f45460e496b0",
+    "cbffd7a94efe6623",
+    "8dc682cf39439607",
+    "d41abc87e2cfeff8",
+    "b3c8e13d1d36c6af",
+    "0d38e56b2b83a833"
    ]
   },
   {
@@ -1322,15 +1322,15 @@
    ],
    "summary": "fail",
    "digests": [
-    "70c5c04ecc6f3823",
-    "c33182316e7b0eac",
-    "b3cbdcd9500eb827",
-    "2aa9b5e57296dad8",
-    "b1865523b484aefc",
-    "079fe7cdbe750038",
-    "300b6e14f3133240",
-    "c0072dbe6ef77fd7",
-    "c0072dbe6ef77fd7"
+    "7dbab170b2c4e956",
+    "222eb77a636b23ee",
+    "2948e740153b077f",
+    "f21ba2d44b554e9b",
+    "db8a155eb6041b2a",
+    "28c6bb9ef0d7ce90",
+    "348e4acd32c1b474",
+    "fecd22f1a5c6583b",
+    "fecd22f1a5c6583b"
    ]
   },
   {
@@ -1342,11 +1342,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "d361486e413345ad",
-    "adb0299f49022695",
-    "2341cfe84530e8ac",
-    "51eb49c3046ace89",
-    "8e46338da076a2c8"
+    "95496a94a7c87991",
+    "313d9326f8246410",
+    "ca39added29d5a3c",
+    "2691fe4abdc8b87f",
+    "258fc4d976cb829d"
    ]
   },
   {
@@ -1367,20 +1367,20 @@
    ],
    "summary": "win switch",
    "digests": [
-    "bf18f24a4c197bfb",
-    "1739627ef76500bf",
-    "24bd65c97a4f39e1",
-    "c99498afd14963c7",
-    "38948aa9cc2bd1c6",
-    "e349781c0ceee231",
-    "25e9c82c5327b020",
-    "7fd93fb5f9cd3998",
-    "ca23952574dcdc6a",
-    "1b7434cdcef57672",
-    "9bbda6ab110411b2",
-    "378c0927129cbd86",
-    "20966c24d08fa348",
-    "84eb0c4c29aab9c4"
+    "fc53f4eede31b544",
+    "68ce5582ea8ee2a8",
+    "ea4da6bfb1b5ea6d",
+    "cdb80ea75af20e22",
+    "169d95b4ee821b8c",
+    "9aacfaf7aefd7e95",
+    "d626e06eed2ad854",
+    "1d9bb6cc1d06852a",
+    "0b4cd71c2b199d15",
+    "c9369f5a649dc6d5",
+    "05b3a276b82d99e8",
+    "569544d58e264dcf",
+    "f1957f25cf578bad",
+    "f6b373b321f2d293"
    ]
   }
  ]
