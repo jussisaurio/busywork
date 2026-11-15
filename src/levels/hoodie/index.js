@@ -3,10 +3,10 @@
 //
 // Nobody lets you at his computer as yourself. But clothes are who you are, to people who don't know better
 // (src/play/disguise.js):
-//   - Kev gets hot at 3:15, leaves his hoodie on his chair and goes home. On his way out he waves to Lin, so she
-//     knows he's gone; the boss is in the restroom and doesn't. In the hoodie, the boss sees Kev 🔧👍, and Kev may
+//   - Kev gets hot, and goes home while the boss is in the restroom (so the boss doesn't know). He waves to Lin
+//     first, so she knows, then leaves his hoodie on his chair on the way out. In the hoodie, the boss sees Kev 🔧👍, and Kev may
 //     fix his computer: he steps aside and watches. Lin sees through it (🔧❓, then ❗👉), so go while she's in the
-//     restroom (3:31).
+//     restroom (3:32).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
@@ -24,7 +24,7 @@ import gate from './gate.js';
 // Level 1's floor (src/levels/meeting/map.js), with the boss's computer Q on his desk and no projector.
 //  Boss office (glass S/E walls)  | Meeting room                    | Kitchen
 //  ------------------------------ hallway (row 7) --------------------------------------------
-//  Open plan: Lin's desk (x3-5), your desk P (x12-14), Kev's desk (x21-23)
+//  Open plan: Lin's desk (x3-5, row 8) with Kev's behind it (row 11), your desk P (x12-14)
 //  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R
 const MAP = [
   '##############################', // 0
@@ -62,11 +62,11 @@ const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
   boss_desk: { x: 4, y: 2, face: 'S' }, // at his computer, watching the floor through the glass
   lin_desk: { x: 4, y: 9, face: 'N' }, // facing the boss's office: she sees his screen through the glass
-  kev_desk: { x: 22, y: 9, face: 'N' }, // his hoodie ends up on this chair
+  kev_desk: { x: 4, y: 12, face: 'N' }, // behind Lin, by the entrance: his hoodie ends up on this chair
   coat_rack: { x: 2, y: 1, face: 'W' },
   boss_aside: { x: 6, y: 3, face: 'W' }, // where the boss stands to watch "Kev" fix his computer
   review_chair: { x: 4, y: 4, face: 'N' }, // in front of his desk: where you sit for your review
-  kev_bye: { x: 4, y: 7, face: 'S' }, // in front of Lin's desk: Kev waves goodbye
+  kev_bye: { x: 5, y: 7, face: 'S' }, // in front of Lin's desk: Kev waves goodbye
   boss_door: { x: 6, y: 7, face: 'S' },
   door_in: { x: 4, y: 12, face: 'S' },
   elevator: { x: 2, y: 15, face: 'S' }, // Kev goes home here

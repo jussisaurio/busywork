@@ -32,9 +32,10 @@ export const CAST = [
     schedule: [
       s('3:05', { do: 'sit', spot: 'kev_desk' }),
       s('3:13', { do: 'say', icons: ['🥵'], kind: 'thought' }),
-      s('3:15', { do: 'visit', spot: 'kev_desk', arrive: 'shedHoodie' }), // stands up, hoodie off, onto his chair
-      // Home, once the boss is out of sight: past Lin, who waves back.
-      s('3:19', { do: 'leave', spot: 'elevator', prelude: 'waveLin', gone: { set: { kevGone: true }, event: 'kev:left' } }),
+      // Home, once the boss is out of sight: a wave to Lin (she waves back), the hoodie off onto his chair, out.
+      s('3:19', {
+        do: 'leave', spot: 'elevator', prelude: ['waveLin', 'shedHoodie'], gone: { set: { kevGone: true }, event: 'kev:left' },
+      }),
     ],
   },
   {
@@ -43,12 +44,12 @@ export const CAST = [
     color: '#2f8f83',
     voice: 'lin',
     meetingSpot: 'lin_desk',
-    vision: { fov: deg(100), radius: 8.5 },
+    vision: { fov: deg(100), radius: 9.5 }, // the whole boss's office, coat rack included
     coneTint: [150, 230, 214],
     schedule: [
       s('3:05', { do: 'sit', spot: 'lin_desk' }),
-      s('3:31', { do: 'away', spot: 'restroom' }),
-      s('3:38', { do: 'sit', spot: 'lin_desk' }),
+      s('3:32', { do: 'away', spot: 'restroom' }), // once the boss is back at his desk
+      s('3:40', { do: 'sit', spot: 'lin_desk' }),
     ],
   },
 ];
@@ -69,10 +70,11 @@ export const BEHAVIOURS = {
       if (game.world.pc === 'boss') game.world.pc = 'free';
     },
   },
-  // Too hot: the hoodie comes off and goes on his chair.
+  // Too hot: on his way out, the hoodie comes off and stays on his chair.
   shedHoodie: {
+    spot: 'kev_desk',
+    pending: (npc) => !npc._shed,
     arrive(game, npc, sim) {
-      if (npc._shed) return;
       npc._shed = true;
       const w = game.world;
       w.hoodie = 'chair';

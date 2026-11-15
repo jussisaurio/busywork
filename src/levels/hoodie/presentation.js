@@ -22,6 +22,7 @@ export const DECOR = {
     { spot: 'lin_desk', face: 'N', color: TEAL },
     { spot: 'kev_desk', face: 'N', color: OLIVE },
     { x: 13, y: 12, face: 'N', color: MUSTARD },
+    { x: 22, y: 9, face: 'N', color: TEAL },
     { x: 22, y: 12, face: 'N', color: TEAL },
     { x: 10, y: 3, face: 'E', color: OXBLOOD },
     { x: 12, y: 5, face: 'N', color: TEAL },
