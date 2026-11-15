@@ -1,8 +1,9 @@
 // "The Last Bus": the last bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
 // Everyone lives by the wall clock of the zone he stands in (clocks.js), and you can climb the stepladder under a
-// clock and push it forward. Push the boss's clock (Lin watches it through the glass) and he lives his afternoon
-// early. Push the open-plan clock (Kev sits facing it) far enough and the boss, walking back under it from his coffee,
-// sees home time and goes; Lin and Kev, who have been eyeing his coat on the rack, follow him out. Leave your desk
+// clock and push it forward. The boss, back from a long lunch with a flat phone, believes the open-plan clock (Kev
+// sits facing it) and then checks his own clock (Lin watches it through the glass) against it. Push both and he lives
+// his afternoon early; push the open-plan clock far enough and he sees home time on his way back from his coffee and
+// goes straight from the hallway. Lin and Kev frown at a jumped clock and keep their own time. Leave your desk
 // while he is in and he comes looking for you; seen out in the street, you are caught. A time loop.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
@@ -143,7 +144,7 @@ export default {
     bossGone: false,
     linGone: false,
     kevGone: false,
-    herd: false, // the boss went home by the open-plan clock (passing under it after his coffee)
+    herd: false, // the boss went home by the open-plan clock (home time on it as he walked back from his coffee)
     herdShown: 0, // ... and the time it showed him then
     coat: 'hook', // the boss's coat: on the rack ('hook') or on him ('boss')
     fix: false, // he has been told about the clocks: he sets them right

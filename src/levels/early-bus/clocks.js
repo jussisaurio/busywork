@@ -2,14 +2,18 @@
 //
 // The boss reads Q in his office; Lin and Kev read O in the open plan (each sits within a few tiles of it). On every
 // beat (each schedule entry and each of cast.js LOOK_UPS) and when he sits down (the `lookUp` behaviour) a person
-// turns to his clock for a second and thinks the time it shows (a clock face). He adopts it, earlier or later, and
-// does whatever his schedule says for that time (skipped bubbles fire at once). Nobody ever acts against a clock he has just read.
+// turns to his clock for a second and thinks the time it shows (a clock face).
 //
-// A clock that has moved since he last read it: the face and 😮, a realize bubble ("oh!": he believes it, he is not alarmed).
+// Nobody swallows a clock that jumped under his nose. Lin and Kev, who look at O all afternoon, see it jump: the
+// face and 🤨, and they keep their own time (they never act by a pushed clock).
 //
-// The boss reads O whenever he walks under it: on his way to the kitchen (readO) and back (passO). If it shows 4:50
-// or later, he goes home (world.herd); otherwise he shrugs and walks on. His coat hangs on a rack in the hallway, by
-// his office door and well away from O, so going home he never walks back past his own clock or under O.
+// The boss is out at a long lunch until about 3:45, with a flat phone (📱🪫): the wall clocks are all he has. Back,
+// he fetches a coffee and walks back under O (passO): the first clock he has seen for an hour, so he believes
+// whatever it says (later than he thought: the face and 😮). If it says 4:50 or later, he goes home from the
+// hallway (world.herd): his coat hangs on a rack there, so he never sees Q. Otherwise he sits down at his desk and
+// looks up at Q. Q agrees with O (within ten minutes): he takes Q's time. Q disagrees: he frowns at it (the face and
+// 🤨) and sets the clocks right (fixQ, fixO). Once he sits, he has watched Q tick: it can't jump on him. Push it
+// behind his back and he hears the stepladder right behind his chair, turns, and sets it right (suspect).
 //
 // Nobody leaves before the boss, and his coat on the rack says he is in (world.coat). At 3:13 Kev picks up his
 // laptop, sees the coat, and puts it down again (bagCheck). At their 4:50 Lin and Kev stand up and look at the rack:
@@ -17,10 +21,10 @@
 // is gone and he is out of the door, they follow him out.
 //
 // After each look at his own clock the boss glances at your desk: you there, [@player, ✔️]; empty, [@player, ❓],
-// and he goes looking for you (index.js hunts: office, open plan, lobby, the street). Seen out in the street before
-// he has gone home, you are caught (index.js roles.scene). If his clock has just jumped and you are in his office,
-// he looks from the clock to you (@player 🤨) and sets it right. Told about a clock (a tattle), he sets the pushed
-// clocks right (fixQ, fixO).
+// and he goes looking for you (index.js hunts: office, open plan, lobby, the street); you already out of the door,
+// he rings you first (📱 @player ❓). Seen out in the street before he has gone home, you are caught (index.js
+// roles.scene). If his clock has jumped and you are in his office, he looks from the clock to you (@player 🤨) and
+// sets it right. Told about a clock (a tattle), he sets the pushed clocks right (fixQ, fixO).
 //
 // The schedule reads it through level.clockFor (src/sim/npcs.js). The HUD clock, the deadline, the gather and the
 // rules keep the true time. A clock you pushed hangs crooked (presentation.js).
@@ -46,6 +50,7 @@ const COAT_S = 1.2; // real s Lin or Kev looks at the boss's coat rack
 const RECHECK_S = 8; // real s sitting before Lin or Kev stands up to look at the rack again
 const REACH_S = 1.2; // real s the boss reaches up to set a clock right
 const BATTERY_S = 2.0; // real s the caretaker reaches up to the boss's clock at 3:00
+const AGREE_MIN = 10; // two clocks this close agree (nobody minds ten minutes)
 
 // The clock of the zone he stands in (null: none).
 function zoneClock(game, npc) {
@@ -112,6 +117,10 @@ export function clockFor(game, npc, sim) {
   st.lookT = Math.max(0, st.lookT - FIXED_DT);
   tickTimers(st);
   if (npc.id !== 'boss') homeCheck(game, st);
+  else {
+    heardLadder(game, npc, st, sim);
+    callOut(game, npc, st);
+  }
   let t = believed(game, npc, st);
   const b = beatAt(npc, t);
   if (st.beat === null) st.beat = b; // the first step of the day: no look-up
@@ -122,6 +131,36 @@ export function clockFor(game, npc, sim) {
     st.beat = beatAt(npc, t);
   }
   return t;
+}
+
+// The boss in his office: his clock pushed right behind his chair. He hears the stepladder, turns and looks from the
+// clock to you, and sets it right (suspect). Pushed while he was out, it waits for his look at it (lookUp).
+function heardLadder(game, npc, st, sim) {
+  const w = game.world;
+  const here = npc.active && !npc._gone && inZone(game, 'boss_office', npc.x, npc.y);
+  if (!here) {
+    st.q = null;
+    return;
+  }
+  if (st.q != null && w.bossClock > st.q) {
+    game.events.emit('boss:heard', {});
+    suspect(game, npc, sim);
+  }
+  st.q = w.bossClock;
+}
+
+// The boss looking for you, and you out of the door: he rings you, once a hunt (where are you?), and keeps looking.
+function callOut(game, npc, st) {
+  if (npc.override !== 'hunting') {
+    st.called = false;
+    return;
+  }
+  const p = game.player;
+  if (st.called || !inZone(game, 'outdoors', p.x, p.y) || game.phase !== 'day' || game.caught) return;
+  st.called = true;
+  say(game, npc.id, ['📱', '@player', '❓'], { kind: 'speech', voice: npc.voice, ttl: 1.8 });
+  say(game, { x: p.x, y: p.y - 0.2 }, ['📳'], { kind: 'thought', ttl: 1.8 }); // your phone buzzes
+  game.events.emit('boss:call', {});
 }
 
 // Lin and Kev at home time, while the boss is in: 'stand' (up to look at his coat rack, coatCheck), 'looking',
@@ -183,32 +222,54 @@ function clockSay(game, npc, clock, icons, kind, ttl) {
   say(game, owner, icons, { kind, voice: npc.voice, ttl });
 }
 
-// He turns to his zone's clock for a second and thinks its time; he adopts it.
+// He turns to his zone's clock for a second and thinks its time.
 function lookUp(game, npc, sim) {
   const st = npc._clk;
   const clock = zoneClock(game, npc);
   const c = CLOCKS[clock];
   sim.lookAt(game, npc, c.spot, LOOK_S);
   st.lookT = LOOK_GAP_S;
+  st.beat = beatAt(npc, believed(game, npc, st)); // this look covers every beat up to now
   game.events.emit('clock:look', { id: npc.id, clock: c.id });
   const off = game.world[c.field] || 0;
   const face = faceFor(shown(game, clock));
-  if (off !== st.off) {
+  if (npc.id !== 'boss') {
+    // Lin or Kev: O has jumped since his last look. He frowns at it and keeps his own time.
+    if (off !== (st.seen ?? 0)) {
+      st.seen = off;
+      clockSay(game, npc, clock, [face, '🤨'], 'thought', LOOK_S + 0.3);
+      game.events.emit('clock:doubt', { id: npc.id, clock: c.id, off });
+    } else {
+      clockSay(game, npc, clock, [face], 'thought', LOOK_S);
+    }
+    return;
+  }
+  // The boss at Q. You in his office with it moved: he looks from it to you (suspect).
+  const moved = off !== st.off;
+  if (moved && inZone(game, 'boss_office', game.player.x, game.player.y)) {
+    clockSay(game, npc, clock, [face, '🤨'], 'thought', LOOK_S + 0.3);
+    st.timers.push({ t: LOOK_S, fn: () => suspect(game, npc, sim) });
+    return;
+  }
+  if (moved && (st.settled || Math.abs(off - st.off) > AGREE_MIN)) {
+    // It disagrees with O (or it moved while he sat under it): he frowns and sets the clocks right.
+    clockSay(game, npc, clock, [face, '🤨'], 'thought', LOOK_S + 0.3);
+    game.world.fix = true;
+    game.events.emit('boss:mismatch', { off, believed: st.off });
+    st.off = Math.min(st.off, off); // he goes by the earlier of the two until he has set them right
+    st.beat = beatAt(npc, believed(game, npc, st));
+  } else if (moved) {
     const ahead = off > st.off;
     st.off = off;
     st.beat = beatAt(npc, believed(game, npc, st)); // (no second look for the jump itself)
-    clockSay(game, npc, clock, [face, '😮'], 'realize', LOOK_S + 0.3); // later than he thought: he believes it ("oh!", CONTRACTS "Bubbles")
+    clockSay(game, npc, clock, [face, '😮'], 'realize', LOOK_S + 0.3);
     game.events.emit('clock:jump', { id: npc.id, clock: c.id, off, ahead });
-    // His clock has just jumped and you are in his office: he looks from it to you, and sets it right.
-    if (npc.id === 'boss' && clock === 'boss' && inZone(game, 'boss_office', game.player.x, game.player.y)) {
-      st.timers.push({ t: LOOK_S, fn: () => suspect(game, npc, sim) });
-      return;
-    }
   } else {
     clockSay(game, npc, clock, [face], 'thought', LOOK_S);
   }
-  // The boss: his clock, then your desk.
-  if (npc.id === 'boss' && clock === 'boss') st.timers.push({ t: LOOK_S, fn: () => deskGlance(game, npc, sim) });
+  st.settled = true;
+  // His clock, then your desk.
+  st.timers.push({ t: LOOK_S, fn: () => deskGlance(game, npc, sim) });
 }
 
 // You were in his office when his clock jumped: he stares at you, 🤨, and goes to set it right (fixQ, his next leg).
@@ -266,10 +327,9 @@ function fixRow(clock) {
     arrive(game, npc, sim) {
       const w = game.world;
       w[c.field] = 0;
-      if (clock === 'boss') {
-        npc._clk.off = 0;
-        npc._clk.beat = beatAt(npc, game.clock.minute);
-      }
+      npc._clk.off = 0; // he knows the time again
+      npc._clk.beat = beatAt(npc, game.clock.minute);
+      if (clock === 'boss') npc._clk.q = 0;
       if (!w.bossClock && !w.openClock) w.fix = false;
       npc._reachUntil = game.loopTime + REACH_S;
       sim.holdFor(npc, REACH_S);
@@ -279,27 +339,28 @@ function fixRow(clock) {
   };
 }
 
-// The boss under O: he looks up. 4:50 or later: 😮 home time. Earlier: a shrug (not yet: the face and ⏳).
+// The boss under O, back from lunch: the first clock he has seen for an hour, so he believes it. 4:50 or later:
+// 😮 home time (world.herd). Earlier: its time (later than he thought: 😮).
 function readOpen(game, npc, sim) {
   const st = npc._clk;
   const time = shown(game, 'open');
   const face = faceFor(time);
+  const off = game.world.openClock || 0;
   sim.lookAt(game, npc, 'open_clock_chair', LOOK_S + 0.4);
   npc._faceTarget = -Math.PI / 2; // up at the clock on the wall
   if (npc._stare) npc._stare.dir = -Math.PI / 2;
-  st.lookT = LOOK_GAP_S;
   game.events.emit('clock:look', { id: npc.id, clock: CLOCKS.open.id });
+  const later = off > st.off;
+  st.off = off;
+  st.beat = beatAt(npc, game.clock.minute + st.off);
   if (time >= HOME_AT) {
-    st.off = Math.max(st.off, game.world.openClock);
-    st.beat = beatAt(npc, game.clock.minute + st.off);
     game.world.herd = true;
     game.world.herdShown = time; // the end card's clock
     clockSay(game, npc, 'open', [face, '😮'], 'realize', LOOK_S + 0.4);
     game.events.emit('boss:herd', { shown: time });
   } else {
-    npc._shrugUntil = game.loopTime + LOOK_S + 0.4;
-    clockSay(game, npc, 'open', [face, '⏳'], 'thought', LOOK_S + 0.4);
-    game.events.emit('boss:shrug', { shown: time });
+    clockSay(game, npc, 'open', later ? [face, '😮'] : [face], later ? 'realize' : 'thought', LOOK_S + 0.4);
+    game.events.emit('boss:readO', { shown: time, off });
   }
 }
 
@@ -323,16 +384,7 @@ export const CLOCK_BEHAVIOURS = {
     },
   },
 
-  // On his way to the kitchen he walks under O and looks up at it (readO); back from the kitchen, again (passO).
-  readO: {
-    spot: 'open_clock_chair',
-    state: { _readOut: false },
-    pending: (npc) => !npc._readOut,
-    arrive(game, npc, sim) {
-      npc._readOut = true;
-      readOpen(game, npc, sim);
-    },
-  },
+  // Back from the kitchen with his coffee he walks under O and looks up at it (passO).
   passO: {
     spot: 'open_clock_chair',
     state: { _onBreak: false },

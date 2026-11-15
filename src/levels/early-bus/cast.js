@@ -4,9 +4,10 @@
 //
 // The normal day: at 3:00 the caretaker is up the stepladder under the boss's clock, swapping its battery (he has
 // done the open-plan clock already); he leaves both stepladders where they stand and goes. At 3:13 Kev picks up his
-// laptop to go, sees the boss's coat on the rack, and puts it down again: the rule, on screen. The boss is back from lunch at 3:15, has a coffee in the kitchen 3:40-3:55 (walking back under the
-// open-plan clock), and at 4:50 sharp takes his coat off the rack and goes home. Nobody leaves before him: at their
-// 4:50 Lin and Kev stand up, look at his coat, and go only once it has gone with him. Your bus is at 4:30.
+// laptop to go, sees the boss's coat on the rack, and puts it down again: the rule, on screen. The boss is out at a
+// long lunch with a flat phone until about 3:45; back, he pours a coffee, walks back under the open-plan clock (the
+// first clock he sees: he believes it), sits down, checks his own clock against it, and at 4:50 sharp takes his coat
+// off the rack and goes home. Your bus is at 4:30.
 import { at, deg } from '../../config.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -22,10 +23,10 @@ export const CAST = [
     vision: { fov: deg(100), radius: 8 },
     coneTint: [255, 160, 82],
     schedule: [
-      s('3:00', { do: 'away', spot: 'street_end' }), // a long lunch
-      s('3:15', { do: 'sit', spot: 'boss_desk', prelude: ['fixQ', 'fixO'], arrive: 'lookUp' }), // back: what time is it?
-      s('3:40', { do: 'visit', spot: 'coffee', prelude: ['fixQ', 'fixO', 'readO'], arrive: 'pour' }), // his break: under O to the kitchen
-      s('3:55', { do: 'sit', spot: 'boss_desk', prelude: ['fixO', 'passO', 'fixQ'], arrive: 'lookUp' }), // back under O
+      s('3:00', { do: 'away', spot: 'street_end' }), // a long lunch: his coat stays on the rack
+      s('3:40', { do: 'visit', spot: 'coffee', prelude: ['fixQ', 'fixO'], arrive: 'pour' }), // back: a coffee first
+      s('3:41', { do: 'say', icons: ['📱', '🪫'], kind: 'thought' }), // his phone is flat: the wall clocks are all he has
+      s('3:50', { do: 'sit', spot: 'boss_desk', prelude: ['fixO', 'passO', 'fixQ'], arrive: 'lookUp' }), // under O to his desk
       s('4:50', { do: 'leave', spot: 'street_end', prelude: 'coat', anim: 'leaving', gone: { set: { bossGone: true }, event: 'boss:left' } }),
     ],
   },
@@ -87,7 +88,7 @@ export const CAST = [
 
 // Extra look-up beats (believed times), so each person checks his clock every quarter hour or so.
 export const LOOK_UPS = {
-  boss: [at('3:35', START), at('4:10', START), at('4:25', START)],
+  boss: [at('4:10', START), at('4:25', START), at('4:28', START)], // 4:28: one last look at your chair before the bus
   lin: [at('3:12', START), at('3:50', START), at('4:10', START), at('4:25', START)],
   kev: [at('3:20', START), at('3:55', START), at('4:10', START), at('4:25', START)],
 };
