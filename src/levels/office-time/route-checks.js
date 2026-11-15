@@ -4,8 +4,8 @@ const BUS = 'pretend until 4:30';
 export default [
   { name: 'do nothing → fail', expect: { result: 'fail' }, cmds: ['wait until 4:30'] },
   {
-    // The teaching fail: he looks up at his clock on every beat of his day (3:30 📄📄), and it hangs right behind
-    // him. You are on the chair when he turns round.
+    // The teaching fail: he looks up at his clock (🕐) every quarter hour or so, and it hangs right behind his chair.
+    // You are on the stepladder when he turns round.
     name: "push the boss's clock behind his back too close to 3:30 → he looks up at it → caught",
     expect: { result: 'caught' },
     play({ run, log }) {

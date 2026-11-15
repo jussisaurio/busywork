@@ -30,8 +30,8 @@ const MAP = [
   '#..TTT......TTT......TTT.....#', // 11
   '#...........................H#', // 12
   '#GGGLGGGGG###############R####', // 13
-  '#:::::::::G,B#################', // 14
-  '#::::::::::,,#################', // 15
+  '#:::::::::G,,#################', // 14
+  '#::::::::::,B#################', // 15
   '##EE##########################', // 16
 ];
 
@@ -61,7 +61,7 @@ const SPOTS = {
   smoke: { x: 7, y: 15, face: 'N' }, // lobby; faces the glass
   elevator: { x: 2, y: 15, face: 'S' }, // where people leave (and the boss comes back from lunch)
   restroom: { x: 25, y: 12, face: 'S' },
-  bus_stop: { x: 11, y: 15, face: 'S' }, // on the kerb, out of the lobby's glass door
+  bus_stop: { x: 11, y: 15, face: 'S' }, // on the kerb by the sign, out of the lobby's glass door
 };
 
 // Half-open tile rectangles (perception.js inZone).
