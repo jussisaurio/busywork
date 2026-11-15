@@ -171,9 +171,10 @@ function coffeeMachine(ctx, x, t, w) {
   ctx.fillStyle = '#1c1816';
   rrect(ctx, x - 16, y - 34, 26, 30, 3);
   ctx.fill();
-  fillEllipse(ctx, x - 3, y - 14, 10, 10, 'rgba(214,234,240,0.45)'); // the pot: empty glass
   const tripped = w.coffee === 'tripped';
-  const brewed = tripped && w.fuse === 'on';
+  const brewed = tripped && w.fuse === 'on'; // the power came back and it brewed what Lin switched it on for
+  fillEllipse(ctx, x - 3, y - 14, 10, 10, 'rgba(214,234,240,0.45)'); // the pot's glass
+  if (brewed) fillEllipse(ctx, x - 3, y - 11, 8.5, 6.5, '#4a2a16'); // full of coffee
   if (brewed) {
     const g = ctx.createRadialGradient(x + 16, y - 30, 0.5, x + 16, y - 30, 9);
     g.addColorStop(0, 'rgba(120,235,110,0.8)');

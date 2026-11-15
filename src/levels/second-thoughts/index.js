@@ -19,6 +19,7 @@ import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from '.
 import harness from './harness.js';
 import gate from './gate.js';
 import { letter } from './things.js';
+import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 
 const t = (hhmm) => at(hhmm, START);
 
@@ -52,7 +53,7 @@ const LEGEND = {
   Y: { kind: 'tray', solid: true, opaque: false, interactable: 'tray', draw: 'desk' },
   S: { kind: 'light_switch', solid: true, opaque: true, interactable: 'office_switch', draw: 'wall' },
   X: { kind: 'fuse_box', solid: true, opaque: true, interactable: 'fuse_box', draw: 'wall' },
-  M: { kind: 'coffee_machine', solid: true, opaque: false }, // drawn as the kitchen counter's coffee machine
+  M: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' }, // the counter's machine
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
@@ -128,6 +129,9 @@ const INTERACTIONS = {
       game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
     },
   },
+  // Once the power is back, Lin's coffee has brewed and the full pot pours a cup (DESIGN.md "A thing that looks usable
+  // is usable"). The cup leads nowhere: it only fills your hands.
+  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'tripped' && w.fuse === 'on' },
   pull_breaker: {
     on: 'fuse_box', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
@@ -149,6 +153,7 @@ const ITEMS = {
     contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: back in his pocket
     edible: true, // eat your words
   },
+  coffee: COFFEE_CUP,
 };
 
 const ROLES = {

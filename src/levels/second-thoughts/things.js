@@ -129,7 +129,8 @@ export function phoneThing(ctx, x, y, size) {
 
 // decor.props painter on the coffee machine: shown { smoke, brewing }. smoke: it blew the fuse and the power is still
 // out. Smoke curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the
-// floor down. brewing: the power is back and the machine runs what it was switched on for: its brew lamp glows green.
+// floor down. brewing: the power is back and the machine has brewed what it was switched on for: its lamp glows green
+// (and the carafe is full: presentation.js).
 export function smokeProp(ctx, info, at, shown, t) {
   const x = at.x * T + T / 2 + 6;
   const y = at.y * T + 6;

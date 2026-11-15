@@ -48,11 +48,11 @@ export const DECOR = {
   ],
   clock: { x: 17, y: 6 },
   // The in-tray on his desk, your letter lying in it while it's there, and the coffee machine smoking while the fuse
-  // it blew is out, its brew lamp lit once the power is back (things.js). Its pot stays empty: there is no coffee to
-  // take in this level. (The switch and the fuse box: darkness.controls.)
+  // it blew is out. Once the power is back it brews what Lin switched it on for: its lamp glows green and the pot is
+  // full, and a full pot pours a cup (index.js pour_coffee). (The switch and the fuse box: darkness.controls.)
   props: [
     { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
-    { tile: 'M', draw: 'carafe', state: () => ({ full: false }) },
+    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) },
     { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on', brewing: w.coffee === 'tripped' && w.fuse === 'on' }) },
   ],
   // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
