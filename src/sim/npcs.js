@@ -405,6 +405,12 @@ function finishPlan(game, npc, plan) {
 
 // --- Witnesses and the meeting ------------------------------------------------------
 
+// Walking out for the day right now (a schedule 'leave' entry, its preludes included), not yet gone.
+// Rules read it (play/disguise.js: whoever sees him go knows he's gone).
+export function leaving(npc) {
+  return npc.active && !npc._gone && npc._plan?.vanish === 'leave' && !npc._plan.done;
+}
+
 // A witness takes their thing back (rules.js: Kev and the coffee).
 export function npcTakes(npc, item) {
   npc.carry = item;

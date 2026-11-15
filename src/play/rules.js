@@ -10,6 +10,8 @@
 // Owners take their things back on sight, but only while they know it's theirs (the owner's `when`): level 1's
 // Lin her sandwich (to anyone else, taking or eating it is just lunch), and Kev the day's only cup of coffee,
 // once he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
+// A disguise (disguise.js) changes who you are to them: fooled, they object to nothing; knowing better, they object
+// to the disguise itself.
 import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
 import { say, burst, shake, sightline } from '../core/fx.js';
 import { npcSees, findNpc, inZone } from '../game/perception.js';
@@ -17,6 +19,7 @@ import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { judge } from '../sim/mechanics/index.js';
 import { cancelAction, dropHeld, actionRow } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
+import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
 
 // Module tunables.
 export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts
@@ -72,10 +75,13 @@ function atScene(game, s, npc) {
 }
 
 // What this NPC would object to right now, if it saw the player:
-// 'action' (doing something sneaky) | 'scene' (near the scene) | 'evidence' (the mark on you) | 'contraband' | null.
+// 'disguise' (he knows who's under it) | 'action' (doing something sneaky) | 'scene' (near the scene) |
+// 'evidence' (the mark on you) | 'contraband' | null. Fooled by a disguise, he objects to nothing.
 function offenceFor(game, s, npc) {
   const p = game.player;
   const r = roles(game);
+  const view = disguiseView(game, npc);
+  if (view) return view === 'fooled' ? null : 'disguise';
   if (p.action && p.action.sneaky && (!p.action.owner || p.action.owner === npc.id)) {
     // A locked-out boss is outside banging on the glass: he can't do anything about it.
     if (npc.id === r.authority?.id && (r.authority.helpless ?? []).includes(npc.override)) return null;
@@ -96,8 +102,8 @@ export function updateRules(game, dt) {
   publishWatch(game);
 }
 
-// What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'action' | 'scene' |
-// 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
+// What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'disguise' | 'action' |
+// 'scene' | 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
 // serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
 // a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
 function publishWatch(game) {
@@ -117,6 +123,7 @@ function rulesStep(game, dt) {
   if (game.phase !== 'day' || game.caught || game.outcome) return;
   const s = game.rules;
   const p = game.player;
+  updateDisguise(game); // who knows better, who is fooled for the first time
   // Mechanics with a say (what lies on your desk: putdown.js; a failed inspection: inspection.js) judge first,
   // even while you serve assigned work: evidence doesn't wait.
   if (judge(game, JUDGE)) return;
@@ -155,9 +162,9 @@ function rulesStep(game, dt) {
   for (const npc of game.npcs) {
     const offence = offenceFor(game, s, npc);
     if (offence && npcSees(game, npc, p.x, p.y)) {
-      if (!s.seen[npc.id]) notice(game, s, npc);
+      if (!s.seen[npc.id]) notice(game, s, npc, offence);
       s.seen[npc.id] = (s.seen[npc.id] || 0) + dt;
-      if (s.seen[npc.id] >= NOTICE - 1e-9) {
+      if (s.seen[npc.id] >= (offence === 'disguise' ? DOUBLE_TAKE : NOTICE) - 1e-9) {
         s.seen[npc.id] = 0;
         react(game, s, npc, offence);
         if (game.caught || s.working) return;
@@ -186,7 +193,8 @@ function rulesStep(game, dt) {
   // The authority's suspicion: he sees you standing around (not busy, not doing anything).
   const id = auth.id;
   const slacking = !p.action || p.action.idle; // eating at work is not working
-  const idleInView = enforcing(game, boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y);
+  const idleInView = enforcing(game, boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y)
+    && disguiseView(game, boss) !== 'fooled'; // he sees whoever you're dressed as standing around
   if (idleInView) {
     if (game.suspicion[id] === 0) game.events.emit(`${id}:suspicious`, {});
     game.suspicion[id] = Math.min(1, game.suspicion[id] + dt / SUSPICION_FILL_SEC);
@@ -201,18 +209,19 @@ function decaySuspicion(game, dt) {
   if (id) game.suspicion[id] = Math.max(0, game.suspicion[id] - dt / SUSPICION_DECAY_SEC);
 }
 
-// First sight of something sneaky: ❓ over the NPC (throttled).
-function notice(game, s, npc) {
+// First sight of something sneaky: ❓ over the NPC (throttled). A disguise he sees through: a double take, 🔧❓.
+function notice(game, s, npc, offence) {
   const last = s.lastNotice[npc.id];
   if (last !== undefined && game.loopTime - last < NOTICE_BUBBLE_GAP) return;
   s.lastNotice[npc.id] = game.loopTime;
-  say(game, npc.id, ['❓'], { kind: 'thought', ttl: 1.0 });
+  say(game, npc.id, offence === 'disguise' ? doubleTakeIcons(game) : ['❓'], { kind: 'thought', ttl: 1.0 });
   sightline(game, npc.id, 'notice', 0.6);
   game.events.emit('witness:notice', { by: npc.id });
 }
 
 function react(game, s, npc, offence) {
   const r = roles(game);
+  if (offence === 'disguise') unmasked(npc); // he objects once; then she is just herself to him
   if (npc.id === r.authority?.id) {
     sightline(game, npc.id, 'caught', 1.6);
     caught(game, offence);
@@ -220,7 +229,8 @@ function react(game, s, npc, offence) {
   }
   const p = game.player;
   // What a late tattle points at (the thing the witness saw you at).
-  const icon = offence === 'action' ? actionRow(game, p.action.type)?.saw : offence === 'scene' ? r.scene.icon : offence === 'evidence' ? r.evidence.icon : undefined;
+  const icon = offence === 'action' ? actionRow(game, p.action.type)?.saw : offence === 'scene' ? r.scene.icon
+    : offence === 'evidence' ? r.evidence.icon : offence === 'disguise' ? itemFlags(game, p.held)?.icon : undefined;
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
   if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)

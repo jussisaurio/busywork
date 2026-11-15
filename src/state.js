@@ -57,6 +57,6 @@ export function resetLoop(game) {
   game.watch = {}; // npc id -> the offence he has in sight; play/rules.js publishes it every step, render reads it
   game.caught = null;
   game.outcome = null;
-  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null }; // rules.js only: who saw what, the grudge
+  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null, worn: null }; // rules.js only: who saw what, the grudge, the disguise worn (disguise.js)
   game.scenario = { beatT: 0, crickets: false }; // scenario.js only: the end beat
 }
