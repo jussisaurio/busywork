@@ -624,6 +624,16 @@ export async function runStage(id, stage, opts = {}) {
     const meta = readRecord(inp.root)[stage]?.meta;
     if (meta?.hash === inp.hash) return { stage, verdict: meta.verdict, skipped: true, commit: meta.commit, steps: [] };
   }
+  // A level with nothing to carry has no verb sheets: there is nothing to read, so nothing is asked.
+  if (stage === 'verbs' && !inp.verbs?.length) {
+    const rec = {
+      stage, verdict: 'works', tally: {}, problems: { blocker: 0, should: 0, nit: 0 }, ledger: [], open: [],
+      note: 'the level has no items to carry: no verb sheets, nothing to read', date: (opts.now ?? new Date()).toISOString().slice(0, 10),
+      commit: opts.commit ?? gitCommit(), hash: inp.hash, parts: inp.parts, model: 'none', by: 'the tool', steps: [], wallMs: 0,
+    };
+    writeSection(opts.recordTo ?? recordFile(inp.root), id, rec);
+    return rec;
+  }
   const steps = stageSteps(inp, { batch });
   // The ledger: the open problems of the pass's earlier record, for the last step. Not an input (not hashed): the
   // record it comes from changes with every run. A calibration run (ledger: false) reads cold.

@@ -342,58 +342,26 @@ Verdict: works
 
 <!-- /cold-read:premise -->
 
-<!-- cold-read:verbs {"verdict":"unreadable","date":"2026-11-15","commit":"d22f387","hash":"c5686faf9978bf37c9cb875a81c21ca721d186e29fce3180b3ab07a7d7f373ab","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","verbs":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","prompts":"061e477a6c379be6b6b5b6834f94ffc76cc7e18374b9322d5658da9920b335c4"},"model":"default","tally":{"fits":0,"odd":0,"wrong":0},"problems":{"blocker":1,"should":0,"nit":0}} -->
-## verbs: unreadable
-Recorded 2026-11-15 at commit d22f387, by claude -p (model: default). Inputs c5686faf9978: the card, the verb sheets, the pass's prompts.
-Items: 0 fits, 0 odd, 0 wrong.
-Problems: 1 blocker, 0 should, 0 nit.
-Earlier problems: 0 fixed, 1 still there, 0 no longer applies.
-Recorded unreadable: the report has no item lines ('- <item>: fits | odd | wrong — why').
+<!-- cold-read:verbs {"verdict":"works","date":"2026-11-15","commit":"3347b98+dirty","hash":"c5686faf9978bf37c9cb875a81c21ca721d186e29fce3180b3ab07a7d7f373ab","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","verbs":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","prompts":"061e477a6c379be6b6b5b6834f94ffc76cc7e18374b9322d5658da9920b335c4"},"model":"none","tally":{},"problems":{"blocker":0,"should":0,"nit":0}} -->
+## verbs: works
+Recorded 2026-11-15 at commit 3347b98+dirty, by the tool (model: none). Inputs c5686faf9978: the card, the verb sheets, the pass's prompts.
+Items: .
+Problems: 0 blocker, 0 should, 0 nit.
+Earlier problems: 0 fixed, 0 still there, 0 no longer applies.
+Recorded works: the level has no items to carry: no verb sheets, nothing to read.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 16 s | $0.03 |
-| 2-judge | report.md | 15 s | $0.04 |
-| all | | 31 s (the steps add up to 31 s) | $0.08 |
+| all | | 0 s (the steps add up to -) | - |
 
 ### Ledger
 The earlier record's open problems, as this run's reader marked them.
 
-- E1 still there: There was nothing to review. `verbs/` is missing from both the reader's folder and mine, and `intents.md` is empty, so nobody checked whether any verb suits its object or looks like it. — Copy the labelled verb sheets into `verbs/` and the engine's verb list into `intents.md`, then run the read and this check again. (Nothing has changed since the last run. `verbs/` is still missing, `intents.md` is still empty (blank now, not just short), and the reader again had no images, so nobody has checked whether any verb suits its object or looks like it.)
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] There was nothing to review. `verbs/` is missing from both the reader's folder and mine, and `intents.md` is empty, so nobody checked whether any verb suits its object or looks like it. — Copy the labelled verb sheets into `verbs/` and the engine's verb list into `intents.md`, then run the read and this check again. (recurring: premise-level?)
-
-### 1-read: reading.md
-
-I couldn't do the reading because there are no images to look at. Your working folder (`busywork-cold-read-weekend-shift-verbs-1-read-aD4phY`) has no `verbs/` directory at all.
-
-- Reading `verbs/` directly returned "File does not exist."
-- Searching for all files (`**/*`), PNGs (`**/*.png`) and hidden files (`.*`) found nothing. The folder looks empty.
-
-Since I can't see any panels, I have nothing to describe, and I won't make up descriptions.
-
-**To fix it:** the images probably didn't get copied into this run's temp folder. Put the `verbs/` images (in numbered order) into the folder and run it again, and I'll write one line per panel, under 600 words.
-
-### 2-judge: report.md
-
-Verdict: fixable
-
-I couldn't check any verb, because there was nothing to check. I'm marking it `fixable` only because the format requires a verdict, and one blocker is still open. This is not a judgment of the verbs.
-
-- The `verbs/` folder is missing from my folder. The only files here are `reading.md`, `intents.md` and `earlier.md`.
-- `intents.md` is empty, so I have no verbs, objects or engine effects to check against.
-- `reading.md` contains no panel readings. The earlier reader says their folder had no `verbs/` either, and they refused to make up descriptions.
-
-So I can't write any `<object> / <verb>` lines. Inventing them would be fabrication. `broken` would also be wrong, because it means most verbs fail, and I can't show that any verb fails.
-
-## Earlier problems
-- E1: still there (blocker) — Nothing has changed since the last run. `verbs/` is still missing, `intents.md` is still empty (blank now, not just short), and the reader again had no images, so nobody has checked whether any verb suits its object or looks like it.
-
-## Problems
-- none — no new problems I can see. The only one is E1 above: the sheets and engine intents never reached this run, so nothing in scope could be checked. To fix it, copy the labelled `verbs/` sheets into both the reader's folder and the judge's folder, fill in `intents.md` (one verb per panel, with what it changed), and run both steps again. This is the second run in a row with the same gap, so the copy step in the pipeline probably needs fixing, not just a rerun.
+- none
 
 <!-- /cold-read:verbs -->
 

@@ -51,42 +51,43 @@ The rest reads like something a coworker would whisper: "You're on the layoff li
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"6af4315","hash":"a1683d14330848adf8d938c2d7f93b0d773f7550aa4aaba3886170facfb6fb09","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"53cb7c337db332438629c12e150c6ee360131ab81070a56a5d1d7b762b28a3b3","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":4,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":1}} -->
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"3347b98+dirty","hash":"46514dd45393ff327315456f539da34bc1bce9b325c8099c1d8bc53186caf344","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"2411855853a4930ec40056d9bbb95174a405a3d012d0d698543af6f679721d58","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":4,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":2}} -->
 ## sense: fixable
-Recorded 2026-11-15 at commit 6af4315, by claude -p (model: default). Inputs a1683d143308: the card, premise.md's ways to win and lose, the pass's prompts.
+Recorded 2026-11-15 at commit 3347b98+dirty, by claude -p (model: default). Inputs 46514dd45393: the card, premise.md's ways to win and lose, the pass's prompts.
 Items: 4 sensible, 2 stretch, 0 nonsense.
-Problems: 1 blocker, 3 should, 1 nit.
+Problems: 1 blocker, 3 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 37 s | $0.09 |
-| all | | 37 s (the steps add up to 37 s) | $0.09 |
+| 1-judge | report.md | 66 s | $0.14 |
+| all | | 66 s (the steps add up to 66 s) | $0.14 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The boss's handover contradicts itself. 🙅🖥️ ("don't touch my screen") reads as a refusal, the same refusal he gives before 3:15. The ☕ 👉 you after it then says the opposite. A player can't tell whether he agreed or why he left. A real boss would just say yes. **Fix:** drop 🙅🖥️ and show a plain go-ahead such as 👍🔌 then ☕, or a shrug at the dead screen then ☕.
-- E2 [should] A boss careful enough to lock the list at 3:11 doesn't usually leave its victim alone with it. It holds up only if he doesn't know you know, so make that explicit. **Fix:** have him glance at the list, then at you, then at the dead screen, and shrug, so the player sees he decides it's harmless. Or have him leave because of something more pressing than coffee, like a ringing kitchen or his own manager calling him out.
-- E3 [should] He fixes it himself at 3:31, which shows he knows it's just the plug. He still calls Kev at 3:26 and then hands the job to you. Bosses do avoid crawling under desks, but the story never shows that's why. **Fix:** at 3:31 show him getting down with visible effort and annoyance (a groan, a sore back), so the earlier choice to delegate reads as reluctance rather than ignorance.
-- E4 [should] In "Seen by Lin", the list goes at 3:45 while he is out hunting you, and nobody clicks send. **Fix:** he goes back to his desk at 3:45 and sends it himself, or the scheduled send fires on its own and is shown that way.
+- E1 [blocker] After the edit, the list stays on the screen with three faces, and the design says it can be read from across the floor. Lin knows you were on it and watches that office all day, so she'd notice your face is gone the moment she looks back from her phone or from Kev's desk. The boss would see it too, from the hallway and again when he sits down at 3:42. Both routes only count you as caught if someone sees you *doing* the edit, which a real coworker wouldn't need. — Make closing the list part of the edit, so the screen goes back to the email (or the screen sleeps). A real worker would cover their tracks, and then there's nothing left on the screen to read.
+- E2 [should] The boss locked his screen just to step away at 3:11, yet he walks off and leaves the one person he's firing kneeling at his computer, knowing the list was open on it. Being fed up explains some of it, but he'd at least say something. — Have him say "plug it in and get out" (☕ 👉 you, then 🚪) as he leaves. He's still careless, but he behaves like the same man who locked the screen at 3:11.
+- E3 [should] It isn't clear what he sends. He "clicks send on the open email without opening the attachment", but you edited the sheet open on his screen. In a real office, editing an open copy doesn't change a file that's already attached, so a player could think the edit was wasted. — Put the faces in the body of the email, or have him attach the open sheet when he clicks send.
+- E4 [should] In "Seen by Lin", the boss searches the floor for you and gives up just before 3:45 if you stay out of sight. A real boss who has already fixed and locked the list doesn't need to find you: he sends it and deals with you on Monday, or calls you into his office. — Once he has fixed and locked it, have him send the list straight away and give the "caught" card.
 
 ### 1-judge: report.md
 
 Verdict: fixable
 
-- Fix his computer, he goes for coffee (shared way in): stretch. A boss who handles the cable himself at 3:31, and who locked his screen at 3:11 to protect the list, walks off and leaves the person on that list alone with his computer. His signal (🙅🖥️ followed by ☕ 👉 you) also says "don't touch it" and "fix it" at once.
-- Route 1, wait for Lin's phone (win): sensible. Anyone who reads a buzzing phone looks away for a few seconds.
-- Route 2, ring Kev's phone (win): sensible. A phone ringing behind you makes you turn round, even at an empty desk.
-- Do nothing (lose): sensible. Nothing changed, so the list goes out as he wrote it.
-- Seen by Lin (lose): stretch. Her reason and his reaction both hold up. But if you stay out of his sight, the list still goes at 3:45 while he is away searching for you, and nobody is at the desk to click send.
-- Caught by the boss (lose): sensible. Catching someone crossing themselves off your layoff list gets them fired on the spot.
+- The way in, fixing his computer so he goes for coffee (shared by both wins): stretch — it's believable that a fed-up boss leaves whoever is already on the floor with his cable, but he's careful enough to lock the list at 3:11, then leaves someone who is on it alone with it.
+- Route 1, Lin's phone (win): sensible — someone reading a message on her phone isn't watching the boss's office.
+- Route 2, ringing Kev's desk (win): sensible — a phone ringing behind you makes you turn round and look, even if you know the desk is empty.
+- Do nothing (lose): sensible — nothing changed, so the list goes out as he wrote it.
+- Seen by Lin (lose): stretch — her telling the boss and him coming back to fix the list both make sense, but a boss playing hide-and-seek until 3:45 doesn't.
+- Caught by the boss (lose): sensible — anyone found crossing themselves off the list gets fired on the spot.
 
 ## Problems
-- blocker: The boss's handover contradicts itself. 🙅🖥️ ("don't touch my screen") reads as a refusal, the same refusal he gives before 3:15. The ☕ 👉 you after it then says the opposite. A player can't tell whether he agreed or why he left. A real boss would just say yes. **Fix:** drop 🙅🖥️ and show a plain go-ahead such as 👍🔌 then ☕, or a shrug at the dead screen then ☕.
-- should: A boss careful enough to lock the list at 3:11 doesn't usually leave its victim alone with it. It holds up only if he doesn't know you know, so make that explicit. **Fix:** have him glance at the list, then at you, then at the dead screen, and shrug, so the player sees he decides it's harmless. Or have him leave because of something more pressing than coffee, like a ringing kitchen or his own manager calling him out.
-- should: He fixes it himself at 3:31, which shows he knows it's just the plug. He still calls Kev at 3:26 and then hands the job to you. Bosses do avoid crawling under desks, but the story never shows that's why. **Fix:** at 3:31 show him getting down with visible effort and annoyance (a groan, a sore back), so the earlier choice to delegate reads as reluctance rather than ignorance.
-- should: In "Seen by Lin", the list goes at 3:45 while he is out hunting you, and nobody clicks send. **Fix:** he goes back to his desk at 3:45 and sends it himself, or the scheduled send fires on its own and is shown that way.
-- nit: If he finds you standing in his office, he just sends you back to your desk. A real boss would at least ask why you were there. **Fix:** add a suspicious ❓ before he points you back, still with no penalty.
+- blocker: After the edit, the list stays on the screen with three faces, and the design says it can be read from across the floor. Lin knows you were on it and watches that office all day, so she'd notice your face is gone the moment she looks back from her phone or from Kev's desk. The boss would see it too, from the hallway and again when he sits down at 3:42. Both routes only count you as caught if someone sees you *doing* the edit, which a real coworker wouldn't need. — Make closing the list part of the edit, so the screen goes back to the email (or the screen sleeps). A real worker would cover their tracks, and then there's nothing left on the screen to read.
+- should: The boss locked his screen just to step away at 3:11, yet he walks off and leaves the one person he's firing kneeling at his computer, knowing the list was open on it. Being fed up explains some of it, but he'd at least say something. — Have him say "plug it in and get out" (☕ 👉 you, then 🚪) as he leaves. He's still careless, but he behaves like the same man who locked the screen at 3:11.
+- should: It isn't clear what he sends. He "clicks send on the open email without opening the attachment", but you edited the sheet open on his screen. In a real office, editing an open copy doesn't change a file that's already attached, so a player could think the edit was wasted. — Put the faces in the body of the email, or have him attach the open sheet when he clicks send.
+- should: In "Seen by Lin", the boss searches the floor for you and gives up just before 3:45 if you stay out of sight. A real boss who has already fixed and locked the list doesn't need to find you: he sends it and deals with you on Monday, or calls you into his office. — Once he has fixed and locked it, have him send the list straight away and give the "caught" card.
+- nit: His coffee break runs from about 3:27 to 3:42, about 15 minutes, on a Friday with a 3:45 deadline and his coat waiting. — Show a moment of chat in the kitchen (💬) so the long break reads as Friday small talk.
+- nit: Sitting in his chair after the screen comes back needs a reason Lin would accept. She watched him point you at the cable, so "checking it works" covers you. — Add a short beat of you testing the screen (🖱️) when you sit down.
 
 <!-- /cold-read:sense -->
 
