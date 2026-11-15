@@ -69,7 +69,7 @@ export const POSES = {
   arms: [
     { when: (n) => n.override === 'whacking', arms: 'bang' }, // a thump on the side of the camera
     { when: (n) => n.override === 'plugging', arms: 'reach' },
-    { when: (n) => n.override === 'tugging', arms: 'reach' }, // tugging at the camera jammed in the plant // pushing the plug back into the power strip
+    { when: (n) => n.override === 'tugging', arms: 'reach' }, // tugging at the camera jammed in the plant
     // Lin, seeing the pink box in your arms: hands up, delighted
     { when: (n, w) => LIN(n) && w.spotT != null, arms: 'cheer' },
     // Lin with your parcel at the mail call: up over her head for the whole office to see.
