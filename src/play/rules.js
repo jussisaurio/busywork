@@ -318,7 +318,7 @@ const JUDGE = { claims, enforcing, caught: (game, reason, by) => caught(game, re
 function caught(game, reason, by = roles(game).authority.id, cam = null) {
   if (game.caught) return;
   const p = game.player;
-  game.caught = { by, reason, t: 0 };
+  game.caught = { by, reason, t: 0, via: cam ? cam.id : null }; // via: the camera he saw you on (end scenes)
   cancelAction(game, 'caught');
   p.locked = true;
   setBusy(game, false, null);
