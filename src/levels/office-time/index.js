@@ -6,15 +6,15 @@
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
-import { CAST, BEHAVIOURS, START } from './cast.js';
-import { clockFor, pushRow } from './clocks.js';
+import { CAST, START } from './cast.js';
+import { clockFor, pushRow, CLOCK_BEHAVIOURS } from './clocks.js';
 import { DECOR, LOOKS, POSES, CONES, TITLE, END_SCENES, SOUNDS, VOICES } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
 // Level 1's floor, rearranged around two clocks. Q the boss's clock (office, north wall), O the open-plan clock
-// (hallway wall, over Kev's desk). Plants flank O's wall so it is reached only from the hallway. The entrance L is
-// open to you today: the lobby is where the bus is.
+// (hallway wall, over Kev's desk), each with a stepladder under it. The entrance L is open to you today. The lobby's
+// glass front opens onto the pavement (,) and the bus stop (B); the road runs along the bottom edge.
 const MAP = [
   '####Q#########################', // 0
   '#.......G..........#FTCT.....#', // 1
@@ -30,8 +30,8 @@ const MAP = [
   '#..TTT......TTT......TTT.....#', // 11
   '#...........................H#', // 12
   '#GGGLGGGGG###############R####', // 13
-  '#:::::::::####################', // 14
-  '#:::::::::####################', // 15
+  '#:::::::::G,B#################', // 14
+  '#::::::::::,,#################', // 15
   '##EE##########################', // 16
 ];
 
@@ -44,6 +44,8 @@ const LEGEND = {
   L: { kind: 'entrance', solid: false, opaque: false },
   R: { kind: 'restroom', solid: true, opaque: true },
   E: { kind: 'elevator', solid: true, opaque: true },
+  ',': { kind: 'pavement', solid: false, opaque: false, draw: 'outside' }, // the street prop paints it
+  B: { kind: 'bus_stop_sign', solid: true, opaque: false, draw: 'outside' }, // the street prop: sign, road, bus
 };
 
 const SPOTS = {
@@ -59,14 +61,15 @@ const SPOTS = {
   smoke: { x: 7, y: 15, face: 'N' }, // lobby; faces the glass
   elevator: { x: 2, y: 15, face: 'S' }, // where people leave (and the boss comes back from lunch)
   restroom: { x: 25, y: 12, face: 'S' },
-  bus_stop: { x: 9, y: 14, face: 'S' }, // the far end of the lobby
+  bus_stop: { x: 11, y: 15, face: 'S' }, // on the kerb, out of the lobby's glass door
 };
 
 // Half-open tile rectangles (perception.js inZone).
 const ZONES = {
   boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // the boss reads Q in here
   open_plan: { x0: 1, y0: 7, x1: 29, y1: 13 }, // Lin and Kev read O in here
-  outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby: be here at 4:30
+  lobby: { x0: 0, y0: 14, x1: 10, y1: 17 }, // the boss smokes here, out of earshot
+  street: { x0: 10, y0: 14, x1: 14, y1: 17 }, // the pavement at the bus stop: be here at 4:30
 };
 
 const INTERACTIONS = {
@@ -75,7 +78,7 @@ const INTERACTIONS = {
 };
 
 const ROLES = {
-  authority: { id: 'boss', offDuty: ['bus'], helpless: [], deafIn: 'outside' },
+  authority: { id: 'boss', offDuty: ['bus'], helpless: [], deafIn: 'lobby' },
 };
 
 export default {
@@ -97,11 +100,11 @@ export default {
   lures: [],
   hunts: [],
   doors: [],
-  behaviours: BEHAVIOURS,
-  meeting: { override: 'bus', room: 'outside', chair: 'bus_stop', presenter: 'player_desk' },
+  behaviours: CLOCK_BEHAVIOURS,
+  meeting: { override: 'bus', room: 'street', chair: 'bus_stop', presenter: 'player_desk' },
   routes: [
     { id: 'clock', icon: '🕐', achieved: (w) => w.bossGone && !w.herd },
-    { id: 'herd', icon: '🐑', achieved: (w) => w.bossGone && w.herd },
+    { id: 'herd', icon: '👋', achieved: (w) => w.bossGone && w.herd },
   ],
   outcomeOrder: ['clock', 'herd'],
   initialWorld: () => ({
