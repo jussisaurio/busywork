@@ -65,7 +65,7 @@ export function createNpc(game, def, now = 0) {
   const rng = createRng((SEED ^ hash(def.id)) >>> 0);
   for (const name of hookNames(def, sched)) hook(game, name); // an unknown name throws now, not mid-day
   const glanceEvery = def.glanceEvery ?? GLANCE_EVERY;
-  return {
+  const npc = {
     id: def.id,
     icon: def.icon,
     color: def.color,
@@ -104,7 +104,14 @@ export function createNpc(game, def, now = 0) {
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
+    _craveT: undefined, // s to the next daydream about what he wants (want/crave)
+    _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
+    _inspected: undefined, // ...and the ones he has started today
   };
+  // The fields the level's hooks keep (a behaviour's `state`). Every field an NPC will ever get is on it from the
+  // start: NPCs that differ in shape make every NPC field read in the sim slow.
+  for (const b of Object.values(game.level.behaviours ?? {})) Object.assign(npc, b.state);
+  return npc;
 }
 
 export function updateNpcs(game, dt) {

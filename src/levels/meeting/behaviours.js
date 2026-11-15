@@ -10,12 +10,14 @@
 //   want(npc, item)   npc.wants = item: he knows it's his now, and daydreams about it until he has it
 //   faceSpot(game, npc, spot)  turn to look at a spot
 //   startHunt(game, npc)  start her hunt (level.hunts)
-// State a hook keeps goes on the NPC (fields with a leading underscore; a new loop builds new NPCs).
+// State a hook keeps goes on the NPC (fields with a leading underscore; a new loop builds new NPCs). `state` lists
+// those fields with their start values: every NPC gets them when it is built.
 
 export const BEHAVIOURS = {
   // Lin opens the fridge, even if her 3:04 entry starts while she's still walking there (both entries name this).
   checkFridge: {
     spot: 'fridge',
+    state: { _fridgeChecked: false },
     pending: (npc) => !npc._fridgeChecked,
     arrive(game, npc, sim) {
       const w = game.world;
@@ -32,6 +34,7 @@ export const BEHAVIOURS = {
   // The boss collects his jacket (and the keycard in it, if it's still there) on his way out for a smoke.
   fetchJacket: {
     spot: 'coat_rack',
+    state: { _jacket: false },
     pending: (npc) => !npc._jacket,
     arrive(game, npc, sim) {
       const w = game.world;
@@ -65,6 +68,7 @@ export const BEHAVIOURS = {
   // The boss takes his seat at the head of the table (once): no projector, a shrug. Otherwise he looks to where the
   // presenter stands.
   presenter: {
+    state: { _presented: false },
     arrive(game, npc, sim) {
       if (npc._presented) return;
       npc._presented = true;
