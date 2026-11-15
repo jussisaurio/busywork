@@ -1,48 +1,46 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"253275c","hash":"1063fb61840d2348e7d6e11eeda8b7575138a52dbb0df0fd511aec3fb7adf70a","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"3561963360cd07b3024144a9a449046e9b686a4867dbf885be976638f6347fe8","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":8,"stretch":2,"nonsense":1},"problems":{"blocker":1,"should":3,"nit":2}} -->
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"c0ce724","hash":"97fd4db0835ee761dca12906b853b521c339a426042d8f2166c2752e85bb18c9","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"41186815f9d97e739b87c025f49a3211cd7cd881bdc8deae85bb66fe64c3c359","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":2,"nonsense":2},"problems":{"blocker":2,"should":1,"nit":2}} -->
 ## sense: fixable
-Recorded 2026-11-15 at commit 253275c, by claude -p (model: default). Inputs 1063fb61840d: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 8 sensible, 2 stretch, 1 nonsense.
-Problems: 1 blocker, 3 should, 2 nit.
+Recorded 2026-11-15 at commit c0ce724, by claude -p (model: default). Inputs 97fd4db0835e: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 2 stretch, 2 nonsense.
+Problems: 2 blocker, 1 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 49 s | $0.12 |
-| all | | 49 s (the steps add up to 49 s) | $0.12 |
+| 1-judge | report.md | 64 s | $0.14 |
+| all | | 64 s (the steps add up to 64 s) | $0.14 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In the after-3:38 loss, the boss recognises his envelope in vomit behind your chair from his desk. Nobody can read a name on a soggy envelope from across an office, and certainly not through glass and past a chair. — He gets up for the retch, as he does earlier. If he reaches the puddle before 3:40 you're caught. If not, he's back at his tray by 3:40 and the letter's absence is your win.
-- E2 [should] The envelope is chewed, bits of paper fly, and then it comes back "stained but whole, his name still on it". A chewed envelope comes back as pulp. — Make the eat action a hurried gulp of a folded envelope with no chewing. Or have it come back as clumps with only the corner showing his name.
-- E3 [should] You fish your envelope out of your own sick while everyone has turned to look, and nobody reacts. Lin, who is on her way with paper towels, would at least ask what that was. — Make it possible only before people turn, or before Lin arrives. Or have Lin remark on it without knowing what it is, so it's weird but not damning.
-- E4 [should] In the switch route, a boss whose office lights go out would first flick the switch by his own door. Going to a hallway panel first only makes sense if he has none. — Show that his office has no wall switch, or that it does nothing, before he heads to the panel.
+- E1 [blocker] The eating lose route depends on a chewed envelope coming back up "stained but whole, his name still on it," which is physically absurd. The same text says you chew it and pieces fly. Throwing up paper reliably after ten minutes is also a puzzle-piece timer, not something a body does. — Fix: what a real person does is gag on the first mouthful and spit the wad out at once. Make the evidence a soggy wad in your bin or on the floor, with the scrap that has his name on it showing. If he walks over and sees the scrap, you're caught.
+- E2 [blocker] In the late-eating win, someone retches loudly enough that the whole floor turns, and the boss ignores it because he's busy with his tray. A real boss would at least stand up and look. — Fix: make it plausible he stays put. For example, Lin is already beside you with paper towels and calls "I've got it!", so he stays at his desk. Or he does come over, but by then the wad is only pulp with no name on it.
+- E3 [should] In "Seen soaking the machine," Kev sees you pour the water, yet "the machine stays dry." The water is already in. — Fix: Kev shouts, unplugs the machine and mops up before 3:10, so it never shorts. You're still sent back to your desk.
 
 ### 1-judge: report.md
 
 Verdict: fixable
 
-- Eat it, after about 3:30 (win): stretch. It's still inside you at 3:40, which is absurd but fine. The trouble is that you chew it, bits fly, and it still comes back up whole.
-- The switch (win): sensible. When his own lights die, a boss goes to the panel to find out why, and his desk sits empty while he tries switches.
-- The blackout (win): sensible. The 3:10 flicker sets up the weak wiring. The boss holding the torch while Kev resets the fuse is how this goes in real life.
-- The breaker (win): sensible. Kev, who looked at the box during the flicker, is the natural one to fix it.
-- Letter still in tray at 3:40 (lose): sensible. He reads it and you're out.
-- Caught with it (lose): sensible. Taking something from his own tray in front of him can't be explained away.
-- Found at the panel (lose): sensible. Whoever is standing at the switch gets the blame.
-- Found at the fuse box (lose): sensible. Same reason.
-- Letter came back up, boss walks over (lose): stretch. A boss might well come to look at retching, but the whole office watched you fish an envelope out of your own sick and nobody says a word.
-- Letter came back up after about 3:38 (lose): nonsense. He spots a soggy envelope in a puddle behind your chair from inside his glass office, across the floor.
-- Seen soaking the coffee machine (lose): sensible. Kev reports it, and you get sent to your desk with work.
+- Eat it, comes up late (win): stretch: retching is "heard all over the floor" and everyone turns, but the boss stays at his tray and never even looks over.
+- Eat it, comes up early (lose): nonsense: you chew the envelope and pieces fly, yet ten minutes later it comes back up whole with his name still readable.
+- The switch (win): sensible: a boss whose office alone goes dark would go to the panel to find out why.
+- The blackout (win): sensible: the wet socket shorts when Lin switches the machine on, the boss goes to the fuse box, and Kev unplugs the machine before resetting the power.
+- The breaker (win): sensible: the floor goes dark, the boss goes to the box, and the office handyman finds the breaker that's down.
+- Letter still in tray at 3:40 (lose): sensible: a boss reads an angry resignation letter he finds in his tray.
+- Caught with it (lose): sensible: he knows what you took from his own tray.
+- Found at the panel (lose): sensible: whoever stands at the switch is the one who flipped it.
+- Found at the fuse box (lose): sensible: whoever stands at the open box is the one who pulled it.
+- Letter came back up (lose): nonsense: same problem as above. A chewed envelope can't come back up whole.
+- Seen soaking the machine (lose): stretch: once Kev sees the water go in, the socket is already wet, but "the machine stays dry."
 
 ## Problems
-- blocker: In the after-3:38 loss, the boss recognises his envelope in vomit behind your chair from his desk. Nobody can read a name on a soggy envelope from across an office, and certainly not through glass and past a chair. — He gets up for the retch, as he does earlier. If he reaches the puddle before 3:40 you're caught. If not, he's back at his tray by 3:40 and the letter's absence is your win.
-- should: The envelope is chewed, bits of paper fly, and then it comes back "stained but whole, his name still on it". A chewed envelope comes back as pulp. — Make the eat action a hurried gulp of a folded envelope with no chewing. Or have it come back as clumps with only the corner showing his name.
-- should: You fish your envelope out of your own sick while everyone has turned to look, and nobody reacts. Lin, who is on her way with paper towels, would at least ask what that was. — Make it possible only before people turn, or before Lin arrives. Or have Lin remark on it without knowing what it is, so it's weird but not damning.
-- should: In the switch route, a boss whose office lights go out would first flick the switch by his own door. Going to a hallway panel first only makes sense if he has none. — Show that his office has no wall switch, or that it does nothing, before he heads to the panel.
-- nit: In the blackout route, Lin goes to make coffee at 3:05 and the jug next to the machine is empty. Someone making coffee would notice that, and might refill it or look around. — Have her shrug and switch the machine on anyway, or make the jug a vase or plant water that nobody uses for the machine.
-- nit: At 3 PM, the whole floor goes dark and everyone needs phone torches, except a strip by the lobby. — Say once that the floor is interior with no windows, or let the blinds be down.
+- blocker: The eating lose route depends on a chewed envelope coming back up "stained but whole, his name still on it," which is physically absurd. The same text says you chew it and pieces fly. Throwing up paper reliably after ten minutes is also a puzzle-piece timer, not something a body does. — Fix: what a real person does is gag on the first mouthful and spit the wad out at once. Make the evidence a soggy wad in your bin or on the floor, with the scrap that has his name on it showing. If he walks over and sees the scrap, you're caught.
+- blocker: In the late-eating win, someone retches loudly enough that the whole floor turns, and the boss ignores it because he's busy with his tray. A real boss would at least stand up and look. — Fix: make it plausible he stays put. For example, Lin is already beside you with paper towels and calls "I've got it!", so he stays at his desk. Or he does come over, but by then the wad is only pulp with no name on it.
+- should: In "Seen soaking the machine," Kev sees you pour the water, yet "the machine stays dry." The water is already in. — Fix: Kev shouts, unplugs the machine and mops up before 3:10, so it never shorts. You're still sent back to your desk.
+- nit: In the switch route the boss uses his phone flash even though the rest of the floor is lit. — Fix: drop the flash. He just walks out looking annoyed.
+- nit: Wins say a white envelope out on the floor is "just an envelope," but the 3:40 lose has him picking up one you dropped. — Fix: say he picks it up because it has his name on it, so both rules hold.
 
 <!-- /cold-read:sense -->
 
