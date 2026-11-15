@@ -217,9 +217,9 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     level 1's `decor.js`; −5), `deadlineAt` (the time on the `'#clock'` face of the mission panel and the title
     screen; `meetingAt`). Read a cue with `dayCue(day, name)`, not `day[name]`. Once the outcome is set the HUD
     clock shows its minute, as the end card does.
-- `meeting`: `{ override, room, chair, presenter }`. `override` is the NPCs' override name at the meeting;
+- `meeting`: `{ override, room, chair, presenter? }`. `override` is the NPCs' override name at the meeting;
   `room` the zone you must be in at `meetingAt`; `chair` the spot the room stares at when you are blamed;
-  `presenter` the spot a failed meeting puts you at. The event `meeting:gather` and the cancel reason `'meeting'`
+  `presenter` the spot a failed meeting puts you at (none: the fail plays where you stand). The event `meeting:gather` and the cancel reason `'meeting'`
   are engine words, the same in every level.
 - `failSign`: `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (offset in tiles from the
   spot's corner). Absent: no sign.
@@ -590,7 +590,7 @@ game = {
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
   and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you walk to
-  `meeting.presenter`, and the 🦗 sign shows at `failSign`. Sent to your desk and not there yet: you walk there. The
+  `meeting.presenter` (none: you stay put), and the 🦗 sign shows at `failSign`. Sent to your desk and not there yet: you walk there. The
   outcome is decided at `meetingAt`; the beat waits for the walk.
 
 ### Render (`src/render/*`)

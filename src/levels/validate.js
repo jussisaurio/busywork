@@ -23,7 +23,7 @@
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
 //   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
-//   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
+//   meeting     { override, room (a zone), chair (a spot), presenter? (a spot; none: a fail plays where you stand), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot or an { x, y } on the map; no `icon` (*: the target lights up with the E key cap instead);
 //               a 'self' row's preview one of render/characters.js ARM_POSES (the player's pose while it is what E
@@ -274,7 +274,7 @@ export function levelProblems(level, key) {
     if (!isStr(m.override)) bad('meeting.override', 'missing');
     zone('meeting.room', m.room);
     spot('meeting.chair', m.chair);
-    spot('meeting.presenter', m.presenter);
+    if (m.presenter != null) spot('meeting.presenter', m.presenter);
     if (m.verdict !== undefined && typeof m.verdict !== 'function') bad('meeting.verdict', 'not a function (game, { result, routes, present })');
   }
 

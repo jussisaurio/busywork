@@ -910,6 +910,14 @@ section('4:00 meeting outcomes + persist.routesFound');
   ok(game.phase === 'end' && evs('day:end').length === 1 && evs('day:end')[0].payload.outcome === game.outcome, "phase 'end', day:end {outcome}");
   ok(r.o.loop === game.persist.loop && r.o.minute >= MEETING_AT && r.o.minute < MEETING_AT + 0.1, 'outcome.loop / minute');
 
+  { // no presenter spot: the fail plays where you stand
+    const lvl = game.level;
+    game.level = { ...lvl, meeting: { ...lvl.meeting, presenter: undefined } };
+    meeting(() => {});
+    ok(near(p().x, 13.5) && near(p().y, 5.5) && game.outcome?.result === 'fail', 'fail, no presenter: you stay where you were');
+    game.level = lvl;
+  }
+
   r = meeting(() => { game.world.projector = 'broken'; });
   ok(r.o?.result === 'win' && r.o.routes.join() === 'projector' && r.o.newRoutes.join() === 'projector', 'projector broken: WIN (projector), new route');
   ok(game.fx.particles.some((q) => q.kind === 'confetti'), 'win: 🎉 confetti');

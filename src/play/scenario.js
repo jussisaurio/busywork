@@ -12,7 +12,7 @@ import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './p
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
 const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
-// A fail sends you to the front (meeting.presenter): you hurry there, at least this fast, and in at most WALK_MAX s.
+// A fail sends you to the front (meeting.presenter, if any): you hurry there, at least this fast, and in at most WALK_MAX s.
 const HURRY = PLAYER_SPEED * 1.5;
 const WALK_MAX = 2.5;
 const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
@@ -101,7 +101,9 @@ function startMeeting(game, s) {
   if (result === 'fail') {
     // You are now presenting. There are no slides. You hurry to the front (the beat waits for you to get there).
     standUp(game);
-    const spot = spotPos(game, game.level.meeting.presenter);
+    // No presenter spot: it happens where you stand.
+    const at = game.level.meeting.presenter;
+    const spot = at ? spotPos(game, at) : { x: p.x, y: p.y, dir: p.dir };
     const t = walkTo(game, s, spot, HURRY, false);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
     // Never a smile on a loss (😅 reads as 😄 at bubble size): a wince on the way, 😩 up front (arrive).
