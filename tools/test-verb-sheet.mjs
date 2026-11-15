@@ -37,7 +37,8 @@ function fakeLib() {
 }
 
 // What the engine lets you do with `type` in hand, from the level and its rows: { selves: ['self' verbs that take
-// it], drop, spots: [{ name, taken: the other item lying there at day start, or null }], pickUp }.
+// it], tap: what a tap of E runs (the first valid row without `hold`, else the hold row), hold: what holding E runs
+// instead (or null), drop, spots: [{ name, taken: the other item lying there at day start, or null }], pickUp }.
 function expected(level, type) {
   const h = createHarness({ level });
   h.begin();
@@ -53,7 +54,10 @@ function expected(level, type) {
   const spots = putSpots(level).filter((e) => e.accepts.includes(type))
     .map((e) => ({ name: e.name, taken: atStart.find((i) => i.spot === e.name && i.type !== type)?.type ?? null }));
   const drop = selves.includes('drop');
-  return { selves, drop, spots, pickUp: drop || spots.some((s) => !s.taken) };
+  let tap = selves.find((v) => !actionRow(g, v).hold) ?? null;
+  let hold = selves.find((v) => actionRow(g, v).hold) ?? null;
+  if (!tap) [tap, hold] = [hold, null];
+  return { selves, tap, hold, drop, spots, pickUp: drop || spots.some((s) => !s.taken) };
 }
 
 const has = (sheet, verb, phase, label = '') => sheet.panels.some((p) => p.verb === verb && p.phase === phase && p.label.includes(label));
@@ -71,12 +75,15 @@ function coverage(id) {
     const e = expected(level, s.type);
     const T = `${id}: the ${s.type}`;
     ok(has(s, 'carry', 'walking') && has(s, 'pretend', 'standing') && has(s, 'pretend', 'walking'), `${T}: carried walking, pretending standing and walking`);
-    // E: the first 'self' row that takes it wins (interactions.js), and its before and after are drawn.
-    const eWin = e.selves[0] ?? null;
-    ok(s.eVerb === eWin, `${T}: E runs ${eWin ?? 'nothing'} (sheet: ${s.eVerb ?? 'nothing'})`);
+    // E: a tap runs the first 'self' row without `hold`, holding E the first `hold` row (interactions.js); before
+    // and after are drawn for both, and the held E (the preview pose) for the hold.
+    const eWin = e.tap;
+    ok(s.eVerb === eWin, `${T}: a tap of E runs ${eWin ?? 'nothing'} (sheet: ${s.eVerb ?? 'nothing'})`);
     if (eWin) ok(has(s, eWin, 'before', 'E →') && has(s, eWin, 'after'), `${T}: E → ${eWin}, before and after`);
     else ok(has(s, 'E', 'none'), `${T}: E with nothing to do, drawn as no prompt`);
-    for (const v of e.selves.slice(1)) ok(has(s, v, 'after'), `${T}: ${v} (not on E), its result drawn`);
+    ok(s.holdVerb === e.hold, `${T}: holding E runs ${e.hold ?? 'nothing else'} (sheet: ${s.holdVerb ?? 'nothing else'})`);
+    if (e.hold) ok(['before', 'holding', 'after'].every((ph) => has(s, e.hold, ph, 'hold E →')), `${T}: hold E → ${e.hold}, before, E held and after`);
+    for (const v of e.selves.filter((x) => x !== e.tap && x !== e.hold)) ok(has(s, v, 'after'), `${T}: ${v} (not on E), its result drawn`);
     ok(e.pickUp === has(s, 'pick_up', 'after'), `${T}: picked up again ${e.pickUp ? 'drawn' : 'not drawn, as nothing puts it down'}`);
     if (e.drop) ok(has(s, 'pick_up', 'before', 'on the floor'), `${T}: on the floor after the drop, a step away`);
     for (const sp of e.spots) {
@@ -98,18 +105,20 @@ function coverage(id) {
 const meeting = coverage('meeting');
 const sandwich = meeting.sheets.find((s) => s.type === 'sandwich');
 const eaten = sandwich.panels.find((p) => p.verb === 'eat_sandwich' && p.phase === 'after');
+ok(sandwich.eVerb === 'drop' && sandwich.holdVerb === 'eat_sandwich', 'meeting: a tap of E drops the sandwich, holding E eats it');
 ok(eaten && eaten.smeared && eaten.held === null, 'meeting: after eating the sandwich, your hand is empty and the stain is on you');
+ok(sandwich.panels.find((p) => p.verb === 'eat_sandwich' && p.phase === 'holding')?.held === 'sandwich', 'meeting: with E held the sandwich is still in your hand (the lift preview)');
+ok(/eat_sandwich done\. It changed: [^\n]*player\.smeared: false → splat \(drawn as a yellow splat down your front/.test(sandwich.intent), 'meeting: the sandwich\'s intents say the mark, in the words MARKS gives it');
 ok(sandwich.panels.some((p) => p.verb === 'eat_sandwich' && p.phase === 'during'), 'meeting: eating (2 s) gets a during panel');
 const mug = meeting.sheets.find((s) => s.type === 'mug');
 ok(!mug.panels.some((p) => p.verb === 'drop'), 'meeting: the mug (keep) is never dropped');
 
-// --- second-thoughts: the letter is edible, and eating it puts the mustard on your shirt ---
+// --- second-thoughts: the letter is edible and leaves nothing (edible: { leaves: null }) ---
 const st = coverage('second-thoughts');
 const letter = st.sheets.find((s) => s.type === 'letter');
 const ate = letter.panels.find((p) => p.verb === 'eat_letter' && p.phase === 'after');
-ok(letter.eVerb === 'eat_letter' && ate?.smeared === true, 'second-thoughts: E with the letter eats it, and the stain is drawn after');
-ok(/eat_letter done\. It changed: [^\n]*player\.smeared: false → true \(drawn as a stain on your shirt/.test(letter.intent), 'second-thoughts: the letter\'s intents say the stain is drawn on your shirt');
-ok(has(letter, 'drop', 'after', 'not on E'), 'second-thoughts: dropping the letter, which E does not reach, is drawn too');
+ok(letter.eVerb === 'drop' && letter.holdVerb === 'eat_letter' && ate?.held === null && ate.smeared === false, 'second-thoughts: a tap drops the letter, holding E eats it, and no mark is drawn after');
+ok(!/smeared/.test(letter.intent), 'second-thoughts: the letter\'s intents name no mark');
 ok(verbsIntents(st.sheets).startsWith('## Verb sheets') && verbsIntents([]) === '', 'verbsIntents: a section when there are sheets, nothing when there are none');
 
 // --- audit: spots taken at day start are named, not drawn; reactions are marked on their panel ---
