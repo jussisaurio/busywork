@@ -3,8 +3,9 @@
 //   premise   step 1: the card alone. Step 2: the card, step 1's reading, premise.md and the level's source files.
 //   pictures  step 1: the card, the shots (src/levels/<id>/shots.js, drawn by tools/shots.mjs) and one verb sheet per
 //             item (tools/lib/verbs.mjs: the item in hand, every generic verb on it, drawn by the tool), numbered, not
-//             named. Step 2: that reading, what each shot must say (the intents) and what each verb panel is (the
-//             engine's account), the shots and the verb sheets, labelled.
+//             named. Step 2: that reading, what each shot must say (the intents, each with the game clock the shot
+//             landed on) and what each verb panel is (the engine's account), the shots and the verb sheets, labelled.
+//             Two shots that render pixel-identical stop the stage (tools/shots.mjs).
 //   replay    step 1: the card and a strip of frames per route check (tools/lib/replay.mjs), numbered, not named.
 //             Step 2: those readings, which check each run was, and premise.md's ways to win and lose.
 // Each step is a fresh `claude -p` (tools: Read and Glob) whose working folder is a new temp folder that holds only
@@ -38,7 +39,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getLevel, levels } from '../src/levels/index.js';
-import { loadShots, renderShots } from './shots.mjs';
+import { loadShots, renderShots, shotWhen } from './shots.mjs';
 import { captureRuns, captionsText, runsIndex } from './lib/replay.mjs';
 import { loadChecks } from './lib/route-ctx.mjs';
 import { loadCanvas, SHOTS_DIR } from './lib/draw.mjs';
@@ -127,7 +128,7 @@ export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, 
     const L = lib ?? loadCanvas();
     inp.shots = await renderShots(id, { lib: L, shots: list });
     inp.verbs = captureVerbs(level, { lib: L }).sheets;
-    parts.shots = sha(JSON.stringify(list.map((s) => ({ name: s.name, cmds: s.cmds, intent: s.intent }))));
+    parts.shots = sha(JSON.stringify(list.map((s) => ({ name: s.name, cmds: s.cmds, intent: s.intent, beat: s.beat }))));
     parts.pictures = sha(...inp.shots.map((s) => s.png));
     parts.verbs = sha(...inp.verbs.flatMap((s) => [s.png, s.labelled, s.intent]));
   } else {
@@ -183,8 +184,10 @@ export function stageSteps(inp, { batch = REPLAY_BATCH } = {}) {
     const verbs = inp.verbs ?? [];
     const plain = Object.fromEntries(verbs.map((s) => [`verbs/${s.file}`, s.png]));
     const labelled = Object.fromEntries(verbs.map((s) => [`verbs/${s.file}`, s.labelled]));
-    const intents = ['What each screenshot in shots/ must tell a first-time player.', '',
-      ...inp.shots.map((s, i) => `- ${pad2(i + 1)}.png (${s.name}): ${s.intent}`), '',
+    // Each intent is a builder's words; the clock the shot landed on is the engine's, so a shot taken at another
+    // moment than its intent describes shows up here rather than as a puzzling misread.
+    const intents = ['What each screenshot in shots/ must tell a first-time player, and the game clock it was taken at.', '',
+      ...inp.shots.map((s, i) => `- ${pad2(i + 1)}.png (${s.name}, ${shotWhen(s)}): ${s.intent}`), '',
       ...(verbs.length ? [verbsIntents(verbs)] : [])].join('\n');
     return [
       { id: '1-read', prompt: 'pictures-1-read.md', reply: 'reading.md', needs: [], files: () => ({ 'card.txt': card, ...shots, ...plain }) },

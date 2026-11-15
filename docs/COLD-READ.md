@@ -42,7 +42,7 @@ node tools/cold-read.mjs --level <id> --stage premise     # build the bundles, r
 node tools/cold-read.mjs --level <id> --stage pictures
 node tools/cold-read.mjs --level <id> --stage replay
 node tools/cold-read.mjs --status                         # every non-fixture level: each stage's verdict, fresh or stale
-node tools/shots.mjs --level <id>                         # look at the shots yourself: tools/.shots/<id>/
+node tools/shots.mjs --level <id>                         # look at the shots yourself: tools/.shots/<id>/ (and each one's clock)
 node tools/shots.mjs --level <id> --replay                # and the replay strips: tools/.shots/<id>/replay/
 node tools/shots.mjs --level <id> --verbs                 # and the verb sheets: tools/.shots/<id>/verbs/
 ```
@@ -115,6 +115,7 @@ The funniest moment, described as a picture.
 ## shots.js (in every level folder)
 ```js
 // Each shot: harness commands from the start of the day, and what the picture must tell a first-time player.
+// Optional: beat: true, to draw the caught beat, not its end card, when the commands stop at a catch.
 export default [
   { name: 'start', cmds: [], intent: 'Your desk, the boss behind glass, the clock on the wall.' },
   { name: 'kev-fixes', cmds: ['pretend until 3:06'], intent: 'Kev types at the boss\'s computer while the boss watches.' },
@@ -123,7 +124,36 @@ export default [
 ```
 - The reader never sees the names or the intents. The comparer does.
 - Each shot is drawn at 1280 x 800, the size of a player's window.
-- A shot whose commands end the day draws the end card as it looks 2 seconds after it comes up.
+- A shot whose commands end the day draws the end card as it looks 2 seconds after it comes up. That includes
+  commands that stop at a catch: the harness's next command would run the caught beat out to the end of the day, so
+  no command lands in it. To draw the caught beat itself (whoever caught you, the alert up, 0.8 seconds in, before
+  the end card), give the shot `beat: true`: `{ name: 'caught', cmds: [...], beat: true, intent: '...' }`. A shot with
+  `beat: true` whose commands do not stop at a catch is an error.
+- Each shot reports the game clock its commands landed on, next to its intent: `node tools/shots.mjs --level <id>`
+  prints it, and the comparer's `intents.md` has it on each line (`05.png (kev-fixes, landed 3:06 PM): ...`). An
+  intent is a builder's words about a moment; the clock says which moment was drawn. The comparer marks a shot whose
+  intent describes another moment `wrong moment`, and the fix is the shot's commands.
+- Two shots that render pixel-identical are an error: `shots.mjs` writes the PNGs, then names both shots and exits 1,
+  and the pictures stage does not run (its status gives the same error). The later shot shows nothing the earlier
+  one doesn't, so one of them is not the moment its intent describes. The usual cause: a shot meant to show the
+  caught beat, without `beat: true`, comes out as the end card another shot already shows.
+
+### Timing a shot: `pretend until`, then `wait`
+In harness commands, `Ns` counts real seconds of play (60 frames each), not game time. Pretending in place (seated at
+your desk, or standing with the phone) runs the game 6 times faster (forced work 8 times), so `pretend 5s` from 2:30
+lands at 2:47, about 18 game minutes on, where `wait 5s` lands at 2:33. Pretending while walking (`goto <target>
+pretend`, the folder) does not fast-forward. So:
+- To land on a moment, give it in game time: `pretend until 3:20` (a clock time) or `pretend 2m` (game minutes;
+  `0.5m` works).
+- Then, to let a beat play out, `wait 1.5s`: real seconds at normal speed, as a player watches it (1 real second is
+  0.6 game minutes). `wait` stops pretending, so the picture shows you standing as yourself.
+- Use `pretend Ns` only for a short hold where the pretend pose must be in the picture, and give it in game minutes
+  when the clock matters: `pretend 0.5m`, not `pretend 5s`.
+
+The harness keeps this meaning. About 300 commands in the goldens (`src/levels/*/golden.json`, `golden-render.json`)
+say `pretend Ns` or `busy Ns`, and making `s` mean game time would move every one that pretends in place. Making
+`shots.mjs` alone read `pretend 5s` differently would move no golden, but the same command would then mean two
+things, and builders copy commands between route checks, goldens and shots. Game time already has its own unit, `m`.
 
 ## The verb sheets
 `shots.js` holds the pictures a builder chose, and builders shoot their routes. Nobody pictured what the engine's own

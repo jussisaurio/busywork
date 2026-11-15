@@ -13,7 +13,7 @@ import {
   readRecord, recordFile, levelDir, bundleOnly, recordManual, batchRuns, cardText, parsePremise, isFixture, PROMPTS,
 } from './cold-read.mjs';
 import { getLevel } from '../src/levels/index.js';
-import { renderShot } from './shots.mjs';
+import { renderShot, renderShots, sameShots, sameShotsText, shotWhen, shotsProblems } from './shots.mjs';
 import { captureRun } from './lib/replay.mjs';
 import { createHarness } from '../src/agent/harness.js';
 import { GAME_MIN_PER_SEC } from '../src/config.js';
@@ -210,8 +210,10 @@ try {
   ok(!Object.values(q1.files).some((b) => /INTENT-|cup-at-projector|end-fail|Verb sheets|eat_sandwich/.test(b.toString('utf8'))), 'pictures step 1 sees no intents, no shot names, no verb names');
   ok(files(q2).join() === `intents.md,reading.md,shots/01.png,shots/02.png,shots/03.png,${VERBS}`, 'pictures step 2 sees the reading, the intents, the shots and the verb sheets');
   ok(pinp.verbs.every((v, i) => q2.files[`verbs/0${i + 1}.png`].equals(v.labelled)), 'pictures step 2: the verb sheets labelled');
-  ok(text(q2, 'reading.md') === 'PICTURE-READING' && /01\.png \(start\): INTENT-START/.test(text(q2, 'intents.md')) && /03\.png \(end-fail\): INTENT-END/.test(text(q2, 'intents.md')),
-    'pictures step 2: step 1\'s reading verbatim; the intents by number and name');
+  ok(text(q2, 'reading.md') === 'PICTURE-READING' && /01\.png \(start, landed 2:30 PM\): INTENT-START/.test(text(q2, 'intents.md'))
+    && /03\.png \(end-fail, landed 4:00 PM, then the end card\): INTENT-END/.test(text(q2, 'intents.md')),
+    'pictures step 2: step 1\'s reading verbatim; the intents by number and name, each with the clock its shot landed on');
+  ok(!Object.values(q1.files).some((b) => /landed \d/.test(b.toString('utf8'))), 'pictures step 1 sees no landed clocks either');
   ok(/## Verb sheets/.test(text(q2, 'intents.md')) && /### verbs\/04\.png: the sandwich/.test(text(q2, 'intents.md')) && /eat_sandwich done\. It changed: [^\n]*player\.smeared: false → true/.test(text(q2, 'intents.md')),
     'pictures step 2: the intents hold each verb sheet, with the engine\'s account of each panel');
   md = readFileSync(recordFile(root), 'utf8');
@@ -230,6 +232,38 @@ try {
   writeFileSync(recordFile(root), recText);
   s = await stageStatus('meeting', 'premise', { root });
   ok(s.verdict === 'unreadable', 'pictures did not touch the premise section');
+
+  // --- shots: the clock each one landed on, and no two alike ---
+  // 'Ns' counts real seconds, and pretending runs the game 6 times faster: 'pretend 5s' lands about 18 game minutes on,
+  // 'wait 5s' 3 (docs/COLD-READ.md, shots.js). If the harness changes this, the doc's rule changes with it.
+  const landed = (cmds) => renderShot(meeting, { name: 'when', cmds }, lib).at;
+  ok(landed(['pretend 5s']) === '2:47 PM' && landed(['wait 5s']) === '2:33 PM' && landed(['pretend 3m']) === '2:33 PM',
+    'shots: \'pretend 5s\' lands at 2:47 PM (5 real seconds at 6x), \'wait 5s\' and \'pretend 3m\' at 2:33 PM');
+  const TWINS = [...SHOTS, { name: 'start-again', cmds: [], intent: 'the same office' }, { name: 'end-again', cmds: ['busy until 4:00'], intent: 'the same end' }];
+  let twinErr = null;
+  try { await renderShots('meeting', { lib, shots: TWINS }); } catch (e) { twinErr = e.message; }
+  ok(/pixel-identical: 01-start\.png \(landed 2:30 PM\) and 04-start-again\.png \(landed 2:30 PM\); 03-end-fail\.png \(landed 4:00 PM, then the end card\) and 05-end-again\.png/.test(twinErr ?? ''),
+    `shots: two shots that render pixel-identical are an error naming both, with their clocks (${twinErr})`);
+  const kept = await renderShots('meeting', { lib, shots: TWINS, same: true });
+  ok(kept.length === 5 && sameShots(kept).map(([a, b]) => `${a.name}=${b.name}`).join() === 'start=start-again,end-fail=end-again', 'shots: same: true draws them anyway (the command line writes them to look at), and sameShots names the pairs');
+  const caughtCard = (file) => ({ file, at: '3:40 PM', phase: 'end', outcome: { result: 'caught' } });
+  ok(!/beat: true/.test(twinErr ?? '') && /Both are the caught end card: [^.]*give that shot beat: true/.test(sameShotsText('audit', [[caughtCard('14-cross-you.png'), caughtCard('27-end-caught.png')]])),
+    'shots: twin caught end cards: the error says how to draw the caught beat instead (not for other end cards)');
+  ok(sameShots(rendered).length === 0, 'shots: the stand-in list has no two alike');
+  // A catch: the next command would run its beat out to the end card, so only beat: true can draw the beat.
+  const CAUGHT = ['busy 7.8s', 'goto boss_office_door busy', 'goto coat_rack busy', 'busy 0.17s', 'interact']; // meeting's end-caught
+  const ended = renderShot(meeting, { name: 'c', cmds: CAUGHT }, lib);
+  const beat = renderShot(meeting, { name: 'c', cmds: CAUGHT, beat: true }, lib);
+  ok(ended.phase === 'end' && beat.phase === 'day' && beat.beat && !ended.png.equals(beat.png),
+    `shots: commands that stop at a catch draw its end card; with beat: true, the caught beat (${ended.phase}, ${beat.phase})`);
+  ok(shotWhen(beat) === `landed ${beat.at}, the caught beat` && shotWhen(ended) === `landed ${ended.at}, then the end card`, `shots: the line says which (${shotWhen(beat)}; ${shotWhen(ended)})`);
+  let beatErr = null;
+  try { renderShot(meeting, { name: 'no-catch', cmds: ['wait 1s'], beat: true }, lib); } catch (e) { beatErr = e.message; }
+  ok(/beat: true, but its commands do not stop at a catch \(nobody caught you\)/.test(beatErr ?? ''), `shots: beat: true with no catch is an error (${beatErr})`);
+  ok(shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: 'yes' }]).some((p) => /beat: true or false/.test(p)) && !shotsProblems([{ name: 'x', cmds: [], intent: 'y', beat: true }]).length,
+    'shots: beat must be true or false');
+  s = await stageStatus('meeting', 'pictures', { root, lib, shots: TWINS });
+  ok(!s.ok && /pixel-identical/.test(s.error ?? ''), 'pictures: a level whose shots repeat cannot be fresh: the status says why');
 
   // --- replay ---
   const inp = await stageInputs('meeting', 'replay', { root, lib, checks: CHECKS });
