@@ -124,8 +124,15 @@ The facts, and when you see them:
   and stands there with the receiver and the hold music (shots `kev-phone-rings`, `kev-on-hold`).
 - **A ring goes to the nearest free person who hears it.** With Kev on his way to his own phone, Lin answers the
   kitchen phone (shot `lin-takes-the-kitchen-phone`). Ring the kitchen alone after about 3:20 and Kev, nearer, takes
-  it, so she is free again at 3:30 (the teaching fail). (Ring it alone between 3:14 and 3:19, while Kev is still on
-  his way back from the socket, and Lin takes it: that wins too.)
+  it, so she is free again at 3:30 (the teaching fail).
+
+A variant: Kev out of the way by timing instead of a phone call. Between about 3:14 and 3:19 Kev is at Lin's socket
+or walking back from it, out of earshot of the kitchen. Ring the kitchen phone alone then (not at about 3:16, when
+Kev walks past the switchboard), and Lin, alone in the kitchen with her tea, answers it and stays on hold past 3:30.
+The rest is route 1. Why a real, half-awake boss falls for it: the same as route 1, and Lin's part is just as real:
+she is alone in the kitchen, the outside-line phone rings, and she picks it up hoping it is her interviewer. It
+teaches the same lesson as route 1 (the ring goes to whoever is free and near), learned from Kev's day instead of
+from his phone.
 - **Lin holds on, hoping it is her interviewer.** The kitchen phone is red, the outside line's colour. On it she says
   briefcase, ? and stays on. She is still there at 3:30 (shot `the-call-answered`).
 - **The boss takes Lin's phone when she is away.** At 3:30 he starts and gets up to answer it (shot
