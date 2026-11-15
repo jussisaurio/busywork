@@ -85,30 +85,18 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
     onFrame?.(game);
   }
 
-  // The first stop event logged since `start`, or null.
-  function stopSince(start, soft = true) {
-    for (let i = start; i < log.length; i++) {
-      const n = log[i].name;
-      if (hardStop.has(n) || (soft && softStop.has(n))) return n;
-    }
-    return null;
-  }
-
-  // Run frames until done() or a stop event. Returns { frames, stoppedBy }. `since`: watch the log from there (an
-  // earlier frame of the same command, e.g. the key press's), not just from now.
-  function runUntil(done, { soft = true, maxFrames = MAX_CMD_FRAMES, onFrame, since } = {}) {
-    const start = since ?? log.length;
+  // Run frames until done() or a stop event. Returns { frames, stoppedBy }.
+  function runUntil(done, { soft = true, maxFrames = MAX_CMD_FRAMES, onFrame } = {}) {
+    const start = log.length;
     let frames = 0;
-    if (since !== undefined) {
-      const n = stopSince(start, soft);
-      if (n) return { frames, stoppedBy: n };
-    }
     while (frames < maxFrames && game.phase === 'day') {
       if (onFrame && onFrame() === false) break;
       frame();
       frames++;
-      const n = stopSince(start, soft);
-      if (n) return { frames, stoppedBy: n };
+      for (let i = start; i < log.length; i++) {
+        const n = log[i].name;
+        if (hardStop.has(n) || (soft && softStop.has(n))) return { frames, stoppedBy: n };
+      }
       if (done()) return { frames, stoppedBy: null };
     }
     return { frames, stoppedBy: game.phase !== 'day' ? 'day over' : frames >= maxFrames ? 'timeout' : null };
@@ -356,11 +344,10 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
       return { text: 'nothing to interact with here' };
     }
     const what = focusText(game, false);
-    const pressed = log.length; // a stop event on the press frame itself counts
     input.press('interact');
     frame();
     if (!p.action) return { text: `interacted: ${what}` };
-    const r = runUntil(() => !p.action, { since: pressed });
+    const r = runUntil(() => !p.action);
     if (r.stoppedBy && p.action) {
       const pct = Math.round((p.action.t / p.action.duration) * 100);
       return { text: `paused at ${pct}% of ${what} (${r.stoppedBy}): you are still in the middle of it` };
@@ -378,7 +365,6 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
       return { text: `nothing to eat: ${p.held ? `the ✋ target is ${focusText(game)}` : 'your hands are empty'}` };
     }
     const what = actionRow(game, verb).text;
-    const pressed = log.length;
     input.press('interact');
     input.hold('interact', true);
     // No stops while the key is down: let go early and it is a tap (a drop).
@@ -391,7 +377,7 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
       frame();
       return { text: `tried to ${what}, but it never started (${focusText(game)})` };
     }
-    const r = runUntil(() => !p.action, { since: pressed });
+    const r = runUntil(() => !p.action);
     if (r.stoppedBy && p.action) {
       const pct = Math.round((p.action.t / p.action.duration) * 100);
       return { text: `paused at ${pct}% of ${what} (${r.stoppedBy}): you are still in the middle of it` };

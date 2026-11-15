@@ -9,7 +9,7 @@ const mustFire = (log, name) => {
 
 // 3:26: his screen is static again and Kev went home. Kneel at the plug behind his desk while he sits there: he
 // leaves you to it (☕👉 you) and goes for a coffee.
-const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact', 'interact']; // the press pauses on boss:coffee (he leaves you to it), the second finishes
+const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact'];
 
 export default [
   {
@@ -62,7 +62,7 @@ export default [
     name: 'phone: plug his cable in, wait for Lin\'s mobile to buzz (she turns away to read it), edit → win',
     expect: { result: 'win', routes: ['phone'] },
     play({ run, log }) {
-      for (const c of [...FIX, 'goto his_screen', 'wait until 3:32.75', 'interact', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:32.75', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
       mustFire(log, 'lin:reads');
     },
   },
