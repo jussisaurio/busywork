@@ -905,7 +905,8 @@ section('4:00 meeting outcomes + persist.routesFound');
   ok(r.o?.result === 'fail' && r.o.routes.length === 0, 'nothing done: FAIL');
   ok(r.locked && r.phaseAtDecision === 'day' && r.phaseMid === 'day', '2 s in-world beat, player locked');
   ok(near(p().x, 17.5) && near(p().y, 3.5), 'fail: player stands at the presenter spot');
-  ok(evs('say').some((e) => e.payload.owner === 'player' && e.payload.icons.includes('😅')), 'fail: player says 😅');
+  ok(evs('say').some((e) => e.payload.owner === 'player' && e.payload.icons.includes('😩')), 'fail: player says 😩 up front');
+  ok(!evs('say').some((e) => e.payload.owner === 'player' && /[😅😄😀😁😆]/u.test(e.payload.icons.join(''))), 'fail: the player never smiles');
   ok(game.phase === 'end' && evs('day:end').length === 1 && evs('day:end')[0].payload.outcome === game.outcome, "phase 'end', day:end {outcome}");
   ok(r.o.loop === game.persist.loop && r.o.minute >= MEETING_AT && r.o.minute < MEETING_AT + 0.1, 'outcome.loop / minute');
 

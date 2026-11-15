@@ -104,7 +104,8 @@ function startMeeting(game, s) {
     const spot = spotPos(game, game.level.meeting.presenter);
     const t = walkTo(game, s, spot, HURRY, false);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
-    say(game, 'player', ['😅'], { kind: 'speech', ttl: t + END_BEAT });
+    // Never a smile on a loss (😅 reads as 😄 at bubble size): a wince on the way, 😩 up front (arrive).
+    if (t > 0) say(game, 'player', ['😬'], { kind: 'speech', ttl: t + 0.3 });
   } else if (result === 'blamed') {
     // Wherever you are, the room has noticed.
     stareAt(game, v?.stare);
@@ -146,6 +147,7 @@ function arrive(game, s, w) {
   p.dir = w.spot.dir;
   p.moving = false;
   if (w.sit) sitAtDesk(game);
+  else if (game.outcome?.result === 'fail') say(game, 'player', ['😩'], { kind: 'speech', ttl: END_BEAT });
 }
 
 function endDay(game) {
