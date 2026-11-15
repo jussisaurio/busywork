@@ -33,6 +33,7 @@ export default {
   ],
 
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (the list went to HR without you, via: ${o.routes.join(' + ')})`
+    : o.result === 'caught' && o.why === 'told' ? 'CAUGHT: Lin told him; he put your face back, locked it and sent it 📧 (you leave with a box 📦)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired on the spot: you leave with a box 📦)'
     : 'FAIL: the boss sent the list to HR with you on it 📧; you leave with a box 📦'),
 
@@ -47,7 +48,6 @@ export default {
     if (n.id === 'kev' && w.pc === 'kev') bits.push("kneeling behind the boss's desk at the plug");
     if (n.id === 'kev' && w.kevUp) bits.push('carrying his bag');
     if (n.id === 'boss' && w.coffee === 'done') bits.push('holding a coffee');
-    if (n.id === 'boss' && n.override === 'pointOut') bits.push('coming for you');
     if (n.id === 'lin' && n.override === 'toTell') bits.push('getting up to go and tell the boss');
     if (n.id === 'lin' && w.linPhone === 'hand') bits.push('reading her mobile, turned away');
     return bits;

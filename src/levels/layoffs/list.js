@@ -35,7 +35,7 @@ export function youOnList(w, game) {
 // The list going out at 3:45: 0 on his screen .. 1 sent (the in-world beat after the outcome; none if caught).
 export function sending(game) {
   const o = game.outcome;
-  if (!o || o.result === 'caught') return 0;
+  if (!o || (o.result === 'caught' && o.why !== 'told')) return 0; // told on: he sends it, then you're out
   return clamp((game.scenario?.beatT ?? 0) / 1.2, 0, 1);
 }
 
@@ -45,6 +45,7 @@ export function sending(game) {
 // 'edit' while you edit it (it grows out over POP_IN), 'off' once your face is off (w.listOffAt: it is already out,
 // so it stays out, then goes back in). k: 0 in the screen .. 1 out at full size; age: seconds into the pop.
 const POP_SECS = 2.8;
+const POP_OFF_SECS = 2.2; // after the edit: your face drops out (OUT_DELAY + OUT_SECS), then you close the sheet
 const POP_IN = 0.25;
 const POP_BACK = 0.35;
 function popOf(w, game, into) {
@@ -63,19 +64,23 @@ function popOf(w, game, into) {
   const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
   if (!from) return;
   const age = (now - from[1]) / GAME_MIN_PER_SEC + (from[0] === 'off' ? POP_IN : 0);
-  if (!(age >= 0 && age < POP_SECS)) return;
+  const dur = from[0] === 'off' ? POP_OFF_SECS : POP_SECS;
+  if (!(age >= 0 && age < dur)) return;
   into.pop = from[0];
   into.popAge = age;
-  into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > POP_SECS - POP_BACK ? 1 - easeOutCubic((age - POP_SECS + POP_BACK) / POP_BACK) : 1;
+  into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > dur - POP_BACK ? 1 - easeOutCubic((age - dur + POP_BACK) / POP_BACK) : 1;
 }
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
-const SHOWN = { glitch: false, locked: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
+const SHOWN = { glitch: false, locked: false, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
   SHOWN.locked = !!w.locked && !w.glitch;
   popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
+  // Your edit saved, you close the sheet as the pop goes back in: his screen is back on his email to HR, the sheet
+  // attached. Nothing left on it to read across the floor.
+  SHOWN.closed = w.list === 'off' && SHOWN.pop !== 'off' && SHOWN.pop !== 'edit';
   const a = game.player?.action;
   SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : w.struck || 0; // struck: Lin stopped you mid-edit
   SHOWN.out = sending(game);
@@ -124,7 +129,8 @@ export function drawListScreen(ctx, info, at, shown, t) {
       // Sent: the sheet shrinks and flies off to the top right.
       ctx.translate(sx + sw / 2 + out * sw * 0.9, sy + sh / 2 - out * sh * 0.8);
       ctx.scale(1 - 0.6 * out, 1 - 0.6 * out);
-      drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t);
+      if (shown.closed) drawEmail(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2);
+      else drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t);
       ctx.restore();
     }
     if (shown.out > 0 && shown.out < 0.8) { // speed lines behind it
@@ -151,6 +157,38 @@ export function drawListScreen(ctx, info, at, shown, t) {
   ctx.restore();
   fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#c0392b' : '#7be08a');
   if (shown.pop && shown.popK > 0) drawPop(ctx, sx, sy, sw, sh, shown, t);
+}
+
+// His email to HR, open: a white window, a blue title bar, the address and a line of text, the list attached (a
+// little sheet with a red top and a paperclip), and the blue send button.
+function drawEmail(ctx, x, y, w, h) {
+  ctx.fillStyle = '#f4f2ec';
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = '#3d7ab8';
+  ctx.fillRect(x, y, w, 3);
+  ctx.fillStyle = '#a7a39a';
+  ctx.fillRect(x + 3, y + 5, w * 0.42, 1.4); // to: HR
+  ctx.fillStyle = '#cfcbc2';
+  ctx.fillRect(x + 3, y + 8.5, w * 0.6, 1.2); // a line of text
+  const ax = x + 3; // the attachment: the list, its red top
+  const ay = y + h - 9;
+  ctx.fillStyle = '#e6e1d6';
+  ctx.fillRect(ax - 1, ay - 1, 18, 8);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(ax, ay, 6, 6);
+  ctx.fillStyle = C.tomatoDark;
+  ctx.fillRect(ax, ay, 6, 1.5);
+  ctx.strokeStyle = '#6f6a62'; // the paperclip
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(ax + 9, ay + 5.5);
+  ctx.lineTo(ax + 9, ay + 1.5);
+  ctx.arc(ax + 10.5, ay + 1.5, 1.5, Math.PI, 0);
+  ctx.lineTo(ax + 12, ay + 5);
+  ctx.stroke();
+  ctx.fillStyle = '#3d7ab8'; // send
+  rrect(ctx, x + w - 11, y + h - 7, 9, 5, 1.2);
+  ctx.fill();
 }
 
 // Locked: the sheet hidden behind a dark lock screen with a padlock in the middle.

@@ -51,43 +51,41 @@ The rest reads like something a coworker would whisper: "You're on the layoff li
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"3347b98+dirty","hash":"46514dd45393ff327315456f539da34bc1bce9b325c8099c1d8bc53186caf344","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"2411855853a4930ec40056d9bbb95174a405a3d012d0d698543af6f679721d58","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":4,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":2}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit 3347b98+dirty, by claude -p (model: default). Inputs 46514dd45393: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 4 sensible, 2 stretch, 0 nonsense.
-Problems: 1 blocker, 3 should, 2 nit.
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"3392902","hash":"c75b10f5606c75ca2d71e78ab298532264e9e9180b5037d713488915a3f47dde","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"c4d895c4e3faf0bc0ecec65f48dd49e8bde16f8e2e95a311078493e7edc46695","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":6,"stretch":1,"nonsense":0},"problems":{"blocker":0,"should":3,"nit":1}} -->
+## sense: works
+Recorded 2026-11-15 at commit 3392902, by claude -p (model: default). Inputs c75b10f5606c: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 6 sensible, 1 stretch, 0 nonsense.
+Problems: 0 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 66 s | $0.14 |
-| all | | 66 s (the steps add up to 66 s) | $0.14 |
+| 1-judge | report.md | 49 s | $0.11 |
+| all | | 49 s (the steps add up to 49 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] After the edit, the list stays on the screen with three faces, and the design says it can be read from across the floor. Lin knows you were on it and watches that office all day, so she'd notice your face is gone the moment she looks back from her phone or from Kev's desk. The boss would see it too, from the hallway and again when he sits down at 3:42. Both routes only count you as caught if someone sees you *doing* the edit, which a real coworker wouldn't need. — Make closing the list part of the edit, so the screen goes back to the email (or the screen sleeps). A real worker would cover their tracks, and then there's nothing left on the screen to read.
-- E2 [should] The boss locked his screen just to step away at 3:11, yet he walks off and leaves the one person he's firing kneeling at his computer, knowing the list was open on it. Being fed up explains some of it, but he'd at least say something. — Have him say "plug it in and get out" (☕ 👉 you, then 🚪) as he leaves. He's still careless, but he behaves like the same man who locked the screen at 3:11.
-- E3 [should] It isn't clear what he sends. He "clicks send on the open email without opening the attachment", but you edited the sheet open on his screen. In a real office, editing an open copy doesn't change a file that's already attached, so a player could think the edit was wasted. — Put the faces in the body of the email, or have him attach the open sheet when he clicks send.
-- E4 [should] In "Seen by Lin", the boss searches the floor for you and gives up just before 3:45 if you stay out of sight. A real boss who has already fixed and locked the list doesn't need to find you: he sends it and deals with you on Monday, or calls you into his office. — Once he has fixed and locked it, have him send the list straight away and give the "caught" card.
+- E1 [should] The boss locks the list when he leaves a working screen. Then he leaves the person who is on that list kneeling at his computer. A half-awake boss could miss this because the screen is dead, but nothing shows he thought about it at all. — Have him hesitate and glance at the dead screen before he goes, then shrug it off (😩☕). It reads as a lazy Friday decision, not a gap in the plan.
+- E2 [should] Lin watches the boss's office and knows you're on the list. She sees you sit down in his chair at his unlocked computer and does nothing until you actually cross yourself out. A real coworker would at least keep staring, and would hardly turn to her phone casually. — Let her notice you sitting down: a 🤨 and a longer look. She still waits for proof before she tells anyone, and her attention drifts back to her desk after a moment, so Route 1 still works.
+- E3 [should] The coffee takes about 9 minutes, from about 3:27 until he leaves the kitchen around 3:36. That's long for one coffee. — Give him a reason to linger: the machine is empty and he has to refill it, or a coworker stops him to chat on a Friday afternoon (shown once in the kitchen).
 
 ### 1-judge: report.md
 
-Verdict: fixable
+Verdict: works
 
-- The way in, fixing his computer so he goes for coffee (shared by both wins): stretch — it's believable that a fed-up boss leaves whoever is already on the floor with his cable, but he's careful enough to lock the list at 3:11, then leaves someone who is on it alone with it.
-- Route 1, Lin's phone (win): sensible — someone reading a message on her phone isn't watching the boss's office.
-- Route 2, ringing Kev's desk (win): sensible — a phone ringing behind you makes you turn round and look, even if you know the desk is empty.
-- Do nothing (lose): sensible — nothing changed, so the list goes out as he wrote it.
-- Seen by Lin (lose): stretch — her telling the boss and him coming back to fix the list both make sense, but a boss playing hide-and-seek until 3:45 doesn't.
-- Caught by the boss (lose): sensible — anyone found crossing themselves off the list gets fired on the spot.
+- Do nothing (lose): sensible — nothing changed, so the boss sends the list as he wrote it.
+- Seen by Lin (lose): sensible — Lin has just escaped the list and fears she could take your place, so she tells the boss; he comes back, puts the list right, locks his screen and sends it.
+- Caught by the boss (lose): sensible — a boss who finds you crossing yourself off his layoff list throws you out on the spot.
+- Shared way in (both wins): stretch — Kev has gone home and the boss is fed up with a dead screen, so walking off to get coffee is believable. But he locked this same list at 3:11, and now he leaves the person he's about to lay off alone with his computer.
+- Route 1, wait for Lin's phone (win): sensible — someone reading a buzzing phone isn't watching the boss's office for those few seconds.
+- Route 2, ring Kev's phone (win): sensible — a phone ringing at an empty desk behind you makes you turn round, and it has already rung there twice today.
+- Sending the edited file (all wins): sensible — at 3:45 on a Friday, with his coat on, a boss sends the email he has open without checking a list he already looked over at 3:08. That HR now has a list without you is the joke, and that's allowed.
 
 ## Problems
-- blocker: After the edit, the list stays on the screen with three faces, and the design says it can be read from across the floor. Lin knows you were on it and watches that office all day, so she'd notice your face is gone the moment she looks back from her phone or from Kev's desk. The boss would see it too, from the hallway and again when he sits down at 3:42. Both routes only count you as caught if someone sees you *doing* the edit, which a real coworker wouldn't need. — Make closing the list part of the edit, so the screen goes back to the email (or the screen sleeps). A real worker would cover their tracks, and then there's nothing left on the screen to read.
-- should: The boss locked his screen just to step away at 3:11, yet he walks off and leaves the one person he's firing kneeling at his computer, knowing the list was open on it. Being fed up explains some of it, but he'd at least say something. — Have him say "plug it in and get out" (☕ 👉 you, then 🚪) as he leaves. He's still careless, but he behaves like the same man who locked the screen at 3:11.
-- should: It isn't clear what he sends. He "clicks send on the open email without opening the attachment", but you edited the sheet open on his screen. In a real office, editing an open copy doesn't change a file that's already attached, so a player could think the edit was wasted. — Put the faces in the body of the email, or have him attach the open sheet when he clicks send.
-- should: In "Seen by Lin", the boss searches the floor for you and gives up just before 3:45 if you stay out of sight. A real boss who has already fixed and locked the list doesn't need to find you: he sends it and deals with you on Monday, or calls you into his office. — Once he has fixed and locked it, have him send the list straight away and give the "caught" card.
-- nit: His coffee break runs from about 3:27 to 3:42, about 15 minutes, on a Friday with a 3:45 deadline and his coat waiting. — Show a moment of chat in the kitchen (💬) so the long break reads as Friday small talk.
-- nit: Sitting in his chair after the screen comes back needs a reason Lin would accept. She watched him point you at the cable, so "checking it works" covers you. — Add a short beat of you testing the screen (🖱️) when you sit down.
+- should: The boss locks the list when he leaves a working screen. Then he leaves the person who is on that list kneeling at his computer. A half-awake boss could miss this because the screen is dead, but nothing shows he thought about it at all. — Have him hesitate and glance at the dead screen before he goes, then shrug it off (😩☕). It reads as a lazy Friday decision, not a gap in the plan.
+- should: Lin watches the boss's office and knows you're on the list. She sees you sit down in his chair at his unlocked computer and does nothing until you actually cross yourself out. A real coworker would at least keep staring, and would hardly turn to her phone casually. — Let her notice you sitting down: a 🤨 and a longer look. She still waits for proof before she tells anyone, and her attention drifts back to her desk after a moment, so Route 1 still works.
+- should: The coffee takes about 9 minutes, from about 3:27 until he leaves the kitchen around 3:36. That's long for one coffee. — Give him a reason to linger: the machine is empty and he has to refill it, or a coworker stops him to chat on a Friday afternoon (shown once in the kitchen).
+- nit: He tells you "plug it in and get out", so sitting in his chair breaks a direct order. That fits the comedy, but the rule "if he finds you standing around in his office, he sends you back to your desk" says nothing about this order. — Reword it as "if he finds you still in his office", so it plainly follows from what he told you.
 
 <!-- /cold-read:sense -->
 
