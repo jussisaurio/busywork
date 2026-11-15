@@ -86,17 +86,17 @@ function bossDesk(ctx, game, o) {
   keyboard(ctx, 396, 244, 50);
 }
 
-// The list leaving: a copy of it flies off his screen to the top right, again every couple of seconds.
+// The list leaving: a copy of it flies off his screen to the top right, one copy after another.
 const SHEET = { you: 1, t: 0 };
 function sendList(ctx, game, e, you, delay = 0.9) {
-  const k = (e - delay) % 2.2;
-  if (e < delay || k > 1.5) return;
+  if (e < delay) return;
+  const k = (e - delay) % 1.5; // one sheet after another, no gap: a still at any moment shows one in flight
   const f = k / 1.5;
   const x = SCREEN.x + SCREEN.w - 10 + easeOutCubic(f) * 320;
   const y = SCREEN.y + 16 - f * 30 - Math.sin(f * Math.PI) * 24; // over everyone's heads
   const s = 1 - f * 0.45;
   ctx.save();
-  ctx.globalAlpha = clamp((1 - f) * 3, 0, 1);
+  ctx.globalAlpha = clamp((1 - f) * 4, 0, 1);
   ctx.strokeStyle = 'rgba(255,255,255,0.6)'; // speed lines
   ctx.lineWidth = 2;
   for (let i = 0; i < 3; i++) {
@@ -240,8 +240,7 @@ function tableauCaught(ctx, game, t, e) {
   const b = person(t);
   b.dir = 0.1;
   b.head = 0.1 + Math.sin(t * 2.4) * 0.08;
-  b.arms = 'point';
-  b.item = '👉';
+  b.arms = 'point'; // the arm itself points: nothing in his hand
   b.angry = true;
   b.jacket = false;
   b.scale = 2.5;
@@ -270,8 +269,8 @@ export const END_SCENES = {
     return o?.result === 'caught' || o?.result === 'blamed' ? o.result : 'fail';
   },
   scenes: {
-    hoodie: { win: true, icons: ['🧥', '📧', '😏'], draw: tableauHoodie }, // in his hoodie, you're Kev
-    jacket: { win: true, icons: ['👔', '📧', '😏'], draw: tableauJacket }, // in his jacket, you're the boss
+    hoodie: { win: true, icons: ['@kev', '📧', '😏'], draw: tableauHoodie }, // as Kev (in his hoodie) it went out
+    jacket: { win: true, icons: ['@boss', '📧', '😏'], draw: tableauJacket }, // as the boss (in his jacket) you fixed it
     fail: { win: false, icons: ['📧', '📦', '😢'], draw: tableauFail },
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught },
     blamed: { win: false, icons: ['🪑', '😠', '📧'], draw: tableauBlamed }, // not at your desk: back on the list

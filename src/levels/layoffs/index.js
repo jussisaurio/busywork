@@ -7,15 +7,15 @@
 //     Kev is the one person allowed at that computer. Kev slips out early while the boss is in the restroom (so
 //     the boss doesn't know): he waves to Lin first (so she knows), then, hot, leaves his hoodie on his chair. At
 //     3:35 the computer acts up again and the boss waves for Kev, who isn't there. In the hoodie, the boss sees
-//     Kev (👋), and Kev may fix his computer: he steps aside and watches, as he did at 3:00. Lin sees through it
-//     (🧥❓, then ❗👉), so go while she's in the restroom (3:32).
+//     Kev (his face, 👋), and Kev may fix his computer: he steps aside and watches, as he did at 3:00. Lin sees
+//     through it (Kev's face, ❓, then ❗👉), so go while she's in the restroom (3:32).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
 // Then be at your desk at 3:45: if your chair is empty when he looks up to send it, he puts you back on.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at } from '../../config.js';
+import { at, PICK_UP_TIME } from '../../config.js';
 import { say } from '../../core/fx.js';
 import { C } from '../../render/palette.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
@@ -26,7 +26,7 @@ import gate from './gate.js';
 // Level 1's floor (src/levels/meeting/map.js), with the boss's computer Q on his desk and no projector.
 //  Boss office (glass S/E walls)  | Meeting room                    | Kitchen
 //  ------------------------------ hallway (row 7) --------------------------------------------
-//  Open plan: Lin's desk (x3-5, row 8) with Kev's behind it (row 11), your desk P (x12-14)
+//  Open plan: Lin's desk (x3-5, row 8) with Kev's behind it (row 11, V), your desk P (x12-14)
 //  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R
 const MAP = [
   '##############################', // 0
@@ -40,7 +40,7 @@ const MAP = [
   '#..TTT......TPT......TTT.....#', // 8
   '#............................#', // 9
   '#............................#', // 10
-  '#..TTT......TTT......TTT.....#', // 11
+  '#..TVT......TTT......TTT.....#', // 11
   '#...........................H#', // 12
   '#GGGLGGGGG###############R####', // 13
   '#:::::::::####################', // 14
@@ -54,6 +54,7 @@ const LEGEND = {
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   C: { kind: 'coffee_machine', solid: true, opaque: false },
   J: { kind: 'meeting_table', solid: true, opaque: false },
+  V: { kind: 'kev_desk', solid: true, opaque: false, interactable: 'kev_hoodie', draw: 'desk' }, // Kev's: his hoodie ends up on his chair
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
   R: { kind: 'restroom', solid: true, opaque: true },
@@ -85,6 +86,25 @@ const ZONES = {
 const AS = { hoodie: 'kev', jacket: 'boss' };
 
 const INTERACTIONS = {
+  // His hoodie, left on his chair (presentation.js draws it there): on, and back off onto the chair.
+  take_hoodie: {
+    on: 'kev_hoodie', icon: '🧥', text: "put on Kev's hoodie", duration: PICK_UP_TIME, sneaky: false,
+    can: (p, w) => !p.held && w.hoodie === 'chair',
+    done(game) {
+      game.player.held = 'hoodie';
+      game.world.hoodie = 'player';
+      game.events.emit('hoodie:taken', {});
+    },
+  },
+  leave_hoodie: {
+    on: 'kev_hoodie', icon: '🧥', text: 'leave his hoodie on his chair', instant: true,
+    can: (p) => p.held === 'hoodie',
+    done(game) {
+      game.player.held = null;
+      game.world.hoodie = 'chair';
+      game.events.emit('hoodie:left', {});
+    },
+  },
   take_jacket: {
     on: 'coat_rack', icon: '👔', text: "put on the boss's jacket", duration: 0.4, sneaky: false,
     can: (p, w) => !p.held && w.jacket === 'rack',
@@ -124,31 +144,33 @@ const INTERACTIONS = {
       if (w.fix === 'asked') { // "Kev" is done: the boss thanks him and takes his chair back
         w.fix = 'done';
         w.pc = 'boss';
-        say(game, 'boss', ['😊', '👋'], { voice: 'boss', ttl: 2.5 });
+        say(game, 'boss', ['😊', '@kev'], { voice: 'boss', ttl: 2.5 }); // thanks, Kev
       }
       game.events.emit('list:edited', { as, x: a.x, y: a.y });
     },
   },
 };
 
+// Both are worn, never carried, and come off only where they came from (keep: no drop, so neither ever lies on the
+// floor; play/interactions.js): the hoodie back on Kev's chair, the jacket back on the rack.
 const ITEMS = {
   hoodie: {
     icon: '🧥',
-    place: 'hoodie',
+    keep: true,
     // Kev's olive hoodie, hood up: Kev, to anyone who didn't see him go home.
     disguise: {
       as: 'kev',
       look: { body: C.olive, bodyDark: C.oliveDark, torso: 'hoodie', hood: true, hoodColor: C.oliveDark, hair: C.olive, hairStyle: 'cap' },
-      greet: [{ say: ['👋'] }],
+      greet: [{ say: ['@kev', '👋'] }], // Kev! Hi
     },
   },
   jacket: {
     icon: '👔',
-    place: 'jacket',
+    keep: true,
     disguise: {
       as: 'boss',
       look: { body: C.navy, bodyDark: C.navyDark, torso: 'suit', shirt: '#d7e4ee', shirtDark: '#a9bccb', tie: '#9c2a22' },
-      greet: [{ say: ['😳', '👋'] }],
+      greet: [{ say: ['😳', '@boss'] }], // eek, the boss
     },
   },
 };
@@ -201,8 +223,8 @@ export default {
   behaviours: BEHAVIOURS,
   meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'pc_front' }, // fail: called in as it goes
   routes: [
-    { id: 'hoodie', icon: '🧥', achieved: (w) => w.list === 'off' && w.offAs === 'kev' },
-    { id: 'jacket', icon: '👔', achieved: (w) => w.list === 'off' && w.offAs !== 'kev' }, // also a plain edit: the gate flags one
+    { id: 'hoodie', icon: '@kev', achieved: (w) => w.list === 'off' && w.offAs === 'kev' },
+    { id: 'jacket', icon: '@boss', achieved: (w) => w.list === 'off' && w.offAs !== 'kev' }, // also a plain edit: the gate flags one
   ],
   outcomeOrder: ['hoodie', 'jacket'],
   initialWorld: () => ({
@@ -213,8 +235,8 @@ export default {
     pc: 'boss', // 'boss' (he's at it) | 'kev' (the real Kev fixing it) | 'free' (nobody at it: he's out, or watching "Kev")
     fix: 'none', // 'none' | 'asked' ("Kev" offered) | 'done'
     fixProgress: 0,
-    jacket: 'rack', // the boss's jacket: 'rack' | 'player' | 'dropped'
-    hoodie: 'kev', // 'kev' (he's wearing it) | 'chair' | 'player' | 'dropped'
+    jacket: 'rack', // the boss's jacket: 'rack' | 'player'
+    hoodie: 'kev', // 'kev' (he's wearing it) | 'chair' | 'player'
     kevGone: false,
     items: [],
   }),

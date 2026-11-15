@@ -1,8 +1,9 @@
 // How The Layoff List looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
 // end-scenes.js, sounds.js and voices.js document the fields).
 import { C } from '../../render/palette.js';
+import { T, rrect, fillEllipse } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
-import { listFeed } from './list.js';
+import { listShown, drawListScreen } from './list.js';
 import { END_SCENES } from './end-scenes.js';
 
 export { END_SCENES };
@@ -15,14 +16,14 @@ export const TITLE = {
 const OXBLOOD = ['#6b2f24', '#4e2019'];
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
+const CHARCOAL = ['#4b5056', '#34383d']; // Kev's chair: his olive hoodie must stand out on it
 
 export const DECOR = {
   chairs: [
     { spot: 'boss_desk', face: 'S', color: OXBLOOD },
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     { spot: 'lin_desk', face: 'N', color: TEAL },
-    { spot: 'kev_desk', face: 'N', color: OLIVE },
+    { spot: 'kev_desk', face: 'N', color: CHARCOAL },
     { x: 13, y: 12, face: 'N', color: MUSTARD },
     { x: 22, y: 9, face: 'N', color: TEAL },
     { x: 22, y: 12, face: 'N', color: TEAL },
@@ -44,8 +45,10 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
-    // His screen: the layoff list, a row of people, you the red one; static while it acts up (list.js).
-    { tile: 'Q', draw: 'monitor', state: listFeed },
+    // His screen: the layoff list, a row of faces, yours framed in red; static while it acts up (list.js).
+    { tile: 'Q', draw: drawListScreen, state: listShown },
+    // Kev's hoodie, left on his chair when he goes home (V: his desk, which you reach it from).
+    { tile: 'V', draw: drawHoodieOnChair, state: (w) => w.hoodie === 'chair' },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: false }) },
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
   ],
@@ -65,6 +68,49 @@ export const DECOR = {
   ],
   legendAt: { x: 20, y: 15.5 },
 };
+
+// Kev's olive hoodie, left on his chair (one tile south of his desk tile; the chair faces his desk, so its backrest
+// is to the south). Drawn as a garment the size of a person's torso: the hood hangs over the backrest, the body lies
+// on the seat, the sleeves dangle past the seat's sides. Kev's chair is charcoal so the olive stands out. shown: true
+// while it lies there.
+function drawHoodieOnChair(ctx, info, at, shown) {
+  if (!shown) return;
+  const cx = at.x * T + T / 2;
+  const cy = (at.y + 1) * T + T / 2;
+  const LINE = '#262b14';
+  const BODY = '#738243';
+  const SHADE = '#56622f';
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = LINE;
+  // the sleeves, splayed out and hanging over the seat's edges
+  for (const side of [-1, 1]) {
+    ctx.save();
+    ctx.translate(cx + side * 7, cy - 4);
+    ctx.rotate(side * -0.5);
+    ctx.fillStyle = SHADE;
+    rrect(ctx, -2.5, 0, 5, 13, 2.2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = BODY; // the cuff
+    ctx.fillRect(-2, 10.5, 4, 1.6);
+    ctx.restore();
+  }
+  // the body
+  ctx.fillStyle = BODY;
+  rrect(ctx, cx - 8, cy - 7, 16, 13, 3.5);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = SHADE; // the front pocket
+  rrect(ctx, cx - 5, cy - 1, 10, 4, 1.5);
+  ctx.fill();
+  // the hood, over the backrest, its opening dark
+  fillEllipse(ctx, cx, cy + 7, 7, 4.2, LINE);
+  fillEllipse(ctx, cx, cy + 6.6, 6.2, 3.5, SHADE);
+  fillEllipse(ctx, cx, cy + 6.2, 3.8, 2, '#1d2010');
+  ctx.fillStyle = '#efe9da'; // drawstrings
+  ctx.fillRect(cx - 2.8, cy - 6, 1.2, 5);
+  ctx.fillRect(cx + 1.6, cy - 6, 1.2, 5);
+}
 
 // Level 1's people. Kev wears a T-shirt under his hoodie (drawn once the hoodie is off: POSES).
 export const LOOKS = {

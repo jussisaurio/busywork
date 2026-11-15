@@ -1,12 +1,14 @@
 // The layoff list: who is on it, as the boss's screen shows it.
-//   NAMES        top to bottom: three people from other floors (nobody you meet today) and you, second
-//   listFeed     in the world, the list is the engine's little 'monitor' screen (render/world.js PROP_PAINTERS):
-//                each name is a figure on it, you the tiny red sweater. A level cannot paint its own furniture,
-//                so the drawn faces below are for the end cards only.
-//   drawList     the list as a big screen of faces on an end card (end-scenes.js), yours marked in red
+//   NAMES          left to right: three people from other floors (nobody you meet today) and you, second
+//   listShown      decor.props state for the boss's computer: { glitch, you, strike, out, looks }
+//   drawListScreen the level's painter for it (presentation.js DECOR.props): a flat screen on his desk, facing the
+//                  floor, with the list on it as a row of faces, yours framed in red. Static while it acts up; a
+//                  red line goes through your face while you edit it, then your face drops out and the others
+//                  close up; at 3:45 the sheet flies off the screen, sent.
+//   drawList       the same list as a big screen of faces on an end card (end-scenes.js)
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { drawPerson, personState } from '../../render/characters.js';
-import { rrect, clamp, easeOutCubic } from '../../render/util.js';
+import { T, rrect, clamp, easeOutCubic, hash, fillEllipse, fillCircle } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 
 const SKIN = { skin: '#eac09a', skinDark: '#cf9d76', legs: '#3a3946', wide: 1, tall: 1, head: 6.6, bubbleDy: 30, eyeDy: 12 };
@@ -16,11 +18,11 @@ export const NAMES = [
   { id: 'raj', color: '#d6a23a', look: { ...SKIN, skin: '#b9845c', skinDark: '#9a6a46', body: '#d6a23a', bodyDark: '#a97b22', hair: '#1f1a1a', hairStyle: 'tuft', torso: 'sweater', trim: '#f3e6c8' } },
   { id: 'mo', color: '#6f8796', look: { ...SKIN, body: '#6f8796', bodyDark: '#556a78', hair: '#d8b25a', hairStyle: 'spiky', torso: 'hoodie' } },
 ];
-const YOU = 1; // your row
+const YOU = 1; // your place on the list
 
-const OUT_SECS = 0.7; // your name drops off the list over this long
+const OUT_SECS = 0.7; // your face drops off the list over this long
 
-// How far your row is on the list right now: 1 on it, 0 gone (the rows below close up in between). Blamed (your
+// How far your face is on the list right now: 1 on it, 0 gone (the others close up in between). Blamed (your
 // chair was empty at 3:45), he puts you back on before he sends it.
 const BACK_SECS = 0.6;
 export function youOnList(w, game) {
@@ -38,36 +40,131 @@ export function sending(game) {
   return clamp(((game.scenario?.beatT ?? 0) - from) / 1.2, 0, 1);
 }
 
-// decor.props state for the 'monitor' painter: { feed, blips[{ id, u, v, color }] } (render/world.js drawMonitor).
-// Acting up (w.glitch): static. Else a row of figures, yours red; while you edit it yours blinks, then it goes
-// and the others close up; at 3:45 they slide off the screen, sent.
-const BLIPS = NAMES.map((n) => ({ id: n.id, u: 0, v: 0.45, color: n.color }));
-const FEED = { feed: 'live', blips: [] };
-export function listFeed(w, game) {
-  if (w.glitch) {
-    FEED.feed = 'static';
-    FEED.blips = [];
-    return FEED;
+// --- in the world: the boss's screen ---------------------------------------------------------------------------
+
+const SHOWN = { glitch: false, you: 1, strike: 0, out: 0, looks: null };
+export function listShown(w, game) {
+  SHOWN.glitch = !!w.glitch;
+  SHOWN.you = youOnList(w, game);
+  const a = game.player?.action;
+  SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : 0;
+  SHOWN.out = sending(game);
+  SHOWN.looks = game.level.looks;
+  return SHOWN;
+}
+
+const MON_W = 50; // body, px
+const MON_H = 28;
+
+export function drawListScreen(ctx, info, at, shown, t) {
+  const cx = at.x * T + T / 2;
+  const top = at.y * T - 4; // stands at the back of the desk, the screen to the floor
+  const x = Math.round(cx - MON_W / 2);
+  fillEllipse(ctx, cx, top + MON_H + 4, 15, 3, 'rgba(0,0,0,0.22)');
+  ctx.fillStyle = '#2b2828'; // the stand and its foot
+  ctx.fillRect(cx - 3, top + MON_H - 1, 6, 4);
+  rrect(ctx, cx - 9, top + MON_H + 2, 18, 3, 1.5);
+  ctx.fill();
+  ctx.fillStyle = '#34312f'; // the bezel
+  rrect(ctx, x, top, MON_W, MON_H, 3);
+  ctx.fill();
+  const sx = x + 2;
+  const sy = top + 2;
+  const sw = MON_W - 4;
+  const sh = MON_H - 5;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(sx, sy, sw, sh);
+  ctx.clip();
+  if (shown.glitch) {
+    const f = Math.floor(t * 14);
+    for (let j = 0; j < sh; j += 2) {
+      for (let i = 0; i < sw; i += 2) {
+        const g = Math.round(70 + 150 * hash(i, j, f));
+        ctx.fillStyle = `rgb(${g},${g},${g})`;
+        ctx.fillRect(sx + i, sy + j, 2, 2);
+      }
+    }
+  } else {
+    ctx.fillStyle = '#2d5a78'; // the desktop behind the sheet
+    ctx.fillRect(sx, sy, sw, sh);
+    const out = easeOutCubic(shown.out);
+    if (out < 1) {
+      ctx.save();
+      // Sent: the sheet shrinks and flies off to the top right.
+      ctx.translate(sx + sw / 2 + out * sw * 0.9, sy + sh / 2 - out * sh * 0.8);
+      ctx.scale(1 - 0.6 * out, 1 - 0.6 * out);
+      drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t);
+      ctx.restore();
+    }
+    if (shown.out > 0 && shown.out < 0.8) { // speed lines behind it
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++) {
+        const lx = sx + sw * (0.2 + out * 0.55) - i * 3;
+        const ly = sy + sh * (0.75 - out * 0.5) + i * 3;
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx - 7, ly + 3);
+      }
+      ctx.stroke();
+    }
   }
-  FEED.feed = 'live';
-  const you = youOnList(w, game);
-  const editing = game.player?.action?.type === 'strike_name';
-  const blink = editing && Math.floor((game.clock?.minute ?? 0) * 6) % 2 === 0;
-  const out = sending(game);
-  const n = NAMES.length - 1 + you; // slots taken
-  const blips = [];
-  let slot = 0;
+  ctx.fillStyle = 'rgba(255,255,255,0.10)'; // glare
+  ctx.beginPath();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(sx + 14, sy);
+  ctx.lineTo(sx, sy + 10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#c0392b' : '#7be08a');
+}
+
+// The list itself, on screen: a white sheet with a red title bar, a face per name in a row, a name line under each,
+// yours framed in red. strike: the red line through your face while you edit it (0..1).
+function drawSheet(ctx, x, y, w, h, shown, t) {
+  ctx.fillStyle = '#f4f2ec';
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = C.tomatoDark;
+  ctx.fillRect(x, y, w, 3);
+  const you = shown.you;
+  const n = NAMES.length - 1 + you;
+  const slot = (w - 2) / NAMES.length;
+  let fx = x + 1 + (w - 2 - slot * n) / 2; // the row stays centred as yours goes
+  const face = Math.min(slot - 1, h - 8);
+  const fy = y + 4 + face / 2;
   for (let i = 0; i < NAMES.length; i++) {
-    const b = BLIPS[i];
     const k = i === YOU ? you : 1;
     if (k <= 0.02) continue;
-    b.u = -0.78 + (1.56 * (slot + 0.5)) / Math.max(n, 1) + out * 2.4;
-    slot += k;
-    if (b.u > 1 || (i === YOU && (blink || k < 0.5))) continue;
-    blips.push(b);
+    const mid = fx + (slot * k) / 2;
+    fx += slot * k;
+    const mine = i === YOU;
+    ctx.save();
+    if (mine && k < 1) {
+      ctx.globalAlpha = k;
+      ctx.translate(0, (1 - k) * 8); // dropping out of the row
+    }
+    if (mine) {
+      ctx.fillStyle = 'rgba(214,72,52,0.25)';
+      ctx.fillRect(mid - slot / 2 + 0.5, y + 3.5, slot - 1, h - 4);
+      ctx.strokeStyle = C.tomato;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(mid - slot / 2 + 0.5, y + 3.5, slot - 1, h - 4);
+    }
+    drawFace(ctx, mine ? shown.looks.player : NAMES[i].look, mid, fy, face, t);
+    ctx.fillStyle = mine ? C.tomato : '#a7a39a';
+    ctx.fillRect(mid - slot * 0.32, y + h - 3, slot * 0.64, 1.2); // the name
+    if (mine && shown.strike > 0) {
+      ctx.strokeStyle = C.tomatoDark;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(mid - slot / 2 + 1, fy + face * 0.35);
+      ctx.lineTo(mid - slot / 2 + 1 + (slot - 2) * shown.strike, fy + face * 0.35 - (face * 0.7) * shown.strike);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
-  FEED.blips = blips;
-  return FEED;
 }
 
 // --- end cards -----------------------------------------------------------------------------------------------

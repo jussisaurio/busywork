@@ -1,11 +1,11 @@
 // What the fuzzer and the gate know about The Layoff List (src/levels/meeting/gate.js documents the fields).
 export default {
   mustUse: [{ id: 'disguise', event: 'disguise:fooled' }], // every win passes for someone else
-  targets: ['boss_pc', 'coat_rack', 'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'restroom_door'],
-  interactable: ['boss_pc', 'coat_rack'],
+  targets: ['boss_pc', 'coat_rack', 'kev_hoodie', 'boss_desk', 'lin_desk', 'kev_desk', 'boss_office_door', 'restroom_door'],
+  interactable: ['boss_pc', 'coat_rack', 'kev_hoodie'],
   milestones: {
     'jacket:taken': () => 'jacket',
-    'item:pickup': (p) => (p.type === 'hoodie' ? 'hoodie' : null),
+    'hoodie:taken': () => 'hoodie',
     'pc:asked': () => 'asked',
     'list:edited': () => 'edited',
     'witness:tattle': () => 'tattle',

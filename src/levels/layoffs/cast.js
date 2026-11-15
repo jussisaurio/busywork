@@ -9,7 +9,7 @@ const ACTS_UP_UNTIL = at('3:37.5', START); // nobody came: he thumps the desk an
 export const CAST = [
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss', // his face: who a double take in his jacket questions (play/disguise.js shows the as NPC's icon)
     color: '#2b3a55',
     voice: 'boss',
     meetingSpot: 'boss_desk',
@@ -20,7 +20,7 @@ export const CAST = [
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // his screen is acting up (index.js glitch)
       s('3:00.8', { do: 'say', icons: ['😠'] }),
-      s('3:01.4', { do: 'say', icons: ['👋'] }), // to Kev: over here
+      s('3:01.4', { do: 'say', icons: ['@kev', '👋'] }), // Kev, over here
       s('3:02', { do: 'visit', spot: 'boss_aside' }), // he stands aside while Kev fixes it
       s('3:06.5', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
       s('3:12', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // his computer sits there, unlocked
@@ -31,7 +31,7 @@ export const CAST = [
   },
   {
     id: 'kev',
-    icon: '🧥', // his hoodie: what a double take questions (play/disguise.js shows the as NPC's icon)
+    icon: '@kev', // his face, the same for a double take in his hoodie
     color: '#5f6b3a',
     voice: 'kev',
     meetingSpot: 'kev_desk',
@@ -49,7 +49,7 @@ export const CAST = [
   },
   {
     id: 'lin',
-    icon: '👓',
+    icon: '@lin',
     color: '#2f8f83',
     voice: 'lin',
     meetingSpot: 'lin_desk',
@@ -109,7 +109,7 @@ export const BEHAVIOURS = {
       if (w.fix !== 'none' || game.clock.minute >= ACTS_UP_UNTIL || npc._actedUp) return;
       npc._actedUp = true;
       w.glitch = true;
-      sim.speak(game, npc, [{ say: ['😠'] }, { say: ['👋'], after: 1.4 }, { say: ['❓'], kind: 'thought', after: 3.2 }]);
+      sim.speak(game, npc, [{ say: ['😠'] }, { say: ['@kev', '👋'], after: 1.4 }, { say: ['@kev', '❓'], kind: 'thought', after: 3.2 }]);
       game.events.emit('pc:actsUp', {});
     },
   },
@@ -129,9 +129,9 @@ export const BEHAVIOURS = {
     pending: (npc) => !npc._waved,
     arrive(game, npc, sim) {
       npc._waved = true;
-      sim.speak(game, npc, [{ say: ['👋'] }]);
+      sim.speak(game, npc, [{ say: ['@lin', '👋'] }]); // bye, Lin
       const lin = game.npcs.find((n) => n.id === 'lin');
-      if (lin?.active && !lin.override) sim.speak(game, lin, [{ say: ['👋'], after: 0.9 }]);
+      if (lin?.active && !lin.override) sim.speak(game, lin, [{ say: ['@kev', '👋'], after: 0.9 }]); // bye, Kev
       sim.holdFor(npc, 1.8);
       game.events.emit('kev:bye', {});
     },
@@ -143,8 +143,7 @@ export const BEHAVIOURS = {
     arrive(game, npc, sim) {
       npc._shed = true;
       const w = game.world;
-      w.hoodie = 'chair';
-      w.items.push({ type: 'hoodie', x: npc.x, y: npc.y });
+      w.hoodie = 'chair'; // drawn on his chair (presentation.js)
       burst(game, 'sweat', npc.x, npc.y - 0.6, 6, { speed: 0.8 });
       sim.holdFor(npc, 1.0);
       game.events.emit('kev:hoodieOff', {});

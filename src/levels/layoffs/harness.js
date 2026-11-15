@@ -3,7 +3,6 @@ const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
 const WORN = { hoodie: "Kev's hoodie, hood up", jacket: "the boss's suit jacket" };
-const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
 
 export default {
   mission: "MISSION: 3:00 PM. At 3:45 the boss emails HR the layoff list. You're on it. Get your name off it.",
@@ -26,7 +25,7 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance, K coat rack,",
-    "     Q the boss's computer, F fridge, C coffee machine, P your desk, R restroom, E elevator, i item,",
+    "     Q the boss's computer, V Kev's desk, F fridge, C coffee machine, P your desk, R restroom, E elevator,",
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
@@ -51,13 +50,11 @@ export default {
   // Only what is visible on screen.
   worldText(game) {
     const w = game.world;
-    const people = w.list === 'on' ? 'four faces, yours marked in red' : 'three faces; yours is gone';
+    const people = w.list === 'on' ? 'a row of four faces, yours framed in red' : 'three faces; yours is gone';
     const screen = w.glitch ? 'static (it is acting up)' : `the layoff list: ${people}`;
     const rack = w.jacket === 'rack' ? "the boss's suit jacket" : 'nothing';
     const chair = w.hoodie === 'chair' ? "; Kev's hoodie is on his chair" : '';
-    const floor = w.items.filter((i) => !(i.type === 'hoodie' && w.hoodie === 'chair'));
-    const floorText = floor.length ? `; on the floor: ${floor.map((i) => `${i.type}@(${f1(i.x)},${f1(i.y)})`).join(', ')}` : '';
-    return `WORLD: the boss's screen shows ${screen}; coat rack holds ${rack}${chair}${floorText}`;
+    return `WORLD: the boss's screen shows ${screen}; coat rack holds ${rack}${chair}`;
   },
 
   describe(e) {
@@ -82,6 +79,8 @@ export default {
       case 'pc:actsUp': return "the boss's screen goes to static again; he waves for Kev 👋";
       case 'pc:thumped': return 'nobody came: the boss thumps his monitor and it works again 😠';
       case 'kev:hoodieOff': return 'Kev takes off his hoodie and leaves it on his chair';
+      case 'hoodie:taken': return "you put on Kev's hoodie, hood up";
+      case 'hoodie:left': return "you leave Kev's hoodie back on his chair";
       case 'kev:left': return 'the elevator doors close behind Kev';
       case 'disguise:fooled': case 'disguise:knows': case 'kev:bye': case 'pc:free': return null; // the lines people say show it
       default: return undefined;
