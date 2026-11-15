@@ -64,6 +64,14 @@ export const CAST = [
   },
 ];
 
+// Lin is on her way to her desk and nothing holds her up: the boss leaves her phone to her.
+const COMING = 6; // tiles
+function linComing(game) {
+  const lin = game.npcs.find((n) => n.id === 'lin');
+  const s = game.level.spots.lin_desk;
+  return lin.active && !onPhone(lin) && Math.hypot(lin.x - (s.x + 0.5), lin.y - (s.y + 0.5)) < COMING;
+}
+
 export const BEHAVIOURS = {
   // Kev's cable round: anything unplugged under Lin's desk goes back in.
   plugIn: {
@@ -93,6 +101,9 @@ export const BEHAVIOURS = {
       } else if (w.line_lin) { // someone is on her line: the interviewer gets the busy tone
         w.interview = 'busy';
         sim.speak(game, npc, [{ say: ['📞', '⏳'], kind: 'thought', ttl: 1.2 }, { say: ['📵', '😱'], after: 1.3 }]);
+      } else if (npc.id === 'boss' && linComing(game)) { // she's nearly here: it's her call
+        sim.speak(game, npc, [{ say: ['👀'], kind: 'thought' }]);
+        return;
       } else if (npc.id === 'lin') {
         w.interview = 'lin';
         sim.speak(game, npc, [{ say: ['📞', '😊'] }, { say: ['🙋', '💼'], after: 1.3 }]);

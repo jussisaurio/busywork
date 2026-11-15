@@ -67,7 +67,7 @@ export default {
       case 'witness:tattle': return p.late
         ? `${name(p.by)} points you out to the boss 👉${p.icon ?? ''} (seen earlier, told now)`
         : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the boss heard)' : ''}`;
-      case 'meeting:gather': return "3:30: Lin's phone rings 🔔 (the interview)";
+      case 'meeting:gather': return '3:30: the interview call 🔔 (everyone heads for Lin\'s phone)';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switchboard:ring': return `you rang ${PHONE[p.phone]} 🔔${p.by ? `; ${name(p.by)} goes to answer it` : '; nobody near enough to hear it'}`;
