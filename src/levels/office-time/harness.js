@@ -10,7 +10,7 @@ const CLOCK_NAME = { boss: "the boss's clock", open: 'the open-plan clock', boss
 const shows = (game, fast) => `${clockArg(game.clock.minute + fast, START)}${fast ? ' (hanging crooked)' : ''}`;
 
 export default {
-  mission: 'MISSION: 3:00 PM. Your bus leaves at 4:30. Nobody leaves before the boss.',
+  mission: 'MISSION: 3:00 PM. Your bus leaves at 4:30. The boss leaves at 4:50. Nobody leaves before him. Catch the bus.',
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -32,13 +32,15 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : lobby, L entrance (open), Q the boss's wall clock,",
-    "     O the open-plan wall clock (a chair under each), F fridge, C coffee machine, P your desk, R restroom, E elevator,",
-    '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
+    "     O the open-plan wall clock (a stepladder under each), F fridge, C coffee machine, P your desk, R restroom, E elevator,",
+    '     , pavement, B the bus stop sign (the road runs along the bottom edge), @ you, b boss, l Lin, k Kev,',
+    '     * floor someone can see right now):',
   ],
 
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (you caught your bus 🚌: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fiddling with the clock)'
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the boss left via ${o.routes.join(' + ')}, but you weren't at the bus stop: the bus left without you)`
+    : o.why === 'stop' ? "FAIL: 4:30, you are at the stop but the boss is still in, so you can't get on; the bus leaves 🚌💨"
     : 'FAIL: 4:30, the boss is still in, and your bus leaves without you 🚌💨'),
 
   playerText: () => [],
@@ -47,8 +49,8 @@ export default {
 
   npcText(game, n) {
     const bits = [];
-    if (n.anim === 'leaving') bits.push('carrying a backpack 🎒');
-    if (n.anim === 'smoking' && !n.override) bits.push('on a smoke break 🚬');
+    if (n.anim === 'leaving') bits.push('going home');
+    if (n.anim === 'smoking' && !n.override) bits.push('on a smoke break, smoking');
     return bits;
   },
 
@@ -66,14 +68,14 @@ export default {
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'clock:pushed': return `you pushed ${CLOCK_NAME[p.clock]} forward: it runs ${p.off} minutes fast 🕐`;
-      case 'clock:look': return `${name(p.id)} looks up at ${CLOCK_NAME[p.clock]} 🕐👀`;
+      case 'clock:look': return `${name(p.id)} looks up at ${CLOCK_NAME[p.clock]} 🕐`;
       case 'clock:jump': return `${name(p.id)} believes it: ❗ (now ${p.off} minutes ahead)`;
-      case 'boss:frown': return `the boss frowns at ${name(p.at)}'s empty desk 🤨`;
-      case 'boss:herd': return 'the boss shrugs 🤷 and packs up';
+      case 'boss:frown': return `the boss turns to ${name(p.at)}'s empty desk: where is ${name(p.at)}? ❓${p.gone ? ' (gone home)' : ''}`;
+      case 'boss:herd': return 'the boss sees the empty desks ❗ and packs up';
       case 'boss:left': return 'ding: the elevator doors close behind the boss';
       case 'lin:left': return 'ding: the elevator doors close behind Lin';
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
-      case 'meeting:gather': return "it's 4:30: the bus pulls up outside 🚌";
+      case 'meeting:gather': return "it's 4:30: the bus at the stop outside closes its doors 🚌";
       default: return undefined;
     }
   },

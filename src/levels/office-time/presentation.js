@@ -1,14 +1,14 @@
 // How Office Time looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { CLOCKS } from './clocks.js';
+import { officeTimeClock, officeTimeStreet } from './painters.js';
+import { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['Your bus leaves at 4:30.', 'Nobody leaves before the boss.'],
-  badge: ['🚌', '⏩'],
+  mission: ['3:00 PM. Your bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him. Catch the bus.'],
+  badge: ['🚌'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -16,10 +16,11 @@ const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
-// A wall clock shows the true minute plus however fast it is, and each push hangs it a little more crooked.
+// A wall clock shows the true minute plus however fast it is, and each push hangs it a little more crooked. The
+// stepladder under it is part of the same drawing (painters.js).
 const wallClock = (clock, lean) => ({
   tile: clock === 'boss' ? 'Q' : 'O',
-  draw: 'wallClock',
+  draw: officeTimeClock,
   state: (w, game) => {
     const fast = w[CLOCKS[clock].field] || 0;
     return {
@@ -38,9 +39,6 @@ export const DECOR = {
     { spot: 'kev_desk', face: 'N', color: OLIVE },
     { x: 13, y: 12, face: 'N', color: MUSTARD },
     { x: 22, y: 12, face: 'N', color: TEAL },
-    // the chairs under the clocks: the boss's spare, and one dragged out of the meeting room
-    { spot: 'boss_clock_chair', face: 'N', color: OXBLOOD },
-    { spot: 'open_clock_chair', face: 'N', color: TEAL },
     // meeting table
     { x: 12, y: 5, face: 'N', color: TEAL },
     { x: 14, y: 5, face: 'N', color: TEAL },
@@ -66,6 +64,8 @@ export const DECOR = {
     wallClock('boss', 1),
     wallClock('open', -1),
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
+    // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
+    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start }) },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -81,43 +81,29 @@ export const DECOR = {
     { zone: 'kitchen', x: 21, y: 2 },
     { zone: 'lobby', x: 4, y: 14 },
   ],
-  legendAt: { x: 20, y: 15.5 },
+  legendAt: { x: 21.45, y: 15.5 }, // on the blank strip right of the bus stop, above the road
 };
 
 export const LOOKS = OFFICE_LOOKS;
 
+// The boss smokes with his hand to his mouth and the smoke drawn (no glyph in his hand: nothing in a hand is an
+// emoji). Going home is the wave and the walk to the elevator.
 export const POSES = {
   arms: [
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '🚬' },
-    { when: (n) => !n.override && n.anim === 'leaving', arms: 'carry', item: '🎒' },
+    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff') },
   ],
   marks: [],
 };
 
 export const CONES = { alert: [] };
 
-// The end card: the carpet and one big emoji.
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes?.includes?.('herd') ? 'herd' : 'clock') : o?.result ?? 'fail'),
-  scenes: {
-    clock: { win: true, icons: ['🕐', '👔', '🚌'], draw: picture('🚌') }, // he went home at "4:50"
-    herd: { win: true, icons: ['🪑', '🪑', '🤨', '🎒'], draw: picture('🐑') }, // he followed the herd
-    fail: { win: false, icons: ['👔', '🚌', '💨'], draw: picture('🚏') }, // the boss is still in, the bus isn't
-    caught: { win: false, icons: ['🕐', '👉', '😠'], draw: picture('🕐') },
-    blamed: { win: false, icons: ['👔', '👋', '🚌', '💨'], draw: picture('🏃') }, // he left, and so did your bus
-  },
-};
+export { END_SCENES };
 
 // What it sounds like (audio/audio.js; recipes in audio/sfx.js).
 export const SOUNDS = {
   actions: {
     start: {
-      push_boss_clock: { sfx: 'creak', spot: 'boss_clock_chair' }, // a chair, stood on
+      push_boss_clock: { sfx: 'creak', spot: 'boss_clock_chair' }, // the stepladder, climbed
       push_open_clock: { sfx: 'creak', spot: 'open_clock_chair' },
     },
     done: {
