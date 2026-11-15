@@ -21,7 +21,7 @@ export default {
 
   stops: {
     hard: ['bob:workAssigned'],
-    soft: ['bob:suspicious', 'bob:static', 'bob:tracing', 'camera:replugged'],
+    soft: ['bob:suspicious', 'bob:static'],
   },
 
   names: NAME,
