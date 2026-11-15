@@ -4,8 +4,8 @@
 
 ## Card
 
-Your face is on Saturday's board.
-At 5:00 the boss reads it out.
+Friday, 4:00 PM. You're down to work Saturday.
+The boss reads out the rota at 5:00. Keep your weekend.
 
 ## Name
 

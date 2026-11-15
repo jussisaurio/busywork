@@ -8,9 +8,19 @@ tighter: it may restate the trouble, but if a word of the name echoes what a rou
 ways to win would use for the trick or its effect), the guess that quotes it is a leak, even when the card alone
 also implies that outcome. Undoing the trouble is fine when the guess rests on the card's words only.
 
+The card must also give the stake: what happens to the player if they fail, in words a stranger understands
+without knowing the game. Check the first reader's `Stake:` line against ways.md's main way to lose. If it says
+`can't tell`, or names a stake that ways.md doesn't, that is a blocker: the player doesn't know why to bother. A
+deadline with no cost ("at 5:00 he reads it out") is not a stake. The card must also end with an order: one
+imperative that says what the player must achieve ("Keep your weekend.", "Catch the bus."). A card with no
+imperative is a blocker, even if the goal can be guessed. Its fix gives replacement card words that say what
+the player loses.
+
 Reply with your report. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.
   - `broken`: the name or the card spells out a whole route.
+- Then `- Order: yes|no — <the card's imperative, or that it has none>`.
+- Then `- Stake: clear|unclear — <what the card says the player loses, or what's missing>`.
 - Then one line per guess: `- <guess>: miss|near|leak — <the route it matches, and the words that led to it>`.
   `near` means it points at a route's area (the right person or thing) but not its key step.
 - Then the problems, graded as below. A leak is a blocker; a near is a `should`. Each fix gives the words to change

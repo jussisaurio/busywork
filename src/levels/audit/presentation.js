@@ -7,7 +7,7 @@ import { DESK_MARKS, penShake, penScribble } from './things.js';
 
 // The card names the trouble, the time first, and never the way out.
 export const TITLE = {
-  mission: ['3:00 PM. Laptop audit at 3:30.', 'You sold yours.'],
+  mission: ['3:00 PM. Laptop audit at 3:30. You sold yours.', 'Pass the audit.'],
   badge: ['📋', '💻'], // his clipboard, a laptop
 };
 
