@@ -113,6 +113,10 @@ function startMeeting(game, s) {
     stareAt(game, v?.stare);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
     say(game, 'player', ['😰'], { kind: 'thought', ttl: END_BEAT });
+  } else if (result !== 'win') {
+    // Any other loss a level's verdict gives (caught: Layoffs' told case): no party.
+    burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
+    say(game, 'player', ['😨'], { kind: 'thought', ttl: END_BEAT });
   } else {
     burst(game, 'confetti', p.x, p.y, 30, { speed: 2.5, lift: 1.2, ttl: 1.6 });
     say(game, 'player', ['🎉'], { kind: 'speech', ttl: END_BEAT });
