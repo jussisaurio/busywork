@@ -71,8 +71,8 @@ export default {
     switch (e.name) {
       case 'lin:sees': return 'Lin sees you crossing your face out; she thinks of the list with her own face on it 😨';
       case 'lin:tells': return 'Lin points you out to the boss 👉🖥️';
-      case 'meeting:gather': return 'the boss turns round in his chair and ticks the list off against the floor 📧';
-      case 'boss:headCount': return p.on ? 'the boss finds your face on the list and looks at your desk' : 'the boss frowns at the sheet, shrugs and goes on 📋🤨🤷';
+      case 'meeting:gather': return 'the boss goes back to his desk to pack up for the weekend 📧';
+      case 'boss:packsUp': return 'the boss puts his coat on at his desk, the email to HR open 🧥📧';
       case 'boss:checks': return 'the boss checks his screen and puts your face back on the list 😠';
       case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';

@@ -193,7 +193,7 @@ const LURES = [
     },
   },
   // Then he turns round on you and comes over to your desk: the moment he sees you, caught (roles.evidence, while
-  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 head count.
+  // 'pointOut'). A lure, not a hunt: it keeps going through the 3:42 pack-up.
   {
     npc: 'boss',
     when: (w) => w.check === 'done' && !w.pointed && !w.bossKnows,
@@ -228,7 +228,7 @@ const LURES = [
     label: 'get a coffee',
     spot: 'coffee',
     // fed up with the static, he doesn't look at the screen again: fix it, I'm getting coffee
-    react: { wait: 0.9, says: [{ say: ['😤'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
+    react: { wait: 0.9, says: [{ say: ['🙅', '🖥️'] }, { say: ['☕', '👉', '@player'], after: 0.5 }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
 ];
@@ -428,7 +428,7 @@ export default {
   cast: CAST,
   day: {
     start: START, // 3:00 PM; at() times count from it
-    gatherAt: at('3:42', START), // he turns round in his chair for the head count
+    gatherAt: at('3:42', START), // back at his desk, coat on
     meetingAt: at('3:45', START), // he sends it to HR
     clockRedAt: at('3:40', START),
     clockTickAt: at('3:40', START),
@@ -444,7 +444,7 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  // Wherever you are on the floor he ticks you off; the fail plays where you stand.
+  // He sends from his desk wherever you are; the fail plays where you stand.
   meeting: { override: 'send', room: 'floor', chair: 'player_desk' },
   routes: [
     { id: 'ring', icon: '☎️', achieved: (w) => w.list === 'off' && w.offVia === 'ring' },

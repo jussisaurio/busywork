@@ -78,7 +78,7 @@ export default [
   {
     name: 'he-left-you-to-it',
     cmds: FIX,
-    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: coffee, pointing at you) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
+    intent: "You pushed the plug home. The boss left you to it the moment you knelt (he said: don't touch my screen, then coffee, pointing at you) and is walking out of his office towards the kitchen. His screen works again, with the list open on it: your face in its red frame. He never locked it: when he left, it was only static.",
   },
   {
     name: 'list-up-alone',
@@ -138,9 +138,9 @@ export default [
     intent: "The boss is back with his coffee and sees you at his screen, editing his list: he stops, angry, and points at you.",
   },
   {
-    name: 'head-count',
+    name: 'packs-up',
     cmds: [...RING_EDIT, 'goto my_seat pretend', 'pretend until 3:43'],
-    intent: "3:43: the boss, back at his desk with his coffee, turns in his chair to his screen and ticks the sheet (a sheet, a tick): he goes down it name by name, and your face isn't on it, so he has no reason to look at your desk.",
+    intent: "3:43: the boss is back at his desk, packing up for the weekend: a coat and an email over his head. He doesn't look at the list again.",
   },
   {
     name: 'end-win-ring',

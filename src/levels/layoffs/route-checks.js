@@ -13,7 +13,7 @@ const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact']
 
 export default [
   {
-    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → ✔️ → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → 🧥📧 → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
       run('pretend until 3:45');
@@ -26,7 +26,7 @@ export default [
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
       mustSay(log, 'boss', ['😮‍💨']); // 3:31: a sigh, then down to the cable himself
       mustSay(log, 'boss', ['🔌']);
-      mustSay(log, 'boss', ['@player', '✔️']);
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
     },
   },
   {
@@ -55,10 +55,10 @@ export default [
     expect: { result: 'win', routes: ['ring'] },
     play({ run, log }) {
       for (const c of [...FIX, 'goto boss_phone', 'interact', 'goto his_screen', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
-      mustSay(log, 'boss', ['😤']); // fed up with the static
+      mustSay(log, 'boss', ['🙅', '🖥️']); // don't touch my screen
       mustSay(log, 'boss', ['☕', '👉', '@player']);
       mustFire(log, 'phone:called');
-      mustSay(log, 'boss', ['📋', '🤨', '🤷']); // a face short? he shrugs and sends it
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it unread
     },
   },
   {
