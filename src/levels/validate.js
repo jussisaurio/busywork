@@ -22,7 +22,7 @@
 //               in the engine's voices or level.voices
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
 //   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
-//               the cosmetic times numbers if present
+//               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
@@ -47,13 +47,13 @@
 //               scene in scenes, each { win, icons, draw() }
 //   voices      optional; an object of voice objects
 import { parseMap } from '../core/map.js';
+import { DAY_CUES } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
-const DAY_EXTRA = ['clockRedAt', 'clockTickAt', 'tockAt', 'halfMinuteAt', 'beamAt'];
 const ROW_TARGETS = new Set(['self', 'item', 'spot']); // besides the map's interactable types
 const FAIL_THEN = new Set(['caught', 'stare', 'hunt']);
 const SCENE_RESULTS = ['caught', 'fail'];
@@ -205,7 +205,7 @@ export function levelProblems(level, key) {
   else {
     for (const f of ['start', 'gatherAt', 'meetingAt']) if (!isNum(day[f])) bad(`day.${f}`, 'not a number');
     if (isNum(day.start) && !(day.start >= 0 && day.start < 24 * 60)) bad('day.start', `${day.start} is not a minute-of-day (0..1439; 2:30 PM is 870)`);
-    for (const f of DAY_EXTRA) if (day[f] !== undefined && !isNum(day[f])) bad(`day.${f}`, 'not a number');
+    for (const f of DAY_CUES) if (day[f] !== undefined && !isNum(day[f])) bad(`day.${f}`, 'not a number');
     if (isNum(day.gatherAt) && isNum(day.meetingAt) && day.gatherAt > day.meetingAt) bad('day.gatherAt', 'after day.meetingAt');
   }
   const m = level.meeting;

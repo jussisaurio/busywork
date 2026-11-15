@@ -9,7 +9,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { itemIcon } from './characters.js';
-import { formatClock, WORK_PENALTY_MIN } from '../config.js';
+import { formatClock, dayCue, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -143,7 +143,7 @@ export function clockDigits(minute, start) {
 }
 
 function drawClock(ctx, minute, t, day) {
-  const red = minute >= day.clockRedAt;
+  const red = minute >= dayCue(day, 'clockRedAt');
   const last = minute >= day.meetingAt - 2;
   const pulse = last ? 0.5 + 0.5 * Math.sin(t * 8) : 0;
   panel(ctx, 10, 6, 168, 44);

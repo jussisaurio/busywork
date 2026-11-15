@@ -41,6 +41,21 @@ export function clockArg(minute, start = DAY_START) {
 }
 
 // --- Movement / interaction -----------------------------------------------
+// Cosmetic cue times, game minutes like day.meetingAt. A level may set any of them in its day; the rest default to
+// a few minutes before day.meetingAt (dayCue reads one). They are not rules: nothing in the sim reads them.
+const CUE_DEFAULTS = {
+  clockRedAt: (d) => d.meetingAt - 5, // the HUD clock turns red
+  clockTickAt: (d) => dayCue(d, 'clockRedAt'), // audio: the wall clock starts ticking (with the red clock)
+  tockAt: (d) => d.meetingAt - 2, // audio: tick-tock
+  halfMinuteAt: (d) => d.meetingAt - 1, // audio: a tick every half minute
+  beamAt: (d) => d.meetingAt - 5, // the meeting projector's beam lights the screen
+};
+export const DAY_CUES = Object.keys(CUE_DEFAULTS);
+export function dayCue(day, name) {
+  const d = day ?? {};
+  return d[name] ?? CUE_DEFAULTS[name](d);
+}
+
 export const PLAYER_SPEED = 4.2;
 export const PLAYER_BUSY_SPEED = 2.4; // striding with a folder
 export const PLAYER_RADIUS = 0.3; // collision circle

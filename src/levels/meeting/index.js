@@ -65,7 +65,8 @@ export default {
     // at()'s default start, config.js DAY_START, the same 2:30 PM (another start passes it: at('9:30', START))
     gatherAt: at('3:54'), // everyone still on the floor heads to their meeting seat (sim)
     meetingAt: at('4:00'), // the meeting: the day's outcome (scenario)
-    // Cosmetic cues: separate times, not rules (none of them follows from gatherAt or meetingAt).
+    // Cosmetic cues: separate times, not rules. Each is optional: config.js dayCue defaults it to a few minutes
+    // before meetingAt (red and ticking at -5, tock -2, half minutes -1, beam -5).
     clockRedAt: at('3:50'), // the HUD clock turns red
     clockTickAt: at('3:50'), // audio: the wall clock starts ticking
     tockAt: at('3:55'), // audio: tick-tock

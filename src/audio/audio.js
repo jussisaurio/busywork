@@ -13,6 +13,7 @@
 // e.g. src/levels/meeting/sounds.js); this file plays the engine's events and the level's recipes.
 
 import { spotPos, findNpc } from '../game/perception.js';
+import { dayCue } from '../config.js';
 import { P, fin, clamp, rand, chain, makeBuffers } from './synth.js';
 import { babble, hum, voiceOf, sfxPitch, voicesFor } from './babble.js';
 import * as sfx from './sfx.js';
@@ -410,9 +411,10 @@ export function createAudio(opts = {}) {
   }
   // quiet: no ticks (meeting outcome or caught); the 4:00 chime still rings unless caught.
   // day: the level's times (meetingAt; clockTickAt: the wall clock starts ticking; tockAt: tick-tock;
-  // halfMinuteAt: a tick every half minute).
+  // halfMinuteAt: a tick every half minute; config.js dayCue gives the defaults).
   function clockTicks(minute, quiet, caught, day) {
-    const { meetingAt, clockTickAt, tockAt, halfMinuteAt } = day;
+    const { meetingAt } = day;
+    const [clockTickAt, tockAt, halfMinuteAt] = ['clockTickAt', 'tockAt', 'halfMinuteAt'].map((n) => dayCue(day, n));
     const m = fin(minute, 0);
     if (prevMinute === null || m < prevMinute) {
       prevMinute = m;
@@ -451,7 +453,7 @@ export function createAudio(opts = {}) {
         play: wantMusic && !muted && ctxOk && day && !g.outcome && !g.caught,
         duck: ducking,
         rate: fin(clock.forced, 0) > 0 ? 1.45 : clock.ff ? 1.3 : 1,
-        level: fin(clock.minute, 0) >= fin(g.level?.day?.clockTickAt, Infinity) ? 0.6 : 1, // make room for the clock
+        level: fin(clock.minute, 0) >= fin(g.level?.day && dayCue(g.level.day, 'clockTickAt'), Infinity) ? 0.6 : 1, // make room for the clock
       });
     }
     if (muted || !ctxOk || !day) {
