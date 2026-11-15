@@ -3,20 +3,27 @@
 //
 // The half hour before the audit is the level: everyone's routine opens and closes windows.
 //   3:08-3:16  the boss smokes in the lobby. Lin sees into his office through the glass, and he sees her desk.
-//   3:10-3:22  Kev is out for lunch; back, he stops by your desk first (👋), and takes his laptop if it's there.
-//   3:13-3:24  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌, and she misses it (💻❓).
-//   3:24-3:37  Kev has a coffee in the kitchen, in view; back, by your desk again, just after your tick.
+//   3:10-3:22  Kev goes to lunch. He packs his laptop, sets it down on your desk to wave, and leaves without it;
+//              back, he finds it there (💻🤦: silly him) and takes it home. Every loop: he's like that.
+//   3:13-3:19  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌.
+//   Back at their desks, the boss and Lin look for a laptop that's gone (💻❓), up and down the hallway till the
+//   audit; one they see within reach (on your desk, on Kev's) goes home in their hands, 😠 (index.js HUNTS).
+//   3:24-3:37  Kev has a coffee in the kitchen, in view. Back, he waits a step short of your desk while the auditor
+//              is at it, if his laptop lies there again: just after the tick he takes it (💻🤦) to his own desk.
 //   3:25       the auditor is out of the lift, coffee at the hallway machine, clipboard. 3:30 he starts ticking:
-//              the boss's desk, Lin's (she gets coffee 3:35-3:38 and walks right past you), yours, Kev's.
-//   3:33-      the boss, ticked off, goes for his smoke.
+//              the boss's desk, Lin's (she goes for a coffee in the kitchen at 3:35), yours, Kev's. A ❌ makes
+//              him angry; he finishes his list all the same and fires you at the sign-off.
+//   3:33-      the boss, ticked off, goes for his smoke. He and Lin stay out through the sign-off (index.js clockFor).
 import { at as atClock, deg } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
+import { setOverride } from '../../sim/override.js';
 import { SPOTS } from './spots.js';
 
 export const START = 15 * 60; // 3:00 PM
 const at = (time) => atClock(time, START);
 const s = (time, entry) => ({ at: at(time), ...entry });
-const KEV_BACK = '3:37.4'; // out of the kitchen: at your desk just after the auditor has ticked it
+const KEV_BACK = '3:36.5'; // out of the kitchen: a step short of your desk before the auditor gets to it
+export const KEV_GO = at('3:39.9'); // on to his desk via yours (index.js clockFor holds him for your desk's tick)
 
 export const CAST = [
   {
@@ -31,7 +38,7 @@ export const CAST = [
     coneTint: [235, 235, 245],
     schedule: [
       s('3:00', { do: 'away', spot: 'elevator' }), // on his way up
-      s('3:25', { do: 'visit', spot: 'coffee', anim: 'coffee' }), // out of the lift; the audit starts at 3:30 (index.js)
+      s('3:25', { do: 'visit', spot: 'coffee', anim: 'coffee' }), // out of the lift; the audit is at 3:30 (index.js)
     ],
   },
   {
@@ -61,9 +68,8 @@ export const CAST = [
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // she sees into the boss's office through the glass
       s('3:13', { do: 'away', spot: 'restroom' }),
-      s('3:19', { do: 'sit', spot: 'lin_desk', arrive: 'checkLaptop' }),
-      s('3:35', { do: 'visit', spot: 'coffee' }), // coffee, while he ticks off her desk
-      s('3:38', { do: 'sit', spot: 'lin_desk', arrive: 'checkLaptop' }), // back down the hallway
+      s('3:19', { do: 'sit', spot: 'lin_desk', arrive: 'linCheck' }),
+      s('3:35', { do: 'visit', spot: 'pot', anim: 'coffee' }), // a coffee in the kitchen, while he ticks off her desk
     ],
   },
   {
@@ -76,19 +82,44 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
-      s('3:09.5', { do: 'say', icons: ['👋'], kind: 'speech' }), // off to lunch
-      s('3:10', { do: 'away', spot: 'elevator' }), // his laptop stays on his desk
+      s('3:10', { do: 'away', spot: 'elevator', prelude: ['kevPacks', 'kevLeavesIt'] }), // lunch: forgets his laptop
       s('3:18', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
-      s('3:24', { do: 'visit', spot: 'kitchen', anim: 'coffee' }), // a coffee in the kitchen; his laptop stays on his desk
-      s(KEV_BACK, { do: 'sit', spot: 'kev_desk', prelude: 'kevStopsAgain', arrive: 'kevSits' }), // via your desk
+      s('3:24', { do: 'visit', spot: 'kitchen', anim: 'coffee' }), // a coffee in the kitchen; his laptop stays home
+      s(KEV_BACK, { do: 'visit', spot: 'kev_wait' }), // waits for the auditor to be done at your desk
+      { at: KEV_GO, do: 'sit', spot: 'kev_desk', prelude: 'kevStopsAgain', arrive: 'kevSits' }, // via your desk
     ],
   },
 ];
 
 const on = (w, spot) => w.items.find((i) => i.spot === spot);
 
-// Kev's stop at your desk on his way back to his own (once per return: flag names the return).
-const stopBy = (flag) => ({
+// An NPC carrying his laptop puts it down where it lives (if nothing else lies there).
+function homeLaptop(game, npc, type, spot) {
+  const w = game.world;
+  if (npc.carry !== type || on(w, spot)) return false;
+  npc.carry = null;
+  w.items.push(itemOn(SPOTS, spot, type));
+  w[type] = spot;
+  game.events.emit('laptop:home', { type, by: npc.id });
+  return true;
+}
+
+// Back at his desk: his laptop, home if he carries it; gone, he wonders, then looks for it once (index.js HUNTS).
+const deskCheck = (type, spot) => ({
+  state: { _hunted: false },
+  arrive(game, npc, sim) {
+    if (homeLaptop(game, npc, type, spot) || on(game.world, spot) || npc.carry === type) return;
+    sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
+    game.events.emit('laptop:missing', { by: npc.id });
+    if (npc._hunted) return;
+    npc._hunted = true;
+    sim.startHunt(game, npc);
+  },
+});
+
+// Kev at the end of your desk, back from lunch or from the kitchen: his laptop on it, he blames himself (💻🤦) and
+// takes it. He never thinks anyone moved it: he's the one who leaves it about. flag: which return this is.
+const stopBy = (flag, expects) => ({
   spot: 'hallway_mid',
   state: { [flag]: false },
   pending: (npc) => !npc[flag],
@@ -100,8 +131,10 @@ const stopBy = (flag) => ({
       w.items = w.items.filter((i) => i !== it);
       npc.carry = 'laptop_kev';
       w.laptop_kev = npc.id;
-      sim.speak(game, npc, [{ say: ['💻', '❗'] }]);
+      sim.speak(game, npc, [{ say: ['💻', '🤦'] }]);
       game.events.emit('kev:fetched', {});
+    } else if (expects && npc.carry !== 'laptop_kev') {
+      sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]); // not where he left it
     } else {
       sim.speak(game, npc, [{ say: ['👋'] }]);
     }
@@ -109,46 +142,89 @@ const stopBy = (flag) => ({
 });
 
 export const BEHAVIOURS = {
-  // Back at her desk: where's her laptop? (She takes it back if she sees you with it: index.js ITEMS.)
-  checkLaptop: {
+  bossCheck: deskCheck('laptop_boss', 'boss_desk'),
+  linCheck: deskCheck('laptop_lin', 'lin_desk'),
+
+  // Kev's lunch: his laptop off his desk into his hands, then down on yours while he waves, and off he goes.
+  kevPacks: {
+    spot: 'kev_desk',
+    state: { _packed: false },
+    pending: (npc) => !npc._packed,
     arrive(game, npc, sim) {
-      if (on(game.world, 'lin_desk')) return;
-      sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
-      game.events.emit('lin:missing', {});
+      npc._packed = true;
+      const w = game.world;
+      const it = on(w, 'kev_desk');
+      if (it?.type !== 'laptop_kev') return;
+      w.items = w.items.filter((i) => i !== it);
+      npc.carry = 'laptop_kev';
+      w.laptop_kev = npc.id;
+      game.events.emit('kev:packed', {});
     },
   },
-  // Back from his smoke: where's his laptop?
-  bossCheck: {
+  kevLeavesIt: {
+    spot: 'hallway_mid',
+    state: { _left: false },
+    pending: (npc) => !npc._left,
     arrive(game, npc, sim) {
-      if (on(game.world, 'boss_desk')) return;
-      sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
+      npc._left = true;
+      const w = game.world;
+      if (npc.carry === 'laptop_kev' && !on(w, 'your_desk')) {
+        npc.carry = null;
+        w.items.push(itemOn(SPOTS, 'your_desk', 'laptop_kev'));
+        w.laptop_kev = 'your_desk';
+        game.events.emit('kev:forgot', {});
+      }
+      sim.speak(game, npc, [{ say: ['👋'] }]);
     },
   },
-  // Kev, back from lunch and back from the kitchen, stops by your desk first: a wave, or his laptop, which he takes.
-  kevStops: stopBy('_lunch'),
-  kevStopsAgain: stopBy('_coffee'),
+  kevStops: stopBy('_lunch', true),
+  kevStopsAgain: stopBy('_coffee', false),
   // At his own desk: his laptop goes back where it lives.
   kevSits: {
     arrive(game, npc, sim) {
-      const w = game.world;
-      if (npc.carry !== 'laptop_kev' || on(w, 'kev_desk')) {
-        if (!on(w, 'kev_desk')) sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
-        return;
-      }
-      npc.carry = null;
-      w.items.push(itemOn(SPOTS, 'kev_desk', 'laptop_kev'));
-      w.laptop_kev = 'kev_desk';
-      game.events.emit('kev:plugged', {});
+      if (homeLaptop(game, npc, 'laptop_kev', 'kev_desk') || on(game.world, 'kev_desk')) return;
+      sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]);
     },
   },
-  // At your desk for the sign-off: a nod if the audit passed.
+
+  // A ❌: angry (index.js INSPECTIONS fail.says), a look at you if it's your desk, then on down his list. Picks the
+  // inspection up again where it stopped (its internals: sim/mechanics/inspection.js check/build), keeping the
+  // desks he ticked before the ❌, so a laptop moved off one still counts as moved.
+  auditGoesOn: {
+    arrive(game, npc, sim, { index }) {
+      const w = game.world;
+      w.crossed = [...w.crossed, index];
+      game.events.emit('audit:crossed', { index });
+      if (index === 2) sim.lookAt(game, npc, 'player_desk', 1.2);
+      const insp = game.level.inspections[0];
+      if (index + 1 >= insp.checks.length) return;
+      const passed = [];
+      insp.checks.forEach((c, j) => {
+        if (j >= index || !c.record || !w[c.record]) return;
+        const item = w.items.find((i) => i.spot === c.spot && i.type === w[c.record]);
+        passed.push({ index: j, item: item ?? { spot: null }, spot: c.spot, moved: !item });
+      });
+      npc._insp = { data: insp, i: index + 1, passed, sim };
+      setOverride(npc, insp.override);
+    },
+  },
+
+  // At your desk for the sign-off: four ticks, a smile; a ❌ on his list, he points you to the door.
   signOff: {
     state: { _signed: false },
     arrive(game, npc, sim) {
       if (npc._signed) return;
       npc._signed = true;
       sim.faceSpot(game, npc, 'player_desk');
-      if (game.world.audited) sim.speak(game, npc, [{ say: ['😊'] }]);
+      const w = game.world;
+      if (['atBoss', 'atLin', 'atYou', 'atKev'].every((r) => w[r])) {
+        sim.speak(game, npc, [{ say: ['😊'] }]);
+        game.events.emit('audit:passed', {});
+      } else {
+        const fired = [{ say: ['💻', '❌'], kind: 'thought', ttl: 1.2 }, { say: ['😠', '👉', '@player'], after: 1.2 }];
+        sim.speak(game, npc, fired);
+        game.events.emit('audit:fired', {});
+      }
     },
   },
 };

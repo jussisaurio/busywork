@@ -37,6 +37,7 @@ const { useFaces, drawPerson, personState, lookFor } = await import('../src/rend
 const { drawFocusHint, drawBubbles } = await import('../src/render/effects.js');
 const { levelProblems } = await import('../src/levels/validate.js');
 const { LEGACY_LEVELS, isLegacyLevel } = await import('../src/levels/legacy.js');
+const LEGACY_ID = LEGACY_LEVELS[0]; // any level still on the list
 const { levels, getLevel } = await import('../src/levels/index.js');
 const { worldGlyphs, drawnCheck } = await import('./lib/drawn.mjs');
 
@@ -115,7 +116,7 @@ useThings(game);
   const noDraw = { ...meeting, items: { ...meeting.items, coffee: { ...meeting.items.coffee, draw: undefined } } };
   delete noDraw.items.coffee.draw;
   ok(has(probs(noDraw), 'items.coffee.draw'), 'an item without a draw is refused');
-  ok(!has(probs({ ...noDraw, id: 'audit' }), 'items.coffee.draw'), 'a legacy level may leave an item undrawn');
+  ok(!has(probs({ ...noDraw, id: LEGACY_ID }), 'items.coffee.draw'), 'a legacy level may leave an item undrawn');
   const badDraw = { ...meeting, items: { ...meeting.items, coffee: { ...meeting.items.coffee, draw: 'teapot' } } };
   ok(has(probs(badDraw), 'items.coffee.draw'), 'an item draw that names no thing is refused');
   const ownerless = { ...meeting, items: { ...meeting.items, keycard: { ...meeting.items.keycard, tint: 'owner' } } };
@@ -124,7 +125,7 @@ useThings(game);
   ok(has(probs(arms('☕')), 'poses.arms[0].item'), 'an emoji in a hand is refused');
   ok(has(probs(arms('#teapot')), 'poses.arms[0].item'), "a '#name' that draws nothing in a hand is refused");
   ok(!has(probs(arms('#coffee')), 'poses.arms[0].item'), "a '#<item>' with a draw in a hand is fine");
-  ok(!has(probs({ ...arms('☕'), id: 'audit' }), 'poses.arms[0].item'), 'a legacy level may hold an emoji');
+  ok(!has(probs({ ...arms('☕'), id: LEGACY_ID }), 'poses.arms[0].item'), 'a legacy level may hold an emoji');
   const iconProp = { ...fixture, decor: { ...fixture.decor, props: [{ ...fixture.decor.props[0], draw: 'icon' }, ...fixture.decor.props.slice(1)] } };
   ok(has(probs(iconProp), 'decor.props[0].draw'), "an 'icon' prop painter is refused");
   const verb = Object.keys(meeting.interactions)[0];
@@ -203,7 +204,7 @@ useThings(game);
   }
   ok(caught.some((v) => v.glyph === '🫖'), 'a painter that draws an emoji in your hand is caught');
   ok(fake.errors.length === 0, `the painters made no bad canvas calls${fake.errors.length ? `: ${fake.errors.slice(0, 3).join('; ')}` : ''}`);
-  ok(!drawnCheck({ level: 'audit' }).ok, 'the gate fails a level on the legacy list');
+  ok(!drawnCheck({ level: LEGACY_ID }).ok, 'the gate fails a level on the legacy list');
   ok(drawnCheck({ level: 'meeting', glyphs: [] }).ok, 'the gate passes a migrated level that draws no emoji objects');
   ok(!drawnCheck({ level: 'meeting', glyphs: [{ glyph: '🥪', level: 'meeting' }] }).ok, 'the gate fails a level that draws an emoji object');
 }

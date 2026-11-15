@@ -1,29 +1,35 @@
-// "The Audit": 3:00 PM. A laptop audit at 3:30. There should be four. You sold yours. Make him count four.
+// "The Audit": 3:00 PM. Laptop audit at 3:30. You sold yours.
 // An auditor comes up in the lift and ticks the desks off in order: the boss's, Lin's, yours, Kev's. Each desk is
 // judged when he gets to it, so a laptop he has already ticked off can run ahead of his clipboard to the next desk
-// and be counted twice. Move one too early and the desk it left gets the ❌.
+// and be counted twice. Move one too early and the desk it left gets the ❌. A ❌ doesn't stop him: he finishes his
+// list, then fires you at the sign-off.
 //
 // Same office as level 1 (its LOOKS and SOUNDS are imported read-only; the map is a copy, see MAP). The level
 // object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
-import { CAST, BEHAVIOURS, START } from './cast.js';
+import { npcSees } from '../../game/perception.js';
+import { speak } from '../../sim/override.js';
+import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
 import { SPOTS, LAPTOPS } from './spots.js';
+import { laptop } from './things.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
-// Level 1's floor (meeting/map.js), with the projector a plain meeting table and the coat rack, coffee machine and
-// fridge set dressing only. Your desk keeps its P (you can still sit at it), but your laptop is gone: what you put
+// Level 1's floor (meeting/map.js), with the projector a plain meeting table and the coat rack and fridge set
+// dressing only. Both coffee machines have a full pot and pour (meeting/coffee.js): the auditor, Lin and Kev drink
+// from them all afternoon. Your desk keeps its P (you can still sit at it), but your laptop is gone: what you put
 // on it lies on its east end (spot your_desk).
 const MAP = [
   '##############################', // 0
-  '#K......G..........#FTCT.....#', // 1
+  '#K......G..........#FTCT.....#', // 1   C the kitchen's coffee machine
   '#.......G..........#.........#', // 2
   '#..TTT..G..TTTTTT..#....TTT..#', // 3   the boss's desk (x3-5): he sits south of it, facing his window
   '#.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
-  '#GGGGGDGG##C##D#######DD######', // 6   glass: Lin, at her desk, looks straight into the boss's office; C the hallway coffee machine
+  '#GGGGGDGG##M##D#######DD######', // 6   glass: Lin, at her desk, looks into the boss's office; M the hallway's pot
   '#............................#', // 7   the hallway the auditor walks
   '#..TTT......TPT......TTT.....#', // 8   Lin's desk (x3-5), yours (x12-14), Kev's (x21-23)
   '#............................#', // 9
@@ -39,7 +45,9 @@ const MAP = [
 const LEGEND = {
   K: { kind: 'coat_rack', solid: true, opaque: false },
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  C: { kind: 'coffee_machine', solid: true, opaque: false },
+  C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
+  // The hallway's machine: a letter of its own, so DECOR draws its pot too (a prop draws on its letter's first tile).
+  M: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
   R: { kind: 'restroom', solid: true, opaque: true },
@@ -63,28 +71,39 @@ const backTo = (type, spot) => (game, npc) => {
   game.events.emit('laptop:reclaimed', { type, by: npc.id });
 };
 
-const laptop = (owner, spot) => ({
+// A laptop: drawn (things.js), its lid in its owner's colour, so whose it is shows in any hand and on any desk.
+const laptopItem = (owner, spot) => ({
   icon: '💻',
+  draw: laptop,
+  tint: 'owner',
   place: `laptop_${owner}`,
   contraband: 'auditor', // company property on audit day: seen carrying one, you're caught
   owner: { id: owner, says: [{ say: ['😠', '💻'] }], reclaim: backTo(`laptop_${owner}`, spot) },
 });
 
-// Four desks passed, so one laptop was counted on two of them.
-const twice = (w, type) => w.audited && [w.atBoss, w.atLin, w.atYou, w.atKev].filter((t) => t === type).length >= 2;
-
 const ITEMS = {
-  laptop_boss: laptop('boss', 'boss_desk'),
-  laptop_lin: laptop('lin', 'lin_desk'),
-  laptop_kev: laptop('kev', 'kev_desk'),
+  laptop_boss: laptopItem('boss', 'boss_desk'),
+  laptop_lin: laptopItem('lin', 'lin_desk'),
+  laptop_kev: laptopItem('kev', 'kev_desk'),
+  // A coffee: your hands are full till you drink it (keep: it never lands on the floor, where the laptop row would
+  // offer to "unplug" it). The cost shows at once: no laptop while you hold a cup.
+  coffee: { ...COFFEE_CUP, keep: true },
 };
 
+// Whose desk each check is (the end card names the first ❌: end-scenes.js).
+const WHY = ['boss', 'lin', 'you', 'kev'];
+// The four records: whose laptop he ticked off on each desk (null: not reached, or crossed).
+const RECORDS = ['atBoss', 'atLin', 'atYou', 'atKev'];
+// Four desks passed, so one laptop was counted on two of them.
+const twice = (w, type) => RECORDS.every((r) => w[r]) && RECORDS.filter((r) => w[r] === type).length >= 2;
+
 // Unplugging a laptop from a desk is sneaky: anyone who sees you at it minds (the auditor catches you). Replaces
-// the generic pick_up row (play/interactions.js), whose pick-up anyone may watch.
+// the generic pick_up row (play/interactions.js), whose pick-up anyone may watch. Laptops only (a cup never lies
+// about: ITEMS.coffee keep).
 const INTERACTIONS = {
   pick_up: {
-    on: 'item', icon: '✋', text: 'unplug the laptop', duration: 0.5, sneaky: true, saw: '💻',
-    can: (p, w, item) => !p.held && w.items.includes(item),
+    on: 'item', text: 'unplug the laptop', duration: 0.5, sneaky: true, saw: '💻',
+    can: (p, w, item) => !p.held && w.items.includes(item) && LAPTOPS.includes(item.type),
     done(game, a) {
       const p = game.player;
       const w = game.world;
@@ -92,6 +111,15 @@ const INTERACTIONS = {
       p.held = a.item.type;
       w[game.level.items[a.item.type].place] = 'player';
       game.events.emit('item:pickup', { type: a.item.type });
+    },
+  },
+  pour_coffee: pourCoffee(),
+  drink_coffee: {
+    on: 'self', text: 'drink the coffee', duration: 1.2, sneaky: false,
+    can: (p) => p.held === 'coffee',
+    done(game) {
+      game.player.held = null;
+      game.events.emit('coffee:drunk', {});
     },
   },
 };
@@ -109,20 +137,73 @@ const INSPECTIONS = [{
   sign: 'item',
   checks: [
     { item: LAPTOPS, spot: 'boss_desk', from: 'audit_boss', look: 2, record: 'atBoss' },
-    { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: 3.5, record: 'atLin' }, // her desk takes him longer
+    { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: 2.75, record: 'atLin' }, // her paper pile (things.js)
     { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: 2, record: 'atYou' },
     { item: LAPTOPS, spot: 'kev_desk', from: 'audit_kev', look: 2, record: 'atKev' },
   ],
-  pass: { set: { audited: true }, event: 'audit:passed', says: [{ say: ['💻', '😊'] }] }, // Kev's desk, the fourth tick
-  fail: { then: 'caught', says: [{ say: ['💻', '❓'] }] },
+  // A ❌: angry, and on down his list (cast.js auditGoesOn). He fires you at the sign-off (cast.js signOff).
+  fail: { then: 'auditGoesOn', says: [{ say: ['😠'] }] },
 }];
+
+// Owners whose laptop is gone go looking for it, back and forth along the hallway, until the audit (C: a tattle
+// costs something you can see). Seen anywhere within reach, on your desk or Kev's, it goes home in their hands.
+const PATROLS = {
+  bossHunt: [[6, 5], [6, 7], [11, 7], [16, 7]], // out of his office and down the hallway: your desk in view
+  linHunt: [[5, 7], [10, 7], [15, 7], [19, 7]],
+};
+const FOUND_REACH = 4.5; // tiles: near enough to know it's his
+const foundLaptop = (type, home) => (game, npc) => {
+  const w = game.world;
+  if (npc.carry === type || w.items.some((i) => i.type === type && i.spot === home)) return true;
+  const it = w.items.find((i) => i.type === type);
+  if (!it || Math.hypot(it.x - npc.x, it.y - npc.y) > FOUND_REACH || !npcSees(game, npc, it.x, it.y)) return false;
+  w.items = w.items.filter((i) => i !== it);
+  npc.carry = type;
+  w[type] = npc.id;
+  speak(game, npc, [{ say: ['😠', '💻'] }]);
+  game.events.emit('laptop:reclaimed', { type, by: npc.id });
+  return true;
+};
+const HUNTS = [
+  {
+    npc: 'boss', override: 'hunt', plan: 'bossHunt', label: 'looking for his laptop', route: 'bossHunt',
+    look: { angle: 1.1, time: 1.0 }, start: { wait: 0.8 }, until: at('3:30', START),
+    found: foundLaptop('laptop_boss', 'boss_desk'),
+  },
+  {
+    npc: 'lin', override: 'hunt', plan: 'linHunt', label: 'looking for her laptop', route: 'linHunt',
+    look: { angle: 1.1, time: 1.0 }, start: { wait: 0.8 }, until: at('3:33', START),
+    found: foundLaptop('laptop_lin', 'lin_desk'),
+  },
+];
+
+// The minute each schedule reads (npcs.js clockFor).
+//   The boss and Lin skip the sign-off: it is the auditor's business at your desk, and they keep to their smoke
+//   and their coffee (back at their desks they would look for their laptops, cast.js).
+//   Kev, back from the kitchen, waits a step short of your desk while the auditor is at it, if his laptop lies
+//   there: he steps in for it just after the tick (fix: the tick lands first, then the gap).
+const KEV_STEP_IN = 0.3; // game minutes after your desk's tick (about half a second)
+function clockFor(game, npc) {
+  const now = game.clock.minute;
+  if ((npc.id === 'boss' || npc.id === 'lin') && npc.override === 'signoff') npc.override = null;
+  if (npc.id !== 'kev' || npc._released || now < KEV_GO) return now;
+  const w = game.world;
+  const mine = w.items.some((i) => i.spot === 'your_desk' && i.type === 'laptop_kev');
+  const ticked = !!w.atYou || w.crossed.includes(2);
+  if (!mine || now >= game.level.day.gatherAt) npc._released = true;
+  else if (ticked) {
+    npc._goAt ??= now + KEV_STEP_IN;
+    if (now >= npc._goAt) npc._released = true;
+  }
+  return npc._released ? now : KEV_GO - 1e-6;
+}
 
 export default {
   id: 'audit',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,
-  patrols: {},
+  patrols: PATROLS,
   cast: CAST,
   day: {
     start: START,
@@ -133,15 +214,20 @@ export default {
     tockAt: at('3:42', START),
     halfMinuteAt: at('3:44', START),
   },
+  clockFor,
   interactions: INTERACTIONS,
   items: ITEMS,
   roles: ROLES,
   lures: [],
-  hunts: [],
+  hunts: HUNTS,
   doors: [],
   inspections: INSPECTIONS,
   behaviours: BEHAVIOURS,
-  meeting: { override: 'signoff', room: 'desk', chair: 'player_desk', presenter: 'player_desk' },
+  meeting: {
+    override: 'signoff', room: 'desk', chair: 'player_desk', presenter: 'player_desk',
+    // A ❌ anywhere: fired at the sign-off. why: whose desk got the first ❌ (end-scenes.js).
+    verdict: (game, { result }) => (result === 'fail' ? { why: WHY[game.world.crossed[0]] ?? 'you' } : null),
+  },
   // A route: whose laptop he counted twice.
   routes: [
     { id: 'boss', icon: '@boss', achieved: (w) => twice(w, 'laptop_boss') },
@@ -153,11 +239,11 @@ export default {
     laptop_boss: 'boss_desk', // where each laptop is: a spot, 'player', 'dropped', or who carries it
     laptop_lin: 'lin_desk',
     laptop_kev: 'kev_desk',
-    audited: false, // every desk ticked
-    atBoss: null, // whose laptop he ticked off on each desk
+    atBoss: null, // whose laptop he ticked off on each desk (RECORDS)
     atLin: null,
     atYou: null,
     atKev: null,
+    crossed: [], // the desks (check indexes) he gave a ❌
     items: [itemOn(SPOTS, 'boss_desk', 'laptop_boss'), itemOn(SPOTS, 'lin_desk', 'laptop_lin'), itemOn(SPOTS, 'kev_desk', 'laptop_kev')],
   }),
   harness,
