@@ -10,6 +10,8 @@ import holdMusic from './hold-music/index.js';
 import monitor from './monitor/index.js';
 import hoodie from './hoodie/index.js';
 import lightsOut from './lights-out/index.js';
+import audit from './audit/index.js';
+import weekendShift from './weekend-shift/index.js';
 import { validateLevel } from './validate.js';
 
 export const levels = {
@@ -23,6 +25,8 @@ export const levels = {
   monitor, // design jam batch 1: the camera
   hoodie, // Kev's Hoodie: disguise
   'lights-out': lightsOut, // batch 1: darkness
+  audit, // The Audit: one laptop counted twice
+  'weekend-shift': weekendShift, // "make a glance": the noises
 };
 for (const [key, level] of Object.entries(levels)) validateLevel(level, key);
 export const defaultLevel = meeting;

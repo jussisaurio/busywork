@@ -26,11 +26,18 @@
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a boolean
+//   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
+//               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
+//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a
+//               boolean; disguise { as (a cast id), look? (an object of look fields), greet? (a list of lines) }
+//               (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
-//               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
+//               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
+//               icon or a list, its absent true or false; a count check a whole count >= 1 with a non-empty spots
+//               list or a zone (then a from); its look a number, its record (on an item or count check) a field of
+//               initialWorld(); a noise is not 'noise' or 'npc:heard'
 //   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
 //               torch { when(), fov, radius }; controls a list of { tile (a legend letter on the map), kind (one of
 //               game/darkness.js CONTROL_KINDS), on() } (src/game/darkness.js)
@@ -47,7 +54,8 @@
 //               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
-//               (render/world.js PROP_PAINTERS) on a legend letter that is on the map
+//               (render/world.js PROP_PAINTERS) or a painter function of the level's, on a legend letter
+//               that is on the map
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
 //               scene in scenes, each { win, icons, draw() }
@@ -56,6 +64,7 @@ import { parseMap } from '../core/map.js';
 import { DAY_CUES } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
+import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
 
@@ -95,6 +104,21 @@ export function levelProblems(level, key) {
   const route = (path, name) => { if (!has(patrols, name)) bad(path, `no route ${q(name)} in level.patrols`); };
   const itemType = (path, type) => { if (!has(items, type)) bad(path, `no item type ${q(type)} in level.items`); };
   const list = (path, v) => { if (!Array.isArray(v)) { bad(path, 'not a list'); return []; } return v; };
+  const itemTypes = (path, v) => { // one item type or a non-empty list of them
+    if (!Array.isArray(v)) return itemType(path, v);
+    if (!v.length) bad(path, 'empty');
+    for (const [k, t] of v.entries()) itemType(`${path}[${k}]`, t);
+  };
+  const icons = (path, v) => { if (!isStr(v) && !(Array.isArray(v) && v.every(isStr))) bad(path, 'not an icon or a list of icons'); };
+  const noiseTiming = (path, n) => {
+    if (!isObj(n)) return;
+    if (n.delay !== undefined && !(isNum(n.delay) && n.delay >= 0)) bad(`${path}.delay`, 'not a number >= 0 (s)');
+    for (const k of ['every', 'turn']) if (n[k] !== undefined && !(isNum(n[k]) && n[k] > 0)) bad(`${path}.${k}`, 'not a number > 0 (s)');
+    if (n.while !== undefined && !isFn(n.while)) bad(`${path}.while`, 'not a function (world) -> bool');
+    if (n.sfx !== undefined && !(isStr(n.sfx) && isFn(SFX[n.sfx]))) bad(`${path}.sfx`, `no sound ${q(n.sfx)} in audio/sfx.js`);
+    const rp = n.ripple;
+    if (rp !== undefined && rp !== true && !(isObj(rp) && (rp.color === undefined || isStr(rp.color)))) bad(`${path}.ripple`, 'not true or { color? }');
+  };
 
   // --- identity and title -----------------------------------------------------------------------
   if (!isStr(level.id)) bad('id', 'missing');
@@ -234,6 +258,7 @@ export function levelProblems(level, key) {
       if (!isObj(row)) { bad(path, 'not an object'); continue; }
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
       if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
+      if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
     }
   }
   if (level.items !== undefined && !isObj(level.items)) bad('items', 'not an object');
@@ -284,20 +309,40 @@ export function levelProblems(level, key) {
     zone(`doors[${i}].zone`, d?.zone);
     for (const [k, id] of list(`doors[${i}].npcs`, d?.npcs).entries()) npc(`doors[${i}].npcs[${k}]`, id);
   }
+  const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
     const path = `inspections[${i}]`;
     npc(`${path}.npc`, insp?.npc);
     for (const [k, c] of list(`${path}.checks`, insp?.checks).entries()) {
       const cp = `${path}.checks[${k}]`;
-      if (c?.item !== undefined) {
-        itemType(`${cp}.item`, c.item);
+      if (c?.count !== undefined) {
+        itemTypes(`${cp}.item`, c.item);
+        if (!Number.isInteger(c.count) || c.count < 1) bad(`${cp}.count`, 'not a whole number of 1 or more');
+        if (c.zone !== undefined) zone(`${cp}.zone`, c.zone);
+        else {
+          const ss = list(`${cp}.spots`, c.spots);
+          if (Array.isArray(c.spots) && !ss.length) bad(`${cp}.spots`, 'empty');
+          for (const [j, n] of ss.entries()) spot(`${cp}.spots[${j}]`, n);
+        }
+        if (c.absent !== undefined) bad(`${cp}.absent`, 'a count is never absent');
+      } else if (c?.item !== undefined) {
+        itemTypes(`${cp}.item`, c.item);
         spot(`${cp}.spot`, c.spot);
       } else {
         if (c?.who !== 'player') npc(`${cp}.who`, c?.who);
         zone(`${cp}.zone`, c?.zone);
       }
-      if (c?.from !== undefined || c?.item === undefined) spot(`${cp}.from`, c?.from);
+      // He stands at `from`: needed where nothing else says where (a who check, a count over a zone).
+      if (c?.from !== undefined || c?.item === undefined || (c?.count !== undefined && c.zone !== undefined)) spot(`${cp}.from`, c?.from);
+      if (c?.icon !== undefined) icons(`${cp}.icon`, c.icon);
+      if (c?.absent !== undefined && typeof c.absent !== 'boolean') bad(`${cp}.absent`, 'not true or false');
+      if (c?.look !== undefined && !(isNum(c.look) && c.look >= 0)) bad(`${cp}.look`, 'not a number of seconds');
+      if (c?.record !== undefined) {
+        if (c.item === undefined || c.absent) bad(`${cp}.record`, 'only an item or count check records');
+        else records.push([`${cp}.record`, c.record]);
+      }
     }
+    if (insp?.sign !== undefined && insp.sign !== 'mark' && insp.sign !== 'item') bad(`${path}.sign`, `${q(insp.sign)} is not 'mark' or 'item'`);
     const then = insp?.fail?.then;
     if (then !== undefined && !FAIL_THEN.has(then)) behaviour(`${path}.fail.then`, then);
     if (then === 'hunt' && !(level.hunts ?? []).some((h) => h?.npc === insp.npc)) bad(`${path}.fail.then`, `no hunt for ${q(insp.npc)} in level.hunts`);
@@ -308,6 +353,7 @@ export function levelProblems(level, key) {
       if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
       spot(`${path}.at`, n?.at);
       for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
+      noiseTiming(path, n);
     }
   }
   if (level.darkness !== undefined) {
@@ -372,6 +418,7 @@ export function levelProblems(level, key) {
     let w;
     try { w = level.initialWorld(); } catch (e) { bad('initialWorld()', `throws: ${e.message}`); }
     if (w !== undefined && !(isObj(w) && Array.isArray(w.items))) bad('initialWorld()', 'returns no { items: [] }');
+    else if (w !== undefined) for (const [path, f] of records) if (!isStr(f) || !Object.hasOwn(w, f)) bad(path, `${q(f)} is no field of initialWorld()`);
   }
 
   // --- tools: harness and gate ------------------------------------------------------------------
@@ -414,7 +461,9 @@ export function levelProblems(level, key) {
     if (decor.elevator !== undefined) spot('decor.elevator.spot', decor.elevator?.spot);
     for (const [i, pr] of (decor.props ?? []).entries()) {
       const path = `decor.props[${i}]`;
-      if (!Object.hasOwn(PROP_PAINTERS, pr?.draw)) bad(`${path}.draw`, `no painter ${q(pr?.draw)} (${Object.keys(PROP_PAINTERS).join(', ')})`);
+      if (!isFn(pr?.draw) && !Object.hasOwn(PROP_PAINTERS, pr?.draw)) {
+        bad(`${path}.draw`, `no painter ${q(pr?.draw)} (a function, or one of ${Object.keys(PROP_PAINTERS).join(', ')})`);
+      }
       if (map && !(level.map.rows.some((r) => r.includes(pr?.tile)) && typeof pr?.tile === 'string' && pr.tile.length === 1)) {
         bad(`${path}.tile`, `${q(pr?.tile)} is not on the map`);
       }

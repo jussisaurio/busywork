@@ -18,6 +18,7 @@
 // mug: the cup in your hand is proof now) and goes looking for it (mechanics.js HUNTS: 📽️💥 … ☕❓).
 const peek = (flag) => ({
   spot: 'meeting_door',
+  state: { _knows: false, [flag]: false },
   pending: (npc) => !npc._knows && !npc[flag],
   arrive(game, npc, sim) {
     npc[flag] = true;

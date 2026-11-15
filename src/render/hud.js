@@ -30,7 +30,7 @@ export function drawHud(ctx, game, t, mem) {
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
   drawClock(ctx, fin(clock.minute), t, game.level.day);
-  drawGoal(ctx);
+  drawGoal(ctx, game.level.title?.badge ?? NO_BADGE);
   drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
   panel(ctx, 342, 6, 160, 44);
@@ -180,11 +180,14 @@ function drawClock(ctx, minute, t, day) {
 }
 
 // Mission icons only: 🕓 📊❌.
-function drawGoal(ctx) {
+// The mission: the 🕓 deadline, then the level's title.badge [main icon, small overlay icon], drawn as the title
+// screen draws it (screens.js).
+const NO_BADGE = [];
+function drawGoal(ctx, badge) {
   panel(ctx, 190, 6, 84, 44);
   emoji(ctx, '🕓', 214, 28, 20);
-  emoji(ctx, '📊', 248, 28, 20);
-  emoji(ctx, '❌', 258, 36, 12);
+  if (badge[0]) emoji(ctx, badge[0], 248, 28, 20);
+  if (badge[1]) emoji(ctx, badge[1], 258, 36, 12);
 }
 
 function drawHeld(ctx, items, held) {
