@@ -1,6 +1,6 @@
 // The dark (level.darkness: src/game/darkness.js), drawn over the people and under the bubbles: a navy
-// veil on every dark room, cut open where a torch beam falls, and eyes for whoever stands in the dark (you also get
-// a red outline, so you can find yourself). Lit rooms and levels without darkness draw nothing here, except the
+// veil on every dark room, cut open where a torch beam falls, the torch (a phone) in its holder's hand, and eyes for
+// whoever stands in the dark (you also get a red outline, so you can find yourself). Lit rooms and levels without darkness draw nothing here, except the
 // light controls (darkness.controls): a wall switch or a breaker panel on its wall tile, on the face that looks into
 // the room, and the little lamp that glows on it while it is off.
 import { T, fin, clamp, fillCircle, ellipse, circle } from './util.js';
@@ -210,6 +210,39 @@ export function paintLamp(ctx, lamp, dark, t) {
   fillCircle(ctx, lamp.x, lamp.y, lamp.r, `rgb(${r},${g},${b})`);
 }
 
+// A phone held out as a torch, in the right hand of someone standing at (x, y) (px) facing `dir`: where
+// render/characters.js puts that hand for arms 'reach' (pose torch holders so: level.poses), its lit end to the
+// front. Drawn over the veil, so it shows in the dark. Facing away, his body hides it: nothing is drawn.
+export function paintTorchLight(ctx, x, y, dir, t) {
+  const fx = Math.cos(dir);
+  const sd = Math.sin(dir);
+  if (sd < -0.25) return;
+  const fy = sd * 0.6;
+  const rx = -sd;
+  const ry = fx * 0.6;
+  const reach = 12 - Math.sin(fin(t) * 9) * 1.5; // the reach pose's wobble
+  const hx = x + fx * (reach + 2.5) + rx * 3;
+  const hy = y - 3 + fy * (reach + 2.5) + ry * 3;
+  const a = Math.atan2(fy, fx);
+  ctx.save();
+  ctx.translate(hx, hy);
+  ctx.rotate(a);
+  ctx.fillStyle = '#16181d';
+  ctx.fillRect(-3.5, -2.2, 7, 4.4); // the phone, end-on along his arm
+  ctx.fillStyle = '#3a3f48';
+  ctx.fillRect(-3.5, -2.2, 7, 1);
+  ctx.restore();
+  const lx = hx + fx * 3.6;
+  const ly = hy + fy * 3.6;
+  const glow = ctx.createRadialGradient(lx, ly, 0.5, lx, ly, 8);
+  glow.addColorStop(0, 'rgba(255,250,225,0.95)');
+  glow.addColorStop(0.3, 'rgba(255,240,190,0.45)');
+  glow.addColorStop(1, 'rgba(255,240,190,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(lx - 8, ly - 8, 16, 16);
+  fillCircle(ctx, lx, ly, 1.3, '#fffdf0'); // the LED
+}
+
 // ---- The dark -----------------------------------------------------------------------------------------------
 
 export function drawDarkness(ctx, game, t) {
@@ -226,11 +259,12 @@ function drawVeil(ctx, game, map, zones, t) {
   const mw = map.w * T;
   const mh = map.h * T;
   const beams = [];
+  const holders = [];
   if (game.phase === 'day') {
     for (const n of game.npcs || []) {
       if (!n || !n.active || !n.vision) continue;
       const b = torchViewer(game, n, viewerOf(n));
-      if (b) beams.push(b);
+      if (b) { beams.push(b); holders.push(n); }
     }
   }
 
@@ -266,6 +300,8 @@ function drawVeil(ctx, game, map, zones, t) {
     }
     ctx.restore();
   }
+  // The torch itself, in the holder's hand (the beam is not a glow from nowhere).
+  holders.forEach((n) => paintTorchLight(ctx, fin(n.x) * T, fin(n.y) * T, fin(n.dir), t));
 
   // Eyes in the dark (nobody's eyes while a beam is on him: he's lit).
   const lit = (x, y) => beams.some((b) => {

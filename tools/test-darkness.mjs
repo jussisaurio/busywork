@@ -137,6 +137,15 @@ function day(level) {
   game.world.torches = true;
   const torch = frame(game);
   ok(torch.filter((m) => m === 'clip').length > off.filter((m) => m === 'clip').length, 'a torch on: its beam is cut out of the veil');
+  // The torch is drawn in his hand: one glow per holder, none for a holder who faces away (his body hides it).
+  const glows = (calls) => calls.filter((m) => m === 'createRadialGradient').length;
+  const holder = findNpc(game, 'boss');
+  const facing = holder.dir;
+  holder.dir = -Math.PI / 2;
+  const away = frame(game);
+  holder.dir = facing;
+  ok(glows(torch) === glows(away) + 1, 'a torch on: the phone shows in his hand, but not while he faces away');
+  ok(glows(torch) > glows(off), 'a torch on: the beam and the phone glow');
   game.player.x = 3.5;
   game.player.y = 4.5;
   frame(game);
