@@ -47,10 +47,7 @@ export function clockFor(game, npc, sim) {
   const now = game.clock.minute;
   const st = (npc._clk ??= { off: 0, beat: null, beats: beatsOf(npc), lookT: 0, saw: {}, herdT: HERD_S });
   st.lookT = Math.max(0, st.lookT - FIXED_DT);
-  if (npc.id === 'boss') {
-    followHerd(game, npc, sim, st, now);
-    if (!game.outcome) game.world.atStop = inZone(game, 'street', game.player.x, game.player.y); // for the end card
-  }
+  if (npc.id === 'boss') followHerd(game, npc, sim, st, now);
   const b = beatAt(npc, now + st.off);
   if (st.beat === null) st.beat = b; // the first step of the day: no look-up
   if (b !== st.beat) {

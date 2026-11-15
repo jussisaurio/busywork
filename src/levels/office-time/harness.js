@@ -40,6 +40,7 @@ export default {
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (you caught your bus 🚌: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fiddling with the clock)'
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the boss left via ${o.routes.join(' + ')}, but you weren't at the bus stop: the bus left without you)`
+    : o.why === 'stop' ? "FAIL: 4:30, you are at the stop but the boss is still in, so you can't get on; the bus leaves 🚌💨"
     : 'FAIL: 4:30, the boss is still in, and your bus leaves without you 🚌💨'),
 
   playerText: () => [],

@@ -196,7 +196,7 @@ function sceneFailAtStop(ctx, game, t, e) {
   bubble(ctx, ['😳'], 505, 196, e, 'thought');
 }
 
-const atTheStop = (game) => !!game.world.atStop; // at 4:30 (the engine then puts you back at your desk)
+const atTheStop = (game) => game.outcome?.why === 'stop'; // index.js meeting.verdict
 
 // The fail: 4:30 on the boss's untouched clock and he is still at his desk, so you are still in the office. Out of
 // the window your bus drives off.

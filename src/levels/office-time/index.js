@@ -101,7 +101,12 @@ export default {
   hunts: [],
   doors: [],
   behaviours: CLOCK_BEHAVIOURS,
-  meeting: { override: 'bus', room: 'street', chair: 'bus_stop', presenter: 'player_desk' },
+  meeting: {
+    override: 'bus', room: 'street', chair: 'bus_stop', presenter: 'player_desk',
+    // At the stop while the boss is still in: you can't get on (nobody leaves before him). The end card shows you
+    // there, looking back at him, instead of inside at the window.
+    verdict: (game, { result, present }) => (result === 'fail' && present ? { why: 'stop' } : null),
+  },
   routes: [
     { id: 'clock', icon: '🕐', achieved: (w) => w.bossGone && !w.herd },
     { id: 'herd', icon: '👋', achieved: (w) => w.bossGone && w.herd },
@@ -114,7 +119,6 @@ export default {
     linGone: false,
     kevGone: false,
     herd: false, // the boss left because everyone else had
-    atStop: false, // you are at the bus stop while the boss is in (the fail card shows you there, not inside)
     items: [],
   }),
   harness,
