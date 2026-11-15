@@ -11,34 +11,34 @@
    ],
    "summary": "caught",
    "digests": [
-    "b286d49e7e698d83",
-    "81de4224ee2d122a",
-    "18bc71ab42b1e7b6",
-    "b62f6882e974e910",
-    "fd3f3ed5d53ec153",
-    "4ce235fa3d700872"
+    "0ea9a1df5d5a79a6",
+    "e2d626bbd336f01a",
+    "89f82eec11897c17",
+    "1fcf19d5386eff57",
+    "c71e5ada3df531bd",
+    "2382a6baae771732"
    ]
   },
   {
    "cmds": [
-    "goto tray pretend",
-    "pretend until 3:40"
+    "goto office_switch pretend",
+    "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "6c5d764fbe35a23d",
-    "bc84f4b7247b96cc",
-    "3ca47c110f10f261"
+    "2afcce7c333379dc",
+    "73e94becb8ee81fd",
+    "14cf6f735dcb9572"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:40"
+    "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "2a4850610cd863f8",
-    "22af8cd6cc2c9b4c"
+    "690d7851713a210e",
+    "1a5fcde4e71e5da8"
    ]
   },
   {
@@ -49,10 +49,10 @@
    ],
    "summary": "caught",
    "digests": [
-    "6c5d764fbe35a23d",
-    "27ecd0323016d16f",
-    "def2ff2d72e62254",
-    "356a3153ca0cc1e7"
+    "5f359ac95ce11456",
+    "1acd1189894d6284",
+    "a3ac4c5041b485db",
+    "fb80606fc0cb4cb5"
    ]
   },
   {
@@ -63,10 +63,10 @@
    ],
    "summary": "fail",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "136c8565f8eff0ae",
-    "9544d59713bace9c"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "7891b2d3701582df",
+    "3e229e881a6dd1f6"
    ]
   },
   {
@@ -77,26 +77,26 @@
    ],
    "summary": "caught",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "1f5d3b5df2eca9c0",
-    "ac76d4fa96dacc6d"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "214df7408b1e8e03",
+    "b2f31898a4252649"
    ]
   },
   {
    "cmds": [
     "goto fuse_box pretend",
     "interact",
-    "goto microwave pretend",
+    "goto coffee_machine pretend",
     "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "8083157755b0206e",
-    "b25bfc6c6ab86108",
-    "e8348db84f8c2471"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "a6bfcaa51206ba36",
+    "f0cd34c84a33d059",
+    "a02b0a1883a89cdc"
    ]
   },
   {
@@ -107,54 +107,70 @@
     "pretend until 3:25",
     "goto tray pretend",
     "interact",
-    "interact",
-    "pretend until 3:40"
+    "wait until 3:40"
    ],
    "summary": "caught",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "b25bfc6c6ab86108",
-    "37ecd8883f7db876",
-    "e7dd60e0cd8e3071",
-    "163b3ab54640a038",
-    "ebbbcf5c1536d13d",
-    "ce2784b718e76967",
-    "ce2784b718e76967"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "4ff937c47211b8e6",
+    "cdd8027465b608cf",
+    "e384c1871e86cddb",
+    "2e60b54d7ad1b360",
+    "536e84def5d22ab9",
+    "2866b3114a88f82a"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto tray",
+    "goto tray pretend",
     "interact",
     "wait until 3:40"
    ],
    "summary": "caught",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "e2c37928ef3d710b",
-    "78a3d6bf3d897022",
-    "914694e94e687af3",
-    "9267a6d4e58eef99"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "2c676a5ba1109062",
+    "5f9b7f786bdb0467",
+    "b4ad6ecba738a69a",
+    "5e50797b3a02c3b5"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto desk_side pretend",
+    "goto fuse_box pretend",
     "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "0e4900fb7c2c3a03",
-    "bcba55f43701a375",
-    "398ffd629f178536"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "b1bcbd03da37c086",
+    "ed87baed01f8e225",
+    "9bcd15bdad530075"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch pretend",
+    "interact",
+    "goto fuse_box pretend",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "b1bcbd03da37c086",
+    "02c6569fecc047c8",
+    "97b4b4a83a8abcca",
+    "a55d8609c68493bc"
    ]
   },
   {
@@ -167,192 +183,154 @@
    ],
    "summary": "caught",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "e21657a3502c9aea",
-    "7173a4d3c44fd988",
-    "0b6c8c5f7713d79e",
-    "537352ba41deec6c"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "fddd7ea0bb696ccb",
+    "02dd924098cbb9d3",
+    "539d48250db1e795",
+    "be4f5eadb71cc4b3"
    ]
   },
   {
    "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "goto desk_side",
+    "goto office_switch",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "d312b4390ab18203",
+    "2349e9a2963ba31a",
+    "1de017f011c1b392",
+    "b21828b4060aad20",
+    "4fd8d85fc48c551b"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:13",
+    "pretend until 3:26",
     "goto office_switch pretend",
     "interact",
     "goto tray pretend",
     "interact",
-    "interact",
-    "wait until 3:40"
+    "pretend 5s",
+    "pretend until 3:40"
    ],
    "summary": "win switch",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "b0660c552a5c7607",
-    "5954b62ecf7bcb44",
-    "1a84efef8636e738",
-    "c0dbe8c933f25f5f",
-    "384181032b6f3746"
+    "690d7851713a210e",
+    "263618b8545fefe5",
+    "0292ebe0935c1c7c",
+    "7113e7fe5cfdc5a0",
+    "53362c5a4e912680",
+    "82f9f9dab75ce8c0",
+    "75ca3e28bfd6b5ab",
+    "f5f769dcb2c1178c",
+    "081de629e6f42429"
    ]
   },
   {
    "cmds": [
     "goto fuse_box pretend",
     "interact",
+    "goto desk_side pretend",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "b746a4781d8448d8",
+    "9236708ca114b9f5",
+    "ad095c828e753ccb",
+    "6f51c489454501d0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto tray pretend",
+    "wait 8s",
     "goto office_switch pretend",
     "interact",
     "pretend until 3:40"
    ],
    "summary": "caught",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "3338b8b1b989d629",
-    "f6480679cc0b0fa4",
-    "0cbfda68fcad4b70",
-    "7e14198bd11ce624"
+    "5f359ac95ce11456",
+    "1f6e344d4225eee5",
+    "5cc5393c052bb7bb",
+    "3ee461dfdb6d13fe",
+    "5c1f023c53c6e98a",
+    "5711671a1495893f"
    ]
   },
   {
    "cmds": [
-    "goto office_switch pretend",
+    "pretend until 3:33",
+    "goto office_switch",
     "interact",
-    "goto tray pretend",
+    "goto desk_side pretend",
     "interact",
-    "interact",
+    "goto lin_desk pretend",
     "goto fuse_box",
-    "sit pretend",
-    "wait until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "b0660c552a5c7607",
-    "5954b62ecf7bcb44",
-    "1a84efef8636e738",
-    "ae9607b68f6291fc",
-    "267b70fc9a9e001d",
-    "1c929fdcc2ff1ca9",
-    "c3000ed9cb49692e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto fuse_box pretend",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
     "pretend until 3:40"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "249192d7fbfb6955",
-    "203561a476568eaa",
-    "a6445872fe522149",
-    "d6d5a699ccd19e13"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto boss_office_door",
-    "wait until 3:09",
-    "goto office_switch pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "d6bfe74e8e2520a7",
-    "75a60e0172da852b",
-    "16716f4eaef8a931",
-    "f8ca3a90443b1cd6",
-    "f14bd000334d78f3",
-    "31c62bd38eeed0e6",
-    "ce84643293268d85"
+    "ac35cb9c14f8ae59",
+    "448b392a55acb87b",
+    "70cd81ea1414408d",
+    "9ac93bda494035bb",
+    "af75f70f88be8f17",
+    "90b98232e301feae",
+    "cba556899c755c66",
+    "20055c977ca05110",
+    "e6b9bcbc8357ae44"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto desk_side pretend",
-    "sit pretend",
+    "goto kev_desk pretend",
     "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "0e4900fb7c2c3a03",
-    "56bc39b7c45406c9",
-    "4d26b07ded5d2371",
-    "59046424116e865f"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "d74052608c23d303",
+    "61f32dc7b9341b50",
+    "ffcaba8f3c0fd5cb"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto fuse_box",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "c835b437c3650010",
-    "8313e3265e860dde",
-    "48e8d1b04c5a38b9",
-    "547823baf1d7a106"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "pretend until 3:03",
-    "goto desk_side pretend",
-    "interact",
-    "goto fuse_box pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "2a4850610cd863f8",
-    "76c35347747133c9",
-    "f6dee38cdbff6fe5",
-    "9ab025ebe8de00c6",
-    "b18f446d2c28ab54",
-    "d4397cc525757155",
-    "89f5a17ef183ec86"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto boss_office_door",
-    "wait until 3:09",
     "goto fuse_box pretend",
     "interact",
-    "goto office_switch pretend",
-    "interact",
+    "sit pretend",
+    "goto kitchen_table pretend",
     "pretend until 3:40"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "d6bfe74e8e2520a7",
-    "75a60e0172da852b",
-    "16716f4eaef8a931",
-    "e7bda9673dfbe7e9",
-    "a200d4343824cdfa",
-    "84576b2ada8fdbc7",
-    "f48ecfc970b96838",
-    "9953387db6d97b06",
-    "76eb7122aaf20357"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "b1bcbd03da37c086",
+    "02c6569fecc047c8",
+    "cc3039b405183f22",
+    "345af490d39d1566",
+    "31835d80f5d090c3",
+    "eeab875bba0eb19c"
    ]
   },
   {
@@ -365,12 +343,12 @@
    ],
    "summary": "win blackout",
    "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "709dda13d894de61",
-    "bb65aaaf06fa8c61",
-    "52fcf9529f2d3b67"
+    "ac35cb9c14f8ae59",
+    "50f38c5bb39450d3",
+    "c8629d2b6d0aa3b9",
+    "59a6719841132c37",
+    "9268cd69b322ce94",
+    "5adf70e552db67de"
    ]
   },
   {
@@ -384,209 +362,123 @@
    ],
    "summary": "win breaker",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "249192d7fbfb6955",
-    "203561a476568eaa",
-    "1ed8890d77d40fe1",
-    "c54c35fc75d1d195",
-    "80a765bcc76827cd"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "b746a4781d8448d8",
+    "9236708ca114b9f5",
+    "f8cd069af7b71d21",
+    "52e5a89d9a24064b",
+    "d44f4a458ca5712d"
    ]
   },
   {
    "cmds": [
-    "goto office_switch pretend",
-    "pretend 8s",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "pretend 2s",
-    "wait 8s",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "fedffa588fc72e5e",
-    "a08c5899ee697a70",
-    "d15c313b6a021df7",
-    "f3ffb89b17dbfa75",
-    "41ece3276bc2696c",
-    "132e44cee7f2e0ca",
-    "9001d5b336151f07",
-    "ffa7f7049282d2ec",
-    "1ce669acb0d09bc0"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
+    "wait until 3:24",
     "goto desk_side pretend",
     "interact",
     "pretend until 3:40"
    ],
    "summary": "caught",
    "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "ca8be5975b0eb9d2",
-    "c2bdfaed27286f6a"
+    "690d7851713a210e",
+    "7dd83198dfd75f90",
+    "6d753a1dd4215f2a",
+    "6cadce49af46b18d",
+    "d31638a25f04603c"
    ]
   },
   {
    "cmds": [
+    "goto office_switch",
+    "wait until 3:13",
+    "goto office_switch pretend",
+    "interact",
+    "goto tray pretend",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2bba29b773aa570c",
+    "b5dd5cdca212e9bd",
+    "04fcf79a03542ab6",
+    "5b283b8bb3e87ccb",
+    "ff76e283fe2f9315",
+    "c64f81d959129f0a",
+    "406e6fc6cd03f962",
+    "40d0bc9b50681807"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch pretend",
+    "interact",
+    "goto boss_office_door",
+    "goto tray",
+    "interact",
     "goto fuse_box pretend",
-    "interact",
-    "goto office_switch pretend",
-    "interact",
     "sit pretend",
-    "pretend until 3:02",
-    "wait until 3:40"
-   ],
-   "summary": "fail",
-   "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "3338b8b1b989d629",
-    "f6480679cc0b0fa4",
-    "922be747e11b1c8d",
-    "d1724ff5c7200493",
-    "3c1a09b8fa892fe8",
-    "f42fa032964151fc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch",
-    "wait until 3:16",
-    "goto office_switch pretend",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "96fd64c91d63a0a3",
-    "fa2a0948c36d2d2a",
-    "d4236560a4aad519",
-    "c8ddfd63da600b28",
-    "a338823557a046ef",
-    "bc24b6a8d1a828fb",
-    "c371a80c7eb694da",
-    "1c3262b466d0dbe4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch",
-    "wait until 3:08",
-    "goto office_switch pretend",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "pretend 10s",
-    "goto kitchen_table pretend",
     "interact",
     "pretend until 3:40"
    ],
    "summary": "win switch",
    "digests": [
-    "96fd64c91d63a0a3",
-    "fa2a0948c36d2d2a",
-    "d4236560a4aad519",
-    "c8ddfd63da600b28",
-    "a338823557a046ef",
-    "bc24b6a8d1a828fb",
-    "c371a80c7eb694da",
-    "2b7f47a9b10a7f55",
-    "d1112857607a4e24",
-    "b5de042faf9f05d0",
-    "e7ca8724e51fec3f"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "5f10cbc5bb3f64c8",
+    "79bc527769d6d6b4",
+    "d4cb5c2b1dfba3ff",
+    "50f139bd362c8337",
+    "50c83d5e51d27c08"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto desk_side pretend",
+    "interact",
+    "interact",
+    "pretend until 3:38",
+    "pretend until 3:40"
+   ],
+   "summary": "win blackout",
+   "digests": [
+    "ac35cb9c14f8ae59",
+    "50f38c5bb39450d3",
+    "c8629d2b6d0aa3b9",
+    "59a6719841132c37",
+    "9268cd69b322ce94",
+    "af0f062b89cbf890",
+    "0a9dfe283968a902"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "pretend until 3:06",
-    "wait 1.5s",
-    "goto desk_side",
+    "goto boss_office_door",
+    "goto tray",
     "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "3189c1d1363cdd2c",
-    "1b71508524e1cc0d",
-    "fa4c3fd75ab3a5e4",
-    "865ae61f36d75de8",
-    "69aa0b80e62b47d3",
-    "7c3ad1077948ec1f"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto desk_side pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "709dda13d894de61",
-    "9654c2b48fa47291",
-    "83ab8435492cb429",
-    "3083bb928cdb0855"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:30",
-    "goto desk_side pretend",
-    "interact",
-    "wait until 3:23",
     "goto fuse_box pretend",
     "interact",
-    "wait until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "abd5f5b437f77e09",
-    "2a592a81416eb3b7",
-    "b5359aeac699826d",
-    "bf671388e0a265de",
-    "1ff66ba53321943b"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto desk_side pretend",
     "interact",
-    "interact",
-    "pretend until 3:36",
     "pretend until 3:40"
    ],
-   "summary": "win blackout",
+   "summary": "win switch",
    "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "709dda13d894de61",
-    "bb65aaaf06fa8c61",
-    "857ebb6d9efab667",
-    "d8440633735ddfa7"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "5f10cbc5bb3f64c8",
+    "900a39789cce914b",
+    "6a16f0d59358be47",
+    "a0232adfb8fe391e",
+    "ac8a7838f2ebfc41"
    ]
   },
   {
@@ -604,17 +496,153 @@
    ],
    "summary": "win switch",
    "digests": [
-    "f2cee8167453d5cf",
-    "290490fd146ccf1c",
-    "435e022421ae27a1",
-    "64f0d40e76632229",
-    "03030f30aa3ed805",
-    "505f180679a571b1",
-    "088b7f97d6104532",
-    "5c180a98c353dfe8",
-    "0814e53aeec22323",
-    "c9e7e954897b7f70",
-    "e7ca8724e51fec3f"
+    "690d7851713a210e",
+    "bfb34041b4ea45cc",
+    "981b014a2eab3c37",
+    "ff49369a148dfe0b",
+    "6b2ee80a27be49bf",
+    "d8e0b5472b353aa9",
+    "cb389bb11574d556",
+    "d7a629abc54f606e",
+    "e66ad103f35bc862",
+    "a76f5f4dc12f6023",
+    "c5b1e8acc494f8d8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch pretend",
+    "interact",
+    "goto boss_office_door",
+    "goto tray",
+    "interact",
+    "goto fuse_box pretend",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "5f10cbc5bb3f64c8",
+    "900a39789cce914b",
+    "a568714e4471fd93",
+    "3555adb8d6c708d6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch",
+    "wait until 3:13",
+    "goto office_switch pretend",
+    "interact",
+    "goto tray pretend",
+    "interact",
+    "pretend 2.5s",
+    "pretend until 3:40"
+   ],
+   "summary": "win switch",
+   "digests": [
+    "2bba29b773aa570c",
+    "b5dd5cdca212e9bd",
+    "04fcf79a03542ab6",
+    "5b283b8bb3e87ccb",
+    "ff76e283fe2f9315",
+    "c64f81d959129f0a",
+    "406e6fc6cd03f962",
+    "3f8ac798f3b53748",
+    "081de629e6f42429"
+   ]
+  },
+  {
+   "cmds": [
+    "goto desk_side pretend",
+    "pretend until 3:13",
+    "interact",
+    "pretend until 3:20",
+    "pretend until 3:40"
+   ],
+   "summary": "win blackout",
+   "digests": [
+    "cdc6e87dc47a44e9",
+    "4c0b96bcae5e5b1c",
+    "ac2dfd3a46884907",
+    "d78d5f51e24294d8",
+    "a58f823d4e5f432c",
+    "8e2d7dd9796fa868"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:24",
+    "goto office_switch pretend",
+    "interact",
+    "goto desk_side",
+    "interact",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "win blackout",
+   "digests": [
+    "ac35cb9c14f8ae59",
+    "eaf1e9ed2cd7e023",
+    "4519f681d4e1cffb",
+    "58829c5c7b5feca6",
+    "a63fcf06514ace6b",
+    "1d4d8434e360921c",
+    "33ed761de67e4273",
+    "d02b8d06869cd109"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch pretend",
+    "interact",
+    "goto boss_office_door",
+    "goto tray",
+    "interact",
+    "goto fuse_box pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 3:40"
+   ],
+   "summary": "win switch",
+   "digests": [
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "5f10cbc5bb3f64c8",
+    "900a39789cce914b",
+    "76b3699e5bd32e86",
+    "a9344a1bdb5310b5",
+    "796a70342d17551c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "pretend until 3:16",
+    "goto tray pretend",
+    "goto office_switch pretend",
+    "interact",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "7891b2d3701582df",
+    "00d06e45c7d904db",
+    "4495b699c9fff1bb",
+    "ede0a61bb9950ebc",
+    "d0726e9143eead2a",
+    "c3f3007247eab518"
    ]
   },
   {
@@ -623,690 +651,294 @@
     "interact",
     "goto desk_side pretend",
     "interact",
-    "pretend until 3:39",
+    "interact",
+    "pretend until 3:32",
     "pretend until 3:40"
    ],
    "summary": "win breaker",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "249192d7fbfb6955",
-    "203561a476568eaa",
-    "a6445872fe522149",
-    "96752979189703ce",
-    "5aa556f4e546660d"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "b746a4781d8448d8",
+    "9236708ca114b9f5",
+    "f8cd069af7b71d21",
+    "52e5a89d9a24064b",
+    "824f6d2417d686b4",
+    "62eb28dbae146d1d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "wait until 3:13",
+    "pretend until 3:26",
+    "goto office_switch pretend",
+    "interact",
+    "goto tray pretend",
+    "interact",
+    "pretend 2.5s",
+    "pretend until 3:40"
+   ],
+   "summary": "win switch",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "4ff937c47211b8e6",
+    "cdd8027465b608cf",
+    "67d308a264106467",
+    "33fc5d970d9dc46a",
+    "6cec82d7131b950c",
+    "db7b1423614a58bd",
+    "cbadd19ddd120c00",
+    "f79c6a9c19591b27",
+    "b00a2dbdd1bec901"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto office_switch pretend",
+    "interact",
+    "goto desk_side pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:38",
+    "pretend until 3:40"
+   ],
+   "summary": "win blackout",
+   "digests": [
+    "ac35cb9c14f8ae59",
+    "eaf1e9ed2cd7e023",
+    "4519f681d4e1cffb",
+    "526ee3c7ab8d238d",
+    "07d08a0f07d665a4",
+    "ba664882ddbb5629",
+    "2e8a0448c32bc6f9",
+    "348e413d8ae1e7cb",
+    "cbb90f0da06e5a4e",
+    "e18a73d51714537d"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto office_switch pretend",
-    "goto tray pretend",
-    "interact",
-    "interact",
-    "sit pretend",
-    "goto fuse_box",
-    "interact",
-    "wait until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "6553c7b179313d3a",
-    "67d21daa6d2705dd",
-    "6643e58107b97194",
-    "077fae7099f2a0c2",
-    "2cce0d2979245fe3",
-    "be56b08a8a9a909e",
-    "1c0a6c608ee6e7f4",
-    "33418a10d912c8a1",
-    "af501a49b8444349"
-   ]
-  },
-  {
-   "cmds": [
-    "goto tray pretend",
-    "goto office_switch",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "interact",
-    "goto lin_desk",
-    "goto fuse_box",
-    "interact",
-    "sit pretend",
-    "wait until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "6c5d764fbe35a23d",
-    "86de0c3f1da041d5",
-    "37021fdec46e6393",
-    "91a590af38368ed2",
-    "7c8e4ba77c81858e",
-    "7b7fe33a7081cff5",
-    "8c16479b8d40af25",
-    "d08d7c25a0c4bf65",
-    "b60e43cd7999dfa8",
-    "9b692af26bf2ad4f",
-    "4c3e5250803ca127",
-    "3042685412f483af"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend 8s",
-    "goto tray pretend",
-    "interact",
-    "interact",
-    "pretend until 3:30",
-    "goto kev_desk pretend",
+    "goto boss_office_door",
     "goto tray",
-    "goto boss_desk pretend",
+    "interact",
+    "goto kev_desk",
     "goto fuse_box pretend",
     "interact",
+    "interact",
+    "wait until 3:32",
     "pretend until 3:40"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "c9427513688e3c01",
-    "d513e09e0fcc2cec",
-    "30f6e4c37a2e407d",
-    "5495a397e5e42b47",
-    "21da9336017872d4",
-    "17869bb7115ec774",
-    "566b9c395995af35",
-    "eee37dfad1907bc9",
-    "9f4c4221ba0106ec",
-    "72f53f2fc37f6f05",
-    "48d9b3ca657cb015",
-    "c75ce5c1f8b77449",
-    "8d1f807a2dba0d3b"
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "e4a5a3ab4d67529e",
+    "7ef7afe52c26bb97",
+    "0faab4cd6dc681b1",
+    "353b0417c3755d9c",
+    "bef9f9cb6a2c5af8",
+    "f948825ee662ff66",
+    "6000e42b4bc86f01"
    ]
   },
   {
    "cmds": [
     "pretend until 3:24",
-    "goto fuse_box",
-    "goto office_switch",
-    "interact",
     "goto desk_side pretend",
     "interact",
     "interact",
     "goto office_switch pretend",
+    "interact",
     "wait until 3:40"
    ],
    "summary": "caught",
    "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "6e2f71f0392916e4",
-    "77bf476d84754415",
-    "c758eda1ee093718",
-    "29dc47390ff17823",
-    "b33139c42d239ab0",
-    "f47f58b225c91c11",
-    "1a628b74f3fd1c13",
-    "82a6b8eba68db93d"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto fuse_box",
-    "goto office_switch",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "6e2f71f0392916e4",
-    "77bf476d84754415",
-    "c758eda1ee093718",
-    "29dc47390ff17823",
-    "b33139c42d239ab0",
-    "30e213ddb93de2e9",
-    "bdabf4f46afe8f38"
+    "ac35cb9c14f8ae59",
+    "50f38c5bb39450d3",
+    "c8629d2b6d0aa3b9",
+    "59a6719841132c37",
+    "f4a42bb47a78161f",
+    "cdb18add111e7bb2",
+    "6f073cbd85e18c17",
+    "7c43fb71048a2502"
    ]
   },
   {
    "cmds": [
     "pretend until 3:24",
     "goto desk_side pretend",
-    "pretend 1s",
     "interact",
-    "goto kev_desk pretend",
+    "goto office_switch pretend",
+    "interact",
+    "interact",
+    "pretend until 3:38",
     "pretend until 3:40"
    ],
    "summary": "win blackout",
    "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "8a275545d8f332ea",
-    "23edd44fdc55de7c",
-    "b38d2a6af6c54f8e",
-    "8fff633fe9e3c0f7",
-    "fa3de118b0d5adb5"
+    "ac35cb9c14f8ae59",
+    "50f38c5bb39450d3",
+    "c8629d2b6d0aa3b9",
+    "9c69fe00ae4e4406",
+    "ec60f6c425bbd8b5",
+    "55ba0952ea26591a",
+    "777fe41384180f14",
+    "5305c80ff42e7bcc",
+    "c999c351a8fbca9c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "goto desk_side pretend",
+    "interact",
+    "goto coffee_machine pretend",
+    "wait until 3:40"
+   ],
+   "summary": "win breaker",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "b746a4781d8448d8",
+    "9236708ca114b9f5",
+    "fd79daf3c4c7de56",
+    "91f5dd9b5a73e3cc",
+    "e16807892fc98e52"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "wait until 3:26",
+    "wait until 3:13",
+    "goto office_switch pretend",
+    "interact",
+    "goto tray pretend",
+    "interact",
+    "pretend 2.5s",
+    "wait until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "4ff937c47211b8e6",
+    "9f1b5aa8a1ad07bf",
+    "4495b699c9fff1bb",
+    "ede0a61bb9950ebc",
+    "3427cb78dac34685",
+    "267f67d0946844a1",
+    "a454fae97019626b",
+    "6b74085989138545",
+    "c2fbee8e4e1a59b7"
    ]
   },
   {
    "cmds": [
     "goto office_switch pretend",
     "interact",
-    "goto tray pretend",
+    "goto desk_side pretend",
+    "interact",
+    "wait until 3:05",
+    "pretend until 3:40"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "021dd57b4ed6329f",
+    "eeaae30fef93b52b",
+    "9170023e7749e28e",
+    "1a19b4a101e6d105",
+    "45e995a07cc738cd"
+   ]
+  },
+  {
+   "cmds": [
+    "goto fuse_box pretend",
+    "interact",
+    "goto desk_side pretend",
+    "interact",
+    "goto lin_desk pretend",
+    "goto fuse_box",
+    "pretend until 3:40"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "b746a4781d8448d8",
+    "9236708ca114b9f5",
+    "820c3669507b4668",
+    "320ac5c78fda2c77",
+    "2c711a579e963e73",
+    "839f83079ba6aa09"
+   ]
+  },
+  {
+   "cmds": [
+    "goto office_switch pretend",
+    "interact",
+    "goto boss_office_door",
+    "goto tray",
+    "interact",
+    "goto fuse_box pretend",
+    "interact",
     "interact",
     "sit pretend",
-    "goto fuse_box pretend",
+    "pretend until 3:40"
+   ],
+   "summary": "win switch",
+   "digests": [
+    "2afcce7c333379dc",
+    "6c773e6e6ece4459",
+    "80a32d42a764b190",
+    "0304d7bb311cd80e",
+    "f0b7cd54afb32669",
+    "5f10cbc5bb3f64c8",
+    "900a39789cce914b",
+    "6a16f0d59358be47",
+    "4c58ac6d26e48171",
+    "835c4d4364832f11",
+    "5feffb5ed4e890d9"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:13",
+    "pretend until 3:26",
+    "goto office_switch pretend",
+    "interact",
+    "goto tray pretend",
+    "goto desk_side",
+    "interact",
+    "pretend 5s",
     "wait until 3:40"
    ],
    "summary": "fail",
    "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "b0660c552a5c7607",
-    "5954b62ecf7bcb44",
-    "edefefe298f287f8",
-    "20216d7fef9d54cc",
-    "4b67377702bba268",
-    "bd460e3ed2e7a28b"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto desk_side pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "c349c150462b5664",
-    "ce1e13b742eea1c2",
-    "48238dc838456128",
-    "50e945d6879d0f6c",
-    "f368e6108cd53844"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto tray",
-    "goto office_switch",
-    "interact",
-    "goto desk_side",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "6e2f71f0392916e4",
-    "77bf476d84754415",
-    "c96d8e4720994375",
-    "cb283011ccedcd78",
-    "a6f45d3b09df7992",
-    "1732347b067f732a",
-    "03277d92c60c447f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto fuse_box pretend",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "sit pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win breaker",
-   "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "249192d7fbfb6955",
-    "203561a476568eaa",
-    "e792e04c141d3910",
-    "9a5ea6bfe7881a4a",
-    "21598fbd926f0b18"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend 8s",
-    "goto tray pretend",
-    "interact",
-    "pretend until 3:27",
-    "goto kev_desk pretend",
-    "interact",
-    "goto tray",
-    "goto fuse_box pretend",
-    "interact",
-    "goto tray pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "c9427513688e3c01",
-    "d513e09e0fcc2cec",
-    "30f6e4c37a2e407d",
-    "5495a397e5e42b47",
-    "94cee70fdcfba1c4",
-    "a9f7035f7ef48261",
-    "3586457ed5635a1d",
-    "294c95d522e28b92",
-    "33805c75b253ecc0",
-    "91e9b6a9ab8ad49e",
-    "abcb1c0a28e45baf",
-    "5e847061557e3cd1",
-    "296c1a31f0c733a3"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto boss_office_door",
-    "goto desk_side pretend",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "goto fuse_box pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "96c73d4de4b5d027",
-    "1eaea9b72c35df04",
-    "cc121aab750a69b4",
-    "585fbc2b4f4337d5",
-    "5a70cabef4ed692e",
-    "0556606bb40912fd",
-    "464b35d1ac9518a3",
-    "bb1dc67bb952c86e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto tray pretend",
-    "goto office_switch",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto fuse_box",
-    "interact",
-    "sit pretend",
-    "wait until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "6c5d764fbe35a23d",
-    "86de0c3f1da041d5",
-    "37021fdec46e6393",
-    "91a590af38368ed2",
-    "7c8e4ba77c81858e",
-    "77a23adfa1d857e8",
-    "27e2b3b74ba82db8",
-    "8be8d4f1f2d7525c",
-    "d01795ec1ddef477",
-    "750d7ba2697a4c60",
-    "03ea03d40b05084e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch pretend",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "sit pretend",
-    "pretend 10s",
-    "goto kitchen_table pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "b0660c552a5c7607",
-    "5954b62ecf7bcb44",
-    "edefefe298f287f8",
-    "cfabb241edd8aab6",
-    "76f0c701fa1a6879",
-    "93bae4c8342edebf",
-    "95c0f9c39517c998"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch pretend",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "goto fuse_box",
-    "interact",
-    "wait until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "b0660c552a5c7607",
-    "5954b62ecf7bcb44",
-    "a1c4e49c80544af2",
-    "f74f503b2caa4605",
-    "d68b2937da0dc06e",
-    "095835d8de32c778"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch pretend",
-    "interact",
-    "goto tray",
-    "interact",
-    "sit pretend",
-    "wait until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "fedffa588fc72e5e",
-    "39dad24962b6fca7",
-    "e2c37928ef3d710b",
-    "78a3d6bf3d897022",
-    "f511ec1dd59c1c2f",
-    "56f30b9c685800f7",
-    "70bf7fca38924081"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch",
-    "wait until 3:16",
-    "goto office_switch pretend",
-    "pretend 3s",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "96fd64c91d63a0a3",
-    "fa2a0948c36d2d2a",
-    "d4236560a4aad519",
-    "d10c66af07080ad6",
-    "6ec7a82ede9c2588",
-    "620ca3af50477f38",
-    "c824512d85058373",
-    "5d376cb5173a9f70",
-    "e9d00f6422701557"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:24",
-    "goto tray",
-    "goto office_switch",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "6e2f71f0392916e4",
-    "77bf476d84754415",
-    "c758eda1ee093718",
-    "29dc47390ff17823",
-    "b33139c42d239ab0",
-    "cc7369ce301f0213",
-    "e89b73235c76d923",
-    "5651b321e15f39ee"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto fuse_box pretend",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "wait until 3:40"
-   ],
-   "summary": "win breaker",
-   "digests": [
-    "d6bfe74e8e2520a7",
-    "5511bfd4b6612b3b",
-    "688053dfca2ff4be",
-    "d00663decfc5c117",
-    "6c67527077457a85",
-    "c802e0d0fba74935",
-    "5099e08f9e35af96",
-    "2175e9f6682f52de",
-    "74a2f33b5a7105bd"
-   ]
-  },
-  {
-   "cmds": [
-    "goto fuse_box pretend",
-    "interact",
-    "goto office_switch pretend",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "3338b8b1b989d629",
-    "f6480679cc0b0fa4",
-    "57fdea4dc1cee7f6",
-    "5b348c6c5fb656f3",
-    "c761e60db2a71a0d",
-    "3bde7fe08ab5b92f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto tray pretend",
-    "goto office_switch",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "interact",
-    "goto lin_desk",
-    "goto fuse_box",
-    "interact",
-    "goto office_switch",
-    "goto desk_side pretend",
-    "goto kitchen_table pretend",
-    "goto fuse_box pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "6c5d764fbe35a23d",
-    "86de0c3f1da041d5",
-    "37021fdec46e6393",
-    "91a590af38368ed2",
-    "7c8e4ba77c81858e",
-    "7b7fe33a7081cff5",
-    "8c16479b8d40af25",
-    "d08d7c25a0c4bf65",
-    "b60e43cd7999dfa8",
-    "fc836b45c5d1b9d8",
-    "eef2a4afcc72bc76",
-    "73a164663e07ae42",
-    "721d09dbab2fe2c2",
-    "65853d8445b86fb7",
-    "b33d30b5473c4dc3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch pretend",
-    "pretend 8s",
-    "interact",
-    "interact",
-    "interact",
-    "goto desk_side pretend",
-    "interact",
-    "interact",
-    "pretend 2s",
-    "wait 8s",
-    "pretend until 3:40"
-   ],
-   "summary": "win blackout",
-   "digests": [
-    "fedffa588fc72e5e",
-    "a08c5899ee697a70",
-    "d15c313b6a021df7",
-    "c48a816f5b1fdf50",
-    "55b4ab61a0b9cfe3",
-    "bb1b19d51c52947a",
-    "2d457b5fc0ae5716",
-    "027b26b42f006939",
-    "ab75c870f87acc8b",
-    "da25a8d9ae021785",
-    "5ff4ab27fce0d1b7",
-    "a1c4aff439f61ec1"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_desk pretend",
-    "pretend 8s",
-    "goto tray pretend",
-    "interact",
-    "pretend until 3:30",
-    "goto kev_desk pretend",
-    "goto tray",
-    "goto boss_desk pretend",
-    "goto fuse_box pretend",
-    "interact",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c9427513688e3c01",
-    "d513e09e0fcc2cec",
-    "30f6e4c37a2e407d",
-    "5495a397e5e42b47",
-    "94cee70fdcfba1c4",
-    "a9f7035f7ef48261",
-    "3f485bc092a42beb",
-    "5c088dcd6af0c876",
-    "dc0b1459c0fcc57b",
-    "e4a8dc910597e643",
-    "aafdb9c3e69055e8",
-    "bb6aaccac3612c59"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto boss_office_door",
-    "wait until 3:09",
-    "goto fuse_box pretend",
-    "wait 2s",
-    "interact",
-    "goto office_switch pretend",
-    "wait 1.5s",
-    "goto desk_side",
-    "interact",
-    "pretend until 3:04",
-    "pretend until 3:40"
-   ],
-   "summary": "caught",
-   "digests": [
-    "d6bfe74e8e2520a7",
-    "75a60e0172da852b",
-    "16716f4eaef8a931",
-    "e7bda9673dfbe7e9",
-    "d67350529d9e6fa3",
-    "97c7bebac45febcd",
-    "2505347b09f6a0e3",
-    "8936aa0e471a734d",
-    "0a5cb998cc6aea9d",
-    "1feb14d920d85ce5",
-    "f50480ebb0993be4",
-    "fa9eea795a865fad",
-    "5330628f08470ff2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto office_switch",
-    "wait until 3:08",
-    "goto office_switch pretend",
-    "interact",
-    "goto tray pretend",
-    "interact",
-    "sit pretend",
-    "pretend 10s",
-    "goto kitchen_table pretend",
-    "pretend until 3:40"
-   ],
-   "summary": "win switch",
-   "digests": [
-    "96fd64c91d63a0a3",
-    "fa2a0948c36d2d2a",
-    "d4236560a4aad519",
-    "c8ddfd63da600b28",
-    "a338823557a046ef",
-    "bc24b6a8d1a828fb",
-    "273d7dc90a0a87c5",
-    "15dac5a4fee1fa9d",
-    "b07f229e676c916a",
-    "b07f229e676c916a",
-    "b07f229e676c916a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto fuse_box pretend",
-    "interact",
-    "goto desk_side pretend",
-    "goto desk_side",
-    "interact",
-    "interact",
-    "pretend until 3:24",
-    "pretend until 3:40"
-   ],
-   "summary": "win breaker",
-   "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "249192d7fbfb6955",
-    "5887f45460e496b0",
-    "cbffd7a94efe6623",
-    "8dc682cf39439607",
-    "d41abc87e2cfeff8",
-    "b3c8e13d1d36c6af",
-    "0d38e56b2b83a833"
+    "690d7851713a210e",
+    "263618b8545fefe5",
+    "0292ebe0935c1c7c",
+    "7113e7fe5cfdc5a0",
+    "53362c5a4e912680",
+    "a46ede952a6514ab",
+    "2906abffb988a028",
+    "b4bdc0fe58810c1a",
+    "9e963d20aefa5419",
+    "d2eff1800af27f3c"
    ]
   },
   {
@@ -1322,15 +954,15 @@
    ],
    "summary": "fail",
    "digests": [
-    "7dbab170b2c4e956",
-    "222eb77a636b23ee",
-    "2948e740153b077f",
-    "0c136299843c8c05",
-    "db8a155eb6041b2a",
-    "28c6bb9ef0d7ce90",
-    "348e4acd32c1b474",
-    "fecd22f1a5c6583b",
-    "fecd22f1a5c6583b"
+    "41bc4616d43fe80d",
+    "eeae5b264617f1e7",
+    "e2ba853701bc51ff",
+    "e22ee068dce93738",
+    "88566b6f97dc7ae3",
+    "d1f92bb79e7caf79",
+    "15d31b54d56ed634",
+    "08f52cde13cb94af",
+    "08f52cde13cb94af"
    ]
   },
   {
@@ -1342,11 +974,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "2a4850610cd863f8",
-    "97b32157ccbd6f20",
-    "ca39added29d5a3c",
-    "2691fe4abdc8b87f",
-    "258fc4d976cb829d"
+    "ac35cb9c14f8ae59",
+    "448b392a55acb87b",
+    "70cd81ea1414408d",
+    "ee75c229fbfded05",
+    "1d540352fbbcf627"
    ]
   },
   {
@@ -1365,22 +997,22 @@
     "move S 1s",
     "wait 2s"
    ],
-   "summary": "win switch",
+   "summary": "fail",
    "digests": [
-    "fc53f4eede31b544",
-    "68ce5582ea8ee2a8",
-    "ea4da6bfb1b5ea6d",
-    "cdb80ea75af20e22",
-    "169d95b4ee821b8c",
-    "9aacfaf7aefd7e95",
-    "d626e06eed2ad854",
-    "1d9bb6cc1d06852a",
-    "0b4cd71c2b199d15",
-    "c9369f5a649dc6d5",
-    "05b3a276b82d99e8",
-    "569544d58e264dcf",
-    "f1957f25cf578bad",
-    "d0b46c22fcdc05dc"
+    "b3837ead66e4bc6a",
+    "5b2de05c0c1de161",
+    "c7b39616dbaca5c2",
+    "2864f5a33d0c5e0d",
+    "3d996476875a2e45",
+    "33c8e814ad6febbe",
+    "c7eaf09c58b83212",
+    "8f38cfa9efba1232",
+    "ca46c0a4510cd513",
+    "e6268fb4b26d122f",
+    "3cb025e55b61cac5",
+    "5bbf0f1457202d59",
+    "5ea3ffaaedf26c3b",
+    "9035093176af6e68"
    ]
   }
  ]
