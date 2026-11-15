@@ -31,6 +31,7 @@ export default {
 
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (the list went to HR without you, via: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired on the spot: you leave with a box 📦)'
+    : o.result === 'blamed' && o.why === 'kev' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but at 3:45 "Kev" sat at your desk in his hoodie: to the boss your chair was empty, so he put you back on)`
     : o.result === 'blamed' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but your chair was empty at 3:45, so he put you back on)`
     : 'FAIL: the boss sent the list to HR with you on it 📧; you leave with a box 📦'),
 
@@ -41,6 +42,7 @@ export default {
   npcText(game, n) {
     const bits = [];
     if (n.id === 'kev' && game.world.hoodie !== 'kev') bits.push('in a T-shirt, no hoodie');
+    if (n.id === 'kev' && game.world.kevUp) bits.push('carrying his bag');
     if (n.id === 'boss') bits.push('in shirtsleeves');
     if (n.override === 'stepAside' || n.override === 'watching') bits.push("standing beside his desk, watching \"Kev\" at his computer");
     if (n.id === 'kev' && game.world.pc === 'kev') bits.push("typing at the boss's computer while the boss watches");
@@ -53,8 +55,9 @@ export default {
     const people = w.list === 'on' ? 'a row of four faces, yours framed in red' : 'three faces; yours is gone';
     const screen = w.glitch ? 'static (it is acting up)' : `the layoff list: ${people}`;
     const rack = w.jacket === 'rack' ? "the boss's suit jacket" : 'nothing';
-    const chair = w.hoodie === 'chair' ? "; Kev's hoodie is on his chair" : '';
-    return `WORLD: the boss's screen shows ${screen}; coat rack holds ${rack}${chair}`;
+    const chair = w.hoodie === 'chair' ? "; Kev's hoodie hangs over his chair" : '';
+    const kev = w.kevGone ? "; Kev's screen is off" : '';
+    return `WORLD: the boss's screen shows ${screen}; coat rack holds ${rack}${chair}${kev}`;
   },
 
   describe(e) {
@@ -71,17 +74,18 @@ export default {
       case 'jacket:taken': return "you put on the boss's suit jacket 👔";
       case 'jacket:hung': return 'you hang his jacket back on the rack';
       case 'pc:asked': return 'you offer to fix his computer';
-      case 'list:edited': return p.as === 'kev' ? 'you take your name off the list 🗑️ (to the boss, "Kev" is fixing it)'
-        : p.as === 'boss' ? 'you take your name off the list 🗑️ (to anyone looking in, the boss is at his own computer)'
-        : 'you take your name off the list 🗑️';
-      case 'kev:fixing': return "the boss's screen is static; he waves Kev over, and Kev types at it while the boss stands aside and watches";
+      case 'list:edited': return p.as === 'kev' ? 'you take your name off the list (to the boss, "Kev" is fixing it)'
+        : p.as === 'boss' ? 'you take your name off the list (to anyone looking in, the boss is at his own computer)'
+        : 'you take your name off the list';
+      case 'kev:fixing': return "the boss's screen is static; he waves Kev over, and Kev fixes it 🔧 while the boss stands aside and watches";
       case 'pc:fixed': return "Kev fixed it: the boss's screen shows the list again, and he takes his chair back 😊";
       case 'pc:actsUp': return "the boss's screen goes to static again; he waves for Kev 👋";
       case 'pc:thumped': return 'nobody came: the boss thumps his monitor and it works again 😠';
-      case 'kev:hoodieOff': return 'Kev takes off his hoodie and leaves it on his chair';
+      case 'kev:hoodieOff': return 'Kev, hot 🥵, takes off his hoodie and hangs it over his chair';
+      case 'kev:up': return 'Kev picks up his bag';
       case 'hoodie:taken': return "you put on Kev's hoodie, hood up";
       case 'hoodie:left': return "you leave Kev's hoodie back on his chair";
-      case 'kev:left': return 'the elevator doors close behind Kev';
+      case 'kev:left': return 'Kev has gone home';
       case 'disguise:fooled': case 'disguise:knows': case 'kev:bye': case 'pc:free': return null; // the lines people say show it
       default: return undefined;
     }

@@ -3,12 +3,15 @@
 //
 // Nobody lets you at his computer as yourself. But clothes are who you are, to people who don't know better
 // (src/play/disguise.js):
-//   - 3:00: his computer acts up (static), he waves Kev over, and Kev types at it while he stands aside and watches.
-//     Kev is the one person allowed at that computer. Kev slips out early while the boss is in the restroom (so
-//     the boss doesn't know): he waves to Lin first (so she knows), then, hot, leaves his hoodie on his chair. At
-//     3:35 the computer acts up again and the boss waves for Kev, who isn't there. In the hoodie, the boss sees
-//     Kev (his face, 👋), and Kev may fix his computer: he steps aside and watches, as he did at 3:00. Lin sees
-//     through it (Kev's face, ❓, then ❗👉), so go while she's in the restroom (3:32).
+//   - 3:00: his computer acts up (static), he waves Kev over, and Kev fixes it (🔧) while he stands aside and
+//     watches. Kev is the one person allowed at that computer. Back at his desk, hot (🥵), Kev hangs his hoodie
+//     over his chair. At 3:19, while the boss is in the restroom (so the boss doesn't know), Kev picks up his bag,
+//     waves goodbye to Lin (👋🏠, so she knows) and goes home, the hoodie left on his chair. At 3:35 the computer
+//     acts up again and the boss waves for Kev, who isn't there. In the hoodie, the boss sees Kev (🙂 + his face),
+//     and while it acts up (to 3:37.5) "Kev" may offer to fix it (🙋🔧): he steps aside and watches, as he did at
+//     3:00. Lin sees through it (Kev's face, ❓, then ❗👉), so go while she's in the restroom (3:32 to 3:40).
+//     And put the hoodie back on Kev's chair: whoever sits at your desk in it at 3:45 is Kev to the boss, so your
+//     chair is empty (verdict below).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
@@ -20,6 +23,7 @@ import { say } from '../../core/fx.js';
 import { C } from '../../render/palette.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { hoodie, jacket } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -87,9 +91,9 @@ const AS = { hoodie: 'kev', jacket: 'boss' };
 
 const INTERACTIONS = {
   // His hoodie, left on his chair (presentation.js draws it there): on, and back off onto the chair.
-  take_hoodie: {
-    on: 'kev_hoodie', icon: '🧥', text: "put on Kev's hoodie", duration: PICK_UP_TIME, sneaky: false,
-    can: (p, w) => !p.held && w.hoodie === 'chair',
+  take_hoodie: { // once Kev is up and away from his chair (cast.js grabBag)
+    on: 'kev_hoodie', text: "put on Kev's hoodie", duration: PICK_UP_TIME, sneaky: false,
+    can: (p, w) => !p.held && w.hoodie === 'chair' && w.kevUp,
     done(game) {
       game.player.held = 'hoodie';
       game.world.hoodie = 'player';
@@ -97,7 +101,7 @@ const INTERACTIONS = {
     },
   },
   leave_hoodie: {
-    on: 'kev_hoodie', icon: '🧥', text: 'leave his hoodie on his chair', instant: true,
+    on: 'kev_hoodie', text: 'leave his hoodie on his chair', instant: true,
     can: (p) => p.held === 'hoodie',
     done(game) {
       game.player.held = null;
@@ -106,7 +110,7 @@ const INTERACTIONS = {
     },
   },
   take_jacket: {
-    on: 'coat_rack', icon: '👔', text: "put on the boss's jacket", duration: 0.4, sneaky: false,
+    on: 'coat_rack', text: "put on the boss's jacket", duration: 0.4, sneaky: false,
     can: (p, w) => !p.held && w.jacket === 'rack',
     done(game) {
       game.player.held = 'jacket';
@@ -115,7 +119,7 @@ const INTERACTIONS = {
     },
   },
   hang_jacket: {
-    on: 'coat_rack', icon: '👔', text: 'hang his jacket back up', instant: true,
+    on: 'coat_rack', text: 'hang his jacket back up', instant: true,
     can: (p) => p.held === 'jacket',
     done(game) {
       game.player.held = null;
@@ -123,17 +127,19 @@ const INTERACTIONS = {
       game.events.emit('jacket:hung', {});
     },
   },
-  fix_pc: { // only Kev may touch the boss's computer
-    on: 'boss_pc', icon: '🔧', text: 'offer to fix his computer', instant: true,
-    can: (p, w) => p.held === 'hoodie' && w.pc === 'boss' && w.fix === 'none',
+  fix_pc: { // only Kev may touch the boss's computer, and only while it acts up (3:35 to 3:37.5: cast.js actsUp)
+    on: 'boss_pc', text: 'offer to fix his computer', instant: true,
+    can: (p, w) => p.held === 'hoodie' && w.pc === 'boss' && w.fix === 'none' && w.glitch,
     done(game, a) {
       game.world.fix = 'asked';
-      say(game, 'player', ['🖥️', '❓'], { ttl: 1.5 }); // "trouble with your computer?"
+      const b = game.npcs.find((n) => n.id === 'boss');
+      if (b) b._sayQ.length = 0; // "Kev" came: no more waving for him, no "where's Kev?"
+      say(game, 'player', ['🙋', '🔧'], { ttl: 1.5 }); // me: I'll fix it (Kev's 🔧 at 3:04)
       game.events.emit('pc:asked', { x: a.x, y: a.y });
     },
   },
   strike_name: {
-    on: 'boss_pc', icon: '🗑️', text: 'take your name off the list', duration: 3.0, sneaky: true, saw: '🖥️', // longer than any glance away
+    on: 'boss_pc', text: 'take your name off the list', duration: 3.0, sneaky: true, saw: '🖥️', // longer than any glance away; saw: what a late tattle says she saw you at
     can: (p, w) => w.list === 'on' && w.pc === 'free',
     done(game, a) {
       const w = game.world;
@@ -156,16 +162,18 @@ const INTERACTIONS = {
 const ITEMS = {
   hoodie: {
     icon: '🧥',
+    draw: hoodie,
     keep: true,
     // Kev's olive hoodie, hood up: Kev, to anyone who didn't see him go home.
     disguise: {
       as: 'kev',
       look: { body: C.olive, bodyDark: C.oliveDark, torso: 'hoodie', hood: true, hoodColor: C.oliveDark, hair: C.olive, hairStyle: 'cap' },
-      greet: [{ say: ['@kev', '👋'] }], // Kev! Hi
+      greet: [{ say: ['🙂', '@kev'] }], // oh, Kev (a face and a wave is the boss calling him over: cast.js)
     },
   },
   jacket: {
     icon: '👔',
+    draw: jacket,
     keep: true,
     disguise: {
       as: 'boss',
@@ -174,6 +182,14 @@ const ITEMS = {
     },
   },
 };
+
+// 3:45, and you're at your desk: in Kev's hoodie you're Kev to the boss, so your chair is empty to him (the hood,
+// not you, is in it): he wonders what Kev is doing there, asks where you are, and puts you back on (blamed, why
+// 'kev': end-scenes.js). Hang it back on Kev's chair first, as the jacket goes back on its rack.
+function verdict(game, { result, present }) {
+  if (result !== 'win' || !present || game.player.held !== 'hoodie') return null;
+  return { result: 'blamed', why: 'kev', stare: { at: 'player', think: ['@kev', '❓'], say: ['@player', '❓'] } };
+}
 
 const ROLES = {
   authority: { id: 'boss', offDuty: [], helpless: [], deafIn: null },
@@ -221,7 +237,7 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'pc_front' }, // fail: called in as it goes
+  meeting: { override: 'send', room: 'desk', chair: 'player_desk', presenter: 'pc_front', verdict }, // fail: called in as it goes
   routes: [
     { id: 'hoodie', icon: '@kev', achieved: (w) => w.list === 'off' && w.offAs === 'kev' },
     { id: 'jacket', icon: '@boss', achieved: (w) => w.list === 'off' && w.offAs !== 'kev' }, // also a plain edit: the gate flags one
@@ -236,7 +252,8 @@ export default {
     fix: 'none', // 'none' | 'asked' ("Kev" offered) | 'done'
     fixProgress: 0,
     jacket: 'rack', // the boss's jacket: 'rack' | 'player'
-    hoodie: 'kev', // 'kev' (he's wearing it) | 'chair' | 'player'
+    hoodie: 'kev', // 'kev' (he's wearing it) | 'chair' (over his chair's back) | 'player'
+    kevUp: false, // Kev has picked up his bag to go home (cast.js grabBag): his chair is free
     kevGone: false,
     items: [],
   }),

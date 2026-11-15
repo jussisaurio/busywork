@@ -40,10 +40,12 @@ export const CAST = [
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
       s('3:01.6', { do: 'visit', spot: 'pc_front', arrive: 'fixPc' }), // the boss waved him over
-      s('3:06', { do: 'sit', spot: 'kev_desk', prelude: 'pcFixed' }),
-      // Home early, once the boss is out of sight: a wave to Lin (she waves back), the hoodie off onto his chair, out.
+      // Back from the boss's stuffy glass office, hot: the hoodie comes off, over his chair's back.
+      s('3:06', { do: 'sit', spot: 'kev_desk', prelude: 'pcFixed', arrive: 'shedHoodie' }),
+      // Home early, once the boss is out of sight: his bag, a wave to Lin (she waves back), out past his chair,
+      // where his hoodie stays.
       s('3:19', {
-        do: 'leave', spot: 'elevator', prelude: ['waveLin', 'shedHoodie'], gone: { set: { kevGone: true }, event: 'kev:left' },
+        do: 'leave', spot: 'elevator', prelude: ['grabBag', 'waveLin'], gone: { set: { kevGone: true }, event: 'kev:left' },
       }),
     ],
   },
@@ -83,8 +85,9 @@ export const BEHAVIOURS = {
   },
   // 3:01: Kev at the boss's computer, typing (presentation.js POSES), the boss watching.
   fixPc: {
-    arrive(game) {
+    arrive(game, npc, sim) {
       game.world.pc = 'kev';
+      sim.speak(game, npc, [{ say: ['🔧'] }]); // the one who fixes things
       game.events.emit('kev:fixing', {});
     },
   },
@@ -123,30 +126,40 @@ export const BEHAVIOURS = {
       game.events.emit('pc:thumped', {});
     },
   },
-  // On his way out, Kev waves goodbye in front of Lin's desk; she waves back. Now she knows he's gone.
+  // Back at his desk at about 3:08.5, hot (🥵, sweat flying): the hoodie comes off and hangs over his chair's back.
+  shedHoodie: {
+    arrive(game, npc, sim) {
+      const w = game.world;
+      if (w.hoodie !== 'kev') return;
+      w.hoodie = 'chair'; // drawn over his chair's back (presentation.js)
+      burst(game, 'sweat', npc.x, npc.y - 0.6, 10, { speed: 1.0 });
+      sim.speak(game, npc, [{ say: ['🥵'] }]);
+      sim.holdFor(npc, 1.0);
+      game.events.emit('kev:hoodieOff', {});
+    },
+  },
+  // 3:19: he gets up with his bag (presentation.js POSES), leaving the hoodie on his chair.
+  grabBag: {
+    spot: 'kev_desk',
+    pending: (npc) => !npc._bag,
+    arrive(game, npc, sim) {
+      npc._bag = true;
+      game.world.kevUp = true;
+      sim.holdFor(npc, 0.8);
+      game.events.emit('kev:up', {});
+    },
+  },
+  // On his way out, Kev waves goodbye in front of Lin's desk, going home; she waves back. Now she knows he's gone.
   waveLin: {
     spot: 'kev_bye',
     pending: (npc) => !npc._waved,
     arrive(game, npc, sim) {
       npc._waved = true;
-      sim.speak(game, npc, [{ say: ['@lin', '👋'] }]); // bye, Lin
+      sim.speak(game, npc, [{ say: ['👋', '🏠'] }]); // bye, I'm off home
       const lin = game.npcs.find((n) => n.id === 'lin');
-      if (lin?.active && !lin.override) sim.speak(game, lin, [{ say: ['@kev', '👋'], after: 0.9 }]); // bye, Kev
+      if (lin?.active && !lin.override) sim.speak(game, lin, [{ say: ['👋'], after: 0.9 }]); // bye
       sim.holdFor(npc, 1.8);
       game.events.emit('kev:bye', {});
-    },
-  },
-  // Then, hot (sweat), the hoodie comes off and stays on his chair.
-  shedHoodie: {
-    spot: 'kev_desk',
-    pending: (npc) => !npc._shed,
-    arrive(game, npc, sim) {
-      npc._shed = true;
-      const w = game.world;
-      w.hoodie = 'chair'; // drawn on his chair (presentation.js)
-      burst(game, 'sweat', npc.x, npc.y - 0.6, 6, { speed: 0.8 });
-      sim.holdFor(npc, 1.0);
-      game.events.emit('kev:hoodieOff', {});
     },
   },
   // 3:42: he sits down to send it at 3:45 (then the list flies off his screen: list.js sending).
