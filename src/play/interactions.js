@@ -97,6 +97,8 @@ function findFocus(game) {
   let best = null;
   let bestD = Infinity;
   for (const it of game.map.interactables) {
+    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
+    if (Math.abs(it.cx - p.x) > INTERACT_RADIUS || Math.abs(it.cy - p.y) > INTERACT_RADIUS) continue;
     const d = Math.hypot(it.cx - p.x, it.cy - p.y);
     if (!(d <= INTERACT_RADIUS && d < bestD)) continue; // can() is pure, so test reach first
     const verb = targetAction(game, it.type);
