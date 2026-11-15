@@ -8,7 +8,8 @@ import { createNpcs, updateNpcs } from '../src/sim/npcs.js';
 import { advanceClock } from '../src/game/loop.js';
 import { angleDiff } from '../src/core/vision.js';
 import { viewerOf, spotPos } from '../src/game/perception.js';
-import { makeNoise } from '../src/sim/mechanics/attention.js';
+import { makeNoise, setNoise } from '../src/sim/mechanics/attention.js';
+import { levelProblems } from '../src/levels/validate.js';
 import { createHarness } from '../src/agent/harness.js';
 import { levels } from '../src/levels/index.js';
 import { levelData } from './fuzz.mjs';
@@ -249,6 +250,91 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   const { noise, ...silent } = FA.interactions.print;
   ok(noise && play({ ...FA, interactions: { ...FA.interactions, print: silent } }, route) !== 'win', 'fixture: the same plan with a silent printer: no win');
   ok(play(FA, route.map((c) => (c === 'goto donut' ? 'goto donut pretend' : c))) === 'caught', 'fixture: strolling over (pretend) is too slow: caught');
+}
+
+// 12. Timing: delay, every + while, turn; a new loop drops what is waiting; the validator checks the fields.
+{
+  const count = (log) => log.filter((e) => e.name === 'noise').length;
+  // delay: the noise waits, then sounds where it was set.
+  const level = { ...BASE, noises: { 'test:timer': { at: 'player_desk', radius: 30, delay: 2 } } };
+  const { game, log } = day(level);
+  step(game, 1);
+  game.events.emit('test:timer', {});
+  ok(count(log) === 0, 'delay: nothing sounds at once');
+  step(game, 1.9);
+  ok(count(log) === 0, 'delay: nor after 1.9 s');
+  step(game, 0.2);
+  const c = spotPos(game, 'player_desk');
+  const n1 = log.find((e) => e.name === 'noise');
+  ok(count(log) === 1 && n1.payload.x === c.x && n1.payload.y === c.y, 'delay: one noise at the spot after 2 s');
+  ok(n1 && Object.keys(n1.payload).join() === 'x,y,radius', `delay: the payload is still {x, y, radius} (${n1 && Object.keys(n1.payload)})`);
+  step(game, 5);
+  ok(count(log) === 1, 'delay: and only one');
+
+  // every + while: repeats while the world says so, and stops for good when it doesn't.
+  const g2 = day(BASE);
+  g2.game.world.beeping = true;
+  const beep = { radius: 30, every: 1, while: (w) => w.beeping };
+  setNoise(g2.game, beep, 5, 5);
+  ok(count(g2.log) === 1, 'every: the first beep sounds at once');
+  step(g2.game, 3.05);
+  ok(count(g2.log) === 4, `every: then one a second (${count(g2.log)} in 3 s)`);
+  g2.game.world.beeping = false;
+  step(g2.game, 1);
+  g2.game.world.beeping = true;
+  step(g2.game, 3);
+  ok(count(g2.log) === 4, 'while: false once, and it stops for good');
+  const g2b = day(BASE);
+  g2b.game.world.beeping = false;
+  setNoise(g2b.game, beep, 5, 5);
+  step(g2b.game, 2);
+  ok(count(g2b.log) === 0, 'while: false at the first sound, and nothing sounds');
+  const g2c = day(BASE);
+  g2c.game.world.ding = true;
+  setNoise(g2c.game, { radius: 30, delay: 1, while: (w) => w.ding }, 5, 5);
+  g2c.game.world.ding = false;
+  step(g2c.game, 2);
+  ok(count(g2c.log) === 0, 'while: a delayed noise is cancelled when the world changes meanwhile');
+  const g2d = day(BASE);
+  setNoise(g2d.game, { radius: 30, delay: 1, every: 0.5 }, 5, 5);
+  step(g2d.game, 2.05);
+  ok(count(g2d.log) === 3, `delay + every: at 1, 1.5 and 2 s (${count(g2d.log)})`);
+
+  // turn: heads stay turned that long.
+  const g3 = day(BASE);
+  step(g3.game, 1);
+  const n = idle(g3.game);
+  setNoise(g3.game, { radius: 5, turn: 4 }, behind(n).x, behind(n).y);
+  ok(n._heard && Math.abs(n._heard.t - 4) < 1e-9, 'turn: he looks for 4 s');
+  step(g3.game, 3.5);
+  ok(n._heard !== null, 'turn: still looking after 3.5 s');
+  step(g3.game, 0.6);
+  ok(n._heard === null, 'turn: and lets go after 4 s');
+
+  // A new loop drops a noise still waiting to sound.
+  const g4 = day(BASE);
+  setNoise(g4.game, { radius: 30, delay: 1 }, 5, 5);
+  g4.game.npcs = createNpcs(g4.game);
+  step(g4.game, 2);
+  ok(count(g4.log) === 0, 'a new loop drops a waiting noise');
+
+  // The harness: an action row's delayed noise goes off after the action, during a later command.
+  const rows = BASE.interactions;
+  const [verb] = Object.entries(rows).find(([, r]) => r.on === 'coffee_machine');
+  const h = createHarness({ level: { ...BASE, interactions: { ...rows, [verb]: { ...rows[verb], noise: { radius: 30, delay: 3 } } } } });
+  h.begin();
+  h.run('goto coffee_machine');
+  h.run('interact');
+  const before = h.log.filter((e) => e.name === 'noise').length;
+  h.run('wait 4s');
+  ok(before === 0 && h.log.filter((e) => e.name === 'noise').length === 1, `${verb}: the row's delayed noise sounds during the next command`);
+
+  // The validator.
+  const probs = levelProblems({ ...BASE, noises: { 'test:x': { at: 'player_desk', radius: 3, delay: -1, every: 0, turn: 'long', while: true } } }, 'meeting');
+  ok(['.delay', '.every', '.turn', '.while'].every((k) => probs.some((p) => p.includes(`noises['test:x']${k}`))), `validator: ${probs.filter((p) => p.startsWith('noises')).length} timing problems listed`);
+  const rowProbs = levelProblems({ ...BASE, interactions: { ...rows, [verb]: { ...rows[verb], noise: { radius: 3, every: -2 } } } }, 'meeting');
+  ok(rowProbs.some((p) => p.includes(`interactions.${verb}.noise.every`)), 'validator: a row noise too');
+  ok(levelProblems(BASE, 'meeting').length === 0, 'validator: level 1 is still fine');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

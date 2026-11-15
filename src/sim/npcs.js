@@ -21,7 +21,7 @@ import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
 import { mechanicsFor, mechanicOf, startHunt } from './mechanics/index.js';
-import { listenForNoises, heardFacing, heardHead, tickAttention } from './mechanics/attention.js';
+import { listenForNoises, resetNoises, tickNoises, heardFacing, heardHead, tickAttention } from './mechanics/attention.js';
 
 export { npcSayLater };
 
@@ -48,6 +48,7 @@ function hash(str) {
 export function createNpcs(game) {
   const now = game.clock ? game.clock.minute : 0;
   listenForNoises(game); // level.noises (mechanics/attention.js): subscribes once per game
+  resetNoises(game); // a noise still waiting to sound belongs to the old loop
   return game.level.cast.map((def) => createNpc(game, def, now));
 }
 
@@ -105,6 +106,7 @@ export function createNpc(game, def, now = 0) {
 export function updateNpcs(game, dt) {
   const now = game.clock.minute;
   const npcs = game.npcs;
+  tickNoises(game, dt); // delayed and repeating noises (mechanics/attention.js)
 
   // 5. Meeting gather, once per loop. The flag lives on the NPCs, so a new loop starts clean.
   if (now >= game.level.day.gatherAt && npcs.length && !npcs.some((n) => n._gathered)) {
