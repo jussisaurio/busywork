@@ -7,6 +7,10 @@
 //   crash     any crash or harness error (a command threw, or a day never ended)
 //   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend; a lesson with `routes`
 //             binds only the wins that include one of them)
+//   cold-read:<stage>  for every level but the fixtures: a cold read stage (premise, pictures, replay) that has not
+//             been recorded `works` in src/levels/<id>/cold-read.md for the level as it is now (docs/COLD-READ.md).
+//             The gate reads the record; it never runs the readers. Checking freshness draws the shots and replay
+//             strips, so it needs @napi-rs/canvas (npm install --prefix tools/.deps @napi-rs/canvas).
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
 // and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
 //
@@ -16,6 +20,7 @@
 // reads level.routes and level.gate (src/levels/meeting/gate.js).
 import { fileURLToPath } from 'node:url';
 import { fuzz, winLines, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
+import { coldReadChecks, isFixture } from './cold-read.mjs';
 
 // Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
@@ -23,9 +28,10 @@ export const DEFAULT_BUDGET = 30000;
 const pct = (x) => `${(100 * x).toFixed(2)}%`;
 
 // The verdict, from fuzz() results (or synthetic ones of the same shape: level, wins, randomWins, randomEvaluated,
-// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). Returns one
+// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). coldRead: the level's cold read
+// checks (tools/cold-read.mjs coldReadChecks); a level that is not a fixture fails without them. Returns one
 // { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
-export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE } = {}) {
+export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE, coldRead } = {}) {
   const oneLine = (plan) => planToCmds(plan, levelData(r.level)).join(' ; ');
   const combos = combosOf(r);
   const checks = [];
@@ -56,6 +62,11 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
     const which = routes ? `${routes.join(' or ')} win` : 'win';
     check(id, !skips.length, skips.length ? `a ${which} without ${id}: ${skips.join(', ')}` : `every ${which} uses ${id}`,
       skips.map((wk) => `${wk}: ${oneLine(r.wins[wk].without[id])}`));
+  }
+
+  if (!isFixture(r.level)) {
+    if (coldRead) checks.push(...coldRead);
+    else check('cold-read', false, 'the cold reads were not checked', [`see: node tools/cold-read.mjs --status`]);
   }
   return checks;
 }
@@ -103,7 +114,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
   try {
     const r = await fuzz(opts);
-    const checks = checkGate(r, levelData(opts.level));
+    const coldRead = isFixture(level) ? undefined : await coldReadChecks(level);
+    const checks = checkGate(r, levelData(opts.level), { coldRead });
     console.log(gateReport(r, checks));
     process.exitCode = checks.every((c) => c.ok) ? 0 : 1;
   } catch (e) {

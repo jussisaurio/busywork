@@ -39,7 +39,8 @@
 //               list or a zone (then a from); its look a number, its record (on an item or count check) a field of
 //               initialWorld(); a noise is not 'noise' or 'npc:heard'
 //   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
-//               torch { when(), fov, radius } (src/game/darkness.js)
+//               torch { when(), fov, radius }; controls a list of { tile (a legend letter on the map), kind (one of
+//               game/darkness.js CONTROL_KINDS), on() } (src/game/darkness.js)
 //   failSign    optional; spot a spot
 //   cameras     optional (src/sim/mechanics/camera.js); ids unique strings; x, y (the lens) on the map; dir, fov,
 //               radius numbers; sweep { arc, period > 0 }; aim, live functions; monitor an { x, y } on the map;
@@ -65,6 +66,7 @@ import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
 import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
+import { CONTROL_KINDS } from '../game/darkness.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
@@ -364,6 +366,14 @@ export function levelProblems(level, key) {
     if (d?.torch !== undefined) {
       if (!isFn(d.torch?.when)) bad('darkness.torch.when', 'not a function');
       if (!isNum(d.torch?.fov) || !isNum(d.torch?.radius)) bad('darkness.torch', 'fov and radius not numbers');
+    }
+    for (const [i, c] of (d?.controls === undefined ? [] : list('darkness.controls', d.controls)).entries()) {
+      const path = `darkness.controls[${i}]`;
+      if (!CONTROL_KINDS.includes(c?.kind)) bad(`${path}.kind`, `no control ${q(c?.kind)} (${CONTROL_KINDS.join(', ')})`);
+      if (map && !(typeof c?.tile === 'string' && c.tile.length === 1 && level.map.rows.some((r) => r.includes(c.tile)))) {
+        bad(`${path}.tile`, `${q(c?.tile)} is not on the map`);
+      }
+      if (!isFn(c?.on)) bad(`${path}.on`, 'not a function');
     }
   }
   if (level.failSign !== undefined) spot('failSign.spot', level.failSign?.spot);

@@ -19,6 +19,11 @@ the data shapes, read `CONTRACTS.md`.
 The only text in a level is its mission card: two typed lines on the title screen, plus a badge of icons. Everything
 else is pictures, motion and sound.
 
+**The level's name, card and badge name the trouble, never the way out.** Name the stakes or the day's event (The
+Audit, Layoff List, Weekend Shift). Never name a mechanic, a tool or a route. A name like "Lights Out" for a level you
+win by turning the lights off gives away the solution before the first move. Test: if knowing the name narrows down
+how to win, rename it. The level's folder and id are its name too, because the level picker shows them.
+
 ## Design principle: no hand-holding
 In the spirit of Jonathan Blow's games, the game explains nothing beyond the mission card. Figuring out how it works
 *is* the game: the time loop, the office rules, what each object is for, and how many ways there are to win.
@@ -44,7 +49,8 @@ There is no camera: the whole office is on screen (30×17 tiles), with the HUD b
 | Key | Verb |
 |---|---|
 | WASD / arrows | walk |
-| E / Space | interact (the nearest valid target shows a ✋ hint) |
+| E | interact (the nearest valid target shows a ✋ hint) |
+| E, Space or Enter | move past the mission card and the end card |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |
 | Esc, or the ⏸ button (top right) | pause; any click, or Esc again, resumes. Losing window focus pauses too |

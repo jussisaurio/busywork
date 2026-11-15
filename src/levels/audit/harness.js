@@ -7,7 +7,7 @@ const WHOSE = { laptop_boss: 'the boss\'s', laptop_lin: 'Lin\'s', laptop_kev: 'K
 const ON = { boss_desk: 'the boss\'s desk', lin_desk: 'Lin\'s desk', your_desk: 'your desk', kev_desk: 'Kev\'s desk' };
 
 export default {
-  mission: 'MISSION: 3:30 PM. Laptop audit. There should be four. You sold yours.',
+  mission: 'MISSION: 3:00 PM. A laptop audit at 3:30. There should be four. You sold yours. Make him count four.',
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -46,7 +46,7 @@ export default {
 
   npcText(game, n) {
     const bits = [];
-    if (n.override === 'audit') bits.push('auditing, clipboard up 🧾');
+    if (n.override === 'audit') bits.push('auditing, clipboard up 📋');
     if (n.carry) bits.push(`holding ${WHOSE[n.carry] ?? n.carry} laptop`);
     return bits;
   },
@@ -70,7 +70,7 @@ export default {
         : p.late
           ? `${name(p.by)} points you out to the auditor 👉${p.icon ?? ''} (seen earlier, told now)`
           : `${name(p.by)} shouts and points at you ❗👉${p.heard ? ' (the auditor heard)' : ''}`;
-      case 'inspect:start': return 'ding: the auditor steps out of the lift, clipboard first 🕵️🧾';
+      case 'inspect:start': return 'ding: the auditor steps out of the lift, clipboard first 📋';
       case 'inspect:pass': return `the auditor ticks off ${DESK[p.index]} 💻✔️`;
       case 'inspect:fail': return `the auditor marks ${DESK[p.index]} 💻❌`;
       case 'inspect:moved': return null;
