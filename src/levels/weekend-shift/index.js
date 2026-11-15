@@ -2,7 +2,8 @@
 // and the top name (yours) works this weekend. Get someone else named: write the boss's name at the top of the
 // board, or put Kev's on the sign-off sheet in Kev's tray. Level 1 taught "wait for a glance"; this one teaches
 // "make one". Three toys make noises that turn heads (sim/mechanics/attention.js):
-//   - the microwave DINGs a while after you start it: every head in earshot snaps east, to the kitchen, for 4 s.
+//   - the microwave DINGs a while after you start it: every head in earshot snaps east, to the kitchen, for 6 s
+//     (long enough to notice it while fast-forwarding at your pretend, let go, and still finish writing).
 //     The board is on the west side: be there when it dings. The sheet is on the east side, between the
 //     microwave and Lin: swap it at the ding and Lin turns to look straight at you (the teaching fail).
 //   - a paper clip jams the copier: it beeps until Kev fixes it (a lure). Every head turns toward it, and Kev leaves
@@ -81,7 +82,7 @@ const INTERACTIONS = {
   start_microwave: {
     on: 'microwave', icon: '🍜', text: 'microwave your noodles', duration: 1.0, sneaky: false,
     can: (p, w) => w.noodles === 'cold',
-    noise: { at: 'microwave', radius: 20, delay: DING_S, turn: 4, ripple: true, sfx: 'elevatorDing' }, // DING
+    noise: { at: 'microwave', radius: 20, delay: DING_S, turn: 6, ripple: true, sfx: 'elevatorDing' }, // DING
     done(game) {
       const w = game.world;
       w.noodles = 'cooking';
