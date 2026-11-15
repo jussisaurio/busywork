@@ -5,10 +5,13 @@
 //   - the microwave DINGs a while after you start it: every head in earshot snaps east, to the kitchen, for 4 s.
 //     The board is on the west side: be there when it dings. The sheet is on the east side, between the
 //     microwave and Lin: swap it at the ding and Lin turns to look straight at you (the teaching fail).
-//   - a paper clip jams the copier: it beeps until Kev fixes it (a lure). Every head turns west, and Kev leaves
-//     his desk (and his tray). The board is west: at the beeping, it's in plain view.
+//   - a paper clip jams the copier: it beeps until Kev fixes it (a lure). Every head turns toward it, and Kev leaves
+//     his desk (and his tray). The board stands between the copier and both watchers: at the beeping, it's in
+//     plain view (the mirror fail).
 //   - your desk phone rings the boss's: he answers it at his window, his back to the office. Lin still watches
-//     the board, except while she's in the kitchen with her fish (4:08-4:19).
+//     the board, except while she's in the kitchen with her fish (4:30-4:40).
+//   Kev sits boxed in by two plants, so nobody reaches his tray from beside him; the row behind the desks is his
+//   way out.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { say, burst } from '../../core/fx.js';
@@ -31,9 +34,9 @@ const MAP = [
   '#.....#.....TTT.....#........#', // 4
   '#H....#............H#........#', // 5
   '###D###GGGGGGDGGGGGG####D#####', // 6
-  '#............................#', // 7
+  '#...X........................#', // 7
   '#...........................C#', // 8
-  '#X.......R..................M#', // 9
+  '#........R..................M#', // 9
   '#...........................C#', // 10
   '#...........................F#', // 11
   '#............................#', // 12
@@ -59,8 +62,8 @@ const SPOTS = {
   lin_desk: { x: 11, y: 14, face: 'N' },
   kev_desk: { x: 18, y: 14, face: 'N' }, // facing his own tray
   kev_tray: { x: 18, y: 12, face: 'S' }, // in front of Kev's desk: where his tray is reached from
-  copier: { x: 2, y: 9, face: 'W' }, // Kev repairs from here
-  copier_boss: { x: 1, y: 10, face: 'N' }, // the boss photocopying
+  copier: { x: 4, y: 8, face: 'N' }, // Kev repairs from here
+  copier_boss: { x: 5, y: 7, face: 'W' }, // the boss photocopying, his back to the board
   microwave: { x: 27, y: 9, face: 'E' },
   boss_window: { x: 19, y: 1, face: 'N' }, // the boss on the phone, his back to the office, the board out of sight
   board_boss: { x: 9, y: 10, face: 'E' }, // beside the board, facing the room: the boss reads the roster from here
@@ -127,7 +130,7 @@ const INTERACTIONS = {
 
 // level.noises: an event sets off a noise at a spot (sim/mechanics/attention.js).
 const NOISES = {
-  // The jammed copier beeps every 2 s until Kev has fixed it: heads stay turned west the whole time.
+  // The jammed copier beeps every 2 s until Kev has fixed it: heads stay turned toward it (and the board) the whole time.
   'copier:jammed': {
     at: 'copier', radius: 22, delay: 1, every: 2, turn: 2.4,
     while: (w) => w.copier === 'jammed' || w.copier === 'fixing',
