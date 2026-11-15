@@ -1,26 +1,29 @@
-// How Kev's Hoodie looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
+// How The Layoff List looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
 // end-scenes.js, sounds.js and voices.js document the fields).
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
+import { T, rrect, fillEllipse } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
+import { listShown, drawListScreen } from './list.js';
+import { END_SCENES } from './end-scenes.js';
+
+export { END_SCENES };
 
 export const TITLE = {
-  mission: ["3:45 PM. The boss's screen shows your awful review.", 'Delete it before he sends it.'],
-  badge: ['💻', '🗑️'],
+  mission: ["3:00 PM. At 3:45 the boss emails HR the layoff list. You're on it.", 'Get your name off it.'],
+  badge: ['🖥️', '🗑️'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
+const CHARCOAL = ['#4b5056', '#34383d']; // Kev's chair: his olive hoodie must stand out on it
 
 export const DECOR = {
   chairs: [
     { spot: 'boss_desk', face: 'S', color: OXBLOOD },
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     { spot: 'lin_desk', face: 'N', color: TEAL },
-    { spot: 'kev_desk', face: 'N', color: OLIVE },
+    { spot: 'kev_desk', face: 'N', color: CHARCOAL },
     { x: 13, y: 12, face: 'N', color: MUSTARD },
     { x: 22, y: 9, face: 'N', color: TEAL },
     { x: 22, y: 12, face: 'N', color: TEAL },
@@ -42,8 +45,10 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
-    // His screen: your review, queued to send (📧), or gone (🗑️).
-    { tile: 'Q', draw: 'icon', state: (w) => ({ icon: w.review === 'queued' ? '📧' : '🗑️', size: 13 }) },
+    // His screen: the layoff list, a row of faces, yours framed in red; static while it acts up (list.js).
+    { tile: 'Q', draw: drawListScreen, state: listShown },
+    // Kev's hoodie, left on his chair when he goes home (V: his desk, which you reach it from).
+    { tile: 'V', draw: drawHoodieOnChair, state: (w) => w.hoodie === 'chair' },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: false }) },
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
   ],
@@ -64,6 +69,49 @@ export const DECOR = {
   legendAt: { x: 20, y: 15.5 },
 };
 
+// Kev's olive hoodie, left on his chair (one tile south of his desk tile; the chair faces his desk, so its backrest
+// is to the south). Drawn as a garment the size of a person's torso: the hood hangs over the backrest, the body lies
+// on the seat, the sleeves dangle past the seat's sides. Kev's chair is charcoal so the olive stands out. shown: true
+// while it lies there.
+function drawHoodieOnChair(ctx, info, at, shown) {
+  if (!shown) return;
+  const cx = at.x * T + T / 2;
+  const cy = (at.y + 1) * T + T / 2;
+  const LINE = '#262b14';
+  const BODY = '#738243';
+  const SHADE = '#56622f';
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = LINE;
+  // the sleeves, splayed out and hanging over the seat's edges
+  for (const side of [-1, 1]) {
+    ctx.save();
+    ctx.translate(cx + side * 7, cy - 4);
+    ctx.rotate(side * -0.5);
+    ctx.fillStyle = SHADE;
+    rrect(ctx, -2.5, 0, 5, 13, 2.2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = BODY; // the cuff
+    ctx.fillRect(-2, 10.5, 4, 1.6);
+    ctx.restore();
+  }
+  // the body
+  ctx.fillStyle = BODY;
+  rrect(ctx, cx - 8, cy - 7, 16, 13, 3.5);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = SHADE; // the front pocket
+  rrect(ctx, cx - 5, cy - 1, 10, 4, 1.5);
+  ctx.fill();
+  // the hood, over the backrest, its opening dark
+  fillEllipse(ctx, cx, cy + 7, 7, 4.2, LINE);
+  fillEllipse(ctx, cx, cy + 6.6, 6.2, 3.5, SHADE);
+  fillEllipse(ctx, cx, cy + 6.2, 3.8, 2, '#1d2010');
+  ctx.fillStyle = '#efe9da'; // drawstrings
+  ctx.fillRect(cx - 2.8, cy - 6, 1.2, 5);
+  ctx.fillRect(cx + 1.6, cy - 6, 1.2, 5);
+}
+
 // Level 1's people. Kev wears a T-shirt under his hoodie (drawn once the hoodie is off: POSES).
 export const LOOKS = {
   ...OFFICE,
@@ -72,7 +120,10 @@ export const LOOKS = {
 
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'watching', arms: 'shrug' }, // the boss, watching "Kev" at his computer
+    { when: (n, w) => n.id === 'kev' && w.pc === 'kev' && !n.moving, arms: 'type' }, // fixing the boss's computer
+    // The boss, watching Kev (or "Kev") at his computer.
+    { when: (n, w) => n.id === 'boss' && !n.moving && (n.override === 'watching' || w.pc === 'kev'), arms: 'shrug' },
+    { when: (n, w) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving, arms: 'bang' }, // at the static
   ],
   marks: [
     { when: (n, w) => n.id === 'kev' && w.hoodie !== 'kev', jacket: false }, // in his T-shirt
@@ -118,25 +169,12 @@ export const SOUNDS = {
     'jacket:taken': { sfx: 'rustle', who: 'player' },
     'jacket:hung': { sfx: 'swish', who: 'player' },
     'kev:hoodieOff': { sfx: 'rustle', who: 'kev' },
-    'review:deleted': { sfx: 'swish', who: 'player' },
+    'pc:actsUp': { sfx: 'rattle', who: 'boss' },
+    'pc:fixed': { sfx: 'fixed', who: 'kev' },
+    'pc:thumped': { sfx: 'bang', who: 'boss' },
+    'list:edited': { sfx: 'swish', who: 'player' },
     'kev:left': { sfx: 'elevator' },
   },
   drops: { hoodie: 'soft', jacket: 'soft' },
   elevator: { spot: 'elevator', radius: 2.5 },
-};
-
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes.includes('hoodie') ? 'hoodie' : 'jacket') : o?.result ?? 'fail'),
-  scenes: {
-    hoodie: { win: true, icons: ['🔧', '🙏', '😇'], draw: picture('🧥') }, // he thanked "Kev"
-    jacket: { win: true, icons: ['👔', '👋', '😬'], draw: picture('👔') }, // Lin waved at "the boss"
-    fail: { win: false, icons: ['📧', '📉', '😱'], draw: picture('📧') },
-    caught: { win: false, icons: ['👔', '👉', '😠'], draw: picture('📦') },
-    blamed: { win: false, icons: ['🪑', '👉', '🗑️'], draw: picture('🪑') }, // it's gone, and so are you
-  },
 };
