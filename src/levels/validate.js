@@ -31,15 +31,16 @@
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
 //               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
-//               cast ids; put seconds; keep a boolean; disguise { as (a cast id), look? (an object of look
+//               cast ids; put seconds; keep and bulky booleans; disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
-//   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
+//   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
 //               icon or a list, its absent true or false; a count check a whole count >= 1 with a non-empty spots
 //               list or a zone (then a from); its look a number, its record (on an item or count check) a field of
-//               initialWorld(); a noise is not 'noise' or 'npc:heard'
+//               initialWorld(); a noise is not 'noise' or 'npc:heard'; a fetch has an override, a plan and a
+//               caught time >= 0 (if any)
 //   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
 //               torch { when(), fov, radius }; controls a list of { tile (a legend letter on the map), kind (one of
 //               game/darkness.js CONTROL_KINDS), on() } (src/game/darkness.js)
@@ -297,6 +298,7 @@ export function levelProblems(level, key) {
     }
     if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
     if (it.keep !== undefined && typeof it.keep !== 'boolean') bad(`items.${type}.keep`, 'not true or false (true: it leaves your hand only by a put)');
+    if (it.bulky !== undefined && typeof it.bulky !== 'boolean') bad(`items.${type}.bulky`, 'not true or false (true: no pretending while you hold it)');
   }
   const roles = level.roles;
   if (roles !== undefined) {
@@ -328,6 +330,12 @@ export function levelProblems(level, key) {
     spot(`doors[${i}].spot`, d?.spot);
     zone(`doors[${i}].zone`, d?.zone);
     for (const [k, id] of list(`doors[${i}].npcs`, d?.npcs).entries()) npc(`doors[${i}].npcs[${k}]`, id);
+  }
+  for (const [i, f] of (level.fetches ?? []).entries()) {
+    itemTypes(`fetches[${i}].item`, f?.item);
+    for (const [k, id] of list(`fetches[${i}].npcs`, f?.npcs).entries()) npc(`fetches[${i}].npcs[${k}]`, id);
+    if (!isStr(f?.override) || !isStr(f?.plan)) bad(`fetches[${i}]`, 'needs an override and a plan (strings)');
+    if (f?.caught !== undefined && !(isNum(f.caught) && f.caught >= 0)) bad(`fetches[${i}].caught`, 'not a time in seconds');
   }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
