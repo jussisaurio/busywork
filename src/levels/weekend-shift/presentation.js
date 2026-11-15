@@ -6,7 +6,7 @@ import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
-import { READ_S, ANNOUNCE_S, CLAP_S, REDRAW_AT, REDRAW_S } from './cast.js';
+import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S } from './cast.js';
 import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
@@ -66,20 +66,28 @@ const bossHasMarker = (n, w) => n.id === 'boss' && !!w.rosterLocked && n.overrid
 // 5:00, the end beat (index.js punchline): the result, and s into the beat
 const result = (game) => game?.outcome?.result ?? null;
 const beatT = (game) => game?.scenario?.beatT ?? 0;
-// his own face read out to a full room: he goes red, they clap
-const ownFace = (game) => result(game) === 'win' && game.world.roster === 'boss';
-// he points the marker: from ANNOUNCE_S into the reading to the end (blamed: from his turn back to the board)
+// he redraws the slot with your face at 5:00: blamed (your chair empty), or his own face on the board (he never put
+// himself down)
+const redraws = (game) => result(game) === 'blamed' || (result(game) === 'fail' && game.outcome?.why === 'boss');
+// his own face, found when he turns to read it (cast.js readRoster), to his redraw: red to the ears, hands out
+function ownFace(game) {
+  const r = result(game);
+  if (!r) return game.world.roster === 'boss' && reading(game, ANNOUNCE_S + LOOK_S);
+  return r === 'fail' && game.outcome?.why === 'boss' && beatT(game) < REDRAW_AT;
+}
+const fumes = (game) => ownFace(game) || (result(game) === 'fail' && game.outcome?.why === 'boss'); // red, to the end
+// he points the marker: from his look at the board to the end (a redraw: from his turn back to the board)
 function pointing(game) {
   const r = result(game);
-  if (!r) return reading(game, ANNOUNCE_S);
-  return r !== 'blamed' || beatT(game) >= REDRAW_AT;
+  if (!r) return game.world.roster !== 'boss' && reading(game, ANNOUNCE_S + LOOK_S);
+  return !redraws(game) || beatT(game) >= REDRAW_AT;
 }
-// blamed: s into his redraw of the slot (0..1), else null; after it, 1
+// blamed, or his own face: s into his redraw of the slot (0..1), else null; after it, 1
 function redrawK(game) {
-  if (result(game) !== 'blamed') return null;
+  if (!redraws(game)) return null;
   return Math.max(0, Math.min(1, (beatT(game) - REDRAW_AT) / REDRAW_S));
 }
-// whose face the board shows: blamed, yours once he's redrawn it
+// whose face the board shows: yours once he's redrawn it
 function boardFace(game, w) {
   const k = redrawK(game);
   return k !== null && k >= 1 ? 'player' : w.roster;
@@ -139,7 +147,7 @@ function nearBoard(game) {
   const r = game?.map?.find?.('R')?.[0];
   return !!p && !!r && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 1)) < 1.6;
 }
-// Blamed: the boss's redraw, your face going over the slot (drawBoard's scribble), while he draws it
+// Blamed, or his own face: the boss's redraw, your face going over the slot (drawBoard's scribble), while he draws it
 function redrawOf(game, w) {
   const k = redrawK(game);
   return k !== null && k > 0 && k < 1 ? { look: look(game, 'player'), k } : null;
@@ -242,7 +250,6 @@ export const POSES = {
     // redraws it and points at your chair); at his own, he spreads his hands, and Lin and Kev clap
     { when: (n, w, game) => n.id === 'boss' && ownFace(game), arms: 'shrug', item: '#marker' },
     { when: (n, w, game) => n.id === 'boss' && pointing(game), arms: 'point', item: '#marker' },
-    { when: (n, w, game) => (n.id === 'lin' || n.id === 'kev') && ownFace(game) && beatT(game) < CLAP_S, arms: 'bang' },
     // 4:50: out to the board head down in his folder
     { when: (n) => n.id === 'boss' && n.anim === 'folder' && n.moving, arms: 'folder' },
     { when: (n, w) => bossHasMarker(n, w), arms: 'mug', item: '#marker' },
@@ -253,7 +260,7 @@ export const POSES = {
     { when: (n, w, game) => n.id === 'lin' && n.anim === 'fish' && !n._ate, arms: 'mug', item: '#lunchhot' },
   ],
   marks: [
-    { when: (n, w, game) => n.id === 'boss' && ownFace(game), angry: true }, // red to the ears
+    { when: (n, w, game) => n.id === 'boss' && fumes(game), angry: true }, // red to the ears
   ],
 };
 

@@ -63,14 +63,16 @@ export const CAST = [
 ];
 
 // The reading, READ_S s before 5:00. The boss has sat (since 4:50) with his back to the board, facing the room, the
-// board's marker in his hand. 📢: hear this. At ANNOUNCE_S he turns to the board and points the marker at the face
-// in Saturday's slot (it lights up: presentation.js), and says whose, and holds it to 5:00. What happens then is the
-// verdict's (index.js punchline): his own (he goes red, Lin and Kev clap for CLAP_S), Kev's, yours.
+// board's marker in his hand. 📢: hear this. At ANNOUNCE_S he turns to the board: he filled it in on Monday and
+// doesn't remember whom he put down, so he looks (🧐, LOOK_S), then points the marker at the face in Saturday's slot
+// (it lights up: presentation.js), says whose, and holds it to 5:00. His own face: he goes red, hands out (he never
+// put himself down). What happens then is the verdict's (index.js punchline).
 export const READ_S = 3.4;
 export const ANNOUNCE_S = 0.9;
-export const CLAP_S = 1.8;
-// At 5:00 with your chair empty (blamed), the boss turns back to the board and redraws the slot: your face, from
-// REDRAW_AT s into the end beat, for REDRAW_S s (presentation.js draws it), then points at your chair.
+export const LOOK_S = 0.7;
+// At 5:00 with your chair empty (blamed), or his own face on the board (fail), the boss redraws the slot: your face,
+// from REDRAW_AT s into the end beat, for REDRAW_S s (presentation.js draws it), then points at your chair (or glares
+// at you).
 export const REDRAW_AT = 0.6;
 export const REDRAW_S = 0.7;
 // s from now to the reading (he has usually been at the board since 4:50, so the gather sits him down at 4:55)
@@ -103,8 +105,9 @@ export const BEHAVIOURS = {
       }
     },
   },
-  // 4:50: the boss sits down in front of the board, the marker in his hand. Nobody writes on it under his nose. He
-  // hasn't looked at it: he's pleased with himself (presentation.js puts the marker in his hand).
+  // 4:50: the boss sits down in front of the board, the marker in his hand, his back to it. Nobody writes on it under
+  // his nose: his cone watches for people coming to it, not what's on it. He filled it in on Monday and hasn't looked
+  // since: he's pleased with himself (presentation.js puts the marker in his hand).
   checkRoster: {
     state: { _checked: false },
     arrive(game, n, sim) {
@@ -124,11 +127,13 @@ export const BEHAVIOURS = {
       n._read = true;
       const t = lastMoment(game);
       const face = w.roster === 'boss' ? '@boss' : w.roster === 'kev' ? '@kev' : '@player';
+      const r = t + ANNOUNCE_S; // he turns to the board: he filled it in on Monday, and only now looks to see whom
       const lines = [
         ...(t > 2 ? [{ say: ['😏'], ttl: 1.6 }] : []), // still guarding it, still pleased
         { say: ['📢'], ttl: ANNOUNCE_S, after: t, face: 'meeting_player' }, // to the room
-        // that face, there, to 5:00 (index.js punchline: then whose it is)
-        { say: ['👈', face], ttl: READ_S - ANNOUNCE_S + 0.2, after: t + ANNOUNCE_S, face: 'board_look' },
+        { say: ['🧐'], kind: 'thought', ttl: LOOK_S, after: r, face: 'board_look' }, // whom did he put down?
+        // that face, there, to 5:00 (index.js punchline: then whose it is). His own: he never put himself down.
+        { say: w.roster === 'boss' ? [face, '😳'] : ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S + 0.2, after: r + LOOK_S, face: 'board_look' },
       ];
       sim.speak(game, n, lines);
     },
