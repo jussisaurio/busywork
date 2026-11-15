@@ -29,7 +29,10 @@ export function drawHud(ctx, game, t, mem) {
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
-  drawClock(ctx, fin(clock.minute), t, game.level.day);
+  // Once the day is decided the clock stops at the outcome's minute: it reads what the end card says, though the
+  // sim's clock runs on through the end beat.
+  const o = game.outcome;
+  drawClock(ctx, o ? Math.min(fin(clock.minute), fin(o.minute)) : fin(clock.minute), t, game.level.day);
   drawGoal(ctx, game.level.title?.badge ?? NO_BADGE);
   drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
