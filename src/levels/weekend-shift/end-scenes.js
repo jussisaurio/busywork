@@ -185,7 +185,7 @@ function sceneFail(ctx, game, t, e) {
 
 // Caught: you at the desk, and the boss, in on his Saturday to make sure, at the board pointing at you. Caught
 // writing, the board still has the face you were halfway through drawing over yours. His own face on the board (a
-// fail): the same, a clean board with your face redrawn on it.
+// fail): the same, your face redrawn on the board, and his own face in the row under it (#rotaboss): what he found.
 function sceneCaught(ctx, game, t, e) {
   room(ctx, t);
   const sc = game.outcome?.result === 'caught' ? scribbleOf(game) : null;
@@ -300,13 +300,26 @@ function kindOf(o) {
   return o?.result === 'caught' || o?.result === 'blamed' ? o.result : 'fail';
 }
 
-export const END_SCENES = {
-  kindOf,
-  scenes: {
-    winKev: { win: true, icons: ['✏️', '@kev', '😢'], draw: sceneWin }, // his Saturday, and he did nothing
-    fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
-    caught: { win: false, icons: ['✏️', '😠', '@player'], draw: sceneCaught },
-    failOwn: { win: false, icons: ['✏️', '@boss', '😠', '@player'], draw: sceneCaught }, // he never put himself down
-    blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },
-  },
+const SCENES = {
+  winKev: { win: true, icons: ['✏️', '@kev', '😢'], draw: sceneWin }, // his Saturday, and he did nothing
+  fail: { win: false, icons: ['🗓️', '@player', '😩'], draw: sceneFail },
+  caught: { win: false, icons: ['#rotacaught', '😠', '@player'], draw: sceneCaught }, // seen with your write half done
+  failOwn: { win: false, icons: ['#rotaboss', '😳', '👉', '@player'], draw: sceneCaught }, // he never put himself down
+  blamed: { win: false, icons: ['#spot', '👉', '@player'], draw: sceneBlamed },
 };
+
+// A lost day on which somebody sent you to your desk (outcome.stopped: Lin told on you, or the boss caught you
+// slacking): the engine would show its own told-on card, but being told on isn't an ending here (premise.md): the
+// day still ended at the board. So the card is the ending that happened, and if Lin told, she leads its row.
+const STOPPED = {
+  win: false,
+  icons: SCENES.fail.icons,
+  iconsFor: (o) => {
+    const k = kindOf({ ...o, stopped: undefined });
+    const base = SCENES[k]?.icons ?? SCENES.fail.icons;
+    return o?.stopped?.by === 'lin' && k === 'fail' ? ['@lin', '👉', '@player', '😩'] : base;
+  },
+  draw: (ctx, game, t, e, o) => (SCENES[kindOf(o)] ?? SCENES.fail).draw(ctx, game, t, e, o),
+};
+
+export const END_SCENES = { kindOf, scenes: { ...SCENES, stopped: STOPPED } };

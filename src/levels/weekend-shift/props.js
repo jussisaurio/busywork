@@ -11,7 +11,7 @@
 //     the cup going round on the turntable and steaming in it (or Lin's fish); after the DING the cup is back on the
 //     counter, open and steaming, and the microwave is free
 //   the phones: yours at the end of your desk, off the hook while it rings the boss's, shaking on a side table in
-//     the corner of his office, a dotted line between them; while he talks, its cord runs to the handset at his ear
+//     the corner of his office, a signal running between them; while he talks, its cord runs to the handset at his ear
 //   Lin's lunch box on her desk: there until she takes it to the microwave at 4:30, back open and steaming after
 // The painters are plain functions (a decor.props draw may be the level's own); THINGS are the '#<name>' things
 // (decor.things: in a hand, in the end cards' rows). The end cards (end-scenes.js) draw the board and the photos too.
@@ -21,6 +21,7 @@ import { drawPerson } from '../../render/characters.js';
 import { person } from '../../render/tableau.js';
 import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
+import { LOOKS } from '../meeting/looks.js'; // (the board in the end cards' rows: whose face)
 
 const INK = '#2a2f3a';
 const MARKER = '#c8372d';
@@ -187,7 +188,8 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
 
 // A new face going into the slot (cx, cy, r: the photo's circle), k of the way. First the board's eraser wipes the
 // old face off, row by row from the top (k < WIPE_K), leaving clean white; then the black marker draws the new face
-// on the clean board, line by line from the top, in marker hatching. No old face shows through.
+// on the clean board, line by line from the top, clean (no hatching: half drawn, it reads as half a face, not a mess).
+// No old face shows through.
 const SCRIBBLE_ROWS = 5;
 export const WIPE_K = 0.35;
 function drawScribble(ctx, look, cx, cy, r, k, t) {
@@ -238,21 +240,10 @@ function drawScribble(ctx, look, cx, cy, r, k, t) {
   ctx.rect(left, top + row * rowH, frac * 2 * r, rowH);
   ctx.clip();
   portrait(ctx, look, cx, cy, r, t, '#fbfcfd');
-  // the marker's hatching over it
-  ctx.strokeStyle = 'rgba(42,47,58,0.45)';
-  ctx.lineWidth = 0.7;
-  ctx.beginPath();
-  for (let i = 0; i <= row; i++) {
-    const y0 = top + i * rowH;
-    const x1 = i < row ? left + 2 * r : penX;
-    ctx.moveTo(left, y0 + rowH * 0.2);
-    for (let x = left; x < x1; x += 2.2) ctx.lineTo(x + 1.1, y0 + rowH * (hash(i, Math.round(x)) > 0.5 ? 0.85 : 0.15));
-  }
-  ctx.stroke();
   ctx.restore();
   // the scribble's leading edge, and the marker at it (jiggling while it draws)
   const jig = Math.sin(t * 40) * 0.8;
-  drawMarker(ctx, penX + 0.5, penY + jig, -2.3, 13);
+  drawMarker(ctx, penX + 0.5, penY + jig, -2.3, 1.3 * r);
 }
 
 // The board's eraser, centred at (x, y), s times: a dark plastic back on a pale grey felt pad.
@@ -727,8 +718,8 @@ function drawPhone(ctx, cx, cy, { lifted = false, ring = false, gone = false } =
   const jig = ring ? Math.sin(t * 50) * 1.2 : 0;
   ctx.save();
   if (lifted) {
-    ctx.translate(cx + 9, cy - 9);
-    ctx.rotate(-0.7);
+    ctx.translate(cx + 13, cy + 1);
+    ctx.rotate(0.35);
   } else ctx.translate(cx + jig, cy - 4 - (ring ? Math.abs(Math.sin(t * 25)) * 1.2 : 0));
   ctx.fillStyle = '#3a3734';
   rrect(ctx, -8, -2.2, 16, 4.4, 2);
@@ -736,22 +727,22 @@ function drawPhone(ctx, cx, cy, { lifted = false, ring = false, gone = false } =
   fillCircle(ctx, -7, 0, 2.6, '#3a3734');
   fillCircle(ctx, 7, 0, 2.6, '#3a3734');
   ctx.restore();
-  if (lifted) {
-    ctx.strokeStyle = '#3a3734';
-    ctx.lineWidth = 0.9;
-    ctx.beginPath();
-    ctx.moveTo(cx - 6, cy);
-    for (let i = 1; i <= 6; i++) ctx.lineTo(cx - 6 + i * 2.2, cy - 4 - i * 0.8 + (i % 2 ? -1.5 : 1.5));
-    ctx.stroke();
-  }
-  if (ring && Math.sin(t * 8) > -0.2) {
-    ctx.strokeStyle = 'rgba(255,240,200,0.95)';
-    ctx.lineWidth = 1.4;
+  if (lifted) drawCord(ctx, cx + 6, cy + 3, cx + 19, cy + 4); // the handset off the hook, beside it, on its coiled cord
+  if (ring) {
+    // ringing: three arcs either side, dark on a pale halo (they show on any floor), pulsing out
+    const pulse = (t * 3) % 1;
     for (const sd of [-1, 1]) {
-      for (let k = 0; k < 2; k++) {
-        ctx.beginPath();
-        ctx.arc(cx, cy - 4, 10 + k * 4, sd < 0 ? Math.PI * 0.8 : -Math.PI * 0.2, sd < 0 ? Math.PI * 1.2 : Math.PI * 0.2);
-        ctx.stroke();
+      for (let k = 0; k < 3; k++) {
+        const rad = 9 + k * 4.5 + pulse * 2;
+        const a0 = sd < 0 ? Math.PI * 0.78 : -Math.PI * 0.22;
+        const a1 = sd < 0 ? Math.PI * 1.22 : Math.PI * 0.22;
+        for (const [c, lw] of [['rgba(255,250,235,0.9)', 2.8], ['#2a2f3a', 1.3]]) {
+          ctx.strokeStyle = c;
+          ctx.lineWidth = lw;
+          ctx.beginPath();
+          ctx.arc(cx, cy - 2, rad, a0, a1);
+          ctx.stroke();
+        }
       }
     }
   }
@@ -814,21 +805,32 @@ function drawFolder(ctx, x, y) {
 // Where the boss's phone sits on its table (at: the table's tile).
 const cornerPhone = (at) => ({ x: at.x * T + 16, y: at.y * T + 9 });
 
-// The call: a dotted line running from your phone to his, bowed up north (over his office, clear of him at his
-// desk and of the board).
+// The call: a signal running from your phone to his along a curve bowed up north (over his office, clear of him at
+// his desk and of the board): little arcs, like the ones round a ringing phone, travelling towards his. Not dots
+// (a row of dots on a curve reads as something thrown).
 function drawCall(ctx, ax, ay, bx, by, t) {
   const mx = (ax + bx) / 2;
   const my = Math.min(ay, by) - 34;
+  const at = (s) => [(1 - s) * (1 - s) * ax + 2 * (1 - s) * s * mx + s * s * bx, (1 - s) * (1 - s) * ay + 2 * (1 - s) * s * my + s * s * by];
+  const len = Math.hypot(bx - ax, by - ay) + 40;
+  const n = Math.max(6, Math.round(len / 22));
+  const off = (t * 0.6) % (1 / n);
   ctx.save();
-  ctx.strokeStyle = 'rgba(255,240,200,0.9)';
-  ctx.lineWidth = 2.6;
   ctx.lineCap = 'round';
-  ctx.setLineDash([0.01, 7]);
-  ctx.lineDashOffset = -t * 40;
-  ctx.beginPath();
-  ctx.moveTo(ax, ay);
-  ctx.quadraticCurveTo(mx, my, bx, by);
-  ctx.stroke();
+  for (let i = 0; i < n; i++) {
+    const s = i / n + off;
+    if (s < 0.04 || s > 0.96) continue;
+    const [x, y] = at(s);
+    const [x2, y2] = at(Math.min(1, s + 0.01));
+    const a = Math.atan2(y2 - y, x2 - x);
+    for (const [c, lw] of [['rgba(42,47,58,0.5)', 3.4], ['rgba(255,248,225,0.95)', 1.8]]) {
+      ctx.strokeStyle = c;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.arc(x - Math.cos(a) * 4, y - Math.sin(a) * 4, 5, a - 0.85, a + 0.85);
+      ctx.stroke();
+    }
+  }
   ctx.restore();
 }
 
@@ -982,7 +984,7 @@ export function scribbleOf(game) {
   const r = game.map?.find?.('R')?.[0];
   const p = game.player;
   if (c && c.reason === 'action' && r && p && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 0.5)) < 1.7) {
-    return { look: looks[NEXT_FACE[w.roster] ?? 'boss'], k: 0.6 };
+    return { look: looks[NEXT_FACE[w.roster] ?? 'boss'], k: 0.8 }; // hair and eyes drawn, the chin not yet
   }
   return null;
 }
@@ -1049,7 +1051,7 @@ export function paintMicrowave(ctx, info, at, shown, t) {
 }
 
 // { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
-// moment you ring his until he hangs up, and the call: dots from yours to his, live the whole time (it's your call).
+// moment you ring his until he hangs up, and the call: a signal from yours to his, live the whole time (it's your call).
 // His (paintBossPhone) draws after, over the end of them.
 export function paintMyPhone(ctx, info, at, shown, t) {
   drawSideTable(ctx, at.x * T, at.y * T);
@@ -1102,6 +1104,20 @@ export function paintLinChair(ctx, info, at, shown, t) {
 }
 
 // decor.things: the '#<name>' things, painters (ctx, x, y, size, t), centred, about size px tall.
+// Saturday's slot alone, filling a thing's 16-unit box: the red Saturday tab over a framed photo (scribble: a write
+// in it, as drawBoard's).
+function miniSlot(ctx, look, scribble, t) {
+  ctx.fillStyle = ALU;
+  rrect(ctx, -8, -7.5, 16, 15.5, 2);
+  ctx.fill();
+  ctx.fillStyle = '#fbfcfd';
+  ctx.fillRect(-6.8, -6.3, 13.6, 13.1);
+  ctx.fillStyle = MARKER;
+  ctx.fillRect(-3, -6.3, 6, 2.6);
+  portrait(ctx, look, 0, 1.6, 4.8, t ?? 0, '#fbfcfd');
+  if (scribble) drawScribble(ctx, scribble.look, 0, 1.6, 4.8, scribble.k, t ?? 0);
+}
+
 export const THINGS = {
   // the boss's phone's handset, upright, held to an ear
   handset(ctx, x, y, size) {
@@ -1142,6 +1158,16 @@ export const THINGS = {
   marker(ctx, x, y, size) {
     box(ctx, x, y, size);
     drawMarker(ctx, 6.5, 0, 0, 13);
+  },
+  // Saturday's slot, close up, in the end cards' rows: the boss's own face in it (he never put himself down), and
+  // a write caught halfway (your face wiped, Kev's half drawn, the marker at it): what got you in trouble
+  rotaboss(ctx, x, y, size, t) {
+    box(ctx, x, y, size);
+    miniSlot(ctx, LOOKS.boss, null, t);
+  },
+  rotacaught(ctx, x, y, size, t) {
+    box(ctx, x, y, size);
+    miniSlot(ctx, LOOKS.player, { look: LOOKS.kev, k: 0.8 }, t);
   },
   // your desk phone, off the hook (the end card's route row: you rang his)
   deskphone(ctx, x, y, size) {

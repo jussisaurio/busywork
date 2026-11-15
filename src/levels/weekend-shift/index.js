@@ -18,7 +18,7 @@
 //     the copier sits on the line from the boss's desk through the board: his look at it crosses the board.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
-import { burst } from '../../core/fx.js';
+import { burst, say } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
 import { npcSees } from '../../game/perception.js';
 import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S } from './cast.js';
@@ -128,6 +128,7 @@ const INTERACTIONS = {
     on: 'desk_phone', text: "ring the boss's phone", duration: 1.0, sneaky: false,
     can: (p, w) => w.phone === 'idle',
     done(game) {
+      say(game, 'player', ['📞'], { ttl: 1.4 }); // you, ringing his number
       game.world.phone = 'ringing';
       game.events.emit('phone:ringing', {});
     },
@@ -173,11 +174,11 @@ function punchline(game, result) {
   const own = game.world.roster === 'boss';
   if (result === 'blamed' || (result === 'fail' && own)) {
     const at = result === 'blamed' ? game.level.meeting.chair : game.level.meeting.presenter;
-    npcSayLater(boss, REDRAW_AT, ['✏️'], 'speech', REDRAW_S, 'board_look');
+    npcSayLater(boss, REDRAW_AT, ['✏️', '@player'], 'speech', REDRAW_S, 'board_look'); // writing you in
     npcSayLater(boss, REDRAW_AT + REDRAW_S, result === 'blamed' ? ['👉', '@player'] : ['😠', '👉', '@player'], 'speech',
       2 - REDRAW_AT - REDRAW_S, at);
   } else if (result === 'fail') {
-    speak(game, boss, [{ say: ['👈'], ttl: 2, face: game.level.meeting.presenter }]);
+    speak(game, boss, [{ say: ['👈', '@player'], ttl: 2, face: game.level.meeting.presenter }]);
   } else {
     // he points at Kev to the end of the beat; Kev groans (😩: again?!). Nobody disputes the board: nobody in this
     // office reads it, they wait for it to be read out
@@ -297,7 +298,7 @@ const LURES = [
       start: {
         set: { phone: 'talking' },
         event: 'phone:answered',
-        says: [{ say: ['❓'], ttl: 1.6 }, { say: ['❓', '❓'], ttl: 1.8, after: 2.2 }], // hello? ... hello??
+        says: [{ say: ['📞', '❓'], ttl: 1.6 }, { say: ['📞', '❓', '❓'], ttl: 1.8, after: 2.2 }], // (into the phone) hello? ... hello??
       },
       done: { set: { phone: 'done' }, event: 'phone:hungUp', says: [{ say: ['🙄'] }] }, // a wrong number
     },
