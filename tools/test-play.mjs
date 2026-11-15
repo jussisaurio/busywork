@@ -412,7 +412,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   for (let i = 0; i < 120 && !game.rules.sent?.said; i++) step();
   ok(near(game.rules.sent.t, 0.75, 0.02), `the order comes 0.75 s after the shout (${game.rules.sent.t.toFixed(2)})`);
   ok(game.rules.sent?.look === 'player' && evs('say').some((e) => e.payload.owner === 'boss' && e.payload.icons.join('') === '📄📄👉🖥️'), 'then at you, and the order 📄📄👉🖥️');
-  ok(game.fx.particles.some((q) => q.kind === 'paper'), 'paper burst (the stack lands on your desk)');
+  ok(game.rules.sent.stackAt != null && near(game.loopTime - game.rules.sent.stackAt, 0, 0.02), 'the stack lands on your desk with the order (rules.sent.stackAt)');
   input.hold('left'); run(0.6);
   ok(!p().seated && p().moving && p().x > 2.6 && p().locked, 'you walk to your desk yourself (input ignored)');
   run(4); input.release('left');

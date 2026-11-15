@@ -4,7 +4,7 @@
 // Runs first in tick(). Reads game.input (any object with the Input interface; null = no input).
 // Sets player.{x, y, dir, moving, busy, busyPose, seated} and game.clock.ff.
 import { PLAYER_SPEED, PLAYER_BUSY_SPEED, PLAYER_RADIUS } from '../config.js';
-import { say, burst } from '../core/fx.js';
+import { say } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from '../sim/nav.js';
 
@@ -120,15 +120,7 @@ export function sendToDesk(game, by, auth) {
 function giveOrder(game, sent) {
   sent.said = true;
   sent.stackAt = game.loopTime;
-  say(game, sent.auth ?? 'player', ORDER_ICONS, { kind: 'speech' });
-  const d = deskFront(game);
-  burst(game, 'paper', d.x, d.y, 10, { speed: 1.8 }); // the stack lands on your desk
-}
-
-// Where the paper stack sits: on the desk in front of your chair.
-function deskFront(game) {
-  const s = spotPos(game, 'player_desk');
-  return { x: s.x + Math.cos(s.dir) * 0.7, y: s.y + Math.sin(s.dir) * 0.7 - 0.2 };
+  say(game, sent.auth ?? 'player', ORDER_ICONS, { kind: 'speech' }); // render drops the paper stack on your desk now
 }
 
 function serveOrder(game, sent, dt) {
