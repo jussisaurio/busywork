@@ -2,7 +2,7 @@
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
 import {
-  T, clamp, fin, emoji, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+  T, clamp, fin, emoji, setFacePainter, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
 
@@ -703,6 +703,53 @@ function drawHead(ctx, look, s, h, hx, hy, hr) {
     ctx.lineCap = 'butt';
   }
 }
+
+// ---------------------------------------------------------------------------
+// Faces as icons: emoji(ctx, '@<castId>', ...) anywhere (bubbles, end-card rows, props) draws that person's head
+// and shoulders facing you, in an icon-sized box. The renderer calls useFaces(game) every frame so the painter
+// can find the level's looks; '@player' is you.
+const FACE = personState();
+let faceGame = null;
+export function useFaces(game) {
+  faceGame = game || null;
+}
+
+function faceLook(game, id) {
+  const level = game && game.level;
+  if (!level) return null;
+  if (level.looks && level.looks[id]) return level.looks[id];
+  const who = id === 'player' ? game.player : (game.npcs || []).find((n) => n && n.id === id)
+    || (level.cast || []).find((d) => d && d.id === id);
+  return who ? lookFor(level.looks, id, who.color) : null;
+}
+
+// Head and shoulders of `look` centred on (x, y), about `size` px tall, like an emoji of that size.
+export function drawFace(ctx, look, x, y, size) {
+  const hr = look.head || 6.6;
+  const k = fin(size, 16) / (2.55 * hr);
+  ctx.save();
+  ctx.translate(fin(x), fin(y) - 0.1 * hr * k);
+  ctx.scale(k, k);
+  // shoulders, cut off flat like a portrait
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(-2 * hr, 0, 4 * hr, hr * 1.3);
+  ctx.clip();
+  fillEllipse(ctx, 0, hr * 1.6, hr * 1.32, hr * 0.95, look.bodyDark || look.body);
+  fillEllipse(ctx, 0, hr * 1.7, hr * 1.2, hr * 0.88, look.body);
+  ctx.restore();
+  if (look.hood) fillEllipse(ctx, 0, hr * 0.75, hr * 1.12, hr * 0.62, look.bodyDark);
+  FACE.t = faceGame ? fin(faceGame.time) : 0;
+  drawHead(ctx, look, FACE, Math.PI / 2, 0, 0, hr);
+  ctx.restore();
+}
+
+setFacePainter((ctx, id, x, y, size) => {
+  const look = faceLook(faceGame, id);
+  if (!look) return false;
+  drawFace(ctx, look, x, y, size);
+  return true;
+});
 
 // ---------------------------------------------------------------------------
 // In-world characters for a day.
