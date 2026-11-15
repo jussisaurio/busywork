@@ -122,13 +122,15 @@ export function updateNpcs(game, dt) {
 }
 
 function updateNpc(game, npc, dt, now) {
-  fireScheduleSays(game, npc, now);
+  // The minute his schedule reads: the level's per-NPC clock, or the game clock (level.clockFor, below).
+  const t = game.level.clockFor ? game.level.clockFor(game, npc, HOOK_API) : now;
+  fireScheduleSays(game, npc, t);
   tickSayQueue(game, npc, dt);
   crave(game, npc, dt);
   checkOverrides(game, npc, now);
 
-  const key = planKey(game, npc, now);
-  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, now, key));
+  const key = planKey(game, npc, t);
+  if (!npc._plan || npc._plan.key !== key) setPlan(game, npc, buildPlan(game, npc, t, key));
 
   const px = npc.x;
   const py = npc.y;
@@ -144,6 +146,13 @@ function updateNpc(game, npc, dt, now) {
 }
 
 // --- Schedule ---------------------------------------------------------------------
+// Each NPC's schedule reads a minute: the game clock, unless the level has a per-NPC clock,
+//   level.clockFor(game, npc, sim)  the minute (game minutes since day.start) npc's schedule reads this step:
+//                                   which entry is current, which `say` entries have fired. Called exactly once per
+//                                   NPC per step, in cast order, before anything else of his; it may keep state on
+//                                   the NPC (underscore fields) and use sim (HOOK_API: speak, holdFor, faceSpot...).
+// Only the schedule reads it. The gather, the meeting, mechanics (a hunt's `until`, an inspection's `at`) and
+// everything outside the sim keep the game clock. Without clockFor the schedule reads game.clock.minute.
 
 // Index of the activity entry (not 'say') that is current at `now`.
 function entryIndex(npc, now) {
