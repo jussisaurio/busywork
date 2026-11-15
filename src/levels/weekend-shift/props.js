@@ -1,4 +1,4 @@
-// Weekend Shift's furniture with moving parts, drawn as the real things (presentation.js's decor.props):
+// Saturday's (id weekend-shift) furniture with moving parts, drawn as the real things (presentation.js's decor.props):
 //   the Saturday roster: a whiteboard on a stand, the week across the top and a big photo of whoever works
 //     Saturday in the slot under it; a write half drawn over it, the marker at it; a new face pops up off it, big,
 //     for a beat, and settles in; its black marker in the tray (gone from 4:50: the boss has it); the slot lit while
@@ -6,8 +6,10 @@
 //   the photocopier: a green light; jammed, a red beacon flashing on its lid, a crumpled sheet sticking out of it
 //     and red arcs spreading off it at every beep (dashes to Kev while he hears it); its front open, a spanner
 //     turning in it and its light amber while Kev fixes it, the sheet gone
-//   the microwave: your cup of noodles on the counter under it; started, big green seconds to the DING on its front
-//     and a lit door, the cup going round and steaming in it (or Lin's fish)
+//   the microwave: a box on its side, a door window with a turntable in it, a panel of buttons with green digits;
+//     your cup of noodles on the counter beside it; started, the seconds to the DING on its panel, the window lit,
+//     the cup going round on the turntable and steaming in it (or Lin's fish); after the DING the cup is back on the
+//     counter, open and steaming, and the microwave is free
 //   the phones: yours at the end of your desk, off the hook while it rings the boss's, shaking on a side table in
 //     the corner of his office, a dotted line between them; while he talks, its cord runs to the handset at his ear
 //   Lin's lunch box on her desk: there until she takes it to the microwave at 4:30, back open and steaming after
@@ -18,6 +20,7 @@ import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { person } from '../../render/tableau.js';
 import { box } from '../../render/things.js';
+import { drawChair } from '../../render/world.js';
 
 const INK = '#2a2f3a';
 const MARKER = '#c8372d';
@@ -64,6 +67,7 @@ function scrawl(ctx, x, y, w, color, lw, seed) {
 //   opts.fresh: a wet-ink glint (just written); opts.glow: the slot lit up (the boss pointing at it)
 //   opts.scribble: { look, k }: a new face half drawn over it, k of the way, the black marker at it
 //   opts.tray: false: the black marker is gone from the tray (in the boss's hand, or in yours)
+//   opts.lift: the black marker lifts off its tray (you're at the board, it's there for the taking)
 export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   ctx.save();
   ctx.translate(x, y);
@@ -166,7 +170,13 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   ctx.fillRect(bx + 4, by + h - 1, w - 8, 2.5);
   ctx.fillStyle = MARKER;
   ctx.fillRect(bx + 8, by + h - 2, 6, 1.6);
-  if (opts.tray !== false) {
+  if (opts.lift) {
+    // lifting off the tray, bobbing, for you to take: its shadow left on the tray
+    const bob = 3.5 + Math.sin(t * 4) * 1.2;
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(bx + 16, by + h - 1.5, 7, 1.2);
+    drawMarker(ctx, bx + 15, by + h - 2 - bob, -0.18, 10);
+  } else if (opts.tray !== false) {
     ctx.fillStyle = INK;
     ctx.fillRect(bx + 16, by + h - 2, 6, 1.6);
   }
@@ -240,18 +250,35 @@ export function drawMarker(ctx, x, y, rot, len = 12) {
   ctx.restore();
 }
 
-// A spanner, its jaw at (x, y), turned by rot, len px long.
+// A spanner, its open jaw at (x, y), turned by rot, len px long: a steel handle, an open jaw at one end (a U), a ring
+// at the other.
 export function drawSpanner(ctx, x, y, rot, len = 11) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot);
-  ctx.fillStyle = '#9aa1a8';
-  ctx.fillRect(0, -1.1, len, 2.2);
-  fillCircle(ctx, 0, 0, 2.6, '#9aa1a8');
-  fillCircle(ctx, -0.9, 0, 1.2, '#2b2a28'); // the jaw's gap
-  fillCircle(ctx, len, 0, 1.8, '#9aa1a8');
-  ctx.fillStyle = '#c23a2e'; // a red grip
-  ctx.fillRect(len * 0.45, -1.4, len * 0.45, 2.8);
+  const k = len / 11;
+  ctx.scale(k, k);
+  const steel = '#c3c9cf';
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(1, -0.4, 10, 2.6);
+  ctx.fillStyle = steel;
+  ctx.fillRect(1.5, -1.2, 8, 2.4);
+  // the open jaw: a disc with a notch out of it
+  ctx.beginPath();
+  ctx.arc(0, 0, 3.2, 0.75, Math.PI * 2 - 0.75);
+  ctx.lineTo(-0.6, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#4a4d52';
+  ctx.fillRect(-3.4, -0.9, 2.6, 1.8); // the gap between the jaws
+  // the ring end
+  ctx.strokeStyle = steel;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.arc(11, 0, 2, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.fillRect(2.5, -1, 6, 0.6);
   ctx.restore();
 }
 
@@ -387,7 +414,7 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
     ctx.rotate(0.9 + Math.sin(t * 5) * 0.05);
     ctx.fillRect(0, -1, 9, 2.4);
     ctx.restore();
-    drawSpanner(ctx, 10, 13, -0.6 + Math.sin(t * 9) * 0.6, 10); // Kev's, turning in the works
+    drawSpanner(ctx, 9, 13, -0.6 + Math.sin(t * 9) * 0.6, 13); // Kev's, turning in the works
   }
   const ring = alarm && beep !== null ? Math.max(0, 1 - beep / BEEP_ARC_S) : 0;
   if (ring > 0) {
@@ -408,84 +435,109 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
   ctx.restore();
 }
 
-// The microwave on the counter, at (x, y) (the top-left of its door's row, px). left: seconds to the DING while
-// cooking, else null: from the moment you start it, big green digits count them down across its top and the door
-// glows. fish: Lin's fish is in it (she stands there): lit, the fish going round, a smell coming off it.
+// The microwave on the counter, a box on its side: (x, y) the top-left of its front, px; 31 x 19, its top face
+// above. On the left the door: a window, a turntable in it; on the right the panel: digits, buttons. left: seconds
+// to the DING while cooking, else null: they count down on the panel, the window lights up, your cup goes round on
+// the turntable steaming. fish: Lin's fish is in it (she stands there): lit, the fish going round, a smell coming off
+// it. ding: the moment of the DING (the end card's badge): rings off it, the cup in it, 00.
+const MW_W = 31;
+const MW_H = 19;
 function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, ding = false) {
-  const cooking = !ding && noodles === 'cooking' && left > 0;
-  const done = ding || (noodles === 'cooking' && !cooking);
-  const lit = cooking || ding || (fish && !done);
-  const top = y - 9; // the display strip sits above the door
+  const cooking = ding || (noodles === 'cooking' && left !== null && left > 0);
+  const lit = cooking || fish;
+  const wx = x + 2.5; // the window
+  const wy = y + 3;
+  const ww = 18;
+  const wh = 13;
   if (lit && glow) {
-    // the light spilling out of the door onto the counter and the floor in front of it
+    // the light spilling out of the window onto the counter and the floor in front of it
     const pulse = 0.85 + 0.15 * Math.sin(t * 6);
-    const g = ctx.createRadialGradient(x + 13, y + 10, 4, x + 13, y + 10, 34);
+    const g = ctx.createRadialGradient(wx + ww / 2, wy + wh, 4, wx + ww / 2, wy + wh, 34);
     g.addColorStop(0, `rgba(255,214,110,${(0.55 * pulse).toFixed(3)})`);
     g.addColorStop(1, 'rgba(255,214,110,0)');
     ctx.fillStyle = g;
-    ctx.fillRect(x - 24, y - 24, 70, 68);
+    ctx.fillRect(x - 24, y - 20, 78, 64);
   }
-  fillEllipse(ctx, x + 14, y + 23, 15, 3, 'rgba(0,0,0,0.2)');
-  ctx.fillStyle = '#9a968c';
-  rrect(ctx, x, top + 1, 29, 32, 3);
+  fillEllipse(ctx, x + MW_W / 2, y + MW_H + 1.5, 16, 3, 'rgba(0,0,0,0.22)');
+  // the box: its top, then its front
+  ctx.fillStyle = '#d3d0c7';
+  rrect(ctx, x + 0.5, y - 5, MW_W - 1, 7, 2.5);
+  ctx.fill();
+  ctx.fillStyle = '#8d897f';
+  rrect(ctx, x, y + 1, MW_W, MW_H + 1, 2.5);
   ctx.fill();
   ctx.fillStyle = '#ecebe5';
-  rrect(ctx, x, top, 29, 30, 3);
+  rrect(ctx, x, y, MW_W, MW_H, 2.5);
   ctx.fill();
-  // the display: big digits, the seconds to the DING
-  ctx.fillStyle = '#16211b';
-  rrect(ctx, x + 3, top + 2, 23, 9, 1.5);
+  // the door window: frame, dark glass, the turntable plate
+  ctx.fillStyle = '#b8b4aa';
+  rrect(ctx, wx - 1.2, wy - 1.2, ww + 2.4, wh + 2.4, 2.2);
   ctx.fill();
-  if (cooking || (done && (ding || Math.sin(t * 7) > 0))) {
-    const sec = cooking ? Math.ceil(left) : 0;
-    ctx.fillStyle = 'rgba(125,255,154,0.25)';
-    rrect(ctx, x + 3, top + 2, 23, 9, 1.5);
-    ctx.fill();
-    text(ctx, sec >= 10 ? String(sec) : `0${sec}`, x + 14.5, top + 6.8, font(9, 'ui-monospace,Menlo,monospace', 'bold'), '#7dff9a');
-  }
-  // the door window
-  ctx.fillStyle = '#2a2724';
-  rrect(ctx, x + 2.5, y + 3, 19, 14, 2);
+  ctx.fillStyle = '#26231f';
+  rrect(ctx, wx, wy, ww, wh, 1.6);
   ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(wx, wy, ww, wh);
+  ctx.clip();
   if (lit) {
     const pulse = 0.88 + 0.12 * Math.sin(t * 6);
     ctx.fillStyle = `rgba(255,214,110,${pulse.toFixed(3)})`;
-    rrect(ctx, x + 3.5, y + 4, 17, 12, 1.5);
-    ctx.fill();
-    fillEllipse(ctx, x + 12, y + 13, 6.5, 2, 'rgba(120,80,30,0.35)');
-    const a = t * 2.4; // going round on the plate
-    if (cooking || ding) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(x + 3.5, y + 4, 17, 12);
-      ctx.clip();
-      drawNoodleCup(ctx, x + 12 + Math.cos(a) * 1.2, y + 15.5, 0.75, true);
-      cupSteam(ctx, x + 12 + Math.cos(a) * 1.2, y + 7.5, t, 0.6);
-      ctx.restore();
-    } else drawFish(ctx, x + 12 + Math.cos(a) * 0.8, y + 10.5, 12.5 * Math.max(0.6, Math.abs(Math.cos(a))), Math.cos(a) < 0);
-  } else if (done) drawNoodleCup(ctx, x + 12, y + 15, 0.75, true);
-  else fillEllipse(ctx, x + 12, y + 11, 4.2, 2.6, 'rgba(255,255,255,0.08)');
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.fillRect(x + 5, y + 4, 2, 12);
-  // the handle
-  ctx.fillStyle = '#b8b4aa';
-  rrect(ctx, x + 23.5, y + 3, 3, 14, 1.2);
+    ctx.fillRect(wx, wy, ww, wh);
+  }
+  // the turntable: a glass plate, its rim, turning
+  fillEllipse(ctx, wx + ww / 2, wy + wh - 3, 7.5, 2.3, lit ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.22)');
+  ctx.strokeStyle = lit ? 'rgba(150,110,50,0.6)' : 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  ctx.ellipse(wx + ww / 2, wy + wh - 3, 7.5, 2.3, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  const a = t * 2.4; // going round on the plate
+  if (cooking) {
+    const cx = wx + ww / 2 + Math.cos(a) * 2.2;
+    drawNoodleCup(ctx, cx, wy + wh - 2.5, 0.72, true);
+    cupSteam(ctx, cx, wy + wh - 11, t, 0.55); // steam inside the window
+  } else if (fish) {
+    drawFish(ctx, wx + ww / 2 + Math.cos(a) * 1.5, wy + wh - 5, 12.5 * Math.max(0.6, Math.abs(Math.cos(a))), Math.cos(a) < 0);
+  }
+  ctx.restore();
+  ctx.fillStyle = 'rgba(255,255,255,0.2)'; // the glass's shine
+  ctx.fillRect(wx + 2, wy + 1, 1.6, wh - 2);
+  // the door's handle, between window and panel
+  ctx.fillStyle = '#a9a59b';
+  rrect(ctx, x + 21.2, y + 2.5, 1.8, 14, 0.9);
   ctx.fill();
-  if (fish && !done) {
-    // the smell: green wisps out of the door
+  // the panel: a display (the seconds to the DING), then a grid of buttons and a start button
+  const px = x + 24;
+  ctx.fillStyle = '#16211b';
+  rrect(ctx, px, y + 2.5, 6, 4.6, 1);
+  ctx.fill();
+  if (cooking) {
+    const sec = ding ? 0 : Math.ceil(left);
+    ctx.fillStyle = 'rgba(125,255,154,0.25)';
+    rrect(ctx, px, y + 2.5, 6, 4.6, 1);
+    ctx.fill();
+    text(ctx, sec >= 10 ? String(sec) : `0${sec}`, px + 3, y + 5, font(4.6, 'ui-monospace,Menlo,monospace', 'bold'), '#7dff9a');
+  }
+  ctx.fillStyle = '#b3afa5';
+  for (let i = 0; i < 2; i++) for (let j = 0; j < 3; j++) ctx.fillRect(px + 0.5 + i * 3, y + 8.6 + j * 2.2, 2, 1.4);
+  ctx.fillStyle = cooking ? '#3fbf63' : '#7d9a86';
+  rrect(ctx, px + 0.5, y + 15.4, 5, 1.8, 0.8);
+  ctx.fill();
+  if (fish && !cooking) {
+    // the smell: green wisps off the top
     for (let i = 0; i < 3; i++) {
       const ph = (t * 0.5 + i / 3) % 1;
       ctx.strokeStyle = `rgba(150,200,90,${(0.7 * (1 - ph)).toFixed(3)})`;
       ctx.lineWidth = 1.6;
       ctx.beginPath();
-      const sx = x + 6 + i * 6;
-      const sy = top - 1 - ph * 16;
+      const sx = x + 5 + i * 6;
+      const sy = y - 6 - ph * 16;
       ctx.moveTo(sx, sy + 6);
       ctx.quadraticCurveTo(sx + 4 * Math.sin(t * 2 + i), sy + 3, sx, sy);
       ctx.stroke();
     }
   }
-  if (noodles === 'cold' && !ding) drawNoodleCup(ctx, x + 6, top + 47, 1, false); // your noodles, on the counter
   if (ding) {
     // DING: rings off it, both sides
     ctx.strokeStyle = 'rgba(255,222,120,0.95)';
@@ -494,21 +546,11 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, d
     for (let k = 0; k < 2; k++) {
       for (const [a0, a1] of [[-Math.PI * 0.3, Math.PI * 0.3], [Math.PI * 0.7, Math.PI * 1.3]]) {
         ctx.beginPath();
-        ctx.arc(x + 14.5, top + 14, 19 + k * 5, a0, a1);
+        ctx.arc(x + MW_W / 2, y + MW_H / 2 - 2, 20 + k * 5, a0, a1);
         ctx.stroke();
       }
     }
     ctx.lineCap = 'butt';
-  }
-  if (done) {
-    // steam off the noodles
-    for (let i = 0; i < 3; i++) {
-      const ph = (t * 0.7 + i / 3) % 1;
-      ctx.fillStyle = `rgba(255,255,255,${(0.55 * (1 - ph)).toFixed(3)})`;
-      ctx.beginPath();
-      ctx.arc(x + 8 + i * 6 + Math.sin(t * 2 + i) * 2, top - 2 - ph * 14, 2 + ph * 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 }
 
@@ -739,8 +781,9 @@ function drawPop(ctx, look, sx, sy, k, t, side = 0) {
   ctx.restore();
 }
 
-// Your place in the half-circle round the board, while you aren't in it: a dashed outline of someone seated,
-// on a ring on the floor, pulsing (x, y: the spot's centre, px). hot: blamed, every head turned to it.
+// Your place in the half-circle round the board, while you aren't in it: a dashed outline of your chair (seat, back
+// and its five-star foot), on a ring on the floor, pulsing (x, y: the spot's centre, px). Faint while the others
+// sit down round the board without you; hot: blamed, every head turned to it.
 export function drawEmptyPlace(ctx, x, y, t, hot) {
   const k = 0.5 + 0.5 * Math.sin(t * (hot ? 7 : 3.5));
   const a = hot ? 0.7 + 0.3 * k : 0.45 + 0.3 * k;
@@ -751,29 +794,36 @@ export function drawEmptyPlace(ctx, x, y, t, hot) {
   ctx.setLineDash([3, 2.5]);
   ctx.lineDashOffset = -t * 6;
   ctx.beginPath();
-  ctx.ellipse(x, y + 8, 13 + k * 1.5, 5 + k * 0.6, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 8, 14 + k * 1.5, 5.5 + k * 0.6, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
-  // someone seated: head and shoulders over the chair
-  thingSpot(ctx, x, y - 6, 26, hot ? 2 : 1.6, [3, 2.5]);
+  thingChair(ctx, x, y, 24, hot ? 2 : 1.6, [3, 2.5]);
   ctx.restore();
 }
 
-// The outline of a seated person, dashed (lw, dash: px), in the current stroke style: centred on (x, y), size px tall.
-function thingSpot(ctx, x, y, size, lw, dash) {
+// The outline of an empty office chair, dashed (lw, dash: px), in the current stroke style, facing you: its back,
+// its seat, its post and five-star foot. Centred on (x, y), size px tall.
+function thingChair(ctx, x, y, size, lw, dash) {
   ctx.save();
   box(ctx, x, y, size);
   const k = size / 16;
   ctx.lineWidth = lw / k;
   ctx.setLineDash(dash.map((d) => d / k));
+  ctx.lineJoin = 'round';
   ctx.beginPath();
-  ctx.arc(0, -4, 3, 0, Math.PI * 2);
-  ctx.moveTo(-5.5, 7);
-  ctx.lineTo(-5.5, 2.5);
-  ctx.quadraticCurveTo(-5.5, -0.5, -2, -0.5);
-  ctx.lineTo(2, -0.5);
-  ctx.quadraticCurveTo(5.5, -0.5, 5.5, 2.5);
-  ctx.lineTo(5.5, 7);
+  ctx.rect(-4.5, -8, 9, 7); // the back
+  ctx.moveTo(-6, 0.5); // the seat
+  ctx.lineTo(6, 0.5);
+  ctx.lineTo(5, 3);
+  ctx.lineTo(-5, 3);
+  ctx.closePath();
+  ctx.moveTo(0, 3); // the post
+  ctx.lineTo(0, 6);
+  ctx.moveTo(-5, 8); // the foot
+  ctx.lineTo(0, 6);
+  ctx.lineTo(5, 8);
+  ctx.moveTo(0, 6);
+  ctx.lineTo(0, 8.5);
   ctx.stroke();
   ctx.restore();
 }
@@ -828,7 +878,7 @@ export function paintRoster(ctx, info, at, shown, t) {
   // its feet a little past the tile's foot, so Saturday's slot sits inside the tile: when you stand south of the
   // board, the lit target's E key cap (above the tile) clears the slot and the face in it
   const y = at.y * T + T + 7;
-  drawBoard(ctx, x, y, 1, shown.look, t, { fresh: shown.fresh, glow: shown.glow, tray: shown.tray, scribble: shown.scribble });
+  drawBoard(ctx, x, y, 1, shown.look, t, { fresh: shown.fresh, glow: shown.glow, tray: shown.tray, lift: shown.lift, scribble: shown.scribble });
   if (shown.pop !== null && shown.pop !== undefined) drawPop(ctx, shown.look, x + 5.5, y - 28.5, shown.pop / POP_S, t, shown.popSide);
 }
 
@@ -852,10 +902,36 @@ export function scribbleOf(game) {
   return null;
 }
 
-// { copier, beep, kev }: the copier, on the line from the boss's desk through the board. kev: where Kev's head is
-// (px) while he stands at his desk, alerted by the beeping: dashes from him to it (it's his to fix).
+// { copier, beep, kev, gaze }: the copier, on the line from the boss's desk through the board. kev: where Kev's head
+// is (px) while he stands at his desk, alerted by the beeping: dashes from him to it (it's his to fix). gaze: the
+// boss's head (px) while he sits at his desk looking at it: dashes in his cone's colour from him to it, straight
+// through the board (drawn over it: the board paints first).
 export function paintCopier(ctx, info, at, shown, t) {
   drawCopier(ctx, at.x * T, at.y * T - 4, shown.copier, t, 1, shown.beep);
+  if (shown.gaze) {
+    const tx = at.x * T + 16;
+    const ty = at.y * T + 6;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,150,60,0.9)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.lineDashOffset = -t * 24;
+    ctx.beginPath();
+    ctx.moveTo(shown.gaze.x, shown.gaze.y);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // an arrowhead at the copier
+    const ang = Math.atan2(ty - shown.gaze.y, tx - shown.gaze.x);
+    ctx.fillStyle = 'rgba(255,150,60,0.95)';
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx - Math.cos(ang - 0.45) * 8, ty - Math.sin(ang - 0.45) * 8);
+    ctx.lineTo(tx - Math.cos(ang + 0.45) * 8, ty - Math.sin(ang + 0.45) * 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
   if (shown.kev) {
     ctx.save();
     ctx.strokeStyle = 'rgba(232,60,45,0.75)';
@@ -870,10 +946,17 @@ export function paintCopier(ctx, info, at, shown, t) {
   }
 }
 
-// { noodles, left, fish }: the microwave on the counter, the bare counter above it, and on down to the sink.
+// { noodles, left, fish }: the microwave on the counter, your cup of noodles beside it (above it, up the counter),
+// and on down to the sink. Cold: the cup's lid on. Cooking: the cup's in the microwave. Done (the DING has gone):
+// the cup is back on the counter, open and steaming, and the microwave is free (for Lin's fish).
 export function paintMicrowave(ctx, info, at, shown, t) {
   drawCounter(ctx, at.x, at.y - 1, at.y + 1);
-  drawMicrowave(ctx, at.x * T + 2, at.y * T + 4, shown.noodles, shown.left, t, shown.fish);
+  const cooking = shown.noodles === 'cooking' && shown.left !== null && shown.left > 0;
+  drawMicrowave(ctx, at.x * T + 1, at.y * T + 8, cooking ? 'cooking' : 'cold', cooking ? shown.left : null, t, shown.fish && !cooking);
+  const cx = at.x * T + 17;
+  const cy = (at.y - 1) * T + 26;
+  if (!cooking) drawNoodleCup(ctx, cx, cy, 1.5, shown.noodles === 'cooking');
+  if (shown.noodles === 'cooking' && !cooking) cupSteam(ctx, cx, cy - 18, t, 1);
 }
 
 // { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
@@ -887,7 +970,16 @@ export function paintMyPhone(ctx, info, at, shown, t) {
     const b = cornerPhone(shown.to);
     drawCall(ctx, a.x, a.y - 4, b.x, b.y - 4, t);
   }
-  drawPhone(ctx, a.x, a.y, { lifted: live }, t);
+  bigPhone(ctx, a.x, a.y, { lifted: live }, t);
+}
+// The phones, 1.35 times the size (they're what you go for)
+const PHONE_S = 1.35;
+function bigPhone(ctx, x, y, opts, t) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(PHONE_S, PHONE_S);
+  drawPhone(ctx, 0, 0, opts, t);
+  ctx.restore();
 }
 
 // { phone, hand: px | null }: the boss's phone on its side table (at), shaking while it rings, and none on his desk.
@@ -899,8 +991,8 @@ export function paintBossPhone(ctx, info, at, shown, t) {
   if (desk) drawFolder(ctx, desk.x0 * T + 5, desk.y0 * T + 4);
   drawSideTable(ctx, at.x * T, at.y * T);
   const b = cornerPhone(at);
-  if (shown.phone === 'talking' && shown.hand) drawCord(ctx, b.x - 7, b.y + 2, shown.hand.x, shown.hand.y + 3);
-  drawPhone(ctx, b.x, b.y, { ring: shown.phone === 'ringing', gone: shown.phone === 'talking' }, t);
+  if (shown.phone === 'talking' && shown.hand) drawCord(ctx, b.x - 7 * PHONE_S, b.y + 2 * PHONE_S, shown.hand.x, shown.hand.y + 3);
+  bigPhone(ctx, b.x, b.y, { ring: shown.phone === 'ringing', gone: shown.phone === 'talking' }, t);
 }
 
 // { lunch: 'cold' | 'away' | 'hot' }: Lin's lunch box at the end of her desk (at): shut, until she takes it to the
@@ -908,6 +1000,16 @@ export function paintBossPhone(ctx, info, at, shown, t) {
 export function paintLunch(ctx, info, at, shown, t) {
   if (shown.lunch === 'away') return;
   drawLunchBox(ctx, at.x * T + 18, at.y * T + 16, 15, t, shown.lunch === 'hot');
+}
+
+// { away, color: [seat, back], at: lin_desk }: Lin's desk chair, at her desk, and while she's away (from 4:30 until
+// she's back with her fish) pushed out from it and turned: someone's gone off and will be back.
+export function paintLinChair(ctx, info, at, shown, t) {
+  const s = shown.at;
+  if (!s) return;
+  const cx = s.x * T + T / 2 + (shown.away ? 7 : 0);
+  const cy = s.y * T + T / 2 + (shown.away ? 8 : 0);
+  drawChair(ctx, cx, cy, -Math.PI / 2 + (shown.away ? 0.8 : 0), shown.color[0], shown.color[1]);
 }
 
 // decor.things: the '#<name>' things, painters (ctx, x, y, size, t), centred, about size px tall.
@@ -930,17 +1032,22 @@ export const THINGS = {
     box(ctx, x, y, size);
     drawLunchBox(ctx, 0, 1, 15, t, true);
   },
-  // your place round the board, outlined: an empty seat that everyone is looking at
+  // your place round the board, outlined: an empty chair that everyone is looking at
   spot(ctx, x, y, size) {
     const k = size / 16;
     ctx.strokeStyle = '#d63a2d';
-    thingSpot(ctx, x, y, size, 1.7 * k, [2.6 * k, 1.8 * k]);
+    thingChair(ctx, x, y, size, 1.7 * k, [2.6 * k, 1.8 * k]);
+  },
+  // Kev's spanner, in his hand at the copier
+  spanner(ctx, x, y, size) {
+    box(ctx, x, y, size);
+    drawSpanner(ctx, -6, 0, 0, 12);
   },
   // the microwave at its DING: 00 on the display, rings off it (the end card's route row: you got them at the DING)
   microwave(ctx, x, y, size) {
     box(ctx, x, y, size);
-    ctx.scale(0.5, 0.5);
-    drawMicrowave(ctx, -14.5, -6, 'cooking', 0, 0.4, false, false, true);
+    ctx.scale(0.42, 0.42);
+    drawMicrowave(ctx, -MW_W / 2, -MW_H / 2 + 1.5, 'cooking', 0, 0.4, false, false, true);
   },
   // the board's black marker, pointing along +x (held, it points where the arm points)
   marker(ctx, x, y, size) {
