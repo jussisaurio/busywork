@@ -414,12 +414,12 @@ function drawLeafPicture(ctx, x, y, w, h, t) {
 export function wallCamera(ctx, info, at, shown, t) {
   const rattle = shown.whack ? Math.sin(t * 38) * 0.14 : 0;
   drawWallCamera(ctx, shown.x * T, shown.y * T, shown.dir + rattle, shown.live, shown.stuck, t);
-  if (shown.whack && (t * 2.2) % 1 < 0.45) star(ctx, shown.x * T - 9, shown.y * T - 4, 6);
+  if (shown.whack && !shown.stuck && (t * 2.2) % 1 < 0.45) star(ctx, shown.x * T - 9, shown.y * T - 4, 6);
 }
 
 export function wallCameraState(w, game) {
   const f = cameraFeed(game, CAM_ID);
-  const whack = !!game?.npcs?.some((n) => n.id === 'bob' && n.override === 'whacking');
+  const whack = !!game?.npcs?.some((n) => n.id === 'bob' && (n.override === 'whacking' || n.override === 'tugging'));
   return { x: f.x, y: f.y, dir: f.dir, live: f.live, stuck: w.camAim === 'plant', whack };
 }
 
@@ -548,8 +548,8 @@ export const socketState = (w) => ({ plugged: w.plug === 'in' });
 
 // --- the broom (tile B) ------------------------------------------------------------------------------------------------
 
-// A broom leaning in the mailroom's corner on a wall clip; taken, only the clip is left. shown: { there }.
-// It also draws the mailroom's neglect: cobwebs in its corners, dust bunnies on the floor. Nobody comes in here.
+// A broom leaning in the store room's corner on a wall clip; taken, only the clip is left. shown: { there }.
+// It also draws the store room's neglect: cobwebs in its corners, dust bunnies on the floor. Nobody opens it before the cleaner comes at 6.
 export function broomStand(ctx, info, at, shown) {
   const x = at.x * T;
   const y = at.y * T;

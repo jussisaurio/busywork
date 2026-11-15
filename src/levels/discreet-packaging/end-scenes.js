@@ -38,7 +38,7 @@ function office(ctx, clockX = 480) {
   ctx.restore();
 }
 
-// The back office or the mailroom: lino and a plain wall.
+// The back office or the store room: lino and a plain wall.
 function backRoom(ctx) {
   floorTiles(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_Y - TAB.y);
@@ -271,7 +271,6 @@ function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false,
   p.dir = dir;
   p.head = head;
   p.angry = angry;
-  p.badge = true;
   p.arms = a;
   p.scale = sc;
   const hugs = w.parcel === 'bob' && a === 'idle';
@@ -339,6 +338,7 @@ function hiddenScene(ctx, game, t, e) {
   lin(ctx, game, t, 290, 296, { head: Math.PI / 2 + Math.sin(t * 1.5) * 0.2 });
   bubble(ctx, ['📭', '@player'], 290, 204, e);
   bob(ctx, game, t, 390, 300, { dir: Math.PI / 2 - 0.2, sc: 2.5 });
+  if (game.outcome?.why === 'away') return emptyChair(ctx, 520, 322, false); // you're elsewhere; nobody minds
   you(ctx, game, t, 470, 324, { smug: true, head: Math.PI / 2 - 0.4 + Math.sin(t * 1.1) * 0.2 });
   bubble(ctx, ['🎵'], 470, 232, e - 0.3, 'thought');
 }
@@ -376,6 +376,7 @@ function finderOf(game) {
 // Off the floor: the icon row opens on the dropped box, and the floor shows where it landed.
 let foundIcons = ['@lin', '💝', '@player', '😳'];
 function foundScene(ctx, game, t, e) {
+  if (game.world.parcel === 'spotted') return spottedScene(ctx, game, t, e);
   const id = finderOf(game);
   const dropped = game.world.parcel === 'found';
   foundIcons = dropped ? ['#dropped', '@' + id, '@player', '😳'] : ['@' + id, '💝', '@player', '😳'];
@@ -388,11 +389,27 @@ function foundScene(ctx, game, t, e) {
   p.dir = Math.PI / 2 - 0.35;
   p.head = Math.PI / 2 - 0.7 + Math.sin(t * 1.2) * 0.08; // from the label to you
   p.arms = 'reach';
-  p.badge = id === 'bob';
   p.scale = sc;
   drawPerson(ctx, look, p, 380, 298);
   boxHeldOut(ctx, look, 380, 298, sc, game.world.parcelFor);
   bubble(ctx, ['@player', '❗'], 380, 194, e);
+  you(ctx, game, t, 620, 316, { red: true, sweat: true, head: Math.PI / 2 + 0.4 });
+  bubble(ctx, ['😳'], 620, 224, e - 0.4, 'thought');
+}
+
+// Lin saw the pink box in your arms. It's still yours: she claps her hands up, delighted, and asks out loud ("Ooh,
+// hearts! From your mum?") for the whole room to hear. You hold it and go red.
+function spottedScene(ctx, game, t, e) {
+  foundIcons = ['@lin', '💝', '😍', '@player', '😳'];
+  const lin = npcAt(game, 'lin');
+  backdropAt(ctx, game, lin?.x ?? 4, lin?.y ?? 4);
+  const p = person(t);
+  p.dir = Math.PI / 2 - 0.35;
+  p.head = Math.PI / 2 - 0.6 + Math.sin(t * 1.4) * 0.06;
+  p.arms = 'cheer';
+  p.scale = 2.3;
+  drawPerson(ctx, looks(game).lin, p, 380, 300);
+  bubble(ctx, ['💝', '😍', '@player', '❓'], 380, 196, e);
   you(ctx, game, t, 620, 316, { red: true, sweat: true, head: Math.PI / 2 + 0.4 });
   bubble(ctx, ['😳'], 620, 224, e - 0.4, 'thought');
 }
@@ -409,8 +426,7 @@ function caughtOnCamera(ctx, game, t, e) {
   b.head = b.dir;
   b.arms = 'point';
   b.angry = true;
-  b.badge = true;
-  b.scale = 2.5;
+    b.scale = 2.5;
   drawPerson(ctx, looks(game).bob, b, 500 + (1 - enter(e)) * 30, 300);
   counter(ctx, TAB.x - 10, TAB.x + TAB.w + 10, 292);
   // the monitor on the counter, turned to us
@@ -454,21 +470,9 @@ function caughtScene(ctx, game, t, e) {
   b.head = 0;
   b.arms = 'point';
   b.angry = true;
-  b.badge = true;
-  b.scale = 2.5;
+    b.scale = 2.5;
   drawPerson(ctx, looks(game).bob, b, 340 + (1 - enter(e)) * -80, 300);
   bubble(ctx, ['😠', '👉'], 340, 196, e);
-}
-
-// blamed: no pink box at the mail call, and no you either. Your chair stands pulled out from your desk, empty in a
-// spotlight; Lin and Bob point at it. The drawers stay shut: nothing pink anywhere.
-function blamedScene(ctx, game, t, e) {
-  office(ctx, 380);
-  desk(ctx, 640, 262, 170);
-  emptyChair(ctx, 560, 322);
-  lin(ctx, game, t, 290, 300, { dir: 0.15, head: 0.1, arms: 'point' });
-  bob(ctx, game, t, 410, 304, { dir: 0.25, head: 0.15, arms: 'point', sc: 2.5 });
-  bubble(ctx, ['📭', '@player', '❓'], 350, 196, e);
 }
 
 function kindOf(o) {
@@ -476,7 +480,6 @@ function kindOf(o) {
   const routes = Array.isArray(o.routes) ? o.routes : [];
   if (o.result === 'caught') return 'caught';
   if (o.why === 'noshow') return 'noshow';
-  if (o.result === 'blamed') return 'blamed';
   if (o.result === 'win') return routes.includes('bob') ? 'bob' : 'hidden';
   return o.why === 'found' ? 'found' : 'mail';
 }
@@ -491,6 +494,5 @@ export const END_SCENES = {
     // found and caught: whose face leads the row is decided by the picture (draw runs before the row is read)
     found: { win: false, get icons() { return foundIcons; }, draw: foundScene },
     caught: { win: false, get icons() { return caughtIcons; }, draw: caughtScene },
-    blamed: { win: false, icons: ['📭', '🪑', '@player', '❓'], draw: blamedScene },
   },
 };
