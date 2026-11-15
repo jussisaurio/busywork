@@ -1,5 +1,6 @@
 // Who can see what. Shared by rules (witnesses), sim (reactions) and renderer (cones).
 import { canSee, DIRS } from '../core/vision.js';
+import { isDark, seesInDark } from '../sim/mechanics/darkness.js';
 
 // The effective viewer for an NPC, including the current head glance.
 export function viewerOf(npc) {
@@ -12,9 +13,11 @@ export function viewerOf(npc) {
   };
 }
 
+// A dark point (level.darkness: sim/mechanics/darkness.js) is seen only up close or in a torch beam.
 export function npcSees(game, npc, x, y) {
   if (!npc.active) return false;
-  return canSee(game.map, viewerOf(npc), x, y);
+  if (!game.level?.darkness || !isDark(game, x, y)) return canSee(game.map, viewerOf(npc), x, y);
+  return seesInDark(game, npc, viewerOf(npc), x, y);
 }
 
 // All NPCs that can currently see point (x, y).
