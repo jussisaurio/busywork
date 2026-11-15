@@ -5,7 +5,7 @@ import {
   T, clamp, fin, hash, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
-import { NOTICE } from '../config.js';
+import { NOTICE, MARKS, HOLD_TIME } from '../config.js';
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -41,15 +41,20 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    badge: false, crank: false, stain: false, seed: 0,
+    badge: false, crank: false, stain: null, lift: 0, seed: 0,
   };
 }
+
+// The arm poses computeHands draws (personState().arms). A level 'self' row's `preview` names one (the validator
+// checks it): the pose the player strikes while that row is what E would do, and while doing it.
+export const ARM_POSES = ['idle', 'walk', 'desk', 'type', 'folder', 'carry', 'reach', 'phone', 'bang', 'shrug', 'puff',
+  'mug', 'box', 'point', 'cheer', 'lift', 'holdout'];
 
 // What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
 const HELD = { held: true };
 
-// Hand positions are written here to avoid allocating per frame.
-const HAND = { lx: 0, ly: 0, rx: 0, ry: 0, lsx: 0, lsy: 0, rsx: 0, rsy: 0 };
+// Hand positions are written here to avoid allocating per frame (fx, fy: the floor under the held-out hand).
+const HAND = { lx: 0, ly: 0, rx: 0, ry: 0, lsx: 0, lsy: 0, rsx: 0, rsy: 0, fx: 0, fy: 0 };
 
 function computeHands(s, g) {
   const { fx, fy, rx, ry, bodyY, brx, headY, hr } = g;
@@ -140,6 +145,26 @@ function computeHands(s, g) {
       lx = lsx - rx * 2; ly = lsy - 14 + Math.sin(t * 12) * 2;
       rxh = rsx + rx * 2; ryh = rsy - 14 + Math.sin(t * 12 + 2) * 2;
       break;
+    case 'lift': {
+      // what you hold, lifted from the carry hold toward the mouth (s.lift 0..1; 1 = at the mouth: eating)
+      const k = s.lift;
+      lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
+      const cx = fx * 8 + rx * 3;
+      const cy = bodyY + fy * 8 + ry * 3;
+      const mx = fx * (hr + 1) + rx * (hr * 0.5 + 1.5);
+      const my = headY + hr * 0.5 + fy * (hr + 1) + ry * (hr * 0.5 + 1.5);
+      rxh = cx + (mx - cx) * k; ryh = cy + (my - cy) * k;
+      break;
+    }
+    case 'holdout': {
+      // what you hold, held out at arm's length over the floor (ready to let go); HAND.fx/fy: the floor under it
+      const f = 10;
+      const r = brx * 0.6 + 5;
+      lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
+      rxh = fx * f + rx * r; ryh = bodyY + 3 + fy * f + ry * r;
+      HAND.fx = rxh; HAND.fy = 8.5 + fy * f + ry * r;
+      break;
+    }
     default:
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       rxh = rsx + fx * 1.5; ryh = rsy + 5 + fy * 1.5;
@@ -198,7 +223,7 @@ function drawArms(ctx, look, s, g, sleeve) {
   ctx.stroke();
   ctx.lineCap = 'butt';
   fillCircle(ctx, H.lx, H.ly, 2.3, look.skin);
-  if (s.arms !== 'phone') {
+  if (s.arms !== 'phone' && !(s.item && liftOverHead(s))) {
     if (s.item && s.arms !== 'folder' && !mugOverTorso(s, g)) drawHeldItem(ctx, s, H.rx, H.ry);
     else if (!s.item && s.arms === 'point' && strictGlyphs()) drawFinger(ctx, H.rx, H.ry, look.skin);
     fillCircle(ctx, H.rx, H.ry, 2.3, look.skin);
@@ -222,11 +247,14 @@ function drawArms(ctx, look, s, g, sleeve) {
   }
 }
 
-// Facing away, the arms are drawn behind the torso; a mug held out at the side is drawn again
+// Facing away, the arms are drawn behind the torso; a mug (or anything held out) at the side is drawn again
 // on top so it still reads from behind.
 function mugOverTorso(s, g) {
-  return s.arms === 'mug' && g.sd < -0.25;
+  return (s.arms === 'mug' || s.arms === 'holdout') && g.sd < -0.25;
 }
+
+// What you hold lifted to your mouth is drawn over your head, whichever way you face (the head would hide it).
+const liftOverHead = (s) => s.arms === 'lift' && s.lift > 0.4;
 
 function drawHeldItem(ctx, s, x, y) {
   if (s.crank) {
@@ -249,8 +277,20 @@ function drawHeldItem(ctx, s, x, y) {
     ctx.restore();
     return;
   }
-  const wob = s.arms === 'reach' ? Math.sin(s.t * 10) * 1.5 : 0;
-  emoji(ctx, s.item, x, y - 2 + wob, s.arms === 'reach' ? 13 : 12, HELD);
+  emoji(ctx, s.item, x, y - 2 + heldWobble(s), s.arms === 'reach' ? 13 : 12, HELD);
+}
+const heldWobble = (s) => (s.arms === 'reach' ? Math.sin(s.t * 10) * 1.5 : 0);
+
+// Where the held item's centre is drawn, in the person's own coordinates (drawPerson's origin, unscaled), or
+// null when nothing is in a hand: the self action's glow traces it (render/effects.js drawLitTarget).
+function heldItemAt(s, out) {
+  if (!s.item) return null;
+  const H = HAND;
+  if (s.arms === 'phone') { out.x = H.rx + G.rx * 2; out.y = H.ry - 2; }
+  else if (s.arms === 'folder') { out.x = H.rx + 2; out.y = H.ry - 7; }
+  else if (s.arms === 'point') { out.x = H.rx + G.fx * 5; out.y = H.ry + G.fy * 5; }
+  else { out.x = H.rx; out.y = H.ry - 2 + heldWobble(s); }
+  return out;
 }
 
 // A bare pointing hand (arms 'point' with nothing in it): the index finger continues the arm. In a migrated level
@@ -371,13 +411,14 @@ export function drawPerson(ctx, look, s, x, y) {
   }
 
   computeHands(s, G);
+  if (s.arms === 'holdout' && s.item) fillEllipse(ctx, HAND.fx, HAND.fy, 4, 1.6, 'rgba(25,15,8,0.3)'); // where it would land
   if (north) drawArms(ctx, look, s, G, bodyDark);
 
   // torso
   fillEllipse(ctx, 0, bodyY + 1.5, brx, bry, bodyDark);
   fillEllipse(ctx, 0, bodyY, brx * 0.97, bry * 0.9, bodyCol);
   drawTorsoDetail(ctx, look, s, noJacket);
-  if (s.stain) drawMustard(ctx);
+  if (s.stain) drawMark(ctx, s.stain);
   if (s.item && mugOverTorso(s, G)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
@@ -388,6 +429,10 @@ export function drawPerson(ctx, look, s, x, y) {
 
   drawHead(ctx, look, s, h, 0, headY, hr);
   if (s.arms === 'type' && !s.typing) drawKeys(ctx, s, G);
+  if (s.item && liftOverHead(s)) {
+    drawHeldItem(ctx, s, HAND.rx, HAND.ry);
+    fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
+  }
 
   if (s.arms === 'phone') {
     const ex = HAND.rx;
@@ -490,22 +535,24 @@ function drawBadge(ctx) {
   ctx.fillRect(x - 1.6, y, 3.4, 1.2);
 }
 
-// Lin's sandwich, worn: a mustard splat with a drip down the chest (on the shoulder from behind).
-const MUSTARD = '#f2c230';
-const MUSTARD_DARK = '#c99512';
-function drawMustard(ctx) {
+// What eating left on you (config.js MARKS[name]: the harness names it with the same entry's words): a splat
+// with a drip down the chest (on the shoulder from behind).
+function drawMark(ctx, name) {
+  const mark = MARKS[name];
+  if (!mark) return;
+  const { color, dark } = mark;
   const { fx, fy, sd, bodyY, brx, bry } = G;
   const back = sd < -0.25;
   const cx = back ? brx * 0.5 : fx * brx * 0.35;
   const cy = bodyY - bry * (back ? 0.45 : 0.15) + fy * 2;
   const r = back ? 2.2 : 3.2;
-  fillEllipse(ctx, cx + 0.4, cy + 0.6, r * 1.1, r * 0.85, MUSTARD_DARK);
-  fillEllipse(ctx, cx, cy, r, r * 0.8, MUSTARD);
-  fillCircle(ctx, cx + r * 0.95, cy - r * 0.55, r * 0.38, MUSTARD);
-  fillCircle(ctx, cx - r * 0.9, cy + r * 0.2, r * 0.32, MUSTARD);
+  fillEllipse(ctx, cx + 0.4, cy + 0.6, r * 1.1, r * 0.85, dark);
+  fillEllipse(ctx, cx, cy, r, r * 0.8, color);
+  fillCircle(ctx, cx + r * 0.95, cy - r * 0.55, r * 0.38, color);
+  fillCircle(ctx, cx - r * 0.9, cy + r * 0.2, r * 0.32, color);
   if (!back) {
-    fillEllipse(ctx, cx - r * 0.25, cy + r * 1.05, r * 0.32, r * 0.65, MUSTARD); // drip
-    fillCircle(ctx, cx - r * 0.25, cy + r * 1.6, r * 0.36, MUSTARD);
+    fillEllipse(ctx, cx - r * 0.25, cy + r * 1.05, r * 0.32, r * 0.65, color); // drip
+    fillCircle(ctx, cx - r * 0.25, cy + r * 1.6, r * 0.36, color);
   }
 }
 
@@ -859,7 +906,7 @@ const NO_POSES = {};
 export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.badge = false; s.crank = false; s.stain = false; s.seed = 0;
+  s.badge = false; s.crank = false; s.stain = null; s.lift = 0; s.seed = 0;
 }
 
 // The emoji for a held item type: its level.items[type].icon (the validator requires one), '❔' for something
@@ -897,14 +944,40 @@ function drawPlayer(ctx, game, t) {
   s.item = worn ? null : itemGlyph(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
-    : p.action ? 'reach' : p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle';
+    : p.action ? p.action.pose ?? 'reach' : selfPreview(p, s, t) ?? (p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle');
+  if (p.action && s.arms === 'lift') s.lift = 1 - 0.12 * Math.max(0, Math.sin(t * 14)); // eating: bites
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
-  s.stain = !!p.smeared;
+  s.stain = p.smeared || null;
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
-  drawPerson(ctx, worn ? wornLook(game.level.looks, worn) : lookFor(game.level.looks, 'player'), s, fin(p.x) * T, fin(p.y) * T);
+  const x = fin(p.x) * T;
+  const y = fin(p.y) * T;
+  drawPerson(ctx, worn ? wornLook(game.level.looks, worn) : lookFor(game.level.looks, 'player'), s, x, y);
+  const at = heldItemAt(s, playerHeld);
+  playerHeld.on = !!at;
+  playerHeld.t = t;
+  if (at) { playerHeld.x = x + at.x * (s.scale || 1); playerHeld.y = y + at.y * (s.scale || 1); }
 }
+
+// What E would do to what you hold, before the press (player.focus a 'self' target, play/interactions.js): its
+// row's preview pose, standing still. E held down on a target with a hold verb shows that verb's pose growing
+// over HOLD_TIME (eating: the item rising to the mouth). null: no preview.
+function selfPreview(p, s, t) {
+  const f = p.focus;
+  if (!f || f.kind !== 'self' || !s.item) return null;
+  if (p.hold && f.holdPreview) {
+    s.lift = 0.25 + 0.75 * clamp(fin(p.hold.t) / HOLD_TIME, 0, 1);
+    return f.holdPreview;
+  }
+  if (p.moving) return null;
+  s.lift = 0.55 + 0.06 * Math.sin(t * 4);
+  return f.preview;
+}
+
+// Where the player's held item was last drawn (world px; on: something in her hand; t: that frame's time), for the
+// self action's glow (render/effects.js drawLitTarget, drawn after the characters in the same frame).
+export const playerHeld = { on: false, x: 0, y: 0, t: -1 };
 
 function drawNpc(ctx, game, n, t) {
   const s = S;

@@ -5,7 +5,7 @@ import {
   starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
-import { headY, lookFor } from './characters.js';
+import { headY, lookFor, playerHeld } from './characters.js';
 import { findNpc } from '../game/perception.js';
 import { NOTICE, DOUBLE_TAKE } from '../config.js';
 
@@ -628,18 +628,21 @@ export function drawFocusHint(ctx, game, t, view = FULL_VIEW) {
 
 // DESIGN.md "Visual language" rule 4: the object itself lights up, with the E key cap over it, and no icon (an icon
 // over a tile reads as the object). The glow traces the target: the interactable's tile, the item or the free spot
-// on a desk; an action on yourself (eating what you hold) shows the key cap over your head alone. The key cap sits
-// on the target's far side from you, so your body never hides it; where that side is off the view (a clock on the
-// top wall), it goes beside the target.
+// on a desk, or for an action on yourself (dropping or eating what you hold) the item in your hand, where the
+// player's pose previews the verb (render/characters.js). The key cap sits on the target's far side from you, so
+// your body never hides it; where that side is off the view (a clock on the top wall), it goes beside the target.
 function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   const pulse = 0.5 + 0.5 * Math.sin(t * 5);
-  const x = f.x * T;
-  const y = f.y * T;
+  let x = f.x * T;
+  let y = f.y * T;
   const self = f.kind === 'self';
-  if (!self) {
+  const held = self && playerHeld.on && playerHeld.t === t; // drawn this frame (render/characters.js)
+  if (held) { x = playerHeld.x; y = playerHeld.y; }
+  if (!self || held) {
     ctx.save();
     const shape = () => {
       if (f.kind === 'interactable') rrect(ctx, x - T / 2 - 1.5, y - T / 2 - 1.5, T + 3, T + 3, 6);
+      else if (self) ellipse(ctx, x, y, 9 + pulse * 0.6, 8 + pulse * 0.6);
       else ellipse(ctx, x, y + 1, 12 + pulse, 9 + pulse * 0.6);
     };
     ctx.fillStyle = `rgba(255,226,122,${(0.1 + 0.12 * pulse).toFixed(3)})`;
@@ -657,7 +660,13 @@ function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   }
   const bob = Math.sin(t * 5) * 2;
   if (self) {
-    keycap(ctx, clamp(x - 9, view.x0 + 2, view.x1 - 20), Math.max(view.y0 + 2, y - 50) + bob, 18, 15, 'E', 11);
+    if (!held) { // nothing drawn in a hand (a level's own action on yourself): over your head
+      keycap(ctx, clamp(x - 9, view.x0 + 2, view.x1 - 20), Math.max(view.y0 + 2, y - 50) + bob, 18, 15, 'E', 11);
+      return;
+    }
+    // beside the item, on its side away from your body
+    const kx = x >= fin(p.x) * T ? x + 11 : x - 29;
+    keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20), clamp(y - 7.5 + bob, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
     return;
   }
   const r = f.kind === 'interactable' ? T / 2 + 3 : 14; // the glow's half size

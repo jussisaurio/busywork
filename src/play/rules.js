@@ -96,7 +96,7 @@ function offenceFor(game, s, npc) {
     return 'action';
   }
   if (atScene(game, s, npc)) return 'scene';
-  // Lin hunting for her sandwich spots the mustard down your sweater. Pretending doesn't hide a stain.
+  // The evidence role's witness, on her hunt, spots the mark on you (player.smeared). Pretending doesn't hide a stain.
   const ev = r.evidence;
   if (ev && npc.id === ev.by && npc.override === ev.while && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
   if (p.busy) return null; // phone call / folder stride hides contraband

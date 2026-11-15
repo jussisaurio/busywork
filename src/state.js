@@ -45,10 +45,11 @@ export function resetLoop(game) {
     busy: false,
     busyPose: null,
     seated: true,
-    smeared: false, // ate an edible item (play/interactions.js eat_<type>); a role's evidence `mark` may name it
+    smeared: false, // what eating left on you: a config.js MARKS name (play/interactions.js eat_<type>); a role's evidence `mark` may name it
     action: null,
     locked: false,
     focus: null,
+    hold: null, // E down on a target with a hold verb: { verb, t } until it is let go (the tap) or held HOLD_TIME
   };
   game.npcs = [];
   game.world = game.level.initialWorld();

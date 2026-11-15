@@ -66,7 +66,9 @@ problem: when Kev says 🔧, he means he will fix something.
 3. **The state that decides the outcome is drawn on the object.** Every world fact a win or a loss depends on changes
    how something looks on the map (the calendar shows whose face is circled; the burning microwave glows and smokes).
 4. **To show you can use something, the object lights up, with the E key cap on its far side from you.** No icon
-   hovers over it: an icon over a tile reads as the object.
+   hovers over it: an icon over a tile reads as the object. What E does to what you hold shows on you: the held
+   thing lights up, and your pose previews the verb before you press (arm held out over the floor: drop; the thing
+   lifted toward your mouth: eat).
 5. **End cards are drawn scenes.** The icon row under the scene is the punchline, in speech emoji and faces.
 
 How it is held:
@@ -84,7 +86,7 @@ There is no camera: the whole office is on screen (30×17 tiles), with the HUD b
 | Key | Verb |
 |---|---|
 | WASD / arrows | walk |
-| E | interact (the nearest valid target lights up, with the E key cap beside it) |
+| E | interact (the nearest valid target lights up, with the E key cap beside it). Holding food: tap drops it, hold E eats it |
 | E, Space or Enter | move past the mission card and the end card |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |

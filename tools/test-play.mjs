@@ -6,8 +6,9 @@
 //   node tools/test-play.mjs
 import {
   FIXED_DT, GAME_MIN_PER_SEC, CAUGHT_DELAY, WORK_PENALTY_MIN,
-  PLAYER_RADIUS, PLAYER_SPEED, PLAYER_BUSY_SPEED, SUSPICION_FILL_SEC,
+  PLAYER_RADIUS, PLAYER_SPEED, PLAYER_BUSY_SPEED, SUSPICION_FILL_SEC, HOLD_TIME, MARKS,
 } from '../src/config.js';
+import { createHarness, observe } from '../src/agent/harness.js';
 import { createGame, resetLoop } from '../src/state.js';
 import { createRng } from '../src/core/rng.js';
 import { DIRS } from '../src/core/vision.js';
@@ -114,6 +115,13 @@ function step(n = 1) {
   }
 }
 const run = (sec) => step(Math.round(sec / FIXED_DT));
+// Hold E standing still until the hold verb fires (eating), then let go.
+function holdE() {
+  input.press('interact');
+  input.hold('interact');
+  run(HOLD_TIME + 0.05);
+  input.release('interact');
+}
 
 // Steer through waypoints (tile-unit points). Returns false if stuck / interrupted.
 function walk(path, { busy = false, maxSec = 20 } = {}) {
@@ -603,9 +611,21 @@ section('contraband');
   place(4.5, 7.5);
   p().held = 'sandwich';
   game.world.sandwich = 'player';
-  input.press('interact');
-  run(1.5);
+  lin.active = false; // she isn't looking when you start
+  holdE();
+  ok(p().action?.type === 'eat_sandwich', 'hold E: eating starts');
+  lin.active = true;
+  run(1.1);
   ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'action' && game.world.sandwich === 'fridge' && !p().held, 'Lin witnesses eating: one tattle + takes it back');
+
+  // Lifting it to your mouth in front of her is just carrying her sandwich: she has it back before the first bite.
+  newDay([lin]);
+  place(4.5, 7.5);
+  p().held = 'sandwich';
+  game.world.sandwich = 'player';
+  holdE();
+  run(0.5);
+  ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'contraband' && game.world.sandwich === 'fridge' && evs('sandwich:eaten').length === 0, 'hold E in her sight: she takes it back before you eat (contraband)');
 
   // Mid-hunt, catching you with it ends her hunt: she has found it.
   newDay([fakeNpc('lin', 'lin_desk', { override: 'hunting' })]);
@@ -620,9 +640,9 @@ section('contraband');
   place(22.5, 7.5);
   p().held = 'sandwich';
   game.world.sandwich = 'player';
-  input.press('interact');
-  run(2.5);
-  ok(p().smeared && game.world.sandwich === 'eaten' && !p().held, 'eating: mustard down your sweater (player.smeared)');
+  holdE();
+  run(2.1);
+  ok(p().smeared === 'splat' && game.world.sandwich === 'eaten' && !p().held, "eating: mustard down your sweater (player.smeared = the item's edible.leaves)");
 
   // Lin, hunting, sees the mustard: she knows. Boss on the floor -> he hears it.
   {
@@ -630,7 +650,7 @@ section('contraband');
     const hl = fakeNpc('lin', 'lin_desk', { override: 'hunting' });
     newDay([boss, hl]);
     place(4.5, 7.5);
-    p().smeared = true;
+    p().smeared = 'splat';
     input.hold('busy'); // pretending doesn't hide a stain
     run(0.5);
     input.release('busy');
@@ -644,7 +664,7 @@ section('contraband');
     const hl = fakeNpc('lin', 'lin_desk', { override: 'hunting' });
     newDay([away, hl]);
     place(4.5, 7.5);
-    p().smeared = true;
+    p().smeared = 'splat';
     run(2);
     ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.heard === false && evs('boss:workAssigned').length === 0, 'boss away: mustard spotted, once, unheard');
     away.active = true;
@@ -655,12 +675,12 @@ section('contraband');
   { // not hunting (before 3:00 or after she gives up): a stain is just a stain
     newDay([fakeNpc('lin', 'lin_desk')]);
     place(4.5, 7.5);
-    p().smeared = true;
+    p().smeared = 'splat';
     run(1);
     ok(evs('witness:tattle').length === 0, 'Lin not hunting: ignores the mustard');
     newDay([fakeNpc('kev', 'kev_desk', { override: 'hunting' })]);
     place(22.5, 7.5);
-    p().smeared = true;
+    p().smeared = 'splat';
     run(1);
     ok(evs('witness:tattle').length === 0, 'Kev never cares about mustard');
   }
@@ -671,8 +691,8 @@ section('contraband');
   place(22.5, 7.5);
   p().held = 'sandwich';
   game.world.sandwich = 'player';
-  input.press('interact');
-  run(2.5);
+  holdE();
+  run(2.1);
   ok(evs('witness:tattle').length === 0 && game.world.sandwich === 'eaten', "Kev watches you eat Lin's sandwich: shrug (he doesn't know whose it is)");
 
   newDay([kev]);
@@ -688,8 +708,8 @@ section('contraband');
   place(4.5, 5.5);
   p().held = 'sandwich';
   game.world.sandwich = 'player';
-  input.press('interact');
-  run(2.5);
+  holdE();
+  run(2.1);
   ok(!game.caught && evs('boss:workAssigned')[0]?.payload.reason === 'idle', 'boss watches you eat: ❓ fills -> desk work, not fired');
   ok(evs('action:cancel').some((e) => e.payload.type === 'eat_sandwich' && e.payload.reason === 'idle'), "the meal ends as action:cancel {reason:'idle'}, not 'witnessed'");
 
@@ -776,13 +796,72 @@ section('sandwich: take + eat');
   run(0.9);
   ok(p().held === 'sandwich' && game.world.sandwich === 'player' && evs('sandwich:taken').length === 1, 'sandwich taken');
   step();
-  ok(p().focus?.kind === 'self' && p().focus.icon === '😋', 'holding sandwich: focus = eat 😋');
-  input.press('interact');
+  ok(p().focus?.kind === 'self' && p().focus.action === 'drop' && p().focus.hold === 'eat_sandwich',
+    'holding sandwich: tap E = drop, hold E = eat');
+  ok(p().focus.preview === 'holdout' && p().focus.holdPreview === 'lift', 'self focus previews: arm out (drop), lift (eat)');
+  holdE();
   run(1.0);
   ok(p().action?.type === 'eat_sandwich', 'eating (2 s)');
-  run(1.1);
+  run(1.0);
   ok(game.world.sandwich === 'eaten' && !p().held && evs('sandwich:eaten').length === 1, 'sandwich eaten');
   ok(game.fx.particles.some((q) => q.kind === 'crumbs'), 'crumbs');
+}
+
+section('tap E drops, hold E eats (an edible item, nothing else in reach)');
+{
+  const holding = () => { newDay(); place(22.5, 7.5); p().held = 'sandwich'; game.world.sandwich = 'player'; step(); };
+  const dropped = () => !p().held && !p().action && evs('sandwich:eaten').length === 0 && game.world.items.some((i) => i.type === 'sandwich');
+  holding();
+  input.press('interact');
+  input.hold('interact');
+  run(0.15);
+  ok(p().held === 'sandwich' && !p().action, 'E down: nothing yet (a tap or a hold?)');
+  input.release('interact');
+  step();
+  ok(dropped(), 'let go before HOLD_TIME: a tap -> dropped, not eaten');
+
+  holding();
+  input.press('interact');
+  input.hold('interact');
+  run(0.25);
+  input.steer(1, 0);
+  step(3);
+  input.steer(null);
+  run(0.25);
+  ok(p().held === 'sandwich' && !p().action && p().hold, 'moving while E is down starts the hold over');
+  run(0.15);
+  ok(p().action?.type === 'eat_sandwich', 'standing still with E down: eats');
+  input.release('interact');
+
+  // An item with `keep` has no drop: a tap eats it (no drop key to protect).
+  const lvl = game.level;
+  const variant = (sandwich) => ({ ...lvl, items: { ...lvl.items, sandwich: { ...lvl.items.sandwich, ...sandwich } } });
+  game.level = variant({ keep: true });
+  holding();
+  ok(p().focus?.action === 'eat_sandwich' && p().focus.hold === null && p().focus.preview === 'lift', 'a kept edible item: E eats, the lift previewed');
+  input.press('interact');
+  step();
+  ok(p().action?.type === 'eat_sandwich', 'a tap eats it');
+
+  // edible: { leaves: null } -> eaten, nothing on you.
+  game.level = variant({ edible: { leaves: null } });
+  holding();
+  holdE();
+  run(2.1);
+  ok(game.world.sandwich === 'eaten' && p().smeared === false, 'edible: { leaves: null }: eaten, nothing on you');
+  game.level = lvl;
+
+  // The harness: `eat` holds E; `interact` taps (drops); the words for the mark are the renderer's (MARKS).
+  const h = createHarness({ level: lvl });
+  h.begin();
+  const hp = h.game.player;
+  Object.assign(hp, { x: 22.5, y: 7.5, seated: false, held: 'sandwich' });
+  h.game.world.sandwich = 'player';
+  h.frame();
+  ok(/drop the sandwich \(hold E: eat the sandwich\)/.test(observe(h.game)), 'harness observe: tap drops, hold E eats');
+  h.run('eat');
+  ok(h.game.world.sandwich === 'eaten' && hp.smeared === 'splat', 'harness eat: eaten, splat');
+  ok(observe(h.game).includes(MARKS.splat.words), `harness observe: "${MARKS.splat.words}"`);
 }
 
 section('action invalidated mid-way');

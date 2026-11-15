@@ -223,10 +223,15 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   edible item, then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's. For one
   target the first row whose `can` holds wins; the nearest target wins; `'self'` rows apply only when nothing else
   does.
+- Of the `'self'` rows, a tap of E does the first possible one without `hold` (a level's own, else `drop`). Holding
+  E for `HOLD_TIME` (0.35 s) while standing still does the first possible `hold: true` row (`eat_<type>`); moving
+  starts the hold over. So eating never takes the drop key. With no tap row (an item with `keep`), a tap eats.
 
 | Row field | Meaning |
 |---|---|
 | `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
+| `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`). The validator refuses a `'self'` row without one |
+| `hold` | `'self'` rows: `true` = holding E does it, a tap does the others |
 | `text` | the harness's words for it. A player sees the target light up with the E key cap |
 | `icon` | legacy levels only (`src/levels/legacy.js`): the hint over the target. The validator refuses it elsewhere |
 | `duration` | real seconds; `instant: true` instead does it at once (never seen in progress) |
@@ -245,8 +250,10 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   - `tint`: a colour, or `'owner'` (the owner's `look.body`; needs an `owner`). The painter gets it as `opts.tint`.
   - `place`: the `world` field that says where it is: `'player'` held, `'dropped'`, `'eaten'`, a spot name, or a
     cast id.
-  - `edible`: the engine offers `eat_<type>` (sneaky to its owner, `idle`, sets `player.smeared`, event
-    `<type>:eaten`).
+  - `edible`: `{ leaves }` (required, no default): the engine offers `eat_<type>` (a hold row; sneaky to its owner;
+    `idle`; event `<type>:eaten`). `leaves`: what eating leaves on you, a `config.js` `MARKS` name (the renderer
+    paints its colours on the player's front, the harness says its `words`) stored in `player.smeared`, or `null`
+    for nothing. The validator refuses an edible item that doesn't say.
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
     sees it on the floor (`<type>:recovered`). Needs a `place`.
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
@@ -471,10 +478,12 @@ game = {
     busy: false,              // pretend button held (and allowed)
     busyPose: null,           // null | 'typing' | 'folder' | 'phone'
     seated: true,             // at own desk (snapped to spot player_desk)
-    smeared: false,           // ate an edible item; a role's evidence `mark` can name it
+    smeared: false,           // false | the MARKS name eating left on you; a role's evidence `mark` can name it
     action: null,             // null | { type, targetId, t, duration, sneaky, owner, idle, x, y, item }
     locked: false,            // can't move or act (forced work, caught, end beat)
     focus: null,              // null | { kind: 'interactable'|'item'|'self'|'spot', id, x, y, icon, action, item }
+                              //   'self' adds preview, hold (the verb holding E does), holdPreview
+    hold: null,               // null | { verb, t }: E down on a 'self' focus with a hold verb (decided on release / HOLD_TIME)
   },
   npcs: [],                   // createNpcs(game), in cast order. See NPC shape.
   world: {                    // level.initialWorld(): the level's own fields, plus
@@ -645,8 +654,8 @@ exits 2 and lists the registry.
   `createHarness({ level, onFrame })` (a level object or id) builds a game with a scripted Input. `onFrame(game)`,
   if given, is called after every frame the harness steps (the replay strips use it to watch; it must not change the
   game). `run('<command>')` runs
-  human-level commands (`look`, `goto`, `move`, `interact`, `put [spot] [pretend]`, `sit`, `pretend`, `wait`,
-  `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
+  human-level commands (`look`, `goto`, `move`, `interact` (a tap of E), `eat` (holds E), `put [spot] [pretend]`,
+  `sit`, `pretend`, `wait`, `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
   events. `observe()` returns only what a human can see. `node tools/play.mjs new <session> --level <id>` starts a
   session (the level id is the first line of `.agent-sessions/<session>.jsonl`); later calls replay the log.
   `help --level <id>` prints the commands and that level's `goto` targets (with the built-in `my_seat`). Times in

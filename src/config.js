@@ -67,6 +67,15 @@ export const INTERACT_RADIUS = 1.5; // from player centre to interactable tile c
 // Generic action timings (real seconds). The level's own actions carry theirs (level.interactions).
 export const PICK_UP_TIME = 0.3; // a floor item
 export const EAT_TIME = 2.0; // an edible item in hand
+// One E key, two verbs on what you hold: a tap drops it, holding E this long (standing still) eats it
+// (play/interactions.js: a 'self' row with `hold`). A tap is the drop, so eating never takes the drop key.
+export const HOLD_TIME = 0.35;
+// What eating leaves on you (an edible item's `edible: { leaves }`, null for nothing; player.smeared holds the
+// name). The renderer paints the mark in these colours and the agent harness names it with these words, so a
+// level can't describe it differently from what the screen shows.
+export const MARKS = {
+  splat: { color: '#f2c230', dark: '#c99512', words: 'a yellow splat down your front' },
+};
 
 // --- Perception --------------------------------------------------------------
 export const deg = (d) => (d * Math.PI) / 180;

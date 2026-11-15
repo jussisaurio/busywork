@@ -10,7 +10,7 @@
 // game.level.harness (src/levels/meeting/harness.js documents the shape).
 
 import { ENGINE_LANDMARKS } from '../levels/validate.js';
-import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
+import { FIXED_DT, FF_MULT, INTERACT_RADIUS, HOLD_TIME, MARKS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
 import { startLoop, runFrame } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
@@ -48,6 +48,7 @@ export function helpText(level = defaultLevel) {
 ${targets.map((l, i) => `${' '.repeat(i ? 40 : 31)}${i ? '' : 'targets: '}${l}`).join('\n')}
   move <N|S|E|W|NE|NW|SE|SW> <dur> [pretend]   raw walking
   interact                     press E (uses the current ✋ target) and wait for the action to finish
+  eat                          hold E: eat what you hold (nothing else in reach; a tap would drop it)
   put [spot] [pretend]         walk to the nearest free spot (or that one) that takes what you hold, put it down
   sit                          goto own_desk and sit down (same as: goto my_seat; interact)
   pretend <dur>                hold PRETEND (Shift) in place
@@ -293,6 +294,9 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
       case 'interact':
         result = interact();
         break;
+      case 'eat':
+        result = eat();
+        break;
       case 'put':
         result = put(tokens.find((t) => !PRETEND(t)), tokens.some(PRETEND));
         break;
@@ -339,10 +343,40 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
       frame();
       return { text: 'nothing to interact with here' };
     }
-    const what = focusText(game);
+    const what = focusText(game, false);
     input.press('interact');
     frame();
     if (!p.action) return { text: `interacted: ${what}` };
+    const r = runUntil(() => !p.action);
+    if (r.stoppedBy && p.action) {
+      const pct = Math.round((p.action.t / p.action.duration) * 100);
+      return { text: `paused at ${pct}% of ${what} (${r.stoppedBy}): you are still in the middle of it` };
+    }
+    return { text: r.stoppedBy ? `tried ${what} (${r.stoppedBy})` : `did ${what}` };
+  }
+
+  // Hold E on what you hold until the hold verb (eating) starts, then wait for it to finish like interact.
+  function eat() {
+    const p = game.player;
+    const f = p.focus;
+    const verb = f?.kind !== 'self' ? null : f.hold ?? (actionRow(game, f.action)?.hold ? f.action : null);
+    if (!verb) {
+      frame();
+      return { text: `nothing to eat: ${p.held ? `the ✋ target is ${focusText(game)}` : 'your hands are empty'}` };
+    }
+    const what = actionRow(game, verb).text;
+    input.press('interact');
+    input.hold('interact', true);
+    // No stops while the key is down: let go early and it is a tap (a drop).
+    for (let i = 0; i < Math.ceil(HOLD_TIME / FIXED_DT) + 2 && game.phase === 'day'; i++) {
+      frame();
+      if (p.action || !p.hold) break;
+    }
+    input.hold('interact', false);
+    if (p.action?.type !== verb) {
+      frame();
+      return { text: `tried to ${what}, but it never started (${focusText(game)})` };
+    }
     const r = runUntil(() => !p.action);
     if (r.stoppedBy && p.action) {
       const pct = Math.round((p.action.t / p.action.duration) * 100);
@@ -383,12 +417,13 @@ function compass(rad) {
   return COMPASS8[i];
 }
 // The focus hint in words (a human sees the target lit up with the E key cap; a legacy level adds an action icon).
-function focusText(game) {
+function focusText(game, withHold = true) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
-  const verb = f.action === 'drop' ? `drop the ${game.player.held}` : actionRow(game, f.action)?.text ?? f.action ?? 'interact';
+  const say = (v) => (v === 'drop' ? `drop the ${game.player.held}` : actionRow(game, v)?.text ?? v ?? 'interact');
   const icon = f.icon ? `${f.icon} ` : '';
-  return f.kind === 'self' ? `${icon}${verb}` : `${icon}${f.id}: ${verb}`;
+  const hold = f.hold && withHold ? ` (hold E: ${say(f.hold)})` : ''; // the harness's 'eat'
+  return f.kind === 'self' ? `${icon}${say(f.action)}${hold}` : `${icon}${f.id}: ${say(f.action)}`;
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
 
@@ -418,6 +453,7 @@ export function observe(game, { map = true, debug = false } = {}) {
   state.push(p.seated ? 'seated at your desk' : sent ? (p.moving ? 'walking back to your desk (sent)' : 'standing, being sent to your desk')
     : p.moving ? 'walking' : 'standing');
   state.push(`hands: ${p.held ?? 'empty'}`);
+  if (p.smeared) state.push(MARKS[p.smeared]?.words ?? `${p.smeared} on you`); // what eating left on you: what the screen paints
   if (H.playerText) state.push(...H.playerText(game));
   if (p.busy) state.push(`PRETENDING (${p.busyPose})`);
   if (p.action) state.push(`doing ${p.action.type} ${Math.round((p.action.t / p.action.duration) * 100)}%`);
