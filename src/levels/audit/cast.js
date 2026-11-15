@@ -1,18 +1,20 @@
 // The audit's four people and their hooks (cast.js and behaviours.js in level 1 document the fields).
-// The day runs from 3:00 to the sign-off at about 3:47.7; every time below is on that clock (at(time, START)).
+// The day runs from 3:00 to the sign-off at about 4:00; every time below is on that clock (at(time, START)).
 //
 // The half hour before the audit is the level: everyone's routine opens and closes windows.
-//   3:08-3:16  the boss smokes in the lobby. Lin sees into his office through the glass, and he sees her desk.
-//   3:10-3:22  Kev goes to lunch. He packs his laptop, sets it down on your desk to wave, and leaves without it;
+//   3:06-3:14  the boss smokes in the lobby. Lin sees into his office through the glass.
+//   3:10-3:20  Kev goes to lunch. He packs his laptop, sets it down on your desk to wave, and leaves without it;
 //              back, he finds it there (💻🤦: silly him) and takes it home. Every loop: he's like that.
-//   3:13-3:19  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌.
+//   3:11-3:22  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌.
 //   Back at their desks, the boss and Lin miss a laptop that's gone (💻❓). The boss looks for his along the hallway
-//   till 3:24; seen on your desk, it goes home in his hands, 😠 (index.js HUNTS). Lin, back at 3:24, stays put.
-//   3:24-3:37  Kev has a coffee in the kitchen, in view. Back, he waits a step short of your desk while the auditor
-//              is at it, if his laptop lies there again: just after the tick he takes it (💻🤦) to his own desk.
+//   till 3:22; seen on your desk (😠👀), he walks over, takes it (😠💻) and carries it home (index.js HUNTS,
+//   bossFetches). Lin, back at 3:22, stays put.
+//   3:24-      Kev has a coffee in the kitchen, in view, till the auditor's phone rings (index.js clockFor). Back at
+//              his desk, his laptop gone (💻❓), he sees it on yours, goes and takes it (💻🤦): silly him, again.
 //   3:25       the auditor is out of the lift, coffee at the hallway machine, clipboard. 3:30 he starts ticking:
-//              the boss's desk, Lin's (she goes for a coffee in the kitchen at 3:35), yours, Kev's. A ❌ makes
-//              him angry; he finishes his list all the same and fires you at the sign-off.
+//              the boss's desk, Lin's (she goes for a coffee in the kitchen at 3:35; his pen runs dry there and he
+//              fetches one from the meeting room), yours (then his phone rings: he takes the call in the meeting
+//              room), Kev's. A ❌ makes him angry; he finishes his list all the same and fires you at the sign-off.
 //   3:33-      the boss, ticked off, goes for his smoke. He and Lin stay out through the sign-off (index.js clockFor).
 import { at as atClock, deg } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
@@ -22,8 +24,7 @@ import { SPOTS } from './spots.js';
 export const START = 15 * 60; // 3:00 PM
 const at = (time) => atClock(time, START);
 const s = (time, entry) => ({ at: at(time), ...entry });
-const KEV_BACK = '3:36.5'; // out of the kitchen: a step short of your desk before the auditor gets to it
-export const KEV_GO = at('3:39.9'); // on to his desk via yours (index.js clockFor holds him for your desk's tick)
+export const KEV_GO = at('3:36'); // back to his desk (index.js clockFor holds him in the kitchen for the phone call)
 
 export const CAST = [
   {
@@ -33,7 +34,7 @@ export const CAST = [
     voice: 'auditor',
     meetingSpot: 'audit_you', // he signs off at your desk
     meetingArrive: 'signOff',
-    vision: { fov: deg(90), radius: 7 },
+    vision: { fov: deg(140), radius: 7 }, // an inspector at a desk: whoever reaches for the laptop beside him, from either side of it, is seen
     glanceEvery: [9999, 9999], // he looks where his list says, and nowhere else
     coneTint: [235, 235, 245],
     schedule: [
@@ -48,12 +49,12 @@ export const CAST = [
     voice: 'boss',
     meetingSpot: 'boss_desk',
     vision: { fov: deg(100), radius: 8 },
-    glanceEvery: [3, 5.5],
+    glanceEvery: [24, 30], // a smoker staring at the lift, a boss at his window: he seldom looks round
     coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // back to the glass, facing his window
-      s('3:08', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
-      s('3:16', { do: 'sit', spot: 'boss_desk', arrive: 'bossCheck' }),
+      s('3:06', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
+      s('3:14', { do: 'sit', spot: 'boss_desk', prelude: 'bossFetches', arrive: 'bossCheck' }),
       s('3:33', { do: 'visit', spot: 'smoke', anim: 'smoking' }), // his desk is ticked off: smoke
     ],
   },
@@ -67,8 +68,8 @@ export const CAST = [
     coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // she sees into the boss's office through the glass
-      s('3:13', { do: 'away', spot: 'restroom' }),
-      s('3:19', { do: 'sit', spot: 'lin_desk', arrive: 'linCheck' }),
+      s('3:11', { do: 'away', spot: 'restroom' }),
+      s('3:17', { do: 'sit', spot: 'lin_desk', arrive: 'linCheck' }),
       s('3:35', { do: 'visit', spot: 'pot', anim: 'coffee' }), // a coffee in the kitchen, while he ticks off her desk
     ],
   },
@@ -83,10 +84,10 @@ export const CAST = [
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
       s('3:10', { do: 'away', spot: 'elevator', prelude: ['kevPacks', 'kevLeavesIt'] }), // lunch: forgets his laptop
-      s('3:18', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
+      s('3:16', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
       s('3:24', { do: 'visit', spot: 'kitchen', anim: 'coffee' }), // a coffee in the kitchen; his laptop stays home
-      s(KEV_BACK, { do: 'visit', spot: 'kev_wait' }), // waits for the auditor to be done at your desk
-      { at: KEV_GO, do: 'sit', spot: 'kev_desk', prelude: 'kevStopsAgain', arrive: 'kevSits' }, // via your desk
+      // Back when the auditor's phone rings: his desk, his laptop not on it (💻❓), then yours for it if it's there.
+      { at: KEV_GO, do: 'sit', spot: 'kev_desk', prelude: ['kevLooks', 'kevStopsAgain'], arrive: 'kevSits' },
     ],
   },
 ];
@@ -127,11 +128,12 @@ const deskCheck = (type, spot, hunts) => ({
 });
 
 // Kev at the end of your desk, back from lunch or from the kitchen: his laptop on it, he blames himself (💻🤦) and
-// takes it. He never thinks anyone moved it: he's the one who leaves it about. flag: which return this is.
-const stopBy = (flag, expects) => ({
+// takes it, openly: it's his. He never thinks anyone moved it: he's the one who leaves it about. flag: which return
+// this is; onlyIfThere: he goes only when he saw it there (index.js clockFor sets _mineOnYours).
+const stopBy = (flag, expects, onlyIfThere) => ({
   spot: 'hallway_mid',
   state: { [flag]: false },
-  pending: (npc) => !npc[flag],
+  pending: (npc) => !npc[flag] && (!onlyIfThere || npc._mineOnYours),
   arrive(game, npc, sim) {
     npc[flag] = true;
     const w = game.world;
@@ -141,6 +143,8 @@ const stopBy = (flag, expects) => ({
       npc.carry = 'laptop_kev';
       w.laptop_kev = npc.id;
       sim.speak(game, npc, [{ say: ['💻', '🤦'] }]);
+      npc._palmAt = game.clock.minute; // presentation.js POSES: a facepalm as he picks it up
+      sim.holdFor(npc, 0.6);
       game.events.emit('kev:fetched', {});
     } else if (expects && npc.carry !== 'laptop_kev') {
       sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.6 }]); // not where he left it
@@ -152,6 +156,25 @@ const stopBy = (flag, expects) => ({
 
 export const BEHAVIOURS = {
   bossCheck: deskCheck('laptop_boss', 'boss_desk', true),
+  // The boss saw his laptop on your desk from the hallway (index.js HUNTS: npc._fetch): he walks to it and takes
+  // it (😠💻), and carries it home.
+  bossFetches: {
+    spot: 'audit_you', // over your desk from the hallway
+    pending: (npc) => !!npc._fetch,
+    arrive(game, npc, sim) {
+      const type = npc._fetch;
+      npc._fetch = null;
+      const w = game.world;
+      const it = w.items.find((i) => i.type === type && i.spot === 'your_desk');
+      if (!it) return sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.2 }]);
+      w.items = w.items.filter((i) => i !== it);
+      npc.carry = type;
+      w[type] = npc.id;
+      sim.speak(game, npc, [{ say: ['😠', '💻'] }]);
+      sim.holdFor(npc, 0.5);
+      game.events.emit('laptop:reclaimed', { type, by: npc.id });
+    },
+  },
   linCheck: deskCheck('laptop_lin', 'lin_desk', false),
 
   // Kev's lunch: his laptop off his desk into his hands, then down on yours while he waves, and off he goes.
@@ -187,7 +210,19 @@ export const BEHAVIOURS = {
     },
   },
   kevStops: stopBy('_lunch', true),
-  kevStopsAgain: stopBy('_coffee', false),
+  // Back from the kitchen at his desk, his laptop not on it: a look (💻❓), then he goes for it if it's on yours.
+  kevLooks: {
+    spot: 'audit_kev',
+    state: { _looked: false },
+    pending: (npc) => !npc._looked && !npc._mineHome,
+    arrive(game, npc, sim) {
+      npc._looked = true;
+      sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.2 }]);
+      sim.holdFor(npc, 0.5);
+      if (npc._mineOnYours) sim.lookAt(game, npc, 'your_desk', 0.5);
+    },
+  },
+  kevStopsAgain: stopBy('_coffee', false, true),
   // At his own desk: his laptop goes back where it lives.
   kevSits: {
     arrive(game, npc, sim) {

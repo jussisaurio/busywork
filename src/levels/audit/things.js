@@ -65,9 +65,10 @@ export const COUNTED = [
   { rec: 'atYou', spot: 'your_desk', x: 15, y: 8 },
   { rec: 'atKev', spot: 'kev_desk', x: 24, y: 8 },
 ];
-// Lin's paper pile: the left end of her desk top (tile units). He goes through it at her desk, which is why her
-// desk takes him longer (index.js INSPECTIONS, presentation.js POSES).
+// Lin's paper pile: the left end of her desk top (tile units). Set dressing: her desk is a busy one.
 const LIN_PILE = { x: 3.35, y: 8.62 };
+// The pen pot on the meeting table's east end (tile units): where the auditor gets a new pen (spots.js pens).
+const PEN_POT = { x: 16.5, y: 4.35 };
 
 // DECOR.props entry. On each desk: the loose cable a laptop plugs into, while no laptop lies there (your desk from
 // the start); and once he has been to it, his sticker on its front edge, green with a tick or red with a cross,
@@ -76,6 +77,7 @@ export const DESK_MARKS = {
   tile: 'P', // any one tile will do: the painter draws on all four desks
   draw(ctx, info, at, shown, t) {
     paperPile(ctx, LIN_PILE.x * T, LIN_PILE.y * T, t);
+    penPot(ctx, PEN_POT.x * T, PEN_POT.y * T);
     for (const d of shown) {
       if (d.empty) cable(ctx, d.lx * T, d.ly * T);
       if (d.mark) sticker(ctx, (d.x - 0.34) * T, (d.y + 0.72) * T, 4.2, d.mark === 'cross');
@@ -107,6 +109,23 @@ function cable(ctx, x, y) {
   ctx.fillStyle = '#c8ccd0';
   ctx.fillRect(x + 3.2, y + 1.6, 1.6, 0.8);
   ctx.fillRect(x + 3.2, y + 3, 1.6, 0.8);
+}
+
+// A mug of pens on the meeting table: (x, y) the mug's foot.
+function penPot(ctx, x, y) {
+  fillEllipse(ctx, x + 1, y + 1, 5, 1.6, 'rgba(25,15,8,0.22)');
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(0.62, 0.62);
+  pen(ctx, -3, -2, -0.32);
+  pen(ctx, 3, -2, 0.28);
+  pen(ctx, 0, -2, 0.03);
+  ctx.restore();
+  ctx.fillStyle = '#d9dde2';
+  rrect(ctx, x - 4, y - 6, 8, 7, 1.6);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.fillRect(x + 1.5, y - 6, 2.5, 7);
 }
 
 // A messy pile of forms, sheets askew: (x, y) its middle.

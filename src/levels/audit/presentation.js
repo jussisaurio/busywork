@@ -70,16 +70,13 @@ export const LOOKS = {
   },
 };
 
-// At Lin's desk he goes through her paper pile (things.js) before he writes: why her desk takes him longer.
-const atLinsPile = (n) => n.override === 'audit' && n._insp?.i === 2 && !n.moving && n._wait > 1.25;
-
-// At your desk his pen runs dry, every loop: why he stands there so long (index.js INSPECTIONS, look PEN_LOOK s).
-// Seconds into the stay: he writes and nothing comes, shakes the pen, scribbles on the clipboard's corner, shakes it
-// again, and writes. Head down over the clipboard, facing your desk: Kev slips home behind his back (cast.js).
-export const PEN_LOOK = 4.2;
+// At Lin's desk his pen runs dry, every loop (index.js INSPECTIONS, look PEN_LOOK s). Seconds into the stay: he
+// writes and nothing comes, shakes the pen, scribbles on the clipboard's corner, shakes it again, gives up, and goes
+// into the meeting room for a pen from the pot on the table (index.js errands). That walk is Lin's desk unwatched.
+export const PEN_LOOK = 3.6;
 const PEN_BEATS = [[0.5, null], [1.4, 'shake'], [2.6, 'scribble'], [3.4, 'shake']];
 export function penBeat(n) {
-  if (n.override !== 'audit' || n._insp?.i !== 3 || n.moving || !(n._wait > 0)) return null;
+  if (n.override !== 'audit' || n._insp?.i !== 2 || n.moving || !(n._wait > 0)) return null;
   const into = PEN_LOOK - n._wait;
   return PEN_BEATS.find(([until]) => into < until)?.[1] ?? null;
 }
@@ -88,7 +85,10 @@ export const POSES = {
   arms: [
     // A coffee, standing: the auditor before 3:30, Kev and Lin in the kitchen.
     { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '#cup' },
-    { when: (n) => n.id === 'auditor' && atLinsPile(n), arms: 'reach' },
+    // Kev, his laptop on your desk again: silly him (cast.js stopBy).
+    { when: (n, w, game) => n.id === 'kev' && n._palmAt !== undefined && game.clock.minute - n._palmAt < 0.6, arms: 'facepalm' },
+    { when: (n) => n.id === 'auditor' && n._reaching, arms: 'reach' }, // a pen out of the pot (index.js errands)
+    { when: (n) => n.id === 'auditor' && n._phone, arms: 'phone' }, // his phone: it rang after your desk's tick
     { when: (n) => n.id === 'auditor' && penBeat(n) === 'shake', arms: 'type', item: '#penShake' },
     { when: (n) => n.id === 'auditor' && penBeat(n) === 'scribble', arms: 'type', item: '#penScribble' },
     // The auditor's clipboard: at his side while he walks, written on while he stands at a desk.
@@ -147,6 +147,7 @@ export const SOUNDS = {
     'laptop:reclaimed': { sfx: 'swish' },
     'kev:fetched': { sfx: 'swish' },
     'kev:forgot': { sfx: 'rustle', who: 'kev', opts: { gain: 0.5 } }, // his laptop down on your desk
+    'auditor:phone': { sfx: 'phoneRing', who: 'auditor', opts: { dur: 1.2 } }, // after your desk's tick
   },
   signs: {},
   contraband: {},
