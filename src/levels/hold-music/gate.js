@@ -27,5 +27,15 @@ export default {
   },
   binKeys: [...ANSWERS, 'unplugged', 'replugged', 'linTook', 'bossTook', 'busy', 'dead', 'work', 'caught'],
   keyActions: ['lin@kitchen', 'kev@kev', 'boss@lin', 'boss@boss', 'unplugged'],
-  goldenPlans: [],
+  goldenPlans: [
+    // Raw movement through the office and down to the switchboard, with and without pretend.
+    ['move E 1.5s', 'move S 2s pretend', 'move W 1s', 'wait 3s', 'goto switchboard', 'move W 0.5s', 'interact', 'move N 2s', 'wait until 3:22', 'pretend until 3:33'],
+    // Unplugging in plain view of Lin and the boss.
+    ['goto lin_phone', 'interact', 'wait until 3:33'],
+    // Unplugging before Kev's cable round: he plugs it back in.
+    ['wait until 3:08', 'goto ring_boss', 'interact', 'goto lin_phone', 'wait until 3:11', 'interact', 'sit', 'pretend until 3:33'],
+    // Several loops: restart mid-day, the busy line, continue into the next day and ring out.
+    ['goto ring_kitchen', 'interact', 'restart', 'pretend until 3:25', 'goto ring_lin', 'interact', 'sit pretend', 'pretend until 3:33', 'pretend until 3:33', 'wait 3s', 'continue',
+      'pretend until 3:21', 'goto ring_kev', 'interact', 'pretend until 3:23', 'goto ring_kitchen', 'interact', 'pretend until 3:27', 'goto ring_boss', 'interact', 'sit', 'pretend until 3:33', 'pretend until 3:33', 'wait 3s'],
+  ],
 };
