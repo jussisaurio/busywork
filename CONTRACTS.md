@@ -80,6 +80,7 @@ change in order changes the digest. These are the usual ways to break it:
   Seen on a screen, the bubble starts with the screen: `['📺', what, '❓']` noticed on it, `['📺', '❗', '👉',
   '@player']` caught on it. A bare `['📺', '❓']` (no subject) is free for a level's "the screen went odd" (static).
   Anger (😠) is an emotion a level may say; the engine never uses it for a catch.
+  A clock emoji (🕐..🕧) in a bubble draws as the wall clock (`things.js` `drawClock`) at that time, a bit larger.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
 - `src/core/events.js`: `game.events.on(name, fn)` (`'*'` gets every event) and `game.events.emit(name, payload)`.
 - `src/levels/index.js`: the registry `levels`, `defaultLevel` (level 1, `meeting`) and `getLevel(id)` (throws on an

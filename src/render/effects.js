@@ -6,6 +6,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { headY, lookFor, playerHeld } from './characters.js';
+import { drawClock } from './things.js';
 import { findNpc } from '../game/perception.js';
 import { NOTICE, DOUBLE_TAKE } from '../config.js';
 
@@ -273,11 +274,25 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   for (let i = 0; i < icons.length; i++) {
     const ic = icons[i] == null ? '' : String(icons[i]);
     const hop = kind === 'speech' && age < 0.6 ? Math.sin(clamp((age - i * 0.06) / 0.25, 0, 1) * Math.PI) * -2 : 0;
-    emoji(ctx, ic, x, 1 + hop, isz);
+    const m = clockMinute(ic);
+    if (m === null) emoji(ctx, ic, x, 1 + hop, isz);
+    else { // a clock emoji is unreadable at bubble size: the wall clock instead, a bit larger
+      ctx.save();
+      drawClock(ctx, x, 1 + hop, isz * 1.25, m);
+      ctx.restore();
+    }
     x += isz + gap;
   }
   glyphScope(was);
   ctx.restore();
+}
+
+// 🕐..🕛 (U+1F550-1F55B) and 🕜..🕧 (the half hours): drawClock's minute (past three o'clock), else null.
+function clockMinute(ic) {
+  if (ic.length !== 2) return null;
+  const k = ic.codePointAt(0) - 0x1f550;
+  if (k < 0 || k > 23) return null;
+  return ((k % 12) + 1 - 3) * 60 + (k >= 12 ? 30 : 0);
 }
 
 function cloudPath(ctx, w, h) {
