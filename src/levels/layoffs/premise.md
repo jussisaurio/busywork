@@ -83,7 +83,7 @@ Steps:
 4. "Take your name off the list" (3 seconds) while he watches. The sheet pops out and your face drops off it. He
    thanks "Kev" (a smile and Kev's face) and sits back down.
 5. Hang the hoodie back on Kev's chair ("leave his hoodie on his chair") without Lin seeing you in it (she is
-   back at 3:40).
+   back at 3:40), and not while the boss can see you: "Kev" was at his computer.
 6. Be at your desk by 3:45, in your own sweater.
 
 The facts the player needs, and where they see each:
@@ -100,6 +100,7 @@ The facts the player needs, and where they see each:
 | Lin knows Kev is gone | about 3:21 | She waved him goodbye. If she sees you in the hoodie: Kev's face and a question mark, then she points at you |
 | Lin is away 3:32 to 3:40 | 3:32 | She walks off to the restroom |
 | Whoever is in the hoodie is Kev | 3:45 | Still in it at your desk: the boss stares at you with Kev's face and a question mark, and your chair counts as empty |
+| The boss sees the hoodie come off | after the edit | ❗ and an angry face, his red line on you, the screen shakes; a beat later the sheet pops out and your face drops back onto it |
 
 ### Route 2: as the boss (the jacket)
 Steps:
@@ -143,6 +144,11 @@ Every lose card draws you as you are when the day ends: in your sweater, or stil
   that is Kev in your chair, so you are not there. He stares (Kev's face and a question mark). Card: you at your
   desk in the hoodie; the boss, angry, puts your face back on the list, and it flies off with you on it. The same
   happens if Lin catches you in the hoodie after the edit: she points, you are sent to your desk, still in it.
+- **Blamed, seen.** Your face came off as "Kev", and the boss sees you take Kev's hoodie off. He stops at once
+  (❗ and an angry face, his red line on you, the screen shakes), and a beat later your face pops back onto his
+  list. The day goes on, but nothing takes it off again. At 3:45 everyone stares (Kev's face and a ❗). Card: the
+  boss, angry, glares at your desk and sends the list with you on it; Kev's hoodie hangs over his chair where you
+  left it; you sit at your desk (if you are at it), in your sweater, sweating.
 
 ## The win cards
 - **Hoodie.** The boss at his desk, pleased, sends the list without you. Kev's empty chair has the hoodie back

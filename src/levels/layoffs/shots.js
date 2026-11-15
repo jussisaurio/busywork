@@ -6,6 +6,7 @@ const HOODIE = ['pretend until 3:26', 'goto kev_desk pretend', 'interact']; // K
 const ASK = [...HOODIE, 'pretend until 3:35.1', 'goto boss_pc', 'interact']; // his screen acts up: "Kev" offers to fix it
 const EDIT = [...ASK, 'wait 2s', 'interact']; // ...and takes your name off while the boss watches
 const RETURN = [...EDIT, 'goto kev_desk', 'interact']; // ...and hangs the hoodie back over Kev's chair
+const SEEN = [...EDIT, 'goto kev_hoodie pretend', 'interact']; // ...a little later, when the boss can see Kev's chair
 const JACKET = ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact']; // on, while Lin glances away
 const END = ['goto my_seat', 'pretend until 3:45', 'pretend until 3:45']; // to your desk, then the end card
 
@@ -86,6 +87,16 @@ export default [
     intent: "You hang Kev's hoodie back over his chair and are yourself again, in your red sweater. His screen across the floor shows three faces.",
   },
   {
+    name: 'boss-sees-hoodie-off',
+    cmds: SEEN,
+    intent: "You hang Kev's hoodie back over his chair while the boss can see you: \"Kev\", who was just at his computer, is you. He stops: ❗ and an angry face, a red line from him to you, the screen shakes.",
+  },
+  {
+    name: 'face-back',
+    cmds: [...SEEN, 'wait 1.6s'],
+    intent: "A beat later the sheet pops out big beside his screen again, and your red-framed face drops back into the row, throbbing. You're back on the list.",
+  },
+  {
     name: 'lin-double-take',
     cmds: [...HOODIE, 'goto boss_pc'],
     intent: "Lin saw Kev go home, so \"Kev\" walking into the boss's office is wrong: her double take (Kev's face and a question mark), then she points you out. Do it while she's away.",
@@ -139,5 +150,10 @@ export default [
     name: 'end-blamed-kev',
     cmds: [...EDIT, ...END],
     intent: "Lose. You kept Kev's hoodie on: at your desk sits \"Kev\", hood up, sweating. The boss glares (Kev's face and a question mark: Kev, at your desk?), and as you aren't at your desk, he puts your red face back on and it goes out.",
+  },
+  {
+    name: 'end-blamed-seen',
+    cmds: [...SEEN, ...END, 'wait 3s'],
+    intent: "Lose. The boss saw \"Kev\" was you (he thinks of Kev's face and a ❗), then glares at your desk, angry, and sends the list with your red face on it. Kev's hoodie hangs over Kev's chair where you left it; you sit at your desk in your own sweater, sweating.",
   },
 ];

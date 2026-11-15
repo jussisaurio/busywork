@@ -11,15 +11,17 @@
 //     and while it acts up (to 3:37.5) "Kev" may offer to fix it (🙋🔧): he steps aside and watches, as he did at
 //     3:00. Lin sees through it (Kev's face, ❓, then ❗👉), so go while she's in the restroom (3:32 to 3:40).
 //     And put the hoodie back on Kev's chair: whoever sits at your desk in it at 3:45 is Kev to the boss, so your
-//     chair is empty (verdict below).
+//     chair is empty (verdict below). But not while he watches: Kev's hoodie coming off you tells him who "Kev"
+//     was (unmask below).
 //   - The boss's suit jacket hangs on his coat rack. In it, Lin sees the boss at his own computer while he's in
 //     the restroom (3:12). He knows his own jacket, and she sees through it if she sees you put it on, so put it
 //     on while she glances away.
 // Then be at your desk at 3:45: if your chair is empty when he looks up to send it, he puts you back on.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at, PICK_UP_TIME } from '../../config.js';
-import { say } from '../../core/fx.js';
+import { at, PICK_UP_TIME, GAME_MIN_PER_SEC } from '../../config.js';
+import { say, sightline, shake } from '../../core/fx.js';
+import { npcSees, findNpc } from '../../game/perception.js';
 import { C } from '../../render/palette.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
@@ -103,9 +105,14 @@ const INTERACTIONS = {
     on: 'kev_hoodie', text: 'leave his hoodie on his chair', instant: true,
     can: (p) => p.held === 'hoodie',
     done(game) {
-      game.player.held = null;
-      game.world.hoodie = 'chair';
+      const p = game.player;
+      const w = game.world;
+      p.held = null;
+      w.hoodie = 'chair';
       game.events.emit('hoodie:left', {});
+      // "Kev" took your name off. If the boss watches Kev's hoodie come off you, he knows who it was.
+      const boss = findNpc(game, 'boss');
+      if (w.list === 'off' && w.offAs === 'kev' && boss && npcSees(game, boss, p.x, p.y)) unmask(game, boss);
     },
   },
   take_jacket: {
@@ -139,7 +146,7 @@ const INTERACTIONS = {
   },
   strike_name: {
     on: 'boss_pc', text: 'take your name off the list', duration: 3.0, sneaky: true, saw: '🖥️', // longer than any glance away; saw: what a late tattle says she saw you at
-    can: (p, w) => w.list === 'on' && w.pc === 'free',
+    can: (p, w) => w.list === 'on' && w.pc === 'free' && w.unmaskedAt == null, // once he knows, he won't send it without you
     done(game, a) {
       const w = game.world;
       const as = AS[game.player.held] ?? 'you';
@@ -155,6 +162,23 @@ const INTERACTIONS = {
     },
   },
 };
+
+// The boss saw "Kev" turn into you, after "Kev" had been at his computer: he catches it as he catches anything
+// (❗😠, his sightline on you, the shake: play/rules.js caught), and a beat later your face is back on his list
+// (list.js pops it out). The day goes on, but at 3:45 it goes out with you on it (verdict: blamed, why 'seen').
+const BACK_AFTER = 1.2; // seconds from his ❗ to your face back on the list
+function unmask(game, boss) {
+  const w = game.world;
+  w.list = 'on';
+  w.unmaskedAt = game.clock.minute;
+  w.listBackAt = game.clock.minute + BACK_AFTER * GAME_MIN_PER_SEC;
+  boss._sayQ.length = 0;
+  game.clock.ff = false;
+  say(game, 'boss', ['❗', '😠'], { kind: 'alert', voice: 'boss' });
+  sightline(game, 'boss', 'caught', 1.6);
+  shake(game, 0.3, 0.4);
+  game.events.emit('boss:unmasked', {});
+}
 
 // Both are worn, never carried, and come off only where they came from (keep: no drop, so neither ever lies on the
 // floor; play/interactions.js): the hoodie back on Kev's chair, the jacket back on the rack.
@@ -185,7 +209,10 @@ const ITEMS = {
 // 3:45, and you're at your desk: in Kev's hoodie you're Kev to the boss, so your chair is empty to him (the hood,
 // not you, is in it): he wonders what Kev is doing there, asks where you are, and puts you back on (blamed, why
 // 'kev': end-scenes.js). Hang it back on Kev's chair first, as the jacket goes back on its rack.
+// And if he saw the hoodie come off you after "Kev" was at his computer (unmask above), it goes out with you on it,
+// wherever you are (blamed, why 'seen').
 function verdict(game, { result, present }) {
+  if (game.world.unmaskedAt != null) return { result: 'blamed', why: 'seen', stare: { at: 'player', think: ['@kev', '❗'], say: ['😠', '👉', '@player'] } };
   if (result !== 'win' || !present || game.player.held !== 'hoodie') return null;
   return { result: 'blamed', why: 'kev', stare: { at: 'player', think: ['@kev', '❓'], say: ['@player', '❓'] } };
 }
@@ -247,6 +274,8 @@ export default {
     listUpAt: null, // the game minute the list came up on his screen, once Kev fixed it (list.js pops it out)
     listOffAt: 0, // the game minute it came off (list.js animates it)
     offAs: null, // who took it off, to the people watching: 'kev' | 'boss' | 'you'
+    unmaskedAt: null, // the game minute the boss saw Kev's hoodie come off you, after "Kev" took you off (unmask)
+    listBackAt: null, // the game minute he puts you back on, then (list.js pops it out)
     glitch: true, // his screen is acting up (static): at 3:00 until Kev fixes it, and again at 3:35 (cast.js)
     pc: 'boss', // 'boss' (he's at it) | 'kev' (the real Kev fixing it) | 'free' (nobody at it: he's out, or watching "Kev")
     fix: 'none', // 'none' | 'asked' ("Kev" offered) | 'done'

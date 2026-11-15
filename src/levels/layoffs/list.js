@@ -4,9 +4,10 @@
 //   drawListScreen the level's painter for it (presentation.js DECOR.props): a flat screen on his desk, facing the
 //                  floor, with the list on it as a row of faces, yours framed in red. Static while it acts up; a
 //                  red line goes through your face while you edit it, then your face drops out and the others
-//                  close up; at 3:45 the sheet flies off the screen, sent. Twice the sheet pops out of the screen,
-//                  big, for a beat (POP_SECS): when it first comes up (3:06, Kev fixed it: your frame throbs) and
-//                  when your face comes off (struck through, it falls out of the row).
+//                  close up; at 3:45 the sheet flies off the screen, sent. The sheet pops out of the screen, big,
+//                  for a beat (POP_SECS): when it first comes up (3:06, Kev fixed it: your frame throbs), when your
+//                  face comes off (struck through, it falls out of the row), and when the boss puts you back on
+//                  (w.listBackAt: he saw Kev's hoodie come off you, index.js unmask; your frame throbs again).
 //   drawList       the same list as a big screen of faces on an end card (end-scenes.js)
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { drawPerson, personState } from '../../render/characters.js';
@@ -26,10 +27,16 @@ const OUT_DELAY = 0.6; // once the edit is done, your struck face stays this lon
 const OUT_SECS = 0.8; // ... then drops off the list over this long
 
 // How far your face is on the list right now: 1 on it, 0 gone (the others close up in between). Blamed (your
-// chair was empty at 3:45), he puts you back on before he sends it.
+// chair was empty at 3:45), he puts you back on before he sends it. Unmasked, he puts you back at w.listBackAt,
+// once the pop is out (BACK_DELAY).
 const BACK_SECS = 0.6;
+const BACK_DELAY = 0.3;
 export function youOnList(w, game) {
-  if (w.list === 'on') return 1;
+  if (w.list === 'on') {
+    if (w.listBackAt == null) return 1;
+    const secs = ((game.clock?.minute ?? 0) - w.listBackAt) / GAME_MIN_PER_SEC - BACK_DELAY;
+    return easeOutCubic(clamp(secs / BACK_SECS, 0, 1));
+  }
   if (game.outcome?.result === 'blamed') return easeOutCubic(clamp((game.scenario?.beatT ?? 0) / BACK_SECS, 0, 1));
   const secs = ((game.clock?.minute ?? 0) - (w.listOffAt ?? 0)) / GAME_MIN_PER_SEC - OUT_DELAY;
   return 1 - easeOutCubic(clamp(secs / OUT_SECS, 0, 1));
@@ -39,14 +46,15 @@ export function youOnList(w, game) {
 export function sending(game) {
   const o = game.outcome;
   if (!o || o.result === 'caught') return 0;
-  const from = o.result === 'blamed' ? BACK_SECS + 0.1 : 0;
+  const from = o.result === 'blamed' && game.world.list === 'off' ? BACK_SECS + 0.1 : 0; // back on first
   return clamp(((game.scenario?.beatT ?? 0) - from) / 1.2, 0, 1);
 }
 
 // --- in the world: the boss's screen ---------------------------------------------------------------------------
 
 // The sheet popping out of his screen: 'up' when it first comes up (w.listUpAt, cast.js pcFixed), 'off' when your
-// face comes off (w.listOffAt). k: 0 in the screen .. 1 out at full size; age: seconds into the pop.
+// face comes off (w.listOffAt), 'back' when he puts it back (w.listBackAt). k: 0 in the screen .. 1 out at full
+// size; age: seconds into the pop.
 const POP_SECS = 2.8;
 const POP_IN = 0.25;
 const POP_BACK = 0.35;
@@ -56,7 +64,9 @@ function popOf(w, game, into) {
   into.popAge = 0;
   if (w.glitch || game.outcome) return;
   const now = game.clock?.minute ?? 0;
-  const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
+  const from = w.list === 'off' ? ['off', w.listOffAt]
+    : w.listBackAt != null ? ['back', w.listBackAt]
+    : w.listUpAt != null ? ['up', w.listUpAt] : null;
   if (!from) return;
   const age = (now - from[1]) / GAME_MIN_PER_SEC;
   if (!(age >= 0 && age < POP_SECS)) return;
@@ -181,7 +191,8 @@ function drawPop(ctx, sx, sy, sw, sh, shown, t) {
   ctx.clip();
   ctx.fillStyle = '#2d5a78';
   ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
-  drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t, shown.pop === 'up' ? 0.5 + 0.5 * Math.sin(shown.popAge * 9) : 0);
+  const throbs = shown.pop === 'up' || (shown.pop === 'back' && shown.you > 0.98);
+  drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t, throbs ? 0.5 + 0.5 * Math.sin(shown.popAge * 9) : 0);
   ctx.restore();
 }
 

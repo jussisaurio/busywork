@@ -8,6 +8,9 @@
 //   caught     the boss points you out; you carry your box out, still in your disguise
 //   blamed     your chair is empty, so the boss puts you back on; it goes out with you
 //   blamedKev  "Kev" sits at your desk in his hoodie: to the boss your chair is empty, so he puts you back on
+//   blamedSeen he saw Kev's hoodie come off you after "Kev" was at his computer: you're back on, and it goes out
+//              with you; Kev's hoodie hangs over his chair where you left it, and you sweat at your desk (if you
+//              are at it)
 import { clamp, easeOutCubic, rrect, fillEllipse } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
@@ -15,10 +18,12 @@ import { drawChair, PROP_PAINTERS } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { drawList } from './list.js';
 import { drapedHoodie } from './painters.js';
+import { inZone } from '../../game/perception.js';
 
 const B_HAPPY = ['😊'];
 const B_ANGRY = ['😠'];
 const KEV_Q = ['@kev', '❓'];
+const SEEN_Q = ['@kev', '❗'];
 const MUSTARD = [C.ochre, C.ochreDark];
 const OXBLOOD = ['#6b2f24', '#4e2019'];
 const CHARCOAL = ['#4b5056', '#34383d']; // Kev's chair (presentation.js)
@@ -300,10 +305,37 @@ function tableauBlamedKev(ctx, game, t, e) {
   sendList(ctx, game, e, 1, 2.0);
 }
 
+// He saw Kev's hoodie come off you, after "Kev" had been at his computer (index.js unmask): you're already back on
+// his list, and he sends it, glaring at your desk. Kev's hoodie hangs over Kev's chair, where you left it; you sit
+// at your desk, sweating (or your chair is empty, if you weren't at it at 3:45).
+function tableauSeen(ctx, game, t, e) {
+  office(ctx);
+  bossDesk(ctx, game, { you: 1, t });
+  bossTyping(ctx, game, t, e > 0.9, true);
+  if (e < 0.9) bubble(ctx, SEEN_Q, 478, 186, e, 'thought'); // Kev was you
+  else bubble(ctx, B_ANGRY, 478, 186, e - 0.9, 'alert');
+  yourDesk(ctx, 584, 296);
+  kevChair(ctx, 584, 296, game.world.hoodie === 'chair');
+  yourDesk(ctx, 704, 296);
+  chair(ctx, 704, 296, MUSTARD);
+  const p = game.player;
+  if (p && inZone(game, game.level.meeting.room, p.x, p.y)) {
+    const you = person(t);
+    you.dir = Math.PI / 2;
+    you.head = Math.PI / 2 + 0.6;
+    you.pose = 'sit';
+    you.arms = 'desk';
+    you.sweat = true;
+    you.scale = 2.2;
+    drawPerson(ctx, yourLook(game), you, 704, 296);
+  }
+  sendList(ctx, game, e, 1, 2.0);
+}
+
 export const END_SCENES = {
   kindOf: (o) => {
     if (o?.result === 'win') return Array.isArray(o.routes) && o.routes.includes('hoodie') ? 'hoodie' : 'jacket';
-    if (o?.result === 'blamed') return o.why === 'kev' ? 'blamedKev' : 'blamed';
+    if (o?.result === 'blamed') return o.why === 'kev' ? 'blamedKev' : o.why === 'seen' ? 'blamedSeen' : 'blamed';
     return o?.result === 'caught' ? 'caught' : 'fail';
   },
   scenes: {
@@ -313,5 +345,6 @@ export const END_SCENES = {
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught },
     blamed: { win: false, icons: ['🪑', '😠', '📧'], draw: tableauBlamed }, // not at your desk: back on the list
     blamedKev: { win: false, icons: ['@kev', '🪑', '📧'], draw: tableauBlamedKev }, // "Kev" at your desk: back on it
+    blamedSeen: { win: false, icons: ['@kev', '👀', '📧'], draw: tableauSeen }, // he saw "Kev" was you: back on it
   },
 };

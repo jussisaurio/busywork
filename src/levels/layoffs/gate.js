@@ -8,13 +8,14 @@ export default {
     'hoodie:taken': () => 'hoodie',
     'hoodie:left': () => 'hoodieBack', // put back on Kev's chair: the hoodie win needs it (index.js verdict)
     'jacket:hung': () => 'jacketBack',
+    'boss:unmasked': () => 'unmasked', // he saw the hoodie come off you after the edit (index.js unmask)
     'pc:asked': () => 'asked',
     'list:edited': () => 'edited',
     'witness:tattle': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['jacket', 'hoodie', 'asked', 'edited', 'hoodieBack', 'jacketBack', 'work', 'caught'],
+  binKeys: ['jacket', 'hoodie', 'asked', 'edited', 'hoodieBack', 'jacketBack', 'unmasked', 'work', 'caught'],
   keyActions: ['jacket', 'hoodie', 'asked', 'edited'],
   goldenPlans: [
     // Raw movement, then the boss's computer while he's at it.

@@ -31,6 +31,7 @@ export default {
 
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (the list went to HR without you, via: ${o.routes.join(' + ')})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired on the spot: you leave with a box 📦)'
+    : o.result === 'blamed' && o.why === 'seen' ? 'BLAMED 👀 (the boss saw Kev\'s hoodie come off you after "Kev" took your name off: he put you back on, and it went out with you)'
     : o.result === 'blamed' && o.why === 'kev' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but at 3:45 "Kev" sat at your desk in his hoodie: to the boss your chair was empty, so he put you back on)`
     : o.result === 'blamed' ? `BLAMED 🪑 (your name came off via ${o.routes.join(' + ')}, but your chair was empty at 3:45, so he put you back on)`
     : 'FAIL: the boss sent the list to HR with you on it 📧; you leave with a box 📦'),
@@ -85,6 +86,7 @@ export default {
       case 'kev:up': return 'Kev picks up his bag';
       case 'hoodie:taken': return "you put on Kev's hoodie, hood up";
       case 'hoodie:left': return "you leave Kev's hoodie back on his chair";
+      case 'boss:unmasked': return 'the boss saw Kev\'s hoodie come off you ❗😠: "Kev" at his computer was you, and he puts your face back on his list';
       case 'kev:left': return 'Kev has gone home';
       case 'disguise:fooled': case 'disguise:knows': case 'kev:bye': case 'pc:free': return null; // the lines people say show it
       default: return undefined;

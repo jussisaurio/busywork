@@ -35,6 +35,16 @@ export default [
     },
   },
   {
+    name: "hoodie back on Kev's chair while the boss can see it, after the edit → ❗😠: \"Kev\" was you, your face is back on his list → blamed",
+    expect: { result: 'blamed', routes: [] },
+    play({ run, log, g }) {
+      for (const c of [...HOODIE_EDIT, 'goto kev_hoodie pretend', 'interact', 'goto my_seat', 'pretend until 3:45', 'wait 5s']) run(c);
+      if (g.outcome?.why !== 'seen') throw new Error(`blamed for ${g.outcome?.why}, not for being seen`);
+      mustSay(log, 'boss', ['❗', '😠']);
+      if (g.world.list !== 'on') throw new Error('your face is not back on the list');
+    },
+  },
+  {
     name: 'hoodie still on at your desk at 3:45 → that\'s Kev in your chair, not you → blamed',
     expect: { result: 'blamed', routes: ['hoodie'] },
     play({ run, log, g }) {

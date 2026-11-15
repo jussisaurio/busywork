@@ -156,6 +156,7 @@ export const SOUNDS = {
     'pc:fixed': { sfx: 'fixed', who: 'kev' },
     'pc:thumped': { sfx: 'bang', who: 'boss' },
     'list:edited': { sfx: 'swish', who: 'player' },
+    'boss:unmasked': { sfx: 'caught', who: 'boss' },
     'kev:left': { sfx: 'elevator' },
   },
   drops: { hoodie: 'soft', jacket: 'soft' },
