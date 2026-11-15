@@ -1,9 +1,11 @@
 // Discreet Packaging's things, drawn (the level's id is still 'monitor'): no emoji stands in for an object. Mum's
 // pink parcel, the pigeonholes it waits in, Bob's monitor and the wall camera that feeds it, the power strip with
-// the monitor's plug, the broom, the label printer and your desk drawer. The world painters are presentation.js
-// DECOR.props draw functions ((ctx, info, at, shown, t), map px); the end scenes (end-scenes.js) reuse the parcel.
+// the monitor's plug, the broom, the label printer and your desk drawer. The furniture painters are presentation.js
+// DECOR.props draw functions ((ctx, info, at, shown, t), map px); the things you can carry (the parcel, the broom,
+// the label) are items[type].draw painters (render/things.js); the end scenes (end-scenes.js) reuse them all.
 import { T, rrect, fillCircle, fillEllipse, emoji, hash, clamp } from '../../render/util.js';
 import { C } from '../../render/palette.js';
+import { box } from '../../render/things.js';
 import { cameraFeed } from '../../game/perception.js';
 import { cameraViewer } from '../../sim/mechanics/camera.js';
 import { canSee, angleDiff } from '../../core/vision.js';
@@ -68,7 +70,7 @@ export function drawParcel(ctx, x, y, w, who = null, shadow = true) {
   emoji(ctx, '@' + who, lx + lw / 2, ly + lh / 2, Math.min(lw, lh) * 0.95);
 }
 
-// --- the pigeonholes (tile S) -------------------------------------------------------------------------------------
+// --- the pigeonholes (tiles Q over S) -----------------------------------------------------------------------------
 
 // A tall oak cabinet against the wall: three rows of cubbies with envelopes, and the big parcel shelf at the bottom.
 // shown: { parcel: whose face is on the label of the parcel on the shelf, or null when the shelf is empty }.
@@ -499,19 +501,27 @@ export function drawer(ctx, info, at, shown) {
 
 export const drawerState = (w) => ({ full: w.parcel === 'drawer' });
 
-// --- things on the floor ------------------------------------------------------------------------------------------------
+// --- the things people hold (items[type].draw) ---------------------------------------------------------------------
 
-// Under the engine's own floor-item glyph: the real thing, so a dropped parcel is a pink box lying where it fell.
-// shown: the loose items, [{ type, x, y }] (tile units).
-export function floorThings(ctx, info, at, shown) {
-  for (const it of shown) {
-    const x = it.x * T;
-    const y = it.y * T;
-    if (it.type === 'parcel') drawParcel(ctx, x, y + 9, 26, null);
-    else if (it.type === 'broom') drawBroom(ctx, x - 14, y + 4, x + 14, y + 7);
-    else if (it.type === 'label') drawLabel(ctx, x + 2, y + 6, 11, 'bob');
-  }
+// render/things.js painters (ctx, x, y, size, t, game, opts): centred on (x, y), about `size` px tall. The engine
+// draws them in a hand, on the floor where they were dropped, and in the HUD's held slot.
+
+// The parcel: the pink box, with the face of whoever it is addressed to on its label (yours, or Bob's once you have
+// stuck his label over it). Whoever picks it up off the floor reads that face.
+export function parcelThing(ctx, x, y, size, t, game) {
+  box(ctx, x, y, size);
+  drawParcel(ctx, 0, 7.5, 17, game?.world?.parcelFor ?? 'player', false);
 }
 
-export const floorThingsState = (w) => w.items.filter((it) => !it.spot);
+// The broom: upright in a hand, longer than the hand is tall; lying flat on the floor.
+export function broomThing(ctx, x, y, size, t, game, opts) {
+  box(ctx, x, y, size);
+  if (opts?.held) drawBroom(ctx, -3, -15, 3, 11, 0.55);
+  else drawBroom(ctx, -13, 1, 13, 3, 0.6);
+}
 
+// The spare address label from the printer, Bob's face on it.
+export function labelThing(ctx, x, y, size) {
+  box(ctx, x, y, size);
+  drawLabel(ctx, 0, 0, 13, 'bob');
+}

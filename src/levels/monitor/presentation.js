@@ -1,37 +1,40 @@
-// How the Monitor looks: title card, set dressing, people and the end card (level 1's decor.js, looks.js and
-// end-scenes.js document the fields).
+// How Discreet Packaging looks (the level's id is still 'monitor'): title card, set dressing, people and their
+// poses, sounds and voices (level 1's decor.js, looks.js and sounds.js document the fields). Every object on the
+// map is drawn by painters.js; the end scenes are in end-scenes.js.
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
-import { cameraFeed } from '../../game/perception.js';
 import { LOOKS as L1 } from '../meeting/looks.js';
+import {
+  pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,
+  broomStand, broomState, labelPrinter, labelPrinterState, drawer, drawerState,
+} from './painters.js';
+export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['Your embarrassing parcel is at the front desk.', 'Lin collects the mail at 4:00.'],
-  badge: ['📦', '😳'],
+  mission: ['3:20 PM. Mum sent a parcel to your office: pink, covered in hearts.', "Lin hands out the mail at 4:00. Don't be the one who gets it."],
+  badge: ['@player', '😳'],
 };
 
 const NAVY = [C.navy, C.navyDark];
 const TEAL = [C.teal, C.tealDark];
 const MUSTARD = ['#d6a23a', '#a97b22'];
-const feed = (w, game) => cameraFeed(game, 'back_office_cam');
 
 export const DECOR = {
   chairs: [
     { spot: 'player_desk', face: 'N', color: MUSTARD },
-    { spot: 'lin_desk', face: 'N', color: TEAL },
+    { spot: 'lin_desk', face: 'S', color: TEAL },
     { spot: 'bob_desk', face: 'S', color: NAVY }, // behind the counter, his back to the pigeonholes
   ],
   windows: [{ x0: 2, x1: 5, y: 0 }, { x0: 8, x1: 10, y: 0 }, { x0: 14, x1: 17, y: 0 }, { x0: 21, x1: 26, y: 0 }],
-  paintings: [{ x: 3, y: 10, variant: 0 }, { x: 23, y: 10, variant: 1 }, { x: 24, y: 4, variant: 1 }],
+  paintings: [{ x: 3, y: 10, variant: 0 }, { x: 23, y: 10, variant: 1 }, { x: 23, y: 4, variant: 1 }],
   clock: { x: 6, y: 0 },
   props: [
-    { tile: 'M', draw: 'monitor', state: feed }, // Bob's screen: what the camera sees
-    { tile: 'C', draw: 'cctv', state: feed },
-    { tile: 'S', draw: 'icon', state: (w) => ({ icon: w.parcel === 'shelf' ? '📦' : '📭' }) },
-    { tile: 'B', draw: 'icon', state: (w) => ({ icon: w.broom === 'stand' ? '🧹' : '' }) },
-    { tile: 'A', draw: 'icon', state: (w) => ({ icon: w.label === 'printer' ? '🏷️' : '🖨️', size: 16 }) },
-    { tile: 'O', draw: 'icon', state: (w) => ({ icon: w.plug === 'in' ? '🔌' : '⚡', size: 14 }) },
+    { tile: 'Q', draw: pigeonholes, state: pigeonholesState }, // the pink box on the parcel shelf, or nothing
+    { tile: 'M', draw: monitor, state: monitorState }, // Bob's screen: the back office, one leaf, or static
+    { tile: 'C', draw: wallCamera, state: wallCameraState }, // turned where it looks; askew in the plant once poked
+    { tile: 'O', draw: socket, state: socketState }, // the monitor's plug in the power strip, or hanging out
+    { tile: 'B', draw: broomStand, state: broomState },
+    { tile: 'A', draw: labelPrinter, state: labelPrinterState }, // Bob's spare label in the tray until taken
+    { tile: 'P', draw: drawer, state: drawerState }, // your drawer, stuck open on a pink corner
   ],
   deskOwners: ['lin_desk'],
   desks: {
@@ -50,7 +53,7 @@ export const DECOR = {
 export const LOOKS = {
   player: L1.player,
   lin: L1.lin,
-  // Bob: security. Navy uniform, cap, moustache, a badge.
+  // Bob: security. Big, navy uniform, cap, moustache, a badge.
   bob: {
     body: C.navy, bodyDark: C.navyDark, torso: 'suit', shirt: '#c9d6e6', shirtDark: '#9fb0c6', tie: '#1c2639',
     skin: '#e3ad86', skinDark: '#c68e66', hair: '#1c2639', hairStyle: 'cap', mustache: true,
@@ -61,12 +64,48 @@ export const LOOKS = {
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'whacking', arms: 'bang' }, // a thump on the side of the camera
-    { when: (n) => n.override === 'plugging', arms: 'reach', item: '🔌' },
-    { when: (n, w) => n.id === 'lin' && w.parcel === 'lin', arms: 'carry', item: '📦' },
+    { when: (n) => n.override === 'plugging', arms: 'reach' }, // pushing the plug back into the power strip
+    // Lin with your parcel at the mail call: up over her head for the whole office to see. On the way there, or
+    // with Bob's: carried in front of her.
+    { when: (n, w) => n.id === 'lin' && w.parcel === 'lin' && w.parcelFor !== 'bob' && n._atMail, arms: 'cheer', item: '#parcel' },
+    { when: (n, w) => n.id === 'lin' && w.parcel === 'lin', arms: 'carry', item: '#parcel' },
+    { when: (n, w) => n.id === 'bob' && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
+    { when: (n, w) => n.id === 'lin' && w.mailEmpty, arms: 'shrug' }, // nothing on the parcel shelf today
   ],
   marks: [
     { when: (n) => n.id === 'bob', badge: true },
   ],
+};
+
+// Whoever has spotted your parcel lying about, and is on the way to it, flares their cone.
+export const CONES = { alert: ['fetching'] };
+
+export const SOUNDS = {
+  actions: {
+    start: {
+      take_parcel: { sfx: 'rustle', spot: 'pigeonholes' },
+      relabel: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
+    },
+  },
+  events: {
+    'bob:suspicious': { sfx: 'tension', who: 'bob' },
+    'bob:workAssigned': { sfx: 'workAssigned' },
+    'camera:unplugged': { sfx: 'key', spot: 'socket' },
+    'camera:pushed': { sfx: 'bang', spot: 'camera' }, // the clunk of it swivelling into the plant
+    'bob:static': { sfx: 'notice', who: 'bob' },
+    'bob:whacking': { sfx: 'bang', who: 'bob' },
+    'camera:replugged': { sfx: 'fixed', spot: 'socket' },
+    'broom:taken': { sfx: 'rustle', who: 'player' },
+    'broom:returned': { sfx: 'swish', who: 'player' },
+    'label:printed': { sfx: 'machineBeep', spot: 'mailroom' },
+    'parcel:relabelled': { sfx: 'swish', spot: 'pigeonholes' },
+    'parcel:stashed': { sfx: 'creak', spot: 'player_desk' },
+    'parcel:spotted': { sfx: 'tension' },
+    'parcel:found': { sfx: 'notice' },
+    'parcel:snatched': { sfx: 'notice' },
+    'parcel:missing': { sfx: 'crickets' },
+  },
+  drops: { parcel: 'soft', broom: 'card', label: 'card' },
 };
 
 // How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.
@@ -84,22 +123,5 @@ export const VOICES = {
     fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
     vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22, gain: 0.8,
     pitch: { notice: 620, tattle: 1.12, grumble: 260 },
-  },
-};
-
-// The end card: the carpet and one big icon.
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (o.routes.includes('bob') ? 'bob' : 'drawer') : o?.result ?? 'fail'),
-  scenes: {
-    bob: { win: true, icons: ['📦', '👉', '💂'], draw: picture('😳') }, // Bob's parcel, read out to the office
-    drawer: { win: true, icons: ['🗄️', '📭', '😌'], draw: picture('📭') }, // no mail today
-    fail: { win: false, icons: ['📦', '😏', '😳'], draw: picture('📦') },
-    caught: { win: false, icons: ['📺', '👉', '😳'], draw: picture('📺') },
-    blamed: { win: false, icons: ['🪑', '👉', '📦'], draw: picture('🪑') }, // not at your desk when the mail came
   },
 };
