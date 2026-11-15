@@ -54,6 +54,10 @@ export default {
     const bits = [];
     const w = game.world;
     if (game.level.darkness.torch.when(n, w)) bits.push('holding up a phone torch 📱');
+    if (n.id === 'boss' && w.bossAct === 'sigh') bits.push('looking at his tray and sighing 😮‍💨');
+    if (n.id === 'boss' && w.bossAct === 'drum') bits.push('drumming his fingers on his desk');
+    if (n.id === 'boss' && w.bossAct === 'clock') bits.push('checking his desk clock');
+    if (n.id === 'boss' && w.pullAt !== null && !w.trayRead) bits.push('dragging his tray over');
     if (n.override === 'dark') bits.push('walking his torch over to the light switch');
     if (n.override === 'switching') bits.push(`at the light switch, the tubes blinking ${Math.round(w.switchProgress * 100)}%`);
     if (n.override === 'fuse') bits.push('on his way to the fuse box');
@@ -94,6 +98,10 @@ export default {
       case 'kev:fuse': return 'Kev: ❓ He heads for the fuse box with his phone torch';
       case 'fuse:fixing': return 'Kev is at the fuse box';
       case 'fuse:fixed': return 'Kev resets the fuse: the lights are back on 💡';
+      case 'boss:sigh': return null;
+      case 'boss:checksClock': return null;
+      case 'boss:chime': return "the boss's desk clock chimes 3:39 🔔";
+      case 'boss:pullsTray': return 'the boss sighs 😮‍💨 and drags his tray over';
       case 'letter:taken': return 'you took your letter back ✉️';
       case 'letter:snatched': return null;
       case 'letter:eaten': return 'you ate your resignation letter';

@@ -86,7 +86,76 @@ export function paintTray(ctx, x, y, letter, s = 1) {
 
 // decor.props painter: shown { letter } (is your letter in it).
 export function trayProp(ctx, info, at, shown) {
-  paintTray(ctx, at.x * T + T / 2, at.y * T + T / 2 - 1, shown.letter);
+  const k = shown.pull ?? 0; // dragged over toward his chair
+  paintTray(ctx, at.x * T + T / 2 - 11 * k, at.y * T + T / 2 - 1 - 4 * k, shown.letter);
+}
+
+// The boss's desk clock, on the west end of his desk two tiles from the tray (keyed on the tray's tile: the first
+// desk tile on the map is the kitchen counter). A brass alarm clock, its hands on the real time. While he checks it,
+// a glint off its face; when it chimes 3:39, it rattles and rings.
+export function deskClockProp(ctx, info, at, shown, t) {
+  const ring = shown.ring ?? 0; // 0..1, fading
+  const x = (at.x - 2) * T + 24 + (ring > 0 ? Math.sin(t * 70) * 1.2 * ring : 0);
+  const y = at.y * T + 11;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.25)'; // its shadow
+  ctx.beginPath();
+  ctx.ellipse(x + 1, y + 6.5, 6, 1.8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#6b4a1c'; // the legs
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(x - 3, y + 3.5);
+  ctx.lineTo(x - 4.5, y + 6.5);
+  ctx.moveTo(x + 3, y + 3.5);
+  ctx.lineTo(x + 4.5, y + 6.5);
+  ctx.stroke();
+  fillCircle(ctx, x - 3.5, y - 5.5, 2, '#c9962e'); // the bells
+  fillCircle(ctx, x + 3.5, y - 5.5, 2, '#c9962e');
+  fillCircle(ctx, x, y, 5.6, '#b8862a'); // the brass case
+  fillCircle(ctx, x, y, 4.4, '#fbf6e6'); // the face
+  ctx.fillStyle = '#4a3a2a';
+  for (let i = 0; i < 12; i += 3) {
+    const a = (i / 12) * Math.PI * 2;
+    ctx.fillRect(x + Math.sin(a) * 3.5 - 0.35, y - Math.cos(a) * 3.5 - 0.35, 0.7, 0.7);
+  }
+  const min = shown.minute ?? 0; // since 3:00
+  const hand = (a, len, w) => {
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.sin(a) * len, y - Math.cos(a) * len);
+    ctx.stroke();
+  };
+  ctx.strokeStyle = '#2a211a';
+  ctx.lineCap = 'round';
+  hand(((3 + min / 60) / 12) * Math.PI * 2, 2.3, 1);
+  hand((min / 60) * Math.PI * 2, 3.5, 0.7);
+  if (shown.glint) { // light off the glass, sweeping
+    const g = (t * 1.3) % 1;
+    ctx.globalAlpha = Math.sin(g * Math.PI) * 0.9;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 2.5 + g * 3, y - 2.5);
+    ctx.lineTo(x - 0.5 + g * 3, y - 3.6);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  if (ring > 0) { // the ring, lines off both bells
+    ctx.globalAlpha = ring;
+    ctx.strokeStyle = '#3a2e22';
+    ctx.lineWidth = 0.9;
+    for (const sx of [-1, 1]) {
+      for (let i = 0; i < 2; i++) {
+        ctx.beginPath();
+        ctx.arc(x + sx * 3.5, y - 5.5, 4 + i * 2.5, sx < 0 ? Math.PI * 1.05 : -Math.PI * 0.45, sx < 0 ? Math.PI * 1.45 : -Math.PI * 0.05);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
 }
 
 // A phone held up as a torch, its back to you, centred on (x, y): a dark slab, the flash lit at its top while `lit`.

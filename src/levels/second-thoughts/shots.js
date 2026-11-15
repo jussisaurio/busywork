@@ -15,6 +15,10 @@ const SIT_TILL_3_41 = ['sit pretend', 'sit pretend', 'sit pretend', 'wait until 
 export default [
   { name: 'start', cmds: [], intent: 'You at your desk on the open floor; the boss behind glass, sitting facing his desk, your white envelope lying in the wire tray right in front of him; the clock says 3:00.' },
   { name: 'tray', cmds: ['goto desk_side pretend'], intent: 'Up close: your letter in his tray within his reach, and he is looking straight at it and at you, so you cannot just take it in the light.' },
+  { name: 'boss-sighs', cmds: ['wait until 3:01', 'wait 0.6s'], intent: 'The boss does no work: he looks at the tray in front of him and sighs (😮‍💨), shrugging, dreading it.' },
+  { name: 'boss-drums', cmds: ['wait until 3:03'], intent: 'The boss drums his fingers on his desk, eyes on his tray: still not working.' },
+  { name: 'boss-clock', cmds: ['wait until 3:05'], intent: 'The boss reaches for the little brass alarm clock on the end of his desk and checks it: a glint off its face, its hands just past 3:00.' },
+  { name: 'tray-pulled', cmds: ['wait until 3:39', 'wait until 3:39', 'wait until 3:39', 'wait 0.3s'], intent: "3:39: the desk clock rings, the boss sighs and drags his tray over to go through it; your letter is still in it." },
   { name: 'switch', cmds: ['goto office_switch pretend'], intent: 'His office has its own light switch, in the corner behind his chair: you stand at it, lights on, behind his back and outside his view.' },
   { name: 'fuse-box', cmds: ['goto fuse_box pretend', 'goto fuse_box pretend'], intent: 'A grey fuse box on the end wall of the hallway, door shut and green lamp on, around the corner where the boss cannot see it.' },
   { name: 'lin-coffee', cmds: ['wait until 3:08'], intent: 'Lin leaves her desk for the old coffee machine in the kitchen.' },

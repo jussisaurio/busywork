@@ -21,10 +21,11 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
 
 ## Cast
 
-- **The boss** sits at his desk facing his tray, from 3:00 until 3:40. He never gets up on his own.
+- **The boss** sits at his desk facing his tray, from 3:00 until 3:40. He never gets up on his own, and he does no work: he dreads the tray. On a fixed five-minute round from 3:01, the same every loop, he looks at it and sighs (📥😮‍💨, a shrug), drums his fingers on the desk, and checks the brass alarm clock at the end of his desk (⏰😮‍💨, a glint off its face). None of it moves his eyes off the desk.
+  - 3:39: the desk clock rings. He sighs and drags the tray over.
   - If his office goes dark (his light switch, in the corner behind his back), he says ❓ and holds up his phone as a torch. As he gets up, his beam swings across the east half of his office; then he walks it over to the switch and flips it back, annoyed. The tubes blink a few times before they catch, about three minutes after the flip. Whoever his torch finds in his dark office is the one who flipped it.
   - If the whole floor goes dark (the fuse), he stays put and holds up his phone as a torch, pointed at his hallway door (waiting for someone to come and fix it). The beam lights the front of his desk and that door, the same every loop. The side of his desk and the side door stay dark.
-  - 3:40: he goes through his tray, there at his desk.
+  - 3:40: he goes through his tray, there at his desk. If your letter is in it, he has already seen it: ✉️😠.
 - **Lin** sits at her desk on the open floor.
   - 3:05: she goes to the kitchen for her afternoon coffee and switches on the old coffee machine at about 3:10. Left alone, the old machine only makes the lights flicker all over the floor: she's startled, Kev looks down the hall at the fuse box, the fuse holds and the lights steady. Three minutes later it has brewed: green lamp, full pot. A full pot pours a cup, for you too; the cup leads nowhere.
   - If someone tipped the water jug over it first, it shorts: sparks and smoke, and a spark runs down the wiring to the fuse box and trips it for the whole floor. A shorted machine brews nothing. If the power is already out, nothing happens and she's puzzled.

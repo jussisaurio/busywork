@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, deskClockProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -47,13 +47,23 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
   ],
   clock: { x: 17, y: 6 },
-  // The in-tray on his desk, your letter lying in it while it's there. The coffee machine: the water jug beside it
+  // The in-tray on his desk, your letter lying in it while it's there (dragged over to him from 3:39), and his
+  // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it
   // (upright and full, or tipped over it, water down its front and on the floor), its lamp blinking green while it
   // brews and glowing green with the pot full and steaming once it has (a full pot pours a cup: index.js
   // pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse is out, and
   // a scorch mark for the rest of the day. (The switch and the fuse box: darkness.controls.)
   props: [
-    { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
+    { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray', pull: w.trayPull }) },
+    {
+      tile: 'Y',
+      draw: deskClockProp,
+      state: (w, game) => ({
+        minute: Math.floor(game?.clock?.minute ?? 0),
+        glint: w.bossAct === 'clock',
+        ring: w.chimed ? Math.max(0, 1 - ((game?.clock?.minute ?? 0) - 39) / 0.9) : 0,
+      }),
+    },
     { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'brewed' }) },
     { tile: 'M', draw: jugProp, state: (w) => ({ tipped: w.rigged }) },
     {
@@ -78,9 +88,16 @@ export const DECOR = {
 
 // level.poses (level 1's looks.js documents it): Kev's hands in the fuse box, the boss's on his light switch, fuming.
 // Anyone holding a phone torch keeps free hands: render/darkness.js draws the arm and the phone.
+// The boss dreading his tray (index.js dread): a shrug as he sighs at it, one hand drumming on the desk, a hand to
+// his desk clock, both hands dragging the tray over at 3:39.
+const dreading = (n, w, act) => n.id === 'boss' && w.bossAct === act;
 export const POSES = {
   arms: [
     { when: (n) => n.override === 'fixing' || n.override === 'switching', arms: 'reach' },
+    { when: (n, w) => n.id === 'boss' && w.pullAt !== null && w.trayPull < 1 && n.pose === 'sit', arms: 'reach' },
+    { when: (n, w) => dreading(n, w, 'sigh'), arms: 'shrug' },
+    { when: (n, w, game) => dreading(n, w, 'drum') && Math.floor((game?.time ?? 0) * 6) % 2 === 0, arms: 'carry' },
+    { when: (n, w) => dreading(n, w, 'clock'), arms: 'carry' },
   ],
   marks: [
     { when: (n) => n.override === 'switching', angry: true },
@@ -93,7 +110,6 @@ export const CONES = { alert: [] };
 export const SOUNDS = {
   actions: {
     start: {
-      take_letter: { sfx: 'rustle', spot: 'desk_side', opts: { gain: 0.6 } },
       pull_breaker: { sfx: 'rattle', spot: 'fuse_box', opts: { gain: 0.6 } },
     },
     done: {
@@ -102,6 +118,9 @@ export const SOUNDS = {
   },
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
+    'boss:checksClock': { sfx: 'clockTick', spot: 'boss_desk', opts: { gain: 0.4 } },
+    'boss:chime': { sfx: 'fourOClock', spot: 'boss_desk', opts: { gain: 0.6 } },
+    'boss:pullsTray': { sfx: 'shuffle', spot: 'boss_desk', opts: { gain: 0.6 } },
     'boss:workAssigned': { sfx: 'workAssigned' },
     'coffee:rigged': { sfx: 'pour', spot: 'coffee_machine' },
     'coffee:flicker': { sfx: 'gurgle', spot: 'coffee_machine' },

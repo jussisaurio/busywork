@@ -241,6 +241,53 @@ function tick(game) {
     }
   }
   if (w.coffee === 'brewing' && w.fuse === 'on' && game.clock.minute - w.brewAt >= BREW_MIN) w.coffee = 'brewed';
+  dread(game);
+}
+
+// The boss dreads his tray. Acting only: his facing and his cone never change. A fixed five-minute round from 3:01,
+// the same every loop, while he sits at his desk in his own light with nothing else to do: he looks at the tray and
+// sighs, drums his fingers, checks his desk clock. At 3:39 the desk clock chimes, he sighs and drags the tray over;
+// a moment later he looks in it.
+const ROUND = 5; // game minutes
+const ACTS = [[0, 0.9, 'sigh'], [1.4, 3.0, 'drum'], [3.5, 4.2, 'clock']]; // [from, to, act], minutes into the round
+const CHIME = 39; // 3:39
+const PULL = 0.4; // game minutes the drag takes
+const READ = 39.6; // he looks in the tray
+function dread(game) {
+  const w = game.world;
+  const boss = game.npcs[0];
+  const m = game.clock.minute;
+  const seated = atBossDesk(boss) && boss.pose === 'sit';
+  const free = seated && !boss.override && !game.outcome && !game.caught && w.fuse === 'on' && w.officeLight === 'on';
+  let act = null;
+  if (free && m >= 1 && m < CHIME) {
+    const r = (m - 1) % ROUND;
+    for (const [a, b, name] of ACTS) if (r >= a && r < b) act = name;
+  }
+  if (act !== w.bossAct) {
+    w.bossAct = act;
+    if (act === 'sigh') {
+      say(game, 'boss', ['📥', '😮‍💨'], { kind: 'thought', ttl: 1.6 });
+      game.events.emit('boss:sigh', {});
+    } else if (act === 'clock') {
+      say(game, 'boss', ['⏰', '😮‍💨'], { kind: 'thought', ttl: 1.4 });
+      game.events.emit('boss:checksClock', {});
+    }
+  }
+  if (m >= CHIME && !w.chimed) {
+    w.chimed = true;
+    game.events.emit('boss:chime', {});
+  }
+  if (w.chimed && w.pullAt === null && seated && !game.outcome && !game.caught) {
+    w.pullAt = m;
+    say(game, 'boss', ['😮‍💨'], { kind: 'thought', ttl: 1.2 });
+    game.events.emit('boss:pullsTray', {});
+  }
+  if (w.pullAt !== null) w.trayPull = Math.min(1, (m - w.pullAt) / PULL);
+  if (w.trayPull === 1 && !w.trayRead && m >= READ) {
+    w.trayRead = true;
+    if (w.letter === 'tray' || w.letter === 'boss') say(game, 'boss', ['✉️', '😠'], { ttl: 2.6 });
+  }
 }
 
 // The lights flickering as the old machine starts (or as it shorts): how far a lit room dims, by seconds since.
@@ -327,6 +374,11 @@ export default {
     surge: null, // how far the short has run down the wiring to the fuse box (0..1), while it runs
     tripped: false, // the short reached the fuse box
     brewAt: null, // the game minute it started brewing
+    bossAct: null, // what he is doing at his desk while he dreads the tray: 'sigh' | 'drum' | 'clock'
+    chimed: false, // his desk clock chimed 3:39
+    pullAt: null, // the game minute he started dragging the tray over
+    trayPull: 0, // how far he has dragged it (0..1)
+    trayRead: false, // he looked in it
     items: [],
   }),
   harness,

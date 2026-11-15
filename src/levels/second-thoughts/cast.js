@@ -15,7 +15,6 @@ export const CAST = [
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'boss_desk',
-    meetingArrive: 'emptyTray',
     vision: { fov: deg(150), radius: 8 }, // nothing on his desk escapes him in the light
     coneTint: [255, 160, 82],
     schedule: [
@@ -95,16 +94,6 @@ export const BEHAVIOURS = {
       const w = game.world;
       if (w.coffee === 'brewed' && w.fuse === 'on') npc.carry = 'coffee';
       else if (w.coffee === 'shorted') sim.speak(game, npc, [{ say: ['😞'], kind: 'thought', ttl: 1.4 }]);
-    },
-  },
-  // 3:40: he goes through his tray. If your letter is still in it, he reads it.
-  emptyTray: {
-    arrive(game, npc, sim) {
-      if (npc._emptied) return;
-      npc._emptied = true;
-      sim.faceSpot(game, npc, 'in_front');
-      const w = game.world;
-      if (w.letter === 'tray' || w.letter === 'boss') sim.speak(game, npc, [{ say: ['✉️', '😠'], after: 0.6, ttl: 2.6 }]);
     },
   },
 };
