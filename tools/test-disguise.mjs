@@ -93,7 +93,7 @@ const sneaky = { type: 'fix_calendar', targetId: 'calendar', t: 0, duration: 99,
   ok(named(log, 'doreen:workAssigned').length === 1, 'without it, the same idling gets her sent to her desk');
 }
 
-// 2. She saw him walk out: she knows. The double take (🧁❓), then caught.
+// 2. She saw him walk out: she knows. The double take (Gus's face, ❓), then caught.
 {
   const { game, log, doreen, gus, p } = day();
   place(gus, 5.5, 4.5);
@@ -111,7 +111,7 @@ const sneaky = { type: 'fix_calendar', targetId: 'calendar', t: 0, duration: 99,
   rules(game, FIXED_DT);
   const n = named(log, 'witness:notice');
   ok(n.length === 1 && n[0].payload.by === 'doreen', 'she notices at once');
-  ok(named(log, 'say').some((e) => e.payload.owner === 'doreen' && e.payload.icons.join('') === '🧁❓'), 'a double take: 🧁❓ (the icon of who she is dressed as)');
+  ok(named(log, 'say').some((e) => e.payload.owner === 'doreen' && e.payload.icons.join('') === '@gus❓'), 'a double take: @gus❓ (the face of who she is dressed as)');
   ok(game.watch.doreen === 'disguise', "her cone flares ('disguise')");
   rules(game, DOUBLE_TAKE - 0.1);
   ok(!game.caught, `not caught before ${DOUBLE_TAKE} s`);

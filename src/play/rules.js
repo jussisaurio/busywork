@@ -217,7 +217,8 @@ function decaySuspicion(game, dt) {
   if (id) game.suspicion[id] = Math.max(0, game.suspicion[id] - dt / SUSPICION_DECAY_SEC);
 }
 
-// First sight of something sneaky: ❓ over the NPC (throttled). A disguise he sees through: a double take, 🔧❓.
+// First sight of something sneaky: ❓ over the NPC (throttled). A disguise he sees through: a double take, the face
+// of whom she passes for, then ❓.
 function notice(game, s, npc, offence) {
   const last = s.lastNotice[npc.id];
   if (last !== undefined && game.loopTime - last < NOTICE_BUBBLE_GAP) return;
@@ -267,8 +268,9 @@ function react(game, s, npc, offence) {
     game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard: false }, cam));
     return;
   }
-  // Caught in the act (or at the scene): they shout and point. The authority hears it if he's around.
-  say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉'] : ['❗', '👉']), { kind: 'alert', ttl: 1.6 });
+  // Caught in the act (or at the scene): they shout and point at you (your face: whom they mean). The authority
+  // hears it if he's around.
+  say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉', '@player'] : ['❗', '👉', '@player']), { kind: 'alert', ttl: 1.6 });
   const heard = authorityHears(game, authorityNpc(game));
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
   if (heard) assignWork(game, 'tattle');
@@ -280,7 +282,7 @@ function tellLate(game, s, w) {
   const g = s.grudge;
   s.grudge = null;
   sightline(game, w.id, 'tattle', 1.4);
-  say(game, w.id, ['👉', g.icon], { kind: 'alert', ttl: 1.6 });
+  say(game, w.id, ['👉', '@player', g.icon], { kind: 'alert', ttl: 1.6 });
   game.events.emit('witness:tattle', { by: w.id, reason: g.reason, heard: true, late: true, icon: g.icon });
   assignWork(game, 'tattle');
 }
@@ -323,7 +325,7 @@ function caught(game, reason, by = roles(game).authority.id, cam = null) {
   p.locked = true;
   setBusy(game, false, null);
   game.clock.ff = false;
-  say(game, by, cam ? pointing(cam, ['❗', '👉']) : ['❗', '😠'], { kind: 'alert' });
+  say(game, by, cam ? pointing(cam, ['❗', '👉', '@player']) : ['❗', '😠'], { kind: 'alert' }); // on a screen: whom he means
   game.events.emit('caught', withVia({ by, reason }, cam));
   shake(game, 0.3, 0.4);
 }

@@ -513,9 +513,9 @@ game = {
   authority's suspicion (fills in 1.6 s of seeing you idle, decays in 3 s), work assignment and caught.
   - An action with an `owner` is sneaky only to that NPC. An `idle` action still counts as slacking.
   - The authority seeing a sneaky action, or his contraband in your hands, means caught.
-  - A witness who sees a sneaky action cancels it (`'witnessed'`) and shouts ❗👉 (`witness:tattle`). If the
+  - A witness who sees a sneaky action cancels it (`'witnessed'`) and shouts ❗👉 `@player` (`witness:tattle`). If the
     authority is on the floor (enforcing, not in `deafIn`) he hears it: work assigned (`'tattle'`). If not, the
-    witness keeps a grudge and points you out (👉 + the row's `saw`) 1.2 s after he is back (`late: true`).
+    witness keeps a grudge and points you out (👉 `@player` + the row's `saw`) 1.2 s after he is back (`late: true`).
   - Evidence and scene (roles): the same shout and tattle, with reason `'evidence'` or `'scene'`.
   - Owners take their thing back on sight (unless you pretend), while `when` holds. Carrying it is reason
     `'contraband'`: his `says`, no tattle.
@@ -524,7 +524,7 @@ game = {
     slacking) or `'witnessed'` (a tattle).
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
-  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉). Fail: you stand at
+  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you stand at
   `meeting.presenter`, and the 🦗 sign shows at `failSign`.
 
 ### Render (`src/render/*`)

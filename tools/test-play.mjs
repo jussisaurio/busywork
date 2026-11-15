@@ -342,7 +342,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   const t = evs('witness:tattle');
   ok(t.length === 3 && t.every((e) => e.payload.by === 'lin' && e.payload.reason === 'action' && e.payload.heard === false), "witness:tattle {by:'lin', reason:'action', heard:false} x3");
   ok(evs('action:cancel').filter((e) => e.payload.reason === 'witnessed').length === 3, "action:cancel {reason:'witnessed'} x3");
-  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.kind === 'alert' && e.payload.icons.join('') === '❗👉'), 'Lin shouts ❗👉 (alert)');
+  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.kind === 'alert' && e.payload.icons.join('') === '❗👉@player'), 'Lin shouts ❗👉 and your face (alert)');
   ok(game.fx.lines.some((l) => l.from === 'lin' && l.kind === 'tattle'), "tattle sightline from Lin");
   ok(evs('boss:workAssigned').length === 0 && !p().locked && game.clock.forced === 0, 'nobody heard: no work, not locked');
 
@@ -359,7 +359,7 @@ section('witnesses: Lin tattles; the boss hears -> forced work');
   run(0.4);
   const late = evs('witness:tattle').filter((e) => e.payload.late);
   ok(late.length === 1 && late[0].payload.by === 'lin' && late[0].payload.heard && late[0].payload.icon === '🪪', "late tattle {by:'lin', heard, late, icon:'🪪'} (once, for 3 attempts)");
-  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '👉🪪'), 'Lin says 👉🪪 (what she saw)');
+  ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '👉@player🪪'), 'Lin says 👉, your face, 🪪 (what she saw)');
   ok(evs('boss:workAssigned')[0]?.payload.reason === 'tattle' && p().locked, 'sent to work, even though you are pretending at your desk now');
   input.release('busy');
 
@@ -602,7 +602,7 @@ section('contraband');
     const t = evs('witness:tattle');
     ok(t.length === 1 && t[0].payload.reason === 'evidence' && t[0].payload.heard === true && evs('boss:workAssigned')[0]?.payload.reason === 'tattle', 'hunting Lin sees the mustard (even pretending): 🥪❗👉, boss hears -> work');
     ok(game.world.linKnows === true, 'world.linKnows (ends her hunt)');
-    ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '🥪❗👉'), 'Lin says 🥪❗👉');
+    ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '🥪❗👉@player'), 'Lin says 🥪❗👉 and your face');
   }
   { // boss away: she remembers, tells him 👉🥪 when he's back; only once
     const away = fakeNpc('boss', 'boss_desk', { active: false });

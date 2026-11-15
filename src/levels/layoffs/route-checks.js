@@ -22,12 +22,12 @@ export default [
     },
   },
   {
-    name: "hoodie in front of Lin, who saw Kev go home → her double take (Kev's face ❓) ❗👉 → desk work → fail",
+    name: "hoodie in front of Lin, who saw Kev go home → her double take (Kev's face ❓) ❗👉 at you → desk work → fail",
     expect: { result: 'fail' },
     play({ run, log }) {
       for (const c of ['pretend until 3:25', 'goto kev_desk pretend', 'interact', 'goto boss_pc', 'pretend until 3:45']) run(c);
       mustSay(log, 'lin', ['@kev', '❓']);
-      mustSay(log, 'lin', ['❗', '👉']);
+      mustSay(log, 'lin', ['❗', '👉', '@player']); // she points at you (the engine's tattle names you)
     },
   },
   {

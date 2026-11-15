@@ -55,7 +55,7 @@ const tablet = { tablet: { icon: '📱', draw: 'laptop' } }; // drawn as a lapto
 // 2. sign: 'item' shows what he checked: the item, the person, the missing item.
 {
   const r = play(variant({ insp: { sign: 'item' } }), STAY);
-  eq(r.signs, ['💻✔️', '🧍✔️', '💻❌'], "sign 'item': 💻✔️, the player, 💻❌");
+  eq(r.signs, ['💻✔️', '@player✔️', '💻❌'], "sign 'item': 💻✔️, the player, 💻❌");
   eq(r.insp, ['pass0', 'pass1', 'fail2', 'done2'], "sign 'item': same events");
 }
 
@@ -67,7 +67,7 @@ const tablet = { tablet: { icon: '📱', draw: 'laptop' } }; // drawn as a lapto
     world: () => ({ items: [itemOn(SPOTS, 'player_desk', 'laptop'), itemOn(SPOTS, 'dave_desk', 'tablet')] }),
   });
   const r = play(level, STAY);
-  eq(r.signs, ['💻✔️', '🧍✔️', '📱✔️'], 'item list: the tablet counts at Dave\'s desk');
+  eq(r.signs, ['💻✔️', '@player✔️', '📱✔️'], 'item list: the tablet counts at Dave\'s desk');
   eq(r.insp, ['pass0', 'pass1', 'pass2', 'done'], 'item list: all pass');
   ok(r.game.world.audited === true, 'item list: pass effect applied');
 }
@@ -83,7 +83,7 @@ const tablet = { tablet: { icon: '📱', draw: 'laptop' } }; // drawn as a lapto
 {
   const empty = { ...INSP.checks[2], absent: true }; // Dave's desk: nothing on it
   let r = play(variant({ insp: { sign: 'item', checks: [INSP.checks[0], INSP.checks[1], empty] } }), STAY);
-  eq(r.signs, ['💻✔️', '🧍✔️', '🚫💻✔️'], 'absent item: 🚫💻✔️ on an empty desk');
+  eq(r.signs, ['💻✔️', '@player✔️', '🚫💻✔️'], 'absent item: 🚫💻✔️ on an empty desk');
   eq(r.insp, ['pass0', 'pass1', 'pass2', 'done'], 'absent item: passes');
   const mine = { ...INSP.checks[0], absent: true }; // your desk: the laptop is on it
   r = play(variant({ insp: { sign: 'item', checks: [mine] } }), STAY);
@@ -91,7 +91,7 @@ const tablet = { tablet: { icon: '📱', draw: 'laptop' } }; // drawn as a lapto
   eq([r.insp, r.result], [['fail0', 'done0'], 'caught'], 'absent item: fails into caught');
   const gone = { who: 'player', zone: 'room_a', from: 'check_mine', absent: true };
   r = play(variant({ insp: { sign: 'item', checks: [INSP.checks[0], gone] } }), ['goto 6,11 pretend', 'pretend until 2:52']);
-  eq(r.signs, ['💻✔️', '🚫🧍✔️'], 'absent who: passes when you are out of the room');
+  eq(r.signs, ['💻✔️', '🚫@player✔️'], 'absent who: passes when you are out of the room');
   r = play(variant({ insp: { checks: [INSP.checks[0], gone] } }), STAY);
   eq(r.signs, ['✔️', '❌'], 'absent who: fails when you are in (mark-only)');
 }
