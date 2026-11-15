@@ -1139,6 +1139,21 @@ export const PROP_PAINTERS = {
   icon(ctx, info, at, shown) {
     if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
   },
+  // { minute, start?, tilt? }: an analog clock on the wall tile's front face, showing `minute` (game minutes since
+  // `start`, a minute-of-day; default DAY_START), hung `tilt` radians askew (0: straight).
+  wallClock(ctx, info, at, shown) {
+    const cx = at.x * T + T / 2;
+    const cy = frontY(at.y) + FRONT / 2 - 1;
+    const tilt = shown.tilt || 0;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(tilt);
+    fillCircle(ctx, 0, 0, 6.5, '#1f1814');
+    fillCircle(ctx, 0, 0, 5.3, C.cream);
+    fillCircle(ctx, 0, -4.2, 0.6, C.ink); // the 12, so a crooked clock reads as crooked
+    clockHands(ctx, 0, 0, shown.minute, 3, 1.4, 4.6, 0.9, C.tomatoDark, shown.start);
+    ctx.restore();
+  },
 };
 
 export function sparkle(ctx, x, y, r, color) {
