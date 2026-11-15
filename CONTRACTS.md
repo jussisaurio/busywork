@@ -19,14 +19,15 @@ change in order changes the digest. These are the usual ways to break it:
   (a leading underscore).
 - **Event names and payloads are digested.** Rename nothing once recorded.
 - **Tick order:** `updatePlayer → updateInteractions → updateNpcs → updateRules → updateScenario → advanceClock`.
-  Mechanics run in check order: lures, hunts, doors, spot owners (put down), inspections, each list in level order.
+  Mechanics run in check order: lures, hunts, doors, spot owners (put down), inspections, fetches, each list in
+  level order.
 - **The harness paths with BFS.** A* would change every path.
 - **No wall-clock time, no `Math.random` in gameplay.** No `Date`, no `performance.now`. Only `input.js` reads
   real time (press expiry). `Math.random` is for visual-only things (particles, wobble).
 - **Schedules are sorted by `at`.** The sim takes the latest entry whose time has passed.
 
 ## Conventions
-- Vanilla JS ES modules, no dependencies, no build step. Serve with `python3 -m http.server` from the repo root.
+- Vanilla JS ES modules, no dependencies, no build step. Serve with `node tools/serve.mjs` (port 8642, caching off, so a plain reload runs the files on disk).
   Node 22 runs the headless tests (`node tools/test-*.mjs`).
 - **No DOM access at module import time.** Only `createInput(window)`, `createRenderer(canvas)`, `createAudio()` and
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
@@ -107,7 +108,7 @@ Examples used below:
 | `interactions` | yes (`{}` is fine) | `play/interactions.js` | fixture `INTERACTIONS` |
 | `items` | no | interactions, rules, render | fixture `ITEMS` |
 | `roles` | no | rules | fixture `ROLES` |
-| `lures`, `hunts`, `doors`, `inspections` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection |
+| `lures`, `hunts`, `doors`, `inspections`, `fetches` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection, discreet-packaging `FETCHES` |
 | `noises` | no | `mechanics/attention.js` | (none yet) |
 | `behaviours` | if the cast names a hook | sim | `fixture/cast.js` `BEHAVIOURS` |
 | `failSign` | no | scenario | meeting `index.js` |
@@ -229,7 +230,7 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
-- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner? } }`.
+- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner?, keep?, bulky? } }`.
   - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
   - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
     and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
@@ -243,6 +244,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
     `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
     (default: he carries it, `<type>:confiscated {by}`).
+  - `bulky`: it fills your arms: no pretending (the busy button does nothing) while you hold it, so you can't
+    hide it behind a folder or a phone call.
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
 
 **Things** (DESIGN.md "Visual language": the world is drawn). A thing is an object drawn in the world by a painter
@@ -311,6 +314,14 @@ fixture-putdown (`player_desk` is yours, `box` is the boss's with `found: 'readN
 then? }`, with `then` one of `'caught'` (reason `'inspection'`, by him), `'stare'`, `'hunt'`, a hook name
 (`arrive(game, npc, sim, { index })`), or none. He starts only when on the floor with no override; never after
 the gather; once a loop. A lure drops it; the gather lets him finish. Example: fixture-inspection.
+
+**Fetch** (`level.fetches`, `fetch.js`): whoever sees a certain item lying loose on the floor walks over and
+picks it up. `{ item, npcs, override, plan, label, react: { wait, says?, event? }, found: { says?, event?, set? },
+caught?, reason? }`. He goes for it when on the floor with no override but the meeting's, on seeing it with his
+own eyes or on a screen he watches; he gives up if it is gone before he gets there. On pickup he carries it
+(`world[place]` = his id if the item has a place), then `found`. With `caught`, the rules catch the player
+`caught` s later (reason `reason`, default `'found'`, by him). `npc._fetch = { t }` while he holds it; an owner's
+`reclaim` may set it to start the same clock. Example: discreet-packaging `FETCHES` (the pink parcel).
 
 **Attention** (`attention.js`): a noise turns heads. Two sources: an interaction row's `noise: { radius, at?,
 npcs? }` (at spot `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
@@ -456,7 +467,8 @@ game = {
   watch: {},                  // { [npcId]: 'action'|'scene'|'evidence'|'contraband' }: what each NPC sees that the
                               // rules react to, after each step (rules.js; render/cones.js reads it). Empty while
                               // caught, after the outcome and during assigned work.
-  caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection', t }
+  caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection'|
+                              //   a fetch's reason, t, via } (via: the camera id he saw you on, or null)
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute }
   rules: { seen, lastNotice, working, sceneTold, grudge },   // private to rules.js
   scenario: { beatT, crickets },                              // private to scenario.js (the end beat)
@@ -624,14 +636,20 @@ exits 2 and lists the registry.
     recorded `works` in `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and
     never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
   `tools/test-gate.mjs` tests the verdict logic.
-- **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`;
-  `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`. Bubbles, sightlines and ripples are
-  drawn as a player at normal speed sees them at that clock time, even after pretending (`playerView`,
-  `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
+- **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`
+  and prints the game clock each shot landed on next to its intent (the pictures cold read's `intents.md` has it
+  too); two shots that render pixel-identical are an error. A shot whose commands stop at a catch draws its end
+  card, or the caught beat with `beat: true` in `shots.js`. `Ns` in harness commands is real seconds, so
+  `pretend 5s` lands about 18 game minutes on: time a shot with `pretend until 3:20` or `pretend 2m`, then
+  `wait Ns` (`docs/COLD-READ.md`). `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--verbs` draws a verb sheet per
+  item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,
+  sightlines and ripples are drawn as a player at normal speed sees them at that clock time, even after pretending
+  (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
   `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
 - **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
   level's premise, pictures and replays, and record a verdict per stage in `cold-read.md`. `--status` lists every
-  level's stages. `tools/test-cold-read.mjs` tests it with a fake reader. See `docs/COLD-READ.md`.
+  level's stages. The pictures stage also shows the verb sheets. `tools/test-cold-read.mjs` tests it with a fake
+  reader; `tools/test-verb-sheet.mjs` tests that the sheets cover every item and verb. See `docs/COLD-READ.md`.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.

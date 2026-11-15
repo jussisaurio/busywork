@@ -1,195 +1,243 @@
 # Cold reads: interview
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a0b1738","hash":"a3f23772b9a44d0b809de956899459072281ddedb9574da90c3cb38d9072ae6b","parts":{"card":"5e41f6d2261204654b3a278642c15d58675e67004861fe07915663d083ee880a","premise":"e0d0f452a22fea7bfd3b3f50408d3fc3ec41dfcb1d10040b75ab43872bec294f","prompts":"c2886f589c84ff30cad9e05d737f4d22d2f634d9aba125f62e9ac2a88edc579e"},"model":"default"} -->
+<!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a19db65+dirty","hash":"dea162406d0d93969bc675b5a64b9d1660d219bd03c7555f4edef86e7e07ca67","parts":{"card":"c27b93544267d1f41c424590839b4209ebfc25b9a430f7eaef4ce8cdddd8a18e","premise":"5928293c07ad8c6127b7a78fa0bb61699ea9ab673164e532c492c5c0f75d60ba","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
-Recorded 2026-11-15 at commit a0b1738, by claude -p (model: default). Inputs a3f23772b9a4: the card, premise.md, the stage's prompts.
+Recorded 2026-11-15 at commit a19db65+dirty, by claude -p (model: default). Inputs dea162406d0d: the card, premise.md, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
 | 1-card | first-read.md | 14 s | $0.02 |
-| 2-review | report.md | 115 s | $0.51 |
-| all | | 129 s (the steps add up to 129 s) | $0.54 |
+| 2-review | report.md | 114 s | $0.59 |
+| all | | 128 s (the steps add up to 128 s) | $0.62 |
 
 ### 1-card: first-read.md
 
-**Situation:** It's 3:00 PM. Lin wants my job and has a phone interview at 3:30. Reading 1: the company is quietly interviewing her to replace me. Reading 2: she's going for a promotion into my role, maybe with another manager. Either way, I'm the one being pushed out.
+**Situation:** It's 3:00 PM. Lin wants my job, and her phone interview is at 3:30. Reading A: Lin is a coworker going for my position, maybe a promotion, and the interview could get me replaced. Reading B: Lin is an outside candidate, but then why is she somewhere I can reach her?
 
-**Task:** Make sure Lin isn't on that phone call at 3:30.
+**Goal:** Make sure she misses the 3:30 call, which gives me 30 minutes. Does she have to miss it completely, or is it enough if she's late, interrupted or the call goes badly?
 
-**If I fail:** She takes the call. Maybe I'm replaced, or maybe the loop just resets. The card doesn't say.
+**If I fail:** She takes the call. Does she get my job right away, or does the loop just reset? The card doesn't say.
 
 **Questions:**
-- Who is Lin? Is she a coworker, an outsider or an intern? How do I recognise her?
-- Whose phone is it: a desk line or her mobile? Does it matter where she takes the call?
-- Does being late count as missing it? What if someone else answers?
-- Do I have 30 real minutes? Is there a visible clock?
-- "@lin ❌": does that mean Lin fails, or Lin is eliminated? That second reading is darker than "comedy."
-- Does "The Interview" mean only hers, or is someone also judging me?
-- Who's on the other end? Is the interviewer in the building?
+- Who is Lin, and where is she? I don't know her face, desk or phone.
+- Whose phone does she use: hers, a desk phone or a meeting room?
+- What does "#interview ❌" mean? Is the ❌ my goal (interview cancelled) or a failure mark? Is "#interview" a room, a channel or a tag?
+- Can the call itself fail, or only her part in it?
+- The name: whose interview is it? Hers? Mine? Or the game interviewing me?
 
 ### 2-review: report.md
 
+I've read all the files and am writing the report now.
+
 Verdict: fixable
 
-**1. Lin's phone habits contradict each other.** Players hit this at 3:01 and at 3:26.
-- If her own phone rings and she hears hold music, she hangs up angrily within seconds. If the kitchen phone rings and she hears the same music, she holds for 10 minutes "hoping it's her interviewer." An anxious candidate would hope hardest on her own line.
-- The rings also give her away. Your rings show the phone's own colour, and only the interview rings red. She could see the yellow kitchen ring isn't the interview.
-- She lifts her receiver to check it every 3.5 minutes. But `phones.js:162` quietly skips the check when the cord is out. So on the unplug route she sits from 3:26 to 3:30 with the cord lying at her feet and never checks it.
-- **Fix:** Put the kitchen phone on the shared outside line, so it can ring red and she has a real reason to think it's her interviewer. Once she's back at her desk, show her rehearsing (📝) instead of checking, and do that in every loop so it's a visible routine and not a special case.
+**1. Kev's trip to the socket exists only for the puzzle.** At about 3:06 the player watches Kev leave the coffee machine and walk the whole length of the office, about 27 tiles or 6–7 game minutes, to Lin's socket. He charges his mobile there for about one minute (3:12–3:13), then walks all the way back for more coffee. He has his own desk. Nothing on screen explains why he needs her socket, and the trip only exists to put the plug back in. *Fix:* give the reason as a picture. Kev's desk socket has a visible "broken" sticker with a spark, and he arrives early and stays 5+ minutes, scrolling on his phone while it charges.
 
-**2. Kev's "cable round" exists only for the puzzle.** He walks the length of the office at 3:06 to check one socket, Lin's, and then goes back to coffee. Nothing he does on screen explains why. Players meet him at 3:12 and can only accept it as "Kev checks plugs."
-- **Fix:** Make it Kev's charging spot. He comes over to plug in his mobile (🔋) and pushes the loose plug back because it's in his way.
+**2. Lin drops her one habit right when the dead-phone route needs her to.** Before her tea she lifts the receiver every 2.6 minutes. After she gets back her checks stop, because the code only runs them before 3:21 (`m < BACK_AT`). That cutoff falls in 3:26–3:30, when she should be most nervous. Her cable also lies on the floor next to her chair, and she never notices it. The player has just learned she checks, so she should find the dead line. *Fix:* show the change on screen. She comes back holding notes up to her face and mouthing her lines (📝), with her back to the socket. Or keep one last check at 3:26, so the unplug has to come after it.
 
-**3. The boss's hold times are tuned per phone and can't be predicted.** He holds 7 minutes on his own phone, 9 on Lin's and 4 on the others. These numbers only fit the solution windows. Nothing the player sees predicts them, so the busy window (3:17–3:24) and the ringout window (3:25–3:29) come down to trial and error.
-- **Fix:** Give him one hold length everywhere. Make the tune visibly end (the notes stop, he hangs up 😊), then shift the windows to fit.
+**3. The boss shows he cares about the call, then shrugs it off.** From 3:30 he keeps glancing at your chair, so the player sees the call matters to him. In route 1 he answers the interviewer, goes 💼 @lin ❓, and shrugs, even though Lin is one room away. In route 4 he hears the ring (❗) and stays with his hold music. *Fix:* in route 1, let him glance at the kitchen door and give up because it's shut. In route 4, show him waving at the ring for it to wait.
 
-**4. The ringout end card shows something that didn't happen.** It draws Kev on hold. But he hung up by about 3:26, before the call came, and was sitting at his far desk at 3:30. premise.md admits this. The picture contradicts what the player just watched.
-- **Fix:** Draw Kev at his far desk, sipping coffee and out of earshot.
+**4. The busy-line timing in premise.md doesn't match the movement numbers.** The boss walks about 9 tiles to Lin's phone, picks up roughly 2.5 minutes after the ring, and stays on 9 minutes. Ring at 3:17 and he hangs up around 3:28–3:29, before the call. So the "3:17–3:24" window is really about 3:19–3:22, minus the moment Lin walks past at 3:23. Players will hit failures they can't read. *Fix:* make his hold 11 minutes, or retest the window and state it correctly.
 
-**5. The badge reads darker than the game, and one rule is unexplained.** The first reader read "@lin ❌" as getting rid of Lin. They also had no idea they had to be back at their own desk by 3:34. The fiction for that rule is weak: the call is Lin's, not yours, so why does your empty chair matter? Separately, premise.md says head office is "filling your position," which means you lose the job either way. The card's "Lin wants your job" is the better stake.
-- **Fix:** Change the badge to "@lin 💼 ❌". Make the 3:34 rule follow from the call: when the interviewer asks after you, the boss glances at your chair. Drop "filling your position."
+**5. The card and first-read.** The name and card only describe the trouble, which is right. But first-read reads "#interview ❌" as either the goal or a failure mark. The ❌ looks like an instruction, as if cancelling the interview were the task. *Fix:* use a badge that names the threat, for example 💼 📞 @lin, and let the end cards carry the ❌. First-read's other question, "where is Lin?", is answered by the face cards on the switchboard and her phone checks at 3:00, so that part works.
 
-**Stakes:** The card holds by comedy logic: stop the call and Lin doesn't get your job. The fail card makes the threat a picture (Lin in your chair with your red mug, you holding the box).
+**Also checked and fine:** the stakes (the fail card puts her in your chair with your mug), how far each ring carries, Lin hoping the red kitchen ring is her interviewer (💼❓), and the boss's back turned while he's on his own phone. Each route can be worked out from what's on screen, mostly through a matching teaching fail. Route 4 needs route 1 first to learn that the boss picks up Lin's phone. That's a fair build-up, not trial and error.
 
-**Deducibility:** Mostly good.
-- The phones carry far enough for every route. Kev is nearer the kitchen phone than Lin is, so that teaching fail works. Walls keep the boss from seeing the switchboard. The boss can see the socket through the glass, and you can watch Kev crouch there at 3:12.
-- The rule "the nearest free person who hears it answers" is only taught by the kitchen teaching fail, but that is enough.
-
-**Name and card:** They name only the trouble. "Phone interview" is the threat itself and doesn't point to a tool.
-
-**The joke:** The boss stands at Lin's desk, eyes half shut, happily listening to hold music. Lin hurries back for the call that would get her your job and can only glare at him. It plays on screen, and the end card draws it. It beats the obvious version (you cut the line yourself) because the boss is the one who sinks her interview without knowing it.
-
-**Best thing:** At 3:30 the boss hogs Lin's line just to enjoy the hold music, and the interview gets a busy signal while she glares at him.
+**Best thing:** Lin rushes back for the call that would get her your job and finds the boss in her spot, eyes half shut, swaying to hold music on her teal phone. At 3:30 the interviewer gets a busy line and she glares at her own boss.
 
 <!-- /cold-read:premise -->
 
-<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"5c30f75","hash":"520361334ef7a0e59ae11dbce75141949a826fe61c0d2784eadbe507a3acafdb","parts":{"card":"5e41f6d2261204654b3a278642c15d58675e67004861fe07915663d083ee880a","shots":"588b64892c7f0ca71a304797846d9085600d41cc9654e5f09da169675a62a02a","pictures":"a26556d04e558af67216f713a2d2cf620701355eb10933cfc9d21373752f919b","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
+<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"a19db65+dirty","hash":"a45173f57df1ffc07f49a5e1145121d9d1597ca67c1230f9b54670b7e3b0d4e6","parts":{"card":"c27b93544267d1f41c424590839b4209ebfc25b9a430f7eaef4ce8cdddd8a18e","shots":"fbd11832561fff2a7a8dba507ff18328670f0f61505bfba17320b4fe81ac425b","pictures":"d150f4cdf1f81ba1dd5e3e69a647fb8dfd9accca2dd6b6064acad35b6ccea534","prompts":"0f4c15900c099f5904f137558b6d30e5162ed82f745deb4d44932fc0b3a61537"},"model":"default"} -->
 ## pictures: fixable
-Recorded 2026-11-15 at commit 5c30f75, by claude -p (model: default). Inputs 520361334ef7: the card, shots.js, the rendered shots, the stage's prompts.
+Recorded 2026-11-15 at commit a19db65+dirty, by claude -p (model: default). Inputs a45173f57df1: the card, shots.js, the rendered shots, the stage's prompts.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 77 s | $0.47 |
-| 2-compare | report.md | 94 s | $0.39 |
-| all | | 171 s (the steps add up to 171 s) | $0.87 |
+| 1-read | reading.md | 82 s | $0.47 |
+| 2-compare | report.md | 119 s | $0.42 |
+| all | | 201 s (the steps add up to 201 s) | $0.89 |
 
 ### 1-read: reading.md
 
-# The Interview: cold read
+# Reading: The Interview
 
-**01** 3:00. I'm the red figure at a centre desk. A teal woman with a bun (Lin, I assume) is at the far-left desk, her phone cord running to a wall socket. A bald man in a suit sits in a glass office. A man in green is at the kitchen coffee machine. Top-centre is a board with five pictures: briefcase, Lin, bald man, spiky-haired man, mug. *Can't read:* the empty hand slot and the four dashed slots in the HUD.
+**01** (3:00) Open-plan office. A bald man in a suit sits in a glass corner office. A woman with a bun and glasses (teal top) sits at a desk on the left, and her phone cord runs to a wall socket. I'm the red figure at the middle desk. A spiky-haired man in green is at the kitchen coffee machine. At the top there's a board with five pictures (briefcase, bun woman, bald man, spiky man, red phone), each with a jack and a cable. The HUD shows a clock next to the bun woman with ❌, so she must be Lin. I can't read the empty "hand" slot or the four empty slots.
 
-**02** Lin turns to the wall clock and thinks "clock". She's waiting for her call.
+**02** (3:01) Lin's thought bubble is a clock. She's waiting.
 
-**03** I'm at the board and a hand appears over the bald man's slot. So the board can be used. I can't yet tell whether it's a switchboard or a key rack.
+**03** Me at the board, with an E prompt over the bald man's jack. So the board is a phone switchboard I can rewire. Good hook.
 
-**04** 3:09. Lin is eating in the kitchen. Green man walks toward her desk. I'm at my desk with "pretend" lit and papers flying. *Can't read:* what pretending does here, and the fast-forward icon.
+**04** (3:09) Lin takes her mug to the kitchen. The spiky man is walking around holding something. I'm at my desk holding papers with the "pretend" key lit, so I'm faking work.
 
-**05** 3:12. Green man crouches at Lin's wall socket with a 👌 bubble. The boss is on his phone. *Can't read:* is he unplugging her phone or plugging something in? It matters a lot.
+**05** (3:12) The spiky man is at Lin's wall socket and his bubble shows a green thing. A battery? A can? I can't read it. Lin is still in the kitchen.
 
-**06** 3:19. I press the spiky-man button and green rings spread from his desk phone. In the kitchen he shows "!". So the board rings people's desk phones.
+**06** (3:19) I patch into the red-phone jack. Green rings spread from the spiky man's desk phone, and he shows "!" in the kitchen. I made his phone ring.
 
-**07** He's at his desk with ♪ (on hold?), and Lin is walking back. Ringing someone moves them around.
+**07** (3:23) He's back at his desk with a 😑 face and the phone ringing. Nobody was on the line. Cheap gag, and it works.
 
-**08** I ring the mug slot. Yellow rings fill the kitchen and Lin answers the wall phone with ♪♪. The mug means the kitchen phone, which I only learned by trying it.
+**08** (3:21) Lin is at the red kitchen wall phone with a bubble of briefcase and "?". Her interview seems to have been sent to the wrong phone.
 
-**09** The boss holds his handset with ♪😌 and a dark-red chair sits beside him. Green man passes Lin's desk.
+**09** (3:15) The boss has a phone to his ear with blue music notes and a 😌 face. A brown pot/stool has appeared next to him, and I can't tell what it is. I put him on hold music.
 
-**10** Lin's cord lies unplugged on the floor. I have a chair bubble and my seat is gone. *Can't read:* did I take my chair, or am I thinking about it?
+**10** (3:18) The boss is still on hold. Lin and the spiky man sit together in the kitchen. Lin's cord looks loose at the wall.
 
-**11** Green man at Lin's socket gives 👍. The boss enjoys hold music. Is green man my accomplice, or a regular who does this every loop?
+**11** (3:12) The spiky man at Lin's socket shows "!" and there's a spark. Did he unplug her phone? Probably to charge his own thing, which would explain the battery in 05.
 
-**12** 3:03. I ring Lin early and she's at her desk looking 😠. Prank calls annoy her, and that's all I learn.
+**12** (3:04) I ring Lin's line. She shows 😠 and shakes. She's irritated, nothing more.
 
-**13** 3:25, and the clock turns red. The boss is on Lin's phone at her desk, ♪😌, and Lin is walking back. *Can't read:* why he left his office for her phone.
+**13** (3:23) Rings spread from Lin's phone while she walks away, and the boss comes out of his office.
 
-**14** 3:31. A red patch cord connects the briefcase slot to Lin's slot by itself. Lin says 💼😊. That's the interview arriving, and she got it.
+**14** (3:31, clock goes red) Lin is on her phone with a bubble of briefcase and 😊. A red cable on the board links the briefcase jack to hers. The interview is happening.
 
-**15** 3:30. The cord is in, her desk phone rings red, but she's at the kitchen phone. The boss shows "!".
+**15** (3:30) Lin is on the kitchen phone with red notes. The boss shows "!" with red rings. Who's ringing whom?
 
-**16** 3:30. Lin is at her desk with a dead phone, thinking clock+? The unplugging worked.
+**16** (3:30) Lin's bubble is clock and "?". Her cord is unplugged and the call never came.
 
-**17** The boss uses her desk phone while she stands next to him with boss-face 😠. He blocks her line.
+**17** (3:31) The boss is beside Lin with a bubble of his own face and 😠. It's unclear who is angry at whom.
 
-**18** The boss is on his own phone, Lin is on the kitchen phone, and the briefcase call goes to her empty desk.
+**18** (3:30) Same as 15, but the boss is also on blue hold music. Too much happening to read.
 
-**19** WIN card. The boss holds Lin's phone with a 💼 Lin ? bubble. Lin hears hold music in the kitchen and I grin. A shrugging badge fills slot 1. *Can't read:* the shrug figure.
+**19** End, teal frame. The boss holds Lin's phone with a bubble of briefcase, Lin and "?". The interviewer got her boss. Funniest picture here. The slot icon is a shrugging man and I can't read it.
 
-**20** WIN. The boss is on hold at her desk and she's furious. Note badge, slot 2.
+**20** End, teal. The boss sits happily on hold music on her line. Lin stands by with a bubble of briefcase, clock and 😠. It reads clearly.
 
-**21** WIN. Plug, Lin, clock, ? Plug badge, slot 3.
+**21** End, teal. The plug is on the floor and Lin's bubble is clock and "?". Clear, but flat.
 
-**22** WIN. Everyone is on hold and the ringing desk is empty. Bell badge, slot 4. Four slots means four ways to win. Nice.
+**22** End, teal. The boss is on hold with "!", Lin's desk phone is ringing, and she's on the kitchen phone with music. The icons are notes, a bell and notes. Muddy, I can't say what happened.
 
-**23** LOSS (red frame). Lin takes the call, 💼😊, and I'm packing a box. Funny and clear.
+**23** End, red frame. Lin is happy on the phone, and I'm sitting in a cardboard box holding a plant. She got my job. Very clear.
 
-**24** LOSS at 3:15. The boss catches *me* at her socket, 😠👉. So green man can do it and I can't? I'd like to see why.
+**24** End, red (3:15). The boss points angrily at me while I hold her plug. Caught. Clear.
 
-**25** LOSS. The boss points at my empty chair: "me ? 😠". I was away from my desk at 3:34, which explains the chair bubble in 10.
+**25** End, red. The boss points at my empty chair and I'm wandering off. Caught away from my desk. Clear.
 
-**Story:** Lin's interview call comes in through the switchboard at 3:30. I can't touch her directly, only the phones. I ring the kitchen to pull her away, put people on hold, or get her line cut. The boss guards the desks and wants me in my seat. The idea is that a phone call moves a person. My stumbles were the green man's role, the "pretend" key, and what the mug and briefcase icons meant. I only worked those out by trying them.
+I'm guessing teal means win and red means loss. Nothing confirms it.
+
+**Story:** Lin is after your job and has a phone interview at 3:30. You sit beside a switchboard that connects every phone in the office. You can unplug her, ring the kitchen phone, put the boss on hold, or best of all, send the interviewer's call to the boss. Do it while looking busy, because if the boss sees you at her socket or away from your desk, you're fired. If you do nothing, she gets the job and you leave with a box.
+
+**Editor's notes:**
+- 19 and 23 are the strongest pictures.
+- 22, 15 and 18 have two phones ringing at once, too many to follow.
+- The spiky man's battery bubble and the brown pot never pay off.
 
 ### 2-compare: report.md
 
 Verdict: fixable
 
-The player understands the level's main idea: a phone call moves a person. They also understand all four win endings and both losses. But two shots that the unplug route depends on are misread. In 09 the player doesn't see that the boss has turned his back. In 11 they don't see that Kev undoes the unplug. Those two gaps explain the question the player asks at 24: "green man can do it and I can't?" Both can be fixed with art changes. I opened shots 01, 03, 05, 08–11, 13, 14, 21, 23 and 24 to settle disagreements.
+**01 — partly** (minor)
+- Reading: "A woman with a bun and glasses (teal top) sits at a desk on the left, and her phone cord runs to a wall socket… At the top there's a board with five pictures… each with a jack and a cable."
+- Intent: Lin has her receiver at her ear, listening. The board is a switchboard with a dark red lamp over the outside line.
+- Cause: missing cue. The receiver at Lin's ear is too small to see, so the player doesn't learn yet that she is waiting on a call. They pick it up in 02 instead. The board was read as "pictures with jacks", which is close enough.
+- Fix: show a small teal wavy line from Lin's receiver to her ear, so "on the phone" reads at a glance.
 
-**01 — partly.** The reading: "Top-centre is a board with five pictures… *Can't read:* the empty hand slot and the four dashed slots." Intent: Lin lifts her teal receiver to listen, the boss faces the open-plan office, and there is a switchboard in the nook. In the image Lin's receiver is a few pixels at her ear, so the player misses that she is checking for a call. The switchboard looks like a picture board: the jacks are dots too small to see, there are no cables, and no lamp is lit. **Fix:** draw two or three patch cables hanging below the jacks so the board reads as a phone switchboard. Draw Lin's receiver at its full size, raised off the cradle with the cord stretched.
+**02 — reads**
 
-**02 — reads.**
+**03 — reads.** The player understands that the board connects the phones and they can rewire it. The colour coding of the lamps wasn't mentioned, but nothing depends on it yet.
 
-**03 — partly.** The reading: "I can't yet tell whether it's a switchboard or a key rack." Intent: the switchboard up close and lit, with a jack under each face card and a red lamp for the outside line. The outside line is shown by a briefcase card, which the player has to decode. There is no red lamp you can see until 14, and the board is not lit any differently when you are at it. **Fix:** give the board a soft glow when you're in reach. Put a dark red lamp over the briefcase jack from the start, so that when it lights at 14 the player recognises it.
+**04 — partly**
+- Reading: "The spiky man is walking around holding something."
+- Intent: Kev walks towards Lin's desk carrying his mobile.
+- Cause: a prop too small to read. The mobile is a few pixels in his hand. This is where the charging thread starts, and it's lost.
+- Fix: draw a bigger phone with a lit screen and a red low-battery sliver, held out in front of him.
 
-**04 — reads.** "Eating" for "tea" doesn't matter.
+**05 — partly**
+- Reading: "his bubble shows a green thing. A battery? A can? I can't read it."
+- Intent: Kev plugs his charger into Lin's socket, under her phone's plug. Her socket is his charging spot.
+- Cause: a glyph used as a prop. The green battery emoji looks like a soda can, and there is no charger cable from his mobile to the socket. The thought bubble is doing all the work and it fails. The player's own note says this thread "never pays off".
+- Fix: drop the bubble. Draw a white charger cable from his mobile into the socket under Lin's teal plug, so both plugs are visibly in the same socket.
 
-**05 — partly.** The reading: "is he unplugging her phone or plugging something in? It matters a lot." Intent: Kev checks the cord, it's plugged in, OK. The 👌 bubble sits over a crouch that looks like tampering, and you can't see whether the plug is in the socket. **Fix:** show the plug seated in a socket with a small green tick or spark, and Kev tapping it rather than gripping it.
+**06 — partly**
+- Reading: "I patch into the red-phone jack. Green rings spread from the spiky man's desk phone."
+- Intent: you plugged into Kev's jack, his olive lamp lights, and his olive phone rings.
+- Cause: a missing cue. The yellow E cursor still sits on the red (kitchen) jack next to his, and no patch cable is shown in Kev's jack. The gag works, but the player now thinks the red jack belongs to Kev. That confusion will hurt in 08, 15 and 18.
+- Fix: draw the patch cable seated in Kev's jack with the olive lamp glowing, and move the cursor off once the plug is in.
 
-**06 — reads.**
+**07 — partly**
+- Reading: "He's back at his desk with a 😑 face and the phone ringing. Nobody was on the line."
+- Intent: Kev holds the receiver to his ear and gets hold music.
+- Cause: a missing cue. The olive notes are thin and sit right where the ring lines were, so they read as the phone still ringing. "Nobody on the line" is close, but "hold music" is the mechanic later routes depend on (09, 17, 20, 22).
+- Fix: draw bigger, separate notes rising from the receiver at his ear, and stop all ring lines once he picks up.
 
-**07 — reads.**
+**08 — partly**
+- Reading: "Lin is at the red kitchen wall phone with a bubble of briefcase and '?'. Her interview seems to have been sent to the wrong phone."
+- Intent: Kev has left to answer his own phone, so Lin is the only free person near the ringing kitchen phone. She answers hoping it's her interviewer.
+- Cause: cause and effect too far apart. No red rings are drawn on the kitchen phone, and Kev is off at the right edge of the frame. The chain "Kev leaves, kitchen phone rings, Lin is the only one left" isn't visible. The player has to make up a reason for her being there.
+- Fix: put red rings on the wall phone and have Lin rise from the table with "!", with Kev visible walking away towards his olive rings.
 
-**08 — partly.** The reading: "Lin answers the wall phone with ♪♪. The mug means the kitchen phone, which I only learned by trying it." Intent: Kev heads for his own ringing phone, so Lin is the only free person in earshot. She answers hoping it's her interviewer (briefcase, ?). There are two causes:
-- **Glyph used as a prop:** a mug card stands for the kitchen wall phone.
-- **Cause and effect too far apart:** the yellow rings are centred on the kitchen table, not the wall phone by the fridge. Kev is off at the far right and doesn't look tied to what happens. The bubble shows the end result (♪♪) instead of her hope (💼?).
+**09 — partly** (matters for the route)
+- Reading: "The boss has a phone to his ear… A brown pot/stool has appeared next to him, and I can't tell what it is. I put him on hold music."
+- Intent: the boss stands at his window with his back to the room, and his sight cone points out of the window. Hold music blinds him.
+- Cause: a missing cue, plus an unclear prop. The "pot" is his empty desk chair, but top-down it looks like a stool. His faint cone doesn't clearly point away from the office. The player got "on hold" and missed "not watching". Their summary only says "do it while looking busy". They never learned that this is the moment to sneak.
+- Fix: draw the chair with a back, turned to face the window. Draw his sight cone clearly through the window glass, and grey out the office side.
 
-The "nearest free person answers" rule is the core of routes 13, 15 and 18, and this is where it should first be taught.
-**Fix:** replace the mug card with a small yellow wall phone and centre the rings on the handset. Show Lin with 💼? as she reaches for it, before ♪♪ appears.
+**10 — partly** (matters for the route)
+- Reading: "Lin's cord looks loose at the wall."
+- Intent: you pulled the plug. Her cable lies on the floor, the plug is out, and the socket is empty.
+- Cause: a missing cue. The loose plug is a few pixels at the end of a cable that is already coiled on the floor in every shot. The player doesn't realise they did it. They also missed that the boss's turned back is what made it safe.
+- Fix: draw the plug clearly apart from the wall with a visible gap, and give the empty socket two dark holes. Have Lin's teal lamp on the switchboard go dark at the same moment.
 
-**09 — misread.** The reading: "The boss holds his handset with ♪😌 and a dark-red chair sits beside him." Intent: he stands at his window with his back to the room, and his sight cone points out of the window. That is the safe moment to pull the plug. The player saw the handset and missed the facing completely. The cone is faint pale orange against the orange carpet, and it points into a thin window strip that doesn't look like a window. The empty chair draws the eye instead. This is a **missing cue**, and it is why the 24 loss feels unfair to the player. **Fix:** draw the window as a big bright pane with a view. Make the boss's cone clearly visible and pointing out of it, and grey out or shade the office floor behind him so "not watching" is plain.
+**11 — misread** (matters for the route)
+- Reading: "The spiky man at Lin's socket shows '!' and there's a spark. Did he unplug her phone? Probably to charge his own thing."
+- Intent: you pulled her plug too early. Kev comes to charge his mobile, finds her plug in his way and jams it back in.
+- Cause: a missing cue, plus the cause and the effect are too far apart. We never see the plug lying on the floor before he arrives, and the "!" plus a spark reads as him doing the sabotage. The player learns the opposite lesson: Kev is a saboteur, not a timing hazard who undoes your work.
+- Fix: show Kev holding Lin's plug up at arm's length with a 😠 bubble before the spark, so the plug visibly goes from floor to wall.
 
-**10 — partly.** The reading: "Lin's cord lies unplugged on the floor. I have a chair bubble and my seat is gone. *Can't read:* did I take my chair, or am I thinking about it?" Intent: you pulled the plug and walked off, and the boss still has his back turned. The loose cord reads. But the 🪑 bubble over the player is **an emoji standing in for a game state** ("you're away from your seat"). It pulls attention away from what the player has just done. Nothing in the frame says "you did this", and the boss's facing isn't noticed. **Fix:** remove the bubble. Show your empty chair at your desk with a faint red outline, and show the loose plug swinging, or a small puff at the socket, as you walk away.
+**12 — partly**
+- Reading: "She shows 😠 and shakes. She's irritated, nothing more."
+- Intent: you rang her while she was at her desk. She picked up, got hold music and slammed the receiver down.
+- Cause: a missing cue. There are no notes from her receiver and no visible slam, so it isn't clear why she's angry. "Ringing her while she's sitting there just wastes the trick" doesn't come across.
+- Fix: show a moment of hold notes from her receiver, then the receiver landing on the cradle, then 😠.
 
-**11 — misread.** The reading: "Green man at Lin's socket gives 👍… Is green man my accomplice, or a regular who does this every loop?" Intent: too early. On his cable round, Kev finds the cord loose and pushes it back in. This frame is nearly identical to 05: same time (3:12), same crouch, same spot. Only 👌 has become 👍. No loose cord is shown before he fixes it, and there's no "!", so the before and after are **too far apart** to see. The player takes the man who undoes their plan for a helper. That breaks the timing of the unplug route. **Fix:** show the cord lying loose on the floor with Kev reacting "!" as he finds it. Then show him jamming it in with a spark at the socket, and use a different pose from 05 (for example standing and pushing hard).
+**13 — reads.** The ring, Lin walking away and the boss coming out are all seen. The player doesn't spell out "he's coming to answer it", but 19 makes up for that.
 
-**12 — reads.**
+**14 — reads**
 
-**13 — partly.** The reading: "*Can't read:* why he left his office for her phone." Intent: Lin is having her tea, her teal phone rings, and the boss walks out of his office to answer it. The shot is taken after the cause. Lin is already back beside her desk and no rings are drawn, so the player sees the effect without the trigger (**cause and effect too far apart**). This sets up the busy-line route (17, 20). **Fix:** move the shot earlier: teal rings on Lin's empty desk phone, Lin still at the kitchen table, the boss halfway through his door looking toward the sound.
+**15 — misread** (matters for the route)
+- Reading: "Lin is on the kitchen phone with red notes. The boss shows '!' with red rings. Who's ringing whom?"
+- Intent: at 3:30 Lin's empty desk phone rings red. Lin is on hold at the kitchen phone. The boss, the only free person nearby, gets up to answer.
+- Cause: colour overload, plus a missing cue. Red is used for the outside line's rings, the kitchen phone, Lin's hold music, the 3:30 clock and the loss frame. The rings are so big that their centre (Lin's phone) is lost, and they look like they come from the boss. His "!" doesn't point at the source. The player's "two phones ringing at once" note is really this: one ring and one tune, both red.
+- Fix: keep red only for the outside call. Make hold music a single neutral colour everywhere, such as white or grey notes. Draw tight rings that shake Lin's handset, and put a teal phone icon next to the boss's "!".
 
-**14 — reads.**
+**16 — reads**
 
-**15 — reads.**
+**17 — misread** (matters for the route)
+- Reading: "The boss is beside Lin with a bubble of his own face and 😠. It's unclear who is angry at whom."
+- Intent: the boss is still on Lin's phone at her desk with hold music. Lin, back from her tea, glares at him. Her line is busy.
+- Cause: an emoji standing in for a person, plus a missing cue. The bubble's tail lands between them, so "boss face + 😠" reads as the boss being angry. There are no notes from the receiver, so "he's tying up her line" is invisible. This is the setup for win 20, and it doesn't come across.
+- Fix: point the bubble clearly at Lin and change it to her teal phone, the boss's face and 😠. Draw hold notes rising from the receiver at the boss's ear.
 
-**16 — reads.**
+**18 — misread** (matters for the route)
+- Reading: "Same as 15, but the boss is also on blue hold music. Too much happening to read."
+- Intent: Lin's empty phone rings, Lin is on hold in the kitchen, and the boss turns to the ring but stays with his tune. Kev is too far away. Nobody answers.
+- Cause: a missing cue. It is nearly the same frame as 15: same red rings, same "!" on the boss. The only difference is a few blue notes. The point is "the boss notices but doesn't move", and nothing shows the not-moving.
+- Fix: replace the boss's "!" with a bubble of a ringing phone and 😌, keep him seated facing the window, and draw Kev's sight cone stopping well short of the rings.
 
-**17 — reads.**
+**19 — reads.** The player calls it the funniest picture here. The shrug icon in the slot is cosmetic.
 
-**18 — reads.**
+**20 — reads**
 
-**19 — reads.** The shrug badge is cosmetic.
+**21 — reads.** The player says it's "clear, but flat". That's a comedy note, not a reading failure. Something like Lin tapping the dead receiver would help.
 
-**20 — reads.**
+**22 — misread**
+- Reading: "The boss is on hold with '!', Lin's desk phone is ringing, and she's on the kitchen phone with music. The icons are notes, a bell and notes. Muddy, I can't say what happened."
+- Intent: win. Lin's phone rings with nobody at it, because the boss and Lin are each on hold.
+- Cause: a missing cue, plus the colour overload from 15. The boss's "!" says he's about to act, which goes against "nobody comes". The ringing phone is small and in the middle distance. The icon row (boss, notes, bell, Lin, notes) reads as a list, not a result. The player didn't even register the two faces.
+- Fix: move the ringing teal phone and Lin's empty chair to the front and centre. Drop the boss's "!". Change the icons to bell and empty chair, so they say "unanswered".
 
-**21 — reads.**
+**23 — partly** (minor)
+- Reading: "I'm sitting in a cardboard box holding a plant. She got my job."
+- Intent: Lin sits at your desk (your red mug, your nameplate) while you stand nearby holding your things in a box.
+- Cause: a prop drawn in the wrong place. The box is drawn in front of your body, so you look like you're sitting in it. The player also didn't notice that it's your desk she's at. They still got the outcome.
+- Fix: draw you standing, holding the box at your chest with the plant sticking out, and make the red mug and your nameplate next to Lin's elbow larger.
 
-**22 — reads.**
+**24 — reads**
 
-**23 — partly.** The reading: "Lin takes the call, 💼😊, and I'm packing a box. Funny and clear." Intent: Lin is sitting at *your* desk with your red mug. She got your job. The player got the loss but missed the punchline. The red mug is a small object at the end of the desk, and nothing else marks the desk as yours, so it looks like Lin at her own desk. **Fix:** put your red chair under her, and show her setting her teal nameplate down beside your red mug. Show your nameplate face-down in the box.
+**25 — reads**
 
-**24 — reads.** The player understands the catch. Their question "why can green man do it?" comes from the misreads in 09 and 11, not from this card.
+**Across all shots:** "I'm guessing teal means win and red means loss. Nothing confirms it." The frame colour is the only signal, and red already does five other jobs. Put a smug-you face as the first icon on every win card and a 😟 you on every loss card.
 
-**25 — reads.**
+**Summary:** The main idea (the switchboard, rerouting the interview, don't get caught) reads, and so do the best pictures (14, 19, 20, 23, 24). Five shots are misread, and four of them set up routes or teach a rule needed to win. In 11 the plug thread runs backwards. In 15 and 18 the colours mix up the 3:30 call. In 17 the busy-line win isn't set up. 22 is also misread, but it only muddies an end card. Smaller misses weaken the Kev charging thread (04, 05) and the boss's back being turned (09, 10). These fixes are about props, colour and bubble contents, not about how the level is built.
 
 <!-- /cold-read:pictures -->
 

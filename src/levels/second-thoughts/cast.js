@@ -32,7 +32,8 @@ export const CAST = [
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
       s('3:05', { do: 'visit', spot: 'coffee_machine', arrive: 'brew' }), // her afternoon coffee: there about 3:10
-      s('3:24', { do: 'visit', spot: 'kitchen_table' }), // drinks it at the kitchen table (once it has brewed)
+      s('3:23', { do: 'visit', spot: 'coffee_machine', arrive: 'pour' }), // pours herself a cup if it brewed
+      s('3:24', { do: 'visit', spot: 'kitchen_table' }), // and drinks it at the kitchen table
       s('3:31', { do: 'sit', spot: 'lin_desk' }),
     ],
   },
@@ -73,7 +74,14 @@ export const BEHAVIOURS = {
       sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
     },
   },
-  // 3:40: he empties his tray. If your letter is still in it, he reads it.
+  // Once the power is back the pot is full (index.js pour_coffee): she pours a cup and carries it off.
+  pour: {
+    arrive(game, npc) {
+      const w = game.world;
+      if (w.coffee === 'tripped' && w.fuse === 'on') npc.carry = 'coffee';
+    },
+  },
+  // 3:40: he goes through his tray. If your letter is still in it, he reads it.
   emptyTray: {
     arrive(game, npc, sim) {
       if (npc._emptied) return;

@@ -1,10 +1,13 @@
 // Weekend Shift's furniture with moving parts, drawn as the real things (presentation.js's decor.props):
 //   the Saturday roster: a whiteboard on a stand, the week across the top and a big photo of whoever works
-//     Saturday in the slot under it (a new face pops up off it, big, for a beat); at 5:00, your place in the
-//     half-circle round it outlined while you aren't there
+//     Saturday in the slot under it; a write half drawn over it, the marker at it; a new face pops up off it, big,
+//     for a beat, and settles in; its black marker in the tray (gone from 4:50: the boss has it); the slot lit while
+//     the boss points at it; your place round it outlined once you're blamed for not being in it
 //   the photocopier: a green light; jammed, a red beacon flashing on its lid, a crumpled sheet sticking out of it
-//     and a red beep coming off it at every beep; its front open and a spanner turning in it while Kev fixes it
-//   the microwave: big green seconds to the DING on its front and a lit door, the noodles (or Lin's fish) turning
+//     and red arcs spreading off it at every beep (dashes to Kev while he hears it); its front open, a spanner
+//     turning in it and its light amber while Kev fixes it, the sheet gone
+//   the microwave: your cup of noodles on the counter under it; started, big green seconds to the DING on its front
+//     and a lit door, the cup going round and steaming in it (or Lin's fish)
 //   the phones: yours at the end of your desk, off the hook while it rings the boss's, shaking on a side table in
 //     the corner of his office, a dotted line between them; while he talks, its cord runs to the handset at his ear
 //   Lin's lunch box on her desk: there until she takes it to the microwave at 4:30, back open and steaming after
@@ -58,7 +61,9 @@ function scrawl(ctx, x, y, w, color, lw, seed) {
 // The Saturday roster: a whiteboard on a stand, its feet at (x, y), s times its map size (46 x 36 px). Across the
 // top, the week in boxes, Saturday's red; under it, a line down to Saturday's slot: a big photo of who works it.
 //   look: whose face is in the slot (null: none)
-//   opts.fresh: a wet-ink glint (just written); opts.pulse: 0..1, the slot's ring throbs (the boss reading it out)
+//   opts.fresh: a wet-ink glint (just written); opts.glow: the slot lit up (the boss pointing at it)
+//   opts.scribble: { look, k }: a new face half drawn over it, k of the way, the black marker at it
+//   opts.tray: false: the black marker is gone from the tray (in the boss's hand, or in yours)
 export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   ctx.save();
   ctx.translate(x, y);
@@ -107,14 +112,24 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   const sw = 28;
   const sy = by + 10;
   const sh = 23;
-  const pulse = opts.pulse ?? 0;
-  if (pulse > 0) {
-    ctx.fillStyle = `rgba(255,80,60,${(0.28 * pulse).toFixed(3)})`;
-    rrect(ctx, sx - 2.5, sy - 2.5, sw + 5, sh + 5, 4);
+  const glow = opts.glow ? 0.75 + 0.25 * Math.sin(t * 6) : 0;
+  if (glow > 0) {
+    // lit up: a warm light spilling off the slot, past the board's frame
+    ctx.save();
+    ctx.shadowColor = `rgba(255,190,30,${glow.toFixed(3)})`;
+    ctx.shadowBlur = 9 * s;
+    ctx.fillStyle = `rgba(255,200,50,${(0.95 * glow).toFixed(3)})`;
+    rrect(ctx, sx - 3.5, sy - 3.5, sw + 7, sh + 7, 5);
     ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = 'rgba(255,240,170,1)';
+    rrect(ctx, sx - 1.5, sy - 1.5, sw + 3, sh + 3, 3.5);
+    ctx.fill();
+    ctx.fillStyle = '#fffdf2';
+    ctx.fillRect(sx + 0.5, sy + 0.5, sw - 1, sh - 1);
   }
   ctx.strokeStyle = MARKER;
-  ctx.lineWidth = 1.1 + pulse * 1.1;
+  ctx.lineWidth = 1.1 + (glow > 0 ? 0.6 : 0);
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(satX, by + 7.4);
@@ -125,6 +140,14 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   ctx.lineCap = 'butt';
   const fy = sy + sh / 2;
   portrait(ctx, look, sx + sw / 2, fy, 10, t);
+  if (glow > 0) {
+    ctx.strokeStyle = `rgba(245,165,20,${glow.toFixed(3)})`;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(sx + sw / 2, fy, 11.6, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  if (opts.scribble) drawScribble(ctx, opts.scribble.look, sx + sw / 2, fy, 10, opts.scribble.k, t);
   if (opts.fresh) {
     // wet ink: a glint sliding across the new face
     const k = (t * 1.4) % 1;
@@ -143,8 +166,77 @@ export function drawBoard(ctx, x, y, s, look, t, opts = {}) {
   ctx.fillRect(bx + 4, by + h - 1, w - 8, 2.5);
   ctx.fillStyle = MARKER;
   ctx.fillRect(bx + 8, by + h - 2, 6, 1.6);
-  ctx.fillStyle = INK;
-  ctx.fillRect(bx + 16, by + h - 2, 6, 1.6);
+  if (opts.tray !== false) {
+    ctx.fillStyle = INK;
+    ctx.fillRect(bx + 16, by + h - 2, 6, 1.6);
+  }
+  ctx.restore();
+}
+
+// A new face being drawn over the one in the slot (cx, cy, r: the photo's circle), k of the way: line by line from
+// the top, the old face wiped under it, hatched in marker, the black marker at the stroke it's on.
+const SCRIBBLE_ROWS = 5;
+function drawScribble(ctx, look, cx, cy, r, k, t) {
+  if (!look || k <= 0) return;
+  const k1 = Math.min(1, k);
+  const rowH = (2 * r) / SCRIBBLE_ROWS;
+  const row = Math.min(SCRIBBLE_ROWS - 1, Math.floor(k1 * SCRIBBLE_ROWS));
+  const frac = k1 >= 1 ? 1 : k1 * SCRIBBLE_ROWS - row;
+  const top = cy - r;
+  const left = cx - r;
+  const penX = left + frac * 2 * r;
+  const penY = top + row * rowH + rowH / 2;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.beginPath();
+  ctx.rect(left, top, 2 * r, row * rowH);
+  ctx.rect(left, top + row * rowH, frac * 2 * r, rowH);
+  ctx.clip();
+  ctx.fillStyle = '#fbfcfd';
+  ctx.fillRect(left, top, 2 * r, 2 * r);
+  portrait(ctx, look, cx, cy, r, t, '#fbfcfd');
+  // the marker's hatching over it
+  ctx.strokeStyle = 'rgba(42,47,58,0.45)';
+  ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  for (let i = 0; i <= row; i++) {
+    const y0 = top + i * rowH;
+    const x1 = i < row ? left + 2 * r : penX;
+    ctx.moveTo(left, y0 + rowH * 0.2);
+    for (let x = left; x < x1; x += 2.2) ctx.lineTo(x + 1.1, y0 + rowH * (hash(i, Math.round(x)) > 0.5 ? 0.85 : 0.15));
+  }
+  ctx.stroke();
+  ctx.restore();
+  // the scribble's leading edge, and the marker at it (jiggling while it draws)
+  const jig = Math.sin(t * 40) * 0.8;
+  drawMarker(ctx, penX + 0.5, penY + jig, -2.3, 13);
+}
+
+// A whiteboard marker, black, its tip at (x, y), pointing along rot (radians), len px long.
+export function drawMarker(ctx, x, y, rot, len = 12) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot + Math.PI);
+  const w = len * 0.24;
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  rrect(ctx, 1.5, -w / 2 + 1.2, len - 1.5, w, w / 2);
+  ctx.fill();
+  ctx.fillStyle = '#1d2027'; // the tip
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(len * 0.18, -w * 0.32);
+  ctx.lineTo(len * 0.18, w * 0.32);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#eef0f2'; // the barrel
+  rrect(ctx, len * 0.16, -w / 2, len * 0.62, w, w * 0.3);
+  ctx.fill();
+  ctx.fillStyle = INK; // its band, and the cap
+  ctx.fillRect(len * 0.34, -w / 2, len * 0.18, w);
+  rrect(ctx, len * 0.74, -w / 2 - 0.3, len * 0.26, w + 0.6, w * 0.35);
+  ctx.fill();
   ctx.restore();
 }
 
@@ -185,6 +277,7 @@ export function drawFish(ctx, x, y, len, flip = false) {
 // The photocopier against the wall, seen from the front, its body over the tile at (x, y) (top-left, px).
 //   state: 'ok' | 'jammed' (beeping) | 'fixing' (front open, still beeping) | 'fixed'
 //   beep: s since its last beep (null: none yet); the beacon flares and a red beep rings off it in time with it
+const BEEP_ARC_S = 1.6; // s a beep's arcs spread (it beeps every 2 s)
 export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
   ctx.save();
   ctx.translate(x, y);
@@ -296,14 +389,15 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
     ctx.restore();
     drawSpanner(ctx, 10, 13, -0.6 + Math.sin(t * 9) * 0.6, 10); // Kev's, turning in the works
   }
-  if (flare > 0) {
-    // the beep: red arcs off the beacon, both sides, spreading as it fades
-    const r = 6 + (1 - flare) * 9;
-    ctx.strokeStyle = `rgba(232,60,45,${(0.95 * flare).toFixed(3)})`;
-    ctx.lineWidth = 1.8;
+  const ring = alarm && beep !== null ? Math.max(0, 1 - beep / BEEP_ARC_S) : 0;
+  if (ring > 0) {
+    // the beep: red arcs off the beacon, both sides, spreading out as they fade (most of the way to the next one)
+    const r = 6 + (1 - ring) * 16;
+    ctx.strokeStyle = `rgba(232,60,45,${(0.95 * Math.min(1, ring * 1.6)).toFixed(3)})`;
+    ctx.lineWidth = 2;
     ctx.lineCap = 'round';
-    for (let k = 0; k < 2; k++) {
-      for (const [a0, a1] of [[-Math.PI * 0.35, Math.PI * 0.15], [Math.PI * 0.85, Math.PI * 1.35]]) {
+    for (let k = 0; k < 3; k++) {
+      for (const [a0, a1] of [[-Math.PI * 0.4, Math.PI * 0.2], [Math.PI * 0.8, Math.PI * 1.4]]) {
         ctx.beginPath();
         ctx.arc(bx, by + 1, r + k * 4.5, a0, a1);
         ctx.stroke();
@@ -317,10 +411,10 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
 // The microwave on the counter, at (x, y) (the top-left of its door's row, px). left: seconds to the DING while
 // cooking, else null: from the moment you start it, big green digits count them down across its top and the door
 // glows. fish: Lin's fish is in it (she stands there): lit, the fish going round, a smell coming off it.
-function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true) {
-  const cooking = noodles === 'cooking' && left > 0;
-  const done = noodles === 'cooking' && !cooking;
-  const lit = cooking || (fish && !done);
+function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true, ding = false) {
+  const cooking = !ding && noodles === 'cooking' && left > 0;
+  const done = ding || (noodles === 'cooking' && !cooking);
+  const lit = cooking || ding || (fish && !done);
   const top = y - 9; // the display strip sits above the door
   if (lit && glow) {
     // the light spilling out of the door onto the counter and the floor in front of it
@@ -342,7 +436,7 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true) {
   ctx.fillStyle = '#16211b';
   rrect(ctx, x + 3, top + 2, 23, 9, 1.5);
   ctx.fill();
-  if (cooking || (done && Math.sin(t * 7) > 0)) {
+  if (cooking || (done && (ding || Math.sin(t * 7) > 0))) {
     const sec = cooking ? Math.ceil(left) : 0;
     ctx.fillStyle = 'rgba(125,255,154,0.25)';
     rrect(ctx, x + 3, top + 2, 23, 9, 1.5);
@@ -360,14 +454,17 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true) {
     ctx.fill();
     fillEllipse(ctx, x + 12, y + 13, 6.5, 2, 'rgba(120,80,30,0.35)');
     const a = t * 2.4; // going round on the plate
-    if (cooking) {
-      fillEllipse(ctx, x + 12 + Math.cos(a) * 1.5, y + 11, 4.2, 2.6, '#f7f3ea');
-      fillEllipse(ctx, x + 12 + Math.cos(a) * 1.5, y + 10.3, 3.2, 1.3, '#e3a33c');
+    if (cooking || ding) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x + 3.5, y + 4, 17, 12);
+      ctx.clip();
+      drawNoodleCup(ctx, x + 12 + Math.cos(a) * 1.2, y + 15.5, 0.75, true);
+      cupSteam(ctx, x + 12 + Math.cos(a) * 1.2, y + 7.5, t, 0.6);
+      ctx.restore();
     } else drawFish(ctx, x + 12 + Math.cos(a) * 0.8, y + 10.5, 12.5 * Math.max(0.6, Math.abs(Math.cos(a))), Math.cos(a) < 0);
-  } else {
-    fillEllipse(ctx, x + 12, y + 11, 4.2, 2.6, done ? '#d8d2c4' : 'rgba(255,255,255,0.08)');
-    if (done) fillEllipse(ctx, x + 12, y + 10.3, 3.2, 1.3, '#b98a3a');
-  }
+  } else if (done) drawNoodleCup(ctx, x + 12, y + 15, 0.75, true);
+  else fillEllipse(ctx, x + 12, y + 11, 4.2, 2.6, 'rgba(255,255,255,0.08)');
   ctx.fillStyle = 'rgba(255,255,255,0.18)';
   ctx.fillRect(x + 5, y + 4, 2, 12);
   // the handle
@@ -388,6 +485,21 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true) {
       ctx.stroke();
     }
   }
+  if (noodles === 'cold' && !ding) drawNoodleCup(ctx, x + 6, top + 47, 1, false); // your noodles, on the counter
+  if (ding) {
+    // DING: rings off it, both sides
+    ctx.strokeStyle = 'rgba(255,222,120,0.95)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 2; k++) {
+      for (const [a0, a1] of [[-Math.PI * 0.3, Math.PI * 0.3], [Math.PI * 0.7, Math.PI * 1.3]]) {
+        ctx.beginPath();
+        ctx.arc(x + 14.5, top + 14, 19 + k * 5, a0, a1);
+        ctx.stroke();
+      }
+    }
+    ctx.lineCap = 'butt';
+  }
   if (done) {
     // steam off the noodles
     for (let i = 0; i < 3; i++) {
@@ -400,6 +512,62 @@ function drawMicrowave(ctx, x, y, noodles, left, t, fish = false, glow = true) {
   }
 }
 
+// A cup of instant noodles, its foot's centre at (x, y), s times 12 px tall: a paper cup, red band, lid on (open:
+// the lid peeled back, the noodles in it).
+function drawNoodleCup(ctx, x, y, s, open) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+  fillEllipse(ctx, 0, 0, 6, 1.6, 'rgba(25,15,8,0.25)');
+  ctx.fillStyle = '#f7f3ea';
+  ctx.beginPath();
+  ctx.moveTo(-4, 0);
+  ctx.lineTo(-5.6, -11);
+  ctx.lineTo(5.6, -11);
+  ctx.lineTo(4, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#d6402f'; // the band
+  ctx.beginPath();
+  ctx.moveTo(-4.9, -6.5);
+  ctx.lineTo(-5.3, -9);
+  ctx.lineTo(5.3, -9);
+  ctx.lineTo(4.9, -6.5);
+  ctx.closePath();
+  ctx.fill();
+  if (open) {
+    fillEllipse(ctx, 0, -11, 5.6, 1.6, '#e8b04a'); // the noodles
+    ctx.strokeStyle = '#c98a2a';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    for (let i = -4; i <= 3; i += 1.6) {
+      ctx.moveTo(i, -11.6);
+      ctx.quadraticCurveTo(i + 0.8, -10.2, i + 1.6, -11.4);
+    }
+    ctx.stroke();
+  } else {
+    fillEllipse(ctx, 0, -11, 5.8, 1.7, '#e9e6dc'); // the lid
+    ctx.fillStyle = '#d6402f';
+    ctx.fillRect(4.6, -12.2, 2.4, 1.2); // its tab
+  }
+  ctx.restore();
+}
+
+// Steam curling up off something hot, from (x, y), s times size.
+function cupSteam(ctx, x, y, t, s = 1) {
+  for (let i = 0; i < 3; i++) {
+    const ph = (t * 0.9 + i / 3) % 1;
+    ctx.strokeStyle = `rgba(255,255,255,${(0.95 * (1 - ph * 0.8)).toFixed(3)})`;
+    ctx.lineWidth = 1.5 * s;
+    ctx.beginPath();
+    const sx = x + (i - 1) * 2.6 * s;
+    const sy = y - ph * 7 * s;
+    ctx.moveTo(sx, sy);
+    ctx.quadraticCurveTo(sx + 2 * s * Math.sin(t * 3 + i), sy - 2.5 * s, sx, sy - 5 * s);
+    ctx.stroke();
+  }
+}
+
 // The counter under the microwave and the sink beside it, down the east wall: tiles (tx, ty0..ty1).
 function drawCounter(ctx, tx, ty0, ty1) {
   const x = tx * T;
@@ -408,15 +576,15 @@ function drawCounter(ctx, tx, ty0, ty1) {
   ctx.fillStyle = C.laminate;
   ctx.fillRect(x + 3, ty0 * T, T - 3, (ty1 - ty0 + 1) * T - 3);
   // a sink and a tap on the lower tile
-  const sy = ty1 * T + 6;
+  const sy = ty1 * T + 12; // a little way down: your noodles stand above it, under the microwave
   ctx.fillStyle = C.steelDark;
-  rrect(ctx, x + 6, sy, 22, 17, 3);
+  rrect(ctx, x + 6, sy, 22, 15, 3);
   ctx.fill();
   ctx.fillStyle = '#d5dade';
-  rrect(ctx, x + 8, sy + 2, 18, 13, 2);
+  rrect(ctx, x + 8, sy + 2, 18, 11, 2);
   ctx.fill();
-  fillCircle(ctx, x + 26, sy + 8, 2, C.steelDark);
-  fillCircle(ctx, x + 17, sy + 8.5, 1.2, '#9aa3aa');
+  fillCircle(ctx, x + 26, sy + 7, 2, C.steelDark);
+  fillCircle(ctx, x + 17, sy + 7.5, 1.2, '#9aa3aa');
 }
 
 // A desk phone at (cx, cy): its base, and its handset on it unless lifted. ring: shaking, with sound marks; gone:
@@ -519,11 +687,11 @@ function drawFolder(ctx, x, y) {
 // Where the boss's phone sits on its table (at: the table's tile).
 const cornerPhone = (at) => ({ x: at.x * T + 16, y: at.y * T + 9 });
 
-// While the boss's phone rings: the call, a dotted line running from your phone to his, bowed out to the east
-// (away from the board and its chairs).
+// The call: a dotted line running from your phone to his, bowed up north (over his office, clear of him at his
+// desk and of the board).
 function drawCall(ctx, ax, ay, bx, by, t) {
-  const mx = (ax + bx) / 2 + 40;
-  const my = Math.min(ay, by) + (Math.abs(ay - by) * 0.35);
+  const mx = (ax + bx) / 2;
+  const my = Math.min(ay, by) - 34;
   ctx.save();
   ctx.strokeStyle = 'rgba(255,240,200,0.9)';
   ctx.lineWidth = 2.6;
@@ -538,40 +706,33 @@ function drawCall(ctx, ax, ay, bx, by, t) {
 }
 
 // A new face in the slot, popping up off the board for a beat: it rises out of the slot (sx, sy: the slot's
-// centre), big in a white ring with marks bursting round it, and sinks back. k: 0..1 through the beat. side: -1 or
-// 1, it drifts that way as it rises (away from you, so your bubble doesn't cover it); 0 straight up.
+// centre), big in a white ring, a soft ring spreading off it like a ripple, and settles back into the slot. k: 0..1
+// through the beat. side: -1 or 1, it drifts that way as it rises (away from you, so your bubble doesn't cover
+// it); 0 straight up.
 const POP_RISE = 46; // px above the slot at the top
 const POP_DRIFT = 30; // px aside at the top
 function drawPop(ctx, look, sx, sy, k, t, side = 0) {
   if (!look || k <= 0 || k >= 1) return;
-  const up = k < 0.22 ? k / 0.22 : k > 0.78 ? (1 - k) / 0.22 : 1;
-  const ease = 1 - (1 - up) * (1 - up);
-  const over = k < 0.22 ? Math.sin(up * Math.PI) * 0.12 : 0; // overshoots a little on the way up
-  const r = 10 + 13 * ease + 13 * over;
+  const up = k < 0.22 ? k / 0.22 : k > 0.7 ? Math.max(0, (1 - k) / 0.3) : 1;
+  const ease = up * up * (3 - 2 * up);
+  const r = 10 + 13 * ease;
   const cx = sx + side * POP_DRIFT * ease;
   const cy = sy - POP_RISE * ease;
   ctx.save();
-  if (k > 0.12 && k < 0.85) {
-    // marks bursting round it
-    const b = Math.min(1, (k - 0.12) / 0.3);
-    ctx.strokeStyle = `rgba(200,55,45,${(0.9 * (1 - Math.max(0, k - 0.6) / 0.25)).toFixed(3)})`;
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2 + 0.2;
-      const r0 = r + 3 + b * 4;
-      const r1 = r0 + 4 + b * 3;
-      ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
-      ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
-      ctx.stroke();
-    }
+  if (k > 0.15 && k < 0.7) {
+    // a soft ring spreading off it, fading
+    const b = (k - 0.15) / 0.55;
+    ctx.strokeStyle = `rgba(255,255,255,${(0.8 * (1 - b)).toFixed(3)})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 4 + b * 10, 0, Math.PI * 2);
+    ctx.stroke();
   }
-  fillCircle(ctx, cx + 1.5, cy + 2.5, r + 2.5, 'rgba(0,0,0,0.25)');
+  fillCircle(ctx, cx + 1.5, cy + 2.5, r + 2.5, 'rgba(0,0,0,0.2)');
   fillCircle(ctx, cx, cy, r + 2.5, '#fbfcfd');
   portrait(ctx, look, cx, cy, r, t);
-  ctx.strokeStyle = MARKER;
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(42,47,58,0.55)';
+  ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.arc(cx, cy, r + 2.5, 0, Math.PI * 2);
   ctx.stroke();
@@ -657,43 +818,76 @@ function drawLunchBox(ctx, x, y, w, t, open = false) {
 
 // decor.props painters, (ctx, info, tile, shown, t).
 
-// { look, fresh, pulse, pop, popSide, place, empty, hot }: the roster board standing on its tile; pulse: its slot
-// throbs (being read out); pop: s into a new face's beat, popSide: the side it drifts to; place, empty: your spot
-// round the board (px) and whether to outline it.
+// { look, fresh, glow, pop, popSide, place, empty, hot, tray, scribble }: the roster board standing on its tile; glow:
+// its slot lit (the boss pointing at it); pop: s into a new face's beat, popSide: the side it drifts to; place,
+// empty: your spot round the board (px) and whether to outline it; tray, scribble: drawBoard's.
 export const POP_S = 1.6;
 export function paintRoster(ctx, info, at, shown, t) {
   if (shown.empty && shown.place) drawEmptyPlace(ctx, shown.place.x, shown.place.y, t, shown.hot);
-  const pulse = shown.pulse ? 0.6 + 0.4 * Math.sin(t * 12) : 0;
   const x = at.x * T + T / 2;
   // its feet a little past the tile's foot, so Saturday's slot sits inside the tile: when you stand south of the
   // board, the lit target's E key cap (above the tile) clears the slot and the face in it
   const y = at.y * T + T + 7;
-  drawBoard(ctx, x, y, 1, shown.look, t, { fresh: shown.fresh, pulse });
+  drawBoard(ctx, x, y, 1, shown.look, t, { fresh: shown.fresh, glow: shown.glow, tray: shown.tray, scribble: shown.scribble });
   if (shown.pop !== null && shown.pop !== undefined) drawPop(ctx, shown.look, x + 5.5, y - 28.5, shown.pop / POP_S, t, shown.popSide);
 }
 
-// { copier, beep }: the copier against the north wall.
-export function paintCopier(ctx, info, at, shown, t) {
-  drawCopier(ctx, at.x * T, at.y * T - 4, shown.copier, t, 1, shown.beep);
+// A write in progress ({ look, k }), or null: the next face going into Saturday's slot, k of the way drawn. Caught at
+// it, it stays half drawn: the caught frame and the end card (end-scenes.js) show it.
+const NEXT_FACE = { player: 'boss', kev: 'boss', boss: 'kev' };
+export function scribbleOf(game) {
+  const w = game?.world;
+  const looks = game?.level?.looks;
+  if (!w || !looks) return null;
+  const a = game.player?.action;
+  if (a && (a.type === 'write_boss' || a.type === 'write_kev')) {
+    return { look: looks[a.type === 'write_boss' ? 'boss' : 'kev'], k: Math.min(1, a.t / (a.duration || 1)) };
+  }
+  const c = game.caught;
+  const r = game.map?.find?.('R')?.[0];
+  const p = game.player;
+  if (c && c.reason === 'action' && r && p && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 0.5)) < 1.7) {
+    return { look: looks[NEXT_FACE[w.roster] ?? 'boss'], k: 0.5 };
+  }
+  return null;
 }
 
-// { noodles, left, fish }: the microwave on the counter, and the counter on down to the sink.
+// { copier, beep, kev }: the copier, on the line from the boss's desk through the board. kev: where Kev's head is
+// (px) while he stands at his desk, alerted by the beeping: dashes from him to it (it's his to fix).
+export function paintCopier(ctx, info, at, shown, t) {
+  drawCopier(ctx, at.x * T, at.y * T - 4, shown.copier, t, 1, shown.beep);
+  if (shown.kev) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(232,60,45,0.75)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.lineDashOffset = t * 20;
+    ctx.beginPath();
+    ctx.moveTo(shown.kev.x, shown.kev.y);
+    ctx.lineTo(at.x * T + 30, at.y * T + 8);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+// { noodles, left, fish }: the microwave on the counter, the bare counter above it, and on down to the sink.
 export function paintMicrowave(ctx, info, at, shown, t) {
-  drawCounter(ctx, at.x, at.y, at.y + 1);
+  drawCounter(ctx, at.x, at.y - 1, at.y + 1);
   drawMicrowave(ctx, at.x * T + 2, at.y * T + 4, shown.noodles, shown.left, t, shown.fish);
 }
 
-// { phone, to: the boss's phone's tile }: your desk phone (on its own tile, at), off the hook while it rings his, and
-// the call: dots from yours to his. His (paintBossPhone) draws after, over the end of them.
+// { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
+// moment you ring his until he hangs up, and the call: dots from yours to his, live the whole time (it's your call).
+// His (paintBossPhone) draws after, over the end of them.
 export function paintMyPhone(ctx, info, at, shown, t) {
-  const ax = at.x * T + 14;
-  const ay = at.y * T + 13;
-  const ringing = shown.phone === 'ringing';
-  if (ringing && shown.to) {
+  drawSideTable(ctx, at.x * T, at.y * T);
+  const a = cornerPhone(at);
+  const live = shown.phone === 'ringing' || shown.phone === 'talking';
+  if (live && shown.to) {
     const b = cornerPhone(shown.to);
-    drawCall(ctx, ax, ay - 4, b.x, b.y - 4, t);
+    drawCall(ctx, a.x, a.y - 4, b.x, b.y - 4, t);
   }
-  drawPhone(ctx, ax, ay, { lifted: ringing }, t);
+  drawPhone(ctx, a.x, a.y, { lifted: live }, t);
 }
 
 // { phone, hand: px | null }: the boss's phone on its side table (at), shaking while it rings, and none on his desk.
@@ -742,11 +936,16 @@ export const THINGS = {
     ctx.strokeStyle = '#d63a2d';
     thingSpot(ctx, x, y, size, 1.7 * k, [2.6 * k, 1.8 * k]);
   },
-  // the microwave, its door lit and its digits on (the end card's route row: you got them at the DING)
+  // the microwave at its DING: 00 on the display, rings off it (the end card's route row: you got them at the DING)
   microwave(ctx, x, y, size) {
     box(ctx, x, y, size);
     ctx.scale(0.5, 0.5);
-    drawMicrowave(ctx, -14.5, -6, 'cooking', 3, 0, false, false);
+    drawMicrowave(ctx, -14.5, -6, 'cooking', 0, 0.4, false, false, true);
+  },
+  // the board's black marker, pointing along +x (held, it points where the arm points)
+  marker(ctx, x, y, size) {
+    box(ctx, x, y, size);
+    drawMarker(ctx, 6.5, 0, 0, 13);
   },
   // your desk phone, off the hook (the end card's route row: you rang his)
   deskphone(ctx, x, y, size) {

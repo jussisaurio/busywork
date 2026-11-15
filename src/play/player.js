@@ -34,7 +34,9 @@ export function updatePlayer(game, dt) {
 
   const ax = input.axis();
   const wantsMove = ax.x !== 0 || ax.y !== 0;
-  const busyHeld = input.isDown('busy');
+  // A bulky thing in your arms (level.items[type].bulky: a big pink box) leaves no hand for a folder or a phone:
+  // no pretending while you carry it.
+  const busyHeld = input.isDown('busy') && !game.level.items?.[p.held]?.bulky;
 
   if (wantsMove) {
     if (p.seated) standUp(game);
