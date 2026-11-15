@@ -1,4 +1,4 @@
-// How Office Time looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
+// How Early Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';

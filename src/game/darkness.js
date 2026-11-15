@@ -8,6 +8,11 @@
 //           (radians, default the viewer's own) of that near sight
 //   torch   { when(npc, world), fov, radius }: whether this NPC's torch is on right now, and its beam: a cone
 //           along his gaze (his glance included, so a glance sweeps it). Optional: no torch, no beams.
+//   controls  [{ tile, kind, on(world) }], optional: the light switches and breaker panels, drawn as the real thing
+//           on their wall tile (render/darkness.js), on the side that faces the room. tile: a map letter (its
+//           first tile, as decor.props); kind: one of CONTROL_KINDS ('switch' a wall switch, 'breaker' a breaker
+//           panel); on(world): whether it is in its on position. Its little lamp glows while it is off, so you can
+//           find it in the dark. Drawing only: flipping it is the level's interaction.
 //
 // Sight (perception.js npcSees): a lit point is seen as ever, through the viewer's own cone and line of sight,
 // whether he stands in the light or the dark. A dark point is seen only within `near`, or in his torch beam (line
@@ -17,6 +22,7 @@
 import { canSee } from '../core/vision.js';
 
 export const NEAR_RADIUS = 1.5; // tiles: you see into the dark about an arm's length
+export const CONTROL_KINDS = ['switch', 'breaker']; // darkness.controls kinds (render/darkness.js draws each)
 
 const NONE = [];
 const roomZones = new WeakMap(); // room -> its zone names as a list (cached: sight asks this per point)

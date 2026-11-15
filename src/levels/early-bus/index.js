@@ -1,4 +1,4 @@
-// "Office Time": your bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
+// "Early Bus": your bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
 // Everyone lives by the wall clock in their zone (clocks.js), and you can climb the stepladder under a clock and
 // push it forward. Push the boss's clock and he lives his afternoon early (Lin watches it through the glass). Push the
 // open-plan clock and Lin and Kev go home early (they go at 4:51 by it, right after the boss); the boss turns to each
@@ -82,7 +82,7 @@ const ROLES = {
 };
 
 export default {
-  id: 'office-time',
+  id: 'early-bus',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,

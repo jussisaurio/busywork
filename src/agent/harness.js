@@ -59,7 +59,9 @@ Waiting/walking commands stop early when something notable happens.`;
 }
 
 // level: a level id from src/levels/index.js or a level object (default: the registry's default level).
-export function createHarness({ level = defaultLevel } = {}) {
+// onFrame(game): called after every real-time frame the harness plays (a watcher, e.g. tools/lib/replay.mjs drawing
+// a frame when a bubble appears). It must not change the game.
+export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
   const input = createScriptedInput();
   const game = createGame({ input, level: typeof level === 'string' ? getLevel(level) : level });
   const H = game.level.harness ?? {};
@@ -80,6 +82,7 @@ export function createHarness({ level = defaultLevel } = {}) {
     updateFx(game, FIXED_DT);
     game.time += FIXED_DT;
     input.clearPresses(); // a press is only valid for the frame it was made in
+    onFrame?.(game);
   }
 
   // Run frames until done() or a stop event. Returns { frames, stoppedBy }.
