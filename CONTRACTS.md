@@ -63,8 +63,10 @@ change in order changes the digest. These are the usual ways to break it:
 - `src/core/vision.js`: `canSee(map, viewer, tx, ty)`, `inCone`, `hasLineOfSight`, `angleDiff`, `DIRS`.
 - `src/core/fx.js`: `say(game, owner, icons, {kind, ttl, voice})`, `burst(game, kind, x, y, n, opts)`, `shake(game, amount, t)`,
   `sightline(game, from, kind='notice', ttl=0.8, via, to='player')` (a dashed line from an NPC to the player, or to
-  the NPC `to`: 'notice' ❓ | 'tattle' ❗👉 | 'caught' | 'relay', a witness's shout reaching the authority),
-  `ripple(game, x, y, radius, opts)` (rings out to `radius`; ttl default `max(1, radius / 12)` s).
+  the NPC `to`: 'notice' ❓ | 'tattle' ❗👉 | 'caught' | 'relay', a witness's shout reaching the authority |
+  'order', his order to your desk), `ripple(game, x, y, radius, opts)` (a burst at the source, rings out to
+  `radius`; ttl default `max(1, radius / 12)` s), `turned(game, id, from, x, y, ttl)` (a head swung from `from` to a
+  noise: render draws the arc).
   **Use `say()` for every speech, thought or alert bubble.** It also emits `'say'` for audio. Without a `voice`
   it uses the owner's id as the voice name.
 - `src/core/rng.js`: `createRng(seed)` returns `{ next, range, int, pick, chance }`.
@@ -196,10 +198,12 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     interrupted. Away NPCs are included.
   - `meetingAt`: the outcome (`play/scenario.js`): no route achieved is `'fail'`; a route and you in zone
     `meeting.room` is `'win'`; a route and you elsewhere is `'blamed'`. A catch before this ends the day `'caught'`.
-  - Cosmetic cues, all optional. Each defaults to a few minutes before `meetingAt` (config.js `dayCue`):
+  - Cosmetic cues, all optional. Each defaults to `meetingAt` or a few minutes before (config.js `dayCue`):
     `clockRedAt` (HUD clock turns red; −5), `clockTickAt` (wall clock starts ticking; with `clockRedAt`),
     `tockAt` (tick-tock; −2), `halfMinuteAt` (a tick every half minute; −1), `beamAt` (the projector beam in
-    level 1's `decor.js`; −5). Read a cue with `dayCue(day, name)`, not `day[name]`.
+    level 1's `decor.js`; −5), `deadlineAt` (the time on the `'#clock'` face of the mission panel and the title
+    screen; `meetingAt`). Read a cue with `dayCue(day, name)`, not `day[name]`. Once the outcome is set the HUD
+    clock shows its minute, as the end card does.
 - `meeting`: `{ override, room, chair, presenter }`. `override` is the NPCs' override name at the meeting;
   `room` the zone you must be in at `meetingAt`; `chair` the spot the room stares at when you are blamed;
   `presenter` the spot a failed meeting puts you at. The event `meeting:gather` and the cancel reason `'meeting'`
@@ -331,11 +335,13 @@ own eyes or on a screen he watches; he gives up if it is gone before he gets the
 `reclaim` may set it to start the same clock. Example: discreet-packaging `FETCHES` (the pink parcel).
 
 **Attention** (`attention.js`): a noise turns heads. Two sources: an interaction row's `noise: { radius, at?,
-npcs? }` (at spot `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
-(whenever that event fires; not `noise` or `npc:heard`). Everyone within `radius` (straight line; walls don't
+npcs? }` (at `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`
+(whenever that event fires; not `noise` or `npc:heard`). `at` is a spot, or a point `{ x, y }` in tile units
+anywhere on the map, a desk or a wall too (a phone rings from the phone). Everyone within `radius` (straight line; walls don't
 stop sound), active and not gone, faces it for 1.5 s; a second noise retargets him. `npcs` limits who hears it.
 `ripple` (true or `ripple()` opts) draws it; at a spot named after a machine (an interactable whose type or id is
-`at`, within 1.6 tiles) the rings start on the machine (`makeNoise`'s `from`).
+`at`, within 1.6 tiles) the rings start on the machine (`makeNoise`'s `from`). Every head it turns shows the swing
+(`fx.turned`), ripple or not.
 The authority hears nothing in his `deafIn` zone. With no override he turns his body and waits; in any
 override only his head turns and his plan goes on. Glances due meanwhile still draw from the rng. Events
 `noise {x, y, radius}`, then `npc:heard {id}` per listener in cast order. Example: fixture-attention (the printer).
@@ -373,7 +379,9 @@ Render and audio read these; the sim never does. All optional except `title`.
   anyone telling on you or catching you.
 - `cones`: `{ alert: [override] }`: overrides during which a cone glows red. A cone also glows while its NPC sees
   something the rules react to (`game.watch`) and when he catches you; the authority's also while his suspicion
-  is above 0.
+  is above 0. Every cone is drawn as plainly as the authority's; its edge firms up while he has you in sight.
+- A seated NPC with no `arms` pose types (keystroke ticks, silent, no paper flurry) unless he is in an override,
+  on a schedule `anim`, `heeding` a noise or a stare, or glancing 0.3 rad or more aside.
 - `endScenes`: `{ kindOf(outcome), scenes: { [kind]: { win, icons, draw(ctx, game, t, e, outcome) } } }`.
   `kindOf` must map every outcome to a scene. Absent: `render/screens.js` `DEFAULT_END_SCENES`, a plain scene per
   result. `draw` paints a scene: people, furniture and things (`drawThing`, the level's painters), never an emoji
@@ -449,7 +457,7 @@ game = {
   input,                      // set by main.js (see Input)
 
   // --- per loop (rebuilt by resetLoop) ---
-  fx: { bubbles, particles, shake, lines },   // lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]
+  fx: { bubbles, particles, shake, lines, ripples, turns },   // lines: [{ from: npcId, to: 'player' | npcId, kind, age, ttl, via? }]
   loopTime: 0,                // real (sim) seconds since loop start
   paused: false,              // main.js only: nothing ticks while true
   clock: { minute: 0, ff: false, forced: 0 },
@@ -505,6 +513,7 @@ game = {
                              // every ~6 s unless busy at a lure's job; cleared when he gets it
   label: '',                 // debug string of the current activity
   anim: null,                // null | the current schedule entry's `anim` (none under an override)
+  heeding: false,            // render only: a noise or a stare holds his eyes (a seated NPC stops typing)
   rng,                       // per-NPC (see the traps)
 }
 ```

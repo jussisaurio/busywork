@@ -109,13 +109,16 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 
 ## Vision and suspicion
 - **Vision cones.** Each NPC sees a cone (default 90° and 7 tiles; each cast member can differ). Walls block sight;
-  glass does not. V shows the cones.
+  glass does not. V shows the cones. Every cone is as plain as the authority's, since anyone can tell on you; its
+  edge firms up while he has you in sight.
+- **Seated NPCs work.** At a desk in his own routine a coworker types, silently. His hands stop when he glances,
+  turns to a noise or is busy with something else, so a glance reads as a break.
 - **Seated NPCs glance around.** Every 5–9 s (each cast member can differ) they turn their head 60–125° to one side
   for 1.3 s. The head turn is the telegraph. Each NPC's glance timing comes from its own seeded RNG, so it is
   learnable.
 - **Suspicion.** If the authority can see you and you are not looking busy (pretending, or doing an action; an idle
   action like eating doesn't count), his ❓ meter fills over 1.6 s. Otherwise it drains over 3 s. Full, he assigns
-  you work: he points, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
+  you work: he points, his order runs to you as a line, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
   time ×8. The work is 20 game minutes from his order, the walk included. Progress shows only in the stack.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
@@ -134,8 +137,9 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   and pretending doesn't hide it.
 - **The scene.** After some events, one witness blames whoever he sees at the scene (a room, or near its door unless
   you pretend), once per event.
-- **Noise.** Some actions and events make a noise. A machine's noise ripples out from the machine. Everyone in
-  earshot turns toward it for a moment. Walls don't stop sound.
+- **Noise.** Some actions and events make a noise. It bursts at its source (a machine, a phone on a desk) and
+  ripples out to its earshot. Everyone in earshot turns toward it for a moment, and each head's swing shows. Walls
+  don't stop sound.
 - **On screen.** Bubbles, signs and meters stay inside the view. With no room above a head, the bubble goes beside
   it, and its tail points at the speaker.
 
@@ -156,7 +160,8 @@ their desk.
 ## Routes and HUD (icons only)
 - A level has a small number of routes (ways to win). Each has an icon and a slot. A found route shows its icon; an
   unfound one is a blank slot. The slots show on the HUD, the title and the end card.
-- The clock is big and always visible. It turns red near the deadline (when is the level's choice).
+- The clock is big and always visible. It turns red near the deadline (when is the level's choice). Once the day
+  is decided it stops at the minute the end card shows. The mission badge's clock face shows the deadline.
 - Mission badge icons only. **No route status chips.** Objects show their state in the world.
 - Held item, loop number (⟳ 3) and ⏩ while fast-forwarding.
 - The authority's ❓ suspicion meter shows above his head when it is above 0.
