@@ -1,6 +1,53 @@
 # Cold reads: interview
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"d593bbabeb9964580b246f01c56a238932a5f36c805b29f77b9bf76033648ff5","parts":{"card":"8d60a62ec622de59463bcbeb9eafadbe14372b3dbb4bc563616da391d906590f","ways":"c225e1c225002f6ee5a8efe326f4487014051039f4d5ad973a63ca1c0c3d0be6","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":3,"nonsense":3},"problems":{"blocker":2,"should":4,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs d593bbabeb99: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 sensible, 3 stretch, 3 nonsense.
+Problems: 2 blocker, 4 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 44 s | $0.11 |
+| all | | 44 s (the steps add up to 44 s) | $0.11 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] In routes 1, 4 and the variant, Lin answers a kitchen call around 3:15 and stays on hold past 3:30. Someone waiting for an interview call would hang up as 3:30 gets close and go back to her desk. She would also hear her own phone ringing from the kitchen, since the boss hears it from his office. In the route 2 teaching fail she slams hold music down at once, so the two don't fit together. — Keep her away for a reason she would accept, such as the kitchen caller saying "please hold for HR" or a real person talking to her. She can't hang up on that without seeming rude.
+- E2 [blocker] In route 2 the boss answers Lin's ringing phone, hears hold music and stays on for nine minutes. With nobody on the line, a real boss hangs up within seconds. When Lin comes back at 3:26 with her interview four minutes away, she would say "I'm expecting a call" and he would hand the phone back. — Put a real caller on the line who keeps the boss talking, such as his golf buddy or a supplier who won't stop. Lin then hovers, too scared to interrupt the boss.
+- E3 [should] In route 1 the boss shrugs and hangs up on an interviewer while Lin is ten steps away in the kitchen. A real boss would shout "Lin, phone!" or take a message. — Have him say "she's not at her desk" and hang up without looking.
+- E4 [should] Across all wins, the interview is lost because one call fails. A real interviewer redials or tries her mobile. — Give a reason they won't, such as one scheduled slot, or the card saying "the interviewer only tries once."
+- E5 [should] In route 3 Lin's desk phone needs a mains plug in a socket that Kev also uses for his charger. Desk phones use a phone jack. — Make it the phone's power adapter, or a phone and power wall plate shared with Kev.
+- E6 [should] Under "Told on", Lin or Kev reports you just for standing at the switchboard. A coworker there isn't suspicious. — Only the socket counts as telling, or they report you only if they see you plug into Lin's own line.
+
+### 1-judge: report.md
+
+Verdict: fixable
+
+- 1. Someone else answers (win): nonsense — Lin is waiting for a 3:30 interview, yet she stays on hold on an unknown kitchen call for over ten minutes and lets the time pass.
+- 1 variant, Kev away by timing (win): nonsense — Lin makes the same choice as in route 1.
+- 2. Her line is busy (win): nonsense — the boss sits on hold on someone else's phone with nobody to talk to, and Lin, back at 3:26, never asks for her phone.
+- 3. Her phone is dead (win): stretch — the boss turning his back and Kev re-plugging are real; a desk phone running off a mains socket is not.
+- 4. Nobody answers (win): stretch — a boss on his own call ignoring another phone is real, but it rests on route 1's kitchen hold.
+- Lin takes her call (lose): sensible — the jump straight to your desk is an absurd result, not an absurd method.
+- Caught (lose): sensible — the boss sees you crouched at a coworker's socket.
+- Away from your desk (lose): sensible — the boss blames whoever is missing when something goes wrong.
+- Told on (lose): stretch — a coworker standing at the switchboard is nothing Lin or Kev would report.
+- Teaching fails (lose): sensible — each one shows a real person's reaction.
+
+## Problems
+- blocker: In routes 1, 4 and the variant, Lin answers a kitchen call around 3:15 and stays on hold past 3:30. Someone waiting for an interview call would hang up as 3:30 gets close and go back to her desk. She would also hear her own phone ringing from the kitchen, since the boss hears it from his office. In the route 2 teaching fail she slams hold music down at once, so the two don't fit together. — Keep her away for a reason she would accept, such as the kitchen caller saying "please hold for HR" or a real person talking to her. She can't hang up on that without seeming rude.
+- blocker: In route 2 the boss answers Lin's ringing phone, hears hold music and stays on for nine minutes. With nobody on the line, a real boss hangs up within seconds. When Lin comes back at 3:26 with her interview four minutes away, she would say "I'm expecting a call" and he would hand the phone back. — Put a real caller on the line who keeps the boss talking, such as his golf buddy or a supplier who won't stop. Lin then hovers, too scared to interrupt the boss.
+- should: In route 1 the boss shrugs and hangs up on an interviewer while Lin is ten steps away in the kitchen. A real boss would shout "Lin, phone!" or take a message. — Have him say "she's not at her desk" and hang up without looking.
+- should: Across all wins, the interview is lost because one call fails. A real interviewer redials or tries her mobile. — Give a reason they won't, such as one scheduled slot, or the card saying "the interviewer only tries once."
+- should: In route 3 Lin's desk phone needs a mains plug in a socket that Kev also uses for his charger. Desk phones use a phone jack. — Make it the phone's power adapter, or a phone and power wall plate shared with Kev.
+- should: Under "Told on", Lin or Kev reports you just for standing at the switchboard. A coworker there isn't suspicious. — Only the socket counts as telling, or they report you only if they see you plug into Lin's own line.
+- nit: The premise has Lin interviewing for your job by an outside call, in front of a boss who doesn't seem to know about it. — Make it clear the interview is with head office or HR, not him.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a19db65+dirty","hash":"dea162406d0d93969bc675b5a64b9d1660d219bd03c7555f4edef86e7e07ca67","parts":{"card":"c27b93544267d1f41c424590839b4209ebfc25b9a430f7eaef4ce8cdddd8a18e","premise":"5928293c07ad8c6127b7a78fa0bb61699ea9ab673164e532c492c5c0f75d60ba","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit a19db65+dirty, by claude -p (model: default). Inputs dea162406d0d: the card, premise.md, the stage's prompts.

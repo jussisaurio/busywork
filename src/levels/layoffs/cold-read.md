@@ -1,6 +1,45 @@
 # Cold reads: layoffs
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"a8e3c4871947c56575b80859ca158890c06b19be12c0f0484135b7c68b8112a2","parts":{"card":"2abe52b881092175ab39a7db9c7c3809e5f686e5630e501b2128883d14163a1b","ways":"1fecea350d1bedc4998d9e81ee0ed683583be056ce713968aa312d2accb255a0","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":1,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":2}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs a8e3c4871947: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 sensible, 1 stretch, 0 nonsense.
+Problems: 1 blocker, 3 should, 2 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 57 s | $0.12 |
+| all | | 58 s (the steps add up to 57 s) | $0.12 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look.
+- E2 [should] Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up.
+- E3 [should] At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not.
+- E4 [should] He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list.
+
+### 1-judge: report.md
+
+Verdict: fixable
+
+- Route 1, waiting for Lin's phone (win): sensible. People get absorbed in their phones. The boss walked off and left a dead screen with you, so you sitting in his chair to check it looks normal.
+- Route 2, ringing Kev's desk (win): sensible. Most people turn to a ringing phone on an empty desk and let it ring.
+- Do nothing (lose): sensible. The boss sends the list he wrote.
+- Seen by Lin (lose): stretch. Lin tells on you without a visible reason, and the boss's mild reaction to being told is unlike any real boss.
+- Caught by the boss (lose): sensible. Any boss who found the person on the list editing it would throw them out.
+
+## Problems
+- blocker: In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look.
+- should: Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up.
+- should: At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not.
+- should: He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list.
+- nit: At 3:26 Lin knows Kev has gone home and hears the boss ringing Kev's desk again and again. Many coworkers would call out "He's gone home!" — Give her a reason not to: she has headphones in, or she shrugs and looks away because it isn't her business.
+- nit: At 3:26 the boss phones Kev and bangs the screen, though he watched Kev fix it with the cable 20 minutes earlier. Five minutes later he fixes it himself. — This is believable if he looks reluctant, as if he hates crawling under desks. A sigh before he kneels at 3:31 would show that.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a19db65","hash":"b150a998cf1de2e48fc549f2b6fc93718a2f75c653ed8ae4cd675e295d6fd24d","parts":{"card":"e775451aef394da14bbed3b69ae83498d1362b02f6b7e02e296e135da0026054","premise":"d6d4d955bc15ac7e14e7192921ab67b0f8d716043649a0e755a09083db341605","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit a19db65, by claude -p (model: default). Inputs b150a998cf1d: the card, premise.md, the stage's prompts.

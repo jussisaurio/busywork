@@ -1,6 +1,46 @@
 # Cold reads: early-bus
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"1b1af7dadf1d7f2479b4c2fc30df009595e31b29bfabc861245d1af26f0d9e1d","parts":{"card":"0ab9d0b732ee148cbaa21f81104048483e6907745bdb00ea4c5c7b97b219769b","ways":"794fee5f12646e07b99b9b28dccf3a95b446c35294d28c34d8895e607f27f1cb","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":5,"stretch":2,"nonsense":1},"problems":{"blocker":2,"should":2,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 1b1af7dadf1d: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 5 sensible, 2 stretch, 1 nonsense.
+Problems: 2 blocker, 2 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 53 s | $0.12 |
+| all | | 53 s (the steps add up to 53 s) | $0.12 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] In route 2 the boss "goes by his wall clock" (route 1), and he sat facing that clock until about 3:43, when it read 3:43. Then he walks under a hallway clock showing 4:43, and at 3:58 one showing 4:58, and believes it. A real boss says "that clock's an hour fast." Today the caretaker was seen fixing clocks, so it's even easier to blame. Only a puzzle piece leaves on that. — Fix: keep the boss out of his office from before 3:00, for example in a meeting room, so he walks straight to the kitchen and never sees his own clock. Or make the route need both clocks pushed so they agree.
+- E2 [blocker] Kev reads 3:01, gets a coffee, comes back at 3:10 and believes it is 4:10. Nobody believes a coffee break took an hour. Lin skipping the restroom only works if Kev's belief is believable. — Fix: do the push while Kev is away much longer, such as a 40-minute meeting or errand. Or have Kev frown and shrug it off, since the route doesn't need him to believe it.
+- E3 [should] Route 1's 3:22 → 4:05 jump within 13 minutes. A half-awake boss can just about take it, but it's thin. — Fix: make his last look at the clock earlier, around 3:05, before the long post-lunch email slog, so the gap feels like the time it claims.
+- E4 [should] The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier.
+
+### 1-judge: report.md
+
+Verdict: fixable
+- 1. Push the boss's clock (win): stretch — he read 3:22 at 3:22, then believes 4:05 at 3:35, so 13 minutes would feel like 43. A sleepy boss after lunch might just about swallow that.
+- 2. Push the open-plan clock (win): nonsense — the boss trusts the hallway clock over his own wall clock, which he goes by and saw moments earlier, though the two are an hour apart. Kev believes his 9-minute coffee took an hour.
+- Still in at 4:30, at your desk (lose): sensible — you stay because his coat is on the rack, and the bus leaves.
+- Still in at 4:30, at the stop (lose): stretch — with the bus at the kerb a real worker just gets on. The boss leaving his desk to walk you back from the street is a reach.
+- Caught on the stepladder (lose): sensible — he turns round and finds you up his ladder at his clock.
+- Caught in the street (lose): sensible — he sees you on his way back from lunch, or comes looking when he finds your chair empty.
+- Boss gone, you not at the stop (lose): sensible — you simply missed the bus.
+- Told on (lose): sensible — a coworker telling the boss, extra work and the clock set right is what really happens.
+
+## Problems
+- blocker: In route 2 the boss "goes by his wall clock" (route 1), and he sat facing that clock until about 3:43, when it read 3:43. Then he walks under a hallway clock showing 4:43, and at 3:58 one showing 4:58, and believes it. A real boss says "that clock's an hour fast." Today the caretaker was seen fixing clocks, so it's even easier to blame. Only a puzzle piece leaves on that. — Fix: keep the boss out of his office from before 3:00, for example in a meeting room, so he walks straight to the kitchen and never sees his own clock. Or make the route need both clocks pushed so they agree.
+- blocker: Kev reads 3:01, gets a coffee, comes back at 3:10 and believes it is 4:10. Nobody believes a coffee break took an hour. Lin skipping the restroom only works if Kev's belief is believable. — Fix: do the push while Kev is away much longer, such as a 40-minute meeting or errand. Or have Kev frown and shrug it off, since the route doesn't need him to believe it.
+- should: Route 1's 3:22 → 4:05 jump within 13 minutes. A half-awake boss can just about take it, but it's thin. — Fix: make his last look at the clock earlier, around 3:05, before the long post-lunch email slog, so the gap feels like the time it claims.
+- should: The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier.
+- nit: Every office worker has a clock on their computer or phone. The design asserts that "nobody checks a wall clock against his phone." That's an acceptable comic premise, but route 1 would be stronger if it showed why. — Fix: show the boss on paper or on the phone, or with a dead monitor, in his post-lunch shots, so a wall clock is his only clock.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"1909728","hash":"741bfac5738b7c056180a5400599ef50a732255fa6a00884d755a73b9f9addf3","parts":{"card":"f5a03af78aedb7ba2b47726215e19a90462bcd10e7841831e65ce15545209405","premise":"7e6d1c5c124d08e9e73f1fed64a1e8a8934e6336a64b91385d07740171602c6c","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit 1909728, by claude -p (model: default). Inputs 741bfac5738b: the card, premise.md, the stage's prompts.

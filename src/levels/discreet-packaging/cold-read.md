@@ -1,6 +1,58 @@
 # Cold reads: discreet-packaging
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"860437740047ccee1533c86cd3463548ea48b04f39cdc792c4fefca188be5479","parts":{"card":"8ee819e35f5bd7f15f8bd57893d30ee49e32f20f5b4f4ef55fa08d1861622e83","ways":"1213694a934cbd837c0c19dc9120ade034662941a4818e5869d65a78f1874145","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":8,"stretch":4,"nonsense":2},"problems":{"blocker":3,"should":4,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 860437740047: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 8 sensible, 4 stretch, 2 nonsense.
+Problems: 3 blocker, 4 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 58 s | $0.13 |
+| all | | 58 s (the steps add up to 58 s) | $0.13 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme.
+- E2 [blocker] In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office.
+- E3 [blocker] After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real.
+- E4 [should] Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter.
+- E5 [should] Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on.
+- E6 [should] "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00.
+- E7 [should] Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter.
+
+### 1-judge: report.md
+
+Verdict: fixable
+- Blind the camera: pull the plug (win step): stretch — kneeling at a power strip right behind Bob's chair without him noticing is thin, but the static-then-thump, then check the plug, order is real.
+- Blind the camera: poke it into the plant (win step): stretch — cameras do get knocked askew, but a watcher who *likes* his feed turning into one leaf is a puzzle piece.
+- Bob gets it (win): sensible — clerks go by the label, and stern Bob crying over "Mum's" hearts is a fine absurd result.
+- Bob gets it, you're away (win): sensible — the brown box held out to an empty chair is nothing anyone would remark on.
+- No parcel today, drawer (win): sensible — taking your own parcel quietly is normal, and a clerk with nothing for you shrugs.
+- No parcel today, mailroom floor (win): stretch — "nobody ever goes into the mailroom" doesn't fit a mail clerk.
+- The mail call (lose): sensible — this is the dread the card sets up.
+- The mail call, you're not there (lose): sensible — everyone sees the pink box for you anyway.
+- Caught on camera (lose): sensible — Bob sees you with the pink box, or with the broom.
+- Caught in person (lose): sensible.
+- Found, off the corridor floor (lose): sensible — Lin picks it up, reads it and holds it out.
+- Found, Lin takes it off you (lose): nonsense — no mail clerk takes a person's own parcel out of their hands.
+- Hidden, and you're not there (lose): nonsense — a parcel gone and its owner gone means "they collected it," not a mystery worth pointing at.
+- Twenty minutes of work (setback): stretch — Bob is called "a real guard," and a guard can't hand you work. A mail clerk telling on you is also odd.
+
+## Problems
+- blocker: Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme.
+- blocker: In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office.
+- blocker: After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real.
+- should: Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter.
+- should: Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on.
+- should: "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00.
+- should: Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter.
+- nit: Lin collecting parcels *from* the pigeonholes to hand them out is backwards for most offices. — Call it the parcel shelf.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"a19db65+dirty","hash":"7904e871082adf6dafb9c1f63c1865a4c06646882de2076c4b78b4b07a446ab8","parts":{"card":"abb950f8c65866c2b72031087db59793a7a513180c067b8ebc3a8e8c4dbab235","premise":"bb3907c05b2cb6f97d9b1da50962f8641195d44950ec295c662b4c88cc39f944","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit a19db65+dirty, by claude -p (model: default). Inputs 7904e871082a: the card, premise.md, the stage's prompts.

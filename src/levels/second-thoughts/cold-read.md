@@ -1,6 +1,55 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"16f474486ca7318be93a503dc19f6b3cab183b2073ee21ef40eba55940e724a4","parts":{"card":"e0419a235f8914bf6c84462211304f84cf0ec3910947787f959fa9d54713a661","ways":"2b8f762fe43a5b0abd2700e9ed817b10c032d1e865da488091fd7946eabeaf53","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":4,"nonsense":2},"problems":{"blocker":4,"should":3,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 16f474486ca7: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 sensible, 4 stretch, 2 nonsense.
+Problems: 4 blocker, 3 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 50 s | $0.11 |
+| all | | 50 s (the steps add up to 50 s) | $0.11 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] In the switch route, his glass office goes dark while the floor around it stays lit, so he can only see "to arm's length." A lit floor lights a glass office. He also saw you walk in behind him a moment ago and would just say "Hey, did you just turn my light off?" — Move his office's switch outside the office, for example a lighting panel in the hallway or the meeting room. Then he gets up and goes looking for the cause, which really does leave his desk empty.
+- E2 [blocker] In the switch route, he spends about three minutes reaching a switch a few steps behind him. A real person flips it back in seconds. — Give him a reason to be away longer, such as the outside panel above, or a blind he has to sort out on the way.
+- E3 [blocker] In the vomit route, Lin picks the letter out of the puddle and carries it to the boss's tray, and the boss pockets a soggy letter off the floor. No coworker handles vomit-soaked paper, and the chewed paper wouldn't be readable anyway. — Lin goes for paper towels and a cleaner. The real risk is the boss walking over to see what the retching was about, and recognising his envelope in the mess.
+- E4 [blocker] Lin switches on a coffee machine that is soaked, sitting in a puddle, beside a tipped-over jug. A real person stops or wipes it down first. — Have the water go somewhere she wouldn't see it, like into the reservoir or behind the machine onto the socket, so she sees nothing wrong.
+- E5 [should] In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office.
+- E6 [should] In the blackout route, the dark lasts eight minutes, which is long for a single tripped breaker. — Justify it: Kev won't reset it until someone unplugs the smoking machine, and Lin is scared to touch it.
+- E7 [should] In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it.
+
+### 1-judge: report.md
+
+Verdict: fixable
+
+- The switch (win): nonsense — the boss's office is glass and the floor around it stays lit, so it wouldn't go dark. He also just watched you walk in behind him, and he takes three minutes to reach a switch a few steps away.
+- The blackout (win): stretch — the short and the floor going dark hold up, but Lin switches on a machine still dripping and standing in a puddle, next to a tipped-over jug.
+- The breaker (win): stretch — Kev gets there a second after you pull it, finds nothing wrong, and would push it straight back up. Your window would be a few seconds.
+- Eating it (win): stretch — panic-eating the letter is a fair comedy move, but swallowing a whole envelope is pushing it.
+- 3:40, still in tray (lose): sensible — he goes through his tray and finds it.
+- Caught with it (lose): stretch — reaching into his tray is fine. But once the light is back, a white envelope in your hand looks like any other envelope unless he knows his tray is missing one.
+- Found in his dark office (lose): sensible — whoever is standing in his dark office flipped the switch.
+- Found at the fuse box (lose): sensible — Kev finds you at a breaker someone pulled and tells the boss.
+- The letter came back up (lose): nonsense — nobody fishes paper out of vomit and delivers it to the boss.
+- Seen soaking the machine (lose): sensible — Kev sees you pour water on the coffee machine and reports it.
+
+## Problems
+- blocker: In the switch route, his glass office goes dark while the floor around it stays lit, so he can only see "to arm's length." A lit floor lights a glass office. He also saw you walk in behind him a moment ago and would just say "Hey, did you just turn my light off?" — Move his office's switch outside the office, for example a lighting panel in the hallway or the meeting room. Then he gets up and goes looking for the cause, which really does leave his desk empty.
+- blocker: In the switch route, he spends about three minutes reaching a switch a few steps behind him. A real person flips it back in seconds. — Give him a reason to be away longer, such as the outside panel above, or a blind he has to sort out on the way.
+- blocker: In the vomit route, Lin picks the letter out of the puddle and carries it to the boss's tray, and the boss pockets a soggy letter off the floor. No coworker handles vomit-soaked paper, and the chewed paper wouldn't be readable anyway. — Lin goes for paper towels and a cleaner. The real risk is the boss walking over to see what the retching was about, and recognising his envelope in the mess.
+- blocker: Lin switches on a coffee machine that is soaked, sitting in a puddle, beside a tipped-over jug. A real person stops or wipes it down first. — Have the water go somewhere she wouldn't see it, like into the reservoir or behind the machine onto the socket, so she sees nothing wrong.
+- should: In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office.
+- should: In the blackout route, the dark lasts eight minutes, which is long for a single tripped breaker. — Justify it: Kev won't reset it until someone unplugs the smoking machine, and Lin is scared to touch it.
+- should: In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it.
+- nit: The letter comes back up whole after being chewed. — Have it come back up as a readable soggy wad, enough for someone to spot the boss's name or yours on it.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"ce498d6","hash":"37a116766a877f3bb2bcfd6145d146d125dd6261cd8afa2117d0a602a99e7f7a","parts":{"card":"12cd9b06c0e80425053b9a559213be241018f2e6ec2bcf8929d4fb6a9c05fabb","premise":"ce1ee358ca3daeb85fb78598f4b0d2c09ce7d237d1a5b029c93101bf5175da47","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit ce498d6, by claude -p (model: default). Inputs 37a116766a87: the card, premise.md, the stage's prompts.

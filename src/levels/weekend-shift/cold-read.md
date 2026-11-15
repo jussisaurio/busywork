@@ -1,6 +1,52 @@
 # Cold reads: weekend-shift
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"b133f2adfe1337eb8a0e4d7a62470c1e7eb94da724005589cb20b683084cc579","parts":{"card":"bfff257f8b131dcb1153ee09488f5dad957d123415042910b62ede71063905d4","ways":"5af38ce1645ff4ef568b37d80144b36cc26422d772c77b5240cfc348c535c66e","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":6,"stretch":2,"nonsense":1},"problems":{"blocker":2,"should":4,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs b133f2adfe13: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 6 sensible, 2 stretch, 1 nonsense.
+Problems: 2 blocker, 4 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 57 s | $0.12 |
+| all | | 57 s (the steps add up to 57 s) | $0.12 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] The ending's own reasoning works against it. "He's reading out what he expects" means he would read out *your* name, and "he knows what it says" means a different face would surprise him. On top of that, his sight cone "lies on the board" all afternoon, yet he "hasn't looked at it since 4:00." — Fix: he filled the board in on Monday, and on a Friday afternoon he honestly doesn't remember who he put down, so he reads whatever face is in the box. Make it clear his cone is watching for *people* at the board, not reading what's on it.
+- E2 [blocker] The boss reading out his own face as a win. A real boss looks at his own face, says "Very funny. Who did this?" and puts yours back. — Fix: make the boss's face a loss (he wipes it, draws yours back and glares). Or drop it, and make the second write land on Kev.
+- E3 [should] The six-second look at the ding has no real reason behind it. — Fix: give it one people actually have. Nobody comes for the noodles, so heads stay turned, wondering whose they are ("Whose is that? Lin?"). An unclaimed ding holds attention. A ding someone is answering doesn't.
+- E4 [should] "Stay near the board until 5:00". After a ding at 4:05, that means standing at the board for nearly an hour. A real boss whose cone is on the board would say "Don't you have work?" — Fix: only require being in the empty chair between Lin and Kev when everyone sits down at 4:55. Hanging around near the board should draw the boss's attention.
+- E5 [should] Kev at 5:00. A real Kev hears his name and says "I wasn't on it." — Fix: show the protest and have the boss wave it off ("The board says Kev"), which fits "the board decides".
+- E6 [should] Told on. Once Lin reports someone tampering with the Saturday board, a real boss checks the board and keeps an eye on it. Here he lets you try again with nothing changed. — Fix: after a tell, his cone stays on the board for the rest of the level, or Lin keeps a closer watch on it.
+
+### 1-judge: report.md
+
+Verdict: fixable
+
+- The ding (win): stretch. Real people look up at a ding for a second, not six, and the reason given ("everyone thinks of food") is not something a person would keep staring for.
+- The phone (win): sensible. Anyone answers their own ringing phone and faces the window while saying hello to a dead line. Lin is away on her own lunch errand.
+- The trap (not a win): sensible. Seen from his desk, the copier is right behind the board, so looking at it means looking at you.
+- Shared ending, boss's face (win): nonsense. No boss reads out his own face for Saturday without stopping.
+- Shared ending, Kev's face (win): stretch. The boss "knows what it says", and Kev is sitting right there and would object.
+- Fail (lose): sensible. The boss reads the list as written.
+- Caught (lose): sensible. The boss sees you scribbling on the rota.
+- Told on (lose): sensible. Lin has a reason to tell: if you get off, she might be next. After that, though, the boss acts as if nothing happened.
+- Blamed (lose): sensible. "If you're not here, you volunteered" is a real boss move.
+
+## Problems
+- blocker: The ending's own reasoning works against it. "He's reading out what he expects" means he would read out *your* name, and "he knows what it says" means a different face would surprise him. On top of that, his sight cone "lies on the board" all afternoon, yet he "hasn't looked at it since 4:00." — Fix: he filled the board in on Monday, and on a Friday afternoon he honestly doesn't remember who he put down, so he reads whatever face is in the box. Make it clear his cone is watching for *people* at the board, not reading what's on it.
+- blocker: The boss reading out his own face as a win. A real boss looks at his own face, says "Very funny. Who did this?" and puts yours back. — Fix: make the boss's face a loss (he wipes it, draws yours back and glares). Or drop it, and make the second write land on Kev.
+- should: The six-second look at the ding has no real reason behind it. — Fix: give it one people actually have. Nobody comes for the noodles, so heads stay turned, wondering whose they are ("Whose is that? Lin?"). An unclaimed ding holds attention. A ding someone is answering doesn't.
+- should: "Stay near the board until 5:00". After a ding at 4:05, that means standing at the board for nearly an hour. A real boss whose cone is on the board would say "Don't you have work?" — Fix: only require being in the empty chair between Lin and Kev when everyone sits down at 4:55. Hanging around near the board should draw the boss's attention.
+- should: Kev at 5:00. A real Kev hears his name and says "I wasn't on it." — Fix: show the protest and have the boss wave it off ("The board says Kev"), which fits "the board decides".
+- should: Told on. Once Lin reports someone tampering with the Saturday board, a real boss checks the board and keeps an eye on it. Here he lets you try again with nothing changed. — Fix: after a tell, his cone stays on the board for the rest of the level, or Lin keeps a closer watch on it.
+- nit: Nothing says where Kev is looking during the phone route, and a coworker who sees his own face going onto the board would speak up. — Fix: state that Kev has his headphones on and his back to the board at 4:30.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"f83f9fa","hash":"7688953dd2ec17924113029f82b037e19e0addc634436423a93baccb488c9670","parts":{"card":"3137c04ca1f41f001ea870b0d86f4e28b995d5194f3b9c2e7c913db934ba3e9f","premise":"cb7b5e1e4f0d1c971b3554c5203b3a3fe5da70b0303db58e8813c4c4504be908","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit f83f9fa, by claude -p (model: default). Inputs 7688953dd2ec: the card, premise.md, the stage's prompts.

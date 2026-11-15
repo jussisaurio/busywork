@@ -1,6 +1,50 @@
 # Cold reads: audit
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"7d7eef6e4217286b58e549191ff82728d6e2cc624df8c699d42b005489262b1b","parts":{"card":"b56071d2cde4a317ffe83d32db69fbe14abe0c6986c2f60fd2101491fe967647","ways":"878d1148ede4d2e399aefd6e9f4833c6d49bfea3d549fbdc73d96b6189acf9d7","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":3,"stretch":3,"nonsense":1},"problems":{"blocker":2,"should":4,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 7d7eef6e4217: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 sensible, 3 stretch, 1 nonsense.
+Problems: 2 blocker, 4 should, 1 nit.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 49 s | $0.11 |
+| all | | 49 s (the steps add up to 49 s) | $0.11 |
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [blocker] In the Lin route, the auditor is sorting her paper pile and doesn't notice you unplugging the laptop from the same desk, right beside him. Only his view cone makes this work. Your hand and the cable are about 30 cm from his clipboard. — Give him a real reason to turn away. For example, his phone rings and he steps into the kitchen doorway to take it, or the boss calls him into the office. Lift the laptop then.
+- E2 [blocker] In the Kev route, Kev has no reason to hide his laptop "behind his back." If he thinks he left it on your desk, as he does every loop, he'd just pick it up openly. Hiding it makes him an accomplice who never agreed to anything. The auditor is also looking at your desk the whole time, so a laptop disappearing from under his eyes would get noticed. — Have Kev pick it up openly while the auditor is turned away. For example, the auditor walks to the printer or Lin's desk to borrow a pen. Kev just mumbles "mine" and carries it home.
+- E3 [should] When Lin's or the boss's desk gets the cross, the auditor points at you, but nothing ties you to it. Players won't know why they lost. — Have the owner do it: Lin, or the boss coming back, says "that's mine on his desk," and then the auditor points.
+- E4 [should] Getting seen "carrying" a laptop leads to an outburst, but carrying a laptop is ordinary. — Make only the suspicious moments fail: unplugging one from a desk that isn't yours, or walking out of the boss's office with one. If he just sees you carrying one, he asks "whose is that?" and you lose time, not the game.
+- E5 [should] In the Lin route, she comes back from the kitchen to an empty desk. A real coworker would say something loudly before the sign-off at 3:47.7. — Keep her in the kitchen until after the sign-off (for example, she's chatting by the coffee machine), or let her notice and blame the IT cart.
+- E6 [should] Kev puts his laptop on your desk at 3:11.7 and takes it back at 3:21.9 every loop, with no visible reason. — Give him one: he's showing you a video, or he's asking you to watch it while he runs to the printer.
+
+### 1-judge: report.md
+
+Verdict: fixable
+
+- The boss's laptop (win): sensible — the boss walks off to the lobby once his desk is ticked, and Lin is in the kitchen, so nobody sees you lift an unattended laptop.
+- Lin's laptop (win): nonsense — you unplug a laptop from the desk the auditor is standing over, right at his elbow. Nobody misses someone reaching across the desk they're working at.
+- Kev's laptop (win): stretch — Kev sneaks his own laptop off your desk "behind his back" for no reason he has, and the auditor standing over that desk doesn't see it go.
+- A desk has no laptop (lose): stretch — fine when it's your desk. When it's Lin's or the boss's, the auditor blames you without a reason to.
+- He sees you with a laptop (lose): stretch — people carry laptops around offices all day. Carrying one alone isn't suspicious.
+- Away at sign-off (lose): sensible — an empty chair when the auditor needs your signature is an obvious fail.
+- Witness / told on / owner takes it back (lose): sensible — these are ordinary coworker reactions.
+
+## Problems
+- blocker: In the Lin route, the auditor is sorting her paper pile and doesn't notice you unplugging the laptop from the same desk, right beside him. Only his view cone makes this work. Your hand and the cable are about 30 cm from his clipboard. — Give him a real reason to turn away. For example, his phone rings and he steps into the kitchen doorway to take it, or the boss calls him into the office. Lift the laptop then.
+- blocker: In the Kev route, Kev has no reason to hide his laptop "behind his back." If he thinks he left it on your desk, as he does every loop, he'd just pick it up openly. Hiding it makes him an accomplice who never agreed to anything. The auditor is also looking at your desk the whole time, so a laptop disappearing from under his eyes would get noticed. — Have Kev pick it up openly while the auditor is turned away. For example, the auditor walks to the printer or Lin's desk to borrow a pen. Kev just mumbles "mine" and carries it home.
+- should: When Lin's or the boss's desk gets the cross, the auditor points at you, but nothing ties you to it. Players won't know why they lost. — Have the owner do it: Lin, or the boss coming back, says "that's mine on his desk," and then the auditor points.
+- should: Getting seen "carrying" a laptop leads to an outburst, but carrying a laptop is ordinary. — Make only the suspicious moments fail: unplugging one from a desk that isn't yours, or walking out of the boss's office with one. If he just sees you carrying one, he asks "whose is that?" and you lose time, not the game.
+- should: In the Lin route, she comes back from the kitchen to an empty desk. A real coworker would say something loudly before the sign-off at 3:47.7. — Keep her in the kitchen until after the sign-off (for example, she's chatting by the coffee machine), or let her notice and blame the IT cart.
+- should: Kev puts his laptop on your desk at 3:11.7 and takes it back at 3:21.9 every loop, with no visible reason. — Give him one: he's showing you a video, or he's asking you to watch it while he runs to the printer.
+- nit: Nobody in any route checks asset tags. A half-awake auditor might plausibly skip that, but a single line would help, e.g. "he never checks the serials" or him yawning at the clipboard. — Have him glance at the screen instead of the sticker, as a visible sign he's sloppy.
+
+<!-- /cold-read:sense -->
+
 <!-- cold-read:premise {"verdict":"fixable","date":"2026-11-15","commit":"789698c","hash":"070040541872dc9db3fbe76e70cd55ea330b6ee1e11c9559918d8ee06165b8e5","parts":{"card":"b56071d2cde4a317ffe83d32db69fbe14abe0c6986c2f60fd2101491fe967647","premise":"6defb3b8e96e42ba4d168396f28c3be394724a2834c812b90ab1cc1b3d5c4159","prompts":"e810e9318a4aa5a21d9654564c23dd898975d90252af2744b888b19de97df7bd"},"model":"default"} -->
 ## premise: fixable
 Recorded 2026-11-15 at commit 789698c, by claude -p (model: default). Inputs 070040541872: the card, premise.md, the stage's prompts.
