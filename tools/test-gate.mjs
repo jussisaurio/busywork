@@ -17,7 +17,10 @@ const healthy = () => ({
   wins: { keycard: win(4), projector: win(5), 'keycard+projector': win(8) },
   randomWins: 4, randomEvaluated: 3000, crashes: [], crashCount: 0,
 });
-const failed = (r) => checkGate(r, L).filter((c) => !c.ok).map((c) => c.name).join(',');
+// Cold reads (tools/cold-read.mjs coldReadChecks): every stage works and is fresh.
+const STAGES = ['premise', 'pictures', 'replay'];
+const coldOk = () => STAGES.map((s) => ({ name: `cold-read:${s}`, ok: true, text: 'works (2026-11-15, abc1234), fresh', detail: [] }));
+const failed = (r, coldRead = coldOk()) => checkGate(r, L, { coldRead }).filter((c) => !c.ok).map((c) => c.name).join(',');
 
 ok(failed(healthy()) === '', 'a healthy level passes every check');
 
@@ -59,9 +62,29 @@ ok(failed(r) === 'pretend', 'a win without the mustUse lesson fails that lesson'
 r = healthy();
 r.wins.keycard = win(1, { without: { pretend: plan(1) } });
 r.crashCount = 7;
-const report = gateReport(r, checkGate(r, L));
+const report = gateReport(r, checkGate(r, L, { coldRead: coldOk() }));
 ok(/verdict: FAIL \(easy, crash, pretend\)/.test(report), 'the report names every failed check in the verdict');
-ok(/verdict: PASS/.test(gateReport(healthy(), checkGate(healthy(), L))), 'the report says PASS for a healthy level');
+ok(/verdict: PASS: level meeting is ready for a human playtest/.test(gateReport(healthy(), checkGate(healthy(), L, { coldRead: coldOk() }))),
+  'the report says PASS for a healthy level whose cold reads all work');
+
+// Cold reads: a level that is not a fixture is not ready for a human until every stage works and is fresh.
+r = healthy();
+ok(failed(r, null) === 'cold-read', 'a level whose cold reads were not checked fails "cold-read"');
+ok(!/ready for a human playtest/.test(gateReport(r, checkGate(r, L))), 'without cold reads the report never says "ready for a human playtest"');
+const cold = coldOk();
+cold[1] = { name: 'cold-read:pictures', ok: false, text: 'no cold read yet', detail: ['run: node tools/cold-read.mjs --level meeting --stage pictures'] };
+cold[2] = { name: 'cold-read:replay', ok: false, text: 'works (2026-11-01, abc1234), but stale: the replay strips changed since', detail: ['run: node tools/cold-read.mjs --level meeting --stage replay'] };
+ok(failed(r, cold) === 'cold-read:pictures,cold-read:replay', 'a missing stage and a stale stage each fail');
+const coldReport = gateReport(r, checkGate(r, L, { coldRead: cold }));
+ok(/verdict: FAIL \(cold-read:pictures, cold-read:replay\)/.test(coldReport) && !/ready for a human playtest/.test(coldReport),
+  'the verdict names the stages that are missing or stale');
+ok(coldReport.includes('stale: the replay strips changed since') && coldReport.includes('node tools/cold-read.mjs --level meeting --stage pictures'),
+  'the report says what is stale and the command to run');
+cold[1] = { ...cold[1], text: 'fixable (2026-11-15, abc1234): fix the problems src/levels/meeting/cold-read.md lists, then run the stage again' };
+ok(failed(r, cold.slice(0, 2)) === 'cold-read:pictures', 'a stage recorded fixable fails');
+const fx = { ...healthy(), level: 'fixture' };
+ok(failed(fx, null) === '', 'a fixture level needs no cold reads');
+ok(/verdict: PASS: level fixture is ready/.test(gateReport(fx, checkGate(fx, L))), 'a fixture can still pass');
 
 // Lesson matching: cmd = a command that ran contains the word; event = the event fired.
 const LL = { mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'fridge', event: 'sandwich:taken' }] };
@@ -75,7 +98,7 @@ ok(skippedLessons(LR, { routes: ['keycard', 'projector'], used: ['pretend'] }).j
 ok(skippedLessons(LR, { routes: ['projector'], used: [] }).join() === 'pretend,put', 'routes: a lesson without routes binds every win');
 const RL = { routes: ['projector', 'keycard'], mustUse: LR.mustUse };
 const rr = healthy();
-ok(checkGate(rr, RL).find((c) => c.name === 'put')?.text === 'every projector win uses put', 'the gate names the routes a lesson binds');
+ok(checkGate(rr, RL, { coldRead: coldOk() }).find((c) => c.name === 'put')?.text === 'every projector win uses put', 'the gate names the routes a lesson binds');
 
 {
   const M = getLevel('meeting');
