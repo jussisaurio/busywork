@@ -48,16 +48,19 @@ export const DECOR = {
   ],
   clock: { x: 17, y: 6 },
   // The in-tray on his desk, your letter lying in it while it's there (dragged over to him from 3:39), and his
-  // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it
-  // (upright and full, or tipped over it, water down its front and on the floor), its lamp blinking green while it
-  // brews and glowing green with the pot full and steaming once it has (a full pot pours a cup: index.js
-  // pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse is out, and
-  // a scorch mark for the rest of the day. (The switch and the fuse box: darkness.controls.)
+  // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it (full, or
+  // empty once you poured it down the back: a dark wet streak on the wall behind, nothing at the front), its lamp
+  // blinking green while it brews and glowing green with the pot full and steaming once it has (a full pot pours a
+  // cup: index.js pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse
+  // is out till Kev unplugs it, and a scorch mark for the rest of the day. (The lighting panel and the fuse box: darkness.controls.)
   props: [
-    { // where you threw up (keyed on your desk; drawn where it happened)
+    { // where you threw up (keyed on your desk; drawn where it happened, smaller as Lin wipes it up)
       tile: 'P',
       draw: puddleProp,
-      state: (w, game) => ({ at: w.puddle, k: w.sickAt === null ? 1 : ((game?.loopTime ?? 0) - w.sickAt) / 0.5 }),
+      state: (w, game) => ({
+        at: w.puddle,
+        k: (w.sickAt === null ? 1 : Math.min(1, ((game?.loopTime ?? 0) - w.sickAt) / 0.5)) * (1 - 0.7 * w.wipeProgress),
+      }),
     },
     {
       tile: 'P',
@@ -78,7 +81,7 @@ export const DECOR = {
       }),
     },
     { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'brewed' }) },
-    { tile: 'M', draw: jugProp, state: (w) => ({ tipped: w.rigged }) },
+    { tile: 'M', draw: jugProp, state: (w) => ({ empty: w.rigged }) },
     {
       tile: 'M',
       draw: machineProp,
@@ -86,7 +89,7 @@ export const DECOR = {
         lamp: w.coffee === 'brewed' ? 'brewed' : w.coffee === 'brewing' && w.fuse === 'on' ? 'brewing' : null,
         steam: w.coffee === 'brewed',
         scorch: w.coffee === 'shorted',
-        smoke: w.coffee === 'shorted' && w.fuse !== 'on',
+        smoke: w.coffee === 'shorted' && w.fuse !== 'on' && !w.unplugged,
       }),
     },
     { tile: 'M', draw: surgeProp, state: (w) => ({ k: w.surge }) },
@@ -99,15 +102,16 @@ export const DECOR = {
   legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
 
-// level.poses (level 1's looks.js documents it): Kev's hands in the fuse box, the boss's on his light switch, fuming.
+// level.poses (level 1's looks.js documents it): Kev's hands in the fuse box or at the machine's plug, the boss's on
+// the lighting panel, fuming; Lin wiping up your sick at arm's length.
 // Anyone holding a phone torch keeps free hands: render/darkness.js draws the arm and the phone.
 // The boss dreading his tray (index.js dread): a shrug as he sighs at it, one hand drumming on the desk, a hand to
 // his desk clock, both hands dragging the tray over at 3:39.
 const dreading = (n, w, act) => n.id === 'boss' && w.bossAct === act;
 export const POSES = {
   arms: [
-    { when: (n, w) => n.id === 'lin' && (w.letter === 'lin' || n.override === 'pinching'), arms: 'holdout' }, // at arm's length
-    { when: (n) => n.override === 'fixing' || n.override === 'switching', arms: 'reach' },
+    { when: (n) => n.id === 'lin' && n.override === 'wiping', arms: 'holdout' }, // at arm's length
+    { when: (n) => n.override === 'fixing' || n.override === 'switching' || n.override === 'unplugging' || n.override === 'tearing', arms: 'reach' },
     { when: (n, w) => n.id === 'boss' && w.pullAt !== null && w.trayPull < 1 && n.pose === 'sit', arms: 'reach' },
     { when: (n, w) => dreading(n, w, 'sigh'), arms: 'shrug' },
     { when: (n, w, game) => dreading(n, w, 'drum') && Math.floor((game?.time ?? 0) * 6) % 2 === 0, arms: 'carry' },
@@ -147,8 +151,9 @@ export const SOUNDS = {
     'letter:taken': { sfx: 'jingle', who: 'player', opts: { gain: 0.5 } },
     'letter:eaten': { sfx: 'rustle', who: 'player' },
     'player:sick': { sfx: 'splashZap', who: 'player', opts: { gain: 0.8 } },
-    'lin:pinches': { sfx: 'pickup', who: 'lin' },
-    'lin:files': { sfx: 'drop', who: 'lin', opts: { soft: true } },
+    'lin:towels': { sfx: 'rustle', who: 'lin', opts: { gain: 0.6 } },
+    'lin:wipes': { sfx: 'shuffle', who: 'lin', opts: { soft: true } },
+    'coffee:unplugged': { sfx: 'pickup', spot: 'coffee_machine', opts: { soft: true } },
     'letter:stashed': { sfx: 'shuffle', who: 'player', opts: { gain: 0.5 } },
   },
   signs: {},

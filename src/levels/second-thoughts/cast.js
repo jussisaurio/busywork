@@ -1,7 +1,8 @@
 // Second Thoughts' three people and their hooks (level 1's cast.js and behaviours.js document the fields).
-// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her afternoon coffee at 3:10: the
-// old machine makes the lights flicker and the fuse holds, unless you tipped the water jug over it first, and then it
-// shorts and takes the fuse with it. Kev resets fuses: a lure in index.js.
+// The boss never leaves his desk on his own: only the dark (or the sound of you retching) gets him up. Lin makes her
+// afternoon coffee at 3:10: the old machine makes the lights flicker and the fuse holds, unless you poured the water
+// jug down its back onto its socket first, and then it shorts and takes the fuse with it. Kev unplugs it and resets
+// fuses: lures in index.js.
 import { at, deg } from '../../config.js';
 import { burst, shake } from '../../core/fx.js';
 
@@ -53,9 +54,9 @@ export const CAST = [
 
 export const BEHAVIOURS = {
   // Lin switches on the coffee machine (about 3:10). An old machine on an old fuse: the lights flicker, she 😳, Kev
-  // glances down the hall at the fuse box, and the fuse holds; it brews (index.js). If you tipped the jug over it, the
-  // water shorts it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js tick). If the power
-  // is already out, nothing happens.
+  // glances down the hall at the fuse box, and the fuse holds; it brews (index.js). If you poured the jug down its
+  // back, the wet socket shorts it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js
+  // tick). If the power is already out, nothing happens.
   brew: {
     arrive(game, npc, sim) {
       if (npc._brewed) return;

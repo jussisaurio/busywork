@@ -14,11 +14,12 @@ export default {
     'letter:stashed': () => 'stashed',
     'player:sick': () => 'sick',
     'letter:recovered': () => 'recovered',
+    'lin:wipes': () => 'wiped',
     'witness:tattle': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['switchOff', 'rigged', 'breaker', 'taken', 'takenLit', 'ate', 'stashed', 'sick', 'recovered', 'work', 'caught'],
+  binKeys: ['switchOff', 'rigged', 'breaker', 'taken', 'takenLit', 'ate', 'stashed', 'sick', 'recovered', 'wiped', 'work', 'caught'],
   keyActions: ['switchOff', 'rigged', 'breaker', 'taken'],
   renderEvents: ['switch:off', 'coffee:rigged', 'coffee:shorted', 'fuse:tripped', 'fuse:pulled', 'boss:dark', 'fuse:fixed', 'letter:taken'],
   goldenPlans: [
