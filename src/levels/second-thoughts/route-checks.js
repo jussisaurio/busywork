@@ -73,7 +73,7 @@ export default [
     name: 'blackout: pour the jug into the back vent of the coffee machine, Lin shorts it at 3:10, take it from beside his desk (off his torch) → win',
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
-      run('goto 20,2 pretend'); // by the fridge, beside the machine: out of Kev's sight through the kitchen door
+      run('goto coffee_machine pretend'); // the kitchen is empty till Lin walks in just after 3:09
       run('interact'); // pour the jug into its back vent
       if (!g.world.rigged) throw new Error('never rigged the machine');
       run('goto my_seat');
@@ -91,7 +91,7 @@ export default [
     name: 'blackout: take it, then spend 3:40 in the kitchen → still a win (nobody knew the letter was there)',
     expect: { result: 'win', routes: ['blackout'] },
     play({ run, g, log }) {
-      run('goto 20,2 pretend'); // by the fridge, beside the machine: out of Kev's sight through the kitchen door
+      run('goto coffee_machine pretend'); // the kitchen is empty till Lin walks in just after 3:09
       run('interact'); // pour the jug into its back vent
       if (!g.world.rigged) throw new Error('never rigged the machine');
       run('goto my_seat');
@@ -112,7 +112,7 @@ export default [
     name: 'blackout: take it and wait in his office till the lights come back → he walks back in and sees it in your hand → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, g, log }) {
-      run('goto 20,2 pretend');
+      run('goto coffee_machine pretend');
       run('interact');
       run('goto my_seat');
       run('pretend until 3:11');
@@ -128,14 +128,15 @@ export default [
     },
   },
   {
-    name: 'blackout: pour the jug from the front of the counter → Kev sees you through the kitchen door ❗👉 → desk work → fail',
+    name: 'blackout: still pouring the jug when Lin walks in for her coffee → she shouts ❗👉 → desk work → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {
-      run('goto 21,2 pretend');
+      run('goto coffee_machine pretend');
+      run('pretend until 3:09');
       try { run('interact'); } catch { /* stopped mid-tip */ }
-      waitFor(() => log.some((e) => e.name === 'boss:workAssigned'), { busy: false, maxSec: 10 });
+      waitFor(() => log.some((e) => e.name === 'boss:workAssigned'), { busy: false, maxSec: 30 });
       const t = log.find((e) => e.name === 'witness:tattle');
-      if (!(t && t.payload.by === 'kev' && t.payload.reason === 'action')) throw new Error('no tattle from Kev');
+      if (!(t && t.payload.by === 'lin' && t.payload.reason === 'action')) throw new Error('no tattle from Lin');
       if (g.world.rigged) throw new Error('the jug got poured anyway');
     },
   },

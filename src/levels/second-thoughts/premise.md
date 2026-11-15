@@ -21,7 +21,7 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
 
 ## Cast
 
-- **The boss** sits at his desk facing his tray, from 3:00 until 3:40. He never gets up on his own, and he does no work: he dreads the tray. On a fixed five-minute round from 3:01, the same every loop, he looks at it and sighs (📥😮‍💨, a shrug), drums his fingers on the desk, and checks the brass alarm clock at the end of his desk (⏰😮‍💨, a glint off its face). None of it moves his eyes off the desk.
+- **The boss** sits at his desk facing his tray, from 3:00 until 3:40. He never gets up on his own, and he does no work: he dreads the tray. On a fixed five-minute round from 3:01, the same every loop, he looks at it and sighs (a thought of the tray and 😩, a shrug), drums his fingers on the desk, and checks the brass alarm clock at the end of his desk (⏰😩, a glint off its face). None of it moves his eyes off the desk.
   - 3:39: the desk clock rings. He sighs and drags the tray over.
   - If his office lights go out (their switch is on the lighting panel out in the hallway), he says ❓ and holds up his phone. He gets up, goes out through the side door and the meeting room into the hallway, and walks to the panel. Its switches have no labels: he tries one after another (his office tubes blink as he does) until his own come back on, then walks back. His desk is empty from the moment he gets up until he is back. Whoever he finds standing at the panel when he gets there switched it off.
   - If the whole floor goes dark (the fuse), he says ❓, holds up his phone as a torch and goes out by his hallway door, round the corner to the fuse box. He doesn't touch fuses: he stands there and holds his light on the box for Kev until the lights come back, then walks back to his desk. His desk is empty all that time. If he finds someone standing at the box when he gets there and the breaker was pulled, that person pulled it.
@@ -30,7 +30,7 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
   - 3:05: she gets up for her afternoon coffee and walks the length of the floor to the kitchen. She comes through the kitchen door just after 3:09 and switches on the old coffee machine at about 3:10. Left alone, the old machine only makes the lights flicker all over the floor: she's startled, Kev glances up from his desk (❓), the fuse holds and the lights steady. Three minutes later it has brewed: green lamp, full pot. A full pot pours a cup, for you too; the cup leads nowhere.
   - If someone poured the water jug into the vent on the back of the machine first, it shorts when she switches it on: sparks and smoke, and a spark runs down the wiring to the fuse box and trips it for the whole floor. She sees nothing wrong before she switches it on: the water is inside the machine, and the jug stands back in its place, empty. If she walks in on someone pouring water into the back of her coffee machine, she shouts and points them out to the boss (❗👉). A shorted machine brews nothing. If the power is already out, nothing happens and she's puzzled.
   - 3:23: she pours herself a cup if it brewed, and drinks it at the kitchen table. 3:31: back at her desk, her cup beside her.
-- **Kev** sits at the far desk on the open floor. He's the one who resets fuses. From his chair he sees through the kitchen door to the front of the coffee machine.
+- **Kev** sits at the far desk on the open floor. He's the one who resets fuses.
   - Whenever the power goes out, he holds up his phone and walks down the hallway to the fuse box at the far west end. The breakers have no labels, so he looks through them by phone light for the one that's down and pushes it back up, and the lights come back on.
   - If the coffee machine shorted and is smoking, he goes to the kitchen first and unplugs it (❓), and only then walks to the fuse box: he won't reset a fuse with a smoking machine still plugged in.
 
@@ -66,7 +66,7 @@ Facts, and where you see each one:
 
 Steps:
 
-1. While the kitchen is empty (Lin walks in just after 3:09), pour the water jug into the vent on the back of the coffee machine. Do it from beside the machine (by the fridge), where Kev can't see you. Pretend to be busy on the way.
+1. While the kitchen is empty (Lin walks in just after 3:09), pour the water jug into the vent on the back of the coffee machine. Pretend to be busy on the way, and be done before she walks in.
 2. At about 3:10 Lin switches it on: the water inside shorts it, and the whole floor goes dark.
 3. The boss goes out to the fuse box with his phone torch. Wait till he's out of his office, walk in, and take the letter from his empty desk.
 4. Get it out of his office before the lights come back and he walks back.
@@ -76,8 +76,8 @@ In a real office: an appliance with water in its works is safe while it's off, a
 Facts, and where you see each one:
 
 - **The old coffee machine strains the wiring.** Any first loop, just by waiting. 3:05: Lin walks to the coffee machine on the kitchen counter. At about 3:10 she switches it on and the lights all over the floor flicker. She's startled, and Kev glances up from his desk (❓). The lights steady, and the machine brews.
-- **A full water jug stands beside it, and you can pour it into the machine's back.** From 3:00: a glass jug of water on the counter beside the machine. Stand by the machine and a prompt appears: pour it into the vent on its back. Afterwards the jug stands empty in its place, and water drips out behind the machine's shoulder. Nothing shows on its front, and nothing happens yet: the machine is off.
-- **Kev watches the front of the machine.** From his desk, his sight cone reaches through the kitchen door to the front of the machine. Pour from there and he sees you leaning over the machine, tipping water into its back. He shouts (❗👉) before more than a splash goes in, points you out to the boss, and you're sent to your desk to work. From beside the machine, by the fridge, he can't see you.
+- **A full water jug stands beside it, and you can pour it into the machine's back.** From 3:00: a glass jug of water on the counter beside the machine. Stand by the machine and a prompt appears: pour it into the vent on its back. While you pour, the jug tips over the machine's back and water streams into the vent. Afterwards the jug stands empty in its place, and a puddle drips down the counter onto the floor; it stays till the machine shorts. Nothing happens yet: the machine is off.
+- **Lin minds what you do to her coffee machine.** Still pouring when she walks into the kitchen, and she sees you tipping her water into its back: she shouts (❗👉) before more than a splash goes in, points you out to the boss, and you're sent to your desk to work. Nobody else cares what you do with a jug.
 - **Water in its works shorts it and the whole floor goes dark.** At about 3:10: sparks and a burst of grey smoke, Lin startled, and a spark runs out of the kitchen and down the wiring to the fuse box at the end of the hallway. Its door flies open, a red lamp blinks, and the office, the meeting room, the kitchen and the open floor all go dark. Only the strip of floor by the glass lobby keeps its daylight. The machine stays scorched black, smoking until Kev unplugs it.
 - **In the dark, everyone sees only where their phone points.** From the blackout: everyone holds up a phone with its flash lit, and each throws a lit beam on the floor.
 - **The boss leaves his desk for the fuse box.** A moment after the lights go: ❓ over his head, and he walks out of his office by the hallway door with his torch, round the corner to the box. There he holds his beam on it, his back to his office. His desk and tray sit dark and empty behind him.
@@ -122,15 +122,15 @@ The blackout win. The floor is dark. The boss stands dutifully at the fuse box r
 
 Every card shows the day as it ended (3:40 for the 3:40 cards, the moment you were caught otherwise), drawn from the state: what you hold, where each person is, the lights. A win: the lights on, the boss at his desk holding up his empty tray, baffled (❓), and you at your desk (or wherever you are) with whatever you hold. Behind, the route's aftermath: the hallway lighting panel after the switch (his eyes keep going out to it); the coffee machine you soaked, scorched, its jug empty beside it and a wet streak behind it, after the blackout; the fuse box after the breaker.
 
-Other cards: the letter chewed and spat out (a win: he holds up his empty tray, baffled; you sit at your desk, still green, thinking 🤢). Sent to your desk by Kev and still there at 3:40 (the boss at his desk, furious, your letter in his hand; you at your desk behind a pile of assigned paperwork; @kev 👉 📄 ✉️). Caught outside his office: in the hallway, by the panel or the fuse box, he points at you (in the dark, with his phone torch on you).
+Other cards: the letter chewed and spat out (a win: he holds up his empty tray, baffled; you sit at your desk, still green, thinking 🤢). Sent to your desk by Lin and still there at 3:40: the boss reads your letter (✉️😠), the thing that ended the day; you behind a pile of assigned paperwork, Lin pointing at you and remembering the jug (@lin 👉 jug), the step that broke. Caught outside his office: in the hallway, by the panel or the fuse box, he points at you (in the dark, with his phone torch on you).
 
 ## Who does what
 
 **The boss** comes back from lunch at 3:00 to a tray he does not want to open. He is a manager who hates paperwork, so he puts it off: he sits facing the tray, sighs at it, drums his fingers, and checks the brass clock on his desk every few minutes, hoping it is later than it is. He does no other work. At 3:39 the clock rings, he gives up, drags the tray over and at 3:40 goes through it, as every day. When his office lights go out, he does what anyone does: gets up and goes to the panel in the hallway to see why, and fumbles with its unlabelled switches. When the whole floor goes out, he goes out to the fuse box with his phone torch, because he's the boss and something has to be done; he can't fix it, so he holds the light for Kev. If someone tells him a colleague was messing with the coffee machine, he gives that person a pile of work to keep them at their desk.
 
-**Lin** works at the desk nearest his office. At 3:05 she wants her afternoon coffee (☕), walks the length of the floor to the kitchen and at about 3:10 switches on the old machine that always makes the lights flicker. She waits for it, pours a cup at 3:23, drinks it at the kitchen table and is back at her desk at 3:31.
+**Lin** works at the desk nearest his office. At 3:05 she wants her afternoon coffee (☕), walks the length of the floor to the kitchen and at about 3:10 switches on the old machine that always makes the lights flicker. She waits for it, pours a cup at 3:23, drinks it at the kitchen table and is back at her desk at 3:31. It is her machine and her water: if she walks in on you tipping the jug into it, she tells the boss (❗👉).
 
-**Kev** works at the far desk. He is the floor's unofficial handyman: when the lights flicker he glances up, and when the power goes he takes his phone torch to the fuse box and resets it. If the coffee machine is smoking, he unplugs it first. From his chair he can see through the kitchen door to the front of the coffee machine. He is also the office tattletale: if he sees someone pour water into the coffee machine, he points them out to the boss (❗👉).
+**Kev** works at the far desk. He is the floor's unofficial handyman: when the lights flicker he glances up, and when the power goes he takes his phone torch to the fuse box and resets it. If the coffee machine is smoking, he unplugs it first. 
 
 **You** wrote an angry resignation letter at lunch and put it in his tray. It is 3:00, you have calmed down, and you want it back before he reads it.
 
@@ -144,10 +144,9 @@ Other cards: the letter chewed and spat out (a win: he holds up his empty tray, 
 - **The fuse box** (west end of the hallway, round the corner from his office). Unlabelled breakers. The breaker route, and where the boss and Kev go in every blackout.
 - **The old coffee machine** (kitchen counter), with a vent on its back. It strains the wiring at 3:10 (the flicker), so a short in it plausibly trips the floor. Brewed, its pot pours a cup that leads nowhere.
 - **The glass water jug beside it.** Pour it into the vent on the back of the machine, and the 3:10 switch-on shorts it: the blackout route. Nothing shows from the front.
-- **The fridge.** Where you stand to pour the jug out of Kev's view.
 - **The kitchen table.** Where Lin drinks her coffee from 3:23 to 3:31, away from her desk.
 - **Your desk, with its drawer.** Where you sit; where Kev's assigned work lands; and a drawer you can hide the letter in, out of the boss's sight.
-- **Lin's and Kev's desks.** Where they sit when nothing is happening; Kev's has the view into the kitchen.
+- **Lin's and Kev's desks.** Where they sit when nothing is happening.
 - **Everyone's phone.** In the dark, each person lights only what their phone torch points at. This is the level's one rule.
 - **The glass lobby, the elevator and the restroom.** The rest of a real office floor. The lobby's daylight keeps one strip of floor lit in a blackout.
 - **The spat-out wad** (only if you eat the letter). A grey lump of chewed paper on the floor by you. Nothing on it can be read.

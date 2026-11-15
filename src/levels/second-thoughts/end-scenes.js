@@ -7,7 +7,8 @@
 //   fail      3:40: he holds your letter up, furious; you stand in front of his desk.
 //   eaten     3:40, you chewed it up and spat it out as pulp: he holds up his empty tray, baffled; you sit green at
 //             your desk.
-//   deskwork  as fail, but Kev told on you and you sit at your desk behind a pile of paperwork.
+//   deskwork  as fail (he read it), and what broke your day: Lin caught you pouring water into her coffee machine, and
+//             you sit at your desk behind a pile of paperwork, remembering her finger pointing at you.
 //   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (in
 //             his office), or in the hallway at the lighting panel you flipped. Each of you stands where you were; the
 //             letter is where it was (your hand, his tray, the floor).
@@ -399,8 +400,9 @@ function sceneFail(ctx, game, t, e) {
   if (e > 0.4) bubble(ctx, ['@player', '😠'], 470, 170, e - 0.4, 'alert');
 }
 
-// 3:40, he read it, and you never got near: Kev told on you and you were sent back to your desk with a pile of work.
-// He holds the letter up, furious; you, at your desk behind the stack, sweat.
+// 3:40, he read it, and you never got near: Lin walked in on you pouring water into her coffee machine and you were
+// sent back to your desk with a pile of work. He holds the letter up, furious; you, at your desk behind the stack,
+// sweat, thinking of Lin's pointing finger and the jug.
 function sceneDeskwork(ctx, game, t, e) {
   office(ctx);
   glassWall(ctx, GLASS_X);
@@ -415,6 +417,7 @@ function sceneDeskwork(ctx, game, t, e) {
   drawPerson(ctx, game.level.looks.player, p, 744, 262);
   yourDesk(ctx, 720, 280, { pile: 9 });
   if (e > 0.4) bubble(ctx, ['@player', '😠'], 450, 150, e - 0.4, 'alert');
+  if (e > 0.9) bubble(ctx, ['@lin', '👉', '#jug'], 760, 168, e - 0.9, 'thought');
 }
 
 // Where someone stood in his office (tiles), in the picture: its door corner top left, his desk (tiles 3..5 of row
@@ -514,7 +517,7 @@ export const END_SCENES = {
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneWin('breaker') }, // the fuse box, Kev fixed it, the letter
     eaten: { win: true, icons: ['✉️', '🤢', '@boss', '❓'], draw: sceneEaten }, // you ate it; he finds his tray empty
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
-    deskwork: { win: false, icons: ['@kev', '👉', '📄', '✉️'], draw: sceneDeskwork }, // Kev told; buried in work, you never got it back
+    deskwork: { win: false, icons: ['✉️', '😠', '@lin', '👉', '📄'], draw: sceneDeskwork }, // he read it; Lin told on you and you were buried in work
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he finds you: in the light or in his torch
   },
 };

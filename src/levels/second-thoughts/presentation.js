@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, deskClockProp, drawerProp, wadProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, deskClockProp, drawerProp, wadProp, jugProp, machineProp, surgeProp, trayThing, phoneThing, jugThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -49,7 +49,7 @@ export const DECOR = {
   clock: { x: 17, y: 6 },
   // The in-tray on his desk, your letter lying in it while it's there (dragged over to him from 3:39), and his
   // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it (full, or
-  // empty once you poured it into its back vent: a dark wet streak dripping out behind it, nothing at the front), its lamp
+  // tipping into its back vent while you pour, empty after, a puddle dripping under the counter till it shorts), its lamp
   // blinking green while it brews and glowing green with the pot full and steaming once it has (a full pot pours a
   // cup: index.js pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse
   // is out till Kev unplugs it, and a scorch mark for the rest of the day. (The lighting panel and the fuse box: darkness.controls.)
@@ -57,7 +57,7 @@ export const DECOR = {
     { // the wad of letter you spat out (keyed on your desk; drawn where it landed)
       tile: 'P',
       draw: wadProp,
-      state: (w, game) => ({ at: w.wad, k: w.wadAt === null ? 1 : Math.min(1, ((game?.loopTime ?? 0) - w.wadAt) / 0.25) }),
+      state: (w, game) => ({ at: w.wad, k: w.wadAt === null ? 1 : Math.min(1, ((game?.loopTime ?? 0) - w.wadAt) / 0.45) }),
     },
     {
       tile: 'P',
@@ -78,7 +78,7 @@ export const DECOR = {
       }),
     },
     { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'brewed' }) },
-    { tile: 'M', draw: jugProp, state: (w) => ({ empty: w.rigged }) },
+    { tile: 'M', draw: jugProp, state: (w) => ({ empty: w.rigged, pouring: w.pouring, puddle: w.rigged && w.coffee !== 'shorted' }) },
     {
       tile: 'M',
       draw: machineProp,
@@ -92,7 +92,7 @@ export const DECOR = {
     { tile: 'M', draw: surgeProp, state: (w) => ({ k: w.surge }) },
   ],
   // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
-  things: { tray: trayThing, phone: phoneThing },
+  things: { tray: trayThing, phone: phoneThing, jug: jugThing },
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
   },

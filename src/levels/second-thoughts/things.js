@@ -33,20 +33,33 @@ export function letter(ctx, x, y, size, t, game) {
   paintLetter(ctx, x, y, s);
 }
 
-// The letter you spat out: a soggy grey-white wad of chewed paper, a few torn flecks round it, a wet shine. It lands
-// over a quarter of a second.
+// The letter you spat out: a dull, soggy grey wad of chewed paper in a little wet patch, drool still running off it.
+// It flies out of your mouth and drops onto the floor beside you over half a second, dripping on the way.
 export function wadProp(ctx, info, at, shown) {
   if (!shown.at) return;
   const k = Math.min(1, shown.k ?? 1);
+  const a = shown.at;
+  const fx = a.fromX ?? a.x;
+  const fy = a.fromY ?? a.y;
+  const x = (fx + (a.x - fx) * k) * T;
+  const y = (fy + (a.y - fy) * k) * T - Math.sin(Math.PI * k) * 8; // a little arc
   ctx.save();
-  ctx.translate(shown.at.x * T, shown.at.y * T);
-  ctx.scale(0.6 + 0.6 * k, 0.6 + 0.6 * k);
-  fillCircle(ctx, 0, 1.5, 6.5, 'rgba(0,0,0,0.15)');
-  fillCircle(ctx, 0, 0, 6, '#d9d6c8');
-  fillCircle(ctx, -3, -1, 3.5, '#e8e5d8');
-  fillCircle(ctx, 3, 1.5, 3, '#c9c5b4');
-  for (const [dx, dy] of [[-9, 3], [8, -4], [10, 5], [-6, -6]]) fillCircle(ctx, dx, dy, 1.2, '#ecebe2'); // flecks
-  fillCircle(ctx, -2, -2.5, 1.4, 'rgba(255,255,255,0.7)'); // wet shine
+  if (k < 1) for (let i = 1; i <= 3; i++) { // drips trailing it from your mouth
+    const j = Math.max(0, k - i * 0.12);
+    fillCircle(ctx, (fx + (a.x - fx) * j) * T, (fy + (a.y - fy) * j) * T - Math.sin(Math.PI * j) * 8, 1.4, 'rgba(150,170,180,0.7)');
+  }
+  ctx.translate(x, y);
+  ctx.scale(0.55 + 0.45 * k, 0.55 + 0.45 * k);
+  if (k >= 1) { ctx.fillStyle = 'rgba(70,80,90,0.3)'; rrect(ctx, -10, -2, 21, 10, 5); ctx.fill(); } // the wet patch
+  fillCircle(ctx, 0, 1.5, 6.5, 'rgba(0,0,0,0.2)');
+  fillCircle(ctx, 0, 0, 6, '#8e8c84');
+  fillCircle(ctx, -3, -1, 3.5, '#a3a199');
+  fillCircle(ctx, 3, 1.5, 3, '#77756e');
+  ctx.strokeStyle = '#5f5d57'; // crumple creases
+  ctx.lineWidth = 0.9;
+  ctx.beginPath(); ctx.moveTo(-4, 2); ctx.lineTo(-1, -1); ctx.lineTo(2, 2); ctx.moveTo(1, -4); ctx.lineTo(3, -1); ctx.stroke();
+  fillCircle(ctx, -2, -2.5, 1.2, 'rgba(220,235,245,0.55)'); // wet shine
+  if (k >= 1) fillCircle(ctx, 5, 6, 1.3, 'rgba(150,170,180,0.75)'); // a drip off it
   ctx.restore();
 }
 
@@ -229,6 +242,36 @@ export function trayThing(ctx, x, y, size) {
 export function phoneThing(ctx, x, y, size) {
   paintPhone(ctx, x, y, size / 12);
 }
+// The water jug tipped and pouring, for bubbles ('#jug': what Lin saw you doing to her coffee machine).
+export function jugThing(ctx, x, y, size) {
+  const s = size / 14;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+  ctx.save();
+  ctx.translate(1, -2);
+  ctx.rotate(-1.0);
+  ctx.fillStyle = 'rgba(190,222,240,0.95)';
+  rrect(ctx, -5, -7, 10, 13, 2.5);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(96,170,232,0.95)';
+  rrect(ctx, -4, -1, 8, 6, 2);
+  ctx.fill();
+  ctx.strokeStyle = '#7a9fb5';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.arc(5.5, -1, 3, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(96,170,232,0.95)'; // the stream
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(-5, -5);
+  ctx.quadraticCurveTo(-8, -1, -7, 6);
+  ctx.stroke();
+  for (const [dx, dy] of [[-10, 6], [-4, 7]]) fillCircle(ctx, dx, dy, 1.2, 'rgba(96,170,232,0.9)');
+  ctx.restore();
+}
 
 // decor.props painters on the coffee machine's tile (presentation.js says what each is shown). They draw in map
 // pixels from the machine's tile: render/world.js draws the machine itself (its body x 6..26, y 1..23 of the tile, its
@@ -241,6 +284,39 @@ const WATER = 'rgba(96,170,232,';
 export function jugProp(ctx, info, at, shown, t) {
   const px = at.x * T;
   const py = at.y * T;
+  if (shown.puddle) { // under the counter: a puddle on the floor, fed by a drip running down the counter's front
+    ctx.fillStyle = 'rgba(70,120,170,0.45)';
+    rrect(ctx, px + 18, py + T + 1, 15, 7, 3.5);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(110,170,230,0.5)';
+    ctx.fillRect(px + 24, py + T - 6, 1.6, 7);
+    const k = (t * 1.3) % 1;
+    fillCircle(ctx, px + 24.8, py + T - 6 + k * 8, 1.2, `${WATER}${(0.9 * (1 - k)).toFixed(3)})`);
+  }
+  if (shown.pouring !== null && shown.pouring !== undefined) { // in your hands, tipped over the machine's back vent
+    const k = shown.pouring;
+    ctx.save();
+    ctx.translate(px + 22, py + 1);
+    ctx.rotate(-1.1 - 0.5 * k); // tipping further as it empties
+    ctx.fillStyle = 'rgba(214,236,246,0.75)';
+    rrect(ctx, -5.5, -7.5, 11, 15, 2.5);
+    ctx.fill();
+    ctx.fillStyle = `${WATER}0.95)`;
+    rrect(ctx, -4.5, -6.5 + 10 * k, 9, Math.max(1.5, 10 * (1 - k)), 2);
+    ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = `${WATER}0.9)`; // the stream, down into the vent at the back of the machine
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px + 15, py - 2);
+    ctx.quadraticCurveTo(px + 12, py, px + 13, py + 4);
+    ctx.stroke();
+    for (let i = 0; i < 3; i++) { // splashes
+      const s = (t * 3 + i / 3) % 1;
+      fillCircle(ctx, px + 13 + (i - 1) * 3 * s, py + 4 - 4 * s, 1.1, `${WATER}${(0.9 * (1 - s)).toFixed(3)})`);
+    }
+    return; // the jug is in your hands, not on the counter
+  }
   if (shown.empty) {
     ctx.fillStyle = 'rgba(40,52,64,0.35)'; // wet wall behind the machine, peeking out right of it
     rrect(ctx, px + 25, py - 4, 4, 14, 2);

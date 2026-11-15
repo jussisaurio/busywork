@@ -7,8 +7,9 @@
 //             blink) before he finds his. His desk is empty for minutes: in by the meeting room's side door, out the
 //             same way. Whoever he finds at the panel, or in his dark office, switched it off.
 //   blackout  pour the water jug into the vent on the back of the coffee machine while the kitchen is empty (Lin
-//             gets up at 3:05 and walks in just after 3:09 to switch it on at 3:10). Do it from beside it, by the
-//             fridge: in front of it, Kev sees you from his desk through the kitchen door. Nothing shows from the front. Left alone the old machine only makes the lights flicker;
+//             gets up at 3:05 and walks in just after 3:09 to switch it on at 3:10). Only Lin minds: walk in on
+//             you mid-pour and she tells the boss. The jug goes back empty and a puddle drips under the counter till it
+//             shorts. Left alone the old machine only makes the lights flicker;
 //             with water in its back it shorts, and the short trips the fuse for the whole floor. Everyone holds up a phone
 //             as a torch. Kev first unplugs the smoking machine, then walks his torch down the hallway to the fuse box
 //             (its door hangs open, its red lamp blinking) and finds the breaker that's down by phone light.
@@ -78,7 +79,7 @@ const SPOTS = {
   office_switch: { x: 17, y: 7, face: 'N' }, // stand here to reach S: out in the hallway, round the corner from his door
   fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
   fuse_watch: { x: 2, y: 8, face: 'N' }, // the boss in a blackout: at Kev's shoulder, his torch on the box
-  coffee_machine: { x: 21, y: 2, face: 'N' }, // in front of M: Kev sees it from his desk, through the kitchen door
+  coffee_machine: { x: 21, y: 2, face: 'N' }, // in front of M
   desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, by the side door
   in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk
   called_in: { x: 5, y: 5, face: 'N' }, // where you're summoned at 3:40 if he reads it: a step back from his desk
@@ -156,11 +157,11 @@ const INTERACTIONS = {
     },
   },
   // The water jug beside the coffee machine, poured into the vent on its back: the machine is off, so nothing happens
-  // till Lin switches it on; then its wet insides short and blow the fuse. Nothing shows from the front (the jug goes
-  // back empty). A witness who sees it (Kev through the door, Lin walking in) sees you tipping water into the back of
-  // a coffee machine, and shouts mid-pour.
+  // till Lin switches it on; then its wet insides short and blow the fuse. The jug goes back empty and a puddle drips
+  // under the counter till it shorts. Only Lin minds (owner): it's her coffee, and walking in on you she'd ask what
+  // you're doing to it. From across the floor anyone else sees a coworker at the coffee machine with the jug.
   rig_coffee: {
-    on: 'coffee_machine', text: 'pour the water jug into the vent on the back of the machine', duration: 1.5, sneaky: true, saw: '💦',
+    on: 'coffee_machine', text: 'pour the water jug into the vent on the back of the machine', duration: 1.5, sneaky: true, owner: 'lin', saw: '#jug',
     can: (p, w) => !p.held && !w.rigged && w.coffee === 'none',
     done(game) {
       game.world.rigged = true;
@@ -181,7 +182,7 @@ const INTERACTIONS = {
       const p = game.player;
       p.held = null;
       w.letter = 'eaten';
-      w.wad = { x: p.x + 0.7, y: p.y - 0.2 }; // beside you, on the open floor
+      w.wad = { x: p.x + 0.7, y: p.y - 0.2, fromX: p.x, fromY: p.y - 0.45 }; // out of your mouth, onto the floor beside you
       w.wadAt = game.loopTime;
       burst(game, 'paper', p.x, p.y, 5, { speed: 0.8, ttl: 0.6 });
       say(game, 'player', ['🤢'], { ttl: 1.6 });
@@ -218,7 +219,7 @@ const ROLES = {
   authority: { id: 'boss', offDuty: ['meeting'], helpless: [], deafIn: null },
   // On his way to the panel or the fuse box: whoever he finds at the one you threw, or in his dark office, threw it
   // (pretending doesn't help; tick clears the mark once you are clear of them).
-  evidence: { by: 'boss', while: ['dark', 'blackout'], mark: 'switched', knows: 'bossKnows', icon: '💡' },
+  evidence: { by: 'boss', while: ['dark', 'blackout'], mark: 'switched', knows: 'bossKnows', icon: '🌑' },
 };
 
 const LURES = [
@@ -236,7 +237,7 @@ const LURES = [
       minutes: 2,
       progress: 'switchProgress',
       start: { set: { officeLight: 'starting' }, event: 'switch:starting' }, // trying switches: the tubes blink
-      done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['😠'] }] },
+      done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['💡', '😠'] }] },
     },
   },
   { // The whole floor goes dark: he holds up his phone and goes out to the fuse box, round the corner from his door,
@@ -337,6 +338,12 @@ function tick(game) {
   const boss = game.npcs[0];
   if (boss.override === 'dark') w.bossOut = 'switch';
   if (boss.override === 'blackout') w.bossOut = w.fuseBy === 'player' ? 'breaker' : 'blackout';
+  // The jug tipping into the machine's back while you pour (presentation.js draws it): how far, 0..1. Stopped by a
+  // shout, you freeze with it still tipped for a moment.
+  if (p.action?.type === 'rig_coffee') {
+    w.pouring = Math.min(1, p.action.t / p.action.duration);
+    w.pourT = game.loopTime;
+  } else if (w.pouring !== null && (w.rigged || game.loopTime - w.pourT > 1.5)) w.pouring = null;
   if (game.rules?.working && !w.deskwork) w.deskwork = game.fx?.lines?.find((l) => l && l.kind === 'tattle')?.from ?? 'boss';
 }
 
@@ -363,10 +370,10 @@ function dread(game) {
   if (act !== w.bossAct) {
     w.bossAct = act;
     if (act === 'sigh') {
-      say(game, 'boss', ['📥', '😮‍💨'], { kind: 'thought', ttl: 1.6 });
+      say(game, 'boss', ['#tray', '😩'], { kind: 'thought', ttl: 1.6 });
       game.events.emit('boss:sigh', {});
     } else if (act === 'clock') {
-      say(game, 'boss', ['⏰', '😮‍💨'], { kind: 'thought', ttl: 1.4 });
+      say(game, 'boss', ['⏰', '😩'], { kind: 'thought', ttl: 1.4 });
       game.events.emit('boss:checksClock', {});
     }
   }
@@ -376,7 +383,7 @@ function dread(game) {
   }
   if (w.chimed && w.pullAt === null && seated && !game.outcome && !game.caught) {
     w.pullAt = m;
-    say(game, 'boss', ['😮‍💨'], { kind: 'thought', ttl: 1.2 });
+    say(game, 'boss', ['😩'], { kind: 'thought', ttl: 1.2 });
     game.events.emit('boss:pullsTray', {});
   }
   if (w.pullAt !== null) w.trayPull = Math.min(1, (m - w.pullAt) / PULL);
@@ -392,8 +399,9 @@ function flicker(since) {
   for (const [a, b, k] of FLICKER) if (since >= a && since < b) return k;
   return 0;
 }
+// The harmless flicker only half-dims (the tubes stutter, the room stays lit); the short dips nearly to dark.
 const dip = (w, game) => Math.max(
-  w.flickerAt === null ? 0 : flicker(game.loopTime - w.flickerAt),
+  w.flickerAt === null ? 0 : 0.45 * flicker(game.loopTime - w.flickerAt),
   w.shortAt === null ? 0 : flicker(game.loopTime - w.shortAt),
 );
 
@@ -450,7 +458,7 @@ export default {
       const w = game.world;
       if (result === 'blamed') return { result: 'win', why: gone(w) ? 'eaten' : undefined };
       if (result === 'win') return gone(w) ? { why: 'eaten' } : null; // spat out: an empty tray
-      return w.deskwork === 'kev' ? { why: 'deskwork' } : null;
+      return w.deskwork === 'lin' ? { why: 'deskwork' } : null;
     },
   },
   // A route's icon names your move: you flip his light 💡, you soak Lin's coffee machine ☕, you pull the breaker ⚡.
@@ -473,6 +481,8 @@ export default {
     bossKnows: false,
     coffee: 'none', // Lin's: 'none' | 'brewing' | 'brewed' (the pot full) | 'shorted' (soaked, it blew) | 'cold' (no power)
     rigged: false, // you poured the water jug into the vent on the back of the machine
+    pouring: null, // 0..1 while you pour it (and a moment after a shout stops you)
+    pourT: 0, // loop seconds you last poured
     flickerAt: null, // loop seconds when it started and the lights flickered
     shortAt: null, // loop seconds when it shorted
     surge: null, // how far the short has run down the wiring to the fuse box (0..1), while it runs
@@ -489,7 +499,7 @@ export default {
     linCoffee: false,
     unplugged: false, // Kev unplugged the smoking machine
     unplugProgress: 0,
-    deskwork: null, // who had you sent to your desk with a pile of work: 'kev' | 'lin' | 'boss'
+    deskwork: null, // who had you sent to your desk with a pile of work: 'lin' (caught pouring) | null
     items: [],
   }),
   harness,
