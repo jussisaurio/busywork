@@ -31,6 +31,8 @@
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
+//   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
+//               torch { when(), fov, radius } (src/game/darkness.js)
 //   failSign    optional; spot a spot
 //   cameras     optional (src/sim/mechanics/camera.js); ids unique strings; x, y (the lens) on the map; dir, fov,
 //               radius numbers; sweep { arc, period > 0 }; aim, live functions; monitor an { x, y } on the map;
@@ -300,6 +302,18 @@ export function levelProblems(level, key) {
       if (name === 'noise' || name === 'npc:heard') bad(path, 'would make a noise forever');
       spot(`${path}.at`, n?.at);
       for (const [k, id] of (n?.npcs ?? []).entries()) npc(`${path}.npcs[${k}]`, id);
+    }
+  }
+  if (level.darkness !== undefined) {
+    const d = level.darkness;
+    for (const [i, r] of list('darkness.rooms', d?.rooms).entries()) {
+      for (const [k, z] of (Array.isArray(r?.zone) ? r.zone : [r?.zone]).entries()) zone(`darkness.rooms[${i}].zone${Array.isArray(r?.zone) ? `[${k}]` : ''}`, z);
+      if (!isFn(r?.lit)) bad(`darkness.rooms[${i}].lit`, 'not a function');
+    }
+    if (d?.near !== undefined && !isNum(d.near?.radius)) bad('darkness.near.radius', 'not a number');
+    if (d?.torch !== undefined) {
+      if (!isFn(d.torch?.when)) bad('darkness.torch.when', 'not a function');
+      if (!isNum(d.torch?.fov) || !isNum(d.torch?.radius)) bad('darkness.torch', 'fov and radius not numbers');
     }
   }
   if (level.failSign !== undefined) spot('failSign.spot', level.failSign?.spot);

@@ -9,6 +9,7 @@ import officeTime from './office-time/index.js';
 import holdMusic from './hold-music/index.js';
 import monitor from './monitor/index.js';
 import hoodie from './hoodie/index.js';
+import lightsOut from './lights-out/index.js';
 import { validateLevel } from './validate.js';
 
 export const levels = {
@@ -21,6 +22,7 @@ export const levels = {
   'hold-music': holdMusic,
   monitor, // design jam batch 1: the camera
   hoodie, // Kev's Hoodie: disguise
+  'lights-out': lightsOut, // batch 1: darkness
 };
 for (const [key, level] of Object.entries(levels)) validateLevel(level, key);
 export const defaultLevel = meeting;

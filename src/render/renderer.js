@@ -7,6 +7,7 @@ import { C } from './palette.js';
 import { drawStaticLayer, drawWorldDynamic } from './world.js';
 import { drawCharacters } from './characters.js';
 import { drawCones } from './cones.js';
+import { drawDarkness } from './darkness.js';
 import {
   drawBubbles, drawParticles, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
 } from './effects.js';
@@ -144,6 +145,7 @@ export function createRenderer(canvas, opts = {}) {
     }
     if (!title && game.phase === 'day') drawCones(ctx, game, t);
     drawCharacters(ctx, game, t, mem);
+    if (game.level?.darkness) drawDarkness(ctx, game, t); // dark rooms (game/darkness.js)
     if (!title) {
       drawParticles(ctx, game, t);
       drawSightlines(ctx, game, t); // above people, below the bubbles
