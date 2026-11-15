@@ -1011,6 +1011,16 @@ section('input module (createInput on a fake EventTarget)');
   ok(!inp.isDown('up'), 'destroy() removes listeners');
 }
 
+// The harness's interact watches for stop events from the key press's own frame: Layoffs, the boss's coffee
+// (boss:coffee, a soft stop) fires the moment you start on his cable, and the command pauses on it.
+{
+  const h = createHarness({ level: 'layoffs' });
+  h.begin();
+  for (const c of ['pretend until 3:25.5', 'goto behind_his_desk pretend']) h.run(c);
+  const r = h.run('interact');
+  ok(/^paused at 0% .*\(boss:coffee\)/.test(r.text), `a stop on the press frame pauses interact (${r.text})`);
+}
+
 console.log(`\n${passes} passed, ${fails} failed`);
 console.log(fails ? `${fails} FAILED` : 'all passed');
 process.exit(fails ? 1 : 0);
