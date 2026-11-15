@@ -19,6 +19,6 @@
 // lit target with the E key cap (no focus icon), the pointing hand for tattles, judgement signs placed off people,
 // and drawn engine objects (clock, page, muted speaker, restroom sign, no-coffee sticker, plant). Look at the level
 // after migrating.
-export const LEGACY_LEVELS = ['early-bus', 'hold-music', 'monitor', 'layoffs', 'second-thoughts', 'audit', 'weekend-shift'];
+export const LEGACY_LEVELS = ['early-bus', 'hold-music', 'monitor', 'layoffs', 'audit', 'weekend-shift'];
 
 export const isLegacyLevel = (level) => !!level && LEGACY_LEVELS.includes(level.id);

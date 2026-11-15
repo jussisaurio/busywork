@@ -94,7 +94,7 @@ function howDark(game, x, y) {
 
 const INTERACTIONS = {
   take_letter: {
-    on: 'tray', icon: '✉️', text: 'take your letter back', duration: 2.5, sneaky: true, saw: '✉️', // longer than any glance
+    on: 'tray', text: 'take your letter back', duration: 2.5, sneaky: true, saw: '✉️', // longer than any glance
     can: (p, w) => !p.held && w.letter === 'tray',
     done(game, a) {
       const w = game.world;
@@ -107,7 +107,7 @@ const INTERACTIONS = {
     },
   },
   flip_switch: {
-    on: 'office_switch', icon: '💡', text: 'flip the light switch', duration: 0.5, sneaky: false,
+    on: 'office_switch', text: 'flip the light switch', duration: 0.5, sneaky: false,
     noise: { radius: 7 }, // the clack
     can: () => true,
     done(game) {
@@ -119,7 +119,7 @@ const INTERACTIONS = {
     },
   },
   pull_breaker: {
-    on: 'fuse_box', icon: '⚡', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
+    on: 'fuse_box', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
     done(game, a) {
       const w = game.world;
