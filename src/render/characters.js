@@ -48,7 +48,7 @@ export function personState() {
 // The arm poses computeHands draws (personState().arms). A level 'self' row's `preview` names one (the validator
 // checks it): the pose the player strikes while that row is what E would do, and while doing it.
 export const ARM_POSES = ['idle', 'walk', 'desk', 'type', 'folder', 'carry', 'reach', 'phone', 'bang', 'shrug', 'puff',
-  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout'];
+  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout', 'facepalm'];
 
 // What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
 const HELD = { held: true };
@@ -171,6 +171,11 @@ function computeHands(s, g) {
       HAND.fx = ox; HAND.fy = 8 + oy;
       break;
     }
+    case 'facepalm':
+      // the free hand hangs; the other is flat over the face, the head bowed into it (a slow small rub)
+      lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
+      rxh = fx * hr * 0.75 + rx * 1.2 + Math.sin(t * 3) * 0.6; ryh = headY + 0.5 + fy * hr * 0.45 + ry * 1.2;
+      break;
     default:
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       rxh = rsx + fx * 1.5; ryh = rsy + 5 + fy * 1.5;
@@ -222,14 +227,15 @@ function drawArms(ctx, look, s, g, sleeve) {
   ctx.beginPath();
   ctx.moveTo(H.lsx, H.lsy);
   ctx.lineTo(H.lx, H.ly);
-  if (s.arms !== 'phone') {
+  const late = s.arms === 'phone' || palmOverFace(s); // that arm is drawn after the head
+  if (!late) {
     ctx.moveTo(H.rsx, H.rsy);
     ctx.lineTo(H.rx, H.ry);
   }
   ctx.stroke();
   ctx.lineCap = 'butt';
   fillCircle(ctx, H.lx, H.ly, 2.3, look.skin);
-  if (s.arms !== 'phone' && !(s.item && liftOverHead(s))) {
+  if (!late && !(s.item && liftOverHead(s))) {
     if (s.item && s.arms !== 'folder' && !mugOverTorso(s, g)) drawHeldItem(ctx, s, H.rx, H.ry);
     else if (!s.item && s.arms === 'point' && strictGlyphs()) drawFinger(ctx, H.rx, H.ry, look.skin);
     fillCircle(ctx, H.rx, H.ry, 2.3, look.skin);
@@ -262,6 +268,8 @@ function mugOverTorso(s, g) {
 // What you hold lifted to your mouth is drawn over your head (the head would hide it), except facing away: then it
 // is behind the head, the way the mouth is.
 const liftOverHead = (s) => (s.arms === 'lift' || s.arms === 'sip') && s.lift > 0.4 && G.sd >= -0.25;
+// A hand over the face is drawn over the head, except facing away (then the head hides it, as it should).
+const palmOverFace = (s) => s.arms === 'facepalm' && G.sd >= -0.25;
 
 function drawHeldItem(ctx, s, x, y) {
   if (s.crank) {
@@ -448,6 +456,17 @@ export function drawPerson(ctx, look, s, x, y) {
   if (s.item && liftOverHead(s)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
+  }
+  if (palmOverFace(s)) {
+    ctx.strokeStyle = bodyDark;
+    ctx.lineWidth = 3.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(HAND.rsx, HAND.rsy);
+    ctx.lineTo(HAND.rx, HAND.ry + 3);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+    fillEllipse(ctx, HAND.rx, HAND.ry, 3.2, 2.8, look.skin); // the flat palm
   }
 
   if (s.arms === 'phone') {

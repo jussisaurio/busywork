@@ -1,5 +1,5 @@
 // game.fx drawing (bubbles, particles, ripples, sightlines) plus small in-world overlays: interaction hint,
-// action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
+// legacy focus icon (hold-E progress is drawn by characters.js), boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
   T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, strictGlyphs, glyphScope, rrect, circle, ellipse, fillCircle,
   starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
