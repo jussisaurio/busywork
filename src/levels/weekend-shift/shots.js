@@ -3,11 +3,13 @@
 // you change the face on it while every head is turned: at the microwave's DING, or while the boss is on the phone
 // in the corner of his office and Lin is heating her fish. The copier is a trap: the boss's look at it crosses the
 // board.
-const DING = ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13'];
-const KEV = [...DING, 'interact']; // Kev's face written in
-const BOSS = [...DING, 'interact', 'interact']; // written over again: the boss's own (a loss)
-const READ = ['pretend until 4:58', 'wait 1.5s']; // the boss turns to the board and points the marker at the face
-const HOLD = ['pretend until 4:58', 'wait 2.9s']; // ... and holds it there, saying whose, to 5:00
+const DING = ['goto microwave pretend', 'interact', 'goto roster pretend'];
+const KEV = [...DING, 'interact']; // Kev's face written in, walking past as it dings
+// written over again while the boss is on the phone: the boss's own (a loss)
+const BOSS = [...KEV, 'goto player_desk pretend', 'pretend until 4:31', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact'];
+const SEAT = ['goto player_desk pretend', 'pretend until 4:55', 'goto meeting_player pretend']; // back to your desk, then your chair
+const READ = [...SEAT, 'pretend until 4:58', 'wait 1.5s']; // the boss turns to the board and points the marker at the face
+const HOLD = [...SEAT, 'pretend until 4:58', 'wait 2.9s']; // ... and holds it there, saying whose, to 5:00
 // (5:00 itself, the room's reaction, is the end beat: no shot lands in it, the replay strips show it. Nor does one
 // land in your desk work after a tell, when the boss checks the board: the harness runs it through; replays show it.)
 const RING = ['goto desk_phone pretend', 'interact']; // the phone in the supply room, out of the boss's sight: ring his
@@ -20,10 +22,9 @@ export default [
   { name: 'copier', cmds: ['goto copier pretend'], intent: "The photocopier below-left of the board, working, its light green; lit up with the E key cap. You could jam it. The boss's cone, from his desk, reaches toward it across the board." },
   { name: 'phone', cmds: ['wait 1.5s', 'goto desk_phone pretend'], intent: "You went into the supply room, behind the wall, to the phone on its little table: it lights up with the E key cap. The boss can't see you here." },
 
-  // The DING: be at the board when it goes off.
-  { name: 'noodles-cooking', cmds: ['goto microwave pretend', 'interact', 'wait 2s'], intent: "The cup of noodles is gone from the counter: it goes round on the turntable in the microwave's lit window, steam rising off it inside; green digits on its panel count down." },
-  { name: 'too-early', cmds: ['goto microwave pretend', 'interact', 'goto roster pretend'], intent: "You at the board while the noodles cook: the boss's and Lin's sight cones cover you; writing now would be seen." },
-  { name: 'ding', cmds: DING, intent: 'DING: a ripple from the microwave, a noodle bowl thought over every head at once, and every head and sight cone snaps east toward it, away from the board where you stand (the boss\'s cone was on the board until now).' },
+  // The DING: it goes off as you walk back past the board.
+  { name: 'walk-back', cmds: ['goto microwave pretend', 'interact', 'move W 4s pretend'], intent: "Your noodles cook in the microwave behind you (its window lit, digits counting down); you stride back west with a folder, toward the board and your desk. Every sight cone still covers the board." },
+  { name: 'ding', cmds: ['goto microwave pretend', 'interact', 'move W 6.4s pretend'], intent: 'DING: a ripple from the microwave, a noodle cup thought over every head at once, and every head and sight cone snaps east toward it, away from the board you are just walking past (the boss\'s cone was on the board until now).' },
   { name: 'noodles-done', cmds: [...DING, 'wait 3s', 'goto microwave pretend'], intent: 'After the DING: the noodle cup is back on the counter beside the microwave, its lid off, steaming; the microwave is dark and empty again.' },
   { name: 'written-kev', cmds: [...KEV, 'wait 1.2s'], intent: "Written: Kev's face pops up big off the board's Saturday box for a beat, a soft white ring spreading off it, and settles into the box." },
   { name: 'written-boss', cmds: [...BOSS, 'wait 1.2s'], intent: "Written over again: the boss's face pops up big off the Saturday box." },
@@ -43,18 +44,16 @@ export default [
   { name: 'mirror-fail', cmds: ['goto copier pretend', 'interact', 'goto roster pretend'], intent: "The copier beeps: the boss thinks of the copier, and an orange dashed line runs from his head at his desk to the copier, straight through the board; you at the board are in plain view." },
 
   // 5:00: the boss reads the board.
-  { name: 'boss-out', cmds: ['pretend until 4:50', 'wait 1.2s'], intent: '4:50: the boss comes out of his office toward the board, head down in a folder he carries in both hands, thinking about paperwork; he isn\'t looking at the board.' },
-  { name: 'boss-guards', cmds: ['pretend until 4:52.9'], intent: '4:52: the boss sits beside the board with his back to it, facing the room, the board\'s black marker in his hand (gone from its tray), smug.' },
   { name: 'gather', cmds: ['pretend until 4:57', 'wait 0.5s'], intent: "4:57: the boss sits beside the board with his back to it, facing the room, the board's black marker in his hand (gone from its tray); Lin and Kev sit facing it, and each looks at the empty chair between them with a ❓: its dashed outline on the floor marks it as yours, and you're at your desk." },
-  { name: 'reading-points', cmds: ['goto board pretend', ...READ], intent: 'Just before 5:00 the boss turns to the board and points the marker at it; the Saturday box glows yellow round your face.' },
-  { name: 'reading-you', cmds: ['goto board pretend', ...HOLD], intent: "Your face is on it: the boss keeps the marker on it, the box glowing, the bubble over him pointing at your face." },
+  { name: 'reading-points', cmds: READ, intent: 'Just before 5:00 the boss turns to the board and points the marker at it; the Saturday box glows yellow round your face.' },
+  { name: 'reading-you', cmds: HOLD, intent: "Your face is on it: the boss keeps the marker on it, the box glowing, the bubble over him pointing at your face." },
   { name: 'reading-kev', cmds: [...KEV, ...HOLD], intent: "Kev's face is on it: the boss points the marker at it, the bubble over him pointing at Kev's face." },
   { name: 'reading-boss', cmds: [...BOSS, ...HOLD], intent: "His own face is on it, and he never put himself down: the boss has turned to the board, red to the ears, hands spread, the bubble over him his own face and a shocked one." },
-  { name: 'away-at-five', cmds: [...KEV, 'goto microwave pretend', ...HOLD], intent: "Just before 5:00, and you're in the kitchen: the boss points at Kev's face on the board; your chair round the board is empty, its dashed outline on the floor." },
+  { name: 'away-at-five', cmds: [...KEV, 'goto microwave pretend', 'pretend until 4:58', 'wait 2.9s'], intent: "Just before 5:00, and you're in the kitchen: the boss points at Kev's face on the board; your chair round the board is empty, its dashed outline on the floor." },
 
   // The end cards: the office on Saturday, and who sits in it (blamed: Friday at 5:00, round the board).
-  { name: 'end-win-kev', cmds: [...KEV, 'pretend until 5:00', 'wait 3s'], intent: 'Win, of a kind: Saturday, and Kev is the one at the desk, his face on the board, crying. The row: a pencil, his face, a crying face: you put poor Kev there.' },
-  { name: 'end-own-face', cmds: [...BOSS, 'pretend until 5:00', 'wait 3s'], intent: "Loss: Saturday, you at the desk, your face back on the board, and the boss beside it, angry, pointing at you. The row: a pencil, the boss's face, angry, your face: you wrote him in, and he knew." },
+  { name: 'end-win-kev', cmds: [...KEV, ...SEAT, 'pretend until 5:00', 'wait 3s'], intent: 'Win, of a kind: Saturday, and Kev is the one at the desk, his face on the board, crying. The row: a pencil, his face, a crying face: you put poor Kev there.' },
+  { name: 'end-own-face', cmds: [...BOSS, ...SEAT, 'pretend until 5:00', 'wait 3s'], intent: "Loss: Saturday, you at the desk, your face back on the board, and the boss beside it, angry, pointing at you. The row: a pencil, the boss's face, angry, your face: you wrote him in, and he knew." },
   { name: 'end-fail', cmds: ['pretend until 5:00', 'wait 3s'], intent: 'Loss: Saturday, sun outside, and you at the desk with a pile of work; your face is on the board.' },
   { name: 'end-caught', cmds: ['goto roster pretend', 'interact', 'wait 4s'], intent: "Loss, caught: you at the desk on Saturday, and the boss beside the board, angry, pointing at you; on the board, the boss's face half drawn over yours, the marker still at it." },
   { name: 'end-blamed', cmds: [...KEV, 'goto microwave pretend', 'pretend until 5:00', 'wait 3s'], intent: "Loss: Friday, 5:00, round the board. You weren't there, so your face is back on the board: the boss points at your empty chair, outlined red, and Lin and Kev turn to look at it." },

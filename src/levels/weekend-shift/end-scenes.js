@@ -1,5 +1,5 @@
 // Weekend Shift's end cards (level 1's end-scenes.js documents the fields). Most are the same picture: the office
-// on Saturday, sun in the window, the desks empty but one, and the roster board beside it. What changes is who sits
+// on Saturday, sun in the window, the desks empty but one, and the board beside it. What changes is who sits
 // at that desk, working, with their face on the board: Kev (a win), or you (a loss). Caught, or his own face on the
 // board: the boss came in too, to glare at you. Blamed is the day as it ended instead: Friday, 5:00, everyone in their chairs round
 // the board. The board still shows the face you wrote, but you weren't there: the boss points at your empty chair,
@@ -149,7 +149,7 @@ function workDesk(ctx, look, x, y, t, opts = {}) {
   fillEllipse(ctx, x - 63, y - 7, 6, 2, '#4a3324');
 }
 
-// The roster board beside the desk: the same face as the one at the desk.
+// The board beside the desk: the same face as the one at the desk.
 function board(ctx, look, t, opts = {}) {
   drawBoard(ctx, 286, TAB.y + 222, 3.1, look, t, opts);
 }

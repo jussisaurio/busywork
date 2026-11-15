@@ -1,12 +1,12 @@
-// "Saturday" (id weekend-shift): level 1's office, an hour later. At 5:00 the boss reads the Saturday roster: a
+// "Saturday" (id weekend-shift): level 1's office, an hour later. At 5:00 the boss reads the Saturday board: a
 // whiteboard with one face in Saturday's slot (yours, at 4:00), and that person works this weekend. He filled it in
 // on Monday and doesn't remember whom he put down: write Kev's name in it, and he reads out Kev's. (Write again and it's
 // his own, which he knows is wrong: he puts yours back.) Both watchers face the board, so
 // you have to make them look away: level 1 taught "wait for a glance"; this one teaches "make one". The routes are
 // the two ways to make one (sim/mechanics/attention.js), and a third that backfires:
-//   - the microwave DINGs 10 s after you start it: every head in earshot snaps east, to the kitchen, for 6 s, and
-//     everyone thinks of noodles (long enough to notice it while fast-forwarding at your pretend, let go, and still
-//     finish writing). The board is on the west side: be there when it dings.
+//   - the microwave DINGs 6 s after you start it, about the walk back past the board to your desk: every head in
+//     earshot snaps east, to the kitchen, for 6 s, wondering whose noodles they are. The board is on the west side,
+//     on your way back: you're walking past it when it dings, not hanging about at it.
 //   - the phone in the supply room (behind a wall, out of the boss's sight; his desk has none) rings his, on a
 //     side table in the corner of his office. He walks over and answers it standing there, facing the window, his
 //     back to the office: "Hello? ... Hello?" into a silent line, a few seconds, then he slams it down. The ring and
@@ -25,14 +25,14 @@ import harness from './harness.js';
 import gate from './gate.js';
 
 const START = 16 * 60; // 4:00 PM
-const DING_S = 10; // s from starting the microwave to the ding (6 game minutes of noodles)
+const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes of noodles): about the walk back past the board
 const DING_TURN = 6; // s every head in earshot stays turned to the ding
 const WRITE_S = 2.5; // s a write takes: longer than any glance away
 const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he slams it down
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
-//   X copier (on the line from the boss's desk through the board)   R the Saturday roster (a whiteboard on a stand)
-//   M microwave   C counter (the noodle cup)   S sink   F fridge   P your desk   H plant   T desk/table
+//   X copier (on the line from the boss's desk through the board)   R the Saturday board (a whiteboard on a stand)
+//   M microwave   C counter (the noodle cup)   S bare counter   P your desk   H plant   T desk/table
 //   Q the supply room's phone, behind the wall where the boss can't see it   L Lin's desk, where her lunch box sits
 //   B the boss's phone, on a side table (his desk has none)   G glass   D door
 const MAP = [
@@ -47,7 +47,7 @@ const MAP = [
   '#...........................C#', // 8
   '#........R..................M#', // 9
   '#...........................S#', // 10
-  '#...........................F#', // 11
+  '#...........................S#', // 11
   '#......X.....................#', // 12
   '#...TPT...TTL....TTT.........#', // 13
   '#H..........................H#', // 14
@@ -60,8 +60,8 @@ const LEGEND = {
   R: { kind: 'roster', solid: true, opaque: false, interactable: 'roster' },
   M: { kind: 'microwave', solid: true, opaque: true, draw: 'desk', interactable: 'microwave' },
   C: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // bare counter (props.js): no second appliance by the microwave
-  S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // the counter and sink: props.js draws them
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
+  // the counter on down the wall, bare (props.js draws it): the microwave is the kitchen's one thing to use
+  S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
   // the supply room's phone, on a little table (props.js draws both), out of the boss's sight behind the wall
   Q: { kind: 'desk_phone', solid: true, opaque: false, interactable: 'desk_phone' },
@@ -81,7 +81,7 @@ const SPOTS = {
   microwave: { x: 27, y: 9, face: 'E' },
   lin_wait: { x: 25, y: 9, face: 'E' }, // Lin waits for her fish a step back from the microwave, facing it
   boss_window: { x: 18, y: 1, face: 'N' }, // beside his phone (B): on a call, his back to the office, the board out of sight
-  board_boss: { x: 11, y: 9, face: 'E' }, // from 4:50: his back to the board, facing the room; he turns to read it
+  board_boss: { x: 11, y: 9, face: 'E' }, // from the 4:55 gather: his back to the board, facing the room; he turns to read it
   board_check: { x: 10, y: 9, face: 'W' }, // told on, he comes and looks at it, close up
   board_look: { x: 8, y: 9, face: 'W' }, // past the board, seen from board_boss: what he turns to, to read it
   meeting_lin: { x: 13, y: 10, face: 'W' },
@@ -132,13 +132,13 @@ const INTERACTIONS = {
   },
   // The board's Saturday slot: Kev's face, then (write again) the boss's, then Kev's again...
   write_kev: {
-    on: 'roster', text: "write Kev's name in Saturday's slot on the roster", duration: WRITE_S, sneaky: true,
-    saw: '🗓️', // the roster (its week strip, Saturday ringed); longer than any glance away
+    on: 'roster', text: "write Kev's name in Saturday's slot on the board", duration: WRITE_S, sneaky: true,
+    saw: '🗓️', // the board (its week strip, Saturday ringed); longer than any glance away
     can: (p, w) => w.roster !== 'kev' && !w.rosterLocked,
     done: (game) => write(game, 'kev'),
   },
   write_boss: {
-    on: 'roster', text: "write the boss's name in Saturday's slot on the roster", duration: WRITE_S, sneaky: true,
+    on: 'roster', text: "write the boss's name in Saturday's slot on the board", duration: WRITE_S, sneaky: true,
     saw: '🗓️',
     can: (p, w) => w.roster === 'kev' && !w.rosterLocked,
     done: (game) => write(game, 'boss'),
@@ -161,7 +161,7 @@ function write(game, who) {
 // 5:00, the end beat (2 s): who the board says it is. The boss filled it in on Monday and doesn't remember whom he
 // put down: he reads out whatever face is in the slot (cast.js readRoster). Now: Kev's (he points at Kev; Kev
 // protests, he waves it off at the board: the board says Kev), his own (he never put himself down: he wipes it,
-// draws yours back and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
+// draws yours, since Lin and Kev point at you as the reading ends, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
 // your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room
 // stare at it).
 function punchline(game, result) {
@@ -192,11 +192,18 @@ function punchline(game, result) {
 }
 const KEV_PROTEST_S = 0.4; // s into the beat Kev protests
 
-// After a tell (Lin or Kev saw you at the board and the boss heard), the boss walks over to the board, checks it and,
-// if it isn't the face he expects to be wrong about (yours), puts yours back (the lure 'check', below). The engine has
+// After a tell (Lin or Kev saw you at the board, pointed at you, and the boss heard), the boss walks over to the board,
+// looks at it and puts your face in Saturday's slot: he doesn't remember whose it was, but you were messing with it,
+// so it's your Saturday now (the lure 'check', below). The engine has
 // already sent you to your desk. Subscribed once per game.events, from the boss's clock (clockFor).
 const watched = new WeakSet();
 function tick(game) {
+  // The board is shut only while the boss sits right by it, holding its only marker (the tray shows it empty). If he
+  // gets up (his phone), he puts the marker back and the board is open again.
+  const b = game.npcs.find((n) => n.id === 'boss');
+  const spot = SPOTS.board_boss;
+  game.world.rosterLocked = !!b && b.active !== false && !b.moving && b.override !== 'onPhone'
+    && Math.abs(b.x - spot.x) < 0.6 && Math.abs(b.y - spot.y) < 0.6;
   if (watched.has(game.events)) return;
   watched.add(game.events);
   game.events.on('boss:workAssigned', (p) => {
@@ -206,12 +213,12 @@ function tick(game) {
     const w = game.world;
     w.told = false;
     const boss = game.npcs.find((n) => n.id === 'boss' && n.active);
+    if (boss) speak(game, boss, [{ say: ['😠', '👉', '@player'], ttl: 1.8 }]); // she said it was you: then it's your Saturday
     if (w.roster === 'player') return;
     w.roster = 'player';
     w.wrote = null;
     w.wroteAt = game.clock.minute;
     game.events.emit('roster:changed', { to: 'player' });
-    if (boss) speak(game, boss, [{ say: ['😠'], ttl: 1.6 }]);
   });
 }
 
@@ -353,7 +360,7 @@ export default {
     roster: 'player', // whose face is in Saturday's slot: 'player' | 'boss' | 'kev'
     wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' | null (see write())
     wroteAt: null, // game minute of the last write
-    rosterLocked: false, // the boss is at the board (from about 4:51): no more writing on it
+    rosterLocked: false, // the boss sits by the board holding its marker (tick): no writing on it while he does
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     jamAt: null, // game minute of the last jam
     fixProgress: 0,
