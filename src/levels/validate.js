@@ -37,7 +37,7 @@
 //   initialWorld  a function returning an object with an `items` list
 //   harness     optional; landmarks name spots (my_seat is built in: ENGINE_LANDMARKS)
 //   gate        optional; targets are interactable ids, landmarks (the level's or the engine's) or "x,y";
-//               interactable targets; mustUse
+//               interactable targets; mustUse (routes: route ids)
 //               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
@@ -333,6 +333,7 @@ export function levelProblems(level, key) {
     for (const [i, tg] of (gate.interactable ?? []).entries()) if (!targets.includes(tg)) bad(`gate.interactable[${i}]`, `${q(tg)} is not in gate.targets`);
     for (const [i, u] of (gate.mustUse ?? []).entries()) {
       if (!isStr(u?.id) || !(isStr(u?.cmd) || isStr(u?.event))) bad(`gate.mustUse[${i}]`, 'needs { id, cmd } or { id, event }');
+      for (const [j, r] of (u?.routes ?? []).entries()) if (!(level.routes ?? []).some((x) => x.id === r)) bad(`gate.mustUse[${i}].routes[${j}]`, `no route ${q(r)} in level.routes`);
     }
     for (const [name, f] of Object.entries(gate.milestones ?? {})) if (!isFn(f)) bad(`gate.milestones[${q(name)}]`, 'not a function');
     if (gate.renderEvents !== undefined && !(Array.isArray(gate.renderEvents) && gate.renderEvents.every(isStr))) bad('gate.renderEvents', 'not a list of event names');
