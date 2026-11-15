@@ -15,6 +15,7 @@ import { CAST, BEHAVIOURS, START } from './cast.js';
 import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { letter } from './things.js';
 
 const t = (hhmm) => at(hhmm, START);
 
@@ -133,6 +134,7 @@ const INTERACTIONS = {
 const ITEMS = {
   letter: {
     icon: '✉️',
+    draw: letter, // the envelope (things.js), wherever it is held or lies
     place: 'letter',
     contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: back in his pocket
     edible: true, // eat your words
