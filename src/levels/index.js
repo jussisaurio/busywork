@@ -5,6 +5,7 @@ import fixture from './fixture/index.js';
 import fixtureAttention from './fixture-attention/index.js';
 import fixturePutdown from './fixture-putdown/index.js';
 import fixtureInspection from './fixture-inspection/index.js';
+import holdMusic from './hold-music/index.js';
 import { validateLevel } from './validate.js';
 
 export const levels = {
@@ -13,6 +14,7 @@ export const levels = {
   'fixture-attention': fixtureAttention, // test level: attention
   'fixture-putdown': fixturePutdown, // test level: put down
   'fixture-inspection': fixtureInspection, // test level: inspection
+  'hold-music': holdMusic,
 };
 for (const [key, level] of Object.entries(levels)) validateLevel(level, key);
 export const defaultLevel = meeting;
