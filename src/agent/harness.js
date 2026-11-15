@@ -12,7 +12,7 @@
 import { ENGINE_LANDMARKS } from '../levels/validate.js';
 import { FIXED_DT, FF_MULT, INTERACT_RADIUS, at, formatClock } from '../config.js';
 import { createGame } from '../state.js';
-import { startLoop, tick, frameMult } from '../game/loop.js';
+import { startLoop, runFrame } from '../game/loop.js';
 import { updateFx } from '../core/fx.js';
 import { npcSees } from '../game/perception.js';
 import { actionRow } from '../play/interactions.js';
@@ -77,8 +77,7 @@ export function createHarness({ level = defaultLevel, onFrame = null } = {}) {
   // One real-time frame, mirroring main.js (fast-forward / forced-work multipliers).
   function frame() {
     if (game.phase !== 'day') return;
-    const mult = frameMult(game);
-    for (let i = 0; i < mult && game.phase === 'day'; i++) tick(game, FIXED_DT);
+    runFrame(game, FIXED_DT);
     updateFx(game, FIXED_DT);
     game.time += FIXED_DT;
     input.clearPresses(); // a press is only valid for the frame it was made in
@@ -415,12 +414,14 @@ export function observe(game, { map = true, debug = false } = {}) {
 
   const state = [];
   state.push(`at (${f1(p.x)},${f1(p.y)}) facing ${compass(p.dir)}`);
-  state.push(p.seated ? 'seated at your desk' : p.moving ? 'walking' : 'standing');
+  const sent = game.rules.sent;
+  state.push(p.seated ? 'seated at your desk' : sent ? (p.moving ? 'walking back to your desk (sent)' : 'standing, being sent to your desk')
+    : p.moving ? 'walking' : 'standing');
   state.push(`hands: ${p.held ?? 'empty'}`);
   if (H.playerText) state.push(...H.playerText(game));
   if (p.busy) state.push(`PRETENDING (${p.busyPose})`);
   if (p.action) state.push(`doing ${p.action.type} ${Math.round((p.action.t / p.action.duration) * 100)}%`);
-  if (game.clock.forced > 0) state.push(`FORCED WORK: ${Math.ceil(game.clock.forced)} game min left`);
+  if (game.clock.forced > 0 && !sent) state.push(`FORCED WORK: ${Math.ceil(game.clock.forced)} game min left (the paper stack on your desk)`);
   if (game.clock.ff) state.push(`time ×${FF_MULT}`);
   out.push(`YOU: ${state.join(', ')}`);
   // Only what a player would see (the level's statusText: what shows over people's heads).

@@ -1,7 +1,7 @@
 // Browser entry point: wires input, renderer, audio and the fixed-step loop.
 import { FIXED_DT } from './config.js';
 import { createGame } from './state.js';
-import { startLoop, tick, frameMult } from './game/loop.js';
+import { startLoop, runFrame } from './game/loop.js';
 import { updateFx } from './core/fx.js';
 import { createInput } from './play/input.js';
 import { createRenderer } from './render/renderer.js';
@@ -123,8 +123,7 @@ function frame(now) {
       acc += realDt;
       while (acc >= FIXED_DT && game.phase === 'day') {
         acc -= FIXED_DT;
-        const mult = frameMult(game);
-        for (let i = 0; i < mult && game.phase === 'day'; i++) tick(game, FIXED_DT);
+        runFrame(game, FIXED_DT);
       }
       if (game.phase === 'end') game._endedAt = game.time;
     }

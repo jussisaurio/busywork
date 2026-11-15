@@ -1,9 +1,23 @@
-// The player: movement with tile collision, the busy button ("pretend" on screen), sitting at the desk.
+// The player: movement with tile collision, the busy button ("pretend" on screen), sitting at the desk, and the
+// walk back to it when the authority sends you there (rules.js assignWork -> game.rules.sent).
 //
 // Runs first in tick(). Reads game.input (any object with the Input interface; null = no input).
 // Sets player.{x, y, dir, moving, busy, busyPose, seated} and game.clock.ff.
 import { PLAYER_SPEED, PLAYER_BUSY_SPEED, PLAYER_RADIUS } from '../config.js';
+import { say, burst } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
+import { findPath, smoothPath } from '../sim/nav.js';
+
+// Sent to your desk (sim seconds since the order; told on: the witness's shout reaches him first).
+//   told on:   0 shout -> RELAY he looks at her -> LOOK_YOU at you -> ORDER 📄📄👉🖥️ (the stack lands) -> GO you walk
+//   idle:      the order comes at once (he was watching you already) -> GO_IDLE you walk
+// The walk is part of the WORK_PENALTY_MIN: clock.forced runs down from the order, so the work ends on the same tick.
+const RELAY = 0.3;
+const LOOK_YOU = 0.65;
+const ORDER = 0.75;
+const GO = 1.15;
+const GO_IDLE = 0.5;
+export const ORDER_ICONS = ['📄', '📄', '👉', '🖥️'];
 
 const NULL_INPUT = { isDown: () => false, pressed: () => false, axis: () => ({ x: 0, y: 0 }) };
 export const inputOf = (game) => game.input ?? NULL_INPUT;
@@ -18,11 +32,14 @@ export function updatePlayer(game, dt) {
   const input = inputOf(game);
   p.moving = false;
 
-  // Forced work: glued to the desk, typing, nothing else.
+  // Forced work: sent to the desk (the walk there), then glued to it, typing, nothing else.
   if (game.clock.forced > 0 && !game.caught && !game.outcome) {
-    sitAtDesk(game);
-    setBusy(game, true, 'typing');
     game.clock.ff = false;
+    if (game.rules.sent) serveOrder(game, game.rules.sent, dt);
+    else {
+      sitAtDesk(game);
+      setBusy(game, true, 'typing');
+    }
     return;
   }
   // Caught / end beat / externally locked: frozen.
@@ -86,6 +103,97 @@ export function standUp(game) {
   if (!p.seated) return;
   p.seated = false;
   game.events.emit('player:stand', {});
+}
+
+// --- Sent to your desk --------------------------------------------------------------
+// rules.js assignWork: the order stands from now (clock.forced, locked, workAssigned); the rest plays out here.
+// by: the witness whose shout brought him (null: he saw you idling himself). auth: the authority's id, null if he's off the floor
+// (the order then shows over you at once). game.rules.sent = { t, by, auth, look, said, walk, stackAt }; look: whom
+// he faces (render: null, the witness's id, 'player'); stackAt: loopTime the paper stack landed on your desk.
+export function sendToDesk(game, by, auth) {
+  const sent = { t: 0, by: auth ? by : null, auth, look: by && auth ? null : 'player', said: false, walk: null, stackAt: null };
+  game.rules.sent = sent;
+  game.player.moving = false;
+  if (!sent.by) giveOrder(game, sent);
+}
+
+function giveOrder(game, sent) {
+  sent.said = true;
+  sent.stackAt = game.loopTime;
+  say(game, sent.auth ?? 'player', ORDER_ICONS, { kind: 'speech' });
+  const d = deskFront(game);
+  burst(game, 'paper', d.x, d.y, 10, { speed: 1.8 }); // the stack lands on your desk
+}
+
+// Where the paper stack sits: on the desk in front of your chair.
+function deskFront(game) {
+  const s = spotPos(game, 'player_desk');
+  return { x: s.x + Math.cos(s.dir) * 0.7, y: s.y + Math.sin(s.dir) * 0.7 - 0.2 };
+}
+
+function serveOrder(game, sent, dt) {
+  setBusy(game, false, null);
+  sent.t += dt;
+  const told = !!sent.by;
+  if (told) sent.look = sent.t < RELAY - 1e-9 ? null : sent.t < LOOK_YOU - 1e-9 ? sent.by : 'player';
+  if (!sent.said && sent.t >= ORDER - 1e-9) giveOrder(game, sent);
+  if (sent.t < (told ? GO : GO_IDLE) - 1e-9) return; // you stand there and take it
+  if (!sent.walk) {
+    const walk = planWalk(game, spotPos(game, 'player_desk'));
+    sent.walk = walk && walkLength(game, walk) > 1e-6 ? walk : { path: [], wp: 0 }; // there already, or no way there
+    if (sent.walk.path.length) standUp(game);
+  }
+  if (!stepWalk(game, sent.walk, PLAYER_SPEED, dt)) return;
+  game.rules.sent = null;
+  game.rules.workFrom = game.clock.forced;
+  sitAtDesk(game);
+  setBusy(game, true, 'typing');
+}
+
+// A walk the player is made to take (to her desk, to the front of the room): the path from where she is to `to`
+// ({ x, y } tiles), or null if there is none. stepWalk moves her along it; true once she's there.
+export function planWalk(game, to) {
+  const p = game.player;
+  const tiles = findPath(game.map, p, to, 'player');
+  if (!tiles) return null;
+  const path = smoothPath(game.map, tiles, p.x, p.y, 'player', PLAYER_RADIUS);
+  const last = path[path.length - 1];
+  if (!last || Math.hypot(last.x - to.x, last.y - to.y) > 1e-6) path.push({ x: to.x, y: to.y });
+  return { path, wp: 0 };
+}
+
+export function walkLength(game, walk) {
+  let { x, y } = game.player;
+  let d = 0;
+  for (let i = walk.wp; i < walk.path.length; i++) {
+    d += Math.hypot(walk.path[i].x - x, walk.path[i].y - y);
+    ({ x, y } = walk.path[i]);
+  }
+  return d;
+}
+
+export function stepWalk(game, walk, speed, dt) {
+  const p = game.player;
+  let budget = speed * dt;
+  while (budget > 1e-9 && walk.wp < walk.path.length) {
+    const q = walk.path[walk.wp];
+    const dx = q.x - p.x;
+    const dy = q.y - p.y;
+    const d = Math.hypot(dx, dy);
+    if (d > 1e-6) p.dir = Math.atan2(dy, dx);
+    p.moving = true;
+    if (d <= budget) {
+      p.x = q.x;
+      p.y = q.y;
+      budget -= d;
+      walk.wp++;
+    } else {
+      p.x += (dx / d) * budget;
+      p.y += (dy / d) * budget;
+      budget = 0;
+    }
+  }
+  return walk.wp >= walk.path.length;
 }
 
 // --- Collision ------------------------------------------------------------------
