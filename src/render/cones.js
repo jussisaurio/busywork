@@ -40,6 +40,20 @@ export function castRay(map, ox, oy, dx, dy, maxDist) {
 
 const NO_CONES = {};
 
+// Red is the cone of whoever sees you, and only his (the notice mix below). A cast tint in the red-to-orange band
+// (hue under about 36°) is drawn amber instead, so a cone that sees nothing never passes for one that does.
+const calmed = new WeakMap();
+export function coneTint(npc) {
+  const t = npc.coneTint || CONE_TINT_DEFAULT;
+  let c = calmed.get(t);
+  if (!c) {
+    const [r, g, b] = t;
+    c = r > g && g >= b && r > b && (g - b) / (r - b) < 0.6 ? [r, Math.round(b + 0.75 * (r - b)), b] : t;
+    calmed.set(t, c);
+  }
+  return c;
+}
+
 // 0..1: how hard this NPC is "noticing" the player right now (derived, read-only): caught by him; the authority's
 // suspicion (game.suspicion, keyed by his id); one of the level's alert overrides (level.cones.alert); or something
 // the rules object to in his sight (game.watch, published by play/rules.js every step, so the glow is exactly
@@ -94,7 +108,7 @@ export function drawCones(ctx, game, t) {
     if (!npc || !npc.active || !npc.vision) continue;
     const v = viewerOf(npc);
     const notice = noticeLevel(game, npc);
-    const tint = npc.coneTint || CONE_TINT_DEFAULT;
+    const tint = coneTint(npc);
     const near = dark.length ? nearViewer(game, v) : null;
     const sees = !!p && npcSees(game, npc, fin(p.x), fin(p.y)) && !seenVia(game, npc, fin(p.x), fin(p.y)); // his own eyes
     drawFan(ctx, map, v, tint, notice, CONE_BASE, t, dark, near, sees);
@@ -128,7 +142,7 @@ function drawTurns(ctx, game) {
     const cx = fin(v.x) * T;
     const cy = fin(v.y) * T;
     const R = Math.min(TURN_R, Math.max(0.8, fin(v.radius, 6) * 0.5)) * T;
-    const tint = npc.coneTint || CONE_TINT_DEFAULT;
+    const tint = coneTint(npc);
     // the old cone's edges, fading first
     const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
     ctx.setLineDash([3, 4]);
@@ -218,6 +232,13 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(1, edge + 0.2).toFixed(3)})`;
   ctx.lineWidth = sees || notice > 0 ? 1.5 : 1;
   ctx.stroke();
+  if (sees && notice > 0) { // the red starts at his eyes: a ring round its root says whose it is
+    ctx.strokeStyle = `rgba(${RED[0]},${RED[1]},${RED[2]},${(0.55 + 0.35 * pulse).toFixed(3)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 9 + 2 * pulse, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   if (dark.length) {
     ctx.restore();
     const nr = Math.max(0.5, fin(near.radius, 1));
@@ -252,7 +273,7 @@ function drawCameraCones(ctx, game, t) {
       continue;
     }
     const watcher = feed.watcher ? findNpc(game, feed.watcher) : null;
-    const tint = watcher ? watcher.coneTint || CONE_TINT_DEFAULT : CAMERA_GREY;
+    const tint = watcher ? coneTint(watcher) : CAMERA_GREY;
     const onScreen = watcher && p && canSee(game.map, v, p.x, p.y);
     const notice = onScreen ? Math.max(0.35, noticeLevel(game, watcher)) : 0;
     drawFan(ctx, game.map, v, tint, notice, watcher ? 0.16 : 0.07, t);

@@ -170,7 +170,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   `{ id, icon, color, voice?, meetingSpot, meetingArrive?, vision?, glanceEvery?, coneTint?, schedule }`.
   - `vision`: `{ fov, radius }` (default config `VISION_DEFAULT`). `glanceEvery`: `[min, max]` real seconds between
     seated glances (default `GLANCE_EVERY`; `[9999, 9999]` never glances, as in fixture-attention).
-  - `coneTint`: `[r, g, b]` of the drawn cone. `voice`: a name in `level.voices` or the engine's.
+  - `coneTint`: `[r, g, b]` of the drawn cone; one in the red-to-orange band is drawn amber (red is reserved for
+    a cone that sees you: `render/cones.js` `coneTint`). `voice`: a name in `level.voices` or the engine's.
   - `meetingArrive`: a hook run when he sits down at the meeting.
 - `schedule`: entries sorted by `at` (a game minute; write `at('2:45')`). Each runs until the next starts.
 

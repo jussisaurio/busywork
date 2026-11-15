@@ -111,7 +111,8 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 
 ## Vision and suspicion
 - **Vision cones.** Each NPC sees a cone (default 90° and 7 tiles; each cast member can differ). Walls block sight;
-  glass does not. V shows the cones. Every cone is as plain as the authority's, since anyone can tell on you; its
+  glass does not. V shows the cones. Red belongs only to the cone of whoever sees you, ringed at his eyes; no cast
+  tint is red. Every cone is as plain as the authority's, since anyone can tell on you; its
   edge firms up while he has you in sight.
 - **Seated NPCs work.** At a desk in his own routine a coworker types, silently. His hands stop when he glances,
   turns to a noise or is busy with something else, so a glance reads as a break.
