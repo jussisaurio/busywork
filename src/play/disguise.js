@@ -17,7 +17,7 @@
 //   greet  lines a fooled NPC says on first sight, once per loop: [{ say, kind?, ttl?, after? }]
 // Events (only in a level with a disguise item): disguise:knows { by, as, how: 'left' | 'saw' } when an NPC learns
 // better; disguise:fooled { by, as } on a fooled NPC's first sight of her.
-// State: NPC fields _knows (as id -> true) and _greeted / _unmasked (once per loop); game.rules.worn (the disguise
+// State: NPC fields _knowsAs (as id -> true) and _greeted / _unmasked (once per loop); game.rules.worn (the disguise
 // item type she wore last step, so putting it on or taking it off is seen).
 import { npcSees, findNpc } from '../game/perception.js';
 import { leaving } from '../sim/npcs.js';
@@ -43,12 +43,12 @@ export function wornDisguise(game) {
 }
 
 function knows(npc, as) {
-  return npc.id === as || !!npc._knows?.[as];
+  return npc.id === as || !!npc._knowsAs?.[as];
 }
 
 function learn(game, npc, as, how) {
   if (knows(npc, as)) return;
-  (npc._knows ??= {})[as] = true;
+  (npc._knowsAs ??= {})[as] = true;
   game.events.emit('disguise:knows', { by: npc.id, as, how });
 }
 

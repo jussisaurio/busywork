@@ -323,6 +323,14 @@ export function createAudio(opts = {}) {
       if (byLift(n)) return elevatorOnce();
       sfx.door(E, atPos(n, { open: true }));
     },
+    noise: (p) => {
+      // A noise that names its sound (sim/mechanics/attention.js noise.sfx), played where it is.
+      const name = p && typeof p.sfx === 'string' ? p.sfx : null;
+      if (!name) return;
+      if (Object.hasOwn(SHARED, name)) return SHARED[name]();
+      const fn = sfx[name];
+      if (typeof fn === 'function') fn(E, atPos(p));
+    },
     'meeting:gather': () => {
       // Distant murmur from the meeting (level.sounds.murmur's spot; bypasses the per-voice throttle):
       // the whole cast, spread left to right by meeting seat.
