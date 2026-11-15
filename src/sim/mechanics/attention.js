@@ -26,8 +26,10 @@
 //   turn       s heads stay turned (default TURN_TIME)
 // Show (optional): ripple   true or { color }: rings spread from the noise to its earshot each time it sounds
 //                           (core/fx.js ripple; render only, game.fx)
+//                  sfx      a recipe name in audio/sfx.js (e.g. 'machineBeep'): audio plays it at the noise each
+//                           time it sounds (the 'noise' event carries it)
 // A waiting or repeating noise belongs to the loop: a new loop (createNpcs) drops it.
-// Events: 'noise' { x, y, radius }, then 'npc:heard' { id } for each NPC who heard it, in cast order, every time
+// Events: 'noise' { x, y, radius, sfx? } (sfx only when the noise names one), then 'npc:heard' { id } for each NPC who heard it, in cast order, every time
 // it sounds. Nothing is emitted (and nothing is subscribed) unless a noise happens.
 //
 // State: npc._heard = null | { x, y, t, head } (t: s left; head: only the head turns), private to this file; the
@@ -43,9 +45,10 @@ const TURN_TIME = 1.5; // s an NPC faces a noise
 const HEAD_MAX = GLANCE_ANGLE[1]; // a head-only turn goes no further than the widest glance
 const HEAD_SPEED = GLANCE_ANGLE[1] / GLANCE_TURN_TIME; // rad/s: as quick as a glance
 
-// Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME). `ripple`: show it.
-export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple }) {
-  game.events.emit('noise', { x, y, radius });
+// Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME). `ripple`: show it;
+// `sfx`: the sound audio plays for it.
+export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple, sfx }) {
+  game.events.emit('noise', sfx ? { x, y, radius, sfx } : { x, y, radius });
   if (ripple && game.fx) showRipple(game, x, y, radius, ripple === true ? {} : ripple);
   const auth = game.level.roles?.authority;
   for (const npc of game.npcs) {
@@ -80,7 +83,7 @@ export function setNoise(game, n, x, y) {
 }
 function sound(game, n, x, y) {
   if (n.while && !n.while(game.world)) return false;
-  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple });
+  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple, sfx: n.sfx });
   return true;
 }
 

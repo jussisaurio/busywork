@@ -368,5 +368,18 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   ok(probs.some((p) => p.includes(`noises['test:x'].ripple`)), 'validator: ripple is true or { color }');
 }
 
+// 14. sfx: the noise event names its sound only when the noise has one (audio plays it: tools/test-audio.mjs).
+{
+  const { game, log } = day(BASE);
+  setNoise(game, { radius: 6, sfx: 'machineBeep' }, 5, 5);
+  makeNoise(game, { x: 5, y: 5, radius: 6 });
+  const ns = log.filter((e) => e.name === 'noise');
+  ok(ns[0].payload.sfx === 'machineBeep' && Object.keys(ns[0].payload).join() === 'x,y,radius,sfx', "noise.sfx: 'noise' {x, y, radius, sfx}");
+  ok(!('sfx' in ns[1].payload), 'none without it');
+  const probs = levelProblems({ ...BASE, noises: { 'test:x': { at: 'player_desk', radius: 3, sfx: 'kazoo' } } }, 'meeting');
+  ok(probs.some((p) => p.includes(`noises['test:x'].sfx`)), 'validator: sfx names a recipe in audio/sfx.js');
+  ok(!levelProblems({ ...BASE, noises: { 'test:x': { at: 'player_desk', radius: 3, sfx: 'machineBeep' } } }, 'meeting').length, 'validator: a real one is fine');
+}
+
 console.log(fails ? `${fails} FAILED` : 'all passed');
 process.exit(fails ? 1 : 0);
