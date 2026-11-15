@@ -4,7 +4,9 @@
 //   blackout  dark: Lin's coffee machine still sparking in her torchlight, his torch on the front of his desk
 //   breaker   dark: Kev at the open fuse box by his torch, the boss's torch on the front of his desk
 //   fail      he holds your letter up, furious; you're in front of his desk with a cardboard box
-//   caught    he points at you, red-handed by his tray with the letter
+//   caught    he points at you, red-handed by his tray with the letter; or, if he groped his way to the switch and
+//             walked into you there (rules.js reason 'evidence'), his office still dark, his hand on you under the
+//             switch, the letter wherever it is
 // 3:40 is never 'blamed' here (index.js meeting.verdict): wherever you are with the letter, you got away with it.
 // Nothing in a hand or on a desk is an emoji: the tray, the letter and the phones are things.js, the switch and the
 // fuse box are the ones drawn on the floor (render/darkness.js), only bigger. Speech is free: the bubbles and rows.
@@ -395,8 +397,31 @@ function sceneFail(ctx, game, t, e) {
   }
 }
 
-// Caught: red-handed beside his tray, the letter in your hand; he points at you.
+// Caught at the switch: his office still dark, he felt his way along the wall and his hand landed on you, right
+// under the switch you flipped. His tray behind him shows where your letter is: still in it, or in your hand.
+function sceneBumped(ctx, game, t, e) {
+  office(ctx);
+  lamp(ctx, 560, false, t);
+  desk(ctx, 600, 252, true);
+  const held = game.world.letter === 'player';
+  tray(ctx, 654, 252, game.world.letter === 'tray');
+  control(ctx, 'switch', 238, 166, 3.2, false, true, t);
+  const p = person(t);
+  Object.assign(p, { dir: Math.PI / 2 - 0.3, head: Math.PI / 2 - 0.5 + Math.sin(t * 9) * 0.2, arms: held ? 'carry' : null, sweat: true, scale: 2.4 });
+  if (held) holding(ctx, game.level.looks.player, p, 300, 236, (h) => paintLetter(ctx, h.x, h.y - 2 * h.sc, h.sc * 0.95, 0.1));
+  else drawPerson(ctx, game.level.looks.player, p, 300, 236);
+  const b = boss(t, { dir: Math.PI, head: Math.PI, arms: 'reach', angry: true });
+  b.t = 0; // his hand stays on you
+  holding(ctx, game.level.looks.boss, b, 358, 230, null);
+  darkness(ctx, []);
+  control(ctx, 'switch', 238, 166, 3.2, false, true, t); // its amber lamp: the light is off
+  bubble(ctx, ['❗', '😠'], 400, 150, e, 'alert');
+}
+
+// Caught: red-handed beside his tray, the letter in your hand; he points at you. (At the switch in the dark:
+// sceneBumped.)
 function sceneCaught(ctx, game, t, e) {
+  if (game.caught?.reason === 'evidence') return sceneBumped(ctx, game, t, e);
   office(ctx);
   lamp(ctx, 470, true, t);
   desk(ctx, 470, 252, true);
@@ -420,6 +445,6 @@ export const END_SCENES = {
     blackout: { win: true, icons: ['@lin', '☕', '💥', '✉️'], draw: sceneBlackout }, // Lin's coffee machine sparked, the dark, the letter
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneBreaker }, // the fuse box, Kev fixing it, the letter
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
-    caught: { win: false, icons: ['@boss', '👉', '@player', '✉️'], draw: sceneCaught }, // he points at you with the letter
+    caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he points at you: by his tray, or at the switch
   },
 };
