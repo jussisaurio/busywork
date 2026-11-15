@@ -397,533 +397,411 @@ So I can't write any `<object> / <verb>` lines. Inventing them would be fabricat
 
 <!-- /cold-read:verbs -->
 
-<!-- cold-read:faces {"verdict":"fixable","date":"2026-11-15","commit":"d22f387","hash":"e0f10158d98962db8b4de6f25cb2ae910d03e1b55fae6ca169857c6b75e28c09","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","faces":"9e5d161895913b7e0a263a2cdf05a4e1a2a95747919832eaa42592590794b7f3","prompts":"7b1353c6de0c5cf6c70013ea3cb8b0b9dfaae148125f1ffbe7155582b0b04938"},"model":"default","tally":{"clear":27,"vague":5,"misread":1},"problems":{"blocker":3,"should":5,"nit":1}} -->
+<!-- cold-read:faces {"verdict":"fixable","date":"2026-11-15","commit":"fca016b","hash":"d49e3f0e2b4bdfbe74057534ba88b62beef25520e88afbf3e86039ea01ad36b8","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","faces":"fe4be21c0e9559c62e1e0981f4f9b95f9557abfb0ff54a91716a4c79a7f1eb4f","prompts":"7b1353c6de0c5cf6c70013ea3cb8b0b9dfaae148125f1ffbe7155582b0b04938"},"model":"default","tally":{"clear":30,"vague":3,"misread":0},"problems":{"blocker":1,"should":3,"nit":2}} -->
 ## faces: fixable
-Recorded 2026-11-15 at commit d22f387, by claude -p (model: default). Inputs e0f10158d989: the card, route-checks.js, the bubbles, the pass's prompts.
-Items: 27 clear, 5 vague, 1 misread.
-Problems: 3 blocker, 5 should, 1 nit.
-Earlier problems: 0 fixed, 6 still there, 0 no longer applies.
+Recorded 2026-11-15 at commit fca016b, by claude -p (model: default). Inputs d49e3f0e2b4b: the card, route-checks.js, the bubbles, the pass's prompts.
+Items: 30 clear, 3 vague, 0 misread.
+Problems: 1 blocker, 3 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 75 s | $0.22 |
-| 2-judge | report.md | 151 s | $0.63 |
-| all | | 226 s (the steps add up to 226 s) | $0.85 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 still there: The document glyph (04, 30) is a pale grey page that turns into an unnameable smudge in the frame. 04 came up 16 times and drives the boss at 4:50. 30 is the phone call's whole message. A player can't tell what the boss wants or what the call was about. — Use a page with dark text lines (📄 instead of a blank 📃). In 30, add a figure to make the action clear, e.g. 📄 ➡️ 🖨️ for "print it." (28 still uses a blank grey page that turns into a smudge in the frame. It is the whole message of the phone call.)
-- E2 still there: The pencil (22, 34) is the cause of a loss, and it doesn't say whether the boss saw tampering or is writing Bun in. A player won't know what got them caught. — For tampering, show the board with a ✏️ scribble, or ✏️ + ❗. For writing Bun in, show ✏️ + Bun's face. (24's lone pencil still doesn't say why you lost: "writing you in" or "caught you tampering.")
-- E3 still there: 🧐 (08) reads as either "reading" or "suspicious." If suspicion is meant, the player misses the warning. — Use 👀 for reading, or 🧐❓ (or 🤨) for suspicion. (06 still uses 🧐, but in its frame both readings land on "checking the board.")
-- E4 still there: The bare pointer (10) says nobody's name. — Always pair the hand with the face of the person meant, as in 09 and 16. (08 is still a bare hand with no face.)
-- E5 still there: Nothing ties Spiky's 🤢 (03) to Teal's fish. — Use 🐟 + 🤢, or put a smell line (💨/🦨) beside the face. (03 shows only 🤢. Only the timing links it to Teal's fish, which is 220 px away.)
-- E6 still there: "📅!" (31) doesn't say what the boss remembered. — Use 📅 + Bun's face, or show the board itself instead of a calendar. (29 is still just "📅!" with no subject.)
+| 1-read | reading.md | 69 s | $0.21 |
+| 2-judge | report.md | 167 s | $0.69 |
+| all | | 236 s (the steps add up to 236 s) | $0.90 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] The document glyph (04, 30) is a pale grey page that turns into an unnameable smudge in the frame. 04 came up 16 times and drives the boss at 4:50. 30 is the phone call's whole message. A player can't tell what the boss wants or what the call was about. — Use a page with dark text lines (📄 instead of a blank 📃). In 30, add a figure to make the action clear, e.g. 📄 ➡️ 🖨️ for "print it." (recurring: premise-level?)
-- E2 [blocker] The pencil (22, 34) is the cause of a loss, and it doesn't say whether the boss saw tampering or is writing Bun in. A player won't know what got them caught. — For tampering, show the board with a ✏️ scribble, or ✏️ + ❗. For writing Bun in, show ✏️ + Bun's face. (recurring: premise-level?)
-- E3 [should] The bare pointer (10) says nobody's name. — Always pair the hand with the face of the person meant, as in 09 and 16. (recurring: premise-level?)
-- E4 [should] Nothing ties Spiky's 🤢 (03) to Teal's fish. — Use 🐟 + 🤢, or put a smell line (💨/🦨) beside the face. (recurring: premise-level?)
-- E5 [should] "📅!" (31) doesn't say what the boss remembered. — Use 📅 + Bun's face, or show the board itself instead of a calendar. (recurring: premise-level?)
-- E6 [should] In 07 and 14 the hand points left, away from the face in the bubble, while 12, 15, 22, 23, 25 and 28 point at the face. This reads as "not her" / "not him" until you see the board in the frame. — Keep the hand pointing at the face inside the bubble, and let the boss's arm do the in-world pointing. Or use board + face (🗒️ + face) for "on the board."
-- E7 [should] 05's grey megaphone on a white bubble can't be named at frame size. — Use the orange 📣.
-- E8 [blocker] 28: misread — The grey page is a smudge at frame size. The caller's message reads only as "…her" (E1).
+- E1 [blocker] In 28 the document glyph is a pale grey blob that nobody can name. It is the payoff of a phone call, and a player can't tell what the boss learned about Bun or why he then panics in 29 — use a high-contrast 📄 or 📋. If it means "Bun is on the roster," use 🗓️ 👉 Bun-face to match the card's icons.
+- E2 [should] In 26 the bare "!" doesn't say whether Spiky saw Bun or heard the printer, so a player can't tell if being seen at the printer is risky — use 👀 👉 Bun-face like 22 if he saw her, or 🖨️ ! if it's the noise.
+- E3 [should] 4 is a bare "?" thought that adds nothing in its frame — say what she's looking at, e.g. the boss's face plus "?".
+- E4 [should] The same 👉 Bun-face glyph means "she's assigned" in 7, "she did it" in 23 and "for her" in 28. The frames mostly save it, but the hand is overloaded — add the speaker's mood to blame bubbles (😠 👉 Bun-face, as 25 already does).
 
 ### 1-read: reading.md
 
-I've looked at all 33 bubbles and am writing up what each one says.
+# BUSYWORK bubble reading
 
-# Reading of bubbles/
+Cloud-shaped bubbles read as thoughts, square-ish ones as speech, and yellow starbursts as alarms. Two cartoon portraits keep showing up. "Bun" is a woman with a brown hair bun and a red top. "Spiky" is a man with dark spiky hair and a green top. I'm guessing Bun is me, the player.
 
-**Bubble shapes as I read them:** a cloud is a private thought, a rounded box is speech, and a spiky starburst is an alarm or a shout.
+1. Thought: "Fish…" They're thinking about fish, maybe lunch or a pet.
+2. "Fish, yum 😊." They like fish, or they're happy about the fish.
+3. A green, sick face: "I feel sick," or "that's gross." Maybe the fish went off.
+4. Thought: "Huh? I'm confused."
+5. Megaphone: an announcement, "Listen up!" Or "turn it down."
+6. Thought, face with a monocle: "Hmm, suspicious," or "let me look at this closely."
+7. Pointing at Bun: "Her," or "you, go."
+8. Teeth-gritted grimace: "Yikes, awkward," or "uh-oh."
+9. Weary, anguished face: "Ugh, I'm exhausted," or "this is too much."
+10. Thought, calendar plus "?": "What day is it?" or "when's the deadline or meeting?"
+11. Alarm, "! pointing at Bun": "Hey, YOU!" Bun is in trouble or urgently needed.
+12. Thought, surprised face plus noodle bowl: "Ooh, noodles!" or "who took my noodles?"
+13. Hand pointing at Spiky: "Him," or "go see him."
+14. Same as 13. The hand looks very slightly different, but I can't tell what that changes. If it's meant to differ, I missed it.
+15. Party popper: "Celebrate!" There's a party, or "well done."
+16. Phone handset: "Phone call," "I'm on the phone," or "call someone."
+17. Alarm, red desk phone plus "!": "The phone's ringing! Answer it!"
+18. Phone plus "?": "Who's calling?" or "did anyone call?"
+19. Phone plus "??": a stronger 18. "Why is nobody answering?" or "where's that call?"
+20. Eye-roll: "Ugh, whatever," or "here we go again."
+21. Bald old man plus flushed, wide-eyed face: "The (old) boss! Eek," or "that guy is embarrassing."
+22. Eyes, then a hand pointing at Bun: "I'm watching you," or "look at her."
+23. Pointing at Bun again, same as 7: "Her," or "your turn."
+24. Pencil plus Bun: "Bun, write this down or sign it," or "assign it to her."
+25. Angry face pointing at Bun: "I'm mad at you," or "it's her fault."
+26. Plain "!": "Oh!" "Hey!" or "I just noticed something."
+27. Thought, printer: "I need to print something," or "the printer…"
+28. A document (or papers) pointing at Bun: "Give this paper to her," or "she has the paper."
+29. Alarm, calendar plus "!": "The deadline is now!" or "I forgot the meeting!"
+30. Thought, Bun plus "?": "Where's Bun?" or "who is she?"
+31. Thought, anxious sweating face: "Nervous, worried, in trouble."
+32. Wrench: "It needs fixing," "I'm fixing it," or "get maintenance."
+33. Smile: "Thanks, all good."
 
-1. Thought: "Fish…" They want fish, or they're daydreaming about lunch. Or someone's fish is on their mind.
-2. Speech: "Fish! 😊" They love fish, or they're happy about a fish lunch.
-3. Speech: green, queasy face. "I feel sick." Maybe it's the fish, or a smell.
-4. Thought: red "?" They're confused or wondering about something.
-5. Speech: megaphone. "Announcement!" or "Listen up, everyone."
-6. Thought: monocle face. "Hmm, suspicious…" They're watching someone closely.
-7. Speech: pointing hand, then the brown-bun woman in a red top. The hand seems to point *left, away from* her, unlike 15/22/23. It could be "It was her" or "Go to her." Or, if the direction matters, "Not her," "Away from her."
-8. Speech: lone hand pointing left. "Over there," "That way," or "Go."
-9. Speech: teeth-baring grimace. "Yikes," "Awkward," "Oops."
-10. Speech: weary, anguished face. "Ugh, I'm so tired," or "This is too much."
-11. Thought: calendar plus "?" "What day is it?" "When is it due?" or "Is there a meeting?"
-12. Starburst: "!" plus a hand pointing at the bun woman. "HER!" They're accusing or alerting about her: "Look, it's her!"
-13. Thought: surprised "oh" face plus a steaming noodle bowl. "Ooh, noodles!" Either they want some, or they're shocked about someone's noodles.
-14. Speech: hand plus a dark spiky-haired person in green. The hand matches 7, so it seems to point away from him: "Him / go to him." Or maybe "not him."
-15. Speech: hand clearly pointing *at* the spiky-haired man. "It's him," or "Go see him." The only change from 14 is the hand, and I can't tell whether that's meant to change the meaning.
-16. Speech: party popper. "Celebrate!" "Yay!" Could also be a party or birthday.
-17. Starburst: red phone plus "!" "The phone's ringing!" or "Urgent call!"
-18. Speech: "?" "Huh? What?"
-19. Speech: "? ?" "Huh?? What on earth?" Stronger confusion than 18.
-20. Speech: eye-roll. "Ugh, whatever." Annoyed or unimpressed.
-21. Speech: bald man with a mustache, then a flushed, wide-eyed face. "The boss!" They're embarrassed or alarmed about the bald guy, or they've got a crush on him.
-22. Speech: eyes, then pointing at the bun woman. "Watch her," "I saw her," or "Look at her."
-23. Speech: pointing at the bun woman. "Her," "Go to her," or "It's her."
-24. Speech: pencil. "Write it down," "Sign this," or "I need a pencil."
-25. Speech: angry face, then pointing at the bun woman. "I'm mad at her," or "She's angry."
-26. Speech: "!" "Oh!" "Hey!" They noticed something.
-27. Thought: printer. "I need to print," or "the printer…" maybe worried about it.
-28. Speech: a gray page with a folded corner (a document), then pointing at the bun woman. "Give the papers to her," or "She has the document."
-29. Starburst: calendar plus "!" "Deadline!" "The meeting is now!"
-30. Thought: bun woman plus "?" "Where is she?" or "Who is she?"
-31. Thought: anxious face, blue forehead, sweat drop. They're dreading something and nervous.
-32. Speech: wrench. "Fix it," "I'll fix it," or "Something's broken."
-33. Speech: smile. "Thanks," "Nice," or "All good."
-
-**Ambiguities a player would trip on:**
-- In 7 and 14 the hand seems to point the other way from 15, 22, 23 and 28. I can't tell whether that means something.
-- In 23, "Her" can mean "she did it," "go to her," or "it's for her."
-- In 21, the flushed face can read as fear or as a crush.
+## Main confusions
+- I can't tell the two hands in 13 and 14 apart in meaning.
+- A hand pointing at a face could mean "go to her," "give it to her," or "blame her."
+- Repeated "?" in 19 seems to mean more urgency, but I'm guessing.
+- 28: the grey page icon is hard to read at this size.
 
 ### 2-judge: report.md
 
 Verdict: fixable
-- 01: clear — Teal is thinking about fish for lunch.
-- 02: clear — Teal is happy about her fish.
-- 03: vague — Spiky feels sick. Nothing in the bubble ties it to Teal's fish (E5).
-- 04: clear — Teal is confused as the boss comes out.
-- 05: vague — The boss is about to announce something, but the grey megaphone on a white bubble is a blur at frame size.
-- 06: clear — The boss is looking over the board.
-- 07: clear — The boss points left at the board showing your face: "It's her." Alone, the hand looks like it points away from her.
-- 08: vague — A bare hand points toward the board. It doesn't say who is meant (E4).
-- 09: clear — You: "Yikes."
-- 10: clear — You, at the board: "Ugh, no."
-- 11: clear — The boss and Teal wonder what's on the calendar.
-- 12: clear — The boss has caught you in his office: "Her!"
-- 13: clear — Three people smell noodles from the microwave.
-- 14: clear — The boss points at the board, which now shows Spiky: "Him." Alone it could read "not him."
-- 15: clear — The boss points at Spiky himself: "You."
-- 16: clear — You celebrate.
-- 17: clear — The boss: "The phone's ringing!"
-- 18: clear — The boss answers and hears nobody: "Huh?"
-- 19: clear — "What on earth?"
-- 20: clear — The boss rolls his eyes at a prank call.
-- 21: clear — The boss sees his own face on the board: "Me?!" In the frame it reads as shock, not a crush.
-- 22: clear — Teal tells on you: "I saw her."
-- 23: clear — Spiky: "It was her."
-- 24: vague — The boss's pencil doesn't say whether he's writing you in or noting that you tampered with the board. This run is a loss (E2).
-- 25: clear — The boss is angry at you.
-- 26: clear — Spiky spots you at the printer.
-- 27: clear — The boss and Teal think about the noisy printer.
-- 28: misread — The grey page is a smudge at frame size. The caller's message reads only as "…her" (E1).
-- 29: vague — The boss is alarmed about the calendar but it doesn't say why (E6).
-- 30: clear — "Where is she?"
-- 31: clear — You, hiding, are dreading it.
-- 32: clear — Spiky: "I'll fix the printer."
-- 33: clear — Spiky is pleased he fixed it.
-
-## Earlier problems
-- E1: still there (blocker) — 28 still uses a blank grey page that turns into a smudge in the frame. It is the whole message of the phone call.
-- E2: still there (blocker) — 24's lone pencil still doesn't say why you lost: "writing you in" or "caught you tampering."
-- E3: still there (nit) — 06 still uses 🧐, but in its frame both readings land on "checking the board."
-- E4: still there (should) — 08 is still a bare hand with no face.
-- E5: still there (should) — 03 shows only 🤢. Only the timing links it to Teal's fish, which is 220 px away.
-- E6: still there (should) — 29 is still just "📅!" with no subject.
+- 1: clear — the teal coworker at her desk is thinking about her fish lunch.
+- 2: clear — the teal coworker is happily eating her fish.
+- 3: clear — Spiky, at the next desk, is sickened by the fish smell.
+- 4: vague — the teal coworker thinks "?" as the boss comes out. A bare "?" doesn't say what puzzles her.
+- 5: clear — the boss uses a megaphone: "Gather round, announcement."
+- 6: clear — the boss checks the board with a monocle face: "Let me look closely."
+- 7: clear — the boss points at Bun next to the board: "She works Saturday."
+- 8: clear — Bun grimaces as she is named: "Uh-oh."
+- 9: clear — Bun is defeated at the board.
+- 10: clear — the boss and the teal coworker wonder who is on the Saturday roster. The calendar matches the card's icon.
+- 11: clear — the boss catches Bun at the board: "Hey, YOU!"
+- 12: clear — three people smell noodles from the microwave and head over.
+- 13: clear — the boss points at Spiky's face on the board: "He works Saturday."
+- 14: clear — same meaning as 13. The hand is a different emoji, but in its frame it means the same thing.
+- 15: clear — Bun celebrates escaping.
+- 16: clear — Bun makes a call from the side-room phone.
+- 17: clear — the boss is alarmed: "The phone's ringing!"
+- 18: clear — the boss answers: "Hello?"
+- 19: clear — the boss gets no answer: "Hello?? Anyone?"
+- 20: clear — the boss rolls his eyes at the dead line.
+- 21: clear — the boss sees his own photo on the board and is embarrassed.
+- 22: clear — the teal coworker says "I saw her," eyes then pointing at Bun.
+- 23: clear — Spiky says "It was her." This is the same glyph as 7 but means blame here. The surrounding bubbles make that clear.
+- 24: clear — the boss writes Bun back onto the board.
+- 25: clear — the boss angrily blames Bun.
+- 26: vague — Spiky says "!" with a sightline to Bun at the printer. It's unclear whether he spotted her or reacts to the printer.
+- 27: clear — the boss and the teal coworker think about the printer that is acting up.
+- 28: vague — the boss on the phone says "[grey blob] → Bun." Nobody can name the first glyph, so the bubble could mean "a paper for Bun," "Bun's paperwork" or "Bun is down for it." This is the phone route's payoff, so it matters.
+- 29: clear — the boss is alarmed: "The roster!"
+- 30: clear — the crowd at the board wonders where Bun is.
+- 31: clear — Bun is nervous, hiding in the kitchen.
+- 32: clear — Spiky fixes the printer.
+- 33: clear — Spiky says the printer is fixed and all is good.
 
 ## Problems
-- should: In 07 and 14 the hand points left, away from the face in the bubble, while 12, 15, 22, 23, 25 and 28 point at the face. This reads as "not her" / "not him" until you see the board in the frame. — Keep the hand pointing at the face inside the bubble, and let the boss's arm do the in-world pointing. Or use board + face (🗒️ + face) for "on the board."
-- should: 05's grey megaphone on a white bubble can't be named at frame size. — Use the orange 📣.
+- blocker: In 28 the document glyph is a pale grey blob that nobody can name. It is the payoff of a phone call, and a player can't tell what the boss learned about Bun or why he then panics in 29 — use a high-contrast 📄 or 📋. If it means "Bun is on the roster," use 🗓️ 👉 Bun-face to match the card's icons.
+- should: In 26 the bare "!" doesn't say whether Spiky saw Bun or heard the printer, so a player can't tell if being seen at the printer is risky — use 👀 👉 Bun-face like 22 if he saw her, or 🖨️ ! if it's the noise.
+- should: 4 is a bare "?" thought that adds nothing in its frame — say what she's looking at, e.g. the boss's face plus "?".
+- should: The same 👉 Bun-face glyph means "she's assigned" in 7, "she did it" in 23 and "for her" in 28. The frames mostly save it, but the hand is overloaded — add the speaker's mood to blame bubbles (😠 👉 Bun-face, as 25 already does).
+- nit: 13 and 14 draw the pointing hand differently but mean the same thing, and a first reader noticed and wondered why — use one hand glyph everywhere.
+- nit: In 12, 😮 with 🍜 could also read as "who took my noodles?" — 🤤 🍜 reads only as "want noodles."
 
 <!-- /cold-read:faces -->
 
-<!-- cold-read:tells {"verdict":"fixable","date":"2026-11-15","commit":"d22f387","hash":"4150387f1f77024be6281a53bbd72e1f448e8fed4b8612c397e7b52c92e99bc1","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","tells":"9f7944aa85a5a65dcaeffe427e3e877ccc44d12020c604660050035f22051d7b","prompts":"f1d914aecdc56ea365960569f2587c9563e9f9a055deb88f13ba995eb473a219"},"model":"default","tally":{"visible":3,"faint":1,"invisible":1},"problems":{"blocker":3,"should":4,"nit":1}} -->
+<!-- cold-read:tells {"verdict":"fixable","date":"2026-11-15","commit":"fca016b","hash":"974c24fa92cbb03a7916438b3439923d378186c800262d29f3fe4642fb928e97","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","tells":"c6f7158ea822738f651e9873d90b55db6625acf298b458c7d9baf089b1a1578f","prompts":"f1d914aecdc56ea365960569f2587c9563e9f9a055deb88f13ba995eb473a219"},"model":"default","tally":{"visible":3,"faint":2,"invisible":0},"problems":{"blocker":1,"should":3,"nit":1}} -->
 ## tells: fixable
-Recorded 2026-11-15 at commit d22f387, by claude -p (model: default). Inputs 4150387f1f77: the card, route-checks.js, the before and after pictures, the pass's prompts.
-Items: 3 visible, 1 faint, 1 invisible.
-Problems: 3 blocker, 4 should, 1 nit.
-Earlier problems: 0 fixed, 3 still there, 0 no longer applies.
+Recorded 2026-11-15 at commit fca016b, by claude -p (model: default). Inputs 974c24fa92cb: the card, route-checks.js, the before and after pictures, the pass's prompts.
+Items: 3 visible, 2 faint, 0 invisible.
+Problems: 1 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 34 s | $0.13 |
-| 2-judge | report.md | 49 s | $0.18 |
-| all | | 83 s (the steps add up to 83 s) | $0.32 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 still there: In 05 neither phone looks like a phone. The player's handset is read as a speaker, and the dotted arc suggests a thrown object rather than a call. The boss's phone is hidden under the noise burst. A player who doesn't know it's a phone call can't plan the "ring the boss while Lin heats her fish" route. Fix: lift the handset off its cradle when used, with a coiled cord. Replace the arc with a 📞 bubble over the player and ringing waves around the boss's phone. Shake the boss's phone visibly and don't let the burst cover it. (The handset only tilts a little. The arc still looks like something thrown, and the burst still covers the boss's phone. The reader read the call as "fired something", and two routes depend on knowing it is a call. That is a misread cause, so it is now a blocker.)
-- E2 still there: In 02 the ding ends in the same frame the face is put on the board. The rings and all three "🍜?" bubbles vanish at that moment, so a player may conclude that touching the board makes people stop watching. The actual lesson is that the ding is your window. Fix: let the rings fade over a beat after the ding. Show each head turning back from the microwave one at a time with a small arrow, separately from the board interaction. (In 02, the rings and all three 😮🍜 bubbles vanish on the same frame as the roster write. The reader said outright that they couldn't tell whether the board cleared them.)
-- E3 still there: In 04 only the right-hand worker visibly turns toward the copier. The boss gets just an ambiguous orange line, and the middle worker shows nothing. The "every head turned toward it" mirror fail needs the player to see that everyone is looking away from the board. Fix: give every watcher who hears the copier the same "!" and a head turn toward it, with matching lines. Make the boss's reaction a clear turn behind the glass, not a stray line. (Now in 05. Only the green worker gets a "!". The boss gets a stray orange line, which the reader read as "perhaps", and the middle (teal) worker shows no reaction at all.)
+| 1-read | reading.md | 32 s | $0.13 |
+| 2-judge | report.md | 45 s | $0.16 |
+| all | | 78 s (the steps add up to 78 s) | $0.29 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In 05 neither phone looks like a phone. The player's handset is read as a speaker, and the dotted arc suggests a thrown object rather than a call. The boss's phone is hidden under the noise burst. A player who doesn't know it's a phone call can't plan the "ring the boss while Lin heats her fish" route. Fix: lift the handset off its cradle when used, with a coiled cord. Replace the arc with a 📞 bubble over the player and ringing waves around the boss's phone. Shake the boss's phone visibly and don't let the burst cover it. (recurring: premise-level?)
-- E2 [should] In 02 the ding ends in the same frame the face is put on the board. The rings and all three "🍜?" bubbles vanish at that moment, so a player may conclude that touching the board makes people stop watching. The actual lesson is that the ding is your window. Fix: let the rings fade over a beat after the ding. Show each head turning back from the microwave one at a time with a small arrow, separately from the board interaction. (recurring: premise-level?)
-- E3 [should] In 04 only the right-hand worker visibly turns toward the copier. The boss gets just an ambiguous orange line, and the middle worker shows nothing. The "every head turned toward it" mirror fail needs the player to see that everyone is looking away from the board. Fix: give every watcher who hears the copier the same "!" and a head turn toward it, with matching lines. Make the boss's reaction a clear turn behind the glass, not a stray line. (recurring: premise-level?)
-- E4 [blocker] The roster portrait isn't tied to any coworker. The reader couldn't tell whom the swap "is aimed at", but the win depends on the boss reading *Kev's* face, and the player has to know that face is Kev. — Draw the portrait in the person's own colours and hair (green shirt, dark hair). When the face goes up, have Kev glance at the board for a beat.
-- E5 [blocker] In 04 nothing shows the boss is on the phone. The dotted line is still there, but he just stands there with a "?". The fail route is "during his call", so the call is the window, and the player can't see it. — Show the handset at the boss's ear, a 📞 bubble over him and the cord stretched. Have him put it down when the call ends.
-- E6 [should] The cup in 01 just disappears while the hand box stays empty, so the reader wondered whether it went into the microwave at all. — Show the cup inside the lit microwave window, or flash it in the hand box for a moment before it goes in.
-- E7 [should] The board is drawn as an easel with a portrait, so the reader called it a "poster". Nothing says it is a duty roster that the boss checks. — Add rows of small face slots or a weekend calendar strip on the board. Have the boss glance at it on his rounds so its job can be learned by watching.
+- E1 [blocker] In 05, the copier jam's real effect is that every head turns toward it, and that is the cause of the mirror fail. It reads as something else. The red line and the "!" on one worker look like blame aimed at Kev. The boss's line is faint, the teal worker gets nothing, and nobody's body or face actually turns. A player won't learn that the copier draws every eye, which is why writing on the board during the beep gets you caught. — Turn every head and body toward the copier. Give everyone in range the same 👀 or ❗ bubble pointing at it, and draw every sightline in one colour and weight. Then the board, lying inside those turned gazes, reads as "watched".
+- E2 [should] The board change itself in 02 and 04 is a swap of a roughly 20 px face, with no motion or sound shown. Both routes depend on it, and the reader said they'd miss it during play. — Animate the write: marker strokes, a wipe puff and a scribble burst, with the board briefly highlighted. Draw the new portrait larger, or blow it up as a short-lived callout above the board.
+- E3 [should] In 02, the coworkers' 😮🍜 bubbles clear on the same frame as the write. The player can't tell whether writing broke the microwave cover or the smell simply ended, and the cover is what this route depends on. — Let the bubbles linger on after the write. Better, show the heads still turned toward the microwave while the player writes, then fade them on their own schedule a beat later.
+- E4 [should] In 04, the teal worker's walk and the boss's "?" disappearing happen in the same window as the write, so they look like reactions to the boss's face. — Don't let unrelated idle moves start in the same second as a player action. If the boss's "?" ends because the line is dead, show it as the boss hanging up (receiver down, 😤), not as a silent pop.
 
 ### 1-read: reading.md
 
-# Reading: what changed in each image
+# Reading: what changed
 
-The held box at the top (the hand icon) is empty in both halves of all five images. The two slots next to the "↻1" counter are also empty throughout. Nothing was picked up or used up in any of these moments.
+In all five images, the box in the top bar shows the same empty dashed hand before and after. The player never visibly picks anything up or carries anything away.
 
-**01:** The microwave the player was facing (it had the yellow outline and the E prompt) is lit up in AFTER, so it seems to be running. The red-and-white cup that sat just above it on the counter seems to be gone. The player has turned to face the counter. Nobody reacts: there are no bubbles or "!" marks. I think the player switched the microwave on, maybe after putting the cup in it.
+**01:** The microwave on the right wall had the highlight and E prompt in BEFORE. In AFTER it glows, something orange (food?) shows in its window, and the highlight is gone. Nobody reacts: no bubbles, and the coworkers and boss haven't moved. My guess is the player switched the microwave on, maybe after putting food in it. Nothing in the hand box says what went in.
 
-**02:** The picture on the easel next to the player changed from a red-haired woman to a dark-haired man. In BEFORE, the boss and both desk workers had 😮🍜 thought bubbles, and the microwave was smoking and giving off rings. In AFTER, all three bubbles are gone, and the microwave is still smoking. I think the player swapped the face on the easel poster. I can't tell whether that is what cleared the bubbles or whether they just ran out on their own.
+**02:** At the whiteboard, the portrait changes from the red-haired woman to a darker-haired face, the same one that's still up in 03. In BEFORE, the boss and both desk workers have 😮🍜 thought bubbles, and the microwave is smoking with a target ripple on it. In AFTER, all three bubbles are gone and the microwave is still smoking. The player swapped whose face is on the board. I can't tell whether the swap cleared the bubbles or the smell just faded. The 😮🍜 bubbles look like a reaction to the microwave from 01, not to the board.
 
-**03:** The black object in the small left room (it looks like a chair or speaker) was outlined with an E. In AFTER, it is aimed toward the top right. A dotted arc runs from it to the matching black object in the corner of the boss's office, and there is a burst/impact mark there. A red "!" splash appears above the boss's head. The green-shirt worker at the bottom desk seems to react a little. I think the player fired or switched on something that set off a noise across the room at the other device, which startled the boss.
+**03:** The player is in the small top-left room, at a black object (a phone?) that had the E prompt. In AFTER, a dotted trail of ring arcs runs from it to the phone on the boss office's top-right wall, which is shaking with a starburst. A red "!" burst sits above the boss. A small clock bubble appears over the player, and the bearded worker at the bottom desk turns slightly. The player rang the boss's phone from the far room.
 
-**04:** The easel picture changed again, from the dark-haired man to the bald boss. In BEFORE, the boss was standing by the top-right device with a "?" bubble. In AFTER, the "?" is gone and the boss is still there. The teal-shirt worker moved from near the microwave to the green worker's desk and seems to be carrying something (this may have nothing to do with the player). I think the player swapped the poster to show the boss's face.
+**04:** The player is back at the whiteboard. In BEFORE, the boss has left the desk and is at that phone with a "📞 ?" bubble (nobody on the line). The board shows the bearded worker's face, and the teal worker is walking right. In AFTER, the board shows the boss's own bald face. The boss's "?" bubble is gone, but the boss is still at the phone. The teal worker is now standing next to the bearded worker's desk. The player swapped the portrait again, this time to the boss, while the phone call kept the boss away. Whether the teal worker moved because of the new face or was already heading there, I can't tell.
 
-**05:** The copier the player was facing (outlined, with the E prompt) is spitting out paper in AFTER and has a warning icon. A red dashed line runs from the copier to the green-shirt worker, who now has a "!" bubble. An orange dashed line runs from the copier up to the boss's desk. I think the player jammed or started the copier, which got the green worker's attention and perhaps the boss's.
+**05:** The player is at the copier, which had the E prompt in BEFORE. In AFTER, it's spewing paper with a red/orange flash. An orange dashed line runs from it to the boss, and a red dashed line runs to the bearded worker, who now has a "!" bubble. The boss's and teal worker's view cones also shift. The player jammed or overloaded the copier, and it pulls attention: the red line seems to mark the bearded worker as the one blamed or alerted. The orange line to the boss is fainter, maybe meaning heard but not reacting yet.
 
-What confused me as a player:
-- The two easel swaps (02 and 04) look identical. Only the face changes. I can't tell what swapping the poster does or who it's aimed at.
-- In 01 the only feedback is the microwave glowing, and the cup going missing is easy to overlook. Because the hand box never fills, it looks like I never held the cup. So did it go into the microwave, or did it simply disappear?
+**Overall:** each use shows a clear effect at the object: a glow, smoke, ringing or paper. The board swaps are the subtlest change, just a different small face, with no reaction pinned to them. Without the side-by-side, I'd have missed 02 and 04.
 
 ### 2-judge: report.md
 
 Verdict: fixable
 
-- tells/01.png: visible — The player started the microwave. The reader saw it light up and guessed it was switched on. The red-and-white cup vanishing was noticed but not understood, because the hand box never filled.
-- tells/02.png: faint — The player wrote Kev's name on the roster. The reader saw a face swap on an "easel poster" but could not tell it was a duty roster or whose face it was. They also couldn't separate the swap from the bubbles and rings stopping in the same frame.
-- tells/03.png: invisible — The player rang the boss from the desk phone. The reader saw a "chair or speaker" firing something along an arc, with an impact burst at the far end. They read it as a launched noise that startled the boss, not as a phone call.
-- tells/04.png: visible — The player drew the boss's face on the roster. The reader saw the face change to the bald boss. They did not see that the boss was on a call, only "standing by the device with a ?".
-- tells/05.png: visible — The player jammed the copier. The reader saw paper, a warning icon and the green worker's "!". The boss's reaction was only "perhaps", and the middle worker showed nothing.
-
-## Earlier problems
-- E1: still there (blocker) — The handset only tilts a little. The arc still looks like something thrown, and the burst still covers the boss's phone. The reader read the call as "fired something", and two routes depend on knowing it is a call. That is a misread cause, so it is now a blocker.
-- E2: still there (should) — In 02, the rings and all three 😮🍜 bubbles vanish on the same frame as the roster write. The reader said outright that they couldn't tell whether the board cleared them.
-- E3: still there (should) — Now in 05. Only the green worker gets a "!". The boss gets a stray orange line, which the reader read as "perhaps", and the middle (teal) worker shows no reaction at all.
+- 01.png: visible. The player started the microwave. The reader saw it glow with food in the window and guessed it had been switched on. Correct.
+- 02.png: faint. The player wrote Kev's name on the roster board, and the small portrait changed from the red-haired face to Kev's. The reader caught the swap only in the side-by-side and said they'd have missed it in play. In the same moment all three 😮🍜 bubbles cleared, so the reader couldn't tell whether the write or the fading smell cleared them.
+- 03.png: visible. The player rang the boss's desk phone from the far room. The reader read the ring trail, the shaking phone and the boss's "!" correctly.
+- 04.png: faint. The player wrote the boss's own face on the board while the boss was on the dead call. The reader saw the portrait become the bald face, but again only side by side. The teal worker walked off at the same time and the boss's "?" disappeared, which added noise. The reader couldn't tell whether those were caused by the write.
+- 05.png: visible, but the reaction was misread. The player jammed the copier and, per the engine, every head turned toward it. The reader saw the paper spray but read the red dashed line to the bearded worker, and his "!", as him being blamed or alerted. They read the fainter orange line to the boss as "heard, not reacting yet". Nobody visibly turns their head. Only the view cones shift.
 
 ## Problems
-- blocker: The roster portrait isn't tied to any coworker. The reader couldn't tell whom the swap "is aimed at", but the win depends on the boss reading *Kev's* face, and the player has to know that face is Kev. — Draw the portrait in the person's own colours and hair (green shirt, dark hair). When the face goes up, have Kev glance at the board for a beat.
-- blocker: In 04 nothing shows the boss is on the phone. The dotted line is still there, but he just stands there with a "?". The fail route is "during his call", so the call is the window, and the player can't see it. — Show the handset at the boss's ear, a 📞 bubble over him and the cord stretched. Have him put it down when the call ends.
-- should: The cup in 01 just disappears while the hand box stays empty, so the reader wondered whether it went into the microwave at all. — Show the cup inside the lit microwave window, or flash it in the hand box for a moment before it goes in.
-- should: The board is drawn as an easel with a portrait, so the reader called it a "poster". Nothing says it is a duty roster that the boss checks. — Add rows of small face slots or a weekend calendar strip on the board. Have the boss glance at it on his rounds so its job can be learned by watching.
-- nit: In 04 the teal worker carries something across the room in the same frame as the write. The reader flagged it as possibly connected. — Keep unrelated walks out of the moment the player acts, or give them their own obvious purpose bubble (☕).
+- blocker: In 05, the copier jam's real effect is that every head turns toward it, and that is the cause of the mirror fail. It reads as something else. The red line and the "!" on one worker look like blame aimed at Kev. The boss's line is faint, the teal worker gets nothing, and nobody's body or face actually turns. A player won't learn that the copier draws every eye, which is why writing on the board during the beep gets you caught. — Turn every head and body toward the copier. Give everyone in range the same 👀 or ❗ bubble pointing at it, and draw every sightline in one colour and weight. Then the board, lying inside those turned gazes, reads as "watched".
+- should: The board change itself in 02 and 04 is a swap of a roughly 20 px face, with no motion or sound shown. Both routes depend on it, and the reader said they'd miss it during play. — Animate the write: marker strokes, a wipe puff and a scribble burst, with the board briefly highlighted. Draw the new portrait larger, or blow it up as a short-lived callout above the board.
+- should: In 02, the coworkers' 😮🍜 bubbles clear on the same frame as the write. The player can't tell whether writing broke the microwave cover or the smell simply ended, and the cover is what this route depends on. — Let the bubbles linger on after the write. Better, show the heads still turned toward the microwave while the player writes, then fade them on their own schedule a beat later.
+- should: In 04, the teal worker's walk and the boss's "?" disappearing happen in the same window as the write, so they look like reactions to the boss's face. — Don't let unrelated idle moves start in the same second as a player action. If the boss's "?" ends because the line is dead, show it as the boss hanging up (receiver down, 😤), not as a silent pop.
+- nit: In 01 the microwave's glow and the food in its window are small next to the dimmed counter. — Add a light hum or ripple and a bit of light spilling onto the floor while it runs. That also sets up the later ding.
 
 <!-- /cold-read:tells -->
 
-<!-- cold-read:outcomes {"verdict":"fixable","date":"2026-11-15","commit":"d22f387","hash":"e24b863ceb32b6080b7894294ce55696d943e08639beff0e93403a7b1d61e137","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","ways":"f3020a30329cbc3c48e43c84d4ce54912272129e4f4c5a994c816893f772a60f","ends":"19adeb1ce034bf754b3a7b502384496710549797da6a266349e8e0e59b3c867a","prompts":"2c4a72c45c8e3d7e595f0928af4c2741d3a3e144356d832e05fe3e1263e3a558"},"model":"default","tally":{"clear":8,"unclear":1,"wrong":3},"problems":{"blocker":5,"should":2,"nit":1}} -->
+<!-- cold-read:outcomes {"verdict":"fixable","date":"2026-11-15","commit":"fca016b","hash":"df95742211cd3278db88981d371d8966d78eef044c712a21ec998bd7b2525e65","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","checks":"69ad3ba43d5cfd8bed529d25ce051f55d13e27475a87edae3ec5ffbd5be037ee","ways":"af1a3c923726e64f9b0a6f882f4c18f24be9ba168da5e661de35f968653006aa","ends":"18f656123f0f035060d65450523a82ed0a228c81682ad283c447044a7e550650","prompts":"2c4a72c45c8e3d7e595f0928af4c2741d3a3e144356d832e05fe3e1263e3a558"},"model":"default","tally":{"clear":8,"unclear":1,"wrong":3},"problems":{"blocker":2,"should":1,"nit":1}} -->
 ## outcomes: fixable
-Recorded 2026-11-15 at commit d22f387, by claude -p (model: default). Inputs e24b863ceb32: the card, route-checks.js, premise.md's ways to win and lose, the runs' last frames, the pass's prompts.
+Recorded 2026-11-15 at commit fca016b, by claude -p (model: default). Inputs df95742211cd: the card, route-checks.js, premise.md's ways to win and lose, the runs' last frames, the pass's prompts.
 Items: 8 clear, 1 unclear, 3 wrong.
-Problems: 5 blocker, 2 should, 1 nit.
-Earlier problems: 0 fixed, 3 still there, 0 no longer applies.
+Problems: 2 blocker, 1 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 137 s | $0.59 |
-| 2-judge | report.md | 73 s | $0.34 |
-| all | | 210 s (the steps add up to 210 s) | $0.93 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 still there: In runs 8 and 10 the end card shows the told-on punishment (Lin ❗👉, paper pile) instead of the ending that just played. The 5:00 picture builds up the Saturday board loss, and the card contradicts it. A player learns that "Lin" is a separate kind of loss, and never learns that her face on the board is what lost. — Show the red Saturday card (sunny window, her face on the board) in every board loss. Put Lin's 👉 face in the card's cause row. For run 10, also show a small strip on the board of Kev's face wiped off and hers drawn back. (In runs 8 and 10 the end card is still the told-on scene with Lin 👉 and papers, at 5:00, right after the frames that build up the Saturday reading. The card contradicts the moment before it, and run 10 still shows no Kev→her swap.)
-- E2 still there: Run 4's "own face" ending reads as "caught". The card's icon row starts with ✏️ and then the angry boss, which is the same vocabulary as the caught card in runs 2, 5 and 6. The boss's face never appears on the board in the final pictures or on the card. A player won't learn that writing a second time is what broke it. — In the card scene, show the boss's own face in the Saturday box, half wiped, with the boss red-faced 😳. Lead the icon row with that board (board with the boss's face → ✏️ → her face), and keep the pencil-plus-angry-boss pairing for "caught" only. (In run 4 the boss's face never appears, there is no 😳, and the icon row is still ✏️ + boss + 😠 + her. The card does show her full face, not a half-drawn one, but a player can't tell that apart from caught. The Lin/Kev 👀👉 tell is only dotted lines in frame 18.)
-- E3 still there: In run 6 the trap's cause doesn't read. The boss's 🖨️ dashed line to the copier passes right through her at the board, but against his red cone it looks like he was simply watching her the whole time. — Draw his look as a bright orange line that stops on her. Pop a 🖨️→😳 beat over his head as she comes into view. On the card, put the copier directly behind her in the boss's line of sight. (In run 6 the starburst is already up before the beep frame. There is no orange 🖨️ line that stops on her and no 🖨️→😳 beat, so the reader blamed the copier for failing to pull the boss. It isn't a blocker: the outcome reads right and the lesson (the boss still saw the board) isn't false. It just misses the "looking through the board" point.)
+| 1-read | reading.md | 138 s | $0.58 |
+| 2-judge | report.md | 79 s | $0.32 |
+| all | | 217 s (the steps add up to 217 s) | $0.90 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In runs 8 and 10 the end card shows the told-on punishment (Lin ❗👉, paper pile) instead of the ending that just played. The 5:00 picture builds up the Saturday board loss, and the card contradicts it. A player learns that "Lin" is a separate kind of loss, and never learns that her face on the board is what lost. — Show the red Saturday card (sunny window, her face on the board) in every board loss. Put Lin's 👉 face in the card's cause row. For run 10, also show a small strip on the board of Kev's face wiped off and hers drawn back. (recurring: premise-level?)
-- E2 [blocker] Run 4's "own face" ending reads as "caught". The card's icon row starts with ✏️ and then the angry boss, which is the same vocabulary as the caught card in runs 2, 5 and 6. The boss's face never appears on the board in the final pictures or on the card. A player won't learn that writing a second time is what broke it. — In the card scene, show the boss's own face in the Saturday box, half wiped, with the boss red-faced 😳. Lead the icon row with that board (board with the boss's face → ✏️ → her face), and keep the pencil-plus-angry-boss pairing for "caught" only. (recurring: premise-level?)
-- E3 [should] In run 6 the trap's cause doesn't read. The boss's 🖨️ dashed line to the copier passes right through her at the board, but against his red cone it looks like he was simply watching her the whole time. — Draw his look as a bright orange line that stops on her. Pop a 🖨️→😳 beat over his head as she comes into view. On the card, put the copier directly behind her in the boss's line of sight. (recurring: premise-level?)
-- E4 [should] In run 9 (blamed), the boss's wipe-and-redraw (✏️) doesn't show in the last frames or on the card. The reader concluded her write never happened, so the player can't tell that the write worked and only being away broke it. — On the 5:00 frame, show the boss's ✏️ bubble at the board with Kev's face half-wiped. On the card, lead the icon row with Kev's face crossed out → empty seat → her face.
-- E5 [blocker] Run 4: wrong — She wrote twice and put the boss's own face on the board. The reader saw "caught, unclear how". The boss's face never shows on the board, there is no 😳 beat, and the icons are ✏️ + boss + 😠 + her, which reads as the caught card.
-- E6 [blocker] Run 8: wrong — Lin told on her earlier, and at 5:00 her face was still on the board, so she lost the Saturday reading. The 5:00 frames build up that loss, but the end card is the told-on scene (Lin ❗👉, paper pile) instead.
-- E7 [blocker] Run 10: wrong — She wrote Kev's face, then Lin saw a second write, and the boss put her face back. The reader saw run 8's told-on card. The last frames never show Kev's face being wiped and hers drawn back.
+- E1 [blocker] Getting told on (runs 8 and 10) leads the end card with "Lin 👉 you", but nothing on the map near 5:00 ties Lin to the loss. She is just walking around when the boss reads the board. The player decides the card is wrong, never learns that ringing the phone while Lin was at her desk was the mistake, and in run 10 doesn't learn that Kev's face was wiped. — Fix: put a small picture of the moment she told at the front of the card's row: Lin at her desk with 👀, the board with the marker at it, and the boss's phone shaking. In run 10, add a close-up of Kev's face crossed out by the eraser.
+- E2 [blocker] The copier trap's end card (run 6) is the same as a plain catch, so the reader blames timing instead of where the copier stands. They will try the copier earlier and fail again. — Fix: on the copier-trap card, draw the boss's orange dashed line through the board to the copier behind it, and add a copier icon to the row before 😠.
+- E3 [should] In run 4, the boss never discovers his own face where the player can see it. The last map pictures go straight to the redrawn face and the glare, and Lin and Kev never point. The only evidence is a tiny icon on the card. — Fix: keep the board close-up with the boss's face and his 😳 on the map at 5:00 before he wipes it. Also show Lin's "👀👉 you" and Kev's "👉 you" bubbles there, and lead the card's row with the boss's face on the board.
 
 ### 1-read: reading.md
 
-# How each loop of BUSYWORK "Saturday" ended
+I read all 12 runs. Two wins, ten losses. The losses split into three kinds: caught changing the board early (4), plain loss at 5:00 (5), and assigned while out of the room (1).
 
-**Overall:** 2 wins, 7 plain losses and 3 runs where I can't say for sure. Runs 8 and 10 have end pictures that don't match what came before them. In several runs the caption times don't match the clock shown in the pictures.
+Two things showed up more than once:
+- **The end picture doesn't always match.** In runs 8 and 10 it shows the teal coworker blaming the player, but she never does anything like that in the pictures before it.
+- **Captions and the on-screen clock disagree in runs 2, 6 and 12.** The captions say 4:02, 4:03 and 5:01–5:02; the clock still shows 4:01, 4:02 and 5:00.
 
-Here is how I'm naming things. The player is the woman in the red top with a hair bun, marked by a red ring. The boss is bald, in a dark suit. The two coworkers are a spiky-haired man in a green shirt and a woman with glasses and a bun in a teal shirt. The board is the whiteboard on an easel with a face on it.
+# Reading: how each loop ended
 
----
+**Run 1: Loss, assigned the shift (not caught).** At 5:00 the bald boss points at the whiteboard, which shows the player's face (red top, hair bun). The player is moved from the bottom-left desk to the board, looking miserable (😩). End picture: the player alone at a desk under a sunny Saturday window, with the board showing their face. Icons: calendar, player, 😩. **Matches.** Which step broke: the pictures don't show one. Nothing was changed on the board, so it still named the player.
 
-### Run 1: loss (put on the Saturday shift)
-- **What tells me:** At 5:00 the player stands at the board, which still shows her face. The boss points and she makes a 😩 face. The end picture has a red border and shows her at a desk under a sunny window with a stack of papers. The icons read 🗓️ + her face + 😩.
-- **Does the end match?** Yes.
-- **What broke:** The pictures don't show any plan. The board was never changed.
+**Run 2: Loss, caught.** At 4:01 the player is at the board, and a red cone from the boss's office reaches them. A spiky "! 👉 player" burst appears, and a teal coworker has a "calendar ?" thought. End picture: the board now shows the spiky-haired coworker in the green jacket, with a marker on it. The boss is angry and points at the player, who is at their desk. **Matches.** Which step broke: changing the board to the green coworker's face while the boss could see it.
 
-### Run 2: caught
-- **What tells me:** At 4:01 the player is at the board inside the boss's red viewing area. A starburst appears over the boss: "! 👉 her face". The end picture has a red border: the boss is angry and pointing, and a marker is scribbling on the board. The icons read ✏️😠 + her face, then the Saturday desk.
-- **Does the end match?** Yes.
-- **What broke:** She changed the board while the boss could see her through the glass wall.
-- **Mismatch:** The captions say 4:02 but the clock in the pictures shows 4:01.
+**Run 3: Win.** At 4:59 the board shows the green-jacket coworker. At 5:00 the boss points at that face. The player shows 🎉 and the green coworker shows 😩. End picture: the green coworker at the Saturday desk, crying. The card has a teal border instead of red. Icons: pencil, green coworker, 😢. An item that looks like a buzzing ticket or pass fills the first slot. **Matches.**
 
-### Run 3: win
-- **What tells me:** At 5:00 the board shows the green-shirt man's face. The boss points at him and he goes 😩, while the player has a 🎉 bubble. The end picture has a green border and shows the green-shirt man crying at the Saturday desk. An item that looks like a ticket or ID badge fills the first slot.
-- **Does the end match?** Yes.
+**Run 4: Loss, caught at 5:00 (no red cone).** The boss's bubble is "✏️ player", then "😠 👉 player". The player is at the board looking miserable. End picture: the board shows the player's face again, and the angry boss points at them. Icons: a small board with the bald boss's face and a marker, 😳, 👉, player. **Mostly matches.** The field pictures never clearly show the boss's face on the board. Which step broke: the board change itself. The icon suggests the player put the boss's own face up and he noticed. I can't fully confirm that.
 
-### Run 4: caught, though it's unclear how
-- **What tells me:** At 5:00 the board seems to show her face, and I can't read the small marks on it. The boss's bubble is ✏️, then "😠 👉 her face". The end picture is the same as the caught picture in run 2, but with a fourth icon of the boss's face.
-- **Does the end match?** Yes.
-- **What broke:** The boss seems to have spotted a pencil edit when he read the board at 5:00. Nothing in the pictures shows him seeing her do it. I can't tell whether the edit was left half-done or was visible.
+**Run 5: Loss, caught.** This is the same as run 2, at 4:16. The player is at the board inside the boss's red cone. The board changes to the green coworker's face, and the "! 👉 player" burst appears. The end picture is the same as run 2: angry boss, swapped board. **Matches.** Which step broke: changing the board in the boss's view.
 
-### Run 5: caught
-- **What tells me:** At 4:16 she is at the board inside the boss's red viewing area, and the "! 👉 her face" starburst appears. The end picture is the same as in run 2.
-- **Does the end match?** Yes.
-- **What broke:** Same as run 2: she changed the board in the boss's line of sight.
-- **Mismatch:** The caption says 4:17 but the picture shows 4:16.
+**Run 6: Loss, caught.** Caption: "You hear a sound." A red ringing object bursts near the copier, and the green coworker shows "!". But at 4:02 the boss is already looking at the player at the board with "! 👉 player". The end picture is the same as run 2. **Matches.** Which step broke: the noise distraction. It didn't pull the boss's gaze away, or it came too late. The captions say 4:03 but the clock says 4:02.
 
-### Run 6: caught
-- **What tells me:** The photocopier at the bottom left gives off rings, then a red burst. The caption says "You hear a sound." The green-shirt man reacts with "!", but the boss's starburst ("! 👉 her face") is already showing in the first picture. The end picture is the same caught picture.
-- **Does the end match?** Yes.
-- **What broke:** The distraction at the copier drew in the green-shirt man, not the boss. The boss's red viewing area still covered the board.
-- **Mismatch:** The caption says 4:03 but the picture shows 4:02.
+**Run 7: Win.** This is the same as run 3. The board shows the green coworker and the player shows 🎉. End picture: the green coworker crying at the Saturday desk, with a teal border. A black desk phone fills the second slot. **Matches.**
 
-### Run 7: win
-- **What tells me:** This is the same as run 3. The board shows the green-shirt man, he goes 😩 and the player 🎉. The end picture has a green border with him at the Saturday desk. The item gained looks like a dark office chair.
-- **Does the end match?** Yes.
+**Run 8: Loss, assigned the shift.** The field pictures look the same as run 1. End picture: the player at the Saturday desk, but the icons are teal coworker (glasses, bun), 👉, player, 😩. That reads as "she blamed the player." **Doesn't match.** In the last moments the teal coworker is just walking toward the glass wall and never points at the player. Which step broke: I can't tell.
 
-### Run 8: loss, but the end picture doesn't fit
-- **What tells me:** The last two moments look the same as run 1: the board shows her face, the boss points, she goes 😩. The end picture has a red border but is a different scene. The teal-shirt woman points at the player, with an "! 👉 her face" bubble, while the player sits buried under a stack of papers. The icons read: the teal woman's face 👉 papers.
-- **Does the end match?** No. The teal-shirt woman never pointed at or noticed anything in the frames shown.
-- **What broke:** I can't tell.
+**Run 9: Loss, assigned while away.** At 5:00 the player is far off by the kitchen microwave, with a worried thought. The board shows the player's face. The boss and both coworkers have "👉 player" bubbles, and a dashed red empty-chair outline is near them. End picture: a different scene, with a city window and a wall clock near 5. The boss points at the dashed empty chair while the two coworkers sit and watch. Icons: dashed chair, 👉, player. **Matches.** Which step broke: staying away from the meeting. Being absent didn't help, and the board still had the player's face.
 
-### Run 9: loss (she wasn't at the meeting)
-- **What tells me:** At 5:00 the player is in the kitchen by the microwave, with a worried thought bubble. The boss and both coworkers have "👉 her face" bubbles. The end picture has a red border and a different setting: a meeting room with a city-view window and a clock. The board shows her, and the others point at an empty yellow chair outlined in red dashes. The icons read: empty seat 👉 her face.
-- **Does the end match?** Yes.
-- **What broke:** She was away in the kitchen at 5:00, and the board was never changed.
+**Run 10: Loss, assigned the shift.** The field pictures and end picture are the same as run 8, including the "teal coworker 👉 player" icons. **Doesn't match**, for the same reason as run 8. Which step broke: I can't tell.
 
-### Run 10: loss, but the end picture doesn't fit
-- **What tells me:** The pictures are the same as run 8: the last moments look like run 1, but the end picture is the teal-woman-and-papers scene.
-- **Does the end match?** No. This is the same problem as run 8.
-- **What broke:** I can't tell.
+**Run 11: Loss, assigned the shift.** At 5:00 the player is next to the teal coworker in the middle of the room (😬). Then they are moved to the board (😩), still with their own face on it. End picture: same as run 1 (calendar, player, 😩). **Matches.** Which step broke: none shown. The board was never changed.
 
-### Run 11: loss (put on the Saturday shift)
-- **What tells me:** First she is grinning next to the teal-shirt woman. Then she is at the board, which still shows her face, and goes 😩. The end picture is the same Saturday-desk loss as run 1.
-- **Does the end match?** Yes.
-- **What broke:** I can't tell what she was doing with the teal-shirt woman. Whatever it was, the board didn't change.
-
-### Run 12: loss (put on the Saturday shift)
-- **What tells me:** She is grinning by the green-shirt man's desk. Then she is at the board, which still shows her face, and goes 😩. The end picture is the same Saturday-desk loss as run 1.
-- **Does the end match?** Yes.
-- **What broke:** I can't tell what she was doing at his desk, and the board was never changed.
-- **Mismatch:** The captions say 5:01 and 5:02, but every picture shows 5:00.
+**Run 12: Loss, assigned the shift.** At 5:00 the player is at the green coworker's desk (bottom right, 😬). Then they are moved to the board, still with their own face on it. The end picture is the same as run 1. **Matches.** Which step broke: maybe something at the green coworker's desk didn't happen in time. The pictures don't show what it was. The captions say 5:01 and 5:02, but the clock reads 5:00 in all three pictures.
 
 ### 2-judge: report.md
 
 Verdict: fixable
 
-- Run 1: clear. She did nothing and stayed on the board. The reader saw her face read out at 5:00, then the Saturday desk card.
-- Run 2: clear. She wrote in plain sight and was caught. The reader saw the starburst, then the caught card with the half-drawn face.
-- Run 3: clear. She won through the microwave ding. The reader saw Kev's face read out, Kev 😩, her 🎉, and the green card.
-- Run 4: wrong. She wrote twice and put the boss's own face on the board. The reader saw "caught, unclear how". The boss's face never shows on the board, there is no 😳 beat, and the icons are ✏️ + boss + 😠 + her, which reads as the caught card.
-- Run 5: clear. She wrote after the ding had passed and was caught. The reader saw the same starburst and caught card as run 2.
-- Run 6: unclear. This was the copier trap: looking toward the copier, the boss looked straight through the board. The reader got "caught" but read the cause as "the copier pulled Kev, not the boss; his cone was on the board anyway."
-- Run 7: clear. She won through the phone. The reader saw the same win as run 3.
-- Run 8: wrong. Lin told on her earlier, and at 5:00 her face was still on the board, so she lost the Saturday reading. The 5:00 frames build up that loss, but the end card is the told-on scene (Lin ❗👉, paper pile) instead.
-- Run 9: clear. She wrote at the ding but was in the kitchen at 5:00, so she was blamed. The reader got "she wasn't at the meeting" but thought the board was never changed.
-- Run 10: wrong. She wrote Kev's face, then Lin saw a second write, and the boss put her face back. The reader saw run 8's told-on card. The last frames never show Kev's face being wiped and hers drawn back.
-- Run 11: clear. She stood idle and stayed on the board. The reader saw the Saturday desk card.
-- Run 12: clear. She did everything except write on the board. The reader saw the Saturday desk card.
-
-## Earlier problems
-- E1: still there (blocker). In runs 8 and 10 the end card is still the told-on scene with Lin 👉 and papers, at 5:00, right after the frames that build up the Saturday reading. The card contradicts the moment before it, and run 10 still shows no Kev→her swap.
-- E2: still there (blocker). In run 4 the boss's face never appears, there is no 😳, and the icon row is still ✏️ + boss + 😠 + her. The card does show her full face, not a half-drawn one, but a player can't tell that apart from caught. The Lin/Kev 👀👉 tell is only dotted lines in frame 18.
-- E3: still there (should). In run 6 the starburst is already up before the beep frame. There is no orange 🖨️ line that stops on her and no 🖨️→😳 beat, so the reader blamed the copier for failing to pull the boss. It isn't a blocker: the outcome reads right and the lesson (the boss still saw the board) isn't false. It just misses the "looking through the board" point.
+- Run 1: clear. Did nothing, so the player's face stayed on the board. The reader saw a plain fail with the board unchanged.
+- Run 2: clear. Wrote on the board in the boss's sight and got caught. The reader saw the red cone, "! 👉 player" and the angry boss on the end card.
+- Run 3: clear. Won with the noodle ding. The reader saw the boss read out Kev's face, 🎉, and Kev crying at the Saturday desk.
+- Run 4: unclear. Wrote twice and put the boss's own face up, so he redrew the player and glared. The reader guessed this right from the end card's icon row. But the last map pictures show only "✏️ player" and "😠 👉 player". Neither the boss's face on the board nor his 😳 is ever on the map.
+- Run 5: clear. Wrote after the ding had passed and got caught. The reader read it as caught.
+- Run 6: wrong. The copier trap: the boss's line to the beeping copier runs straight through the board. The reader saw the right outcome (caught) but the wrong cause: "the noise didn't pull his gaze away, or came too late." The end card looks exactly like a plain catch, with no copier in it.
+- Run 7: clear. Won with the phone. The reader read it like run 3.
+- Run 8: wrong. Rang the boss's phone while Lin was at her desk; she told on the player and the write never happened. The reader saw "Lin 👉 player" on the end card but nothing like it on the map before it, so they called it a mismatch and couldn't tell which step broke.
+- Run 9: clear. Changed the board, then was away at 5:00 and got blamed. The reader saw the dashed empty chair, the board showing the player again, and the right cause.
+- Run 10: wrong. Kev's face went up at the ding, then a second write while Lin watched; she told, and the boss put the player's face back. The reader saw the same end card as run 8 and the same mismatch. Nothing shows that Kev's write was undone.
+- Run 11: clear. Stood at the empty chair at 4:55 without ever writing, and failed. The reader saw the board unchanged.
+- Run 12: clear. Busy all day but never wrote on the board, and failed. The reader saw the plain-fail end card. They wondered whether something at Kev's desk mattered, but the card itself is right.
 
 ## Problems
-- should: In run 9 (blamed), the boss's wipe-and-redraw (✏️) doesn't show in the last frames or on the card. The reader concluded her write never happened, so the player can't tell that the write worked and only being away broke it. — On the 5:00 frame, show the boss's ✏️ bubble at the board with Kev's face half-wiped. On the card, lead the icon row with Kev's face crossed out → empty seat → her face.
-- nit: On run 4's frame 18, two dotted lines run from Lin's and Kev's desks to a frame at the glass wall. They read as sight lines, not as "they told him", so the run is cluttered for no gain. — Replace them with 👀👉 her bubbles over Lin and Kev, as the design describes.
+- blocker: Getting told on (runs 8 and 10) leads the end card with "Lin 👉 you", but nothing on the map near 5:00 ties Lin to the loss. She is just walking around when the boss reads the board. The player decides the card is wrong, never learns that ringing the phone while Lin was at her desk was the mistake, and in run 10 doesn't learn that Kev's face was wiped. — Fix: put a small picture of the moment she told at the front of the card's row: Lin at her desk with 👀, the board with the marker at it, and the boss's phone shaking. In run 10, add a close-up of Kev's face crossed out by the eraser.
+- blocker: The copier trap's end card (run 6) is the same as a plain catch, so the reader blames timing instead of where the copier stands. They will try the copier earlier and fail again. — Fix: on the copier-trap card, draw the boss's orange dashed line through the board to the copier behind it, and add a copier icon to the row before 😠.
+- should: In run 4, the boss never discovers his own face where the player can see it. The last map pictures go straight to the redrawn face and the glare, and Lin and Kev never point. The only evidence is a tiny icon on the card. — Fix: keep the board close-up with the boss's face and his 😳 on the map at 5:00 before he wipes it. Also show Lin's "👀👉 you" and Kev's "👉 you" bubbles there, and lead the card's row with the boss's face on the board.
+- nit: In runs 2, 5 and 6 the end card's board shows a whole, finished face with the marker at it. The design says the face should be half-drawn, which would show "caught mid-write" rather than "swap done". — Fix: draw only the top half of the face, with the bottom of the box still wiped clean.
 
 <!-- /cold-read:outcomes -->
 
-<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"d22f387","hash":"61e32f01c32dbfefd9783ce353cd14bb4c7fe46afd289e3aebe9c103ccf6ceb3","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","shots":"ec89136eb35ec7c93d3aeeeae668db479c24f8211b3cd3f8eebf7224296feea1","pictures":"cef48bd71f72337f7f93fffef6119398838f85a668b2f3c548695f692caecb51","prompts":"373358f2a720c528dbf043178a7e12d5e465c477911cb7d1ae56f78e1d3c10a4"},"model":"default","problems":{"blocker":5,"should":9,"nit":4}} -->
+<!-- cold-read:pictures {"verdict":"fixable","date":"2026-11-15","commit":"fca016b","hash":"b1427edb0af0237b148b78a3332e1b811da2cd53eb6e55329af49aa305558212","parts":{"card":"cb6c1cffc263704dae616f6456b879413fb4e95f1d6d147e02dd70603b3d3c8e","shots":"c7474a18a8698e5f34e22aa9e1310e9bcd8285c903c62bb992040e4784b0da8a","pictures":"a4e474355bc094a886840825e887467ff93a0fcac4f95513e0e869e685ea79e4","prompts":"373358f2a720c528dbf043178a7e12d5e465c477911cb7d1ae56f78e1d3c10a4"},"model":"default","problems":{"blocker":3,"should":8,"nit":4}} -->
 ## pictures: fixable
-Recorded 2026-11-15 at commit d22f387, by claude -p (model: default). Inputs 61e32f01c32d: the card, shots.js, the rendered shots, the pass's prompts.
-Problems: 5 blocker, 9 should, 4 nit.
-Earlier problems: 6 fixed, 14 still there, 1 no longer applies.
+Recorded 2026-11-15 at commit fca016b, by claude -p (model: default). Inputs b1427edb0af0: the card, shots.js, the rendered shots, the pass's prompts.
+Problems: 3 blocker, 8 should, 4 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-read | reading.md | 111 s | $0.59 |
-| 2-compare | report.md | 191 s | $0.87 |
-| all | | 302 s (the steps add up to 302 s) | $1.46 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 still there: The markers in the tray are still specks, and the black meter still has no fill. The reader asks about it again. (recurring: premise-level?) (The vertical meter now fills and the reader reads it. The two markers in the tray are still specks nobody mentions, so "marker gone from the tray" (17, 21) never registers.)
-- E2 fixed: The rings are gone, but the boss's cone toward the copier is still too pale to notice. (recurring: premise-level?) (20 now shows the boss's cone gone orange and his bar filling on you, and the reader concludes "the copier noise doesn't pull the boss away.")
-- E3 still there: Lin's cone over the player in 07 is still neutral teal. (recurring: premise-level?) (In 12, Lin's cone covers you at the board in plain neutral teal, and the reader reads it as a free window.)
-- E4 fixed: The coffee carry-over is gone, but the reader still asks what the fast-forward icon means (08). (recurring: premise-level?) (In 14 the reader reads the fast-forward button as "waiting is allowed.")
-- E5 still there: The round portrait still reads as a picker (10). (recurring: premise-level?) (The round pop-up still reads as a picker ("faces cycle"), but what it implies, writing over the board again, is right.)
-- E6 still there: The same round frame comes back in 11 and 17. (recurring: premise-level?) (It's the same round frame in 09, 10 and 16; this is the same problem as E5.)
-- E7 still there: In 13, Lin's cone over the player has no red and no "?", so the reader thinks the window is open. (recurring: premise-level?) (In 12, 16 and 10, Lin's cone sits on you with no colour change and no "?" until the frame where she's already caught you (17), so the reader takes those moments as safe.)
-- E8 still there: The fish now shows in the window, but Kev's wavy lines (09, 15) are still unexplained. (recurring: premise-level?) (Lin's motion lines (06, 08) and Kev's (14) are still unexplained ("the teal woman has little motion lines"), but they mislead nobody about a route.)
-- E9 still there: The half-drawn face still reads as "a half-drawn mess" (18) and "scribbled" (33). (recurring: premise-level?) (The writing in progress reads as "a scribbled-out head" (17, 30). The player never learns that writing takes time, so they'll try it in windows that are too short.)
-- E10 fixed: 21 tells the player the copier route works. The boss's cone and meter don't react, and the dashed line says he looks away. The reader's story lists the copier as a working distraction. — In 21, turn his cone red on the player, fill his meter, and move his "?" from the copier to the player. (20 reads as a failure.)
-- E11 still there: 17 was taken at 4:39, after the phone window it should show. Lin is already walking back, and 18 at the same 4:39 shows her catching you. — Retake 17 at about 4:36, while Lin is at the microwave. (This is now 16 (and 10). At 4:39 the "nobody looking" shot has Lin's cone on you. Retake at about 4:35–4:36.)
-- E12 fixed: Writing the boss's face in (28 → 31) reads as being caught. The reader can't tell 31 from 33, so they'll keep trying that route more sneakily. — In 31, draw the boss jabbing at his own face, then at you, with a "boss face + ❌" icon. Give 33 a 👁 icon. (The reader tells 28 (pencil, boss, angry, me, after the witnesses in 25) apart from 30 (caught early).)
-- E13 fixed: In 25–28 the player stands touching the board beside the boss, so 27 reads as "swap at the last second". He holds the only marker, so that route doesn't exist. — Seat the player in the outlined meeting chair in 25–28. (In 22–25 the player sits in the meeting chair.)
-- E14 no longer applies: In 22 the boss's full cone sweeps the board, but the intent says he is head-down in his folder and not looking. The player will skip a window the builder meant to teach. — While he reads, shrink his cone to a stub over the folder. (22 no longer claims the boss is head-down in his folder.)
-- E15 still there: 23 hides the marker in the boss's hand, so the player doesn't learn that the board is locked from 4:52. — Draw an oversized marker in his raised hand and an empty slot in the tray. (The boss's marker in 22–26 is a tiny white stub, and nothing shows the tray empty, so "the board is locked once he has the marker" is never taught.)
-- E16 still there: 20 puts the player at Kev's desk, which suggests a desk interaction. — Retake with the player at their own desk or at the board. (In 19 the player stands at Kev's desk.)
-- E17 still there: Lin's pulled-out chair is drawn tipped on its side (14, 15, 24). — Draw it upright, pulled out and turned. (Lin's chair is drawn tipped over (13, 14, 16, 21), and the reader reads it as "knocked over.")
-- E18 fixed: 34's city window is the only sign of "Friday", so the reader asks if it's the same day. — Light Friday's box on the board and use a dusk sky. (31's wall clock at 5:00 and city view tell Friday's meeting apart from the Saturday cards, and the reader places it correctly.)
-- E19 still there: 33's half-drawn face is Kev's, but the intent says the boss's. — Retake with the boss's face, or correct the intent. (In 30 the half-drawn face has Kev's spiky hair, but the intent says the boss's face.)
-- E20 still there: The red down-arrow jumps from your desk (01) to the copier (04) and means nothing the player can learn. — Remove it, or make it one consistent marker that is explained once. (The red down-triangle sits over your desk (01) and over the copier (04), and the reader asks about it twice.)
-- E21 still there: In 29 the boss still points at Kev's face while you're away. 34 then shows your face back on the board with no visible beat. — When your chair is empty at 4:59, have the boss turn from the board to the outlined chair. (In 26 the boss points at Kev while you're away, and then 31 shows your face. The reader flags this as a contradiction ("when does absence matter?"). Fix: at 4:59, with your chair empty, have the boss turn from the board to the dashed chair with a "?" and have your face flip back onto the board on screen.)
+| 1-read | reading.md | 117 s | $0.58 |
+| 2-compare | report.md | 160 s | $0.57 |
+| all | | 277 s (the steps add up to 277 s) | $1.15 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [should] The markers in the tray are still specks, and the black meter still has no fill. The reader asks about it again. (recurring: premise-level?)
-- E2 [blocker] Lin's cone over the player in 07 is still neutral teal. (recurring: premise-level?)
-- E3 [blocker] In 13, Lin's cone over the player has no red and no "?", so the reader thinks the window is open. (recurring: premise-level?)
-- E4 [should] The fish now shows in the window, but Kev's wavy lines (09, 15) are still unexplained. (recurring: premise-level?)
-- E5 [blocker] The half-drawn face still reads as "a half-drawn mess" (18) and "scribbled" (33). (recurring: premise-level?)
-- E6 [blocker] 17 was taken at 4:39, after the phone window it should show. Lin is already walking back, and 18 at the same 4:39 shows her catching you. — Retake 17 at about 4:36, while Lin is at the microwave. (recurring: premise-level?)
-- E7 [should] 23 hides the marker in the boss's hand, so the player doesn't learn that the board is locked from 4:52. — Draw an oversized marker in his raised hand and an empty slot in the tray. (recurring: premise-level?)
-- E8 [should] 20 puts the player at Kev's desk, which suggests a desk interaction. — Retake with the player at their own desk or at the board. (recurring: premise-level?)
-- E9 [should] Lin's pulled-out chair is drawn tipped on its side (14, 15, 24). — Draw it upright, pulled out and turned. (recurring: premise-level?)
-- E10 [should] 33's half-drawn face is Kev's, but the intent says the boss's. — Retake with the boss's face, or correct the intent. (recurring: premise-level?)
-- E11 [should] The red down-arrow jumps from your desk (01) to the copier (04) and means nothing the player can learn. — Remove it, or make it one consistent marker that is explained once. (recurring: premise-level?)
-- E12 [blocker] In 29 the boss still points at Kev's face while you're away. 34 then shows your face back on the board with no visible beat. — When your chair is empty at 4:59, have the boss turn from the board to the outlined chair. (recurring: premise-level?)
-- E13 [should] In 06 Lin's cone has already swung east onto the player at 4:09, so the board looks partly unwatched before the ding. That weakens the before/after in 07, which is the level's cleanest beat. — Keep every cone, Lin's included, on the board until the ding, and put the folder in the player's hand.
-- E14 [should] In 08 the noodle cup reads as coffee ("a prop, a lure, or just me having coffee?"), so the noodle that sets up the ding has no visible payoff. — Draw an open noodle cup with noodles and chopsticks showing, steaming, with the player standing at it.
+- E1 [blocker] Shot 12. Lin's cone covers the player at the board, but nothing changes. The player concludes the prank call alone is "a clean method", which is the opposite of what the shot is for. Fix: any cone touching the player at the board turns orange and starts that person's "?" bar, exactly like the boss's in 02.
+- E2 [blocker] Shot 20. The copier jam is supposed to fail because the boss looks *through* the board. The player instead reads "attention split", so they would keep trying a route that can't work. Fix: flash the player red where the boss's sight line crosses them, and point a 👀 bubble at the player.
+- E3 [blocker] Shot 06. The boss's suspicion bar fills while I just walk across the open floor. No boss gets suspicious of someone walking to the kitchen, and it teaches the player that being seen anywhere is dangerous, when only the board is. Fix: the bar fills only when the player is at the board (or holding the marker), and the folder from the intent should be in my hand.
+- E4 [should] The noodle cup reads as coffee in 01, 03 and 08, and as fish in 06 and in the 27 slot card. The player never learns that *their* lunch is the microwave tool, and mixes it up with Lin's fish routine. Fix: draw one clear noodle bowl (paper bowl, lid flap, chopsticks) and use it on the counter, in the window, in the 07 bubble and on the slot card.
+- E5 [should] In 07 the level's idea, "noises turn heads", reads as "smell turns heads": the big steam, the food bubble, and rings that look like a smell spreading. Fix: put 🔔 first in the bubble, make the rings crisp sound arcs, and cut the steam down.
+- E6 [should] Lin's chair lies on its side whenever she's up (10, 13, 17, 21). It reads as "knocked over", not pushed out, and it stays on the floor through the meeting. Fix: draw the chair upright, rolled back and turned 45° from the desk.
+- E7 [should] Shot 21 was taken at the wrong moment: people are still walking in, not seated with the boss holding the marker. Shots 22–26 and 31 carry the meeting, so it misleads nobody. Fix: retake the shot at about 4:58, once everyone is seated.
+- E8 [should] Shot 17. The half-drawn face is a black blot and the progress ring under the player isn't explained, so "half-done swap" doesn't read. Fix: finished lines on the top half, blank bottom, marker at the edge of the drawing, and a ring that fills like a pie.
+- E9 [should] Shot 28. The icon row has no pencil and no anger, and the picture shows my face on the board, so the "you wrote the boss in" joke is gone. Fix: ✏️, boss face, 😠, me in the row, and the boss's face crossed out on the board in the picture.
+- E10 [should] Shot 30. The board shows Kev's finished face while I'm the one working Saturday, which contradicts both the intent (the boss's face, half drawn) and the outcome. Fix: show a half-drawn face over a smeared one, with a real marker in my hand instead of the cursor-like arrow.
+- E11 [should] Shot 04 doesn't show the copier can be jammed, and nobody notices the boss's cone covering both the copier and the board, which is the setup shot 20 needs. Fix: a crumpled-paper icon in the E bubble, and a bright cone edge where it crosses the board and the copier.
 
 ### 1-read: reading.md
 
-# Saturday: cold read
+# Reading: "Saturday"
 
-**Card:** It's Friday at 4:00. I'm stuck working Saturday, the boss makes it official at 5:00, and I have to get out of it. Clear and funny. The card icons are a calendar and me.
+**Card:** it's Friday at 4:00. At 5:00 the boss announces who works Saturday, and the board already has my face on it. Icons: 🗓️ and me.
 
-**01 (4:00).** A bald boss in a suit sits in a glass office on a gold rug, and his view cone spills into the open-plan floor. On a whiteboard on an easel there's a portrait of me (red top, hair bun). Two coworkers sit at desks: a woman in teal and a spiky-haired guy in green. There's a kitchen top right, a side room with a phone top left, and a microwave and coffee on the right wall. *Means:* my face on the board is the problem. *Unclear:* the red down-triangle over my desk, the empty hand slot in the HUD, and the two dashed slots next to the "1".
+**01** (4:00) A bald boss in a suit sits behind a desk on a gold rug in a glass office. A whiteboard on an easel in the open office shows my face (red shirt, hair bun) in a red frame. I'm at the far-left desk, under a red triangle. A teal coworker and a green spiky-haired coworker type, and everyone has a view cone. There's a kitchen top right, a microwave and coffee cup on the right wall, and phones in the top-left room and the boss's corner. *I can't read the HUD: clock + calendar + my face, an empty hand slot, "⟳1" and two empty slots.*
 
-**02 (4:01).** I'm at the whiteboard with an E prompt. The boss shows a red "?" and a small vertical bar fills up. His cone turns orange. *Means:* he can see the board from his desk. Touching it in front of him is risky.
+**02** (4:01) I'm at the easel with an E prompt. The boss shows "?" and a vertical bar starts filling, and his cone turns orange. *He can see the board from his desk. Is the bar suspicion?*
 
-**03 / 04 / 05.** E prompts at the microwave, the copier and the side-room phone. *Means:* these are my tools. *Unclear:* the red down-arrow on the copier. Is it the same mark as the one on my desk?
+**03** (4:06) I'm at the microwave with an E prompt. It's usable.
 
-**06 (4:09).** The microwave glows. I'm in the middle of the floor and the boss's "?" bar is up again. *Means:* it runs on a timer, so I should get moving.
+**04** (4:00) I'm at the copier with an E prompt, and the copier now has the red triangle. *The triangle seems to mark the nearest usable thing, not me.*
 
-**07 (4:10).** The microwave dings with big sound rings. All three people think 😮🍜 and turn toward it, and I slip over to the board. *Means:* noise turns heads. This is the cleanest beat in the set.
+**05** (4:03) I'm at the black phone in the empty top-left room with an E prompt.
 
-**08 (4:16).** I'm at the coffee/microwave counter, and a steaming cup sits on the shelf. The teal woman has little motion lines. *Unclear:* what the cup is for. Is it a prop, a lure, or just me having coffee?
+**06** (4:09) The microwave glows with a fish inside. The boss shows "?" with the bar, and I'm walking across the open floor. *I started the fish.*
 
-**09 (4:13).** At the board, a portrait of the green guy pops up. Smoke drifts from the microwave. *Means:* I can swap whose name goes up. That's a nasty, good joke.
+**07** (4:10) The microwave gives off rings and steam. The boss and both coworkers think 😮 plus a bowl, and arrows show them turning toward it. I'm near the easel. *Smell turns heads. That's the distraction.*
 
-**10 (4:39).** The boss has left his desk for a phone in the top-right corner, with a 😑 bubble. The portrait choice at the board is now the boss himself. The teal woman walks past carrying a mug. *Means:* faces cycle, and the boss can be the pick.
+**08** (4:16) A steaming coffee cup sits by the microwave and I'm next to it. The teal coworker's head turns. *Did I make coffee? Why? It isn't clear.*
 
-**11 (4:04).** I use the side-room phone. A dotted line arcs to the corner phone and the boss gets a ☎️! burst. *Means:* I can make his phone ring.
+**09** (4:13) The microwave is smoking and every cone points away. A portrait pop-up of the green coworker sits over the easel: I'm putting his face on the board. *So that's the scheme: swap the name.*
 
-**12 (4:06).** He's at the corner phone with a "?" (nobody's there), and I'm at the board. *Means:* a prank call buys me time at the board.
+**10** (4:39) The pop-up shows the boss's own face as the board option. The boss stands by his phone looking 😳/😒. The teal coworker walks off with a cup, and her chair is knocked over. *Putting the boss's face up is a choice. Is it a joke or a trap?*
 
-**13 (4:30).** The teal woman walks off thinking 🐟, and her chair is knocked over. The blue fish thing has gone from her desk. *Means:* her routine is to heat fish at 4:30.
+**11** (4:04) I'm on the top-left phone. The boss's phone gives off a huge ☎️! burst, and a dotted wave line runs between the two phones. *A prank call pulls him out of his chair.*
 
-**14 (4:35).** She's at the microwave with the fish, and I'm at my desk drinking. A fast-forward button appears. *Means:* waiting is allowed.
+**12** (4:06) The boss holds the receiver with "📞?" while I swap the board, unseen. *A clean method.*
 
-**15 (4:34).** Boss on the phone with "?", teal at the microwave, me in the phone room. *Means:* I can stack distractions.
+**13** (4:30) The teal coworker leaves her desk carrying a fish and thinking 🐟, and her chair is tipped over. *A daily routine: she brings fish lunch at 4:30.*
 
-**16 (4:39).** I'm swapping in the green guy while she walks back with her plate. The boss is 😑 in the corner.
+**14** (4:35) She's at the microwave with the fish. I'm at my desk raising a cup. A fast-forward button appears. *I'm waiting for her routine to make the noise for me.*
 
-**17 (4:39).** The board shows a scribbled-out head. The teal woman's cone turns red, and her bubble is a board with a "?". The boss shows "? ?". A ring sits under me. *Means:* she caught me. *Unclear:* whether the scribble is a mistake or a choice I made.
+**15** (4:34) I call again. The boss is on the phone while the teal coworker heats her fish. Two distractions overlap.
 
-**18 (4:02).** The copier is pulsing red rings. The boss and the teal woman both think of the copier, and the green guy gets up with a "!". *Means:* I jammed it and he's the one who goes to fix it.
+**16** (4:37) I swap the board to the green coworker while the boss is on the phone and she walks back with her plate.
 
-**19 (4:07).** He's fixing the copier, and I'm standing at his empty desk. *Unclear:* why I'm at his desk. Am I sabotaging something, or hiding?
+**17** (4:39) The board shows a black scribble or splat over the face. I stand on a gold ring, and a red cone from the teal coworker covers me. She thinks "📄?" and the boss shows "📞??". *The red cone means I'm caught. I can't tell what the scribble is: a defaced photo or a half-done swap?*
 
-**20 (4:02).** The copier is noisy and I'm at the board, but the boss's orange cone and bar are on me. *Means:* the copier noise doesn't pull the boss away.
+**18** (4:02) The copier jams with red rings. The boss and the teal coworker think of a copier icon, and the green coworker gets up with "!". *I jammed it, and he's the one who fixes it.*
 
-**21 (4:57).** The clock turns red. The boss walks out to the board, the coworkers come over thinking "?", and my yellow chair is empty with a dashed red circle. *Means:* the 5:00 meeting gathers by the board.
+**19** (4:07) The green coworker fixes the copier. I'm down at his desk. *What am I doing there?*
 
-**22 / 23 (4:58–4:59).** Meeting. The boss points at the board, bubble 👈 + my face.
+**20** (4:02) The copier jams while I swap the board. The boss's bar rises, but his attention is split.
 
-**24 (4:59).** The board shows the green guy and the boss's bubble points at him. *Means:* the swap holds if nobody objects.
+**21** (4:57) The clock turns red. The boss walks out of his office, the coworkers move toward chairs and show "?", and one chair has a dashed red outline. *The 5:00 meeting is forming.*
 
-**25 (4:59).** The board shows the boss. He shows himself plus 😳. Green says 👉 me, and teal says 👀👉 me. *Means:* if I go too far, the witnesses rat me out. Funny.
+**22–23** (4:58–4:59) The meeting happens at the easel. The boss points 👈 at my face in a bubble while the coworkers and I sit.
 
-**26 (4:59).** The board shows green, the boss points at green, and I'm off at the microwave with my chair dashed. Odd: it works even though I'm absent?
+**24** (4:59) Same scene, but the board shows the green coworker and the boss points at him. *The swap worked.*
 
-**27: WIN.** The green guy sits at his desk on a sunny day, 😢, next to a stack of paper. Icons: pencil, green guy, 😢. A microwave stamp fills a HUD slot. *Unclear:* does the pencil mean "edited board"? What is the stamp? A badge for the method?
+**25** (4:59) The board shows the boss himself. He goes 👴😳, and both coworkers point at me: "👀👉 her." *They tell on me. Funny.*
 
-**28: LOSS.** My face is on the board and the boss is angry and pointing. I'm 😳. Icons: pencil, boss, 😠, me. *Means:* he caught the edit. Pencil-boss is readable.
+**26** (4:59) The green coworker is on the board, but I'm away at the microwave and my seat has a dashed outline. *Skipping the meeting is a risk.*
 
-**29: LOSS.** I'm working Saturday, 😩. Icons: calendar, me, 😩. The default ending, clear.
+**27 – WIN (teal border).** The green coworker sits crying 😢 at a desk stacked with paper on a sunny day. Icons: ✏️ green coworker 😢. A glowing fish-microwave card fills one of the two slots. *The slots seem to collect methods. Two slots suggests there are two ways to win.*
 
-**30: LOSS (4:01).** The board shows a scribbled head, and the boss is angry. Ending at 4:01 means getting caught cuts the loop short. Good.
+**28 – LOSS (red border).** I'm on the board, the boss is furious 💢 and pointing, and I'm 😳. Icons: the board with the boss's photo, 😳, 👉, me. *Putting his face up gets me punished. Good gag, but the icons only make sense if you already know what happened.*
 
-**31: LOSS (5:00).** At the meeting my chair is empty and dashed, and the boss points 👉 at me. Icons: dashed chair, 👉, me. *Means:* skip the meeting and you get picked. This seems to contradict 26.
+**29 – LOSS.** I'm working Saturday, 😩. Icons: calendar, me, 😩. *The default ending, and it reads clearly.*
 
-**The story**
-The boss is about to put my name on the Saturday whiteboard. Everyone has a routine: a fish lunch at 4:30, the green guy fixes the copier, the boss answers his phone. I use noise (microwave, copier, a prank call) to turn heads and empty the room, then write a coworker's name on the board instead. I have to be back in my chair by 5:00, and I can't be greedy (the boss's own face gets me ratted out).
-The joke is office cowardice: you win by dumping your weekend on the guy in green, and he cries in the sunshine.
+**30 – LOSS (4:01).** The board shows the green coworker with a hand cursor stuck mid-swap, the boss angry, and me 😳. *Caught in the act. The icon (a hand on the photo) works.*
 
-**Editor notes:** 07 and 25 are the laughs. The worst readability problems are 26 vs 31 (when does absence matter?), the pencil icon, the red triangles, and the HUD slots.
+**31 – LOSS.** The meeting goes on without me. Dashed empty chair 👉 me, with a 5:00 clock and a city view. *You can't skip the meeting. Nice "absent = volunteered" joke.*
+
+**Things I couldn't read:** the calendar+face glyph in the HUD, the "?" bar, the gold ring under me in 17, the steaming coffee in 08, the bowl in the 07 bubbles (fish or soup?), the red triangle, the dashed chair, the scribble in 17, and what I was doing at the green coworker's desk in 19.
+
+## Story
+
+The boss's board says I'm working Saturday. To get out of it I have to put someone else's face up without being seen.
+The office gives me ways to pull eyes off the board: a prank call to the boss's phone, a jammed copier, fish in the microwave. My coworker heats her fish at 4:30 anyway, so I can just wait for it.
+Getting caught at the board, putting up the boss's own face, or skipping the 5:00 meeting all end with the boss pointing at me.
+The win is the green coworker crying over a pile of paperwork on a sunny Saturday. It's funny and mean.
+Lesson: smells and rings turn heads, and turned heads leave the board unwatched.
 
 ### 2-compare: report.md
 
 Verdict: fixable
 
 ## Shots
-- 01: reads. (The red triangle over the desk is carried as E20.)
-- 02: reads
-- 03: reads
-- 04: partly. The reading is "these are my tools. *Unclear:* the red down-arrow on the copier." The intent is that you could jam the copier, and that the boss's cone reaches toward it across the board. The cue is too faint: the pale yellow cone stops short of the copier, so the reader never notices it. A red arrow sits where the reader's eye goes instead. Fix: in this shot, tint the edge of the boss's cone where it crosses the board, and drop the arrow.
-- 05: reads
-- 06: partly. The reading is "it runs on a timer, so I should get moving." The intent is that every sight cone still covers the board. The picture contradicts the intent: Lin's cone has swung east onto you, so the board looks half open at 4:09. There is also no folder in your hand. Fix: keep Lin facing the board with her cone on it, and put the folder in your hand.
-- 07: reads
-- 08: partly. The reading is "*Unclear:* what the cup is for. Is it a prop, a lure, or just me having coffee?" The intent is that the noodles are done and back on the counter, and the microwave is empty. A glyph is standing in for the prop: the small red-and-white cup reads as coffee, and you aren't next to it. Fix: draw it as a noodle cup with the lid peeled back and noodles and chopsticks showing, and stand the player at it.
-- 09: reads
-- 10: partly. The reading is "The portrait choice at the board is now the boss himself... faces cycle." The intent is that you wrote over the board again. The round pop-up reads as a selector (E5). The 4:39 framing also puts you inside Lin's teal cone as she walks back, with no reaction from her (E7). Fix: take the shot during the 4:35 microwave window.
-- 11: reads
-- 12: misread. The reading is "a prank call buys me time at the board." The intent is that the boss is on the phone but Lin, at her desk, is facing the board and her cone covers you. The cue is missing: her cone stays neutral teal, with no colour change and no "?", so the reader thinks the coast is clear (E3).
-- 13: partly. The reading is "her chair is knocked over." The intent is that the chair is pushed out and turned, meaning she'll be back. The chair is drawn tipped on its side (E17).
-- 14: reads
-- 15: reads
-- 16: wrong moment. The intent is "with nobody looking", but at 4:39 Lin is walking back and her cone covers you and the board. The reader reads it as "swapping in the green guy while she walks back", so they learn that writing in her view is safe. Retake at about 4:35–4:36, while she's at the microwave (E11).
-- 17: partly. The reading is "*Unclear:* whether the scribble is a mistake or a choice I made." The intent is that you're halfway through writing: your face wiped off and Kev's face half drawn, line by line. The half-drawn face reads as a scribble, and the marker isn't visible at the board (E9, E1).
-- 18: reads
-- 19: partly. The reading is "*Unclear:* why I'm at his desk." The intent is about Kev kneeling and fixing the copier, and says nothing about you. A stray position is the cause: the player standing at Kev's desk suggests a desk interaction (E16).
-- 20: reads. The orange cone and the filling bar on you make the failed route clear.
-- 21: partly. The reading gets the gathering and the empty chair, but not the marker in the boss's hand or the empty tray (E15). Kev is also mostly hidden behind the stacked "?" bubbles.
-- 22: reads
-- 23: reads
-- 24: reads
-- 25: reads
-- 26: misread. The reading is "it works even though I'm absent?" The intent is that you're away just before 5:00 and your chair is empty, which leads to 31. Cause and effect are too far apart: the boss is still pointing at Kev, and the flip to your face happens off-screen between 4:59 and the card (E21).
-- 27: reads. The pencil and the stamp are only guessed at; see the nit below.
-- 28: reads
-- 29: reads
-- 30: partly. The reading is "the board shows a scribbled head." The intent is your face wiped off and the boss's face half drawn in its place. The half-drawn face reads as a scribble (E9), and the spiky hair is Kev's, not the bald boss's (E19).
-- 31: reads. The card on its own is clear; the contradiction is with 26.
 
-## Earlier problems
-- E1: still there (should). The vertical meter now fills and the reader reads it. The two markers in the tray are still specks nobody mentions, so "marker gone from the tray" (17, 21) never registers.
-- E2: fixed. 20 now shows the boss's cone gone orange and his bar filling on you, and the reader concludes "the copier noise doesn't pull the boss away."
-- E3: still there (blocker). In 12, Lin's cone covers you at the board in plain neutral teal, and the reader reads it as a free window.
-- E4: fixed. In 14 the reader reads the fast-forward button as "waiting is allowed."
-- E5: still there (nit). The round pop-up still reads as a picker ("faces cycle"), but what it implies, writing over the board again, is right.
-- E6: still there (nit). It's the same round frame in 09, 10 and 16; this is the same problem as E5.
-- E7: still there (blocker). In 12, 16 and 10, Lin's cone sits on you with no colour change and no "?" until the frame where she's already caught you (17), so the reader takes those moments as safe.
-- E8: still there (should). Lin's motion lines (06, 08) and Kev's (14) are still unexplained ("the teal woman has little motion lines"), but they mislead nobody about a route.
-- E9: still there (blocker). The writing in progress reads as "a scribbled-out head" (17, 30). The player never learns that writing takes time, so they'll try it in windows that are too short.
-- E10: fixed. 20 reads as a failure.
-- E11: still there (blocker). This is now 16 (and 10). At 4:39 the "nobody looking" shot has Lin's cone on you. Retake at about 4:35–4:36.
-- E12: fixed. The reader tells 28 (pencil, boss, angry, me, after the witnesses in 25) apart from 30 (caught early).
-- E13: fixed. In 22–25 the player sits in the meeting chair.
-- E14: no longer applies. 22 no longer claims the boss is head-down in his folder.
-- E15: still there (should). The boss's marker in 22–26 is a tiny white stub, and nothing shows the tray empty, so "the board is locked once he has the marker" is never taught.
-- E16: still there (should). In 19 the player stands at Kev's desk.
-- E17: still there (should). Lin's chair is drawn tipped over (13, 14, 16, 21), and the reader reads it as "knocked over."
-- E18: fixed. 31's wall clock at 5:00 and city view tell Friday's meeting apart from the Saturday cards, and the reader places it correctly.
-- E19: still there (should). In 30 the half-drawn face has Kev's spiky hair, but the intent says the boss's face.
-- E20: still there (should). The red down-triangle sits over your desk (01) and over the copier (04), and the reader asks about it twice.
-- E21: still there (blocker). In 26 the boss points at Kev while you're away, and then 31 shows your face. The reader flags this as a contradiction ("when does absence matter?"). Fix: at 4:59, with your chair empty, have the boss turn from the board to the dashed chair with a "?" and have your face flip back onto the board on screen.
+- **01 — partly.** Reading: "a microwave and coffee cup on the right wall… I'm at the far-left desk, under a red triangle." Intent: nothing is lit yet; a cup of noodles sits on the counter and Lin has a lunch box on her desk. Cause: **a glyph used as a prop**. The red-and-white noodle cup is drawn like a coffee cup. Also a **missing cue**: the red triangle over my keyboard looks like a highlight in a shot that should have nothing lit. Fix: draw the noodles as a wide paper bowl with a fold-back lid and a fork in it, and don't draw the interact triangle until something is actually in reach.
+- **02 — partly.** Reading: "I'm at the easel with an E prompt… Is the bar suspicion?" Intent: you could *write* on it, with seven day boxes, Saturday in red and two markers in the tray. Cause: **missing cue**. At this size the markers and day boxes don't show, so the player sees "usable" but not "writable". Fix: draw the tray markers bigger in black and red, and have the black one lift slightly while the prompt is up.
+- **03 — partly.** Reading: "I'm at the microwave with an E prompt. It's usable." Intent: you could heat your noodles, with the cup right next to it. Cause: **a glyph used as a prop**, the same coffee-cup problem as 01, so nothing links the cup to the microwave. Fix: when the prompt is up, show a small noodle-bowl icon going into the microwave inside the E bubble.
+- **04 — partly.** Reading: "the copier now has the red triangle… seems to mark the nearest usable thing." Intent: you could *jam* it, and the boss's cone reaches toward it across the board. Cause: **missing cue**. Nothing says "jam", and the player doesn't notice the boss's cone running over the board to the copier, even though shot 20 depends on it. Fix: show a crumpled-paper icon in the E bubble, and draw the boss's cone edge brighter where it crosses both the board and the copier.
+- **05 — reads.**
+- **06 — misread.** Reading: "The microwave glows with a fish inside. The boss shows '?' with the bar… *I started the fish.*" Intent: your noodles are cooking, and you're walking back with a folder while every cone still covers the board. Causes: **a glyph used as a prop**, because the tiny lit window plus Lin's fish lunch box sitting in view adds up to "fish". And a **missing cue**: there is no folder in hand. The boss's suspicion bar is also filling just because I'm walking across the floor. Fix: show a noodle bowl turning in the window with steam curling up, draw the folder in my hand, and keep the boss's bar empty when I'm not at the board.
+- **07 — partly.** Reading: "😮 plus a bowl… *Smell turns heads.*" Intent: the DING, a sound, turns every head. Causes: **a glyph used as a prop** and a **missing cue**. The big steam cloud and the food-bowl bubble say smell, and the rings read as a smell spreading. Nothing in the picture says "sound". Fix: put a bell (🔔) in the bubble before the bowl, make the rings sharp sound arcs, and shrink the steam.
+- **08 — misread.** Reading: "A steaming coffee cup… *Did I make coffee? Why?*" Intent: the noodles are done and back on the counter, and the microwave is empty. Cause: **a glyph used as a prop**, the coffee-cup look again. Fix: use the same noodle-bowl drawing as 01 and 06, with the lid open and chopsticks sticking out.
+- **09 — reads.**
+- **10 — partly.** Reading: "The pop-up shows the boss's own face as the board option… a choice." Intent: it's already written over. Cause: **missing cue**. The big portrait reads as a menu choice, not as something that just happened. Fix: animate the portrait sliding down into the Saturday box and stamping there, with a marker squiggle.
+- **11 — reads.**
+- **12 — misread.** Reading: "The boss holds the receiver… while I swap the board, unseen. *A clean method.*" Intent: Lin is facing the board and her cone covers you, so the phone alone isn't enough. Cause: **missing cue**. Lin's cone is a faint teal over a beige floor, it doesn't change colour, and she shows no "?" or bar. The player decides they're safe. Fix: turn Lin's cone orange and start her "?" bar as soon as it touches the player at the board, the same way the boss's does in 02.
+- **13 — reads.** Her chair falls over; see Problems.
+- **14 — reads.**
+- **15 — reads.**
+- **16 — reads.**
+- **17 — partly.** Reading: "a black scribble or splat over the face… a defaced photo or a half-done swap?" and "I can't read the gold ring." Intent: my face wiped off and Kev's half drawn from the top down, with the marker at it. Cause: **missing cue**. The half-drawn face is a black blot, and the progress ring under me isn't explained. Fix: draw Kev's spiky hair and eyes in finished lines on the top half, leave the bottom blank, put the black marker at the edge of the drawing, and make the ring a pie that fills.
+- **18 — reads.**
+- **19 — reads.** I'm parked at Kev's desk for no reason; see Problems.
+- **20 — misread.** Reading: "The boss's bar rises, but his attention is split." Intent: looking at the copier means looking straight through the board, so you're in plain view and this method fails. Cause: **cause and effect too far apart**. The dashed line passes by the player, but nothing marks the player as seen, so "rising bar" reads as half a success. Fix: where the boss's sight line crosses the player, flash the player red and pop a 👀 over the boss aimed at the player, not at the copier.
+- **21 — wrong moment.** The intent describes everyone already seated at 4:57: the boss beside the board with the marker, Lin and Kev in their chairs. The picture at 4:57 shows the boss and Kev still walking in and Lin standing. Change the shot's commands so it's taken once everyone is seated (around 4:58).
+- **22 — reads.**
+- **23 — reads.**
+- **24 — reads.**
+- **25 — reads.**
+- **26 — reads.**
+- **27 — reads.**
+- **28 — partly.** Reading: "Icons: the board with the boss's photo, 😳, 👉, me… only make sense if you already know." Intent: a row of pencil, the boss's face, an angry face, your face, meaning "you wrote him in, and he knew." Cause: **missing cue**. The row has no pencil and no angry face, and the 😳 reads as my embarrassment. The picture itself is just the plain Saturday loss with the boss added. Fix: start the row with ✏️, swap 😳 for 😠, and in the picture show the boss's face on the board crossed out with an X and my face written back in a hurry.
+- **29 — reads.**
+- **30 — partly.** Reading: "The board shows the green coworker with a hand cursor stuck mid-swap." Intent: your face wiped off and the *boss's* face half drawn. Cause: **missing cue**. The picture shows a finished Kev face, and a marker that looks like a mouse cursor. It also contradicts itself: I'm the one working Saturday, but Kev's face stays on the board. Fix: draw a half-finished face with the old face smeared under it, and draw a real marker held in my hand.
+- **31 — reads.**
 
 ## Problems
-- should: In 06 Lin's cone has already swung east onto the player at 4:09, so the board looks partly unwatched before the ding. That weakens the before/after in 07, which is the level's cleanest beat. — Keep every cone, Lin's included, on the board until the ding, and put the folder in the player's hand.
-- should: In 08 the noodle cup reads as coffee ("a prop, a lure, or just me having coffee?"), so the noodle that sets up the ding has no visible payoff. — Draw an open noodle cup with noodles and chopsticks showing, steaming, with the player standing at it.
-- nit: The empty hand slot and the two dashed slots in the HUD are never explained, and in 27 the microwave stamp that fills one reads only as "a badge for the method?" — On the win card, animate the stamp flying from the drawn microwave into its slot so the slot reads as "routes found."
-- nit: In 21 the two stacked "?" bubbles cover Kev, so the gathering shows only two people looking at the chair. — Offset the bubbles so Kev's head and turn toward the chair are visible.
+
+- blocker: Shot 12. Lin's cone covers the player at the board, but nothing changes. The player concludes the prank call alone is "a clean method", which is the opposite of what the shot is for. Fix: any cone touching the player at the board turns orange and starts that person's "?" bar, exactly like the boss's in 02.
+- blocker: Shot 20. The copier jam is supposed to fail because the boss looks *through* the board. The player instead reads "attention split", so they would keep trying a route that can't work. Fix: flash the player red where the boss's sight line crosses them, and point a 👀 bubble at the player.
+- blocker: Shot 06. The boss's suspicion bar fills while I just walk across the open floor. No boss gets suspicious of someone walking to the kitchen, and it teaches the player that being seen anywhere is dangerous, when only the board is. Fix: the bar fills only when the player is at the board (or holding the marker), and the folder from the intent should be in my hand.
+- should: The noodle cup reads as coffee in 01, 03 and 08, and as fish in 06 and in the 27 slot card. The player never learns that *their* lunch is the microwave tool, and mixes it up with Lin's fish routine. Fix: draw one clear noodle bowl (paper bowl, lid flap, chopsticks) and use it on the counter, in the window, in the 07 bubble and on the slot card.
+- should: In 07 the level's idea, "noises turn heads", reads as "smell turns heads": the big steam, the food bubble, and rings that look like a smell spreading. Fix: put 🔔 first in the bubble, make the rings crisp sound arcs, and cut the steam down.
+- should: Lin's chair lies on its side whenever she's up (10, 13, 17, 21). It reads as "knocked over", not pushed out, and it stays on the floor through the meeting. Fix: draw the chair upright, rolled back and turned 45° from the desk.
+- should: Shot 21 was taken at the wrong moment: people are still walking in, not seated with the boss holding the marker. Shots 22–26 and 31 carry the meeting, so it misleads nobody. Fix: retake the shot at about 4:58, once everyone is seated.
+- should: Shot 17. The half-drawn face is a black blot and the progress ring under the player isn't explained, so "half-done swap" doesn't read. Fix: finished lines on the top half, blank bottom, marker at the edge of the drawing, and a ring that fills like a pie.
+- should: Shot 28. The icon row has no pencil and no anger, and the picture shows my face on the board, so the "you wrote the boss in" joke is gone. Fix: ✏️, boss face, 😠, me in the row, and the boss's face crossed out on the board in the picture.
+- should: Shot 30. The board shows Kev's finished face while I'm the one working Saturday, which contradicts both the intent (the boss's face, half drawn) and the outcome. Fix: show a half-drawn face over a smeared one, with a real marker in my hand instead of the cursor-like arrow.
+- should: Shot 04 doesn't show the copier can be jammed, and nobody notices the boss's cone covering both the copier and the board, which is the setup shot 20 needs. Fix: a crumpled-paper icon in the E bubble, and a bright cone edge where it crosses the board and the copier.
+- nit: The HUD's calendar+face glyph, the "⟳1" and the red interact triangle went unread, and the triangle showing over my desk at the start looks like a highlight. Fix: show the triangle only over something in reach, and pulse the calendar+face glyph when the board changes.
+- nit: Shots 09 and 10. The big portrait pop-up reads as a menu of choices, not as something just written. Fix: animate it sliding into the Saturday box with a marker squiggle.
+- nit: Shot 19. I'm standing at Kev's desk for no reason, and the player wonders whether it's part of the route. Fix: leave the player at the board, or somewhere off to the side, for this shot.
+- nit: Shot 02. The markers and day boxes are too small to say "you can write here". Fix: draw bigger black and red markers, and lift the black one while the prompt is up.
 
 <!-- /cold-read:pictures -->
 
