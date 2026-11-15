@@ -2,8 +2,8 @@
 // end-scenes.js documents the fields). Every card shows the day as it ended (DESIGN.md), drawn from the state:
 //   switch    3:40, the lights on: he holds up his empty tray, baffled, and squints at the switch on his wall; you
 //   blackout  stand outside his glass office with the letter (at your desk, if that's where you are). Behind you, the
-//   breaker   thing that went dark, back to normal: the coffee machine's brew lamp lit (blackout), the fuse box shut
-//             (breaker).
+//   breaker   thing that went dark: the coffee machine you soaked, scorched, its jug lying in a puddle (blackout); the
+//             fuse box, shut again (breaker).
 //   fail      3:40: he holds your letter up, furious; you stand in front of his desk.
 //   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (by
 //             his desk, or under the switch you flipped). Each of you stands where you were; the letter is where it
@@ -158,21 +158,35 @@ function counter(ctx, x0, x1) {
   for (let x = x0 + 40; x < x1; x += 46) ctx.fillRect(x, y + 12, 2, 38);
 }
 
-// The coffee machine on the counter at x, as the world shows it (presentation.js decor.props): its pot empty, its brew
-// lamp green once it brewed (the power came back after it tripped), smoke off its back while the fuse it blew is out.
+// The coffee machine on the counter at x, as the world shows it (presentation.js decor.props): soaked and shorted on
+// the blackout route, so scorched black up the wall behind it, its lamp dead, the water jug lying on its side in a
+// puddle beside it, and smoke off its back while the fuse it blew is out. Brewed (it never shorted): the pot full and
+// its brew lamp green.
 function coffeeMachine(ctx, x, t, w) {
   const y = TAB.y + WALL_H - 6; // sits on the counter
+  const shorted = w.coffee === 'shorted';
+  const brewed = w.coffee === 'brewed';
+  if (shorted) { // soot licks up the wall behind it
+    ctx.fillStyle = 'rgba(30,26,24,0.55)';
+    for (const [dx, h, wd] of [[-12, 46, 9], [2, 62, 11], [14, 40, 8]]) {
+      ctx.beginPath();
+      ctx.moveTo(x + dx - wd, y - 46);
+      ctx.quadraticCurveTo(x + dx - wd * 0.4, y - 46 - h * 0.6, x + dx + 2, y - 46 - h);
+      ctx.quadraticCurveTo(x + dx + wd * 0.5, y - 46 - h * 0.5, x + dx + wd, y - 46);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
   ctx.fillStyle = '#2f2926';
   rrect(ctx, x - 22, y - 50, 44, 50, 5);
   ctx.fill();
-  ctx.fillStyle = '#6a625c';
+  ctx.fillStyle = shorted ? '#3a3330' : '#6a625c';
   rrect(ctx, x - 22, y - 50, 44, 12, 5);
   ctx.fill();
+  if (shorted) for (const [dx, r] of [[-10, 7], [4, 9], [15, 6]]) fillEllipse(ctx, x + dx, y - 46, r, 4, 'rgba(12,10,10,0.75)'); // scorched top
   ctx.fillStyle = '#1c1816';
   rrect(ctx, x - 16, y - 34, 26, 30, 3);
   ctx.fill();
-  const tripped = w.coffee === 'tripped';
-  const brewed = tripped && w.fuse === 'on'; // the power came back and it brewed what Lin switched it on for
   fillEllipse(ctx, x - 3, y - 14, 10, 10, 'rgba(214,234,240,0.45)'); // the pot's glass
   if (brewed) fillEllipse(ctx, x - 3, y - 11, 8.5, 6.5, '#4a2a16'); // full of coffee
   if (brewed) {
@@ -182,8 +196,30 @@ function coffeeMachine(ctx, x, t, w) {
     ctx.fillStyle = g;
     ctx.fillRect(x + 7, y - 39, 18, 18);
   }
-  fillCircle(ctx, x + 16, y - 30, 2.6, brewed ? '#d8ffd0' : '#6b2a22');
-  if (!tripped || brewed) return;
+  fillCircle(ctx, x + 16, y - 30, 2.6, brewed ? '#d8ffd0' : shorted ? '#161212' : '#6b2a22');
+  if (w.rigged) { // the jug you tipped, on its side in its puddle, still dripping off the counter's edge
+    fillEllipse(ctx, x + 30, y + 3, 34, 5, 'rgba(110,170,230,0.6)');
+    ctx.save();
+    ctx.translate(x + 44, y - 9);
+    ctx.rotate(-Math.PI / 2 - 0.2);
+    ctx.fillStyle = 'rgba(214,234,240,0.55)';
+    rrect(ctx, -9, -13, 18, 26, 4);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(110,170,230,0.7)';
+    rrect(ctx, -7, 3, 14, 8, 3);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(214,234,240,0.8)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(10, -2, 6, -Math.PI / 2, Math.PI / 2);
+    ctx.stroke();
+    ctx.restore();
+    for (let i = 0; i < 3; i++) {
+      const k = (t * 0.9 + i / 3) % 1;
+      fillCircle(ctx, x + 20 + i * 14, y + 6 + k * 40, 2.2, `rgba(110,170,230,${0.8 * (1 - k)})`);
+    }
+  }
+  if (!shorted || w.fuse === 'on') return;
   for (let i = 0; i < 3; i++) {
     const k = (t * 0.6 + i / 3) % 1;
     fillCircle(ctx, x + 10 + Math.sin(t + i) * 6, y - 56 - k * 40, 6 + k * 8, `rgba(90,90,96,${0.45 * (1 - k)})`);
@@ -265,7 +301,7 @@ const near = (game, who, spot, r) => {
 
 // 3:40, the lights on. He holds up his empty tray (it's what he goes through), baffled; on the switch route his eyes
 // keep going to the switch behind him. You, outside his glass office, the letter in your hand (at your desk if you're
-// at it). Behind you, what went dark on your route, back to normal.
+// at it). Behind you, what went dark on your route: the scorched coffee machine, or the fuse box shut again.
 function sceneWin(route) {
   return (ctx, game, t, e) => {
     const w = game.world;
@@ -383,7 +419,7 @@ export const END_SCENES = {
   kindOf: (o) => (o?.result === 'win' || o?.result === 'blamed' ? ROUTE_SCENE[o.routes?.[0]] ?? 'switch' : o?.result ?? 'fail'),
   scenes: {
     switch: { win: true, icons: ['💡', '@boss', '❓', '✉️'], draw: sceneWin('switch') }, // his light, him baffled, the letter yours
-    blackout: { win: true, icons: ['@lin', '☕', '💥', '✉️'], draw: sceneWin('blackout') }, // Lin's coffee machine blew the fuse, the letter
+    blackout: { win: true, icons: ['@lin', '☕', '⚡', '✉️'], draw: sceneWin('blackout') }, // Lin's coffee machine shorted the power, the letter
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneWin('breaker') }, // the fuse box, Kev fixed it, the letter
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he finds you: in the light or in his torch

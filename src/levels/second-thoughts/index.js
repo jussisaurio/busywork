@@ -6,9 +6,12 @@
 //             gets up his beam swings across the east half of the office; then he walks it over to the switch. Be
 //             anywhere but in that beam, because whoever he finds in his dark office flipped it. He flips it back and
 //             the tubes blink a few times before they catch.
-//   blackout  3:10: Lin switches on the coffee machine, it sparks, and it trips the fuse for the whole floor.
-//             Everyone holds up a phone as a torch, and he sweeps his across the front of his desk. Kev walks his torch
-//             down the hallway to the fuse box (its door hangs open, its red lamp blinking) and resets it.
+//   blackout  tip the water jug over the coffee machine before Lin switches it on at 3:10 (from beside it, by the
+//             fridge: from in front of it, Kev sees you from his desk through the kitchen door). Left alone the old
+//             machine only makes the lights flicker; soaked, it shorts, and the short runs down the wiring to the fuse
+//             box and trips it for the whole floor. Everyone holds up a phone as a torch; his rests on his hallway door,
+//             so take it from the side of his desk and leave by the side door. Kev walks his torch down the hallway to
+//             the fuse box (its door hangs open, its red lamp blinking) and resets it.
 //   breaker   pull the breaker yourself. Kev comes to the fuse box with his torch: don't be there.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, deg } from '../../config.js';
@@ -28,12 +31,13 @@ const t = (hhmm) => at(hhmm, START);
 //   X the fuse box (on the hallway's end wall, facing the hallway)   M the coffee machine   F fridge   P your desk
 // The switch and the fuse box are drawn by darkness.controls (render/darkness.js), the coffee machine by the map.
 // His chair is boxed in by plants and his desk (the tray on its east end): he gets out behind it. The office's south-west wall is solid,
-// so from his chair he can't see down the hallway to the fuse box.
+// so from his chair he can't see down the hallway to the fuse box. Two doors: the hallway door (south) and a side
+// door into the meeting room (east, beside the tray). In the dark his torch rests on the hallway door.
 const MAP = [
   '#S############################', // 0
-  '#.......G..........#FTMT.....#', // 1
+  '#.......G..........#FMTT.....#', // 1
   '#..H.HH.G..........#.........#', // 2
-  '#..TTY..G..TTTTTT..#....TTT..#', // 3
+  '#..TTY..D..TTTTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
   '#......HG..........#.........#', // 5
   '#X##GGDGG#####D#######DD######', // 6
@@ -68,8 +72,8 @@ const SPOTS = {
   kev_desk: { x: 22, y: 9, face: 'N' },
   office_switch: { x: 1, y: 1, face: 'N' }, // stand here to reach S: behind him, out of his view and his reach
   fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
-  coffee_machine: { x: 22, y: 2, face: 'N' },
-  desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, off his gaze: his torch only gets here when he glances
+  coffee_machine: { x: 21, y: 2, face: 'N' }, // in front of M: Kev sees it from his desk, through the kitchen door
+  desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, by the side door: his torch never rests here
   in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk: where you're summoned at 3:40 if he reads it
   boss_door: { x: 6, y: 7, face: 'N' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
@@ -101,6 +105,7 @@ const BLINKS = [[0.2, 0.24], [0.42, 0.45], [0.6, 0.66], [0.76, 0.79], [0.86, 0.9
 const tubesLit = (w) => w.officeLight === 'on'
   || (w.officeLight === 'starting' && BLINKS.some(([a, b]) => w.switchProgress >= a && w.switchProgress < b));
 // Anyone in a dark room holds up a phone: in the blackout everyone, in his switched-off office whoever is in it.
+const atBossDesk = (n) => Math.abs(n.x - (SPOTS.boss_desk.x + 0.5)) < 0.3 && Math.abs(n.y - (SPOTS.boss_desk.y + 0.5)) < 0.3;
 const inOffice = (n) => n.x >= ZONES.office.x0 && n.x < ZONES.office.x1 && n.y >= ZONES.office.y0 && n.y < ZONES.office.y1;
 
 const INTERACTIONS = {
@@ -129,9 +134,20 @@ const INTERACTIONS = {
       game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
     },
   },
-  // Once the power is back, Lin's coffee has brewed and the full pot pours a cup (DESIGN.md "A thing that looks usable
-  // is usable"). The cup leads nowhere: it only fills your hands.
-  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'tripped' && w.fuse === 'on' },
+  // The water jug beside the coffee machine, tipped over it: when Lin switches it on, it shorts and blows the fuse.
+  // Only before she does (the jug is full and upright till then, and stays tipped after).
+  rig_coffee: {
+    on: 'coffee_machine', text: 'tip the water jug over the coffee machine', duration: 1.5, sneaky: true, saw: '💦',
+    can: (p, w) => !p.held && !w.rigged && w.coffee === 'none',
+    done(game) {
+      game.world.rigged = true;
+      burst(game, 'sweat', 21.5, 1.9, 10, { speed: 1.4, ttl: 0.7 }); // the splash
+      game.events.emit('coffee:rigged', {});
+    },
+  },
+  // Once Lin's coffee has brewed, the full pot pours a cup (DESIGN.md "A thing that looks usable is usable"). The cup
+  // leads nowhere: it only fills your hands.
+  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'brewed' && w.fuse === 'on' },
   pull_breaker: {
     on: 'fuse_box', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
@@ -204,6 +220,40 @@ const LURES = [
 
 const gotIt = (w) => w.letter === 'player' || w.letter === 'eaten';
 
+// The level's own clock work, once a step (from clockFor, on the boss's turn: he is first in the cast).
+const SURGE = 1.2; // s: the short runs down the wiring from the coffee machine to the fuse box
+const BREW_MIN = 3; // game minutes the machine brews (with the power on)
+function tick(game) {
+  const w = game.world;
+  // The short reaches the fuse box: it blows, and its door flies open.
+  if (w.coffee === 'shorted' && !w.tripped) {
+    const k = (game.loopTime - w.shortAt) / SURGE;
+    w.surge = k < 1 ? k : null;
+    if (k >= 1) {
+      w.tripped = true;
+      if (w.fuse === 'on') {
+        w.fuse = 'off';
+        w.fuseBy = 'coffee';
+        burst(game, 'sparks', 1.5, 6.9, 22, { speed: 3, ttl: 0.9 });
+        shake(game, 0.08, 0.25);
+        game.events.emit('fuse:tripped', {});
+      }
+    }
+  }
+  if (w.coffee === 'brewing' && w.fuse === 'on' && game.clock.minute - w.brewAt >= BREW_MIN) w.coffee = 'brewed';
+}
+
+// The lights flickering as the old machine starts (or as it shorts): how far a lit room dims, by seconds since.
+const FLICKER = [[0, 0.1, 0.75], [0.17, 0.25, 0.45], [0.36, 0.5, 0.85], [0.62, 0.68, 0.35], [0.8, 0.88, 0.6]];
+function flicker(since) {
+  for (const [a, b, k] of FLICKER) if (since >= a && since < b) return k;
+  return 0;
+}
+const dip = (w, game) => Math.max(
+  w.flickerAt === null ? 0 : flicker(game.loopTime - w.flickerAt),
+  w.shortAt === null ? 0 : flicker(game.loopTime - w.shortAt),
+);
+
 export default {
   id: 'second-thoughts',
   map: { rows: MAP, legend: LEGEND },
@@ -227,12 +277,22 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
+  clockFor(game, npc) {
+    if (npc === game.npcs[0]) tick(game);
+    return game.clock.minute;
+  },
   darkness: {
     rooms: [
-      { zone: 'office', lit: (w) => w.fuse === 'on' && tubesLit(w) },
-      { zone: ['floor_dark', 'floor_back', 'meeting_room', 'kitchen'], lit: (w) => w.fuse === 'on' },
+      { zone: 'office', lit: (w) => w.fuse === 'on' && tubesLit(w), dip },
+      { zone: ['floor_dark', 'floor_back', 'meeting_room', 'kitchen'], lit: (w) => w.fuse === 'on', dip },
     ],
-    torch: { when: (n, w) => w.fuse !== 'on' || (w.officeLight !== 'on' && inOffice(n)), fov: deg(60), radius: 7 },
+    // Seated in the dark, he points his phone at his hallway door (waiting for someone to come and fix it): the
+    // front of his desk and that door are lit, the side of his desk and the side door stay dark, the same every loop.
+    // Up and walking, his beam goes where he looks.
+    torch: {
+      when: (n, w) => w.fuse !== 'on' || (w.officeLight !== 'on' && inOffice(n)), fov: deg(60), radius: 7,
+      aim: (n) => (n.id === 'boss' && atBossDesk(n) ? 'boss_door' : null),
+    },
     controls: [
       { tile: 'S', kind: 'switch', on: (w) => w.officeLight !== 'off' }, // its amber lamp lights while it's off
       { tile: 'X', kind: 'breaker', on: (w) => w.fuse === 'on' }, // off: its door hangs open, its red lamp blinks
@@ -244,10 +304,10 @@ export default {
     override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
     verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' } : null),
   },
-  // A route's icon names your move: you flip his light 💡, you wait for Lin's blackout ⏳, you pull the breaker ⚡.
+  // A route's icon names your move: you flip his light 💡, you soak Lin's coffee machine ☕, you pull the breaker ⚡.
   routes: [
     { id: 'switch', icon: '💡', achieved: (w) => gotIt(w) && w.snatched === 'switch' },
-    { id: 'blackout', icon: '⏳', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
+    { id: 'blackout', icon: '☕', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
     { id: 'breaker', icon: '⚡', achieved: (w) => gotIt(w) && w.snatched === 'breaker' },
   ],
   outcomeOrder: ['breaker', 'blackout', 'switch'],
@@ -255,12 +315,18 @@ export default {
     letter: 'tray', // 'tray' | 'player' | 'dropped' | 'boss' (he picked it up) | 'eaten'
     snatched: null, // how dark it was when you took it: 'switch' | 'blackout' | 'breaker' | 'light'
     fuse: 'on', // 'on' | 'off'
-    fuseBy: null, // who tripped it: 'lin' (the coffee machine) | 'player' (the breaker)
+    fuseBy: null, // what tripped it: 'coffee' (the soaked coffee machine) | 'player' (the breaker)
     officeLight: 'on', // his office switch: 'on' | 'off' | 'starting' (flipped back on, the tubes blinking)
     switchProgress: 0,
     fixProgress: 0,
     bossKnows: false,
-    coffee: 'none', // Lin's: 'none' | 'tripped' (switching it on tripped the fuse; brewed once it's back) | 'cold'
+    coffee: 'none', // Lin's: 'none' | 'brewing' | 'brewed' (the pot full) | 'shorted' (soaked, it blew) | 'cold' (no power)
+    rigged: false, // you tipped the water jug over the machine
+    flickerAt: null, // loop seconds when it started and the lights flickered
+    shortAt: null, // loop seconds when it shorted
+    surge: null, // how far the short has run down the wiring to the fuse box (0..1), while it runs
+    tripped: false, // the short reached the fuse box
+    brewAt: null, // the game minute it started brewing
     items: [],
   }),
   harness,

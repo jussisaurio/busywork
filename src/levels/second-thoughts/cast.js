@@ -1,6 +1,7 @@
 // Second Thoughts' three people and their hooks (level 1's cast.js and behaviours.js document the fields).
-// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her afternoon coffee at 3:10,
-// and the old coffee machine takes the fuse with it. Kev resets fuses: a lure in index.js.
+// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her afternoon coffee at 3:10: the
+// old machine makes the lights flicker and the fuse holds, unless you tipped the water jug over it first, and then it
+// shorts and takes the fuse with it. Kev resets fuses: a lure in index.js.
 import { at, deg } from '../../config.js';
 import { burst, shake } from '../../core/fx.js';
 
@@ -52,8 +53,10 @@ export const CAST = [
 ];
 
 export const BEHAVIOURS = {
-  // Lin switches on the coffee machine: it sparks, and the whole floor goes dark with it (the fuse box's door
-  // flies open down the hall). If the power is already out, nothing happens.
+  // Lin switches on the coffee machine (about 3:10). An old machine on an old fuse: the lights flicker, she 😳, Kev
+  // glances down the hall at the fuse box, and the fuse holds; it brews (index.js). If you tipped the jug over it, the
+  // water shorts it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js tick). If the power
+  // is already out, nothing happens.
   brew: {
     arrive(game, npc, sim) {
       if (npc._brewed) return;
@@ -64,21 +67,34 @@ export const BEHAVIOURS = {
         sim.speak(game, npc, [{ say: ['❓'], kind: 'thought', ttl: 1.4 }]);
         return;
       }
-      w.coffee = 'tripped';
-      w.fuse = 'off';
-      w.fuseBy = 'lin';
-      burst(game, 'sparks', 22.5, 1.6, 28, { speed: 3.6, ttl: 1.1 });
-      burst(game, 'puff', 22.5, 1.4, 8, { speed: 0.6, ttl: 1.6 });
-      shake(game, 0.12, 0.3);
-      game.events.emit('fuse:tripped', {});
-      sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
+      if (w.rigged) {
+        w.coffee = 'shorted';
+        w.shortAt = game.loopTime;
+        burst(game, 'sparks', 21.5, 1.6, 28, { speed: 3.6, ttl: 1.1 });
+        burst(game, 'puff', 21.5, 1.4, 10, { speed: 0.6, ttl: 1.8 });
+        shake(game, 0.12, 0.3);
+        game.events.emit('coffee:shorted', {});
+        sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
+        return;
+      }
+      w.coffee = 'brewing';
+      w.brewAt = game.clock.minute;
+      w.flickerAt = game.loopTime;
+      game.events.emit('coffee:flicker', {});
+      sim.speak(game, npc, [{ say: ['😳'], after: 0.3, ttl: 1.4 }]);
+      const kev = game.npcs.find((n) => n.id === 'kev');
+      if (kev?.active && !kev.override) {
+        sim.lookAt(game, kev, 'fuse_box', 2.0);
+        sim.speak(game, kev, [{ say: ['❓'], kind: 'thought', after: 0.3, ttl: 1.3 }]);
+      }
     },
   },
-  // Once the power is back the pot is full (index.js pour_coffee): she pours a cup and carries it off.
+  // 3:23: if it brewed she pours a cup and carries it off. Shorted, there is nothing to pour.
   pour: {
-    arrive(game, npc) {
+    arrive(game, npc, sim) {
       const w = game.world;
-      if (w.coffee === 'tripped' && w.fuse === 'on') npc.carry = 'coffee';
+      if (w.coffee === 'brewed' && w.fuse === 'on') npc.carry = 'coffee';
+      else if (w.coffee === 'shorted') sim.speak(game, npc, [{ say: ['😞'], kind: 'thought', ttl: 1.4 }]);
     },
   },
   // 3:40: he goes through his tray. If your letter is still in it, he reads it.

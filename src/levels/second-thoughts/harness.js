@@ -4,6 +4,7 @@ import { isDark } from '../../game/darkness.js';
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
+const MACHINE = { brewing: ' is brewing (its green lamp blinking)', brewed: ' has brewed (green lamp, the pot full and steaming)', shorted: ' is scorched (it shorted)', cold: ' is off' };
 const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
 
 export default {
@@ -22,7 +23,7 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'fuse:tripped', 'boss:dark', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered'],
+    soft: ['boss:suspicious', 'coffee:flicker', 'coffee:shorted', 'fuse:tripped', 'boss:dark', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered'],
   },
 
   names: NAME,
@@ -66,7 +67,9 @@ export default {
       : w.officeLight === 'starting' ? "the boss's office tubes are blinking back on; the rest of the floor is lit"
       : w.officeLight !== 'on' ? "the boss's office is dark; the rest of the floor is lit" : 'all the lights are on';
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
-    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}`;
+    const machine = MACHINE[w.coffee] ?? '';
+    const jug = w.rigged ? 'the water jug lies tipped over it, water down its front and a puddle in front' : 'a full water jug stands beside it';
+    return `WORLD: ${lights}; your letter is ${LETTER[w.letter] ?? w.letter}${floor}; the coffee machine${machine}: ${jug}`;
   },
 
   describe(e) {
@@ -83,7 +86,10 @@ export default {
       case 'boss:dark': return 'the boss: ❓ He holds up his phone torch 📱 and gets up for the switch';
       case 'switch:starting': return 'the boss flips his switch back on: the tubes blink';
       case 'switch:fixed': return "the boss's office tubes catch: his light is back on 💡 (😠)";
-      case 'fuse:tripped': return "Lin switches on the coffee machine: sparks fly, the fuse trips and the whole floor goes dark. The fuse box's door flies open. Out come the phone torches 📱";
+      case 'coffee:rigged': return 'you tip the water jug over the coffee machine 💦: water runs down its front onto the floor';
+      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😳), Kev glances down the hall at the fuse box, and the lights steady. It brews';
+      case 'coffee:shorted': return 'Lin switches on the soaked coffee machine: it shorts, sparks and smoke (😳), and a spark runs down the wiring toward the fuse box';
+      case 'fuse:tripped': return "the spark reaches the fuse box: its door flies open and the whole floor goes dark. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
       case 'kev:fuse': return 'Kev: ❓ He heads for the fuse box with his phone torch';
       case 'fuse:fixing': return 'Kev is at the fuse box';

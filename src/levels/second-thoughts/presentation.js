@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, smokeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -47,13 +47,26 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
   ],
   clock: { x: 17, y: 6 },
-  // The in-tray on his desk, your letter lying in it while it's there, and the coffee machine smoking while the fuse
-  // it blew is out. Once the power is back it brews what Lin switched it on for: its lamp glows green and the pot is
-  // full, and a full pot pours a cup (index.js pour_coffee). (The switch and the fuse box: darkness.controls.)
+  // The in-tray on his desk, your letter lying in it while it's there. The coffee machine: the water jug beside it
+  // (upright and full, or tipped over it, water down its front and on the floor), its lamp blinking green while it
+  // brews and glowing green with the pot full and steaming once it has (a full pot pours a cup: index.js
+  // pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse is out, and
+  // a scorch mark for the rest of the day. (The switch and the fuse box: darkness.controls.)
   props: [
     { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
-    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) },
-    { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on', brewing: w.coffee === 'tripped' && w.fuse === 'on' }) },
+    { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'brewed' }) },
+    { tile: 'M', draw: jugProp, state: (w) => ({ tipped: w.rigged }) },
+    {
+      tile: 'M',
+      draw: machineProp,
+      state: (w) => ({
+        lamp: w.coffee === 'brewed' ? 'brewed' : w.coffee === 'brewing' && w.fuse === 'on' ? 'brewing' : null,
+        steam: w.coffee === 'brewed',
+        scorch: w.coffee === 'shorted',
+        smoke: w.coffee === 'shorted' && w.fuse !== 'on',
+      }),
+    },
+    { tile: 'M', draw: surgeProp, state: (w) => ({ k: w.surge }) },
   ],
   // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
   things: { tray: trayThing, phone: phoneThing },
@@ -90,7 +103,10 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'fuse:tripped': { sfx: 'splashZap', spot: 'coffee_machine' },
+    'coffee:rigged': { sfx: 'pour', spot: 'coffee_machine' },
+    'coffee:flicker': { sfx: 'gurgle', spot: 'coffee_machine' },
+    'coffee:shorted': { sfx: 'splashZap', spot: 'coffee_machine' },
+    'fuse:tripped': { sfx: 'clank', spot: 'fuse_box' },
     'fuse:pulled': { sfx: 'splashZap', spot: 'fuse_box', opts: { gain: 0.7 } },
     'fuse:fixing': { sfx: 'clank', spot: 'fuse_box', opts: { soft: true } },
     'fuse:fixed': { sfx: 'fixed', spot: 'fuse_box' },
