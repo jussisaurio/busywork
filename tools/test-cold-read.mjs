@@ -214,7 +214,7 @@ try {
     && /03\.png \(end-fail, landed 4:00 PM, then the end card\): INTENT-END/.test(text(q2, 'intents.md')),
     'pictures step 2: step 1\'s reading verbatim; the intents by number and name, each with the clock its shot landed on');
   ok(!Object.values(q1.files).some((b) => /landed \d/.test(b.toString('utf8'))), 'pictures step 1 sees no landed clocks either');
-  ok(/## Verb sheets/.test(text(q2, 'intents.md')) && /### verbs\/04\.png: the sandwich/.test(text(q2, 'intents.md')) && /eat_sandwich done\. It changed: [^\n]*player\.smeared: false → true/.test(text(q2, 'intents.md')),
+  ok(/## Verb sheets/.test(text(q2, 'intents.md')) && /### verbs\/04\.png: the sandwich/.test(text(q2, 'intents.md')) && /eat_sandwich done\. It changed: [^\n]*player\.smeared: false → splat/.test(text(q2, 'intents.md')),
     'pictures step 2: the intents hold each verb sheet, with the engine\'s account of each panel');
   md = readFileSync(recordFile(root), 'utf8');
   ok(md.indexOf('<!-- cold-read:premise ') < md.indexOf('<!-- cold-read:pictures ') && md.split('<!-- cold-read:premise ')[1].startsWith(before2.slice(0, 200)),

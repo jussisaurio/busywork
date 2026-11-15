@@ -161,8 +161,9 @@ verbs look like on a level's items, so a level 1 mustard stain once reached a pl
 `tools/lib/verbs.mjs` draws one sheet per item in `level.items`, with no plan search. The item goes straight into the
 player's hand at an empty tile that nobody watches, and each sequence is a fresh day:
 - carrying it: walking, pretending standing (held to your ear), pretending walking
-- what E does with it in hand when nothing else is in reach (a level 'self' row, eat or drop): before (the prompt),
-  during (an action of 0.5 seconds or more), after
+- what a tap of E does with it in hand when nothing else is in reach (a level 'self' row, else drop): before (the
+  prompt), during (an action of 0.5 seconds or more), after
+- when holding E does something else (eating): before, E held (the preview pose), during, after
 - each other 'self' verb that takes it but that E does not reach there: its result only
 - it on the floor a step away after a drop, then picked up again
 - put on each spot that takes it (`putdown.js`): before, during, after. A spot that holds another item at day start

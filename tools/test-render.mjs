@@ -171,7 +171,7 @@ for (const d of DIR_LIST) {
   draw(`folder strut dir=${d.toFixed(2)}`);
 }
 for (const d of DIR_LIST) for (const bp of [null, 'typing', 'phone']) {
-  day((g) => Object.assign(g.player, { smeared: true, seated: bp === 'typing', busyPose: bp, busy: !!bp, dir: d }));
+  day((g) => Object.assign(g.player, { smeared: 'splat', seated: bp === 'typing', busyPose: bp, busy: !!bp, dir: d }));
   draw(`mustard dir=${d.toFixed(2)} pose=${bp}`);
 }
 day((g) => { g.paused = true; });

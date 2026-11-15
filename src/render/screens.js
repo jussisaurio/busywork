@@ -11,6 +11,7 @@ import { lookFor, drawPerson } from './characters.js';
 import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { sparkle } from './world.js';
 import { TAB, person, bubble, floorCarpet, confetti, backWall } from './tableau.js';
+import { clockFace } from './things.js';
 
 // Width of a row of n route slots.
 const rowSpan = (n, size, gap) => (n > 0 ? n * size + (n - 1) * gap : 0);
@@ -322,7 +323,11 @@ export function drawEnd(ctx, game, t, mem) {
   const by = 492;
   loopIcon(ctx, 226, by, 9, C.ink, 3);
   text(ctx, String(Math.max(0, fin(o.loop) | 0)), 242, by + 1, font(24, MONO_FAMILY, 'bold'), C.ink, 'left');
-  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 404, by, 22); // legacy: drop with the legacy list
+  if (strictGlyphs()) { // its face at the minute beside it, as the HUD's clock reads behind the card
+    ctx.save();
+    clockFace(ctx, 404, by, 22, fin(o.minute), game.level.day.start);
+    ctx.restore();
+  } else emoji(ctx, '🕓', 404, by, 22); // legacy: drop with the legacy list
   text(ctx, clockDigits(fin(o.minute), game.level.day.start), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
   if (e > 0.6) playKey(ctx, 700, by, 110, 38, t);
   ctx.restore();

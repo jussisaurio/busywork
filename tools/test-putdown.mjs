@@ -166,6 +166,7 @@ const IDLE = [...WRITE, 'goto 3,6', ...Array(40).fill('wait 1s')];
   };
   const a = idle(plain());
   const b = idle(plain({ keep: true }));
+  for (let i = 0; i < 600 && b.game.rules.sent; i++) b.frame(); // the walk to your desk
   ok(work(a) && a.game.world.note === 'dropped' && a.game.player.held === null, `no keep: work, the note dropped (${a.game.world.note})`);
   ok(work(b) && b.game.world.note === 'player' && b.game.player.held === 'note' && b.game.player.seated, `keep: work, still holding it at the desk (${b.game.world.note})`);
   b.run('wait until 3:10');

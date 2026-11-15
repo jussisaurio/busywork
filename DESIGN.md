@@ -66,7 +66,9 @@ problem: when Kev says 🔧, he means he will fix something.
 3. **The state that decides the outcome is drawn on the object.** Every world fact a win or a loss depends on changes
    how something looks on the map (the calendar shows whose face is circled; the burning microwave glows and smokes).
 4. **To show you can use something, the object lights up, with the E key cap on its far side from you.** No icon
-   hovers over it: an icon over a tile reads as the object.
+   hovers over it: an icon over a tile reads as the object. What E does to what you hold shows on you: the held
+   thing lights up, and your pose previews the verb before you press (arm held out over the floor: drop; the thing
+   lifted toward your mouth: eat).
 5. **End cards are drawn scenes.** The icon row under the scene is the punchline, in speech emoji and faces.
 
 How it is held:
@@ -84,7 +86,7 @@ There is no camera: the whole office is on screen (30×17 tiles), with the HUD b
 | Key | Verb |
 |---|---|
 | WASD / arrows | walk |
-| E | interact (the nearest valid target lights up, with the E key cap beside it) |
+| E | interact (the nearest valid target lights up, with the E key cap beside it). Holding food: tap drops it, hold E eats it |
 | E, Space or Enter | move past the mission card and the end card |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |
@@ -109,18 +111,27 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 
 ## Vision and suspicion
 - **Vision cones.** Each NPC sees a cone (default 90° and 7 tiles; each cast member can differ). Walls block sight;
-  glass does not. V shows the cones.
+  glass does not. V shows the cones. Every cone is as plain as the authority's, since anyone can tell on you; its
+  edge firms up while he has you in sight.
+- **Seated NPCs work.** At a desk in his own routine a coworker types, silently. His hands stop when he glances,
+  turns to a noise or is busy with something else, so a glance reads as a break.
 - **Seated NPCs glance around.** Every 5–9 s (each cast member can differ) they turn their head 60–125° to one side
   for 1.3 s. The head turn is the telegraph. Each NPC's glance timing comes from its own seeded RNG, so it is
   learnable.
 - **Suspicion.** If the authority can see you and you are not looking busy (pretending, or doing an action; an idle
   action like eating doesn't count), his ❓ meter fills over 1.6 s. Otherwise it drains over 3 s. Full, he assigns
-  you work: you are sent to your desk and type for 20 game minutes, and time runs ×8 while you suffer.
+  you work: he points, his order runs to you as a line, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
+  time ×8. The work is 20 game minutes from his order, the walk included. Progress shows only in the stack.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
+- **Who saw you.** A coworker who sees you do something reportable opens an eye beside her head, its pupil on you.
+  The eye widens while she keeps looking. Wide open, she tells, with a hop. A grudge (below) keeps the eye red until
+  she has told.
 - **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
-  authority is on the floor, he hears it and assigns you work. If he is away, the witness keeps a grudge and points
-  you out 👉 and your face (plus what they saw) as soon as he is back. An authority gone for good never hears it.
+  authority is on the floor, he hears it: a red line runs from her to him, he turns to her, then to you, and assigns
+  you work. A level may set another cost for a heard tattle (you are caught, or its own). If he is away, the
+  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
+  authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
   slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
@@ -128,16 +139,22 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   and pretending doesn't hide it.
 - **The scene.** After some events, one witness blames whoever he sees at the scene (a room, or near its door unless
   you pretend), once per event.
-- **Noise.** Some actions and events make a noise. Everyone in earshot turns to look for a moment. Walls don't stop
-  sound.
+- **Noise.** Some actions and events make a noise. It bursts at its source (a machine, a phone on a desk) and
+  ripples out to its earshot. Everyone in earshot turns toward it for a moment, and each head's swing shows. Walls
+  don't stop sound.
+- **On screen.** Bubbles, signs and meters stay inside the view. With no room above a head, the bubble goes beside
+  it, and its tail points at the speaker.
 
 ## Outcomes
 At the deadline the game picks the first result that applies:
 1. **Caught** earlier: you were fired. (The day ends a moment after the catch.)
-2. **Fail**: no route achieved. You stand at the front of the room with nothing to show. 🦗
+2. **Fail**: no route achieved. You walk to the front of the room with nothing to show. 🦗
 3. **Blamed**: a route achieved, but you are not in the room. Everyone stares at your empty chair 🪑❓ and points
    😠👉 and your face. The loop doesn't count and no route is recorded.
 4. **Win**: every route achieved this loop is recorded.
+
+The result is decided at the deadline. If it moves you (to the front, or to your desk if you were sent there), you
+walk there; the picture never cuts.
 
 Attendance is a rule in every level: being in the right place at the deadline is part of winning, so nobody wins from
 their desk.
@@ -145,7 +162,8 @@ their desk.
 ## Routes and HUD (icons only)
 - A level has a small number of routes (ways to win). Each has an icon and a slot. A found route shows its icon; an
   unfound one is a blank slot. The slots show on the HUD, the title and the end card.
-- The clock is big and always visible. It turns red near the deadline (when is the level's choice).
+- The clock is big and always visible. It turns red near the deadline (when is the level's choice). Once the day
+  is decided it stops at the minute the end card shows. The mission badge's clock face shows the deadline.
 - Mission badge icons only. **No route status chips.** Objects show their state in the world.
 - Held item, loop number (⟳ 3) and ⏩ while fast-forwarding.
 - The authority's ❓ suspicion meter shows above his head when it is above 0.
