@@ -7,8 +7,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "06407385ddae4641",
-    "d9921824cdc7e978"
+    "cc856bc1c2af64f9",
+    "8ca0f9e20c0b7fe7"
    ]
   },
   {
@@ -17,60 +17,22 @@
    ],
    "summary": "fail",
    "digests": [
-    "814cdda4b4d56b89",
-    "81e21e5f9398e2b2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_pc",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "a89c8e81184fda86",
-    "36a6900c308fcba9",
-    "452f3b847c6fa847",
-    "895f7f7fe3ebb98b",
-    "e802e6092534bc6a",
-    "865a63345deab558",
-    "6de198329a4e880a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "90fd479bb0ee4e08",
-    "5530b04b645a99f2",
-    "34707e8e7a668d1a",
-    "5a4dc4ea9c33adbd",
-    "0b709f85f452abe3",
-    "6f59b2620916e2c3"
+    "f31dd4b72d35d34f",
+    "11180a41d1630ffe"
    ]
   },
   {
    "cmds": [
     "goto coat_rack pretend",
     "interact",
-    "wait until 3:45"
+    "pretend until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "2e05adf57f4388c4",
-    "02768168065601c4"
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "66bbcf7647b6c8dc",
+    "4a37ecdf77bade4d"
    ]
   },
   {
@@ -82,45 +44,49 @@
    ],
    "summary": "fail",
    "digests": [
-    "ea919a9748782dbe",
-    "1f0c6d04a90a052a",
-    "7ac90a51fb307786",
-    "28dc68808d9e71d6",
-    "681d20f99fb7002f"
+    "4b167ce653ea12d5",
+    "8887ec166349dcb0",
+    "bf47cc530ec3e224",
+    "5cbc6a5a3642b622",
+    "cd9f6f4d854aafc3"
    ]
   },
   {
    "cmds": [
+    "goto boss_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "fb190112d55ea5b1",
+    "0d1f2a6b7e3bc402",
+    "00917dde92bf1a6d",
+    "0c1c645e66cfed93",
+    "b931d6900a3462de"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 5s",
     "goto coat_rack",
-    "goto coat_rack pretend",
     "interact",
-    "pretend until 3:45"
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "wait until 3:45"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "a89c8e81184fda86",
-    "36a6900c308fcba9",
-    "452f3b847c6fa847",
-    "ef2441eb6c20f481",
-    "655263f026849e21"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "0a75a92921c84ab3",
-    "cf6c7f07970ad22f",
-    "544ba0c54e038408"
+    "f56d12a5a142bcc6",
+    "f02624d9018c95bf",
+    "61a6350d92a10bc1",
+    "e7da878400e3b500",
+    "6e71aade1627dd88",
+    "d53753722f4233c5",
+    "5e0c352c0510de97",
+    "4b4ec447e7f0a919"
    ]
   },
   {
@@ -132,189 +98,249 @@
    ],
    "summary": "fail",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "2d0efa294ee61af3",
-    "6f98f027edb82ccb"
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "afeb7dd392063cbb",
+    "b5159e48c19a5721",
+    "3d285697855c8fce"
    ]
   },
   {
    "cmds": [
-    "goto coat_rack pretend",
+    "pretend until 3:21",
+    "goto kev_desk pretend",
     "interact",
     "interact",
     "pretend until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "472486a3540589c8",
-    "6f59b2620916e2c3"
+    "ee0b65a361f4d60d",
+    "bb352a4155d56640",
+    "6cd05a12a09882c6",
+    "77ecd9966508eb3a",
+    "77d5bc4334ae81c8",
+    "921cee48fed9c805"
    ]
   },
   {
    "cmds": [
-    "pretend 1.5s",
+    "pretend 3s",
     "goto coat_rack pretend",
     "interact",
     "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "509850336327e7a2",
-    "b25c2bbff0145dad",
-    "a52135203594afb5",
-    "0602f601624a95dc",
-    "7ae124654eeff951"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:35",
-    "wait 5s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "06407385ddae4641",
-    "20447ff9da7aac5b",
-    "e69d0db2d0a9206f",
-    "4231e30fb2094788",
-    "0fb5d11ea8442003",
-    "8e47f7ef2868bca7"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "90fd479bb0ee4e08",
-    "5530b04b645a99f2",
-    "34707e8e7a668d1a",
-    "5a4dc4ea9c33adbd",
-    "68e639dd02526e73",
-    "0390f34804e97396"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:26",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "90fd479bb0ee4e08",
-    "5530b04b645a99f2",
-    "34707e8e7a668d1a",
-    "5a4dc4ea9c33adbd",
-    "ccc4246897e15cfd",
-    "349e0897da762ce9",
-    "224ed32f25fdcba0",
-    "102115d46d239452"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "6f1e9e82f3602837",
-    "a49188dec487fd75"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:40",
-    "goto coat_rack pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "1dc3ae9425232dbb",
-    "2eaa0d9d840610e8",
-    "a6b5b7ed4a142ac9",
-    "5d5fe6ac7e984414",
-    "8d905086cdf26a84"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:42",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "a3f1191369b4b3a0",
-    "782612eb962f3cbb",
-    "f08fb7c0aeb673ef",
-    "e686626629a7cbec",
-    "8948d0298f73d973"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:28",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "9dccf422ce063b41",
-    "360dff1453a34df6",
-    "0944554e2ad34832",
-    "83d8c2dc058391ad",
-    "48577d4bf27e05c5",
-    "f29664d9292b75c6",
-    "7bb1d22ad3283cbc"
+    "68b5c63baaeadf1c",
+    "49f81f4508b01762",
+    "02584c69bbe9bbd9",
+    "ffe4898d36238b9c",
+    "d7472bcab927a422"
    ]
   },
   {
    "cmds": [
     "pretend until 3:27",
-    "goto boss_pc pretend",
+    "goto kev_hoodie pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e03de6408f2a9adc",
+    "5410b31c9b8442a1",
+    "5f833e38160f90a9",
+    "d42ff9063372c4ee",
+    "8f5b03e4a3da214d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "afeb7dd392063cbb",
+    "86ce06dcf1679a74",
+    "921cee48fed9c805"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:18",
+    "wait until 3:27",
+    "goto kev_hoodie pretend",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "3be0d339bd1a0764",
-    "29d793428edf32df",
-    "891da6bc329714e8",
-    "2e7846f218d9d2d5",
-    "4725faef0f43ba4d"
+    "cc856bc1c2af64f9",
+    "a4ae9b009013763d",
+    "607cbff446c20a9c",
+    "f31038e47b6ef451",
+    "07355f07c341c60c",
+    "9e897aa0bbdb00b9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 8s",
+    "pretend 3s",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "0c3ad74f4c1bf2df",
+    "0fd10db0c7e57a0c",
+    "545d564ca7b95ae4",
+    "a8aee7e142b07c44",
+    "3880120e9abbb55a",
+    "2d01d93bce8fe881"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:21",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "ee0b65a361f4d60d",
+    "084825be41e03630",
+    "13f90589f4748a13",
+    "ddeaab3d784b2c42",
+    "015a82d84ad6229e",
+    "fea21888bd01114f"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e03de6408f2a9adc",
+    "0df95eb902ffffe7",
+    "5f1d43b804311618",
+    "82aee805a45734f7",
+    "dc51b8f5c3b5acce",
+    "480309a69e977e30",
+    "84b86ed8dba05f57",
+    "26d21e66ab57202b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:43",
+    "goto kev_desk",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c05c8888d96e0a8c",
+    "01991bd3659d8971",
+    "4c0df924bc1f0c91",
+    "6377fdde48b8d3c4",
+    "86a99cca23038273"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_desk pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e03de6408f2a9adc",
+    "7e8be5a8eae3458b",
+    "24b0f7e4cb9e77f7",
+    "cc66f12cbabdc6a2",
+    "12d696a145c4ef6c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "afeb7dd392063cbb",
+    "22a9944452f425cd",
+    "859d2df899cf096e",
+    "678699e5a02b4831"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_desk pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "ba06a7460543fdb4",
+    "e0a3e15b8016012e",
+    "21c154f8dd1748c8",
+    "c513b5a31f5d2324"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 5s",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "pretend 2s",
+    "goto coat_rack",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "f56d12a5a142bcc6",
+    "ce025f33c9bffbf0",
+    "70f03bc5b787a6dd",
+    "143a3d907c810308",
+    "96fab877e4d491fe",
+    "3eea5329d3857af6",
+    "51ca10d43f2692d1",
+    "df3a8d489436adb6",
+    "fa9485428174ccda",
+    "aab32cf53af24dbd"
    ]
   },
   {
@@ -324,553 +350,37 @@
     "pretend 1.5s",
     "goto boss_pc pretend",
     "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "a89c8e81184fda86",
-    "ff8c4ce49356633a",
-    "60bbeaeaccd1ba16",
-    "7e8a70bf13bb93ab",
-    "b533d4d67f0e9258",
-    "ae38a2b18c4755eb",
-    "95713f23ffa6ff3c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:34",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "8a84c466f0dd765d",
-    "51960ba6a1ced403",
-    "956f0d373aacee7c",
-    "5c650ebacdd3cf03",
-    "241a57ffe054e80c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3be0d339bd1a0764",
-    "835746ba1148ac82",
-    "cb2c25b363bc5761",
-    "a39a9adba052ef31",
-    "7135318caf114d93",
-    "bc6f442178e0be9f",
-    "3ba312038a42d832",
-    "ab7625781cb612ba"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kev_hoodie pretend",
-    "pretend until 3:26",
-    "interact",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c64d94b481205326",
-    "5e6616b4cde1514b",
-    "dcff780fa88b3964",
-    "f038b1d1983bc831",
-    "7600df2222a32bf4",
-    "179dc5b5b4b4fc69",
-    "676e4a2429901dda",
-    "f56fb3088773755e"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d05ce551c034d03b",
-    "8d4894fc111cdb1e",
-    "bdad4264c257bd1e",
-    "30295b8b0a40ef13",
-    "b5a379f6a64bea39",
-    "492c32fe7937fbbd",
-    "c9135b0430510537"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d05ce551c034d03b",
-    "8d4894fc111cdb1e",
-    "bdad4264c257bd1e",
-    "30295b8b0a40ef13",
-    "681f76ecd23e6b5c",
-    "7d0bee021af27338"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "5b3d0e585c23f55a",
-    "217dace73584ae81",
-    "83775e0fb901ef1c",
-    "e767166c6949d509",
-    "2bba7d968f079f74",
-    "d82d13b9feefc51c",
-    "6c1dc08fbfe338d6",
-    "e493d3b6ebe89caf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_desk pretend",
-    "pretend until 3:44",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "5ec9a209311a346c",
-    "89f8b0717cf2d5d2",
-    "95f06d41ad97fb4d",
-    "a765122ddd7c5fd8",
-    "968be114576ac54f"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "wait 2s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend 2.5s",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "2d0efa294ee61af3",
-    "9db76a41bb397e46",
-    "01fdeaa1a0ef2de4",
-    "578225932db428ac",
-    "ce72f2b3dfe5ab28",
-    "4a99d13fe4dae92c",
-    "33bf13d530b9b4f6",
-    "98bf5e626e9b757a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d05ce551c034d03b",
-    "8d4894fc111cdb1e",
-    "bdad4264c257bd1e",
-    "30295b8b0a40ef13",
-    "b5a379f6a64bea39",
-    "0ac1757231cc3590",
-    "dcfbbb381a7b8def"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kev_hoodie pretend",
-    "pretend until 3:26",
-    "interact",
-    "interact",
-    "goto coat_rack pretend",
-    "pretend until 3:43",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c64d94b481205326",
-    "5e6616b4cde1514b",
-    "dcff780fa88b3964",
-    "f038b1d1983bc831",
-    "7600df2222a32bf4",
-    "3097eb13a484ef5d",
-    "3c1958fbf436bf9e",
-    "f771b616b39097f6",
-    "8d905086cdf26a84"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "cc798036ca97ec79",
-    "369c826c5c069490",
-    "a44660bf468f6af2",
-    "333085ab27b530fb",
-    "c13d40df77374fba",
-    "b050d866db5eefc6",
-    "0022ff24ece59e7e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "cc798036ca97ec79",
-    "369c826c5c069490",
-    "a44660bf468f6af2",
-    "333085ab27b530fb",
-    "3dfc7d60fba842f3",
-    "cb40020b039f892c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "wait until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "5b3d0e585c23f55a",
-    "217dace73584ae81",
-    "83775e0fb901ef1c",
-    "e767166c6949d509",
-    "2bba7d968f079f74",
-    "d82d13b9feefc51c",
-    "1cd094b237b004ec",
-    "d1d85d26c0ac23b2",
-    "8ff0354f939da2c4"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "blamed jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "ff9012233d3ff29c",
-    "1d59b7cbacd66f79"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "goto coat_rack pretend",
-    "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "cc798036ca97ec79",
-    "369c826c5c069490",
-    "a44660bf468f6af2",
-    "333085ab27b530fb",
-    "32189527fc8d0a4e",
-    "eb7a3b12897df15e",
-    "ffe5e10f605a1549",
-    "387e0c3152a847a4",
-    "d936cda5dcc22de4"
+    "fb190112d55ea5b1",
+    "c0c3898b672d733d",
+    "f00aecfa51fd99ff",
+    "68ff60a4a734256d",
+    "a2792829ae407e52",
+    "040291445c2efa5b",
+    "7478857319051a7d"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "cc798036ca97ec79",
-    "369c826c5c069490",
-    "a44660bf468f6af2",
-    "333085ab27b530fb",
-    "32189527fc8d0a4e",
-    "eb7a3b12897df15e",
-    "ffe5e10f605a1549",
-    "eb529c0df8ef835e",
-    "a767bb7a2afd8059",
-    "146b9113d1195e3f"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:35",
-    "wait 5s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "06407385ddae4641",
-    "20447ff9da7aac5b",
-    "e69d0db2d0a9206f",
-    "4231e30fb2094788",
-    "7a00f142054197bf",
-    "79c9958620cae0c3",
-    "ce09f3497a9d2932",
-    "d8bff47a986f443e"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "47187d63ef10ce3c",
-    "06b308e84f5e5058"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
+    "pretend until 3:31",
     "goto kev_desk",
     "interact",
     "goto boss_pc pretend",
     "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "cc798036ca97ec79",
-    "369c826c5c069490",
-    "f377a93e4b6499c9",
-    "2b0859cbabb13f68",
-    "b57f784b6d243df7",
-    "cea45ac8ec7af8dc"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "wait until 3:33",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:32",
-    "goto boss_pc",
-    "interact",
     "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d2bce320482579a1",
-    "448721458036fdc9",
-    "de103340a9423238",
-    "bfcbbe7ea30db069",
-    "d49d02d3975daf5f",
-    "0de990029eaf492a",
-    "245a5f1655d07b38",
-    "7af49625258b1f78",
-    "dfaefddd08f7f9b3",
-    "cb13c90a5b4b6274",
-    "0c39bf8ece7d8868",
-    "a39c8450c05f4fa2"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d05ce551c034d03b",
-    "8d4894fc111cdb1e",
-    "bdad4264c257bd1e",
-    "30295b8b0a40ef13",
-    "b5a379f6a64bea39",
-    "ec5a2f82d86b993b",
-    "6a682a8ece92e0dd",
-    "c3ec8c037545b80c"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "89ce7739d4561b92",
+    "f4725915b9a0b339"
    ]
   },
   {
@@ -880,511 +390,303 @@
     "interact",
     "goto boss_pc pretend",
     "interact",
-    "goto kev_desk",
-    "wait until 3:45"
+    "pretend until 3:45"
    ],
-   "summary": "blamed jacket",
+   "summary": "caught",
    "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "da872ccdf72982d3",
-    "25e9c4b2429819c2",
-    "6d87e3d7a5ba3e13"
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "7b356a1292e02d57",
+    "ebdca2156da44643"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "goto kev_hoodie pretend",
+    "goto coat_rack pretend",
+    "pretend 0.5s",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c0e39347855edc71",
+    "17c0218600ff411b",
+    "bbd7a11ca963a5d9",
+    "08cb2e358689a9e8",
+    "ac754ca975475a36",
+    "a687cdcedf86574d",
+    "1fe1f92c8f1a14a3"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e03de6408f2a9adc",
+    "0df95eb902ffffe7",
+    "5f1d43b804311618",
+    "82aee805a45734f7",
+    "c0ba27288be7ff31",
+    "589ac5196c0f7435",
+    "2d43713bd096a33c",
+    "d19edbc3faa76f43"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "e03de6408f2a9adc",
+    "0df95eb902ffffe7",
+    "5f1d43b804311618",
+    "82aee805a45734f7",
+    "c0ba27288be7ff31",
+    "589ac5196c0f7435",
+    "a2749d83d7918622",
+    "e28231e7834111de",
+    "921cee48fed9c805"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "e03de6408f2a9adc",
+    "0df95eb902ffffe7",
+    "5f1d43b804311618",
+    "82aee805a45734f7",
+    "c0ba27288be7ff31",
+    "589ac5196c0f7435",
+    "a2749d83d7918622",
+    "7dc5c7679a8129b3",
+    "ad1b7fcb5fc78e36"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
     "goto boss_pc pretend",
     "interact",
     "goto kev_hoodie pretend",
     "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "7229a2774cd22ad1",
+    "426a3f64b1ae214b",
+    "d12128e51d0c5d97",
+    "5b536c45ae9d2a1c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_hoodie pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "d76624c29e5b2a03",
+    "3cff9de84c824984",
+    "ca06c585774dc826",
+    "68b2e6b78ce631d6",
+    "71b576b124979e49",
+    "925c1b801f43de74",
+    "e77400a07306ee14",
+    "703dc402cbaa6dd8"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto kev_hoodie",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "e03de6408f2a9adc",
+    "0df95eb902ffffe7",
+    "5f1d43b804311618",
+    "82aee805a45734f7",
+    "c0ba27288be7ff31",
+    "589ac5196c0f7435",
+    "a2749d83d7918622",
+    "9b420e39ecb60fea",
+    "1822148aa90bc989",
+    "1abc0f2c442a9044"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 5s",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "pretend 2s",
+    "goto boss_pc pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "f56d12a5a142bcc6",
+    "ce025f33c9bffbf0",
+    "70f03bc5b787a6dd",
+    "143a3d907c810308",
+    "96fab877e4d491fe",
+    "3eea5329d3857af6",
+    "51ca10d43f2692d1",
+    "be5656456d113c94",
+    "51070ee803220c6a",
+    "84c437611906dad7",
+    "4bcf376cda4268f3"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_hoodie pretend",
     "pretend until 3:41",
-    "goto coat_rack pretend",
+    "interact",
+    "interact",
     "goto coat_rack pretend",
     "interact",
-    "pretend until 3:45"
+    "wait until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "c5eba6a924e1130d",
-    "981388de0c092f6b",
-    "e5b1706a214efffe",
-    "066b5be76c36b736",
-    "6f16ff340f58887d",
-    "95f1af29a83f1e4c",
-    "d997bf5f48eee7e6",
-    "7f7e98d49540ca0e",
-    "5bb714fec1363acd",
-    "3c768f16224541bd",
-    "27c7587ed09a98a2",
-    "7890e796ce2f0886"
+    "d76624c29e5b2a03",
+    "9c3fcb060c410e1e",
+    "1941df2a7a2c3efd",
+    "a533c280d9daee4e",
+    "c744a95ba2690412",
+    "e498cb8f65a8a14e",
+    "c70ec1e44aeb7823",
+    "2d01d93bce8fe881"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
     "goto boss_pc pretend",
     "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
+    "goto boss_desk pretend",
     "interact",
     "wait until 3:45"
    ],
-   "summary": "blamed jacket",
+   "summary": "blamed hoodie",
    "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "a1bde502589582a5",
-    "4f37ffaf5be0d61e",
-    "ee79567a2fab2f59",
-    "4fa124de95bb49ad"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "873e439376adcffe",
+    "7b830e6b921a397d",
+    "adda4802481b3811",
+    "c3d82dcde3787310"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "pretend 0.5s",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "5973f58d5a852fe3",
-    "d41a8f183216e462",
-    "e67d1c4be2aadfe9",
-    "34a3fb6959b70062",
-    "cacf0824c7b89d30",
-    "1f8282fcbf803735",
-    "ae479afe02a4dd4a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "wait 4s",
-    "goto kev_hoodie pretend",
-    "pretend 2.5s",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "2d0efa294ee61af3",
-    "9db76a41bb397e46",
-    "ef30107c66569062",
-    "d051157d415ab431",
-    "202f4b869b27a109",
-    "0c3a4b2dae365bfd"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "sit pretend",
-    "wait until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "7e02244556247d17",
-    "403a763fef7f772b",
-    "42dc652c0fd6cf7a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "3be0d339bd1a0764",
-    "d79f8a79b2206ac3",
-    "d05ce551c034d03b",
-    "8d4894fc111cdb1e",
-    "bdad4264c257bd1e",
-    "30295b8b0a40ef13",
-    "b5a379f6a64bea39",
-    "ec5a2f82d86b993b",
-    "f0acd6591eee04bd",
-    "a80b4e43a3137356",
-    "977ef481097e465e",
-    "d13f442c25070843"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "sit pretend",
-    "wait until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "5ee5eebfd44c402f",
-    "4b6775fa91f03bc0",
-    "f58163d1a65521b9",
-    "e7394882e168f222"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "pretend until 3:29",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "4794d974da29a0dd",
-    "05ff1d6a6917286f",
-    "21a145d07e6edd97",
-    "ce4ebf5df39ccdf8",
-    "83c6c250b44862f3",
-    "242d95a285fd533c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto boss_pc pretend",
-    "interact",
+    "pretend 5s",
+    "pretend 1.5s",
     "goto coat_rack",
     "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "f242f251fe9bc394",
-    "1d8879ac54e33e93",
-    "dc24b43d7467fc1e",
-    "fa3f503fd5d1a301",
-    "621c66b1edb66109",
-    "d4d46fbaf41c9cfd",
-    "1583b25ec0234479",
-    "f00aef3af3533a9e"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "a1bde502589582a5",
-    "4f37ffaf5be0d61e",
-    "37901b4e6333cf4b",
-    "8db16985901c4822",
-    "deba3125f1b5988a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:35",
-    "wait 5s",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "06407385ddae4641",
-    "20447ff9da7aac5b",
-    "e69d0db2d0a9206f",
-    "4231e30fb2094788",
-    "7a00f142054197bf",
-    "9e979a5ade6ee4f6",
-    "4f95b94b092cd927",
-    "ea9130524a0bdd84",
-    "1e8ee10f63a7f5fa"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "blamed jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "a1bde502589582a5",
-    "4f37ffaf5be0d61e",
-    "37901b4e6333cf4b",
-    "21a7d23fdb2a980a",
-    "80509bad13c1101c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "ecd1db03bcd260cd",
-    "c0e859d8546630c6",
-    "247d56fc6a44c2ea",
-    "feb84775f6513d39",
-    "ed885309428da835",
-    "46323f81b432bd59",
-    "06b138275a0e93a8",
-    "d45d63867128653c",
-    "bd55d57d9f138754"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "wait until 3:28",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto coat_rack",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "d7488b31980c2c86",
-    "2f1a23aa49991698",
-    "3a12aec82c56d798",
-    "ddfd2be3f5a4b6b6",
-    "b865615635ef472d",
-    "5246fa64c812f91c",
-    "5c4a26bbe225a107",
-    "00f744276807e2fe",
-    "78dca5ff3f833b5d",
-    "99693b4ac8da7808",
-    "cf86c1bce4b41b09",
-    "ee1578738f5586b2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "fail",
-   "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "ff3f91ac740a4ae4",
-    "a4eb8809f1b87526",
-    "a5b8404433c3714b",
-    "c48188c1bc701328",
-    "d230e7698ffc1020",
-    "d36c3f958a412ea7",
-    "7da69ae6dcae24d7",
-    "06d98b5ddce55b30",
-    "5efef229fcffc12a"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "blamed jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "a1bde502589582a5",
-    "4f37ffaf5be0d61e",
-    "37901b4e6333cf4b",
-    "87f3c4a65662275a",
-    "ee79567a2fab2f59",
-    "4fa124de95bb49ad"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto coat_rack pretend",
     "interact",
     "goto kev_desk pretend",
-    "pretend until 3:44",
     "interact",
-    "pretend until 3:45"
+    "goto coat_rack pretend",
+    "wait until 3:45"
    ],
-   "summary": "blamed jacket",
+   "summary": "caught",
    "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "94e474c76d88fe0e",
-    "48577b85717c7910",
-    "40c2ef06ca3e0cfd",
-    "ded99d514c589c3a",
-    "e5d1cc1e7b8608c3"
+    "f56d12a5a142bcc6",
+    "7737cabec9bfb5f5",
+    "c05532b41e274a09",
+    "1803068e3e14d896",
+    "17338c63bf2690aa",
+    "5ba828093ec5554a",
+    "369840dc1572ce70",
+    "15687a52276b0df1",
+    "58f0a0aa38ae92f4",
+    "5d81461330344014"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "c4c0489aa7750877",
+    "61bca1bf006afe44"
    ]
   },
   {
@@ -1394,429 +696,201 @@
     "interact",
     "goto boss_pc pretend",
     "interact",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "interact",
-    "sit pretend",
-    "pretend until 3:45"
-   ],
-   "summary": "win jacket",
-   "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "cfcd5fc462f6fa00",
-    "c51d9ad8cfa66b9d",
-    "a1bde502589582a5",
-    "4f37ffaf5be0d61e",
-    "37901b4e6333cf4b",
-    "6c9be2384916a7fe",
-    "0201d6a5fa940d61",
-    "6cdbddfd0c59f7ce"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto coat_rack pretend",
-    "interact",
-    "goto kev_hoodie pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "goto boss_pc pretend",
-    "interact",
+    "goto kev_desk pretend",
     "wait until 3:45"
    ],
    "summary": "blamed jacket",
    "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "ecd1db03bcd260cd",
-    "c0e859d8546630c6",
-    "247d56fc6a44c2ea",
-    "feb84775f6513d39",
-    "ed885309428da835",
-    "382c64b024001467",
-    "1113adf4aefa0acd",
-    "cdd8b5011b51617e",
-    "7ab834074e578278",
-    "51417dc1523796d0"
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "3f59d6a70eb1d601",
+    "0231f6dbe1e2cac9",
+    "5ffc1073c0fabb53"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
-    "goto boss_pc",
+    "goto boss_pc pretend",
     "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto coat_rack pretend",
-    "pretend until 3:45"
-   ],
-   "summary": "blamed hoodie",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "033be0eb1dee86d0",
-    "287db56b3e5bf4da",
-    "8d4f926305f0a3c1"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
+    "wait 2.25s",
     "goto kev_hoodie pretend",
-    "pretend until 3:45"
+    "interact",
+    "interact",
+    "wait until 3:45"
    ],
-   "summary": "blamed hoodie",
+   "summary": "caught",
    "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "fad3aac6f34d637c",
-    "1e99e8f67022fb48",
-    "ac5cf075a1adba9d"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "79bc7135a56e6c21",
+    "200802631f5beb48",
+    "87d8289075f133fe",
+    "722f867000e2cfdc",
+    "bca413f68e9d6ec5"
    ]
   },
   {
    "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto kev_desk",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "54fcaacb7f32fdb6",
+    "d2484f89e14242fd",
+    "6bea3e9a246a33f8",
+    "2a045da4d44a61f7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 5s",
     "goto coat_rack pretend",
     "interact",
     "interact",
-    "goto restroom_door",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "goto kev_desk pretend",
+    "interact",
+    "pretend 2s",
+    "goto boss_pc pretend",
     "interact",
     "goto boss_desk",
-    "interact",
-    "wait until 3:45"
+    "pretend until 3:45"
    ],
    "summary": "fail",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "7c0372697fc4d0a5",
-    "96d00b042db2729d",
-    "58aa72c9b0d68f38",
-    "183853e68b3f802c",
-    "4b650f88c44ce5cb",
-    "e295ec4a96572603",
-    "11bf1e3e91afc187",
-    "6447cad8cdb64c89",
-    "bb34b027f3c31cf4",
-    "c4328979fd09fb73"
+    "f56d12a5a142bcc6",
+    "ce025f33c9bffbf0",
+    "70f03bc5b787a6dd",
+    "143a3d907c810308",
+    "96fab877e4d491fe",
+    "3eea5329d3857af6",
+    "51ca10d43f2692d1",
+    "be5656456d113c94",
+    "51070ee803220c6a",
+    "c2b5fcb348543628",
+    "8e90a4871c46b87b",
+    "ea75c5a5073e48c1"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_hoodie",
-    "goto kev_desk pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "blamed hoodie",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "e859cf6362840b3d",
-    "84653564a30046fd",
-    "cf4f824c87f29dbd",
-    "8ed46bccc79399b1",
-    "447330a46ffe4b4e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_hoodie",
-    "interact",
-    "goto kev_desk pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "blamed hoodie",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "e859cf6362840b3d",
-    "5634108a691644e1",
-    "b4694d8dcc909def",
-    "f818af93c25dce41",
-    "14cf93e96f5c4f6e",
-    "229f6d4f025acee0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_pc",
-    "goto coat_rack pretend",
-    "interact",
-    "interact",
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
     "goto boss_pc pretend",
     "interact",
-    "goto coat_rack",
-    "goto boss_pc",
-    "interact",
-    "pretend until 3:45"
-   ],
-   "summary": "blamed hoodie",
-   "digests": [
-    "a89c8e81184fda86",
-    "36a6900c308fcba9",
-    "452f3b847c6fa847",
-    "895f7f7fe3ebb98b",
-    "b1039b2c60b44cee",
-    "4fea02a8945339ce",
-    "569110a93866730c",
-    "91c0c6f6586eb6d0",
-    "0c955d236beebe87",
-    "d92e20e4128463dc",
-    "92e2cdd7339cc0c0",
-    "760dc9f723c867a3",
-    "a0ac3f7f5e906124",
-    "8af122e00dbd5237",
-    "2ec6c6d5fade7ec9",
-    "445d2de975dbc1f8"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "goto coat_rack pretend",
+    "wait 1.69s",
     "interact",
     "goto kev_hoodie pretend",
     "interact",
-    "goto coat_rack pretend",
-    "goto boss_pc pretend",
-    "interact",
-    "goto restroom_door pretend",
     "wait until 3:45"
    ],
-   "summary": "blamed jacket",
+   "summary": "blamed",
    "digests": [
-    "6203d0b9b72aba3b",
-    "8f4cb0491a7c2e37",
-    "5df16c14cc484b76",
-    "519e16cef71c93e8",
-    "2d608f43a5db0d64",
-    "ecd1db03bcd260cd",
-    "c0e859d8546630c6",
-    "247d56fc6a44c2ea",
-    "feb84775f6513d39",
-    "ed885309428da835",
-    "382c64b024001467",
-    "1113adf4aefa0acd",
-    "cdd8b5011b51617e",
-    "fc50def607f66ea8",
-    "c23898c6d4f25218",
-    "41d1a045a02f08d8"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "a86cb1360e1bb2e3",
+    "614ea9722ce8b130",
+    "9a6aa46d286897f7",
+    "002955a8f963716a",
+    "58b28ec9cd8ba737",
+    "2aa729b6e91c7b66"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_hoodie",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "e859cf6362840b3d",
-    "5634108a691644e1",
-    "7f9f15b4a58e77c6",
-    "1d012800e5f78378",
-    "8f0ca22099cc9229"
-   ]
-  },
-  {
-   "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
-    "interact",
-    "goto boss_pc",
-    "interact",
-    "goto boss_desk pretend",
-    "interact",
-    "goto kev_hoodie",
-    "interact",
-    "pretend until 3:16",
-    "goto coat_rack pretend",
-    "interact",
-    "goto boss_pc pretend",
-    "wait until 3:45"
-   ],
-   "summary": "blamed hoodie",
-   "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "e859cf6362840b3d",
-    "5634108a691644e1",
-    "5532340cd236e414",
-    "35b27f83083319ce",
-    "a752685cb3e1964b",
-    "273202619f66214a",
-    "4caa223491740072",
-    "acee30675fe5828d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_pc",
+    "pretend 5s",
     "goto coat_rack pretend",
     "interact",
     "interact",
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "goto kev_desk pretend",
     "interact",
+    "pretend 2s",
     "goto boss_pc pretend",
     "interact",
-    "goto coat_rack",
+    "goto kev_hoodie pretend",
     "interact",
-    "goto boss_pc",
-    "interact",
-    "sit pretend",
     "pretend until 3:45"
    ],
-   "summary": "blamed hoodie",
+   "summary": "fail",
    "digests": [
-    "a89c8e81184fda86",
-    "36a6900c308fcba9",
-    "452f3b847c6fa847",
-    "895f7f7fe3ebb98b",
-    "b1039b2c60b44cee",
-    "4fea02a8945339ce",
-    "569110a93866730c",
-    "91c0c6f6586eb6d0",
-    "0c955d236beebe87",
-    "d92e20e4128463dc",
-    "92e2cdd7339cc0c0",
-    "760dc9f723c867a3",
-    "88a1f6ea2a0a9cc6",
-    "824cf4a83d08ab94",
-    "9da1d3121080f0a8",
-    "7eb7331148d70314",
-    "ccb1a8dd90fdd04e",
-    "4b27d5636f3bd68a"
+    "f56d12a5a142bcc6",
+    "ce025f33c9bffbf0",
+    "70f03bc5b787a6dd",
+    "143a3d907c810308",
+    "96fab877e4d491fe",
+    "3eea5329d3857af6",
+    "51ca10d43f2692d1",
+    "be5656456d113c94",
+    "51070ee803220c6a",
+    "aef1ae86abd37b5e",
+    "8aa44057939d9795",
+    "6c3f3502f4b19ece",
+    "4c0f05de0e65c494"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
-    "goto boss_pc",
+    "goto boss_pc pretend",
     "interact",
-    "goto boss_desk pretend",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "a9398350676840f2",
+    "36ba4d6d0e28d756",
+    "b514f01870c7a493"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
     "interact",
     "goto kev_hoodie pretend",
     "interact",
@@ -1824,57 +898,971 @@
    ],
    "summary": "win hoodie",
    "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "fad3aac6f34d637c",
-    "86f15b9b44a2c6eb",
-    "149491717c2f1faf",
-    "f9a20f9b690412b2"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "d62c58412fd42dd2",
+    "5adfb8e05e251edf"
    ]
   },
   {
    "cmds": [
-    "goto restroom_door pretend",
-    "pretend until 3:29",
-    "pretend 0.5s",
-    "goto kev_hoodie",
+    "pretend until 3:31",
+    "goto kev_desk",
     "interact",
-    "goto boss_pc",
+    "goto boss_pc pretend",
     "interact",
-    "goto boss_desk pretend",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "blamed hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "1c7f2fbe2b023ef7",
+    "cfee2b20d770d529"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 4.5s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "5e467b0f9c8e1f89",
+    "89f58be7f8fcb5aa",
+    "f0af472badfced92",
+    "7a1ca3c0f40f6dcd",
+    "ea15114e28ee4ba0",
+    "2c4c16ca2d351498"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "c99bcfbc195bca10",
+    "21b5c7e6d5dd045b",
+    "4fd50314c386c6ef",
+    "4f146845a2bd0889"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 1.69s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "a86cb1360e1bb2e3",
+    "614ea9722ce8b130",
+    "9a6aa46d286897f7",
+    "002955a8f963716a",
+    "d46d2d69534fda4d",
+    "a4ae262be224a27b",
+    "977f723b19de14f1"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "c99bcfbc195bca10",
+    "21b5c7e6d5dd045b",
+    "44047a3ca23aadd1",
+    "57d5b05772ff6dc4",
+    "6cc22a81271f3207"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "pretend 1.69s",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "7229a2774cd22ad1",
+    "426a3f64b1ae214b",
+    "14725a73e73406b3",
+    "2eb1a280ad8a84a4",
+    "1d13a67258f4e158",
+    "c80d47c8084190ee",
+    "3e8562785cf3df60"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "wait 2.25s",
     "interact",
     "goto kev_hoodie",
     "interact",
     "goto coat_rack pretend",
     "interact",
-    "goto kev_desk pretend",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "76d11dc2dadff004",
-    "fc80c8c99fc55da5",
-    "179b10e3568d09b3",
-    "f45f5993c8a2b3ad",
-    "935c76641999f044",
-    "4c5351ea6ec1f77d",
-    "a8d99da93ec46ff7",
-    "d914b9d4acb6b7dd",
-    "52f5cfafb63771ef",
-    "e859cf6362840b3d",
-    "5634108a691644e1",
-    "27d5ec7a958461da",
-    "58cb49f30d41cfd1",
-    "d54d2956c3f527db",
-    "571f2004b270fa3c",
-    "c1116687706425e7"
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "ddad720485caade0",
+    "f4b2038f3843a87a",
+    "d284cf5560667430",
+    "02f30d3fff79fed9",
+    "ea9b09fe20aee4ec",
+    "eb035af1bfe060d3",
+    "90d658297cc0922a",
+    "5e841843aac328ca"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "6254f637c22412dd",
+    "3049c75676a548c5",
+    "d4fd30c0997d110c",
+    "3cbae7de443339e2",
+    "0b2b4d4875203018",
+    "267e4891d4e1bb69"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.54s",
+    "goto kev_hoodie pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "c59de3da97bfa4f5",
+    "92153554c7a29dd6",
+    "537039560d2ede85",
+    "47d9595b0cd3dfe0",
+    "3e0ee3dec1feffc9",
+    "119dc0c97ec0e121",
+    "d75e00d5dc293a2e",
+    "f8bb710ecca60010",
+    "e344f42501e76aa8"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "6254f637c22412dd",
+    "3049c75676a548c5",
+    "e9fe13a7bc695295",
+    "e9aa6eb872e09f92",
+    "463d662a115c5d13",
+    "afe8bc7926f5cdd1"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 5s",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "pretend 2s",
+    "goto boss_pc pretend",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "f56d12a5a142bcc6",
+    "ce025f33c9bffbf0",
+    "70f03bc5b787a6dd",
+    "143a3d907c810308",
+    "96fab877e4d491fe",
+    "3eea5329d3857af6",
+    "51ca10d43f2692d1",
+    "be5656456d113c94",
+    "51070ee803220c6a",
+    "aef1ae86abd37b5e",
+    "8aa44057939d9795",
+    "8d5cfd75812cf7c7",
+    "4028e5702da0d906",
+    "9d7208b2b1424458"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "6254f637c22412dd",
+    "3049c75676a548c5",
+    "d4fd30c0997d110c",
+    "3cbae7de443339e2",
+    "c458cde31723aeba",
+    "f09a34a70a4c76da",
+    "cff592a235943c71"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "sit pretend",
+    "wait until 3:45"
+   ],
+   "summary": "win hoodie",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "64cba1b0ecf48363",
+    "3b79b1a05adf19cd",
+    "2d931856ffd9fdf6",
+    "d2d30d817b1b45e8",
+    "480503eb7283fa1a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "pretend 1s",
+    "goto boss_pc pretend",
+    "interact",
+    "goto kev_hoodie pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "afeb7dd392063cbb",
+    "6ebf8121ea76752b",
+    "d4099df7b6169ff2",
+    "4ed4974cc447acfd",
+    "9d55ae93bd5e789b",
+    "68f88c29676a81dc",
+    "990301d98dc8b03b",
+    "6c4a18a807d4ac9f",
+    "4e06ca7b9b83effb",
+    "eb38ef81c232d12d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto boss_pc pretend",
+    "wait 1.69s",
+    "goto kev_hoodie pretend",
+    "interact",
+    "interact",
+    "goto boss_pc pretend",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "23a80b921a4e518b",
+    "91c5822af4738183",
+    "3305381d10a1b508",
+    "37918f024ee1339c",
+    "852e11945d62ad22",
+    "645f25d57bdef5ba",
+    "e07821abfdfbbd0f",
+    "7a56a613f6ec280e",
+    "3ae99c942b4b9d18",
+    "5f1f97eee44166fe",
+    "7f369f072b412bd8",
+    "833b8264a436b366",
+    "1bc2d583d0e8246c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 1.69s",
+    "goto boss_pc pretend",
+    "goto kev_hoodie pretend",
+    "wait until 3:42",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_pc pretend",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "23a80b921a4e518b",
+    "91c5822af4738183",
+    "f84f52c8453fc9bf",
+    "3305381d10a1b508",
+    "2939d26608ca3770",
+    "9cc647fb8feca2ee",
+    "b62ddd128c697087",
+    "a77058099af1cffb",
+    "a34738ba95a7ba76",
+    "5bd362efed26caad",
+    "513796592c159b04",
+    "22623d693242f20b",
+    "59836f4a8b9a8f03"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "win jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "8708e3e9e1393db4",
+    "25fb1ecb8fb4c213"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "blamed jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "0a80a7d18d2e22a1",
+    "3b7ea4755fd0377b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "a91e35cc69595855",
+    "b1337c836fbd345d",
+    "4916c59b9f1308aa",
+    "5226d244c7612e73"
+   ]
+  },
+  {
+   "cmds": [
+    "goto kev_desk",
+    "goto boss_pc pretend",
+    "wait 1.69s",
+    "goto kev_hoodie pretend",
+    "interact",
+    "interact",
+    "goto boss_pc pretend",
+    "goto lin_desk",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "23a80b921a4e518b",
+    "91c5822af4738183",
+    "3305381d10a1b508",
+    "37918f024ee1339c",
+    "852e11945d62ad22",
+    "645f25d57bdef5ba",
+    "e07821abfdfbbd0f",
+    "1e8766e3d1bf5adf",
+    "528cbd2caa3247af",
+    "702051887b022e68",
+    "0e2935d53920fabe",
+    "2263644e1ab19ba0"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "blamed jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "999c2b9e903ea94e",
+    "d0617dcc75a0e642",
+    "4b500f038ca1d018",
+    "d4ee0d38f1dc52dd",
+    "282b6c30fbb54024"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto coat_rack",
+    "wait until 3:45"
+   ],
+   "summary": "win jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "999c2b9e903ea94e",
+    "d0617dcc75a0e642",
+    "4b500f038ca1d018",
+    "b8c1a96a988d67a6",
+    "cd36c8461c87f2f6",
+    "a5c280b84d880ee9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto restroom_door pretend",
+    "goto kev_desk pretend",
+    "interact",
+    "goto coat_rack",
+    "wait until 3:45"
+   ],
+   "summary": "blamed jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "1f17e86ad644cfcb",
+    "fdb0c2f7320f997d",
+    "3546625f5d231dfe",
+    "d92de622718d3eb0",
+    "09dd0905c094787a",
+    "1d1e72f0cff6f96f"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "cdf2f422d979edb9",
+    "78e6a99dc1752c28",
+    "a65cd80452cff2a6",
+    "cce30d565cd505f7",
+    "24f83f1786357b43",
+    "658f9f80d52de4ae",
+    "b9e853badf938e96"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "999c2b9e903ea94e",
+    "d0617dcc75a0e642",
+    "4b500f038ca1d018",
+    "46256c7297be192e",
+    "0e56c3bac019e395",
+    "9410cefd8f5d4a56"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "sit pretend",
+    "wait until 3:45"
+   ],
+   "summary": "win jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "8a9971f3531041e0",
+    "e1865a025f35cb51",
+    "bc0e460210334b70"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto kev_desk",
+    "wait until 3:41",
+    "interact",
+    "goto boss_pc pretend",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "2b7fa9611abc0183",
+    "a8e83d9ba9a510e7",
+    "6a53f164bf20cd56",
+    "2e1f18825c397484",
+    "f0fad3de752a848b",
+    "cc469bc24b453f6c",
+    "eb748dbd3d00d8e5",
+    "16f3e1715c36f6a8",
+    "2c867382b72d65bf",
+    "67ade4cf052b2106"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto kev_hoodie pretend",
+    "sit pretend",
+    "pretend until 3:45"
+   ],
+   "summary": "win jacket",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "b8e1e8e044d4af58",
+    "527ded07af38089f",
+    "db0d5188417a9626",
+    "f60426ea3f4db886"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:16",
+    "goto coat_rack pretend",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "goto kev_desk pretend",
+    "interact",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "goto coat_rack pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "f3ef543bc8132edb",
+    "f6406831dd8a09f5",
+    "282d27e04ec29c3d",
+    "e2e2be540abf852e",
+    "b42e61eb165a8a53",
+    "3ea8f80cdb911282",
+    "d1d69c583a468dc5",
+    "4d7ddb1ed9b72e15",
+    "f9d3281a0097f18b",
+    "673b96d54e3f60b8",
+    "f8518ff626391290",
+    "0be9eb21a0e12492",
+    "4d67856f5b434c5a",
+    "617f3016579a4e54",
+    "546c38cd2f92d087",
+    "48d3d61b0e02feaf"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "6254f637c22412dd",
+    "3049c75676a548c5",
+    "e9fe13a7bc695295",
+    "e9aa6eb872e09f92",
+    "eb179ba77b6e0852",
+    "5a80770bf0759e85",
+    "23ddcb46ed8a285e"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:31",
+    "goto kev_desk",
+    "interact",
+    "goto boss_pc pretend",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "goto kev_hoodie",
+    "interact",
+    "goto coat_rack",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "2da26abfb3be459f",
+    "68c7ef652a547c38",
+    "7a1c49c3558d4c1a",
+    "2a5b2407005f910a",
+    "f00de88ffae248df",
+    "e4e2539abebd5321",
+    "de8b9a4ffb0f9db6",
+    "6254f637c22412dd",
+    "3049c75676a548c5",
+    "e9fe13a7bc695295",
+    "e9aa6eb872e09f92",
+    "eb179ba77b6e0852",
+    "cb0af8b989103e91",
+    "463d662a115c5d13",
+    "afe8bc7926f5cdd1"
    ]
   },
   {
@@ -1888,13 +1876,13 @@
    ],
    "summary": "fail",
    "digests": [
-    "cd920a749e409ddd",
-    "c3f7d5f381843492",
-    "89d7bad6581ab10b",
-    "7383757349cf47a8",
-    "9c848a94f7730c3a",
-    "a8ed22f4288d3b00",
-    "8007bd5b26f54ef3"
+    "ae17195671b1b41c",
+    "4b8df7542abd7dc3",
+    "353c607201ca17f1",
+    "2fc504e52e8d6bdc",
+    "70d19fea30f7a6e0",
+    "9a76b208940fc5da",
+    "df615a8937569f31"
    ]
   },
   {
@@ -1906,11 +1894,11 @@
    ],
    "summary": "caught",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "65f039b4256b1450",
-    "f91026ca9544d0a3",
-    "81363dbe430a4548"
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "41581813fd34fcd1",
+    "9046e252377722a3",
+    "233b2313f0bb0d0a"
    ]
   },
   {
@@ -1923,12 +1911,12 @@
    ],
    "summary": "fail",
    "digests": [
-    "2dd0a848885be5cc",
-    "4ef33fff12be88ed",
-    "13b8d157ddcecec9",
-    "b44247ea0f42d865",
-    "64d243abfadbad31",
-    "dc7ff9e7d5330414"
+    "1fba328c9ffe36d1",
+    "e051e2b01406ae77",
+    "4f5f59e10b6f912e",
+    "bf8fdfd9c0166295",
+    "084a4cca19fef77c",
+    "b6a9c20347a3c566"
    ]
   },
   {
@@ -1947,18 +1935,18 @@
    ],
    "summary": "fail",
    "digests": [
-    "023206e413a4364c",
-    "e4d6ca4f37a5ff88",
-    "66a9b3d1ce536913",
-    "4715e947553eb34c",
-    "267972aedf48160d",
-    "66eb7fa385f17e97",
-    "d722a6c63d8ace9b",
-    "32d7b7f75c055765",
-    "6e82da36585c01f6",
-    "961cc301daa6efdd",
-    "3904e6f2965a464d",
-    "5c9ce033111940e2"
+    "c0e39347855edc71",
+    "a9953ef24fa194fa",
+    "dad66d424f14bdb9",
+    "8c220e1cb1ef63c8",
+    "94c04b3baf366bdb",
+    "70a048bde309c70b",
+    "3349dc27cf65dad7",
+    "ec2dc63763014abb",
+    "4bf33f3429dccb12",
+    "9035cc30730b26f0",
+    "acce1d34ddaea66c",
+    "8434fef23724cadd"
    ]
   }
  ]
