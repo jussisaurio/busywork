@@ -242,9 +242,9 @@ time. Each works in its own worktree.
 
 1. (done, 2a22323) Particle seed uses `hash(ttl)`, not the array index (fixes colour and rotation flicker). Render golden only.
 2. (done, 6108405) Particle drag scaled by dt (`0.92 ** (dt*60)`). The same at 60 Hz. Render golden only.
-3. Cone "notice" glow is drawn from a read-only `game.watch[id]` that rules publish every tick, so it matches
+3. (done, 458ecf3) Cone "notice" glow is drawn from a read-only `game.watch[id]` that rules publish every tick, so it matches
    what the rules react to. Render golden only.
-4. `assignWork` cancel reason for the idle path: `'idle'`, not `'witnessed'`. Both goldens.
+4. (done, ae16836) `assignWork` cancel reason for the idle path: `'idle'`, not `'witnessed'`. Both goldens.
 
 ## Left out on purpose
 
