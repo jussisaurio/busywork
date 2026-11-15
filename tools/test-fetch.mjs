@@ -79,15 +79,26 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
   ok(!ev('parcel:found'), 'nobody picked it up');
 }
 
-// 4. Nobody fetches without level.fetches: it lies there and the day ends in a shrug (hidden).
+// 4. No level fetch, but Lin owns the parcel: an owner who sees his thing on the floor picks it up (owner.reclaim).
 {
-  const { h, g, ev } = play(variant(null), DROP_IN_CORRIDOR);
+  const { h, ev } = play(variant(null), DROP_IN_CORRIDOR);
   finish(h);
-  ok(!ev('parcel:spotted') && !ev('parcel:found'), 'no fetch events');
+  const r = ev('item:reclaimed');
+  ok(r?.payload.by === 'lin' && r.payload.type === 'parcel', `the owner picks it up (${r?.payload.by})`);
+  ok(ev('parcel:snatched')?.payload.by === 'lin', "through her own owner.reclaim (parcel:snatched)");
+  ok(!ev('parcel:spotted') && !ev('parcel:found'), 'none of the level fetch events');
+}
+
+// 5. Nobody fetches without level.fetches or an owner: it lies there and the day ends in a shrug (hidden).
+{
+  const level = { ...variant(null), items: { ...MON.items, parcel: { ...MON.items.parcel, owner: undefined } } };
+  const { h, g, ev } = play(level, DROP_IN_CORRIDOR);
+  finish(h);
+  ok(!ev('parcel:spotted') && !ev('parcel:found') && !ev('item:reclaimed'), 'no fetch events');
   ok(g.outcome?.result === 'win' && g.outcome.routes.includes('hidden'), `win, hidden (${g.outcome?.result} ${g.outcome?.routes})`);
 }
 
-// 5. The validator rejects a bad fetch.
+// 6. The validator rejects a bad fetch.
 {
   const bad = (patch) => {
     try { validateLevel({ ...MON, fetches: [{ ...MON.fetches[0], ...patch }] }, 'discreet-packaging'); return null; } catch (e) { return e.message; }

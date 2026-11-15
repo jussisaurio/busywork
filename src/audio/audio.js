@@ -233,7 +233,7 @@ export function createAudio(opts = {}) {
     speak(key, {
       voiceId: vid,
       icons,
-      kind: alert ? 'alert' : 'speech',
+      kind: alert ? 'alert' : p.kind === 'realize' ? 'realize' : 'speech',
       pan: pl.pan,
       gain: (alert ? 0.75 : 1) * pl.gain,
       muffle: pl.muffle,

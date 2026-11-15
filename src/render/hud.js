@@ -29,10 +29,10 @@ export function drawHud(ctx, game, t, mem) {
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
-  // Once the day is decided the clock stops at the outcome's minute: it reads what the end card says, though the
-  // sim's clock runs on through the end beat.
-  const o = game.outcome;
-  drawClock(ctx, o ? Math.min(fin(clock.minute), fin(o.minute)) : fin(clock.minute), t, game.level.day);
+  // Once the day is decided (or you are caught) the clock stops at that minute: it reads what the end card says,
+  // though the sim's clock runs on through the end beat.
+  const stop = game.outcome?.minute ?? game.caught?.minute;
+  drawClock(ctx, stop !== undefined ? Math.min(fin(clock.minute), fin(stop)) : fin(clock.minute), t, game.level.day);
   drawGoal(ctx, game.level.title?.badge ?? NO_BADGE);
   drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
@@ -43,8 +43,10 @@ export function drawHud(ctx, game, t, mem) {
   drawStatus(ctx, game, clock, t);
   if (game.phase === 'day') {
     drawPauseButton(ctx, !!game.paused);
-    if (game.paused) drawPaused(ctx, t); // under the legend, so "Esc pause" stays readable
-    drawKeyLegend(ctx, game);
+    if (game.paused) { // the only words in play: the controls, on the pause screen (the map stays wordless)
+      drawPaused(ctx, t);
+      drawKeyLegend(ctx, game);
+    }
   }
 }
 
@@ -127,7 +129,7 @@ export function drawLegendRow(ctx, items, cx, cy, o, pressed = null, lead = 0) {
   return x0;
 }
 
-// Centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
+// On the pause screen, centred on the level's decor.legendAt (map tiles); no legendAt, no legend.
 // Held keys show pushed down (toggles don't: a lit V by default reads as a hint).
 function drawKeyLegend(ctx, game) {
   const at = game.level.decor && game.level.decor.legendAt;

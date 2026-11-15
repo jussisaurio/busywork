@@ -35,13 +35,15 @@ const GENERIC = {
 };
 
 // Eating an edible item you hold (hold E): the boss reads it as slacking, its owner (if any) as theft, and what
-// it leaves on you (edible.leaves, a config.js MARKS name, or null) stays for the loop as player.smeared.
+// it leaves on you (edible.leaves, a config.js MARKS name, or null) stays for the loop as player.smeared. Its face
+// (edible.icon, default 😋) and its burst (edible.burst, default 'crumbs') say what kind of thing went down.
 // preview: the item lifted toward the mouth.
 function eatRow(type, item) {
   const owner = item.owner?.id ?? null;
   const leaves = item.edible?.leaves ?? null;
+  const face = item.edible?.icon ?? '😋'; // a letter isn't tasty: the level says what eating it looks like
   return {
-    on: 'self', icon: '😋', text: `eat the ${type}`, duration: EAT_TIME, sneaky: !!owner, owner, idle: true, saw: item.icon,
+    on: 'self', icon: face, text: `eat the ${type}`, duration: EAT_TIME, sneaky: !!owner, owner, idle: true, saw: item.icon,
     hold: true, preview: 'lift',
     can: (p) => p.held === type,
     done(game) {
@@ -49,8 +51,8 @@ function eatRow(type, item) {
       p.held = null;
       if (leaves) p.smeared = leaves; // the evidence is now on you
       if (item.place) game.world[item.place] = 'eaten';
-      burst(game, 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
-      say(game, 'player', ['😋'], { kind: 'thought', ttl: 1.5 });
+      burst(game, item.edible?.burst ?? 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
+      say(game, 'player', [face], { kind: 'thought', ttl: 1.5 });
       game.events.emit(`${type}:eaten`, {});
     },
   };

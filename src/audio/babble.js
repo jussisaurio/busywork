@@ -88,10 +88,12 @@ export function planBabble(voiceId, icons, kind = 'speech', table = VOICES) {
   const angry = RE_ANGRY.test(text);
   const excl = RE_EXCL.test(text);
   const alert = kind === 'alert';
+  const oh = kind === 'realize'; // "oh!": one rising syllable
 
   // Words: 2-3 syllables per icon (alerts: a single 1-2 syllable word).
   let words = [];
-  if (alert) words.push(Math.random() < 0.5 ? 1 : 2);
+  if (oh) words.push(1);
+  else if (alert) words.push(Math.random() < 0.5 ? 1 : 2);
   else for (let i = 0; i < Math.max(1, list.length); i++) words.push(Math.random() < 0.5 ? 2 : 3);
   let total = words.reduce((a, b) => a + b, 0);
   if (total > MAX_SYL) {
@@ -115,7 +117,7 @@ export function planBabble(voiceId, icons, kind = 'speech', table = VOICES) {
       if (excl && last) f *= 1.15;
       if (alert) f *= 1.08;
       let glide = rand(0.94, 1.04);
-      if (last) glide = q ? 1.35 : angry ? 0.8 : excl ? 0.85 : 0.9;
+      if (last) glide = oh ? 1.3 : q ? 1.35 : angry ? 0.8 : excl ? 0.85 : 0.9;
       const dur =
         rand(V.syl[0], V.syl[1]) * (angry ? 0.8 : 1) * (last ? (q ? 1.5 : 1.25) : 1) * (alert ? 0.9 : 1);
       const vowel = pick(V.vowels);

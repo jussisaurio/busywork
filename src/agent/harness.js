@@ -482,7 +482,7 @@ export function observe(game, { map = true, debug = false } = {}) {
     if (debug) bits.push(`[debug: ${n.label ?? ''} override=${n.override}]`);
     out.push(`  ${n.id.padEnd(4)} ${bits.join(', ')}`);
   }
-  const bubbles = game.fx.bubbles.map((b) => `${typeof b.owner === 'string' ? b.owner : 'sign'}: ${b.kind === 'thought' ? '💭' : '💬'} ${b.icons.join('')}`);
+  const bubbles = game.fx.bubbles.map((b) => `${speaker(b.owner, b.kind, b.voice, H.names, 'sign')}: ${b.kind === 'thought' ? '💭' : '💬'} ${b.icons.join('')}`);
   if (bubbles.length) out.push(`BUBBLES: ${bubbles.join(' | ')}`);
 
   const items = game.world.items;
@@ -519,6 +519,13 @@ function renderMap(game) {
   ].join('\n');
 }
 
+// Who a bubble is from: the owner id; a point's bubble by its voice (the level's harness name for it), else a sign.
+function speaker(owner, kind, voice, names = {}, sign) {
+  if (typeof owner === 'string') return owner;
+  if (kind !== 'sign' && voice) return names[voice] ?? voice;
+  return sign;
+}
+
 // One line per event a human would notice. level: whose words (default: the registry's default level);
 // its harness.describe() speaks for the level's own events first.
 export function describeEvents(events, { verbose = false, level = defaultLevel } = {}) {
@@ -534,7 +541,8 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
     let s = H.describe?.(e, memo);
     if (s === undefined) switch (e.name) {
       case 'say': {
-        const who = typeof p.owner === 'string' ? NAME[p.owner] ?? p.owner : 'a sign';
+        const voice = typeof p.owner === 'string' || p.voice === `${p.owner?.x},${p.owner?.y}` ? null : p.voice;
+        const who = typeof p.owner === 'string' ? NAME[p.owner] ?? p.owner : speaker(p.owner, p.kind, voice, H.names, 'a sign');
         if (p.kind === 'sign' && typeof p.owner === 'string') { s = `a sign over ${who} says ${p.icons.join('')}`; break; } // an inspection's ✔️
         const you = p.owner === 'player';
         s = `${who} ${p.kind === 'thought' ? (you ? 'think' : 'thinks') : you ? 'say' : 'says'} ${p.icons.join('')}`;

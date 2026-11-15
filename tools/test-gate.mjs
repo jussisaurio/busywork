@@ -127,5 +127,13 @@ ok(d.result !== 'win' && d.used.length === 0, 'level 1: the same plan without pr
 d = evaluate({ steps: [{ k: 'until', m: 80, busy: false }, { k: 'until', m: 1, busy: true }], endBusy: false }, levelData('meeting'));
 ok(d.used.length === 0, 'level 1: a pretend wait skipped because its time had passed does not count');
 
+// contraband: a coworker with the boss's keycard in his view is flagged; the plain day is clean.
+{
+  const { contrabandSeen, contrabandCheck } = await import('./lib/contraband.mjs');
+  ok(contrabandSeen('meeting', [[]]).length === 0 && contrabandCheck([]).ok, 'contraband: level 1 do-nothing day is clean');
+  const f = contrabandSeen('meeting', [[]], (g) => { for (const n of g.npcs) if (n.id !== 'boss') n.carry = 'keycard'; });
+  ok(f.length > 0 && f.every((x) => x.item === 'keycard') && !contrabandCheck(f).ok, `contraband: coworkers carrying his keycard in view are flagged (${f.map((x) => x.npc).join(',')})`);
+}
+
 console.log(fails ? `${fails} FAILED` : 'all passed');
 process.exit(fails ? 1 : 0);

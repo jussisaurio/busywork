@@ -271,7 +271,7 @@ export function sadTrombone(E, o = {}) {
   s.done();
 }
 
-// 📄📄 Work assigned: heavy paper-stack thud, then the sad trombone.
+// 📄👉 Work assigned: heavy paper-stack thud, then the sad trombone.
 export function workAssigned(E, o = {}) {
   const t = T(E, o), g = G(o);
   tone(E, { t, f: 85, f2: 38, dur: 0.3, attack: 0.002, gain: 0.3 * g });
