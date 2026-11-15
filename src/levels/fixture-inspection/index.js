@@ -69,7 +69,6 @@ export default {
   routes: [{ id: 'audit', icon: '💻', achieved: (w) => w.audited }],
   outcomeOrder: ['audit'],
   initialWorld: () => ({ laptop: 'player_desk', audited: false, items: [itemOn(SPOTS, 'player_desk', 'laptop')] }),
-  itemIcons: { laptop: '💻' },
   harness: {
     mission: 'MISSION: 3:00 PM meeting. Inventory day: the auditor counts two laptops. There is one.',
     landmarks: {

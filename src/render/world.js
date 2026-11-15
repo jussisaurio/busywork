@@ -5,6 +5,7 @@ import {
   T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, clamp, clockHands, drawScreen,
 } from './util.js';
 import { C } from './palette.js';
+import { itemIcon } from './characters.js';
 import { WORK_PENALTY_MIN } from '../config.js';
 
 const FRONT = 14; // px of visible wall front face (3/4 depth)
@@ -62,7 +63,6 @@ const FACE = { N: -Math.PI / 2, S: Math.PI / 2, E: 0, W: Math.PI };
 // Set dressing comes from the level (level.decor, e.g. src/levels/meeting/decor.js). Every field is optional.
 const NO_DECOR = {};
 const NO_PADS = {};
-const NO_ICONS = {};
 const NONE = [];
 const decorOf = (level) => level.decor || NO_DECOR;
 // A workstation whose owner has no decor.desks entry.
@@ -1088,14 +1088,13 @@ export function drawWorldDynamic(ctx, game, t) {
 
   // Dropped items on the floor.
   const items = world.items || [];
-  const icons = game.level.itemIcons || NO_ICONS;
   for (let i = 0; i < items.length; i++) {
     const it = items[i];
     const x = it.x * T;
     const y = it.y * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     fillEllipse(ctx, x, y + 6, 7, 2.5, 'rgba(0,0,0,0.22)');
-    emoji(ctx, icons[it.type] || '❔', x, y + Math.sin(t * 3 + i) * 1, 14);
+    emoji(ctx, itemIcon(game.level.items, it.type), x, y + Math.sin(t * 3 + i) * 1, 14);
     if ((t + i * 0.7) % 2.4 < 0.25) sparkle(ctx, x + 6, y - 6, 3.5, '#fff');
   }
 

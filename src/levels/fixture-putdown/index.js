@@ -87,7 +87,6 @@ export default {
   routes: [{ id: 'box', icon: '📝', achieved: (w) => w.cancelled }],
   outcomeOrder: ['box'],
   initialWorld: () => ({ note: 'pad', cancelled: false, items: [] }),
-  itemIcons: { note: '📝' },
   harness: {
     mission: 'MISSION: 3:00 PM meeting. The boss does whatever the suggestion box says.',
     landmarks: {

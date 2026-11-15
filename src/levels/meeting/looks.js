@@ -62,6 +62,3 @@ export const POSES = {
 // the evidence, contraband or his own thing in your hands, published by play/rules.js).
 //   alert   overrides during which he's on alert
 export const CONES = { alert: ['alerted', 'hunting'] };
-
-// level.itemIcons: the emoji for each item type (held, in hands, dropped on the floor, in the HUD).
-export const ITEM_ICONS = { coffee: '☕', keycard: '🪪', sandwich: '🥪' };

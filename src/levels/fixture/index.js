@@ -170,7 +170,6 @@ export default {
   title: TITLE,
   decor: DECOR,
   looks: LOOKS,
-  itemIcons: { cake: '🎂' },
   endScenes: END_SCENES,
   voices: VOICES,
 };

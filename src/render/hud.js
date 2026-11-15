@@ -31,7 +31,7 @@ export function drawHud(ctx, game, t, mem) {
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
   drawClock(ctx, fin(clock.minute), t, game.level.day);
   drawGoal(ctx);
-  drawHeld(ctx, game.level.itemIcons, game.player && game.player.held);
+  drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
   panel(ctx, 342, 6, 160, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
@@ -187,7 +187,7 @@ function drawGoal(ctx) {
   emoji(ctx, '❌', 258, 36, 12);
 }
 
-function drawHeld(ctx, icons, held) {
+function drawHeld(ctx, items, held) {
   panel(ctx, 286, 6, 44, 44);
   ctx.strokeStyle = 'rgba(243,230,200,0.22)';
   ctx.lineWidth = 1.5;
@@ -195,7 +195,7 @@ function drawHeld(ctx, icons, held) {
   rrect(ctx, 292, 12, 32, 32, 6);
   ctx.stroke();
   ctx.setLineDash([]);
-  const ic = itemIcon(icons, held);
+  const ic = itemIcon(items, held);
   if (ic) emoji(ctx, ic, 308, 29, 24);
   else {
     ctx.globalAlpha = 0.18;
