@@ -5,7 +5,7 @@ const name = (id) => NAME[id] ?? id;
 
 const COPIER = { ok: 'working', jammed: 'jammed, beeping ⚠️', fixing: 'Kev is fixing it, still beeping 🔧', fixed: 'working again' };
 const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is on it 📞', done: 'quiet' };
-const NOISE = { elevatorDing: 'DING! the microwave', machineBeep: 'the copier beeps', jingle: "the boss's phone rings" };
+const NOISE = { elevatorDing: 'DING! the microwave', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
 
 export default {
   mission: "MISSION: 5:00 PM. Someone works this Saturday. Make sure it isn't you.",
@@ -27,7 +27,7 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday roster (whiteboard),",
-    '     M microwave, C counter, F fridge, P your desk (with a phone), i item,',
+    '     M microwave, C counter, F fridge, P your desk, Q your desk phone, B the boss\'s phone (side table), i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
@@ -86,9 +86,9 @@ export default {
       case 'kev:alerted': return 'Kev heard the copier 🖨️❗';
       case 'copier:fixing': return 'Kev is fixing the copier';
       case 'copier:fixed': return 'the copier is fixed (the beeping stops)';
-      case 'phone:ringing': return "you rang the boss's desk phone";
+      case 'phone:ringing': return "you rang the boss's phone";
       case 'boss:phone': return 'the boss jumps for his phone ☎️❗';
-      case 'phone:answered': return 'the boss takes the call at his window, his back to the office 📞';
+      case 'phone:answered': return 'the boss takes the call at his phone in the corner, his back to the office 📞';
       case 'phone:hungUp': return 'the boss hangs up 📞🤨';
       case 'roster:changed': return `you wrote ${name(p.to) === 'you' ? 'yourself' : name(p.to)} into Saturday's slot on the roster ✏️`;
       default: return undefined;

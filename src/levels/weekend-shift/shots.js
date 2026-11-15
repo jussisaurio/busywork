@@ -1,7 +1,7 @@
 // Each shot: harness commands from the start of the day, and what the picture must tell a first-time player.
 // (COLD-READ.md: the pictures reader sees these without the intents.) One whiteboard decides who works Saturday;
 // you change the face on it while every head is turned: at the microwave's DING, or while the boss is on the phone
-// at his window and Lin is heating her fish. The copier is a trap: it beeps from behind the board.
+// in the corner of his office and Lin is heating her fish. The copier is a trap: it beeps from behind the board.
 const DING = ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13'];
 const BOSS = [...DING, 'interact']; // the boss's face written in
 const KEV = [...DING, 'interact', 'interact']; // written over again: Kev's
@@ -10,11 +10,11 @@ const REACT = ['pretend until 4:58', 'wait 2.9s']; // ... then at whoever's face
 
 export default [
   // The office, and the things you can use.
-  { name: 'start', cmds: [], intent: "4:00. You at your desk, bottom left, a phone on it; the boss in his glass office at the top; Lin and Kev at their desks; a whiteboard on a stand mid-room with your face in a red box under Saturday." },
+  { name: 'start', cmds: [], intent: "4:00. You at your desk, bottom left, a phone on it; the boss in his glass office at the top, a phone on a little table in its top-right corner; Lin and Kev at their desks; a whiteboard on a stand mid-room with your face in a red box under Saturday." },
   { name: 'board', cmds: ['goto roster pretend'], intent: "At the whiteboard (seven day boxes along the top, Saturday's red, a red line down to the box with your face): a pencil prompt; you could write on it." },
   { name: 'microwave', cmds: ['goto microwave pretend'], intent: 'The microwave on the kitchen counter, east wall, dark and empty. You could heat noodles in it.' },
   { name: 'copier', cmds: ['goto copier pretend'], intent: 'The photocopier in the corner behind the board, working. You could jam it.' },
-  { name: 'phone', cmds: ['wait 0.5s'], intent: "Your desk phone has a line to the boss's phone, on his desk: you could ring him." },
+  { name: 'phone', cmds: ['wait 0.5s'], intent: "A phone prompt over the phone on your desk: you could ring the boss's phone, on the little table in the corner of his office." },
 
   // The DING: be at the board when it goes off.
   { name: 'noodles-cooking', cmds: ['goto microwave pretend', 'interact', 'wait 2s'], intent: 'Your noodles turn in the lit microwave; its display counts down.' },
@@ -23,11 +23,11 @@ export default [
   { name: 'written-boss', cmds: [...BOSS, 'wait 1.2s'], intent: "While they still look at the microwave, the board's Saturday box now shows the boss's face, freshly written; you whistle." },
   { name: 'written-kev', cmds: [...KEV, 'wait 1.2s'], intent: "Written over again: now the Saturday box shows Kev's face." },
 
-  // The phone: the boss at his window while Lin is at the microwave.
-  { name: 'phone-ring', cmds: ['pretend 0.5s', 'interact', 'wait 1s'], intent: "Your phone rings the boss's: a dashed line from your desk to his, his phone shaking, the boss startled." },
-  { name: 'lin-watches', cmds: ['pretend 0.5s', 'interact', 'goto board pretend'], intent: "The boss is at his window on the phone, but Lin, at her desk, faces the board: her cone covers you there." },
+  // The phone: the boss on the phone in his corner while Lin is at the microwave.
+  { name: 'phone-ring', cmds: ['pretend 0.5s', 'interact', 'wait 1s'], intent: "Your phone rings the boss's: a dashed line from your desk to the phone in his corner, shaking, the boss startled at his desk." },
+  { name: 'lin-watches', cmds: ['pretend 0.5s', 'interact', 'goto board pretend'], intent: "The boss is in his corner on the phone, but Lin, at her desk, faces the board: her cone covers you there." },
   { name: 'lin-fish', cmds: ['pretend until 4:35'], intent: "4:35: Lin at the microwave with her back to the room, a fish turning inside; she's been there since 4:30." },
-  { name: 'phone-window', cmds: ['pretend until 4:31', 'interact', 'wait 5s'], intent: 'The boss takes the call at his window, his back to the office, while Lin is at the microwave: no cone touches the board.' },
+  { name: 'phone-window', cmds: ['pretend until 4:31', 'interact', 'wait 6s'], intent: 'The boss takes the call standing at the phone in his corner, facing the window, his back to the office: the handset is off the base, at his ear on a coiled cord. Lin is at the microwave: no cone touches the board.' },
   { name: 'written-phone', cmds: ['pretend until 4:31', 'interact', 'goto board pretend', 'interact', 'wait 1.2s'], intent: "With nobody looking, the board's Saturday box now shows the boss's face." },
 
   // The copier: a trap.
