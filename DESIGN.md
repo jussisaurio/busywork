@@ -140,7 +140,7 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
   authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
-  slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle.
+  slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle. An owner who sees his thing on the floor walks over and picks it up.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
 - **Evidence.** Some acts leave a mark on you for the rest of the loop. One witness, at one moment, reads it as guilt,
   and pretending doesn't hide it.

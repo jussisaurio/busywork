@@ -271,7 +271,9 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     sees it on the floor (`<type>:recovered`). Needs a `place`.
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
     `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
-    (default: he carries it, `<type>:confiscated {by}`).
+    (default: he carries it, `<type>:confiscated {by}`). On the floor: if he sees it (while `when` holds) he walks
+    over and picks it up, an implicit fetch (`reclaim`, else he carries it; `item:reclaimed {by, type}`). A level
+    fetch naming that item and npc replaces it.
   - `bulky`: it fills your arms: no pretending (the busy button does nothing) while you hold it, so you can't
     hide it behind a folder or a phone call.
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
@@ -626,6 +628,7 @@ These are the engine's events. A level adds its own through data (`react.event`,
 | `<type>:eaten` | `{}` | interactions (an edible item) |
 | `<type>:recovered` | `{}` | rules (contraband pocketed off the floor) |
 | `<type>:confiscated` | `{by}` | rules / put down (an owner took it back, no `reclaim`) |
+| `item:reclaimed` | `{by, type}` | fetch (an owner picked his thing up off the floor) |
 | `inspect:start` | `{by}` | inspection |
 | `inspect:pass` / `inspect:fail` | `{by, index}` | inspection (check `index` judged on arrival) |
 | `inspect:done` | `{by, failed}` | inspection (`failed`: the ❌ check's index, or null) |
