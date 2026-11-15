@@ -55,7 +55,7 @@ export default {
     const bits = [];
     const w = game.world;
     if (game.level.darkness.torch.when(n, w)) bits.push('holding up a phone torch 📱');
-    if (n.id === 'boss' && w.bossAct === 'sigh') bits.push('looking at his tray and sighing 😮‍💨');
+    if (n.id === 'boss' && w.bossAct === 'sigh') bits.push('looking at his tray and sighing 😩');
     if (n.id === 'boss' && w.bossAct === 'drum') bits.push('drumming his fingers on his desk');
     if (n.id === 'boss' && w.bossAct === 'clock') bits.push('checking his desk clock');
     if (n.id === 'boss' && w.pullAt !== null && !w.trayRead) bits.push('dragging his tray over');
@@ -98,8 +98,8 @@ export default {
       case 'switch:starting': return 'the boss tries the unlabelled switches on the panel one by one: his office tubes blink';
       case 'switch:fixed': return "the boss finds his switch: his office light is back on 💡 (😠)";
       case 'coffee:rigged': return "you pour the water jug into the vent on the back of the coffee machine 💦. It's switched off, so nothing happens yet, and nothing shows from the front";
-      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😳), Kev glances up from his desk (❓), and the lights steady. It brews';
-      case 'coffee:shorted': return 'Lin switches on the coffee machine: the water inside it shorts it, sparks and smoke (😳), and a spark runs down the wiring toward the fuse box';
+      case 'coffee:flicker': return 'Lin switches on the coffee machine: the lights flicker (😨), Kev glances up from his desk (❓), and the lights steady. It brews';
+      case 'coffee:shorted': return 'Lin switches on the coffee machine: the water inside it shorts it, sparks and smoke (😨), and a spark runs down the wiring toward the fuse box';
       case 'fuse:tripped': return "the spark reaches the fuse box: its door flies open and the whole floor goes dark. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
       case 'kev:smoke': return 'Kev: ❓ He heads for the smoking coffee machine with his phone torch';
@@ -110,7 +110,7 @@ export default {
       case 'boss:sigh': return null;
       case 'boss:checksClock': return null;
       case 'boss:chime': return "the boss's desk clock chimes 3:39 🔔";
-      case 'boss:pullsTray': return 'the boss sighs 😮‍💨 and drags his tray over';
+      case 'boss:pullsTray': return 'the boss sighs 😩 and drags his tray over';
       case 'letter:taken': return 'you took your letter back ✉️';
       case 'letter:snatched': return null;
       case 'letter:eaten': return 'you chew up your resignation letter, gag 🤢 and spit it out: a soggy wad of pulp on the floor, nothing left to read';

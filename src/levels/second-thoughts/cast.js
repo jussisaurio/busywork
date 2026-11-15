@@ -53,7 +53,7 @@ export const CAST = [
 ];
 
 export const BEHAVIOURS = {
-  // Lin switches on the coffee machine (about 3:10). An old machine on an old fuse: the lights flicker, she 😳, Kev
+  // Lin switches on the coffee machine (about 3:10). An old machine on an old fuse: the lights flicker, she 😨, Kev
   // glances up from his desk (❓, he doesn't turn: nothing to see), and the fuse holds; it brews (index.js). If you
   // poured the jug into its back vent, its wet insides short it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js
   // tick). If the power is already out, nothing happens.
@@ -74,14 +74,14 @@ export const BEHAVIOURS = {
         burst(game, 'puff', 21.5, 1.4, 10, { speed: 0.6, ttl: 1.8 });
         shake(game, 0.12, 0.3);
         game.events.emit('coffee:shorted', {});
-        sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
+        sim.speak(game, npc, [{ say: ['😨'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
         return;
       }
       w.coffee = 'brewing';
       w.brewAt = game.clock.minute;
       w.flickerAt = game.loopTime;
       game.events.emit('coffee:flicker', {});
-      sim.speak(game, npc, [{ say: ['😳'], after: 0.3, ttl: 1.4 }]);
+      sim.speak(game, npc, [{ say: ['😨'], after: 0.3, ttl: 1.4 }]);
       const kev = game.npcs.find((n) => n.id === 'kev');
       if (kev?.active && !kev.override) sim.speak(game, kev, [{ say: ['❓'], kind: 'thought', after: 0.3, ttl: 1.3 }]);
     },
