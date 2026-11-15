@@ -79,7 +79,24 @@ const tablet = { tablet: { icon: '📱' } };
   eq(play(variant({ insp: { checks, sign: 'item' } }), STAY).signs, ['🖥️✔️', '🪑👤✔️', '💻❌'], "icon: wins over sign 'item'");
 }
 
-// 5. The validator knows the new fields.
+// 5. absent: true turns a check round: no such item there (no such person in the zone) passes.
+{
+  const empty = { ...INSP.checks[2], absent: true }; // Dave's desk: nothing on it
+  let r = play(variant({ insp: { sign: 'item', checks: [INSP.checks[0], INSP.checks[1], empty] } }), STAY);
+  eq(r.signs, ['💻✔️', '🧍✔️', '🚫💻✔️'], 'absent item: 🚫💻✔️ on an empty desk');
+  eq(r.insp, ['pass0', 'pass1', 'pass2', 'done'], 'absent item: passes');
+  const mine = { ...INSP.checks[0], absent: true }; // your desk: the laptop is on it
+  r = play(variant({ insp: { sign: 'item', checks: [mine] } }), STAY);
+  eq(r.signs, ['🚫💻❌'], 'absent item: 🚫💻❌ when it is there');
+  eq([r.insp, r.result], [['fail0', 'done0'], 'caught'], 'absent item: fails into caught');
+  const gone = { who: 'player', zone: 'room_a', from: 'check_mine', absent: true };
+  r = play(variant({ insp: { sign: 'item', checks: [INSP.checks[0], gone] } }), ['goto 6,11 pretend', 'pretend until 2:52']);
+  eq(r.signs, ['💻✔️', '🚫🧍✔️'], 'absent who: passes when you are out of the room');
+  r = play(variant({ insp: { checks: [INSP.checks[0], gone] } }), STAY);
+  eq(r.signs, ['✔️', '❌'], 'absent who: fails when you are in (mark-only)');
+}
+
+// 6. The validator knows the new fields.
 {
   const broken = (insp, re, what) => {
     let msg = '';
@@ -90,6 +107,7 @@ const tablet = { tablet: { icon: '📱' } };
   broken({ checks: [{ item: ['laptop', 'phone'], spot: 'dave_desk' }] }, /inspections\[0\]\.checks\[0\]\.item\[1\]: no item type 'phone'/, 'item list type');
   broken({ checks: [{ item: [], spot: 'dave_desk' }] }, /inspections\[0\]\.checks\[0\]\.item: empty/, 'empty item list');
   broken({ checks: [{ item: 'laptop', spot: 'dave_desk', icon: 7 }] }, /inspections\[0\]\.checks\[0\]\.icon: not an icon or a list of icons/, 'icon type');
+  broken({ checks: [{ item: 'laptop', spot: 'dave_desk', absent: 'yes' }] }, /inspections\[0\]\.checks\[0\]\.absent: not true or false/, 'absent type');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

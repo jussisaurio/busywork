@@ -9,13 +9,15 @@
 //   plan, label  the plan key prefix (`${plan}#${seq}`) and the debug label (`${label} i/n`: checks done)
 //   look      seconds he stands at each check (default 1)
 //   sign      what his signs show: 'mark' (default: ✔️ or ❌ alone) or 'item' (what he checked, then the mark:
-//             💻✔️ for an item, 💻❌ for a missing one, the person's icon for a who check)
+//             💻✔️ for an item, 💻❌ for a missing one, the person's icon for a who check; 🚫 first for an absent
+//             check: 🚫💻✔️)
 //   checks    in order, each one of:
 //               { item, spot, from? }  an item of type `item` lies on spot `spot` (put down, or itemOn() in
 //                                      initialWorld; putdown.js). `item` may be a list of types: any of them
 //                                      counts. He stands at `from` (default: the spot itself).
 //               { who, zone, from }    `who` ('player' or a cast id, active) is in zone `zone`. He stands at `from`.
 //             and optionally:
+//               absent: true           turned round: it passes when no such item lies there (who: she isn't there)
 //               icon                   what the sign shows before the mark (an icon or a list), whatever `sign` says
 //             On arrival: a sign over what he checked (the item's place, the person, or the zone if she isn't
 //             there), then he stands `look` s.
@@ -72,13 +74,13 @@ function inspect(game, c) {
   if (c.item !== undefined) {
     const types = typesOf(c);
     const item = game.world.items.find((i) => types.includes(i.type) && i.spot === c.spot);
-    return { ok: !!item, at: restOf(game.level.spots[c.spot]), found: item ? [item] : [] };
+    return { ok: !item === !!c.absent, at: restOf(game.level.spots[c.spot]), found: item ? [item] : [] };
   }
   const p = c.who === 'player' ? game.player : findNpc(game, c.who);
   const here = !!p && (c.who === 'player' || p.active) && inZone(game, c.zone, p.x, p.y);
-  if (here) return { ok: true, at: c.who, found: [] };
+  if (here) return { ok: !c.absent, at: c.who, found: [] };
   const z = game.level.zones[c.zone];
-  return { ok: false, at: { x: (z.x0 + z.x1) / 2, y: (z.y0 + z.y1) / 2 }, found: [] };
+  return { ok: !!c.absent, at: { x: (z.x0 + z.x1) / 2, y: (z.y0 + z.y1) / 2 }, found: [] };
 }
 
 // The sign over a check: what it shows (the check's `icon`, else with sign: 'item' what he checked), then the mark.
@@ -87,9 +89,10 @@ function signOf(game, insp, c, r) {
   return [...[what].flat(), r.ok ? '✔️' : '❌'];
 }
 function shows(game, c, r) {
-  if (c.item === undefined) return c.who === 'player' ? PLAYER_ICON : findNpc(game, c.who)?.icon ?? [];
+  const no = c.absent ? ['🚫'] : [];
+  if (c.item === undefined) return [...no, c.who === 'player' ? PLAYER_ICON : findNpc(game, c.who)?.icon ?? []].flat();
   const icon = (type) => game.level.items[type].icon;
-  return r.found.length ? r.found.map((i) => icon(i.type)) : icon(typesOf(c)[0]);
+  return [...no, ...(r.found.length ? r.found.map((i) => icon(i.type)) : [icon(typesOf(c)[0])])];
 }
 
 function arrive(game, npc, insp, index) {
@@ -102,7 +105,7 @@ function arrive(game, npc, insp, index) {
   game.events.emit(r.ok ? 'inspect:pass' : 'inspect:fail', { by: npc.id, index });
   holdFor(npc, insp.look ?? LOOK);
   if (!r.ok) return fail(game, npc, insp, index);
-  for (const item of r.found) st.passed.push({ index, item, spot: item.spot, moved: false });
+  for (const item of r.found) st.passed.push({ index, item, spot: item.spot, moved: false }); // (none if absent)
   if (st.i < insp.checks.length) return;
   npc._insp = null;
   applyEffect(game, insp.pass);

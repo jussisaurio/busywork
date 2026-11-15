@@ -31,7 +31,7 @@
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
-//               icon or a list; a noise is not 'noise' or 'npc:heard'
+//               icon or a list, its absent true or false; a noise is not 'noise' or 'npc:heard'
 //   failSign    optional; spot a spot
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
@@ -286,6 +286,7 @@ export function levelProblems(level, key) {
       }
       if (c?.from !== undefined || c?.item === undefined) spot(`${cp}.from`, c?.from);
       if (c?.icon !== undefined) icons(`${cp}.icon`, c.icon);
+      if (c?.absent !== undefined && typeof c.absent !== 'boolean') bad(`${cp}.absent`, 'not true or false');
     }
     if (insp?.sign !== undefined && insp.sign !== 'mark' && insp.sign !== 'item') bad(`${path}.sign`, `${q(insp.sign)} is not 'mark' or 'item'`);
     const then = insp?.fail?.then;
