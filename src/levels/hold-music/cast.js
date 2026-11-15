@@ -1,4 +1,4 @@
-// Hold Music's three people and their hooks (cast.js and behaviours.js in level 1 document the fields).
+// The Interview's three people and their hooks (cast.js and behaviours.js in level 1 document the fields).
 import { at, deg } from '../../config.js';
 import { START } from './phones.js';
 

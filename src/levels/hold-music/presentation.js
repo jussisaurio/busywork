@@ -1,4 +1,4 @@
-// How Hold Music looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
+// How The Interview looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
 import { C } from '../../render/palette.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';

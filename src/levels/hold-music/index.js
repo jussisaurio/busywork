@@ -1,4 +1,4 @@
-// "Hold Music": Lin's interview for your job is a phone call at 3:30. She must miss it.
+// "The Interview" (folder and id: hold-music): Lin's interview for your job is a phone call at 3:30. She must miss it.
 //
 // A cord switchboard stands in the reception nook above your desk: one jack per phone (Lin's desk, the boss's
 // desk, Kev's desk, the kitchen wall phone), each under a card with its owner's face. Plug in and that phone rings:

@@ -1,4 +1,4 @@
-// Hold Music's own prop painters (decor.props draws: (ctx, info, at, shown, t), shown = { w, game }). Everything the
+// The Interview's own prop painters (decor.props draws: (ctx, info, at, shown, t), shown = { w, game }). Everything the
 // outcome depends on is drawn on the object: a phone rings (shakes, arcs, glows in its colour), its handset is off
 // the cradle and on a curly cord to whoever holds it, the switchboard's plugs, lamps and cords, Lin's cord in its
 // socket or loose on the floor.

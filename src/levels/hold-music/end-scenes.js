@@ -1,4 +1,4 @@
-// Hold Music's end cards: a drawn scene per outcome (contract: src/levels/meeting/end-scenes.js). Each shows what
+// The Interview's end cards: a drawn scene per outcome (contract: src/levels/meeting/end-scenes.js). Each shows what
 // happened to the 3:30 call and what it means for you; the icon row under it retells the picture left to right.
 // The phones are the level's own (painters.js): ivory rotary bodies, handsets in the owner's colour, curly cords.
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji } from '../../render/util.js';

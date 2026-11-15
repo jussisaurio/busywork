@@ -1,4 +1,4 @@
-// Hold Music's phones: the switchboard, the four phones, Lin's cord and the 3:30 call.
+// The Interview's phones: the switchboard, the four phones, Lin's cord and the 3:30 call.
 //
 // A ring (you plug a cord into a jack) sets ring_<p> = 'you'. Every step (tick, below) a ringing phone is answered
 // by its owner if he is free and in earshot, else by the nearest free NPC in earshot (call_<p>). He walks over,

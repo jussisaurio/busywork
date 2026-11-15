@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Hold Music (src/levels/meeting/gate.js documents the fields).
+// What the fuzzer and the gate know about The Interview (src/levels/meeting/gate.js documents the fields).
 const PEOPLE = ['boss', 'lin', 'kev'];
 const PHONES = ['lin', 'boss', 'kev', 'kitchen'];
 // Who answered which ring: 'lin@kitchen'.
