@@ -12,97 +12,137 @@ made. The card says it in its first line, so the name makes sense before you hav
 You are an office worker in a red sweater. At 4:00 PM there is a meeting where you are supposed to present slides,
 and you haven't made any. If the meeting happens, you stand in front of the boss and your colleagues with nothing on
 the screen (the fail end card: a blank screen, crickets). You can't make the slides in 90 minutes, so the only way
-out is that the meeting doesn't happen: either there is nothing to show it on (the projector is dead), or the boss
-can't get to it (he is locked out of the building). Whatever you do must not be traced to you: get caught at it, or
-be the obvious culprit, and you are fired or blamed instead.
+out is that the meeting doesn't happen: either there is nothing to show it on (the projector is dead, and the boss
+calls the meeting off), or the boss can't get to it (he goes down for a smoke and can't get back into the building).
+Whatever you do must not be traced to you: get caught at it, or be the obvious culprit, and you are fired or blamed
+instead.
 
 ## Cast
+- **You** (red sweater). Your desk chair and your meeting-room chair are red, like your sweater.
 - **The boss** (navy suit, bald, the glass office top left). He runs the meeting.
-  - 2:30: at his desk, facing the open plan through his glass walls. His jacket hangs on the coat rack behind him.
-  - 2:44–2:56: walks the open plan, checking on everyone (a boss's rounds).
-  - 3:12: goes to the restroom (bottom right). On the way he looks in at the meeting-room door. Out of his office
-    about 3:14–3:28, looking in again on the way back.
-  - 3:33: wants a cigarette (🚬❓). 3:35: takes his jacket off the rack and goes down to the lobby to smoke.
-  - 3:48: comes back in through the glass entrance. It needs the keycard from his jacket.
-  - 3:54: everyone walks to the meeting room. 4:00: the meeting.
-- **Kev** (IT, olive hoodie, his desk on the right). He fixes things.
-  - 2:38: goes to the kitchen for his afternoon coffee (the machine holds one cup).
-  - 2:58: packs his bag and waves goodbye (🎒👋). He goes home early: down the elevator (bottom left), gone by about
-    3:05 (the elevator dings).
-  - Any time before he is gone: if the projector breaks, he runs over and repairs it.
-- **Lin** (teal cardigan, glasses, her desk on the left). She faces north, through the boss's glass wall, so from
-  her desk she sees the coat rack.
-  - 2:58: lunch. She opens the fridge for her sandwich and eats at the kitchen table, back at her desk by about 3:12.
-  - 3:30–3:37: the restroom.
-  - She tells on anyone she sees doing something sneaky (❗👉). If the boss is away, she tells him when he is back.
+- **Kev** (IT, olive hoodie). His desk chair and his meeting chair are olive, like his hoodie.
+- **Lin** (teal cardigan, glasses). Her desk chair is teal, like her cardigan. From her desk she looks north, through
+  the boss's glass wall, at the coat rack.
+
+## Who does what
+**The boss** sits at his desk at 2:30, facing the open plan through his glass walls. His jacket hangs on the coat rack
+behind him, his keycard clipped to it. At 2:44 he walks the open plan, checking on everyone, and is back at his desk
+by 2:56. Anyone he sees idle gets sent to their desk to work. At 3:12 he goes to the restroom (bottom right); on the
+way out and on the way back he looks in at the meeting-room door, so his office is empty from about 3:14 to 3:28. If
+the projector is dead when he looks in, he stares at it (📽️💥), wonders where the coffee came from (☕❓), and walks
+the hallway, the coffee machine, Kev's desk and your desk looking for a cup until 3:34. At 3:33 he wants a cigarette
+(🚬❓). At 3:35 he takes his jacket off the rack and goes down in the lift to smoke in the street. At 3:48 he comes
+back in through the glass entrance, holding his keycard to the reader (🪪, a beep). The ground-floor gate needs the
+same card: without it he never gets back up, and nobody upstairs sees him stuck. At 3:54 everyone walks to the
+meeting room. At 4:00 he stands at the head of the table. If the projector is dead he points at it (📽️💥), says no
+(🙅📊) and waves everyone out (👋🚪): the meeting is off.
+
+**Kev** sits at his desk. At 2:38 he goes to the kitchen for his afternoon coffee. The machine has one cup left in
+the pot, and the coffee bag beside it is empty. If the pot is full he pours it and drinks it. If it is empty he
+stares at it (☕❓, 😩) and wants that cup for the rest of his day. If he sees you carrying it, he asks for it (☕🥺❓)
+now and then, but it is yours and he leaves it with you. If he sees it set down unattended on the machine or on his
+own desk, it looks free, and he takes it, delighted (🤤☕, 😌). On your desk it is yours, and he leaves it alone. At
+2:58 he packs his bag and waves goodbye (🎒👋). He goes home early, down the lift (bottom left), gone by about 3:05.
+Whenever he is in the building and the projector breaks, he runs over (🔧❗), repairs it in about 5 game minutes,
+and gives a thumbs up (👍).
+
+**Lin** sits at her desk and looks around now and then. At 2:58 she goes to the fridge for her lunch, eats at the
+kitchen table, and is back at her desk by about 3:10. If her sandwich is gone she finds the fridge empty (🥪❓, 😠)
+and walks the kitchen and the open plan looking for it until 3:24. From 3:30 to 3:37 she is in the restroom. She
+tells on anyone she sees doing something sneaky (❗👉 and your face). If the boss hears it, you are caught. If he is
+away, she tells him when he is back.
+
+## Things in the office
+- **The coffee machine** (kitchen, top right). Its pot has the day's last cup. Pour it and you hold it.
+- **The empty coffee bag** beside the machine. It is why there is no more coffee after this cup.
+- **The cup of coffee.** Full and hot: you can't swing it about, so you can't pretend to work while you hold it, and
+  it leaves your hand only when you set it down. You can set it down on your desk, on Kev's desk or on the machine.
+- **The projector** on the meeting-room table, with a "no coffee" sticker (☕🚫). Coffee kills it: sparks and smoke.
+- **The empty mug.** The cup, after the spill. It is evidence: you can't let it fall, only set it down, and that takes
+  a moment.
+- **The coat rack and the boss's jacket** (his office, behind his desk). His keycard is clipped to the jacket.
+- **The keycard.** It opens the glass entrance and the ground-floor gate. The boss is the only one who cares about
+  it: he catches you with it, and pockets it if he sees it on the floor.
+- **The fridge** (kitchen). Lin's sandwich is in it.
+- **The sandwich.** Lin's lunch. To anyone else it is just a sandwich. Eat it and the mustard stays on your sweater.
+- **The glass walls** of the boss's office. He sees out; Lin sees in.
+- **The desks and chairs.** Each desk chair has its owner's colour: red yours, teal Lin's, olive Kev's. The meeting
+  table has a red chair for you and an olive one for Kev.
+- **The lift and the glass entrance** (bottom left). Kev leaves this way; the boss goes down to smoke this way.
+- **The restroom** (bottom right). The boss goes at 3:12, Lin at 3:30.
+- **The wall clock.** The day runs 2:30 to 4:00.
 
 ## Ways to win
 ### 1. Break the projector
-Steps: pour the coffee before Kev's 2:38 coffee run. Keep it hidden while Kev is in the office (pretend: the cup is
-held to your ear like a phone). After Kev has gone (about 3:06), spill it on the projector in the meeting room. You are
-left holding the empty mug. Get rid of it: put it back on the coffee machine, or plant it on Kev's desk. Be in the
-meeting room at 4:00.
+Steps: pour the coffee before Kev's 2:38 coffee run. Keep it from Kev until he has gone: hold on to it (he asks,
+but it's yours), or set it down on your own desk (he leaves it alone there, and you can type). Don't leave it on the
+machine or on his desk. After Kev has gone (about 3:05), spill it on the projector in the meeting room. You are left holding the empty
+mug. Get rid of it: put it back on the coffee machine, or plant it on Kev's desk. Be in the meeting room at 4:00.
+
+In a real office: there is one cup left and someone else wants it; nobody takes a cup off a colleague's desk, but a
+cup left on the machine is anyone's; IT fixes what breaks until IT goes home; a boss with a dead projector cancels.
 
 Facts the player must know, and where they SEE them:
-- **Coffee breaks the projector.** The projector on the meeting-room table has a "no coffee" sticker (☕🚫). Seen
-  from 2:30 by walking up to it; the sticker is visible at the projector. Walking up with the cup shows a spill
-  prompt above you.
-- **There is one cup of coffee, and Kev wants it.** At 2:38 Kev walks to the coffee machine. If you poured the cup,
-  he finds the pot empty (☕❓, then 😩). If you didn't, he takes it, and there is none left for you.
-- **Kev takes the cup off you if he sees it.** After he found the pot empty, he yawns (🥱☕) every few minutes, and
-  if he sees you holding the cup he takes it, delighted (🤤☕), and drinks it (😌).
-- **Kev fixes the projector.** Break it while Kev is in the building, and he runs to it (🔧❗), works on it at the
-  table for about 5 game minutes, and gives a thumbs up (👍). The projector works again.
-- **Kev leaves early.** At 2:58 he waves goodbye with his bag (🎒👋) and walks to the elevator. The elevator dings
-  when he is gone, about 3:05.
-- **The empty mug is evidence.** After the spill you hold the empty mug, and you can't drop it; only put it somewhere.
-  On his 3:12 walk past the meeting room the boss sees the dead projector (📽️💥), wonders about coffee (☕❓) and walks
-  the hallway, the coffee machine, Kev's desk and your desk looking for a mug. On the coffee machine he shrugs (☕🤷).
-  On Kev's desk he decides it was Kev (☕❗, then 😠🔧). In your hand at 4:00, the whole table points at you.
-- **Be at the meeting.** At 4:00 everyone sits down in the meeting room. The one person missing is the one they
-  blame. The end card shows the table pointing at your empty chair.
+- **Coffee breaks the projector.** The projector has a "no coffee" sticker (☕🚫), visible from 2:30. Walking up
+  with the cup shows a spill prompt above you.
+- **There is one cup of coffee, and Kev wants it.** The coffee bag by the machine is empty. At 2:38 Kev walks to the
+  machine. If you poured the cup, he finds the pot empty (☕❓, then 😩). If you didn't, he pours it himself.
+- **Kev asks, and takes a free cup.** He asks for the cup in your hand (☕🥺❓) and leaves it with you. A cup left on
+  the machine or on his desk he takes (🤤☕). You can't type at your desk holding a full cup: set it down on your desk.
+- **Kev fixes the projector.** Break it while Kev is in the building, and he runs to it (🔧❗), works on it, and gives
+  a thumbs up (👍).
+- **Kev leaves early.** At 2:58 he waves goodbye with his bag (🎒👋) and walks to the lift. The lift dings when he is
+  gone, about 3:05.
+- **The empty mug is evidence.** On his 3:12 walk the boss sees the dead projector (📽️💥, ☕❓) and hunts for a cup.
+  On the coffee machine he shrugs (☕🤷). On Kev's desk he decides it was Kev (☕❗, then 😠 and Kev's face). In your
+  hand, or on your desk, it is you.
+- **Be at the meeting.** At 4:00 everyone sits down in the meeting room. The boss points at the dead projector and
+  waves everyone out. If you are missing, the table points at your empty red chair instead.
 
 ### 2. Lock the boss out
-Steps: take the keycard from the boss's jacket on the coat rack in his office while the boss is out (3:14–3:28, his
-restroom trip) and Lin glances away from her desk. Keep it. At 3:35 the boss takes his jacket without the card and goes
-down to smoke. At 3:48 he can't get back in through the glass entrance and the meeting never happens.
+Steps: take the keycard from the boss's jacket while the boss is out (3:14–3:28, his restroom trip) and Lin is not
+looking. Keep it. At 3:35 the boss takes his jacket without the card and goes down to smoke. He can't get back in, and
+the meeting never happens.
+
+In a real office: a boss who smokes leaves his jacket on the rack until he goes out; the building's gate needs a
+card; nobody upstairs knows he is stuck in the street.
 
 Facts the player must know, and where they SEE them:
 - **The jacket on the coat rack has a keycard.** The jacket hangs behind the boss in his glass office, visible from
   2:30. Standing at the rack shows the keycard prompt above you.
-- **The boss's office is empty 3:14–3:28.** At 3:12 the boss gets up and walks out, along the hallway to the restroom
-  (bottom right). He is gone from the floor 3:18–3:22.
-- **Lin watches the rack.** Her desk faces the boss's glass wall. A watcher's view is drawn as a cone on the floor;
-  hers reaches the rack. She glances around: when her cone swings away, the rack is clear. If she sees you take it,
-  she points (❗👉) and tells the boss when he is back.
+- **The boss's office is empty 3:14–3:28.** At 3:12 he gets up and walks out to the restroom (bottom right).
+- **Lin watches the rack.** Her desk faces the boss's glass wall. Her view is drawn as a cone on the floor; it reaches
+  the rack. When her cone swings away, the rack is clear. If she sees you at the jacket, she shouts (❗👉), and the
+  boss takes his card back.
 - **The boss goes out for a smoke with his jacket.** At 3:33 he thinks of a cigarette (🚬❓), at 3:35 he takes the
-  jacket off the rack and walks to the lobby (bottom left).
-- **The entrance needs a keycard.** At 3:48 he is stuck outside the glass entrance, banging on it (😠🚪🪪, 🪪❓, 👊🚪).
-  He stays out, and the meeting doesn't happen.
+  jacket off the rack and walks to the lift (bottom left).
+- **The entrance needs the card.** Let him keep it, and at 3:48 you see him badge in at the glass entrance (🪪, a
+  beep). Take it, and he never comes back. The end card shows him in the street at the gate, cigarette in hand,
+  with no card (🚬🪪❓).
 
 Combo: take Lin's sandwich from the fridge before 2:58. At lunch she finds it gone (🥪❓, then 😠) and walks around the
-open plan looking for it until 3:24, away from her desk while the boss is out. You can't put the sandwich down, and you
-need empty hands for the keycard, so you eat it somewhere she won't look. Eating it leaves mustard on your sweater: if
-she sees you while she hunts, she knows (🥪❗👉).
+open plan looking for it until 3:24, away from her desk while the boss is out. You need empty hands for the keycard,
+so you eat the sandwich somewhere she won't look. Eating it leaves mustard on your sweater: if she sees you while she
+hunts, she knows (🥪❗👉).
 
 ## Ways to lose
 - **The meeting happens (fail).** Nothing stopped it. End card: you in front of a blank screen, the boss expecting
   slides (📊👀), crickets (📊❌🦗).
-- **Caught (fired).** The boss sees you take the keycard, holding it, or holding the mug once he knows the projector is
-  dead, or he finds the mug on your own desk (❗😠). End card: you carry your things out in a box (😠👉📦).
+- **Caught (fired).** The boss, or Lin when he hears her, catches you at his jacket or with his keycard (he takes it
+  back: 😠🪪), with the mug once he knows the projector is dead, with the mug on your own desk, or with the mustard
+  on you. Kev making the leap when you hang around a projector you just broke is also a catch. End card: you carry
+  your things out in a box (😠👉📦).
 - **Blamed: the mug.** The projector is dead and you are still holding the empty mug at 4:00. End card: the table
   points at you and the mug (☕👉😠).
 - **Blamed: your empty chair.** The projector is dead and you are not in the meeting room at 4:00. End card: the table
-  points at your empty chair (🪑👉😠).
+  points at your empty red chair (🪑👉😠).
 - **Kev fixed it (fail).** You broke the projector while Kev was still in the building. He repaired it, and the meeting
   happens.
-- **Kev drank the coffee (fail).** You didn't pour it before 2:38, or he saw you with it and took it. There is no
-  more coffee, so no way to break the projector.
-- **Lin told (fail).** She saw you at the rack (❗👉) or saw the mustard (🥪❗👉). The boss sends you to your desk for
-  20 minutes, past his 3:35 jacket pick-up.
+- **Kev drank the coffee (fail).** You didn't pour it before 2:38, or you left it on the machine or on his desk and he
+  took it. The coffee bag is empty: no more coffee, no way to break the projector.
 - **The keycard went back (fail).** You dropped the keycard where the boss saw it, and he pocketed it.
 
 ## The joke
 The projector win where you plant the empty mug on Kev's desk: at 4:00 the boss sits in front of the dead projector,
-and the whole table turns to stare at Kev's empty chair. Kev went home an hour ago and is being blamed for coffee he
-never got to drink.
+and the whole table turns to stare at Kev's empty olive chair. Kev went home an hour ago and is being blamed for
+coffee he never got to drink.

@@ -6,7 +6,9 @@
 // clock runs at x6), so the wait must land inside that. A wait stops early when someone notices something
 // ('wait 2s', 'wait 2s' steps past two such stops).
 const POUR = ['goto coffee_machine busy', 'interact']; // 2:34: the day's only cup, before Kev's 2:38 coffee run
-const SPILL = [...POUR, 'sit busy', 'busy until 3:06', 'goto projector busy', 'interact']; // after Kev has gone home
+const HIDE = ['goto my_desk_spot busy', 'put my_desk']; // the cup on your own desk, out of Kev's way
+const SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:06', 'goto my_desk_spot busy', 'interact', 'goto projector busy',
+  'interact']; // after Kev has gone home (3:05)
 const KEYCARD = ['busy until 3:11', 'busy 1.35s', 'goto boss_office_door busy', 'goto coat_rack busy']; // the boss is out
 
 export default [
@@ -28,14 +30,26 @@ export default [
   {
     name: 'pot-empty',
     cmds: [...POUR, 'sit busy', 'busy until 2:40', 'wait 1s'],
-    intent: 'Kev has come to the coffee machine and finds the pot empty (☕❓): you poured the only cup, and it is in ' +
-      'your hand.',
+    intent: 'Kev has come to the coffee machine and finds the pot empty (☕❓): you poured the last cup (the empty ' +
+      'coffee bag lies beside the machine), and it is in your hand.',
   },
   {
-    name: 'kev-grabs-cup',
-    cmds: [...POUR, 'goto kev_desk busy', 'goto coffee_machine', 'wait until 2:40', 'wait 2s', 'wait 2s', 'wait 0.3s'],
-    intent: 'You stand openly by the coffee machine with the cup. Kev, who wanted that coffee, takes it out of your ' +
-      'hand, delighted (🤤☕). Lesson: Kev takes the cup if he sees it, so it has to be hidden from him.',
+    name: 'kev-asks',
+    cmds: [...POUR, 'goto kitchen_table busy', 'wait until 2:40', 'wait 7.3s'],
+    intent: 'You stand by the kitchen table with the cup in your hand. Kev, at the coffee machine with the pot empty, ' +
+      'looks at your cup and asks for it (☕🥺❓). He does not take it: it is yours while you hold it.',
+  },
+  {
+    name: 'kev-takes-cup',
+    cmds: [...POUR, 'put coffee', 'sit busy', 'busy until 2:40', 'wait 2s', 'wait 0.6s'],
+    intent: 'You left the cup on the coffee machine and went back to your desk. Kev, finding it there unattended, ' +
+      'takes it as free and is delighted (🤤☕). An unattended cup is anyone\'s.',
+  },
+  {
+    name: 'cup-on-desk',
+    cmds: [...POUR, ...HIDE, 'sit busy', 'busy until 2:41'],
+    intent: 'You sit typing at your desk, the cup set down beside your keyboard, a room away from the kitchen. Kev at ' +
+      'the coffee machine has found the pot empty (☕❓) and has no idea where the last cup went.',
   },
   {
     name: 'kev-leaves',
@@ -62,15 +76,15 @@ export default [
   },
   {
     name: 'mug-on-machine',
-    cmds: [...SPILL, 'put coffee busy', 'busy until 3:19', 'busy 0.4s'],
+    cmds: [...SPILL, 'put coffee busy', 'goto meeting_seat busy'],
     intent: 'The boss, hunting for the culprit, finds the empty mug back on the coffee machine and shrugs (☕🤷): no ' +
-      'one to blame. You put it back there.',
+      'one to blame. You put it back there and walked off.',
   },
   {
     name: 'mug-on-kevs-desk',
-    cmds: [...SPILL, 'put kev_desk busy', 'busy until 3:17', 'busy 0.67s'],
-    intent: 'The boss finds the empty mug on Kev\'s desk (☕❗): he concludes Kev spilled coffee on the projector. ' +
-      'Kev has gone home and can\'t deny it.',
+    cmds: [...SPILL, 'put kev_desk busy', 'goto meeting_seat busy', 'busy 0.4s'],
+    intent: 'The boss finds the empty mug on Kev\'s desk and blames Kev (😠 + Kev\'s face), with nobody near it: he concludes Kev spilled coffee ' +
+      'on the projector. Kev has gone home and can\'t deny it. You are walking away to the meeting room.',
   },
   {
     name: 'sandwich-missing',
@@ -91,26 +105,34 @@ export default [
       'while Lin looks away. Nobody saw.',
   },
   {
-    name: 'boss-locked-out',
-    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:48', 'busy 0.45s'],
-    intent: 'The boss went out to the lobby for a smoke. Without his keycard he can\'t get back in through the glass ' +
-      'entrance, and he is outside, angry (😠🚪🪪), while the meeting time comes.',
+    name: 'boss-goes-down',
+    cmds: ['busy until 3:38'],
+    intent: 'The boss, in his jacket, walks out to the lift with a cigarette: he is going down to the street for a ' +
+      'smoke. You watch from your desk.',
+  },
+  {
+    name: 'boss-badges-in',
+    cmds: ['busy until 3:48', 'busy 0.2s'],
+    intent: 'Back from his smoke, the boss holds his keycard to the reader at the glass entrance (🪪) to get back in. ' +
+      'Without that card, he could not get back into the building.',
   },
   {
     name: 'end-keycard',
     cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 4:00'],
-    intent: 'End card, a win: the boss is locked out, so the meeting never happens (🪪✅🎉).',
+    intent: 'End card, a win. Upstairs you cheer. Downstairs, at the street gate, the boss in his jacket stands at a ' +
+      'card reader that blinks red, wondering where his card is (🪪❓): he cannot get back in for the meeting.',
   },
   {
     name: 'end-projector',
     cmds: [...SPILL, 'put coffee busy', 'goto meeting_seat busy', 'busy until 4:00'],
-    intent: 'End card, a win: at 4:00 the projector is dead, so the meeting can\'t go ahead (📽️💥🤷).',
+    intent: 'End card, a win: at 4:00 the projector is dead. You sit at the table, the picture of patience. The boss ' +
+      'points at the smoking projector (📽️💥🙅) and then waves everyone out: the meeting is called off.',
   },
   {
     name: 'end-kev-blamed',
-    cmds: [...SPILL, 'put kev_desk busy', 'goto meeting_seat busy', 'busy until 4:00'],
-    intent: 'End card, a win: the projector is dead and everyone at the table stares at Kev\'s empty chair: they ' +
-      'blame him, and he has gone home.',
+    cmds: [...SPILL, 'put kev_desk busy', 'goto meeting_seat busy', 'busy until 4:00', 'busy 3s'],
+    intent: 'End card, a win: the projector is dead and everyone at the table stares at Kev\'s empty olive chair: ' +
+      'they blame him, and he has gone home. You stand among them.',
   },
   {
     name: 'end-fail',
@@ -120,7 +142,8 @@ export default [
   {
     name: 'end-caught',
     cmds: ['busy 7.8s', 'goto boss_office_door busy', 'goto coat_rack busy', 'busy 0.17s', 'interact'],
-    intent: 'End card, a loss: the boss caught you at it, and you are fired, carrying your things out in a box.',
+    intent: 'End card, a loss: the boss caught you at his jacket, reaching for his keycard (😠🪪). The card is on his ' +
+      'pocket, and you are fired, carrying your things out in a box.',
   },
   {
     name: 'end-blamed-chair',

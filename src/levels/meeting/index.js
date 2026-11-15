@@ -14,8 +14,8 @@
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up
-//   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
 //   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
+//   clockFor    the minute each NPC's schedule reads (src/sim/npcs.js): the boss's lockout, Kev and the cup (below)
 //   meeting  the day's frame: { override, room, chair, presenter }. At day.gatherAt every NPC on the floor gets
 //            override `override` and walks to its cast `meetingSpot` (sim; plan key `<override>#<n>`); at
 //            day.meetingAt you win only standing in zone `room`; blamed, the table stares at spot `chair`;
@@ -52,9 +52,10 @@ import { VOICES } from './voices.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
-import { LURES, HUNTS, DOORS } from './mechanics.js';
+import { LURES, HUNTS } from './mechanics.js';
 import { BEHAVIOURS } from './behaviours.js';
 import { verdict } from './verdict.js';
+import { clockFor } from './clocks.js';
 
 export default {
   id: 'meeting',
@@ -81,8 +82,8 @@ export default {
   roles: ROLES,
   lures: LURES,
   hunts: HUNTS,
-  doors: DOORS,
   behaviours: BEHAVIOURS,
+  clockFor,
   meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
@@ -95,13 +96,15 @@ export default {
     fixProgress: 0,
     keycard: 'rack',
     jacket: 'rack',
-    bossLockedOut: false,
+    bossLockedOut: false, // down for a smoke without his card: the street gate keeps him out (clocks.js)
     sandwich: 'fridge',
-    coffee: 'pot', // 'pot' (one full carafe) | 'taken' (no coffee left today)
+    coffee: 'pot', // 'pot' (the last cup, from the last of the beans) | 'taken' (none left today)
     items: [],
     kevGone: false,
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
     mug: null, // the cup after the spill: 'player' | a spot it was put on (coffee, kev_desk, my_desk)
+    _cardTry: null, // when Lin's shout stopped your hand at the jacket (clocks.js)
+    cardBack: false, // caught with the keycard: the boss took it back off you (clocks.js listen; the end card)
   }),
   harness,
   gate,

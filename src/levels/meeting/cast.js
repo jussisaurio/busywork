@@ -15,7 +15,8 @@
 //
 // Layered on top (mechanics.js; CONTRACTS.md "Sim overrides"):
 //   - Kev repairs a broken projector whenever he is on the floor (a lure).
-//   - On the way back in from his smoke the boss is locked out at the entrance if he doesn't have the keycard (a door).
+//   - The boss goes down to the street for a smoke. Without the keycard in his jacket the ground-floor gate won't let
+//     him back up: he never comes back (clocks.js picks his 'leave' entry).
 //   - Lin hunts for her sandwich if it's gone when she checks the fridge (a hunt).
 //   - The boss hunts for the coffee cup once he has seen the projector dead (a hunt; behaviours.js peek).
 //   - At 3:54 everyone still on the floor goes to their meeting seat.
@@ -26,6 +27,9 @@
 import { at, deg } from '../../config.js';
 
 const s = (time, entry) => ({ at: at(time), ...entry });
+
+// The boss's 'leave' entry: never read by the game clock's own course (clocks.js jumps to it).
+export const LOCKOUT_AT = at('3:35') + 0.5;
 
 export const NPC_DEFS = [
   {
@@ -45,8 +49,11 @@ export const NPC_DEFS = [
       s('3:12', { do: 'away', spot: 'restroom', prelude: 'peekOut' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
       s('3:22', { do: 'sit', spot: 'boss_desk', prelude: 'peekBack' }), // both walks look in on the meeting room
       s('3:33', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
-      s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket', anim: 'smoking' }),
-      s('3:48', { do: 'sit', spot: 'boss_desk' }),
+      // Down the lift for a smoke, jacket (and keycard) on. clocks.js holds him on this entry while he has
+      // the card, or moves him to the next one (the same walk, out for good) once he has his jacket and no card.
+      s('3:35', { do: 'away', spot: 'elevator', prelude: 'fetchJacket', anim: 'smoking' }),
+      { at: LOCKOUT_AT, do: 'leave', spot: 'elevator', prelude: 'fetchJacket', anim: 'smoking', gone: { set: { bossLockedOut: true }, event: 'boss:lockedOut' } },
+      s('3:48', { do: 'sit', spot: 'boss_desk', prelude: 'badgeIn' }), // back up, badging in at the glass door
     ],
   },
   {

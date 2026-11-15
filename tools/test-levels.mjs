@@ -44,7 +44,7 @@ const CASES = [
   ['interaction on a missing interactable', { ...M, interactions: { ...M.interactions, kick: { on: 'vending_machine', done() {} } } }, 'meeting', /interactions\.kick\.on: no interactable 'vending_machine'/],
   ['lure spot', { ...M, lures: [{ ...M.lures[0], spot: 'projektor' }] }, 'meeting', /lures\[0\]\.spot: no spot 'projektor'/],
   ['hunt route', { ...M, hunts: [{ ...M.hunts[0], route: 'gone' }] }, 'meeting', /hunts\[0\]\.route: no route 'gone'/],
-  ['door zone and npc', { ...M, doors: [{ ...M.doors[0], zone: 'lobby', npcs: ['bos'] }] }, 'meeting', /doors\[0\]\.zone: no zone 'lobby'[^]*doors\[0\]\.npcs\[0\]: no cast member 'bos'/],
+  ['door zone and npc', { ...M, doors: [{ spot: 'door_out', zone: 'lobby', npcs: ['bos'] }] } /* a door of its own: meeting has none */, 'meeting', /doors\[0\]\.zone: no zone 'lobby'[^]*doors\[0\]\.npcs\[0\]: no cast member 'bos'/],
   ['item without an icon (drew as ❔)', { ...M, items: { ...M.items, keycard: { ...M.items.keycard, icon: undefined } } }, 'meeting', /items\.keycard\.icon: missing/],
   ['item contraband npc', { ...M, items: { ...M.items, keycard: { ...M.items.keycard, contraband: 'security' } } }, 'meeting', /items\.keycard\.contraband: no cast member 'security'/],
   ['roles authority', { ...M, roles: { ...M.roles, authority: { ...M.roles.authority, id: 'ceo' } } }, 'meeting', /roles\.authority\.id: no cast member 'ceo'/],

@@ -35,7 +35,7 @@ export const LOOKS = {
 
 // level.poses: what render/characters.js draws the cast doing, beyond sitting, walking and standing.
 //   arms   the first rule whose when(npc, world, game) holds sets the arms: { when, arms, item?, angry?, crank? }
-//          arms: a characters.js computeHands pose ('bang' fists on glass, 'reach', 'shrug', 'puff' hand to mouth,
+//          arms: a characters.js computeHands pose ('point', 'reach', 'shrug', 'puff' hand to mouth,
 //          'carry' in both hands, ...) or a function of the npc; item: a '#<thing>' in hand (an item type with a
 //          draw, or an engine thing, render/things.js: never an emoji); crank: a wrench turning.
 //          No rule holds: 'desk' sitting, 'walk' walking, else idle. What an NPC carries (npc.carry) is drawn in
@@ -44,10 +44,9 @@ export const LOOKS = {
 //          jacket: false (a look with a `shirt` is drawn in it). The authority scowls on his own when he catches you.
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'lockedOut', arms: 'bang', angry: true },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
-    // No projector, no slides: the boss shrugs at the head of the table.
-    { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'shrug' },
+    // No projector, no slides: the boss points at the dead projector and calls it off (behaviours.js presenter).
+    { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'point' },
     { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '#cigarette' },
     { when: (n, w) => n.id === 'lin' && w.sandwich === 'lin', arms: 'carry', item: '#sandwich' },
   ],

@@ -176,7 +176,10 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   const jk = evAt(R, 'boss:jacket');
   ok(jk != null && jk >= at('3:35') && jk < at('3:37'), `boss takes jacket ~3:35 (${fmtS(jk)})`);
   ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss', 'keycard and jacket -> boss');
-  ok(arr(R, 'boss', 'smoke', at('3:35'), at('3:48')) != null, `boss reaches smoke spot (${fmt(arr(R, 'boss', 'smoke'))})`);
+  const bl = ev(R, 'npc:vanish', (p) => p.id === 'boss').map((e) => e.m).find((m) => m >= at('3:35'));
+  ok(bl != null && bl < at('3:48'), `boss goes down the lift for a smoke 3:35–3:48 (${fmt(bl)})`);
+  const bb = evAt(R, 'boss:badge');
+  ok(R.counts['boss:badge'] === 1 && bb >= at('3:48') && bb < at('3:54'), `boss badges back in once, after 3:48 (${fmt(bb)})`);
   ok(arr(R, 'boss', 'boss_desk', at('3:48'), at('3:54')) != null, `boss back at desk before 3:54 (${fmt(arr(R, 'boss', 'boss_desk', at('3:48')))})`);
   ok(!R.game.world.bossLockedOut && !R.counts['boss:lockedOut'], 'boss NOT locked out');
 
@@ -195,7 +198,7 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   const bm = arr(R, 'boss', 'meeting_head', MEETING_GATHER_AT), lm = arr(R, 'lin', 'meeting_lin', MEETING_GATHER_AT);
   ok(bm != null && bm <= MEETING_AT, `boss at meeting_head by 4:00 (${fmtS(bm)})`);
   ok(lm != null && lm <= MEETING_AT, `lin at meeting_lin by 4:00 (${fmtS(lm)})`);
-  ok(said(R, 'boss', '📊👀').length === 1 && !said(R, 'boss', '📽️💥🤷').length, 'boss reacts 📊👀 (projector ok)');
+  ok(said(R, 'boss', '📊👀').length === 1 && !said(R, 'boss', '🙅📊').length && !R.counts['meeting:calledOff'], 'boss reacts 📊👀 (projector ok)');
   ok(npc(R, 'boss').override === 'meeting' && npc(R, 'lin').override === 'meeting', 'override = meeting');
   common(R, 'day1');
 }
@@ -214,11 +217,11 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   });
   const b = npc(R, 'boss');
   ok(R.counts['boss:jacket'] === 1 && R.game.world.keycard === 'player', 'stolen: boss takes jacket, keycard stays with player');
-  ok(leftOffice && !ev(R, 'boss:lockedOut').some((e) => e.m < at('3:48')), 'stolen: not locked out on the way out');
+  const jacketAt = evAt(R, 'boss:jacket');
+  ok(leftOffice && lockedAt != null && lockedAt >= jacketAt, 'stolen: he walks out to the lift with his jacket; locked out only once he has gone down');
   ok(R.game.world.bossLockedOut && R.counts['boss:lockedOut'] === 1, `stolen: boss locked out (${fmtS(lockedAt)})`);
-  ok(atSpot(b, 'door_out') && b.override === 'lockedOut' && Math.abs(b.dir - -Math.PI / 2) < 0.01, 'stolen: boss stands at door_out facing N');
-  ok((R.counts['boss:bang'] || 0) >= 5, `stolen: bang events fire (${R.counts['boss:bang']})`);
-  ok(said(R, 'boss', '😠🚪🪪').length >= 1 && said(R, 'boss', '👊🚪').length >= 1, 'stolen: bang bubbles cycle');
+  ok(!b.active && !R.counts['boss:badge'], 'stolen: out of sight at the street gate (no badge-in, not on the map)');
+  ok(!R.says.some((x) => x.owner === 'boss' && x.m > lockedAt), 'stolen: not a word from him after (nobody upstairs hears him stuck)');
   ok(!reentered, 'stolen: boss never re-enters');
   ok(R.counts['meeting:gather'] === 1 && arr(R, 'lin', 'meeting_lin', MEETING_GATHER_AT) != null, 'stolen: lin still gathers');
   common(R, 'stolen');
@@ -270,9 +273,9 @@ let projRun = null;
   common(R, 'proj lobby');
 }
 {
-  const R = runDay({ hooks: [breakAt(at('3:11'))] });
+  const R = runDay({ hooks: [breakAt(at('3:11'))], until: MEETING_AT + 3 }); // past 4:00: the call-off takes a few seconds
   ok(!R.counts['kev:alerted'] && R.game.world.projector === 'broken', 'proj 3:11 (after kevGone): stays broken');
-  ok(said(R, 'boss', '📽️💥🤷').length === 1, 'proj 3:11: boss reacts 📽️💥🤷');
+  ok(said(R, 'boss', '🙅📊').length === 1 && said(R, 'boss', '👋🚪').length === 1 && R.counts['meeting:calledOff'] === 1, 'proj 3:11: at 4:00 the boss calls it off 🙅📊 👋🚪');
   common(R, 'proj 3:11');
 }
 { // late repairs keep Kev in the building; at 3:54 he finishes first, then joins the meeting
@@ -395,8 +398,8 @@ let projRun = null;
     const last = anims[anims.length - 1];
     if (b.anim !== (last?.anim ?? null)) anims.push({ m: g.clock.minute, anim: b.anim, label: b.label });
   } });
-  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'visit smoke' && fmt(anims[0].m) === '3:35'
-    && anims[1].anim === null, `anim: boss 'smoking' only during 'visit smoke' (${anims.map((a) => `${fmt(a.m)} ${a.anim}`).join(', ')})`);
+  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'away elevator' && fmt(anims[0].m) === '3:35'
+    && anims[1].anim === null, `anim: boss 'smoking' only during his smoke break, down the lift (${anims.map((a) => `${fmt(a.m)} ${a.anim} '${a.label}'`).join(', ')})`);
 
   // A hook name the level doesn't define fails when the NPC is created, not mid-day.
   const badCast = LEVEL.cast.map((d) => (d.id === 'kev'

@@ -45,20 +45,21 @@ export const SPOTS = {
   lin_desk: { x: 4, y: 9, face: 'N' },
   // Put down (sim/mechanics/putdown.js): the empty mug lies on the tile the spot faces. Kev's desk is where it
   // frames Kev (verdict.js); your own is where it frames you (owner 'player': the boss who knows sees it there).
-  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug'] },
-  my_desk: { x: 12, y: 9, face: 'N', accepts: ['mug'], owner: 'player' }, // the desk left of P: sit wins at P
+  // The full cup goes on them too: on yours it is yours, and Kev leaves it be; on Kev's desk or the machine it looks
+  // free to him, and he takes it (clocks.js).
+  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug', 'coffee'] },
+  my_desk: { x: 12, y: 9, face: 'N', accepts: ['mug', 'coffee'], owner: 'player' }, // the desk left of P: sit wins at P
 
   coat_rack: { x: 2, y: 1, face: 'W' }, // stand here to reach K
   projector: { x: 13, y: 2, face: 'S' }, // stand here to reach J (Kev repairs from here)
-  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug'] }, // the mug back on the machine
+  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug', 'coffee'] }, // a cup back on the machine
   fridge: { x: 20, y: 2, face: 'N' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
 
   boss_door: { x: 6, y: 7, face: 'S' }, // hallway outside the boss's office door
   meeting_door: { x: 14, y: 7, face: 'N' }, // hallway outside the meeting room: the boss looks in (behaviours.js peek)
   door_in: { x: 4, y: 12, face: 'S' }, // inside the entrance
-  door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance (locked-out boss stands here)
-  smoke: { x: 7, y: 15, face: 'N' }, // lobby; faces the glass, can see into the office
+  door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance: the boss badges in here (behaviours.js badgeIn)
   elevator: { x: 2, y: 15, face: 'S' }, // NPCs vanish here when leaving
   restroom: { x: 25, y: 12, face: 'S' }, // NPCs vanish here for restroom breaks
 

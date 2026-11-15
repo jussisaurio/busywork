@@ -1,5 +1,6 @@
-// The meeting's NPC mechanics: the engine's generic lure, hunt and door (src/sim/mechanics/*, where each field is
-// documented) set up as Kev's projector repair, Lin's sandwich hunt and the boss's keycard lockout.
+// The meeting's NPC mechanics: the engine's generic lure and hunt (src/sim/mechanics/*, where each field is
+// documented) set up as Kev's projector repair, Lin's sandwich hunt and the boss's hunt for the cup. (The keycard
+// lockout happens downstairs, out of sight: clocks.js.)
 // Order is behaviour: the sim checks each list in this order.
 
 import { at } from '../../config.js';
@@ -10,9 +11,13 @@ const SEES_CUP = 3.5; // tiles: how close the hunting boss must be to spot the c
 
 // The hunting boss spots the cup where it lies (not in your hand: that's the rules' business, items.js; not on your
 // desk: that's put down's, and he catches you). On Kev's desk: Kev did it. On the machine: back where it belongs.
+// Not while you stand beside it: then it's anybody's guess whose it is, and he keeps looking.
+const NEAR_CUP = 2.5; // tiles
 function cupFound(game, npc) {
   const it = game.world.items.find((i) => i.type === 'mug');
   if (!it || it.spot === 'my_desk') return false;
+  const p = game.player;
+  if (Math.hypot(it.x - p.x, it.y - p.y) < NEAR_CUP) return false;
   if (Math.hypot(it.x - npc.x, it.y - npc.y) > SEES_CUP || !npcSees(game, npc, it.x, it.y)) return false;
   const kev = it.spot === 'kev_desk';
   speak(game, npc, kev ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', '@kev'], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
@@ -72,27 +77,7 @@ export const HUNTS = [
       says: [{ say: ['📽️', '💥'], kind: 'thought', ttl: 1.3 }, { say: ['☕', '❓'], kind: 'thought', after: 1.3, ttl: 1.4 }],
       wait: 2.4, // staring in at the sparks
     },
-    until: at('3:34'), // gives up in time for his smoke (and the lockout)
+    until: at('3:34'), // gives up in time for his smoke
     found: cupFound,
-  },
-];
-
-// Doors (level.doors): listed NPCs coming in from `zone` must open it, or they're shut out for the day.
-export const DOORS = [
-  { // The glass entrance: the boss badges in with the keycard from his jacket. Without it he bangs on the glass.
-    spot: 'door_out',
-    zone: 'outside',
-    npcs: ['boss'],
-    opens: (game, npc) => game.world.keycard === npc.id,
-    override: 'lockedOut',
-    plan: 'lockout',
-    label: 'locked out',
-    locked: { set: { bossLockedOut: true }, event: 'boss:lockedOut' },
-    bang: {
-      first: 0.8,
-      lines: [{ say: ['😠', '🚪', '🪪'], next: 2.5 }, { say: ['🪪', '❓'], next: 2.2 }, { say: ['👊', '🚪'], next: 2.8 }],
-      event: 'boss:bang',
-      shake: [0.12, 0.25],
-    },
   },
 ];
