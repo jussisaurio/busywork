@@ -8,18 +8,16 @@ import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
 
 export const TITLE = {
   mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'She must miss it.'],
-  badge: ['#interview', '❌'], // Lin and her interview's briefcase (painters.js THINGS)
+  badge: ['#interview', '#call'], // the threat: Lin's interview (her face and its briefcase) and the call (painters.js THINGS)
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
 export const DECOR = {
   zoneSeeds: [{ x: 3, y: 2, zone: 'office' }, { x: 20, y: 3, zone: 'kitchen' }],
-  chairs: [
-    { spot: 'boss_desk', face: 'S', color: OXBLOOD },
+  chairs: [ // (the boss's high-backed one is painters.js: it turns to his window)
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     { spot: 'lin_desk', face: 'N', color: TEAL },
     { spot: 'kev_desk', face: 'N', color: OLIVE },
@@ -43,9 +41,10 @@ export const DECOR = {
 export const LOOKS = MEETING_LOOKS;
 
 // What the cast are seen doing (level 1's looks.js POSES documents the fields). On a line: the line's handset at
-// the ear (Lin slams hers down); someone else's interview gets a shrug. Kev jams Lin's plug in, crouches to plug in
-// his charger and stands by his mobile. A walk of their own day has something in hand (Kev's coffee and mobile,
-// Lin's tea and her notes); a summons (a ring) has them set off empty-handed with a ❗.
+// the ear (Lin slams hers down); someone else's interview gets a shrug. Kev holds Lin's loose plug up at her chair
+// and jams it in, crouches to plug in his charger and stands by, scrolling on his mobile. A walk of their own day
+// has something in hand (Kev's coffee and mobile, Lin's tea and her notes); a summons (a ring) has them set off
+// empty-handed with a ❗.
 const m = (game) => (game.clock ? game.clock.minute : 0);
 const onLine = (p) => (n, w) => n.override === `on_${p}_phone` && w[`line_${p}`] === n.id;
 const own = (n) => !n.override && n.pose !== 'sit';
@@ -56,13 +55,14 @@ export const POSES = {
     ...PHONE_IDS.map((p) => ({ when: onLine(p), arms: 'phone', item: `#handset_${p}` })),
     { when: (n) => n.override === 'on_job', arms: 'phone', item: '#handset_lin' },
     { when: (n, w) => n.id === 'lin' && !!w.linCheck, arms: 'phone', item: '#handset_lin' },
-    { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevJam, arms: 'bang', angry: true },
+    { when: (n, w, game) => n.id === 'kev' && !n.override && !!w.kevJamAt && m(game) >= w.kevLift, arms: 'reach', item: '#plug', angry: true },
+    { when: (n, w, game) => n.id === 'kev' && w.sparkAt >= w.kevAt && m(game) < w.kevJam, arms: 'bang', angry: true },
     { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevReach, arms: 'reach', item: '#mobile' },
     { when: (n, w, game) => n.id === 'kev' && !!w.kevCharge && m(game) >= w.kevCharge && !n.moving, arms: 'carry', item: '#mobile' },
-    { when: (n, w, game) => n.id === 'lin' && !n.override && m(game) >= BACK_AT && m(game) < game.level.day.gatherAt, arms: 'folder' },
-    { when: (n, w, game) => n.id === 'lin' && !n.override && n.pose === 'sit' && m(game) >= at('3:04', START) && m(game) < BACK_AT, arms: 'mug', item: '#cup' },
-    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:06', START), arms: 'mug', item: '#mug' },
-    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:13', START), arms: 'carry', item: '#mobile' },
+    { when: (n, w, game) => n.id === 'lin' && !n.override && m(game) >= BACK_AT && m(game) < game.level.day.gatherAt, arms: 'carry', item: '#notes' },
+    { when: (n, w, game) => n.id === 'lin' && !n.override && n.pose === 'sit' && m(game) >= at('3:03', START) && m(game) < BACK_AT, arms: 'mug', item: '#cup' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:04', START), arms: 'mug', item: '#mug' },
+    { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < at('3:15', START), arms: 'carry', item: '#mobile' },
     { when: (n, w, game) => n.id === 'kev' && own(n) && m(game) < game.level.day.gatherAt, arms: 'mug', item: '#cup' },
   ],
   marks: [],
