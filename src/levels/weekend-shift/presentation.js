@@ -12,7 +12,7 @@ export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
   mission: ["Friday, 4:00 PM. You're stuck working Saturday.", 'The boss makes it official at 5:00. Get out of it.'],
-  badge: ['🗓️', '@player'], // the roster's week, and you down for it
+  badge: ['🗓️', '@player'], // the board's week, and you down for it
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -61,7 +61,7 @@ const reading = (game, from) => {
   const s = readS(game);
   return s !== null && s >= from;
 };
-// He has the board's marker from 4:50 (the board is his now): in his hand, gone from the tray
+// He has the board's marker while he sits by it (index.js tick): in his hand, gone from the tray
 const bossHasMarker = (n, w) => n.id === 'boss' && !!w.rosterLocked && n.override !== 'onPhone';
 // 5:00, the end beat (index.js punchline): the result, and s into the beat
 const result = (game) => game?.outcome?.result ?? null;
@@ -170,7 +170,7 @@ export const DECOR = {
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     // (Lin's desk chair: props.js paints it, pushed out while she's away)
     { spot: 'kev_desk', face: 'N', color: OLIVE },
-    // round the roster: everyone pulls up a chair at 5:00; yours is the mustard one
+    // round the board: everyone pulls up a chair at 5:00; yours is the mustard one
     { spot: 'board_boss', face: 'E', color: OXBLOOD },
     { spot: 'meeting_kev', face: 'W', color: OLIVE },
     { spot: 'meeting_lin', face: 'W', color: TEAL },
@@ -207,7 +207,7 @@ export const DECOR = {
           place: placePx(game),
           empty: emptyPlace(game),
           hot: game?.outcome?.result === 'blamed',
-          tray: !w.rosterLocked && !scribbleOf(game), // the marker: in his hand from 4:50, in yours while you write
+          tray: !w.rosterLocked && !scribbleOf(game), // the marker: in his hand while he sits by it, in yours while you write
           lift: !w.rosterLocked && !scribbleOf(game) && nearBoard(game), // ... lifting off its tray when you're at the board
           scribble: redrawOf(game, w) ?? scribbleOf(game), // a write in progress, half drawn (and left so if you're caught at it)
         };
@@ -250,8 +250,6 @@ export const POSES = {
     // redraws it and points at your chair); at his own, he spreads his hands, and Lin and Kev clap
     { when: (n, w, game) => n.id === 'boss' && ownFace(game), arms: 'shrug', item: '#marker' },
     { when: (n, w, game) => n.id === 'boss' && pointing(game), arms: 'point', item: '#marker' },
-    // 4:50: out to the board head down in his folder
-    { when: (n) => n.id === 'boss' && n.anim === 'folder' && n.moving, arms: 'folder' },
     { when: (n, w) => bossHasMarker(n, w), arms: 'mug', item: '#marker' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#spanner', crank: true },
     { when: (n) => n.override === 'onPhone', arms: 'phone', item: '#handset' },

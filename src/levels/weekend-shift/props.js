@@ -1,7 +1,7 @@
 // Saturday's (id weekend-shift) furniture with moving parts, drawn as the real things (presentation.js's decor.props):
-//   the Saturday roster: a whiteboard on a stand, the week across the top and a big photo of whoever works
+//   the Saturday board: a whiteboard on a stand, the week across the top and a big photo of whoever works
 //     Saturday in the slot under it; a write half drawn over it, the marker at it; a new face pops up off it, big,
-//     for a beat, and settles in; its black marker in the tray (gone from 4:50: the boss has it); the slot lit while
+//     for a beat, and settles in; its black marker in the tray (gone while the boss sits by it: he has it); the slot lit while
 //     the boss points at it; your place round it outlined once you're blamed for not being in it
 //   the photocopier: a green light; jammed, a red beacon flashing on its lid, a crumpled sheet sticking out of it
 //     and red arcs spreading off it at every beep (dashes to Kev while he hears it); its front open, a spanner
@@ -61,7 +61,7 @@ function scrawl(ctx, x, y, w, color, lw, seed) {
   ctx.lineCap = 'butt';
 }
 
-// The Saturday roster: a whiteboard on a stand, its feet at (x, y), s times its map size (46 x 36 px). Across the
+// The Saturday board: a whiteboard on a stand, its feet at (x, y), s times its map size (46 x 36 px). Across the
 // top, the week in boxes, Saturday's red; under it, a line down to Saturday's slot: a big photo of who works it.
 //   look: whose face is in the slot (null: none)
 //   opts.fresh: a wet-ink glint (just written); opts.glow: the slot lit up (the boss pointing at it)
@@ -332,6 +332,22 @@ export function drawCopier(ctx, x, y, state, t, s = 1, beep = null) {
   ctx.fill();
   ctx.fillStyle = '#b9b6ad';
   ctx.fillRect(2, 5, 28, 1.4);
+  // a pot of paper clips on the lid, by the tray end (what jams it: index.js jam_copier)
+  ctx.strokeStyle = '#c9ced3';
+  ctx.lineWidth = 1.1;
+  for (const [cx, a] of [[3.6, -0.35], [5.4, 0.1], [7.2, 0.45]]) {
+    ctx.save();
+    ctx.translate(cx, -4.5);
+    ctx.rotate(a);
+    rrect(ctx, -1.1, -4.2, 2.2, 5, 1.1); // a clip's loop, sticking up out of the pot
+    ctx.stroke();
+    ctx.restore();
+  }
+  ctx.fillStyle = '#3d5a80';
+  rrect(ctx, 1.8, -5, 7.4, 6, 1.2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillRect(2.6, -4.4, 1.3, 4.6);
   if (jam) {
     // a crumpled sheet stuck in the feed on the lid, sticking up out of it, shivering at each beep
     const sh = flare * Math.sin(t * 40) * 1.2;
@@ -610,23 +626,14 @@ function cupSteam(ctx, x, y, t, s = 1) {
   }
 }
 
-// The counter under the microwave and the sink beside it, down the east wall: tiles (tx, ty0..ty1).
+// The counter under the microwave, on down the east wall, bare: tiles (tx, ty0..ty1). (No sink, no fridge: nothing
+// in the kitchen looks usable but the microwave.)
 function drawCounter(ctx, tx, ty0, ty1) {
   const x = tx * T;
   ctx.fillStyle = C.tealDark;
   ctx.fillRect(x + 1, ty0 * T, T - 1, (ty1 - ty0 + 1) * T);
   ctx.fillStyle = C.laminate;
   ctx.fillRect(x + 3, ty0 * T, T - 3, (ty1 - ty0 + 1) * T - 3);
-  // a sink and a tap on the lower tile
-  const sy = ty1 * T + 12; // a little way down: your noodles stand above it, under the microwave
-  ctx.fillStyle = C.steelDark;
-  rrect(ctx, x + 6, sy, 22, 15, 3);
-  ctx.fill();
-  ctx.fillStyle = '#d5dade';
-  rrect(ctx, x + 8, sy + 2, 18, 11, 2);
-  ctx.fill();
-  fillCircle(ctx, x + 26, sy + 7, 2, C.steelDark);
-  fillCircle(ctx, x + 17, sy + 7.5, 1.2, '#9aa3aa');
 }
 
 // A desk phone at (cx, cy): its base, and its handset on it unless lifted. ring: shaking, with sound marks; gone:
@@ -868,7 +875,7 @@ function drawLunchBox(ctx, x, y, w, t, open = false) {
 
 // decor.props painters, (ctx, info, tile, shown, t).
 
-// { look, fresh, glow, pop, popSide, place, empty, hot, tray, scribble }: the roster board standing on its tile; glow:
+// { look, fresh, glow, pop, popSide, place, empty, hot, tray, scribble }: the board standing on its tile; glow:
 // its slot lit (the boss pointing at it); pop: s into a new face's beat, popSide: the side it drifts to; place,
 // empty: your spot round the board (px) and whether to outline it; tray, scribble: drawBoard's.
 export const POP_S = 1.6;
@@ -947,10 +954,10 @@ export function paintCopier(ctx, info, at, shown, t) {
 }
 
 // { noodles, left, fish }: the microwave on the counter, your cup of noodles beside it (above it, up the counter),
-// and on down to the sink. Cold: the cup's lid on. Cooking: the cup's in the microwave. Done (the DING has gone):
+// and on down the wall. Cold: the cup's lid on. Cooking: the cup's in the microwave. Done (the DING has gone):
 // the cup is back on the counter, open and steaming, and the microwave is free (for Lin's fish).
 export function paintMicrowave(ctx, info, at, shown, t) {
-  drawCounter(ctx, at.x, at.y - 1, at.y + 1);
+  drawCounter(ctx, at.x, at.y - 1, at.y + 2);
   const cooking = shown.noodles === 'cooking' && shown.left !== null && shown.left > 0;
   drawMicrowave(ctx, at.x * T + 1, at.y * T + 8, cooking ? 'cooking' : 'cold', cooking ? shown.left : null, t, shown.fish && !cooking);
   const cx = at.x * T + 17;

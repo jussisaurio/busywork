@@ -26,18 +26,18 @@ export default {
   names: NAME,
 
   mapKey: [
-    "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday roster (whiteboard),",
+    "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday board (whiteboard),",
     '     M microwave, C counter, F fridge, P your desk, Q a phone on a little table in the supply room, L Lin\'s desk (her',
     '     lunch box sits on it), B the boss\'s phone (side table; his desk has none), i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
   outcomeText: (o) => (o.result === 'win'
-    ? `WIN 🎉 (Kev's face is on the roster for Saturday: the boss read it out${o.routes.includes('ding') ? '; you wrote it during the DING' : o.routes.includes('phone') ? "; you wrote it during the boss's phone call" : ''})`
+    ? `WIN 🎉 (Kev's face is on the board for Saturday: the boss read it out${o.routes.includes('ding') ? '; you wrote it during the DING' : o.routes.includes('phone') ? "; you wrote it during the boss's phone call" : ''})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (you work every Saturday now)'
-    : o.result === 'blamed' ? "BLAMED 👉 (you weren't round the roster when it was read out: the boss pointed at your empty place, and the Saturday went to you)"
-    : o.why === 'boss' ? "FAIL: the boss found his own face on the roster. He never put himself down: he wiped it, drew yours back and glared at you 😠👉"
-    : 'FAIL: the boss read out your face on the roster. See you Saturday 👉😩'),
+    : o.result === 'blamed' ? "BLAMED 👉 (you weren't round the board when it was read out: the boss pointed at your empty place, and the Saturday went to you)"
+    : o.why === 'boss' ? "FAIL: the boss found his own face on the board. He never put himself down: he wiped it, drew yours back and glared at you 😠👉"
+    : 'FAIL: the boss read out your face on the board. See you Saturday 👉😩'),
 
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),
 
@@ -55,7 +55,7 @@ export default {
     const roster = `${w.roster === 'player' ? 'your' : w.roster === 'boss' ? "the boss's" : "Kev's"} face in Saturday's slot`;
     const left = w.noodles === 'cooking' && w.dingAt !== null ? Math.max(0, w.dingAt - game.clock.minute) : null;
     const micro = w.noodles === 'cold' ? 'empty' : left > 0 ? `your noodles, ${Math.round(left * 10) / 10} min to go ⏲️` : 'your noodles, done 🍜';
-    return `WORLD: the Saturday roster has ${roster}${w.rosterLocked ? ' (the boss is guarding it)' : ''}; copier ${COPIER[w.copier] ?? w.copier}; the boss's phone: ${PHONE[w.phone] ?? w.phone}; microwave: ${micro}`;
+    return `WORLD: the Saturday board has ${roster}${w.rosterLocked ? ' (the boss sits by it, its marker in his hand)' : ''}; copier ${COPIER[w.copier] ?? w.copier}; the boss's phone: ${PHONE[w.phone] ?? w.phone}; microwave: ${micro}`;
   },
 
   describe(e, memo) {
@@ -80,7 +80,7 @@ export default {
         memo[key] = e.minute;
         return `${name(p.id)} snaps round to look`;
       }
-      case 'meeting:gather': return 'everyone gathers round the Saturday roster 🗓️';
+      case 'meeting:gather': return 'everyone gathers round the Saturday board 🗓️';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'microwave:started': return 'you put your noodles in the microwave ⏲️';
@@ -92,7 +92,7 @@ export default {
       case 'boss:phone': return 'the boss jumps for his phone ☎️❗';
       case 'phone:answered': return 'the boss takes the call at his phone in the corner, his back to the office 📞';
       case 'phone:hungUp': return 'the boss hangs up 📞🤨';
-      case 'roster:changed': return `you wrote ${name(p.to) === 'you' ? 'yourself' : name(p.to)} into Saturday's slot on the roster ✏️`;
+      case 'roster:changed': return `you wrote ${name(p.to) === 'you' ? 'yourself' : name(p.to)} into Saturday's slot on the board ✏️`;
       default: return undefined;
     }
   },

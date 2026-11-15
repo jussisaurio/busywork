@@ -488,7 +488,7 @@ try {
     `shots: commands that stop in the deadline's beat draw its end card; with beat: true, the beat itself (${outCard.phase}, ${mid.phase}, ${mid.beatT?.toFixed(2)} s in)`);
   ok(new RegExp(`^landed ${mid.at}, 0\\.\\d s into the deadline's beat$`).test(shotWhen(mid)), `shots: the line says how far into the deadline's beat (${shotWhen(mid)})`);
   // A command that starts in the beat runs it out (the player is locked), so beat: <s> runs on into it itself.
-  const BOSS_WS = ['goto microwave pretend', 'interact', 'goto roster pretend', 'pretend until 4:13', 'interact', 'pretend until 5:00'];
+  const BOSS_WS = ['goto microwave pretend', 'interact', 'goto roster pretend', 'interact', 'pretend until 5:00']; // Saturday's ding: written walking past
   const won = renderShot(ws, { name: 'w', cmds: BOSS_WS, beat: 0.8 }, lib);
   const won2 = renderShot(ws, { name: 'w', cmds: BOSS_WS, beat: 1.5 }, lib);
   ok(won.phase === 'day' && won.beat === 'outcome' && won.outcome?.result === 'win' && Math.abs(won.beatT - 0.8) < 0.05 && !won.png.equals(won2.png),
