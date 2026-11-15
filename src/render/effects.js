@@ -8,6 +8,11 @@ import { C } from './palette.js';
 import { headY, lookFor } from './characters.js';
 import { findNpc } from '../game/perception.js';
 
+// The part of the map on screen, in map pixels (renderer.js: smaller while the end beat zooms in). Bubbles, the
+// suspicion meter and the witness's eye stay inside it.
+export const FULL_VIEW = Object.freeze({ x0: 0, y0: 0, x1: PLAY_W, y1: PLAY_H });
+const EDGE = 3; // px kept free between a bubble and the edge of the view
+
 // --- bubbles -------------------------------------------------------------------
 const ANCHOR = { x: 0, y: 0 };
 
@@ -33,15 +38,15 @@ function anchorOf(game, owner) {
   return false;
 }
 
-export function drawBubbles(ctx, game) {
+export function drawBubbles(ctx, game, view = FULL_VIEW) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
   const strict = strictGlyphs();
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y) : null;
-    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place);
+    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y, view) : null;
+    drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place, view);
   }
 }
 
@@ -49,7 +54,7 @@ export function drawBubbles(ctx, game) {
 // nobody: above the point, else below it, else to its right or left; its post leans to the point. (A migrated
 // level only; the legacy ones keep it above.) Returns the board's centre, or null for the default.
 const SIGN_AT = { x: 0, y: 0 };
-function signPlace(game, b, ax, ay) {
+function signPlace(game, b, ax, ay, view = FULL_VIEW) {
   const icons = Array.isArray(b.icons) ? b.icons : [];
   const n = Math.max(1, icons.length);
   const w = n * 15 + (n - 1) * 3 + 12 + 4;
@@ -64,8 +69,8 @@ function signPlace(game, b, ax, ay) {
   for (const e of game.npcs || []) if (e && e.active) add(e);
   add(game.player);
   for (let i = 0; i < tries.length; i++) {
-    const x = clamp(ax + tries[i][0], w / 2 + 4, PLAY_W - w / 2 - 4);
-    const y = clamp(ay + tries[i][1], h / 2 + 4, PLAY_H - h / 2 - 4);
+    const x = clamp(ax + tries[i][0], view.x0 + w / 2 + 4, view.x1 - w / 2 - 4);
+    const y = clamp(ay + tries[i][1], view.y0 + h / 2 + 4, view.y1 - h / 2 - 4);
     const hit = people.some((r) => x + w / 2 > r[0] && x - w / 2 < r[2] && y + h / 2 > r[1] && y - h / 2 < r[3]);
     if (!hit) {
       if (i === 0) return null;
@@ -77,8 +82,25 @@ function signPlace(game, b, ax, ay) {
   return null;
 }
 
-// place: { x, y } the bubble's centre instead of above the anchor (a sign moved aside: signPlace).
-export function drawBubble(ctx, b, ax, ay, place = null) {
+// How far a bubble's drawing reaches from its centre: { x, top, bot } px (the star's points, the cloud's bumps).
+const EXTENT = { x: 0, top: 0, bot: 0 };
+function bubbleExtent(kind, w, h) {
+  if (kind === 'alert') {
+    const r = Math.max(w, h) * 0.62 + 4;
+    EXTENT.x = r; EXTENT.top = r; EXTENT.bot = r;
+  } else if (kind === 'thought') {
+    EXTENT.x = w / 2 - 2 + h / 2; EXTENT.top = h / 2 + 6; EXTENT.bot = h / 2 + 5;
+  } else {
+    EXTENT.x = w / 2 + 2; EXTENT.top = h / 2 + 2; EXTENT.bot = h / 2 + 2;
+  }
+  return EXTENT;
+}
+const BESIDE = 13; // px from the speaker's head to a bubble placed beside it
+
+// place: { x, y } the bubble's centre instead of above the anchor (a sign moved aside: signPlace). view: the part of
+// the map on screen (FULL_VIEW, smaller while the end beat zooms in). The whole bubble stays inside it: with no room
+// above the head it sits beside the head instead, its tail (or dots, or post) pointing at the speaker.
+export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   const icons = Array.isArray(b.icons) ? b.icons : b.icons != null ? [String(b.icons)] : [];
   const age = Math.max(0, fin(b.age));
   const ttl = fin(b.ttl, 2.5);
@@ -94,17 +116,38 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
-  // bubble centre, clamped inside the play area
-  const bx = clamp(place ? place.x : ax, w / 2 + 4, PLAY_W - w / 2 - 4);
-  const by = clamp(place ? place.y : ay - lift - h / 2, h / 2 + 4, PLAY_H - h / 2 - 4);
+  // bubble centre, inside the view: above the head, else beside it (side: 1 right of it, -1 left of it)
+  const ext = bubbleExtent(kind, w, h);
+  const cx0 = view.x0 + EDGE + ext.x;
+  const cx1 = Math.max(cx0, view.x1 - EDGE - ext.x);
+  const cy0 = view.y0 + EDGE + ext.top;
+  const cy1 = Math.max(cy0, view.y1 - EDGE - ext.bot);
+  let bx = place ? place.x : ax;
+  let by = place ? place.y : ay - lift - h / 2;
+  let side = 0;
+  if (!place && by < cy0) {
+    side = ax + BESIDE + ext.x <= cx1 ? 1 : ax - BESIDE - ext.x >= cx0 ? -1 : 0;
+    if (side) {
+      bx = ax + side * (BESIDE + ext.x);
+      by = ay + 12;
+    }
+  }
+  bx = clamp(bx, cx0, cx1);
+  by = clamp(by, cy0, cy1);
+  // what the tail points at, relative to the bubble's centre: the anchor over the head, or the side of the head
+  const hx = side ? ax + side * 8 - bx : ax - bx;
+  const hy = side ? ay + 14 - by : ay - by;
 
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.translate(bx, by + h / 2);
+  // it pops out of the side that faces the speaker
+  const ox = side ? -side * w / 2 : 0;
+  const oy = side ? 0 : h / 2;
+  ctx.translate(bx + ox, by + oy);
   ctx.scale(pop, pop);
-  ctx.translate(0, -h / 2);
-  const tailX = clamp(ax - bx, -w / 2 + 8, w / 2 - 8);
-  const tailY = ay - by; // anchor relative to bubble centre
+  ctx.translate(-ox, -oy);
+  const tailX = clamp(hx, -w / 2 + 8, w / 2 - 8);
+  const tailY = hy; // anchor relative to bubble centre
 
   if (kind === 'alert') {
     const wob = Math.sin(age * 30) * 0.35 * Math.exp(-age * 4);
@@ -125,17 +168,19 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
     ctx.fillRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8);
     // trailing dots toward the thinker
     const dx = tailX * 0.6;
+    const ex = -side * (w / 2 + h / 2 - 4); // beside the head: from the cloud's near end
+    const ey = clamp(hy, -h / 4, h / 4);
     for (let k = 0; k < 2; k++) {
       const f = 0.45 + k * 0.3;
-      const px = dx * (1 - f * 0.5);
-      const py = h / 2 + (tailY - h / 2) * f;
+      const px = side ? ex + (hx - ex) * (f - 0.15) : dx * (1 - f * 0.5);
+      const py = side ? ey + (hy - ey) * (f - 0.15) : h / 2 + (tailY - h / 2) * f;
       ctx.lineWidth = 1.5;
       circle(ctx, px, py, 3 - k * 1.2);
       ctx.fill();
       ctx.stroke();
     }
   } else if (kind === 'sign') {
-    if (place) { // the post leans from the board to the point it judges
+    if (place || side) { // the post leans from the board to the point it judges
       ctx.strokeStyle = C.walnutEdge;
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -160,19 +205,37 @@ export function drawBubble(ctx, b, ax, ay, place = null) {
     rrect(ctx, -w / 2, -h / 2, w, h, 7);
     ctx.fill();
     ctx.stroke();
-    const tb = h / 2 - 0.5;
-    const ty = Math.max(tb + 4, Math.min(tb + 9, tailY));
-    ctx.beginPath();
-    ctx.moveTo(tailX - 5, tb - 2);
-    ctx.lineTo(tailX + 4, tb - 2);
-    ctx.lineTo(tailX - 1, ty);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(tailX - 5, tb + 0.5);
-    ctx.lineTo(tailX - 1, ty);
-    ctx.lineTo(tailX + 4, tb + 0.5);
-    ctx.stroke();
+    if (side) { // out of the near side, toward the head
+      const sx = -side * (w / 2 - 0.5);
+      const sy = clamp(hy, -h / 2 + 7, h / 2 - 7);
+      const tx = sx - side * Math.max(4, Math.min(9, Math.abs(hx) - w / 2));
+      const ty = clamp(hy, sy - 6, sy + 6);
+      ctx.beginPath();
+      ctx.moveTo(sx + side * 2, sy - 5);
+      ctx.lineTo(sx + side * 2, sy + 4);
+      ctx.lineTo(tx, ty);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(sx - side * 0.5, sy - 5);
+      ctx.lineTo(tx, ty);
+      ctx.lineTo(sx - side * 0.5, sy + 4);
+      ctx.stroke();
+    } else {
+      const tb = h / 2 - 0.5;
+      const ty = Math.max(tb + 4, Math.min(tb + 9, tailY));
+      ctx.beginPath();
+      ctx.moveTo(tailX - 5, tb - 2);
+      ctx.lineTo(tailX + 4, tb - 2);
+      ctx.lineTo(tailX - 1, ty);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(tailX - 5, tb + 0.5);
+      ctx.lineTo(tailX - 1, ty);
+      ctx.lineTo(tailX + 4, tb + 0.5);
+      ctx.stroke();
+    }
   }
   let x = -cw / 2 + isz / 2;
   const was = glyphScope('speech'); // any emoji may be said (DESIGN.md "Visual language" rule 1)
@@ -458,18 +521,25 @@ function drawLineMark(ctx, x, y, age, a, color) {
 // --- overlays --------------------------------------------------------------------
 // What E would do now (player.focus, play/interactions.js). A migrated level lights the target up (drawLitTarget);
 // a legacy one (src/levels/legacy.js) floats the row's icon over it.
-export function drawFocusHint(ctx, game, t) {
+export function drawFocusHint(ctx, game, t, view = FULL_VIEW) {
   const p = game.player;
   if (!p || !p.focus || p.action || p.locked || game.phase !== 'day') return;
   const f = p.focus;
   if (!Number.isFinite(f.x) || !Number.isFinite(f.y)) return;
   if (strictGlyphs()) {
-    drawLitTarget(ctx, f, p, t);
+    drawLitTarget(ctx, f, p, t, view);
     return;
   }
   const self = f.kind === 'self';
-  const x = f.x * T;
-  const y = f.y * T - (self ? 44 : 24) + Math.sin(t * 5) * 2.5;
+  const bob = Math.sin(t * 5) * 2.5;
+  let x = f.x * T;
+  let y = f.y * T - (self ? 44 : 24) + bob;
+  let side = 0; // no room above (the top wall): beside the target, its tail pointing back at it
+  if (y - 13 < view.y0 + 2) {
+    side = x > (view.x0 + view.x1) / 2 ? -1 : 1;
+    x += side * (self ? 26 : T / 2 + 14);
+    y = Math.max(view.y0 + 15, f.y * T - (self ? 20 : 0) + bob);
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   circle(ctx, x + 1, y + 2, 11);
   ctx.fill();
@@ -477,9 +547,15 @@ export function drawFocusHint(ctx, game, t) {
   ctx.strokeStyle = C.ink;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(x - 4, y + 9);
-  ctx.lineTo(x, y + 14);
-  ctx.lineTo(x + 4, y + 9);
+  if (side) {
+    ctx.moveTo(x - side * 9, y - 4);
+    ctx.lineTo(x - side * 14, y);
+    ctx.lineTo(x - side * 9, y + 4);
+  } else {
+    ctx.moveTo(x - 4, y + 9);
+    ctx.lineTo(x, y + 14);
+    ctx.lineTo(x + 4, y + 9);
+  }
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
@@ -492,8 +568,9 @@ export function drawFocusHint(ctx, game, t) {
 // DESIGN.md "Visual language" rule 4: the object itself lights up, with the E key cap over it, and no icon (an icon
 // over a tile reads as the object). The glow traces the target: the interactable's tile, the item or the free spot
 // on a desk; an action on yourself (eating what you hold) shows the key cap over your head alone. The key cap sits
-// on the target's far side from you, so your body never hides it.
-function drawLitTarget(ctx, f, p, t) {
+// on the target's far side from you, so your body never hides it; where that side is off the view (a clock on the
+// top wall), it goes beside the target.
+function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   const pulse = 0.5 + 0.5 * Math.sin(t * 5);
   const x = f.x * T;
   const y = f.y * T;
@@ -519,14 +596,16 @@ function drawLitTarget(ctx, f, p, t) {
   }
   const bob = Math.sin(t * 5) * 2;
   if (self) {
-    keycap(ctx, x - 9, y - 50 + bob, 18, 15, 'E', 11);
+    keycap(ctx, clamp(x - 9, view.x0 + 2, view.x1 - 20), Math.max(view.y0 + 2, y - 50) + bob, 18, 15, 'E', 11);
     return;
   }
   const r = f.kind === 'interactable' ? T / 2 + 3 : 14; // the glow's half size
   const dx = f.x - fin(p.x, f.x);
   const dy = f.y - fin(p.y, f.y);
-  if (Math.abs(dy) >= Math.abs(dx)) keycap(ctx, x - 9, (dy > 0 ? y + r + 1 : y - r - 16) + bob, 18, 15, 'E', 11);
-  else keycap(ctx, (dx > 0 ? x + r + 1 : x - r - 19) + bob, y - 7.5, 18, 15, 'E', 11);
+  const ky = dy > 0 ? y + r + 1 : y - r - 16;
+  const kx = dx > 0 || (dx === 0 && x - r - 19 < view.x0 + 2) ? x + r + 1 : x - r - 19;
+  if (Math.abs(dy) >= Math.abs(dx) && ky >= view.y0 + 2 && ky + 15 <= view.y1 - 2) keycap(ctx, x - 9, ky + bob, 18, 15, 'E', 11);
+  else keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20) + bob, clamp(y - 7.5, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
 }
 
 export function drawActionRing(ctx, game, t) {
@@ -556,7 +635,7 @@ export function drawActionRing(ctx, game, t) {
 }
 
 // The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id).
-export function drawSuspicion(ctx, game, t) {
+export function drawSuspicion(ctx, game, t, view = FULL_VIEW) {
   const id = game.level?.roles?.authority?.id;
   const s = game.suspicion && id ? fin(game.suspicion[id]) : 0;
   if (!(s > 0)) return;
@@ -564,9 +643,9 @@ export function drawSuspicion(ctx, game, t) {
   if (!boss || !boss.active) return;
   const lvl = clamp(s, 0, 1);
   const jit = lvl > 0.75 ? Math.sin(t * 47) * 1.2 : 0;
-  const x = fin(boss.x) * T + 17 + jit;
-  const y = fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10;
   const h = 20;
+  const x = Math.min(fin(boss.x) * T + 17, view.x1 - EDGE - 8) + jit;
+  const y = clamp(fin(boss.y) * T - lookFor(game.level.looks, boss.id, boss.color).bubbleDy - 10, view.y0 + EDGE + 20, view.y1 - EDGE - h - 2);
   ctx.fillStyle = 'rgba(24,19,15,0.8)';
   rrect(ctx, x - 1.5, y - 1.5, 8, h + 3, 3);
   ctx.fill();
