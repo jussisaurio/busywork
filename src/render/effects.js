@@ -723,30 +723,15 @@ function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   else keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20) + bob, clamp(y - 7.5, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
 }
 
+// A hold-E action's progress is drawn on the floor under the player (characters.js drawActionProgress), so it
+// never covers her or what she holds. Here only the legacy focus icon beside her.
 export function drawActionRing(ctx, game, t) {
   const p = game.player;
-  const a = p && p.action;
-  if (!a) return;
-  const k = clamp(fin(a.t) / Math.max(0.001, fin(a.duration, 1)), 0, 1);
-  const x = fin(p.x) * T;
-  const y = fin(p.y) * T - 6;
-  const r = 17;
-  ctx.lineWidth = 4.5;
-  ctx.strokeStyle = 'rgba(24,19,15,0.45)';
-  circle(ctx, x, y, r);
-  ctx.stroke();
-  // Same look for every action: colouring "sneaky" ones would explain a rule (no hand-holding).
-  ctx.strokeStyle = C.ochre;
-  ctx.lineWidth = 3.2;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
-  if (p.focus && p.focus.icon && !strictGlyphs()) { // legacy: drop with the legacy list
-    fillCircle(ctx, x + r * 0.75, y - r * 0.75, 7.5, C.white);
-    emoji(ctx, p.focus.icon, x + r * 0.75, y - r * 0.75 + 0.5, 10);
-  }
+  if (!p || !p.action || !p.focus || !p.focus.icon || strictGlyphs()) return; // legacy: drop with the legacy list
+  const x = fin(p.x) * T + 13;
+  const y = fin(p.y) * T - 19;
+  fillCircle(ctx, x, y, 7.5, C.white);
+  emoji(ctx, p.focus.icon, x, y + 0.5, 10);
 }
 
 // The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id): an outlined gauge that

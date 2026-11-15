@@ -918,6 +918,29 @@ function drawPlayerRing(ctx, game, t, mem) {
   ellipse(ctx, x, y, 14, 6);
   ctx.stroke();
   ctx.globalAlpha = 1;
+  drawActionProgress(ctx, p, x, y);
+}
+
+// A hold-E action's progress: an ochre arc filling round the floor under her, from the front, clockwise. On the
+// floor, under her, so it never covers her or what she holds. Same look for every action: colouring "sneaky" ones
+// would explain a rule (no hand-holding).
+function drawActionProgress(ctx, p, x, y) {
+  const a = p.action;
+  if (!a) return;
+  const k = clamp(fin(a.t) / Math.max(0.001, fin(a.duration, 1)), 0, 1);
+  const rx = 18;
+  const ry = 8;
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = 'rgba(24,19,15,0.5)';
+  ellipse(ctx, x, y, rx, ry);
+  ctx.stroke();
+  ctx.strokeStyle = C.ochre;
+  ctx.lineWidth = 3.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, 0, Math.PI / 2, Math.PI / 2 + Math.PI * 2 * k);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
 }
 
 const NONE = [];
