@@ -15,13 +15,9 @@ const TAKE_BLACKOUT = [...TRIP, 'wait 3s', 'goto desk_side pretend', 'goto desk_
 // The breaker: pull it, get clear of the box (he'd know it was you), and wait by Lin's desk till he is out at it.
 const BREAKER_OUT = ['goto fuse_box pretend', 'interact', 'goto lin_desk pretend', 'wait 2s', 'wait 2s', 'wait 2s', 'wait 1s'];
 const TAKE_BREAKER = [...BREAKER_OUT, 'goto desk_side pretend', 'goto desk_side pretend', 'interact'];
-// Eat it: take it in the breaker's dark, step off your desk (at it, E is the drawer) and hold E. It comes back up
-// a while later, if it's in you long enough to come up before 3:40.
+// Eat it: take it in the breaker's dark, step off your desk (at it, E is the drawer) and hold E: you chew, gag
+// and spit it out.
 const EAT = [...TAKE_BREAKER, 'goto my_seat pretend', 'goto my_seat pretend', 'move S 0.4s', 'eat'];
-const SICK = [...EAT, 'wait until 3:27', 'wait until 3:27', 'wait until 3:27', 'wait until 3:27'];
-// It came back up: Lin goes for paper towels (a stop: the boss gets up), then he walks over to the puddle.
-const COMING = [...SICK, 'wait 1s', 'wait 2s', 'wait 2s', 'wait 2s', 'wait 2s'];
-const LOOKED = [...COMING, 'wait 5s'];
 const SIT_TILL_3_41 = ['sit pretend', 'sit pretend', 'sit pretend', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'];
 
 export default [
@@ -51,16 +47,13 @@ export default [
   { name: 'breaker-pulled', cmds: ['goto fuse_box pretend', 'interact', 'wait 1s'], intent: 'You pulled the breaker yourself: the fuse box door hangs open with its red lamp blinking, and the whole floor goes dark with phones up.' },
   { name: 'boss-at-box', cmds: [...BREAKER_OUT, 'goto desk_side pretend', 'goto desk_side pretend'], intent: 'The boss stands at the open fuse box holding his phone torch on it while Kev works at the breakers; you are at the boss\'s empty desk in his dark office, the envelope in the tray in front of you.' },
   { name: 'boss-finds-you', cmds: ['goto fuse_box pretend', 'interact', 'wait 2s', 'wait 2s', 'wait 2s', 'wait 1s'], beat: true, intent: 'If you hang about at the fuse box you pulled, the boss comes round the corner with his torch and finds you standing at it: he points at you (❗👉), a line from him to you.' },
-  { name: 'sick', cmds: [...SICK, 'wait 0.9s'], intent: 'A while after you ate your letter it comes back up: you, green-faced (🤢), stand over a green puddle with the soggy, stained envelope in it; a ripple spreads over the whole floor and everyone turns to look.' },
-  { name: 'lin-towels', cmds: [...SICK, 'wait 1s', 'wait 2s'], intent: 'After you threw up, nobody touches the envelope in the puddle: Lin (🤢) is in the kitchen tearing off paper towels, and the boss has got up from his desk to come and see what the retching was.' },
-  { name: 'boss-looks', cmds: COMING, beat: 1, intent: 'The boss stands over your green puddle and knows his own envelope in it: angry (😠), he points at you (❗👉).' },
+  { name: 'spat', cmds: [...EAT, 'wait 1s'], intent: 'You chewed up your letter, gagged (🤢) and spat it out: a soggy grey wad of chewed paper lies on the floor at your feet, nothing on it readable; your hands are empty.' },
   { name: 'end-switch', cmds: [...TAKE_SWITCH, ...SIT_TILL_3_41], intent: 'Win by the switch, 3:40 with the lights on: he holds up his empty tray, baffled, glancing out through the glass at the hallway lighting panel; you stand at your desk outside his glass office, smug, the envelope in your hand.' },
   { name: 'end-blackout', cmds: [...TAKE_BLACKOUT, ...SIT_TILL_3_41], intent: 'Win by the blackout, 3:40 with the lights on: he holds up his empty tray, baffled; you at your desk with the envelope; behind you the coffee machine you soaked, scorched black up the wall, a wet streak behind it, the water jug empty beside it.' },
   { name: 'end-breaker', cmds: [...TAKE_BREAKER, ...SIT_TILL_3_41], intent: 'Win by the breaker, 3:40 with the lights on: he holds up his empty tray, baffled; you at your desk with the envelope; behind you the fuse box, shut again.' },
   { name: 'end-fail', cmds: ['wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Loss at 3:40: he went through his tray, read your letter and holds it up, furious; you stand in front of his desk, sweating.' },
   { name: 'end-deskwork', cmds: ['goto 21,2 pretend', 'interact', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Loss at 3:40 after Kev saw you tip water into the coffee machine and told on you: the boss holds your letter up, furious; you sit at your desk behind a tall pile of paperwork. Icons: Kev, pointing, paperwork, the letter.' },
-  { name: 'end-eaten', cmds: [...TAKE_BREAKER, 'goto my_seat pretend', 'goto my_seat pretend', 'wait until 3:32', 'wait until 3:32', 'wait until 3:32', 'move S 0.4s', 'eat', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Win, the letter eaten and still inside you at 3:40: he holds up his empty tray, baffled; you sit at your desk outside his glass office, green in the face.' },
-  { name: 'end-soggy', cmds: [...LOOKED, 'wait 5s', 'wait 5s'], intent: 'Loss: you ate it too early and it came back up; he came over to see what the retching was and stands over the green puddle on the floor, pointing at his own soggy envelope lying in it, furious; you stand beside it, green.' },
+  { name: 'end-eaten', cmds: [...EAT, 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Win, the letter chewed up and spat out as pulp: at 3:40 he holds up his empty tray, baffled; you sit at your desk outside his glass office, still green in the face.' },
   { name: 'end-caught', cmds: ['goto desk_side pretend', 'interact', 'wait 5s', 'wait 5s'], intent: 'Loss: you took the letter while he could see you; the lights on, he points at you holding it beside his desk.' },
   { name: 'end-panel', cmds: [...FLIP, 'wait 30s', 'wait 5s', 'wait 5s'], intent: 'Loss: out in the lit hallway he found you at the lighting panel, its switch still off: he points at you, sweating.' },
   { name: 'coffee-poured', cmds: ['wait until 3:20', 'wait until 3:20', 'wait until 3:20', 'goto coffee_machine', 'interact', 'move S 1.2s'], intent: 'Nobody soaked it, so the coffee machine brewed after its flicker: its lamp glows green, the pot is full and steaming, and you hold a cup you just poured.' },

@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, deskClockProp, drawerProp, puddleProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
+import { trayProp, deskClockProp, drawerProp, wadProp, jugProp, machineProp, surgeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -54,13 +54,10 @@ export const DECOR = {
   // cup: index.js pour_coffee). Shorted: the spark running down the wiring to the fuse box, smoke off it while the fuse
   // is out till Kev unplugs it, and a scorch mark for the rest of the day. (The lighting panel and the fuse box: darkness.controls.)
   props: [
-    { // where you threw up (keyed on your desk; drawn where it happened, smaller as Lin wipes it up)
+    { // the wad of letter you spat out (keyed on your desk; drawn where it landed)
       tile: 'P',
-      draw: puddleProp,
-      state: (w, game) => ({
-        at: w.puddle,
-        k: (w.sickAt === null ? 1 : Math.min(1, ((game?.loopTime ?? 0) - w.sickAt) / 0.5)) * (1 - 0.7 * w.wipeProgress),
-      }),
+      draw: wadProp,
+      state: (w, game) => ({ at: w.wad, k: w.wadAt === null ? 1 : Math.min(1, ((game?.loopTime ?? 0) - w.wadAt) / 0.25) }),
     },
     {
       tile: 'P',
@@ -103,15 +100,14 @@ export const DECOR = {
 };
 
 // level.poses (level 1's looks.js documents it): Kev's hands in the fuse box or at the machine's plug, the boss's on
-// the lighting panel, fuming; Lin wiping up your sick at arm's length.
+// the lighting panel, fuming.
 // Anyone holding a phone torch keeps free hands: render/darkness.js draws the arm and the phone.
 // The boss dreading his tray (index.js dread): a shrug as he sighs at it, one hand drumming on the desk, a hand to
 // his desk clock, both hands dragging the tray over at 3:39.
 const dreading = (n, w, act) => n.id === 'boss' && w.bossAct === act;
 export const POSES = {
   arms: [
-    { when: (n) => n.id === 'lin' && n.override === 'wiping', arms: 'holdout' }, // at arm's length
-    { when: (n) => n.override === 'fixing' || n.override === 'switching' || n.override === 'unplugging' || n.override === 'tearing', arms: 'reach' },
+    { when: (n) => n.override === 'fixing' || n.override === 'switching' || n.override === 'unplugging', arms: 'reach' },
     { when: (n, w) => n.id === 'boss' && w.pullAt !== null && w.trayPull < 1 && n.pose === 'sit', arms: 'reach' },
     { when: (n, w) => dreading(n, w, 'sigh'), arms: 'shrug' },
     { when: (n, w, game) => dreading(n, w, 'drum') && Math.floor((game?.time ?? 0) * 6) % 2 === 0, arms: 'carry' },
@@ -150,9 +146,6 @@ export const SOUNDS = {
     'switch:fixed': { sfx: 'clank', spot: 'office_switch' },
     'letter:taken': { sfx: 'jingle', who: 'player', opts: { gain: 0.5 } },
     'letter:eaten': { sfx: 'rustle', who: 'player' },
-    'player:sick': { sfx: 'splashZap', who: 'player', opts: { gain: 0.8 } },
-    'lin:towels': { sfx: 'rustle', who: 'lin', opts: { gain: 0.6 } },
-    'lin:wipes': { sfx: 'shuffle', who: 'lin', opts: { soft: true } },
     'coffee:unplugged': { sfx: 'pickup', spot: 'coffee_machine', opts: { soft: true } },
     'letter:stashed': { sfx: 'shuffle', who: 'player', opts: { gain: 0.5 } },
   },

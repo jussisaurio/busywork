@@ -158,70 +158,18 @@ export default [
     },
   },
   {
-    name: 'breaker, then eat it after 3:30 → still inside you at 3:40 → win (eaten)',
+    name: 'breaker, then eat it at your desk → chewed up and spat out as pulp → nothing in his tray at 3:40 → win (eaten)',
     expect: { result: 'win', routes: ['breaker'] },
     play(ctx) {
       const { run, g } = ctx;
       breakerTake(ctx);
       run('goto my_seat pretend'); run('goto my_seat pretend');
-      for (let i = 0; i < 3; i++) run('wait until 3:32');
       run('move S 0.4s'); // at your desk E is the drawer
       run('eat');
-      if (g.world.letter !== 'eaten') throw new Error('never ate it');
-      for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
-      if (g.outcome?.why !== 'eaten') throw new Error(`end card ${g.outcome?.why}, not eaten`);
-    },
-  },
-  {
-    name: 'breaker, then eat it about 3:28 → it comes up after he sat down to his tray → he finds the tray empty → win (eaten)',
-    expect: { result: 'win', routes: ['breaker'] },
-    play(ctx) {
-      const { run, g, log } = ctx;
-      breakerTake(ctx);
-      run('goto my_seat pretend'); run('goto my_seat pretend');
-      for (let i = 0; i < 3; i++) run('wait until 3:27');
-      run('move S 0.4s');
-      run('eat');
-      if (g.world.letter !== 'eaten') throw new Error('never ate it');
+      if (g.world.letter !== 'eaten' || !g.world.wad) throw new Error('never bit it and spat it out');
+      if (g.player.held) throw new Error('still holding something');
       for (let i = 0; i < 6 && !g.outcome; i++) run('wait until 3:41');
-      if (!log.some((e) => e.name === 'player:sick')) throw new Error('it never came up before 3:40');
       if (g.outcome?.why !== 'eaten') throw new Error(`end card ${g.outcome?.why}, not eaten`);
-    },
-  },
-  {
-    name: 'breaker, then eat it early → it comes back up, he comes over to see the retching and knows his envelope → caught (soggy)',
-    expect: { result: 'caught' },
-    play(ctx) {
-      const { run, waitFor, g, log } = ctx;
-      breakerTake(ctx);
-      run('goto my_seat pretend'); run('goto my_seat pretend');
-      run('move S 0.4s');
-      run('eat');
-      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:30');
-      if (!g.world.sick || g.world.letter !== 'puddle') throw new Error('it never came back up');
-      waitFor((gg) => gg.caught, { maxSec: 120 });
-      caughtFor(g, 'inspection');
-      waitFor((gg) => gg.outcome, { maxSec: 30 });
-      if (g.outcome?.why !== 'soggy') throw new Error(`end card ${g.outcome?.why}, not soggy`);
-    },
-  },
-  {
-    name: 'breaker, eat it early, then fish it back out of the sick and into your drawer before he gets there → win',
-    expect: { result: 'win', routes: ['breaker'] },
-    play(ctx) {
-      const { run, g, log } = ctx;
-      breakerTake(ctx);
-      run('goto my_seat pretend'); run('goto my_seat pretend');
-      run('move S 0.4s');
-      run('eat');
-      for (let i = 0; i < 4 && !log.some((e) => e.name === 'player:sick'); i++) run('wait until 3:30');
-      if (g.world.letter !== 'puddle') throw new Error('it never came back up');
-      for (let i = 0; i < 3 && g.world.letter === 'puddle'; i++) run('interact'); // pick it out of the puddle
-      if (g.world.letter !== 'player') throw new Error('could not pick it out of the puddle');
-      run('goto my_seat'); run('goto my_seat');
-      if (g.world.letter !== 'drawer') run('interact');
-      if (g.world.letter !== 'drawer') throw new Error('never got it into the drawer');
-      for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
     },
   },
   {
