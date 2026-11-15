@@ -10,8 +10,8 @@
    "summary": "caught",
    "digests": [
     "5a6a2015f4bfb30a",
-    "51318f00101d5713",
-    "51068a24e9c39f25",
+    "882937a215523b1d",
+    "3016862a9e700523",
     "e0a86bf95f693a9c"
    ]
   },
@@ -21,20 +21,20 @@
    ],
    "summary": "fail",
    "digests": [
-    "802ce2303a3229fc",
+    "95ac3be4956aa0a3",
     "818a84f2915410a5"
    ]
   },
   {
    "cmds": [
-    "goto camera pretend",
+    "goto pigeonholes pretend",
     "pretend until 4:00"
    ],
    "summary": "blamed",
    "digests": [
-    "99ede29fc52dc7f9",
-    "64fbe14e50265eff",
-    "bdc180b93c2ce758"
+    "5a6a2015f4bfb30a",
+    "606bc08c76950955",
+    "b22f2675ff2a86c8"
    ]
   },
   {
@@ -62,7 +62,7 @@
    "digests": [
     "21c1be0cbe763e8c",
     "bdfe637ade5c8703",
-    "9313f9859fde3891",
+    "3ded631d8fb9c0df",
     "2aa5cb24d08a9074",
     "8098a59bea259632"
    ]
@@ -75,24 +75,24 @@
    "summary": "fail",
    "digests": [
     "590096e3add7c890",
-    "8d6f6867946d8e44",
-    "e5a94f338c5f6abc"
+    "ca8963b424f4c726",
+    "44638ab1e90f429b"
    ]
   },
   {
    "cmds": [
     "goto socket pretend",
     "interact",
-    "goto mail_call pretend",
+    "goto own_desk pretend",
     "pretend until 4:00"
    ],
    "summary": "fail",
    "digests": [
     "b126064d9d7252c6",
     "c1e262ca6a5dc548",
-    "77c005beffa2e3e5",
-    "fb972abf2d112ce0",
-    "62daadfc8879a073"
+    "1d4dfcca32b9234e",
+    "2cd2f37d4c2b3ce0",
+    "387b88fe02a17be3"
    ]
   },
   {
@@ -106,63 +106,59 @@
     "b126064d9d7252c6",
     "c1e262ca6a5dc548",
     "47eee01c5d16ebc9",
-    "deb8fa510b638251"
+    "e2151b4175869c18"
    ]
   },
   {
    "cmds": [
-    "goto broom_stand",
+    "goto broom_stand pretend",
     "interact",
-    "pretend until 3:43",
-    "goto camera",
+    "goto camera pretend",
     "interact",
     "pretend until 4:00"
    ],
    "summary": "blamed",
    "digests": [
-    "aad337223093a615",
-    "4bdee8ac33e1b33f",
-    "988f1b5079edd842",
-    "99142a13221f28e6",
-    "28784cce04aa39a9",
-    "5da7c86c01807eab",
-    "93cc1b8b9c09b68c"
+    "28605e6fbff827df",
+    "357dced04f69bb4d",
+    "16d32c27ac622968",
+    "64f1cb8dfc58813f",
+    "1beb8a2940cc9c53",
+    "ffb150c41de2c32f"
    ]
   },
   {
    "cmds": [
-    "goto socket",
-    "wait 16s",
     "goto pigeonholes",
-    "goto socket",
+    "wait until 3:57",
+    "goto socket pretend",
     "interact",
-    "wait until 4:00"
+    "pretend until 4:00"
    ],
    "summary": "blamed",
    "digests": [
-    "4e363daaf9ee359c",
-    "4ffb0fb530bca208",
-    "8fa43adc815bdb0a",
-    "8a8d5375935b87ea",
-    "9657363327eb88ca",
-    "a9472f50fb004d7e",
-    "ced01aa047657fd8"
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "ab8af58f6476d918",
+    "d76f0b01abba06bf"
    ]
   },
   {
    "cmds": [
     "goto camera",
-    "wait 5s",
+    "wait 7.5s",
     "goto broom_stand pretend",
     "pretend until 4:00"
    ],
    "summary": "blamed",
    "digests": [
     "78431f9ad6b0ce40",
-    "8084f396f3dca474",
+    "d6ef5423de442545",
     "4bfc09e24e8ecd33",
     "44b7fcb92ae3e8a4",
-    "9c476c20e52d301c"
+    "298f5322742661f9"
    ]
   },
   {
@@ -193,7 +189,7 @@
     "interact",
     "goto pigeonholes pretend",
     "interact",
-    "wait until 4:00"
+    "pretend until 4:00"
    ],
    "summary": "caught",
    "digests": [
@@ -201,48 +197,46 @@
     "c1e262ca6a5dc548",
     "d07ca6b9e49ecaa4",
     "98553023c265b565",
-    "87d5cce1fc454216",
-    "302116a9c05c7c88"
+    "c413fba8c1f2c6c7",
+    "4b7a61d903f60af8"
    ]
   },
   {
    "cmds": [
     "goto socket pretend",
     "interact",
-    "pretend 5s",
+    "goto own_desk pretend",
     "goto pigeonholes pretend",
     "interact",
-    "pretend until 4:00"
+    "wait until 4:00"
    ],
    "summary": "caught",
    "digests": [
     "b126064d9d7252c6",
     "c1e262ca6a5dc548",
-    "d61dd074b105f1d6",
-    "cc6461bedc883bff",
-    "68f2d90e4954c9ba",
-    "67edfb4d1e1c396a",
-    "57d461504cf2c59f"
+    "1d4dfcca32b9234e",
+    "ac7e53e8aa8fd066",
+    "fc54650e2565116c",
+    "5aa95242b656b0de",
+    "ee09beed7f44018c"
    ]
   },
   {
    "cmds": [
     "goto socket",
-    "wait 8s",
-    "goto socket",
-    "goto pigeonholes",
+    "wait 4.5s",
+    "goto pigeonholes pretend",
     "interact",
     "wait until 4:00"
    ],
    "summary": "caught",
    "digests": [
     "4e363daaf9ee359c",
-    "4ffb0fb530bca208",
-    "e5760180562ea4b3",
-    "33d54f3c4187b55d",
-    "5cf9a51bf07fe744",
-    "0bd897baa305952a",
-    "aca1d96c0d94e72d"
+    "f5a76d77a98f2d53",
+    "0f0377c90288cd26",
+    "e55b57af5f5ee430",
+    "973e0221f02611d3",
+    "36e63b39731197ab"
    ]
   },
   {
@@ -251,7 +245,7 @@
     "interact",
     "goto pigeonholes pretend",
     "interact",
-    "goto camera",
+    "goto camera pretend",
     "pretend until 4:00"
    ],
    "summary": "caught",
@@ -260,63 +254,51 @@
     "c1e262ca6a5dc548",
     "d07ca6b9e49ecaa4",
     "98553023c265b565",
-    "b9a2cf5907b9dd13",
-    "ce33c115891638f5",
-    "a6014bf5a7d0f6a0"
+    "f783cfddca248ed9",
+    "4c27a99455ccc3db",
+    "a1f0c6239944ac50"
    ]
   },
   {
    "cmds": [
-    "interact",
     "goto pigeonholes",
-    "wait 2s",
-    "pretend 0.5s",
-    "goto mailroom pretend",
+    "wait until 3:27",
     "goto socket pretend",
+    "pretend 2s",
     "interact",
-    "wait until 3:33",
-    "wait until 4:00"
+    "pretend until 4:00"
    ],
    "summary": "blamed",
    "digests": [
-    "a0d445211839d5b0",
-    "85d7286da4b86674",
-    "4a2677597e91f3ff",
-    "d1e1c3e96e61be15",
-    "adf80cd3cac3b399",
-    "0ad4abff08a6d61c",
-    "6707910fea1dbaac",
-    "e7d51f2602e25848",
-    "a49248314a50888b",
-    "a5b7d3f10f28be29"
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "2cb9e0697c21f6fa",
+    "80d8263117f284c9",
+    "42dbf9a6ae7a5f3a",
+    "17d7ae6268604e62"
    ]
   },
   {
    "cmds": [
     "goto broom_stand",
     "interact",
-    "pretend 3s",
     "goto socket pretend",
     "interact",
     "goto camera",
     "interact",
-    "pretend 1s",
-    "goto bob_desk pretend",
-    "wait until 4:00"
+    "pretend until 4:00"
    ],
    "summary": "caught",
    "digests": [
     "aad337223093a615",
     "4bdee8ac33e1b33f",
-    "4f9cac6d8f335aab",
-    "137d1557868afdd6",
-    "1071c4eb9768a5b2",
-    "1b458d1fe41187c4",
-    "fb8145f2464c8c0b",
-    "39857cfaf01c0272",
-    "88bbf461c6735749",
-    "88bbf461c6735749",
-    "88bbf461c6735749"
+    "eba62f86156f3f39",
+    "d4ab7232d3089398",
+    "13caa9b23b1ab7fb",
+    "c6778dbbc4b1d8f0",
+    "cf3898283f9f995a",
+    "28d7f11bf488ebe8"
    ]
   },
   {
@@ -326,7 +308,7 @@
     "goto pigeonholes pretend",
     "interact",
     "sit pretend",
-    "wait until 4:00"
+    "pretend until 4:00"
    ],
    "summary": "win hidden",
    "digests": [
@@ -335,13 +317,12 @@
     "d07ca6b9e49ecaa4",
     "98553023c265b565",
     "98195e400140773a",
-    "d085f5a54160b56d",
-    "8cd1a2e8b52dd983"
+    "32ab00d0e14c37bd",
+    "25a47ebba274292c"
    ]
   },
   {
    "cmds": [
-    "goto own_desk pretend",
     "wait until 3:51",
     "goto socket pretend",
     "interact",
@@ -350,13 +331,52 @@
    ],
    "summary": "fail",
    "digests": [
-    "77a49bf5cff31fd9",
-    "78bc42f0e9693d1e",
+    "9e99af53ec08fba2",
     "3964be6e186eb3ee",
-    "b0c54c771f3442cd",
+    "6ab8573342ed02c0",
     "8693f497a480026c",
-    "84eb81fce73c9fe3",
-    "2ed148bdaef10fe4"
+    "11964c427f726a18",
+    "46671f7e21fb2e18"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto lobby",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "36fe41eff15f999b",
+    "4b413393a9c2e6e8",
+    "7375b9b85304ab78",
+    "52904f71f6c4ab1b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:51",
+    "goto socket pretend",
+    "interact",
+    "goto own_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "21c1be0cbe763e8c",
+    "bdfe637ade5c8703",
+    "3ded631d8fb9c0df",
+    "b69a8c8235c5d72a",
+    "0d2fcde54890b57b",
+    "cbde9b3577b4193d"
    ]
   },
   {
@@ -385,94 +405,6 @@
     "interact",
     "goto pigeonholes pretend",
     "interact",
-    "sit pretend",
-    "goto broom_stand pretend",
-    "wait until 4:00"
-   ],
-   "summary": "blamed hidden",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "98195e400140773a",
-    "7fd9eb22443bd05e",
-    "c7717bc05547604e",
-    "7f14b274f02d3b70"
-   ]
-  },
-  {
-   "cmds": [
-    "goto mailroom pretend",
-    "goto socket pretend",
-    "wait until 3:48",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "sit pretend",
-    "pretend until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "cee8608a11dc5d27",
-    "cc3ae81acf152b48",
-    "b0ea60895a86bb16",
-    "bfb952081bf7f989",
-    "fb4b5755fc005c0c",
-    "0a060d2affd6fa64",
-    "219639e8e2ac1061",
-    "a1d92159cfbca468",
-    "b71b11fb179b6f8c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto broom_stand",
-    "interact",
-    "pretend until 3:43",
-    "goto camera",
-    "interact",
-    "sit pretend",
-    "pretend until 4:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "aad337223093a615",
-    "4bdee8ac33e1b33f",
-    "988f1b5079edd842",
-    "99142a13221f28e6",
-    "28784cce04aa39a9",
-    "03fe70f95e6a81e4",
-    "645acae7631abd27",
-    "b02147346fe8e615"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto own_desk",
-    "pretend until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "9f89cfee2350d726",
-    "5e102ed12c6aeeb1",
-    "a07520ba4334c187"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
     "interact",
     "wait until 4:00"
    ],
@@ -484,7 +416,7 @@
     "98553023c265b565",
     "9f4a6032b0110322",
     "d3259ac68b658dda",
-    "3fc3a490f21c6ac6"
+    "268677aaa26cb0e6"
    ]
   },
   {
@@ -494,52 +426,7 @@
     "goto pigeonholes pretend",
     "interact",
     "sit pretend",
-    "goto camera pretend",
-    "wait until 4:00"
-   ],
-   "summary": "win hidden",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "98195e400140773a",
-    "04bb4dc250035fa6",
-    "984b94fea7375287",
-    "980f718ab367f58f"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:34",
-    "goto socket pretend",
-    "pretend 3s",
-    "interact",
     "goto pigeonholes pretend",
-    "interact",
-    "interact",
-    "pretend until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "367b7c233dcb81b9",
-    "f97b40ef41c96baa",
-    "b646f017efd4d4f7",
-    "4ce4beaf69af8b86",
-    "36aefed8ab05afe8",
-    "36f8a089255160db",
-    "7d87265cfc1a819a",
-    "3ae382b67be4c67e",
-    "579d43d4db95dad2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto mailroom",
     "pretend until 4:00"
    ],
    "summary": "blamed hidden",
@@ -548,9 +435,10 @@
     "c1e262ca6a5dc548",
     "d07ca6b9e49ecaa4",
     "98553023c265b565",
-    "bb3085d9daca6e62",
-    "de080cbe31868d7a",
-    "0bc52a91a5860f25"
+    "98195e400140773a",
+    "05a5d4f1391c3743",
+    "b8a6db29f36a3966",
+    "ffdf95a848bb1af6"
    ]
   },
   {
@@ -559,77 +447,7 @@
     "interact",
     "goto pigeonholes pretend",
     "interact",
-    "pretend 3.75s",
-    "goto own_desk",
-    "interact",
-    "pretend until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "6c66cc72d3bc6c49",
-    "9901751d9b41de7a",
-    "cb4713d8a6b0f0e0",
-    "59bc5797ce86c5ab",
-    "db6822e782f5c47b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto camera pretend",
-    "interact",
-    "sit pretend",
-    "wait until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "b9a2cf5907b9dd13",
-    "988190e78db8d31c",
-    "454d0d16cc910ad2",
-    "adc3f400b352a6bc",
-    "7c361a9b3af9ac77"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto lin_desk pretend",
-    "interact",
-    "pretend until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "5adec474ba07b876",
-    "3a597aebd98fa62d",
-    "cc63adacea3e6c87",
-    "fdd81739aaef8946"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto broom_stand pretend",
+    "goto broom_stand",
     "interact",
     "sit pretend",
     "pretend until 4:00"
@@ -649,12 +467,117 @@
   },
   {
    "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto bob_desk pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "711a40578810c01b",
+    "87929b219934ec74",
+    "3a62493f7e9e28a4",
+    "911a4e5ac6a7f45f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto bob_desk pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "711a40578810c01b",
+    "87929b219934ec74",
+    "22a0bd874630e322",
+    "5d53aa0da86cddd8",
+    "48a74ae6bc81bac4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto own_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "9f89cfee2350d726",
+    "4fa093f4bab9103d",
+    "e36ea9d2990dd160"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto mail_call",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "5a88b947c4ad31c4",
+    "17bb0efe04ade37e",
+    "67634bdf10ef6610"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "b31999fd6eebdcfe",
+    "7b897b524dcab7f7",
+    "f6d74691ef3abcd1"
+   ]
+  },
+  {
+   "cmds": [
     "goto broom_stand pretend",
     "interact",
     "goto camera pretend",
     "interact",
     "goto socket",
-    "wait 12s",
     "interact",
     "wait until 4:00"
    ],
@@ -665,150 +588,9 @@
     "16d32c27ac622968",
     "64f1cb8dfc58813f",
     "224ba31efbaf96ed",
-    "41b7ddb49c5458c0",
-    "f7cdc66902e57466",
-    "3b2daec46a75c42e",
-    "4b48b4549725d074"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto mailroom pretend",
-    "interact",
-    "goto camera pretend",
-    "wait until 4:00"
-   ],
-   "summary": "win hidden",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "bb3085d9daca6e62",
-    "77c7f461dae9e5bf",
-    "40333cd139d41e25",
-    "b62aac4322c89c2c",
-    "93c2639358c3fd03"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto socket pretend",
-    "interact",
-    "wait until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "c23961b9df1e2ac0",
-    "96467008a4d62893",
-    "cd5255e1c779eafa",
-    "e48ff48fda09b65a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "pretend until 3:50",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "wait until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "cc31245751872a38",
-    "5035b76ae22292ac",
-    "7470dacfc8dedc73",
-    "c53faa2bf89e9d51",
-    "cfdf937325ed6110",
-    "89e9d9ab65cb5c38"
-   ]
-  },
-  {
-   "cmds": [
-    "goto broom_stand pretend",
-    "interact",
-    "goto camera pretend",
-    "interact",
-    "goto socket",
-    "wait 24s",
-    "interact",
-    "goto own_desk pretend",
-    "wait until 4:00"
-   ],
-   "summary": "fail",
-   "digests": [
-    "28605e6fbff827df",
-    "357dced04f69bb4d",
-    "16d32c27ac622968",
-    "64f1cb8dfc58813f",
-    "224ba31efbaf96ed",
-    "06a981f8afcba332",
-    "eab8dda128ae4cfb",
-    "8eb0fff7d6452fe2",
-    "0c4feb5022004c92",
-    "fc8e8afa22aacaa2"
-   ]
-  },
-  {
-   "cmds": [
-    "goto socket pretend",
-    "interact",
-    "goto pigeonholes pretend",
-    "interact",
-    "goto mailroom pretend",
-    "goto own_desk pretend",
-    "wait until 4:00"
-   ],
-   "summary": "caught",
-   "digests": [
-    "b126064d9d7252c6",
-    "c1e262ca6a5dc548",
-    "d07ca6b9e49ecaa4",
-    "98553023c265b565",
-    "bb3085d9daca6e62",
-    "f032d7ceadb30ea7",
-    "d5666f9d2ed1b47f",
-    "a717f6f748c367b8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto broom_stand pretend",
-    "interact",
-    "goto camera pretend",
-    "pretend 5s",
-    "interact",
-    "goto socket",
-    "wait 12s",
-    "interact",
-    "wait until 4:00"
-   ],
-   "summary": "blamed",
-   "digests": [
-    "28605e6fbff827df",
-    "357dced04f69bb4d",
-    "16d32c27ac622968",
-    "e25aaab8d562e340",
-    "c5627bc4e9040e98",
-    "98914660123baf2e",
-    "c258fb9fcf482fb6",
-    "424ab283f284d552",
-    "2e9e10d8053b0f36",
-    "28302cee04751932"
+    "1f5c5ab93a6aace6",
+    "d9820a375091c243",
+    "49c78ac1c0087eaa"
    ]
   },
   {
@@ -818,11 +600,571 @@
     "goto pigeonholes pretend",
     "interact",
     "sit pretend",
+    "goto pigeonholes pretend",
+    "wait until 4:00"
+   ],
+   "summary": "win hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "98195e400140773a",
+    "05a5d4f1391c3743",
+    "49a436fa9bf19ef4",
+    "9237c2b6539733d0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
     "goto camera pretend",
+    "interact",
+    "goto own_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "28605e6fbff827df",
+    "357dced04f69bb4d",
+    "16d32c27ac622968",
+    "64f1cb8dfc58813f",
+    "07cf90f54e828a27",
+    "a930fad2bc19af10",
+    "792c7f683da9185f"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
     "interact",
     "goto pigeonholes pretend",
     "interact",
+    "wait 3s",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "febc614c29aa9e18",
+    "77458defe408c33f",
+    "bd1d2d68cd013154",
+    "a1c83aa4ab26b209"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:27",
     "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "e9635c9801751396",
+    "458d1c6724fb12f5",
+    "5bd4af86f0ddf407",
+    "03c4484898c59c43"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:27",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto lin_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "e9635c9801751396",
+    "458d1c6724fb12f5",
+    "3862efd777391822",
+    "eb73e16a310597d9",
+    "f306120317e65646"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:26",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "e9635c9801751396",
+    "458d1c6724fb12f5",
+    "3862efd777391822",
+    "379772de3f77312b",
+    "8b43beb3aa36c3fa",
+    "a98545552cc4e5f6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto mail_call pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "fail hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "5a88b947c4ad31c4",
+    "72124fc7ddbfa10a",
+    "68ad027fea59003e",
+    "88ba4f6d16d7adc9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "win hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "b31999fd6eebdcfe",
+    "2e77b6bc1de6c7eb",
+    "8940c69928b0c806",
+    "ce937d7c28b5867e",
+    "9e6669c838f2b5cf"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "9f4a6032b0110322",
+    "d2c33f14c7d3b3be",
+    "0b4fe60d65dfa5b3",
+    "e0c16e134557478c",
+    "770faf3237204da9",
+    "12e1d2d940c5be59",
+    "4b9f03e6496b4ca8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "goto camera",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "9f4a6032b0110322",
+    "820efad777a1323d",
+    "d27dd7cd11fb00fe",
+    "dc914fdbe559458b",
+    "b2a876e13e262b76",
+    "b21696451a6664e3",
+    "53aa2fbfdc5e62ce"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:26",
+    "goto corridor",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "wait until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "5aa508f5d4989074",
+    "c5aeb1f80b6607a9",
+    "17c227f843236062",
+    "006262a18d9cfc1b",
+    "0cefe3b43192c711",
+    "da449e95d161e04a",
+    "e8595d788209563a",
+    "f726f9df7428a623"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:26",
+    "goto corridor",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "goto camera pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "5aa508f5d4989074",
+    "c5aeb1f80b6607a9",
+    "17c227f843236062",
+    "006262a18d9cfc1b",
+    "0cefe3b43192c711",
+    "da449e95d161e04a",
+    "268f15fd738533ac",
+    "da4a2a99920a25e0",
+    "3d3144fd2191ee50"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto mail_call pretend",
+    "interact",
+    "goto socket pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "5a88b947c4ad31c4",
+    "72124fc7ddbfa10a",
+    "66cc04c440835e3e",
+    "3ce6352e0b507f3f",
+    "b7b23c7fcae73374"
+   ]
+  },
+  {
+   "cmds": [
+    "goto camera",
+    "wait 7.5s",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto socket",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "78431f9ad6b0ce40",
+    "d6ef5423de442545",
+    "4bfc09e24e8ecd33",
+    "231e21583acb1e0e",
+    "2b9742ad1038f0db",
+    "883113c4e7febd3a",
+    "026fffbd020612ef",
+    "fb810b50afc35b73",
+    "f4cb2ddfd19b9213",
+    "2a885e1539e7d01d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "pretend until 3:54",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto socket",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "28605e6fbff827df",
+    "e1ca236ce5ff9bf5",
+    "0f90d579f944795d",
+    "b7b2f038f2fab747",
+    "e3f713ac7da0dd86",
+    "271fa5f28987382e",
+    "f2e1fa384c333303",
+    "ee52166da2fd9b21",
+    "5ef5899a30c1514b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto camera",
+    "wait 7.5s",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "78431f9ad6b0ce40",
+    "d6ef5423de442545",
+    "4bfc09e24e8ecd33",
+    "231e21583acb1e0e",
+    "2b9742ad1038f0db",
+    "883113c4e7febd3a",
+    "b8949abf0f77df5c",
+    "3195c527c05c44f6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:26",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto camera",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "e9635c9801751396",
+    "458d1c6724fb12f5",
+    "400dc007a7645d5d",
+    "3c42be9c0c7658e5",
+    "071108d993933639"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto bob_desk",
+    "wait until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "28605e6fbff827df",
+    "357dced04f69bb4d",
+    "16d32c27ac622968",
+    "64f1cb8dfc58813f",
+    "99c9e3a9921d68ff",
+    "37e1ae59d330030a",
+    "3606517563205d51"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto socket",
+    "interact",
+    "goto own_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "fail",
+   "digests": [
+    "28605e6fbff827df",
+    "357dced04f69bb4d",
+    "16d32c27ac622968",
+    "64f1cb8dfc58813f",
+    "224ba31efbaf96ed",
+    "1f5c5ab93a6aace6",
+    "0402495d943c35c0",
+    "89ef69974b91b70a",
+    "9a7baff773565fb6"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:26",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto camera",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "e9635c9801751396",
+    "458d1c6724fb12f5",
+    "400dc007a7645d5d",
+    "ff3af1593bb26bfe",
+    "b260f13b2939dd3b",
+    "85235b1f4f4807da"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "pretend until 3:48",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "2759c180b3b7262c",
+    "20cfe648ed00d0a7",
+    "ba100132f491ca74",
+    "1e19c376e1edd21e",
+    "6ef9310f8c24335a",
+    "2a0056ae33f5bf9b",
+    "1375eeccf703a8c5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "98195e400140773a",
+    "7fd9eb22443bd05e",
+    "51ec010904359ee2",
+    "8f701a771e8dc095",
+    "6df53bc7017c2380",
+    "abb4887ba3621f8a",
+    "03b8cef1d41b4983"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "goto pigeonholes pretend",
+    "wait until 3:26",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "adf019697f5edb63",
+    "01cfb019026ec332",
+    "b73abfcbe0a2edd4",
+    "1d95215e58aa5299",
+    "edb77322b046c9ce",
+    "6e2e8fa9d32b40a3",
+    "52d59047b7ca1c46",
+    "359be5c031734c2e",
+    "cc4325303a88222e",
+    "b3673a016177b3c0",
+    "78ff97716ee73581"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand",
+    "interact",
+    "goto camera pretend",
     "interact",
     "pretend until 4:00"
    ],
@@ -833,34 +1175,38 @@
     "d07ca6b9e49ecaa4",
     "98553023c265b565",
     "98195e400140773a",
-    "04bb4dc250035fa6",
-    "08c1f7e3bbe7bfc0",
-    "b30327a8a2651ef3",
-    "69a79445d053a1cc",
-    "001908f9c1053f6f",
-    "8e967c2b3c831887",
-    "90d6e8699813089c",
-    "5611621df261ec92"
+    "b40411ab5ce8bec0",
+    "9d9a4d7c1deae52e",
+    "e3c265fda16a07a0",
+    "1b0ce4017afee0bf",
+    "0e89edc6be498a46",
+    "b5725b971945ae4e"
    ]
   },
   {
    "cmds": [
-    "wait until 3:51",
-    "goto socket pretend",
+    "goto broom_stand",
     "interact",
-    "sit pretend",
-    "goto camera pretend",
-    "wait until 4:00"
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "pretend until 4:00"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "9e99af53ec08fba2",
-    "3964be6e186eb3ee",
-    "b0c54c771f3442cd",
-    "c1438036b7bb8793",
-    "01e4ccbe0438be6e",
-    "184160f51e64edb0",
-    "184160f51e64edb0"
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "19d921f7790e64ca",
+    "4bff75834424bde8"
    ]
   },
   {
@@ -871,8 +1217,11 @@
     "interact",
     "goto corridor pretend",
     "interact",
+    "goto broom_stand pretend",
+    "interact",
     "goto camera pretend",
-    "wait until 4:00"
+    "interact",
+    "pretend until 4:00"
    ],
    "summary": "caught",
    "digests": [
@@ -882,9 +1231,482 @@
     "98553023c265b565",
     "5ca88fffefe53117",
     "d35de5e0c4c19802",
-    "fe324dfd6b4268ee",
-    "8a2363e3c8f498b7",
-    "515711f731e7c2b9"
+    "e61563281b9662c5",
+    "b305cbb6cd7cdf0c",
+    "1cc8e3db03699331",
+    "54fb08c9ea475045",
+    "488d6eacf64652ce",
+    "35453c4a3cb033ff"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto mail_call pretend",
+    "interact",
+    "goto socket pretend",
+    "pretend until 3:59",
+    "goto own_desk pretend",
+    "wait until 4:00"
+   ],
+   "summary": "fail hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "5a88b947c4ad31c4",
+    "72124fc7ddbfa10a",
+    "66cc04c440835e3e",
+    "3ce6352e0b507f3f",
+    "c5881c380193b71d",
+    "ae4111c35904c721",
+    "8146b6d7174b1753"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto own_desk pretend",
+    "interact",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera",
+    "pretend 4s",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "9f89cfee2350d726",
+    "1397569b584acb0f",
+    "18f85b101fa451af",
+    "8c6ce6d4164dcd72",
+    "98ab53e6fbca10e2",
+    "949030400488670c",
+    "328a011ebb2f9818",
+    "baea0a7dfdc48ccf",
+    "6cda3ff5c260beb8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "win bob",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "771544f940ed4e0c",
+    "e2fb9d29c4d0eb9d",
+    "cc79f73b32b3a383"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto pigeonholes pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "bf998c415ac15b92",
+    "f811730645719b07",
+    "7e08328a241aee09",
+    "09cf76f20770dff2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto own_desk pretend",
+    "interact",
+    "goto pigeonholes",
+    "wait until 3:55",
+    "goto socket pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "9f89cfee2350d726",
+    "1397569b584acb0f",
+    "6835350819c2adf2",
+    "bd5f21afb2ba955f",
+    "70cafe6f09b01e54",
+    "3e5a60bdc54b6c4b",
+    "2b349b8554a5234a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "wait until 3:50",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "dff036125d65a221",
+    "8d7b2639e0f2eaf1",
+    "59698efde797aa2f",
+    "3f8306eaf1d69040",
+    "d86549b6e850d8e9",
+    "c66ddaf86e89c9f7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win hidden",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "bf998c415ac15b92",
+    "0c3efe917a8d4ae2",
+    "92fa2b6516c806f0"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto camera",
+    "interact",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "5dd2cc91ba432d4a",
+    "ac1f054880534bbb",
+    "ac234db4d74c1593",
+    "29e7f0a5935774be"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:32",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto mail_call pretend",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "2188accd43daaa98",
+    "b5a7ca9e3205ce84",
+    "ce60610119ff4f38",
+    "65c0cbc7cb4ba5b7",
+    "e3035ec4c2970f9e",
+    "181417eb31de42a9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "wait 5s",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto own_desk pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "a8d9daf53e150c96",
+    "983ba90653e7a83f",
+    "b3aedb654cd11682",
+    "dd3b286a9d2f755c",
+    "54ac5dfeff89d01c",
+    "90146f30b2e6648a",
+    "522be8c6ad39529f",
+    "abfd1cc48f7bccfc",
+    "7efd5a83241569c8",
+    "6e94fe1556023155",
+    "61e4fa0b10530b9d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "goto broom_stand pretend",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "goto own_desk pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "win hidden",
+   "digests": [
+    "b126064d9d7252c6",
+    "c1e262ca6a5dc548",
+    "d07ca6b9e49ecaa4",
+    "98553023c265b565",
+    "98195e400140773a",
+    "7fd9eb22443bd05e",
+    "51ec010904359ee2",
+    "8f701a771e8dc095",
+    "6df53bc7017c2380",
+    "5b80c7c3ad186d3f",
+    "1cd54cdad57b77c8",
+    "2bbfa3740ae7f8ed"
+   ]
+  },
+  {
+   "cmds": [
+    "goto socket pretend",
+    "pretend until 3:48",
+    "interact",
+    "wait until 3:29",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto camera",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b126064d9d7252c6",
+    "2759c180b3b7262c",
+    "20cfe648ed00d0a7",
+    "3214ed1a1c5cff63",
+    "e76106982d69b474",
+    "9538cb037438a146",
+    "35f57dc0d85ab0ea",
+    "f49b8de8960b91fc",
+    "17567c2531a4974c",
+    "6f3511c1dc956f5c",
+    "0fdf7ba789fefeae"
+   ]
+  },
+  {
+   "cmds": [
+    "goto pigeonholes",
+    "wait until 3:32",
+    "goto socket pretend",
+    "interact",
+    "goto pigeonholes",
+    "goto pigeonholes pretend",
+    "goto broom_stand",
+    "interact",
+    "goto camera pretend",
+    "interact",
+    "wait until 4:00"
+   ],
+   "summary": "blamed",
+   "digests": [
+    "73d9fae44ece7549",
+    "32d650143c677647",
+    "613d4b680a61e792",
+    "5ee6d74472d88020",
+    "2188accd43daaa98",
+    "b5a7ca9e3205ce84",
+    "74f2fb20314acde4",
+    "5ddfd55ca8343d71",
+    "11bd6b94273514b1",
+    "202838ba640d227f",
+    "e6736ab0ff5a61bd",
+    "8f107a9ef5c5aa63"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto broom_stand",
+    "pretend until 4:00"
+   ],
+   "summary": "blamed hidden",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "c0b428f6b27e7755",
+    "aa75a5f9ec0dcb10",
+    "1134c4a0dd7ef68d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "wait 5s",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "sit pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "6e9ed93fc6f37697",
+    "b3aedb654cd11682",
+    "dd3b286a9d2f755c",
+    "54ac5dfeff89d01c",
+    "90146f30b2e6648a",
+    "522be8c6ad39529f",
+    "abfd1cc48f7bccfc",
+    "a7682e958c8daaeb",
+    "017804dbca7eb397"
+   ]
+  },
+  {
+   "cmds": [
+    "goto broom_stand",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "interact",
+    "goto pigeonholes pretend",
+    "interact",
+    "goto socket pretend",
+    "goto camera",
+    "interact",
+    "goto pigeonholes pretend",
+    "pretend 3.75s",
+    "interact",
+    "sit pretend",
+    "goto mail_call pretend",
+    "pretend until 4:00"
+   ],
+   "summary": "caught",
+   "digests": [
+    "aad337223093a615",
+    "4bdee8ac33e1b33f",
+    "eba62f86156f3f39",
+    "8f53328ecd6ebd20",
+    "e084576cdeb1a373",
+    "d2e61bbfe5b9e36c",
+    "9880925c431f63f0",
+    "9fb636296250c02c",
+    "16dad98fed98e741",
+    "27dd0ad8e6515ef9",
+    "7924f815c75031e2",
+    "c914f410a9ca227f",
+    "a1a6c152d600d5cb",
+    "8d889ac51771443a",
+    "2d78c4ca3fd390af",
+    "d117df9f5c31cf7f",
+    "a0675b53c35f1a18",
+    "137e019e1e1f03cd"
    ]
   },
   {
@@ -903,10 +1725,10 @@
     "382b95955ea08837",
     "525c826807d85575",
     "8b6040f701851528",
-    "efa352052865ead0",
+    "9041b8f097521b31",
     "825ebd6c9b8b0e85",
     "5fa1834ee3bf5fb9",
-    "9897508a968470ea"
+    "6cd5fd8fd36a51ae"
    ]
   },
   {
@@ -952,8 +1774,8 @@
     "aad337223093a615",
     "4bdee8ac33e1b33f",
     "f02444480fd1cf08",
-    "3634a06931fedb81",
-    "b17a17ba3c9ca726",
+    "97bee674c3b8f35d",
+    "59c6cb43915e04c4",
     "dba8db81c6e87f86",
     "dba8db81c6e87f86",
     "dba8db81c6e87f86",
@@ -986,7 +1808,7 @@
     "5d343d52868ab6ea",
     "008eb682698aefed",
     "e243db9989de7681",
-    "5540626947a89948"
+    "b5855cbb2ca9e582"
    ]
   },
   {
@@ -1018,7 +1840,7 @@
     "7e732fc73a5d4d6f",
     "1eed32d353429904",
     "ad06795466583813",
-    "54524169f03cdef5"
+    "a17dab20d4fac1bb"
    ]
   }
  ]
