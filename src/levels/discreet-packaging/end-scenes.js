@@ -282,8 +282,18 @@ function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false,
   return p;
 }
 
-// Your chair, pulled out from your desk and empty, in a spotlight, feet at (x, y).
-function emptyChair(ctx, x, y) {
+// Your chair, pulled out from your desk and empty, feet at (x, y). spot: in a spotlight (the losses: where are
+// you?); the away win leaves it unlit, since nobody is looking for you.
+function emptyChair(ctx, x, y, spot = true) {
+  if (spot) spotlight(ctx, x, y);
+  ctx.save();
+  ctx.translate(x, y - 20);
+  ctx.scale(2.6, 2.6);
+  drawChair(ctx, 0, 0, Math.PI / 2 + 0.5, '#d6a23a', '#a97b22');
+  ctx.restore();
+}
+
+function spotlight(ctx, x, y) {
   ctx.save();
   ctx.globalAlpha = 0.35;
   fillEllipse(ctx, x, y + 6, 70, 18, '#fff7d0');
@@ -296,11 +306,6 @@ function emptyChair(ctx, x, y) {
   ctx.lineTo(x - 70, y + 6);
   ctx.closePath();
   ctx.fill();
-  ctx.restore();
-  ctx.save();
-  ctx.translate(x, y - 20);
-  ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, Math.PI / 2 + 0.5, '#d6a23a', '#a97b22');
   ctx.restore();
 }
 
@@ -316,7 +321,7 @@ function bobScene(ctx, game, t, e) {
   bob(ctx, game, t, 300, 300 - Math.abs(Math.sin(t * 2)) * 1.5, { sc: 2.6 });
   if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 300, 300, 2.6, t);
   bubble(ctx, ['🥹'], 300, 196, e, 'thought');
-  if (away) emptyChair(ctx, 650, 320);
+  if (away) emptyChair(ctx, 650, 320, false);
   lin(ctx, game, t, 470, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6 });
   bubble(ctx, ['#brownbox', '@player'], 470, 196, e - 0.2);
   if (!away) you(ctx, game, t, 650, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
