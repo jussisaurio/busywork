@@ -206,10 +206,17 @@ export const stepPrompt = (s, dir = PROMPTS) => promptText(s.prompt, s.extra, di
 
 // The verdict on a report's first line: 'works' | 'fixable' | 'broken', or null when the line is not a verdict.
 // Markdown emphasis around it (**Verdict: works**) is forgiven; anything else on the line is not.
+// The verdict line opens the reply. Reviewers sometimes put one or two lines of chatter first ("I've read the files;
+// writing the report now."), so the first VERDICT_LINES non-empty lines may hold it; a verdict further down (a quote
+// in the report) doesn't count.
+const VERDICT_LINES = 3;
 export function parseVerdict(text) {
-  const first = String(text ?? '').split('\n').find((l) => l.trim()) ?? '';
-  const m = /^verdict:\s*(works|fixable|broken)\.?$/i.exec(first.replace(/[*_`#>]/g, '').trim());
-  return m ? m[1].toLowerCase() : null;
+  const lines = String(text ?? '').split('\n').filter((l) => l.trim()).slice(0, VERDICT_LINES);
+  for (const line of lines) {
+    const m = /^verdict:\s*(works|fixable|broken)\.?$/i.exec(line.replace(/[*_`#>]/g, '').trim());
+    if (m) return m[1].toLowerCase();
+  }
+  return null;
 }
 
 // A new temp folder for one step's bundle, outside the repo.
