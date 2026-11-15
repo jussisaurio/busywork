@@ -9,15 +9,56 @@ with problems any outsider would have caught:
 - **Every level.** Emoji stood in for people, which nobody could read.
 
 A cold read is a review by a fresh reader who sees only what a player would see. A level is not ready for a human
-playtest until it passes all three stages. `tools/gate.mjs` enforces this for every level except the fixtures (ids
+playtest until it passes every pass below. `tools/gate.mjs` enforces this for every level except the fixtures (ids
 that start with `fixture`).
 
-## The three stages
-| Stage | The reader sees | The reader judges | When |
-|---|---|---|---|
-| **premise** | Step 1: the card alone. Step 2: the card, step 1's reading, `premise.md` and the level's own source files (not `shots.js`). Its prompt adds the engine rules every level relies on (`tools/cold-read/prompts/engine.md`). | Stakes, motivation, deducibility, consistency, the joke, the name. | At the first playable cut, and whenever the card or premise changes. |
-| **pictures** | Step 1: the card, the screenshots from `shots.js`, numbered `01.png`, `02.png`, ... with no names and no intents, and one verb sheet per item (`verbs/01.png`, ...; see below), panels numbered only. Step 2: a second reader compares step 1's reading with the intents, and gets the verb sheets labelled, with the engine's account of each panel. | Whether each picture says what it must. Whether each verb panel makes sense for its object and shows what the action is. | Before the level goes to a human, and whenever the stage goes stale. |
-| **replay** | Step 1: the card and one strip of frames per route check, with captions that give only the clock and what the player knows. Step 2: a second reader compares those readings with what each run really was and with `premise.md`'s ways to win and lose. | Whether a player could tell why each loop ended, and which of their actions caused it. | Before the level goes to a human, and whenever the stage goes stale. |
+## The passes
+Each pass is one reader (or two, in steps) with one narrow question. Its reader is told to ignore everything outside
+that question: other passes check the rest. A pass is a small spec in `PASSES` in `tools/cold-read.mjs`: its inputs,
+its steps and prompts, the answer it gives per item, and its verdict rule. Each pass records its own section in
+`cold-read.md`, with its own input hash.
+
+More narrow passes will follow `sense` and `verbs` (title, motives, props, joke, faces, tells, outcomes). The text
+passes come first. They are cheap (no code, no pictures) and catch design errors before any picture is made.
+
+| Pass | The reader sees | The question | Per item | The past failure it must catch |
+|---|---|---|---|---|
+| **sense** | The card and the ways to win and lose, as prose. | Would every route, winning and losing, get past a real, half-awake boss? Does every NPC act for a reason a real person would have? | sensible / stretch / **nonsense** | Layoffs' hoodie route: the boss takes you for Kev, who he knows went home. |
+| **premise** (broad) | Step 1: the card alone. Step 2: the card, step 1's reading, `premise.md` and the level's own source files (not `shots.js`), with the engine rules (`engine.md`). | Stakes, motivation, deducibility, consistency, the name: is it legible to an implementer? | (none: problems only) | "Kev's Hoodie": the stakes meant nothing. |
+| **verbs** | Step 1: the verb sheets alone, panels numbered. Step 2: the reading, the sheets labelled, the engine's account of each panel. | Does each verb make sense for its item, and look like it? | fits / odd / **wrong** | Eating the resignation letter left mustard. |
+| **pictures** (broad) | Step 1: the card and the screenshots from `shots.js`, numbered, no names, no intents. Step 2: the reading against the intents. | Does each picture say what it must? What would you try? | reads / partly / misread (per shot) | |
+| **replay** (broad) | Step 1: the card and one strip of frames per route check, captioned with the clock and what the player knows. Step 2: the readings against the runs and the ways to win and lose. | Could a player tell why each loop ended, and which of their actions caused it? | explained / partly / unexplained (per run) | |
+
+- **Preambles.** The text passes start from `text.md`: an ordinary office worker, not a game designer. They never get
+  `common.md`, whose game rules ("clothes are identity") would make the reader judge like an implementer, and never
+  the engine rules. The narrow picture passes start from `focus.md`; the broad passes from `common.md`.
+- **Items.** A narrow pass's reply starts `Verdict: works | fixable | broken`, then one line per item:
+  `- <item>: <answer> — <one line why>`. The record keeps the tally. A bold-listed (last column) answer is a blocker.
+  A narrow report with no item lines is `unreadable`.
+
+## Grades and the ledger
+Every pass's last step ends its prompt with `prompts/grades.md`, so every pass uses the same scale. (It is a file of
+its own, not part of `common.md`, because the text passes never get `common.md`.)
+- **No quota.** The reader lists every problem in its question's scope, each graded:
+  - `blocker`: a player would misunderstand a route or a cause, a person or thing acts as it never would in a real
+    office, or the name or card leaks the way out
+  - `should`: it hurts, but misleads nobody
+  - `nit`: polish
+
+  The report ends with `## Problems` and one `- <grade>: <problem> — <fix>` line each, or `- none`.
+- **The verdict counts blockers only.** `works` when there are none, `fixable` when there are any, whatever the
+  reader's verdict line says (the record notes when they differ). `broken` stands when the reader says it. The
+  blockers are the listed ones, a narrow pass's bad items, and the earlier problems still there. A report without
+  its verdict line or its `## Problems` is `unreadable`.
+- **The ledger.** When the pass already has a record, its open problems (every blocker and should, not the nits) go
+  to the last step as `earlier.md`, numbered E1, E2, .... The reader marks each `fixed`, `still there` or `no longer
+  applies` under `## Earlier problems`, before listing new ones. One still there (or not marked) is promoted to a
+  blocker and tagged "recurring: premise-level?": a problem that survives a round of fixes is often in the premise,
+  not the pixels. A record from before the grades has no open list; its last report goes in `earlier.md`, and the
+  reader numbers its problems. The ledger is not an input: it does not make a pass stale.
+- **Calibration.** `--calibrate` runs passes on a reference level (one the user is happy with), with no ledger, and
+  records them in `tools/.shots/<id>/calibrate.md`, never the level's record. If that level can't get `works`, the
+  prompt is wrong: read each blocker, and fix the prompt when a real office would shrug at it.
 
 Each step is a separate fresh reader, so nothing the reader learns later can colour their first read.
 
@@ -26,36 +67,43 @@ engine's rules (pretending hides what you carry, a schedule time is when someone
 rules that hold in every level, true to DESIGN.md and the engine, and never a level's solution. Add a rule when a
 review reports an engine behaviour as missing or wrong.
 
-Verdicts are `works`, `fixable` or `broken`. A reply whose first line is not a verdict is recorded as `unreadable`,
-which the gate treats as a failure. The gate needs `works` from every stage, for the current inputs.
+Verdicts are `works`, `fixable` or `broken` (see the grades above). An `unreadable` record is a failure too. The gate needs `works` from every pass, for the current inputs.
 
 ## Setup
-The pictures and replay stages draw with `@napi-rs/canvas`. Install it once, into a folder git ignores:
+The picture passes (verbs, pictures, replay) draw with `@napi-rs/canvas`. Install it once, into a folder git ignores:
 ```
 npm install --prefix tools/.deps @napi-rs/canvas
 ```
-`BUSYWORK_CANVAS_DIR` points the tools at another copy, if you have one. The premise stage needs no canvas.
+`BUSYWORK_CANVAS_DIR` points the tools at another copy, if you have one. The text passes need no canvas.
 
 ## Running it
 ```
-node tools/cold-read.mjs --level <id> --stage premise     # build the bundles, run the readers, record the result
-node tools/cold-read.mjs --level <id> --stage pictures
-node tools/cold-read.mjs --level <id> --stage replay
-node tools/cold-read.mjs --status                         # every non-fixture level: each stage's verdict, fresh or stale
-node tools/shots.mjs --level <id>                         # look at the shots yourself: tools/.shots/<id>/ (and each one's clock)
-node tools/shots.mjs --level <id> --replay                # and the replay strips: tools/.shots/<id>/replay/
-node tools/shots.mjs --level <id> --verbs                 # and the verb sheets: tools/.shots/<id>/verbs/
+node tools/cold-read.mjs --level <id> --pass sense         # build the bundles, run the readers, record the result
+node tools/cold-read.mjs --level <id> --pass sense,verbs   # a list, at the same time
+node tools/cold-read.mjs --level <id> --pass all           # every pass, at the same time
+node tools/cold-read.mjs --level <ref> --pass sense --calibrate   # a reference level, read cold: should come out works
+node tools/cold-read.mjs --status                          # every non-fixture level: each pass's verdict, fresh or stale
+node tools/shots.mjs --level <id>                          # look at the shots yourself: tools/.shots/<id>/ (and each one's clock)
+node tools/shots.mjs --level <id> --replay                 # and the replay strips: tools/.shots/<id>/replay/
+node tools/shots.mjs --level <id> --verbs                  # and the verb sheets: tools/.shots/<id>/verbs/
+node tools/crop.mjs --in <png> --out <scratch>/c.png --x 300 --y 360 --w 400 --h 280   # zoom into part of a picture
 ```
+- Passes share no readers, so several run at the same time. The pictures they share (strips, sheets) are drawn once.
+- `--stage` still works as another name for `--pass`.
+- To look closely at part of a picture, use `tools/crop.mjs`, not a script of your own. Every argument is named and
+  checked, and it refuses to write into the repo (except `tools/.shots/`). A hand-made crop script with positional
+  arguments once wrote a blank PNG named `280` into the main repo's root; the gate now fails on any picture at the
+  repo root (`stray`).
 - `cold-read.mjs` draws the shots, sheets and strips itself. You do not need to run `shots.mjs` first.
 - Each step runs through `claude -p` in a new temp folder that holds only that step's bundle. The reader has two tools,
   Read and Glob, and no other access. Steps that do not depend on each other run at the same time.
 - Options: `--model <m>` picks the readers' model. `--keep` keeps the bundles after a successful run (a failed run
   always keeps them and says where).
-- A `fixable` or `broken` verdict lists its problems. Fix them and run the stage again. Do not argue with the reader:
+- A `fixable` or `broken` verdict lists its problems. Fix them and run the pass again. Do not argue with the reader:
   if a fresh reader misread it, so will the player.
 
 ### Without `claude -p`
-1. `node tools/cold-read.mjs --level <id> --stage <stage> --bundle-only` prints each step's folder, its prompt file,
+1. `node tools/cold-read.mjs --level <id> --pass <pass> --bundle-only` prints each step's folder, its prompt file,
    where its reply goes, and whether it is ready.
 2. Run a fresh agent in each ready step's folder with that prompt. Save its reply to the reply file.
 3. Run `--bundle-only` again. A step 2 bundle is ready once step 1's reply is saved.
@@ -64,24 +112,29 @@ node tools/shots.mjs --level <id> --verbs                 # and the verb sheets:
 If the inputs change between these runs, `--bundle-only` starts a new manual run.
 
 ## The record: `cold-read.md`
-`src/levels/<id>/cold-read.md` has one section per stage. A new run of a stage replaces its section. Each section
+`src/levels/<id>/cold-read.md` has one section per pass. A new run of a pass replaces its section. Each section
 holds:
-- the verdict (the first line of the last step's reply)
+- the verdict (from the blockers, above), the item tally and the problem tally (blocker, should, nit)
+- the ledger (each earlier problem and its mark) and the open problems the next run's reader gets
 - the date, the commit and the model
-- a hash of the stage's inputs, and what went into it
-- a table of the steps, with each one's time and cost, and the stage's wall-clock time (steps can run at the same
+- a hash of the pass's inputs, and what went into it
+- a table of the steps, with each one's time and cost, and the pass's wall-clock time (steps can run at the same
   time)
 - every step's reply, verbatim
 
-A stage is fresh while its inputs still hash to the recorded value. Every stage's inputs include the full text of
-the prompts its readers get (`tools/cold-read/prompts/`), so changing a prompt makes the stages that use it stale.
-The other inputs are:
-- **premise**: the card and `premise.md`
-- **pictures**: the card, `shots.js` (names, commands, intents), the bytes of every rendered shot and verb sheet,
-  and the verb panels' intents
-- **replay**: the card, `route-checks.js`, `premise.md`'s ways to win and lose, and every frame and caption
+A pass is fresh while its inputs still hash to the recorded value. Every pass's inputs include the card and the full
+text of the prompts its readers get (`tools/cold-read/prompts/`), so changing a prompt makes the passes that use it
+stale. The other inputs are:
+- **sense**: `premise.md`'s ways to win and lose
+- **premise**: `premise.md`
+- **verbs**: the bytes of every verb sheet, numbered and labelled, and the panels' intents
+- **pictures**: `shots.js` (names, commands, intents) and the bytes of every rendered shot
+- **replay**: `route-checks.js`, the ways to win and lose, and every frame and caption
 
-The PNG bytes are the same on every run on one machine. Fonts and the canvas version change them, so a stage recorded
+So an edit to `## The joke` stales only premise (which reads the whole file), and an edit to `## Ways to lose` stales
+sense, replay and premise.
+
+The PNG bytes are the same on every run on one machine. Fonts and the canvas version change them, so a pass recorded
 on another machine can show as stale. Run it again there.
 
 ## premise.md (in every level folder, kept true to the level)
@@ -109,8 +162,10 @@ The funniest moment, described as a picture.
   a mechanic or a tool, the premise review reports it, and the verdict is at best `fixable`.
 - The first heading is the level's name. `card.txt`, which every step 1 reader gets, holds that name, the card's two
   lines and the card's icons (the badge). Nothing else from `premise.md` goes in it.
-- `## Card` must hold the card's lines exactly as the level has them. If not, the stage does not run.
-- The replay stage needs `## Ways to win` and `## Ways to lose`.
+- `## Card` must hold the card's lines exactly as the level has them. If not, no pass runs.
+- sense and replay need `## Ways to win` and `## Ways to lose`. Without its section a pass does not run, and `--status` and the gate
+  say which section is missing.
+- The text passes see the sections as prose, without the rest of the file. Write them so they stand alone.
 
 ## shots.js (in every level folder)
 ```js
@@ -134,7 +189,7 @@ export default [
   intent is a builder's words about a moment; the clock says which moment was drawn. The comparer marks a shot whose
   intent describes another moment `wrong moment`, and the fix is the shot's commands.
 - Two shots that render pixel-identical are an error: `shots.mjs` writes the PNGs, then names both shots and exits 1,
-  and the pictures stage does not run (its status gives the same error). The later shot shows nothing the earlier
+  and the pictures pass does not run (its status gives the same error). The later shot shows nothing the earlier
   one doesn't, so one of them is not the moment its intent describes. The usual cause: a shot meant to show the
   caught beat, without `beat: true`, comes out as the end card another shot already shows.
 
@@ -169,8 +224,8 @@ player's hand at an empty tile that nobody watches, and each sequence is a fresh
 - put on each spot that takes it (`putdown.js`): before, during, after. A spot that holds another item at day start
   is not drawn: a spot holds one item.
 
-Each panel is a close-up around the player, with the top bar's hand slot in its corner. Step 1 gets each sheet with
-the panels numbered only. Step 2 gets the same file with each panel's verb on it, and `intents.md` gets the engine's
+Each panel is a close-up around the player, with the top bar's hand slot in its corner. The verbs pass shows them
+alone (not with the shots). Step 1 gets each sheet with the panels numbered only. Step 2 gets the same file with each panel's verb on it, and `intents.md` gets the engine's
 account of each panel: the verb's row and what it changed (your hand, `player.smeared`, world flags, events, thoughts).
 Panels where someone reacts to the player are marked there, not avoided.
 
@@ -204,10 +259,10 @@ Both `shots.mjs` and the replay strips draw each effect as a player at normal sp
 
 The game itself is not changed: the harness's own effects age as they always do. The harness gives
 `createHarness({ level, onFrame })` a hook that runs after every frame, for this.
-
 ## The gate
-`node tools/gate.mjs --level <id>` adds one check per stage, `cold-read:premise`, `cold-read:pictures` and
-`cold-read:replay`. Each passes only when the record says `works` and the stage is still fresh. A failing check says
-why (no cold read yet, the verdict, or what changed since) and gives the command to run. The gate reads only the
-record and the current inputs. It never runs a reader. Checking pictures and replay freshness draws the shots and
-strips, so it needs the canvas.
+`node tools/gate.mjs --level <id>` adds one check per pass: `cold-read:sense`, `cold-read:premise`,
+`cold-read:verbs`, `cold-read:pictures`, `cold-read:replay`. Each passes only when the record says `works` and the pass is still fresh. A failing check says
+why (no cold read yet, the verdict, what changed since, or the missing `premise.md` section) and gives the command to
+run. The gate reads only the record and the current inputs. It never runs a reader. Checking the picture passes'
+freshness draws what they show, so it needs the canvas. The gate also fails on a picture file at the repo root
+(`stray`, `tools/lib/stray.mjs`).

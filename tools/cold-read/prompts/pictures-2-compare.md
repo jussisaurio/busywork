@@ -10,14 +10,9 @@ words; the clock is when the picture was really taken. When the intent describes
 beat that is over by then, a moment before the end card the picture shows), mark the shot `wrong moment` instead:
 the fix is the shot's commands, not the picture.
 
-If intents.md has verb sheets, look at every image in verbs/ yourself: each is one object, labelled, and each panel's
-intent comes from the engine (the verb and what it changed). For each panel: does it make sense for this object, and
-does the picture show what the action is? List each panel that fails, with its number, the cause and one fix.
-
 Reply with the report. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.
-  - `works`: every shot reads, or at worst a cosmetic one is partly.
-  - `fixable`: any shot that matters to understanding a route is misread or taken at the wrong moment, or any verb
-    panel fails.
   - `broken`: the player would not understand the level from these pictures.
-- Then the list of shots, then the verb sheets.
+- Then the list of shots.
+- Then the problems, graded as below. A shot that matters to understanding a route and is misread or taken at the
+  wrong moment is a blocker.

@@ -21,12 +21,10 @@ Judge:
    version?
 6. **Name and card.** Compare first-read.md with the real design. Every gap between the two is a finding. The name,
    the card and the badge (the card's icons) name the trouble, never the way out. Does any of them hint at a route, a
-   mechanic or a tool? If so, that is a finding, and the verdict is at best `fixable`.
+   mechanic or a tool? If so, that is a blocker.
 
-Reply with the report, under 450 words. Your reply is saved as report.md.
+Reply with the report, under 600 words. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.
-  - `works`: a first-time player would understand the situation and could deduce every route.
-  - `fixable`: there are problems, but the premise holds.
   - `broken`: the premise itself does not make sense.
-- Up to 5 problems, most serious first. For each: the problem, the moment a player hits it, and one concrete fix.
 - The best thing about the level, in one line, so it survives the fixes. It must work on screen without premise.md.
+- Then the problems, graded as below. Each says the moment a player hits it.
