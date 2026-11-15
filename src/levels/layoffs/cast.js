@@ -1,6 +1,6 @@
 // The Layoff List: the boss, Kev and Lin, and their hooks (cast.js and behaviours.js in level 1 document the fields).
 import { at, deg } from '../../config.js';
-import { burst } from '../../core/fx.js';
+import { burst, say } from '../../core/fx.js';
 
 export const START = 15 * 60; // 3:00 PM
 const s = (time, entry) => ({ at: at(time, START), ...entry });
@@ -99,6 +99,8 @@ export const BEHAVIOURS = {
       npc._fixed = true;
       const w = game.world;
       w.glitch = false;
+      w.listUpAt = game.clock.minute; // the list comes up on his screen: it pops out big, your face framed (list.js)
+      say(game, 'player', ['😨'], { kind: 'thought', ttl: 1.8 }); // that's me on it
       if (w.pc === 'kev') w.pc = 'boss';
       const b = boss(game);
       if (b?.active && !b.override) sim.speak(game, b, [{ say: ['😊'] }]);

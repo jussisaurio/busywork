@@ -52,7 +52,6 @@ export const DECOR = {
     // his screen off once he's gone home.
     { tile: 'V', draw: drawKevDesk, state: kevDesk },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: false }) },
-    { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
   ],
   things: { kevbag },
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },

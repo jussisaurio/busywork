@@ -4,7 +4,9 @@
 //   drawListScreen the level's painter for it (presentation.js DECOR.props): a flat screen on his desk, facing the
 //                  floor, with the list on it as a row of faces, yours framed in red. Static while it acts up; a
 //                  red line goes through your face while you edit it, then your face drops out and the others
-//                  close up; at 3:45 the sheet flies off the screen, sent.
+//                  close up; at 3:45 the sheet flies off the screen, sent. Twice the sheet pops out of the screen,
+//                  big, for a beat (POP_SECS): when it first comes up (3:06, Kev fixed it: your frame throbs) and
+//                  when your face comes off (struck through, it falls out of the row).
 //   drawList       the same list as a big screen of faces on an end card (end-scenes.js)
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { drawPerson, personState } from '../../render/characters.js';
@@ -20,7 +22,8 @@ export const NAMES = [
 ];
 const YOU = 1; // your place on the list
 
-const OUT_SECS = 0.7; // your face drops off the list over this long
+const OUT_DELAY = 0.6; // once the edit is done, your struck face stays this long (seconds) ...
+const OUT_SECS = 0.8; // ... then drops off the list over this long
 
 // How far your face is on the list right now: 1 on it, 0 gone (the others close up in between). Blamed (your
 // chair was empty at 3:45), he puts you back on before he sends it.
@@ -28,7 +31,7 @@ const BACK_SECS = 0.6;
 export function youOnList(w, game) {
   if (w.list === 'on') return 1;
   if (game.outcome?.result === 'blamed') return easeOutCubic(clamp((game.scenario?.beatT ?? 0) / BACK_SECS, 0, 1));
-  const secs = ((game.clock?.minute ?? 0) - (w.listOffAt ?? 0)) / GAME_MIN_PER_SEC;
+  const secs = ((game.clock?.minute ?? 0) - (w.listOffAt ?? 0)) / GAME_MIN_PER_SEC - OUT_DELAY;
   return 1 - easeOutCubic(clamp(secs / OUT_SECS, 0, 1));
 }
 
@@ -42,9 +45,31 @@ export function sending(game) {
 
 // --- in the world: the boss's screen ---------------------------------------------------------------------------
 
-const SHOWN = { glitch: false, you: 1, strike: 0, out: 0, looks: null };
+// The sheet popping out of his screen: 'up' when it first comes up (w.listUpAt, cast.js pcFixed), 'off' when your
+// face comes off (w.listOffAt). k: 0 in the screen .. 1 out at full size; age: seconds into the pop.
+const POP_SECS = 2.8;
+const POP_IN = 0.25;
+const POP_BACK = 0.35;
+function popOf(w, game, into) {
+  into.pop = null;
+  into.popK = 0;
+  into.popAge = 0;
+  if (w.glitch || game.outcome) return;
+  const now = game.clock?.minute ?? 0;
+  const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
+  if (!from) return;
+  const age = (now - from[1]) / GAME_MIN_PER_SEC;
+  if (!(age >= 0 && age < POP_SECS)) return;
+  into.pop = from[0];
+  into.popAge = age;
+  into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > POP_SECS - POP_BACK ? 1 - easeOutCubic((age - POP_SECS + POP_BACK) / POP_BACK) : 1;
+}
+const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
+
+const SHOWN = { glitch: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
+  popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
   const a = game.player?.action;
   SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : 0;
@@ -119,11 +144,51 @@ export function drawListScreen(ctx, info, at, shown, t) {
   ctx.fill();
   ctx.restore();
   fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#c0392b' : '#7be08a');
+  if (shown.pop && shown.popK > 0) drawPop(ctx, sx, sy, sw, sh, shown, t);
+}
+
+// The sheet out of his screen, big: it grows out of the screen (sx, sy, sw, sh) to POP_ZOOM times its size, beside
+// it to the east (over the glass, the meeting room behind), joined to the screen by a pale zoom wedge.
+const POP_ZOOM = 2.8;
+const POP_DX = 163; // the pop's centre, from the screen's centre
+const POP_DY = -8;
+function drawPop(ctx, sx, sy, sw, sh, shown, t) {
+  const k = shown.popK;
+  const z = 1 + (POP_ZOOM - 1) * k;
+  const cx = sx + sw / 2 + POP_DX * Math.min(k, 1);
+  const cy = sy + sh / 2 + POP_DY * Math.min(k, 1);
+  const hw = (sw / 2) * z;
+  const hh = (sh / 2) * z;
+  ctx.save();
+  ctx.globalAlpha = clamp(k * 1.5, 0, 1);
+  ctx.fillStyle = 'rgba(244,242,236,0.22)'; // the zoom wedge, from the screen's right edge to the pop's left
+  ctx.beginPath();
+  ctx.moveTo(sx + sw, sy);
+  ctx.lineTo(cx - hw, cy - hh);
+  ctx.lineTo(cx - hw, cy + hh);
+  ctx.lineTo(sx + sw, sy + sh);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.3)'; // shadow, bezel
+  ctx.fillRect(cx - hw - 3, cy - hh - 1, hw * 2 + 8, hh * 2 + 8);
+  ctx.fillStyle = '#34312f';
+  rrect(ctx, cx - hw - 4, cy - hh - 4, hw * 2 + 8, hh * 2 + 8, 4);
+  ctx.fill();
+  ctx.translate(cx, cy);
+  ctx.scale(z, z);
+  ctx.beginPath();
+  ctx.rect(-sw / 2, -sh / 2, sw, sh);
+  ctx.clip();
+  ctx.fillStyle = '#2d5a78';
+  ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
+  drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t, shown.pop === 'up' ? 0.5 + 0.5 * Math.sin(shown.popAge * 9) : 0);
+  ctx.restore();
 }
 
 // The list itself, on screen: a white sheet with a red title bar, a face per name in a row, a name line under each,
-// yours framed in red. strike: the red line through your face while you edit it (0..1).
-function drawSheet(ctx, x, y, w, h, shown, t) {
+// yours framed in red. strike: the red line through your face while you edit it (0..1). throb: 0..1, your frame
+// swelling (the pop when the list first comes up).
+function drawSheet(ctx, x, y, w, h, shown, t, throb = 0) {
   ctx.fillStyle = '#f4f2ec';
   ctx.fillRect(x, y, w, h);
   ctx.fillStyle = C.tomatoDark;
@@ -142,14 +207,16 @@ function drawSheet(ctx, x, y, w, h, shown, t) {
     const mine = i === YOU;
     ctx.save();
     if (mine && k < 1) {
-      ctx.globalAlpha = k;
-      ctx.translate(0, (1 - k) * 8); // dropping out of the row
+      ctx.globalAlpha *= k;
+      ctx.translate(mid, (1 - k) * 9); // dropping out of the row, tipping over
+      ctx.rotate((1 - k) * 0.5);
+      ctx.translate(-mid, 0);
     }
     if (mine) {
-      ctx.fillStyle = 'rgba(214,72,52,0.25)';
+      ctx.fillStyle = `rgba(214,72,52,${0.25 + 0.3 * throb})`;
       ctx.fillRect(mid - slot / 2 + 0.5, y + 3.5, slot - 1, h - 4);
       ctx.strokeStyle = C.tomato;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1 + 0.9 * throb;
       ctx.strokeRect(mid - slot / 2 + 0.5, y + 3.5, slot - 1, h - 4);
     }
     drawFace(ctx, mine ? shown.looks.player : NAMES[i].look, mid, fy, face, t);

@@ -34,7 +34,7 @@ import gate from './gate.js';
 //  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R
 const MAP = [
   '##############################', // 0
-  '#K......G..........#FTCT.....#', // 1
+  '#K......G..........#TTCT.....#', // 1
   '#.......G..........#.........#', // 2
   '#..TQT..G..TTJTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
@@ -55,7 +55,6 @@ const MAP = [
 const LEGEND = {
   K: { kind: 'coat_rack', solid: true, opaque: false, interactable: 'coat_rack' }, // the boss's jacket hangs here
   Q: { kind: 'boss_pc', solid: true, opaque: false, interactable: 'boss_pc', draw: 'desk' }, // his computer
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   C: { kind: 'coffee_machine', solid: true, opaque: false },
   J: { kind: 'meeting_table', solid: true, opaque: false },
   V: { kind: 'kev_desk', solid: true, opaque: false, interactable: 'kev_hoodie', draw: 'desk' }, // Kev's: his hoodie ends up on his chair
@@ -245,6 +244,7 @@ export default {
   outcomeOrder: ['hoodie', 'jacket'],
   initialWorld: () => ({
     list: 'on', // your name on the layoff list: 'on' | 'off'
+    listUpAt: null, // the game minute the list came up on his screen, once Kev fixed it (list.js pops it out)
     listOffAt: 0, // the game minute it came off (list.js animates it)
     offAs: null, // who took it off, to the people watching: 'kev' | 'boss' | 'you'
     glitch: true, // his screen is acting up (static): at 3:00 until Kev fixes it, and again at 3:35 (cast.js)

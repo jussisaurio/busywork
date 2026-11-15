@@ -2,16 +2,18 @@
 // from the start of the day, and what the picture must tell a first-time player. An end card is the picture after
 // the day ends; the last command of each end shot is the one that ends the day. A command that stops early (on a
 // soft stop such as someone noticing you) is repeated.
-const HOODIE = ['pretend until 3:25', 'goto kev_desk pretend', 'interact']; // Kev's hoodie off his chair, on
-const ASK = [...HOODIE, 'pretend until 3:33', 'goto boss_pc', 'interact']; // "Kev" offers to fix it
+const HOODIE = ['pretend until 3:26', 'goto kev_desk pretend', 'interact']; // Kev's gone home: his hoodie off his chair, on
+const ASK = [...HOODIE, 'pretend until 3:35.1', 'goto boss_pc', 'interact']; // his screen acts up: "Kev" offers to fix it
 const EDIT = [...ASK, 'wait 2s', 'interact']; // ...and takes your name off while the boss watches
+const RETURN = [...EDIT, 'goto kev_desk', 'interact']; // ...and hangs the hoodie back over Kev's chair
 const JACKET = ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact']; // on, while Lin glances away
+const END = ['goto my_seat', 'pretend until 3:45', 'pretend until 3:45']; // to your desk, then the end card
 
 export default [
   {
     name: 'start',
     cmds: ['pretend until 3:00.9'],
-    intent: "3:00. You at your desk on the open floor. Behind glass, the boss at his desk is angry at his computer: its screen is static. His suit jacket hangs on a rack in the corner of his office.",
+    intent: "3:00. You at your desk on the open floor; nothing near you to use. Behind glass, the boss at his desk is angry at his computer: its screen is static. His suit jacket hangs on a rack in the corner of his office.",
   },
   {
     name: 'boss-waves-kev',
@@ -20,13 +22,18 @@ export default [
   },
   {
     name: 'kev-fixes',
-    cmds: ['pretend until 3:05'],
-    intent: "Kev stands at the boss's computer typing, while the boss has left his chair and stands aside, watching him. Kev is the one person allowed at that computer.",
+    cmds: ['pretend until 3:04.6'],
+    intent: "Kev stands at the boss's computer, saying he'll fix it (a wrench), while the boss has left his chair and stands aside, watching him. Kev is the one person allowed at that computer.",
   },
   {
-    name: 'list-before',
-    cmds: ['pretend until 3:06.3'],
-    intent: "Kev fixed it: the boss is pleased and the screen works again. On it, a white sheet with a red title bar and a row of four faces; yours is framed in red. That is the list, and you are on it.",
+    name: 'list-pops',
+    cmds: ['pretend until 3:06.6'],
+    intent: "Kev fixed it: the screen works again, and what's on it pops out big beside it: a white sheet with a red title bar and a row of four faces, yours in a throbbing red frame. You're on the list (your own frightened thought).",
+  },
+  {
+    name: 'kev-sheds',
+    cmds: ['pretend until 3:08.9'],
+    intent: "Back at his desk, Kev is hot (sweat, a hot face): his olive hoodie now hangs over the back of his chair, and he sits in a T-shirt.",
   },
   {
     name: 'coat-rack',
@@ -35,13 +42,18 @@ export default [
   },
   {
     name: 'kev-waves-lin',
-    cmds: ['pretend until 3:20.9'],
-    intent: "Kev goes home early while the boss is out: he waves goodbye to Lin and she waves back. She knows he's gone; the boss doesn't.",
+    cmds: ['pretend until 3:22'],
+    intent: "Kev goes home early while the boss is out: bag in hand, he waves goodbye (a wave and a house) and Lin waves back. She knows he's gone; the boss doesn't.",
+  },
+  {
+    name: 'kev-leaves',
+    cmds: ['pretend until 3:24'],
+    intent: "Kev walks out with his bag, past his chair; his hoodie stays hanging over it.",
   },
   {
     name: 'hoodie-on-chair',
-    cmds: ['pretend until 3:25'],
-    intent: "Kev, sweating, has taken off his olive hoodie and left it draped over his chair on his way out. He walks to the elevator in a T-shirt.",
+    cmds: ['pretend until 3:26'],
+    intent: "Kev has gone: his chair is empty, its seat bare, his olive hoodie hanging over its back; his monitor is off.",
   },
   {
     name: 'hoodie-on',
@@ -51,27 +63,32 @@ export default [
   {
     name: 'boss-greets-kev',
     cmds: [...HOODIE, 'pretend until 3:30'],
-    intent: "Back at his desk, the boss sees you in the hoodie and waves, with Kev's face in his bubble: he takes you for Kev.",
+    intent: "Back from the restroom, the boss sees you in the hoodie and greets you, with a smile and Kev's face in his bubble: he takes you for Kev.",
   },
   {
     name: 'acts-up',
     cmds: ['pretend until 3:35.9'],
-    intent: "3:35: the boss's screen goes to static again. Angry, he waves for Kev (Kev's face and a wave), but Kev went home; he wonders where Kev is (a thought with Kev's face and a question mark).",
+    intent: "3:35: the boss's screen goes to static again. Angry, he waves for Kev (Kev's face and a wave), but Kev went home.",
   },
   {
     name: 'kev-asks',
     cmds: [...ASK, 'wait 0.5s'],
-    intent: "In the hoodie, you offer to fix his computer. The boss is happy to see \"Kev\" and steps out of his chair to stand aside and watch, as he did for the real Kev at 3:00.",
+    intent: "In the hoodie, you offer to fix his static-filled computer (a raised hand and a wrench). The boss is happy to see \"Kev\" and steps out of his chair to stand aside and watch, as he did for the real Kev at 3:00.",
   },
   {
-    name: 'list-after',
-    cmds: [...EDIT, 'wait 0.5s'],
-    intent: "Your face is gone from the sheet on his screen; three faces remain. The boss thanks \"Kev\" (a smile and Kev's face) and goes back to his chair.",
+    name: 'list-off',
+    cmds: [...EDIT, 'wait 1s'],
+    intent: "Your face comes off: the sheet pops out big beside his screen, your red-framed face struck through and falling out of the row, the others closing up. The boss thanks \"Kev\" (a smile and Kev's face).",
+  },
+  {
+    name: 'hoodie-back',
+    cmds: RETURN,
+    intent: "You hang Kev's hoodie back over his chair and are yourself again, in your red sweater. His screen across the floor shows three faces.",
   },
   {
     name: 'lin-double-take',
     cmds: [...HOODIE, 'goto boss_pc'],
-    intent: "Lin saw Kev leave, so \"Kev\" walking into the boss's office is wrong: her double take (Kev's face and a question mark), then she points you out. Do it while she's away.",
+    intent: "Lin saw Kev go home, so \"Kev\" walking into the boss's office is wrong: her double take (Kev's face and a question mark), then she points you out. Do it while she's away.",
   },
   {
     name: 'lin-greets-boss',
@@ -80,8 +97,8 @@ export default [
   },
   {
     name: 'jacket-edit',
-    cmds: [...JACKET, 'goto boss_pc', 'interact'],
-    intent: "Your face comes off the sheet on his screen while, to anyone looking in, the boss is at his own computer.",
+    cmds: [...JACKET, 'goto boss_pc', 'interact', 'wait 1s'],
+    intent: "Your face comes off the sheet (it pops out big beside his screen, your face struck and falling out) while, to anyone looking in, the boss is at his own computer.",
   },
   {
     name: 'caught',
@@ -90,12 +107,12 @@ export default [
   },
   {
     name: 'end-win-hoodie',
-    cmds: [...EDIT, 'goto my_seat', 'pretend until 3:45', 'pretend until 3:45', 'pretend until 3:45'],
-    intent: "Win. You, in Kev's hoodie, at the boss's keyboard, the boss over your shoulder, pleased; the list on his screen has no red face, and a copy flies off to HR.",
+    cmds: [...RETURN, ...END],
+    intent: "Win. The boss, pleased, sends the list with no red face on it. Kev's hoodie hangs over his empty chair, where you put it back; you sit at your desk, in your own sweater, smug.",
   },
   {
     name: 'end-win-jacket',
-    cmds: [...JACKET, 'goto boss_pc', 'interact', 'goto coat_rack', 'interact', 'goto my_seat', 'pretend until 3:45', 'wait 2s'],
+    cmds: [...JACKET, 'goto boss_pc', 'interact', 'goto coat_rack', 'interact', ...END],
     intent: "Win. The boss sends the list himself, with no red face on it; his jacket is back on its rack; you sit at your desk looking smug.",
   },
   {
@@ -104,13 +121,23 @@ export default [
     intent: "Lose. The boss sends the list with your red face on it; you carry your desk out in a cardboard box with your plant, past your empty desk and chair.",
   },
   {
+    name: 'end-fail-hoodie',
+    cmds: [...HOODIE, 'goto boss_pc', 'pretend until 3:45', 'pretend until 3:45', 'wait 3s'],
+    intent: "Lose. Told on in Kev's hoodie, you never got to his computer: the list goes out with your red face on it, and you carry your box out still in the olive hoodie.",
+  },
+  {
     name: 'end-caught',
     cmds: [...JACKET, 'goto boss_pc', 'interact', 'goto my_seat', 'pretend until 3:45', 'pretend until 3:45', 'wait 2s'],
     intent: "Lose. Caught: the boss, furious, points the way out; you go with your box, still in his jacket. Your red face is still on the list.",
   },
   {
     name: 'end-blamed',
-    cmds: [...EDIT, 'goto kitchen_table', 'pretend until 3:45', 'wait 2s'],
-    intent: "Lose. Your chair is empty in a pool of light; the boss, angry, puts your red face back on the list and it goes out.",
+    cmds: [...RETURN, 'goto kitchen_table', 'pretend until 3:45', 'wait 3s'],
+    intent: "Lose. Your chair is empty in a pool of light; the boss, angry, glares at it and puts your red face back on the list, and it goes out.",
+  },
+  {
+    name: 'end-blamed-kev',
+    cmds: [...EDIT, ...END],
+    intent: "Lose. You kept Kev's hoodie on: at your desk sits \"Kev\", hood up, sweating. The boss glares (Kev's face and a question mark: Kev, at your desk?), and as you aren't at your desk, he puts your red face back on and it goes out.",
   },
 ];

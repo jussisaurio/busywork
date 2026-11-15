@@ -25,7 +25,7 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance, K coat rack,",
-    "     Q the boss's computer, V Kev's desk, F fridge, C coffee machine, P your desk, R restroom, E elevator,",
+    "     Q the boss's computer, V Kev's desk, C coffee machine (no pot), P your desk, R restroom, E elevator,",
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
