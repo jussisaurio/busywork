@@ -104,6 +104,7 @@ export function createNpc(game, def, now = 0) {
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },
+    _mechanics: mechanicsFor(game.level, def.id), // the level's mechanics that name him (read every step)
     _craveT: undefined, // s to the next daydream about what he wants (want/crave)
     _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
     _inspected: undefined, // ...and the ones he has started today
@@ -246,7 +247,7 @@ function tickSayQueue(game, npc, dt) {
 // Lures start and hunts end (polled from world state, so no event subscriptions leak across loops). A check that
 // runs level hooks gets HOOK_API.
 function checkOverrides(game, npc, now) {
-  for (const m of mechanicsFor(game.level, npc.id)) m.kind.check?.(game, npc, m.data, now, HOOK_API);
+  for (const m of npc._mechanics) m.kind.check?.(game, npc, m.data, now, HOOK_API);
 }
 
 function planKey(game, npc, now) {
@@ -303,7 +304,7 @@ function buildPlan(game, npc, now, key) {
   }
   if (plan.done) return plan; // (a door's lockout)
   // Doors: coming in from a door's zone, its NPCs go through the door first.
-  for (const d of mechanicsFor(game.level, npc.id)) d.kind.prelude?.(game, npc, plan, d.data);
+  for (const d of npc._mechanics) d.kind.prelude?.(game, npc, plan, d.data);
   return plan;
 }
 
