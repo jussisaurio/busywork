@@ -30,7 +30,8 @@
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
-//               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
+//               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
+//               icon or a list; a noise is not 'noise' or 'npc:heard'
 //   failSign    optional; spot a spot
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
@@ -88,6 +89,12 @@ export function levelProblems(level, key) {
   const route = (path, name) => { if (!has(patrols, name)) bad(path, `no route ${q(name)} in level.patrols`); };
   const itemType = (path, type) => { if (!has(items, type)) bad(path, `no item type ${q(type)} in level.items`); };
   const list = (path, v) => { if (!Array.isArray(v)) { bad(path, 'not a list'); return []; } return v; };
+  const itemTypes = (path, v) => { // one item type or a non-empty list of them
+    if (!Array.isArray(v)) return itemType(path, v);
+    if (!v.length) bad(path, 'empty');
+    for (const [k, t] of v.entries()) itemType(`${path}[${k}]`, t);
+  };
+  const icons = (path, v) => { if (!isStr(v) && !(Array.isArray(v) && v.every(isStr))) bad(path, 'not an icon or a list of icons'); };
 
   // --- identity and title -----------------------------------------------------------------------
   if (!isStr(level.id)) bad('id', 'missing');
@@ -271,14 +278,16 @@ export function levelProblems(level, key) {
     for (const [k, c] of list(`${path}.checks`, insp?.checks).entries()) {
       const cp = `${path}.checks[${k}]`;
       if (c?.item !== undefined) {
-        itemType(`${cp}.item`, c.item);
+        itemTypes(`${cp}.item`, c.item);
         spot(`${cp}.spot`, c.spot);
       } else {
         if (c?.who !== 'player') npc(`${cp}.who`, c?.who);
         zone(`${cp}.zone`, c?.zone);
       }
       if (c?.from !== undefined || c?.item === undefined) spot(`${cp}.from`, c?.from);
+      if (c?.icon !== undefined) icons(`${cp}.icon`, c.icon);
     }
+    if (insp?.sign !== undefined && insp.sign !== 'mark' && insp.sign !== 'item') bad(`${path}.sign`, `${q(insp.sign)} is not 'mark' or 'item'`);
     const then = insp?.fail?.then;
     if (then !== undefined && !FAIL_THEN.has(then)) behaviour(`${path}.fail.then`, then);
     if (then === 'hunt' && !(level.hunts ?? []).some((h) => h?.npc === insp.npc)) bad(`${path}.fail.then`, `no hunt for ${q(insp.npc)} in level.hunts`);
