@@ -24,6 +24,6 @@ export const SPOTS = {
   restroom: { x: 25, y: 12, face: 'S' },
   smoke: { x: 7, y: 15, face: 'N' }, // the lobby: the boss smokes facing the glass
   elevator: { x: 2, y: 15, face: 'S' },
-  kitchen: { x: 25, y: 2, face: 'N' },
+  kitchen: { x: 25, y: 2, face: 'E' }, // Kev's coffee: side-on, the cup in view; his back to the door
   coffee: { x: 11, y: 7, face: 'N' }, // the hallway coffee machine, on the auditor's way to your desk
 };
