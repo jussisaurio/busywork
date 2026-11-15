@@ -55,7 +55,7 @@ export const DECOR = {
     { x0: 25, x1: 27, y: 0 },
   ],
   paintings: [
-    { x: 10, y: 6, variant: 0 },
+    { x: 19, y: 6, variant: 0 },
     { x: 25, y: 6, variant: 1 },
     { x: 15, y: 0, variant: 1 },
   ],
@@ -63,9 +63,9 @@ export const DECOR = {
   props: [
     wallClock('boss', 1),
     wallClock('open', -1),
-    { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
+    { tile: 'C', draw: 'carafe', state: () => ({ full: true }) }, // refilled all day: it pours (index.js)
     // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
-    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start }) },
+    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start, rows: game.level.map.rows }) },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -73,25 +73,19 @@ export const DECOR = {
     kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
     lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
   },
-  ashtray: { spot: 'smoke' },
-  elevator: { spot: 'elevator' },
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },
     { zone: 'meeting', x: 13, y: 2 },
     { zone: 'kitchen', x: 21, y: 2 },
     { zone: 'lobby', x: 4, y: 14 },
   ],
-  legendAt: { x: 21.45, y: 15.5 }, // on the blank strip right of the bus stop, above the road
+  legendAt: { x: 21.45, y: 14.55 }, // on the blank wall strip right of the lobby, above the pavement
 };
 
 export const LOOKS = OFFICE_LOOKS;
 
-// The boss smokes with his hand to his mouth and the smoke drawn (no glyph in his hand: nothing in a hand is an
-// emoji). Going home is the wave and the walk to the elevator.
 export const POSES = {
-  arms: [
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff') },
-  ],
+  arms: [],
   marks: [],
 };
 
@@ -115,11 +109,10 @@ export const SOUNDS = {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
     'boss:herd': { sfx: 'shuffle', who: 'boss' },
-    'boss:left': { sfx: 'elevator' },
-    'lin:left': { sfx: 'elevator' },
-    'kev:left': { sfx: 'elevator' },
+    'boss:left': { sfx: 'door', who: 'boss' },
+    'lin:left': { sfx: 'door', who: 'lin' },
+    'kev:left': { sfx: 'door', who: 'kev' },
   },
-  elevator: { spot: 'elevator', radius: 2.5 },
 };
 
 // Level 1's voices (src/levels/meeting/voices.js), copied.

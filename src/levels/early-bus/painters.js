@@ -208,18 +208,32 @@ const BUS_DOORS = 16 * 60 + 28;
 const BUS_LEN = 104;
 const BUS_H = 40;
 
-// { minute, start }: the pavement outside the lobby's glass door, the kerb, the road along the bottom edge from
-// the door to the right side of the map, the bus stop sign on tile `at`, and the bus when it is due. The road is
-// painted over the bottom wall row: nothing walks there.
+// { minute, start }: the pavement outside the lobby's glass door (every ',' tile, and the sign's), the kerb, the road
+// along the bottom edge from the door to the right side of the map with the zebra crossing ('=') people go home
+// over, the bus stop sign on tile `at`, and the bus when it is due. The road is painted over the bottom wall row:
+// only the crossing is walkable.
 export function officeTimeStreet(ctx, info, tile, shown) {
   const sx = tile.x * T + T / 2 + 4; // the sign's pole
   const by = (tile.y + 1) * T; // the kerb line
-  const x0 = (tile.x - 1) * T; // the pavement: the sign's tile and the one to its left, two rows
-  ctx.fillStyle = SLAB;
-  ctx.fillRect(x0, by - 2 * T, 2 * T, 2 * T);
-  ctx.fillStyle = SLAB_LINE;
-  for (let gx = 0; gx <= 2 * T; gx += 16) ctx.fillRect(x0 + gx, by - 2 * T, 1, 2 * T);
-  for (let gy = 0; gy <= 2 * T; gy += 16) ctx.fillRect(x0, by - 2 * T + gy, 2 * T, 1);
+  const rows = shown.rows || null; // the level's map rows (presentation.js)
+  const slab = (x, y) => {
+    ctx.fillStyle = SLAB;
+    ctx.fillRect(x * T, y * T, T, T);
+    ctx.fillStyle = SLAB_LINE;
+    for (let g = 0; g < T; g += 16) {
+      ctx.fillRect(x * T + g, y * T, 1, T);
+      ctx.fillRect(x * T, y * T + g, T, 1);
+    }
+  };
+  let cross = null;
+  if (rows) {
+    rows.forEach((row, y) => [...row].forEach((ch, x) => {
+      if (ch === ',' || ch === 'B') slab(x, y);
+      if (ch === '=') cross = { x, y };
+    }));
+  } else {
+    for (let y = tile.y - 1; y <= tile.y; y++) for (let x = tile.x - 1; x <= tile.x; x++) slab(x, y);
+  }
   // the road: from the lobby's corner to the map's right edge
   const rx0 = (tile.x - 2) * T;
   ctx.fillStyle = ASPHALT;
@@ -232,14 +246,26 @@ export function officeTimeStreet(ctx, info, tile, shown) {
   ctx.setLineDash([6, 4]);
   ctx.strokeRect(rx0 + 6, by + 5, BUS_LEN + 14, T - 9);
   ctx.setLineDash([]);
-  // the centre line, further along
+  // the centre line, further along (not across the crossing)
   ctx.fillStyle = 'rgba(240,236,220,0.7)';
-  for (let x = rx0 + BUS_LEN + 40; x < 960; x += 34) ctx.fillRect(x, by + T - 4, 18, 2);
-  // the kerb
+  for (let x = rx0 + BUS_LEN + 40; x < 960; x += 34) {
+    if (cross && x + 18 > cross.x * T - 4 && x < (cross.x + 1) * T + 4) continue;
+    ctx.fillRect(x, by + T - 4, 18, 2);
+  }
+  // the zebra crossing: white bars across the road
+  if (cross) {
+    ctx.fillStyle = 'rgba(244,240,228,0.92)';
+    for (let i = 0; i < 4; i++) ctx.fillRect(cross.x * T + 3, by + 3 + i * 7.5, T - 6, 4);
+  }
+  // the kerb (open at the crossing)
   ctx.fillStyle = KERB;
   ctx.fillRect(rx0, by - 2, 960 - rx0, 4);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(rx0, by + 2, 960 - rx0, 2);
+  if (cross) {
+    ctx.fillStyle = SLAB;
+    ctx.fillRect(cross.x * T + 2, by - 2, T - 4, 4);
+  }
   drawStopSign(ctx, sx, by - 3, 40);
   // the bus
   const m = (shown.minute ?? 0) + (shown.start ?? 0);
