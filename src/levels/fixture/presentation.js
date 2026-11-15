@@ -1,8 +1,11 @@
 // How the fixture looks: title card, set dressing, people and the end card (level 1's decor.js, looks.js and
 // end-scenes.js document the fields).
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
+import { fillEllipse } from '../../render/util.js';
+import { drawPerson } from '../../render/characters.js';
+import { drawChair } from '../../render/world.js';
+import { TAB, person, bubble, floorCarpet, backWall, confetti } from '../../render/tableau.js';
+import { cakeStand, microwave, calendar, drawStand } from './painters.js';
 
 export const TITLE = {
   mission: ["3:00 PM. It's your birthday. Nobody was supposed to know.", 'Make sure nobody sings.'],
@@ -24,9 +27,9 @@ export const DECOR = {
   paintings: [{ x: 2, y: 0, variant: 1 }],
   clock: { x: 10, y: 0 },
   props: [
-    { tile: 'B', draw: 'icon', state: (w) => ({ icon: w.cake === 'stand' ? '🎂' : '🍽️' }) },
-    { tile: 'M', draw: 'icon', state: (w) => ({ icon: w.popcorn === 'burning' || w.popcorn === 'smoking' ? '🔥' : '♨️', size: 16 }) },
-    { tile: 'W', draw: 'icon', state: () => ({ icon: '📅' }) },
+    { tile: 'B', draw: cakeStand, state: (w) => ({ cake: w.cake === 'stand' }) },
+    { tile: 'M', draw: microwave, state: (w) => ({ state: w.popcorn }) },
+    { tile: 'W', draw: calendar, state: (w) => ({ who: w.birthday }) },
   ],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
@@ -52,7 +55,6 @@ export const LOOKS = {
   },
 };
 
-// The end card: no hand-drawn tableaux, just the carpet and the outcome's first icon, big.
 // How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.
 export const VOICES = {
   // Doreen: brisk, clipped, a little shrill.
@@ -69,18 +71,80 @@ export const VOICES = {
   },
 };
 
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
+// The end card: small drawn scenes round the cake stand (painters.js); the icon rows are the punchline.
+const room = (ctx) => {
+  backWall(ctx, 72);
+  floorCarpet(ctx, TAB.x, TAB.y + 72, TAB.w, TAB.h - 72);
 };
+const figure = (ctx, game, t, id, x, y, set) => {
+  const p = person(t);
+  p.scale = 2.2;
+  set(p);
+  drawPerson(ctx, game.level.looks[id], p, x, y);
+};
+const stand = (ctx, x, y, full) => {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(3, 3);
+  drawStand(ctx, 0, 0, full);
+  ctx.restore();
+};
+const CX = TAB.x + TAB.w / 2;
+const FLOOR = TAB.y + 200;
 
 export const END_SCENES = {
   kindOf: (o) => (o?.result === 'win' ? (o.routes.includes('calendar') ? 'calendar' : 'cake') : o?.result ?? 'fail'),
   scenes: {
-    calendar: { win: true, icons: ['📅', '🧁', '🎶'], draw: picture('🤨') }, // Gus gets sung at instead
-    cake: { win: true, icons: ['🎂', '😋', '🤷'], draw: picture('🍽️') }, // nothing to sing over
-    fail: { win: false, icons: ['🎂', '🎶', '😅'], draw: picture('🎶') },
-    caught: { win: false, icons: ['📋', '👉', '😠'], draw: picture('📋') },
-    blamed: { win: false, icons: ['🪑', '👉', '🎂'], draw: picture('🪑') }, // your own party, and you skipped it
+    // Gus gets sung at instead: Doreen beams at him over the cake; you hang back.
+    calendar: { win: true, icons: ['📅', '🧁', '🎶'], draw(ctx, game, t, e) {
+      room(ctx);
+      figure(ctx, game, t, 'gus', CX, FLOOR - 18, (p) => { p.head = p.dir + Math.sin(t * 2) * 0.3; p.sweat = true; });
+      stand(ctx, CX, FLOOR + 6, true);
+      figure(ctx, game, t, 'doreen', CX - 150, FLOOR, (p) => { p.dir = 0.2; p.head = 0.2; p.arms = 'cheer'; });
+      figure(ctx, game, t, 'player', CX + 170, FLOOR, (p) => { p.smug = true; p.head = Math.PI / 2 + Math.sin(t) * 0.2; });
+      bubble(ctx, ['🎶'], CX - 150, FLOOR - 82, e);
+      bubble(ctx, ['🤨'], CX + 30, FLOOR - 100, e, 'thought');
+    } },
+    // Nothing to sing over: an empty plate, and you, full.
+    cake: { win: true, icons: ['🎂', '😋', '🤷'], draw(ctx, game, t, e) {
+      room(ctx);
+      confetti(ctx, TAB.x, TAB.w, TAB.y, TAB.h, e, 24);
+      stand(ctx, CX - 60, FLOOR + 6, false);
+      figure(ctx, game, t, 'player', CX + 60, FLOOR - Math.abs(Math.sin(t * 6)) * 6, (p) => { p.smug = true; p.arms = 'cheer'; });
+      figure(ctx, game, t, 'doreen', CX - 190, FLOOR, (p) => { p.arms = 'shrug'; });
+      bubble(ctx, ['😋'], CX + 110, FLOOR - 92, e, 'thought');
+    } },
+    // They sing at you, candles and all.
+    fail: { win: false, icons: ['🎂', '🎶', '😅'], draw(ctx, game, t, e) {
+      room(ctx);
+      figure(ctx, game, t, 'player', CX, FLOOR - 18, (p) => { p.sweat = true; p.head = p.dir + Math.sin(t * 2.6) * 0.5; });
+      stand(ctx, CX, FLOOR + 6, true);
+      figure(ctx, game, t, 'doreen', CX - 150, FLOOR, (p) => { p.dir = 0.2; p.head = 0.2; p.arms = 'cheer'; });
+      figure(ctx, game, t, 'gus', CX + 150, FLOOR, (p) => { p.dir = Math.PI - 0.2; p.head = Math.PI - 0.2; p.arms = 'cheer'; });
+      bubble(ctx, ['🎶'], CX - 150, FLOOR - 82, e);
+      bubble(ctx, ['🎶'], CX + 150, FLOOR - 82, e);
+    } },
+    // Doreen, clipboard under her arm, points you back to your desk.
+    caught: { win: false, icons: ['📋', '👉', '😠'], draw(ctx, game, t, e) {
+      room(ctx);
+      figure(ctx, game, t, 'doreen', CX - 90, FLOOR, (p) => { p.dir = 0.1; p.head = 0.1; p.arms = 'point'; p.angry = true; });
+      figure(ctx, game, t, 'player', CX + 90, FLOOR, (p) => { p.sweat = true; p.dir = Math.PI - 0.3; p.head = Math.PI - 0.3; });
+      bubble(ctx, ['😠', '👉', '@player'], CX - 90, FLOOR - 82, e, 'alert');
+    } },
+    // Your own party, and you skipped it: everyone looks at your empty chair behind the cake.
+    blamed: { win: false, icons: ['🪑', '👉', '🎂'], draw(ctx, game, t, e) {
+      room(ctx);
+      for (let i = 3; i >= 1; i--) fillEllipse(ctx, CX, FLOOR + 8, 26 + i * 14, 7 + i * 4, `rgba(255,240,200,${(0.08 * (4 - i)).toFixed(3)})`);
+      ctx.save();
+      ctx.translate(CX, FLOOR - 44);
+      ctx.scale(2.6, 2.6);
+      drawChair(ctx, 0, 0, -Math.PI / 2, C.ochre, C.ochreDark);
+      ctx.restore();
+      stand(ctx, CX, FLOOR + 30, true);
+      figure(ctx, game, t, 'doreen', CX - 170, FLOOR, (p) => { p.dir = 0.3; p.head = 0.3; p.arms = 'point'; p.angry = true; });
+      figure(ctx, game, t, 'gus', CX + 170, FLOOR, (p) => { p.dir = Math.PI - 0.3; p.head = Math.PI - 0.3; p.glance = 1; });
+      bubble(ctx, ['👉', '@player'], CX - 170, FLOOR - 82, e);
+      bubble(ctx, ['❓'], CX + 170, FLOOR - 82, e, 'thought');
+    } },
   },
 };

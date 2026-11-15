@@ -469,9 +469,9 @@ export function npcTakes(npc, item) {
 }
 
 // 4:00: everyone at the table turns to one place, thinks, then says it. The default is the attendance rule: your
-// empty chair, 🪑❓ … 😠👉. A level's meeting.verdict can name another (scenario.js):
+// empty chair, 🪑❓ … 😠👉 and your face. A level's meeting.verdict can name another (scenario.js):
 //   at     a spot name, or 'player' (default: meeting.chair)
-//   think  the thought bubble (default ['🪑', '❓']); say  the speech 1 s later (default ['😠', '👉'])
+//   think  the thought bubble (default ['🪑', '❓']); say  the speech 1 s later (default ['😠', '👉', '@player'])
 //   line   a sightline kind (fx.js) from each of them to the player, for the beat (optional)
 export function stareAt(game, stare = {}) {
   const m = game.level.meeting;
@@ -481,7 +481,7 @@ export function stareAt(game, stare = {}) {
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
     n._gl.hold = 0; // stop any glance: all eyes on the chair
     say(game, n.id, stare.think ?? ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
-    npcSayLater(n, 1.0, stare.say ?? ['😠', '👉'], 'speech');
+    npcSayLater(n, 1.0, stare.say ?? ['😠', '👉', '@player'], 'speech');
     if (stare.line) sightline(game, n.id, stare.line, 2.0);
   }
 }

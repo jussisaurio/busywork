@@ -2,7 +2,7 @@
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
 import {
-  T, clamp, fin, emoji, setFacePainter, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+  T, clamp, fin, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
 
@@ -43,6 +43,9 @@ export function personState() {
     badge: false, crank: false, stain: false,
   };
 }
+
+// What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
+const HELD = { held: true };
 
 // Hand positions are written here to avoid allocating per frame.
 const HAND = { lx: 0, ly: 0, rx: 0, ry: 0, lsx: 0, lsy: 0, rsx: 0, rsy: 0 };
@@ -196,6 +199,7 @@ function drawArms(ctx, look, s, g, sleeve) {
   fillCircle(ctx, H.lx, H.ly, 2.3, look.skin);
   if (s.arms !== 'phone') {
     if (s.item && s.arms !== 'folder' && !mugOverTorso(s, g)) drawHeldItem(ctx, s, H.rx, H.ry);
+    else if (!s.item && s.arms === 'point' && strictGlyphs()) drawFinger(ctx, H.rx, H.ry, look.skin);
     fillCircle(ctx, H.rx, H.ry, 2.3, look.skin);
     if (s.item && s.arms === 'folder') drawHeldItem(ctx, s, H.rx + 2, H.ry - 5);
   }
@@ -229,7 +233,7 @@ function drawHeldItem(ctx, s, x, y) {
     ctx.save();
     ctx.translate(x, y - 2);
     ctx.rotate(Math.sin(s.t * 9) * 0.7);
-    emoji(ctx, s.item, 0, 0, 13);
+    emoji(ctx, s.item, 0, 0, 13, HELD);
     ctx.restore();
     return;
   }
@@ -240,12 +244,27 @@ function drawHeldItem(ctx, s, x, y) {
     ctx.translate(x + G.fx * 5, y + G.fy * 5);
     if (G.fx < 0) ctx.scale(-1, 1);
     ctx.rotate(a);
-    emoji(ctx, s.item, 0, 0, 12);
+    emoji(ctx, s.item, 0, 0, 12, HELD);
     ctx.restore();
     return;
   }
   const wob = s.arms === 'reach' ? Math.sin(s.t * 10) * 1.5 : 0;
-  emoji(ctx, s.item, x, y - 2 + wob, s.arms === 'reach' ? 13 : 12);
+  emoji(ctx, s.item, x, y - 2 + wob, s.arms === 'reach' ? 13 : 12, HELD);
+}
+
+// A bare pointing hand (arms 'point' with nothing in it): the index finger continues the arm. In a migrated level
+// only (render/util.js strictGlyphs); the legacy ones point with a 👉 item.
+function drawFinger(ctx, x, y, skin) {
+  const a = Math.atan2(G.fy, Math.abs(G.fx));
+  ctx.save();
+  ctx.translate(x, y);
+  if (G.fx < 0) ctx.scale(-1, 1);
+  ctx.rotate(a);
+  ctx.fillStyle = skin;
+  rrect(ctx, 0, -1.1, 7.5, 2.2, 1.1);
+  ctx.fill();
+  fillCircle(ctx, 1.2, 1.4, 1.5, skin); // the curled fingers under it
+  ctx.restore();
 }
 
 function drawFolder(ctx, g) {
@@ -283,7 +302,7 @@ function drawBox(ctx, g) {
   ctx.fillStyle = '#6e4a26'; // dark open top
   rrect(ctx, cx - w / 2, top - 3, w, 5, 1.5);
   ctx.fill();
-  emoji(ctx, '🪴', cx + 1.5, top - 6, 12);
+  emoji(ctx, strictGlyphs() ? '#plant' : '🪴', cx + 1.5, top - 6, 12); // legacy: drop with the legacy list
   ctx.fillStyle = '#c38f55'; // flaps, splayed out
   ctx.beginPath();
   ctx.moveTo(cx - w / 2, top - 2); ctx.lineTo(cx - w / 2 - 3, top - 5); ctx.lineTo(cx - w / 2 + 3, top - 4.5); ctx.closePath();
@@ -380,7 +399,7 @@ export function drawPerson(ctx, look, s, x, y) {
     ctx.stroke();
     ctx.lineCap = 'butt';
     if (s.item) {
-      emoji(ctx, s.item, ex + G.rx * 2, ey - 2, 13); // the gag: whatever you're holding is your "phone"
+      emoji(ctx, s.item, ex + G.rx * 2, ey - 2, 13, HELD); // the gag: whatever you're holding is your "phone"
     } else {
       ctx.fillStyle = '#26221f';
       rrect(ctx, ex - 2, ey - 6, 4.5, 9, 1.2);
@@ -816,6 +835,13 @@ export function itemIcon(items, held) {
   return (items && items[held]?.icon) || '❔';
 }
 
+// The glyph an item is drawn with, on the floor, in a hand and in the HUD: '#<type>' (its `draw`, render/things.js)
+// when it has one, else its emoji (a level on the legacy list, src/levels/legacy.js). null for empty hands.
+export function itemGlyph(items, type) {
+  if (!type) return null;
+  return items && items[type]?.draw !== undefined ? `#${type}` : itemIcon(items, type);
+}
+
 // The player's look in a disguise she wears (level.items[type].disguise.look over her own; play/disguise.js).
 const wornLooks = new WeakMap();
 function wornLook(looks, disguise) {
@@ -834,7 +860,7 @@ function drawPlayer(ctx, game, t) {
   s.pose = p.seated ? 'sit' : p.moving ? 'walk' : 'stand';
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
-  s.item = worn ? null : itemIcon(game.level.items, p.held);
+  s.item = worn ? null : itemGlyph(game.level.items, p.held);
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? 'reach' : p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle';
@@ -873,12 +899,13 @@ function drawNpc(ctx, game, n, t) {
   } else if (s.pose === 'walk') {
     s.arms = 'walk';
   }
+  if (strictGlyphs()) pointAt(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
   let mug = false;
   if (n.carry) {
     if (!s.item && s.pose !== 'sit' && (s.arms === 'walk' || s.arms === 'idle')) {
       s.arms = 'mug';
-      s.item = itemIcon(game.level.items, n.carry);
+      s.item = itemGlyph(game.level.items, n.carry);
     } else mug = true;
   }
   for (const r of poses.marks || NONE) {
@@ -891,9 +918,28 @@ function drawNpc(ctx, game, n, t) {
   const px = fin(n.x) * T;
   const py = fin(n.y) * T;
   const mugBehind = mug && Math.sin(s.dir) < 0; // on the far side of him: he overlaps it
-  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
+  if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
   drawPerson(ctx, look, s, px, py);
-  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemIcon(game.level.items, n.carry));
+  if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
+}
+
+// Telling on you, or catching you (a 'tattle' or 'caught' sightline from him, core/fx.js): he turns to you, or to
+// the screen he saw you on, and points with his bare hand, whatever the pose said. In a migrated level only.
+function pointAt(game, n, s) {
+  const lines = game.fx && game.fx.lines;
+  const p = game.player;
+  if (!Array.isArray(lines) || !p) return;
+  const l = lines.find((v) => v && v.from === n.id && (v.kind === 'tattle' || v.kind === 'caught') && fin(v.age) < fin(v.ttl, 0.8));
+  if (!l) return;
+  const to = l.via?.screen ?? p;
+  const dx = fin(to.x) - fin(n.x);
+  const dy = fin(to.y) - fin(n.y);
+  if (Math.abs(dx) + Math.abs(dy) > 0.01) s.dir = Math.atan2(dy, dx);
+  s.head = s.dir;
+  s.glance = 0;
+  s.arms = 'point';
+  s.item = null;
+  s.crank = false;
 }
 
 // A cup set down on the desk or table in front of someone, a little to their right.

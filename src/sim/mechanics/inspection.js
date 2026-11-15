@@ -76,7 +76,6 @@ export const label = (game, npc, insp) => `${insp.label} ${npc._insp.i}/${insp.c
 
 // The item types an item check counts (`item`: one type or a list).
 const typesOf = (c) => [c.item].flat();
-const PLAYER_ICON = '🧍'; // a who check's sign, for the player
 
 const middle = (pts) => ({ x: pts.reduce((a, p) => a + p.x, 0) / pts.length, y: pts.reduce((a, p) => a + p.y, 0) / pts.length });
 const zoneMid = (z) => ({ x: (z.x0 + z.x1) / 2, y: (z.y0 + z.y1) / 2 });
@@ -108,7 +107,7 @@ function signOf(game, insp, c, r) {
 }
 function shows(game, c, r) {
   const no = c.absent ? ['🚫'] : [];
-  if (c.item === undefined) return [...no, c.who === 'player' ? PLAYER_ICON : findNpc(game, c.who)?.icon ?? []].flat();
+  if (c.item === undefined) return [...no, c.who === 'player' || findNpc(game, c.who) ? `@${c.who}` : []].flat(); // a who check: their face
   const icon = (type) => game.level.items[type].icon;
   return [...no, ...(r.found.length ? r.found.map((i) => icon(i.type)) : [icon(typesOf(c)[0])])];
 }

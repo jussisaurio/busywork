@@ -25,12 +25,14 @@
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
 //   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
-//               noise.at (optional) a spot
+//               noise.at (optional) a spot; no `icon` (*: the target lights up with the E key cap instead)
 //   noise timing  (a row's noise and level.noises', each optional) delay >= 0, every > 0, turn > 0 numbers; while
 //               a function; ripple true or { color? (a string) }; sfx a recipe name in audio/sfx.js
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep and
-//               bulky booleans; disguise { as (a cast id), look? (an object of look fields), greet? (a list of lines) }
-//               (src/play/disguise.js)
+//   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
+//               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
+//               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
+//               cast ids; put seconds; keep and bulky booleans; disguise { as (a cast id), look? (an object of look
+//               fields), greet? (a list of lines) } (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
@@ -56,17 +58,25 @@
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
 //               (render/world.js PROP_PAINTERS) or a painter function of the level's, on a legend letter
-//               that is on the map
+//               that is on the map (*: not the 'icon' painter, an emoji on a tile); things (optional) the level's
+//               '#<name>' things, each an engine thing's name or a painter function (render/things.js)
+//   poses       optional; arms and marks lists of rules with a when() (*: an arms rule's item a '#<thing>' that
+//               draws: an item type with a draw, a decor.things name or an engine thing, never an emoji)
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
 //               scene in scenes, each { win, icons, draw() }
 //   voices      optional; an object of voice objects
+// (*) The visual language (DESIGN.md "Visual language": people speak emoji, the world is drawn). These rules hold
+// for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
+// icon rows) is never checked.
 import { parseMap } from '../core/map.js';
 import { DAY_CUES } from '../config.js';
 import { DIRS } from '../core/vision.js';
 import { voicesFor } from '../audio/babble.js';
 import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
+import { THINGS } from '../render/things.js';
+import { isLegacyLevel } from './legacy.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
@@ -88,6 +98,11 @@ export function levelProblems(level, key) {
   const out = [];
   const bad = (path, msg) => out.push(`${path}: ${msg}`);
   if (!isObj(level)) return ['level: not an object'];
+  const drawn = !isLegacyLevel(level); // held to the visual language (*)
+  const thingNames = Object.keys(THINGS).join(', ');
+  const painter = (path, d, what) => { // an engine thing's name or a painter function
+    if (!isFn(d) && !(isStr(d) && Object.hasOwn(THINGS, d))) bad(path, `${what} (an engine thing: ${thingNames}; or a painter function)`);
+  };
 
   // --- names the rest refers to -----------------------------------------------------------------
   const spots = isObj(level.spots) ? level.spots : {};
@@ -260,12 +275,17 @@ export function levelProblems(level, key) {
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
       if (row.noise?.at !== undefined) spot(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
+      if (drawn && row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
     }
   }
   if (level.items !== undefined && !isObj(level.items)) bad('items', 'not an object');
   for (const [type, it] of Object.entries(items)) {
     if (!isObj(it)) { bad(`items.${type}`, 'not an object'); continue; }
-    if (!isStr(it.icon)) bad(`items.${type}.icon`, 'missing (the emoji it draws as)');
+    if (!isStr(it.icon)) bad(`items.${type}.icon`, 'missing (the emoji people say for it)');
+    if (it.draw !== undefined) painter(`items.${type}.draw`, it.draw, `no thing ${q(it.draw)}`);
+    else if (drawn) bad(`items.${type}.draw`, 'missing: how it is drawn, not an emoji');
+    if (it.tint !== undefined && !isStr(it.tint)) bad(`items.${type}.tint`, "not a colour or 'owner'");
+    if (it.tint === 'owner' && !it.owner) bad(`items.${type}.tint`, "'owner' but the item has no owner");
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
     if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
     if (it.disguise !== undefined) {
@@ -471,13 +491,35 @@ export function levelProblems(level, key) {
       const path = `decor.props[${i}]`;
       if (!isFn(pr?.draw) && !Object.hasOwn(PROP_PAINTERS, pr?.draw)) {
         bad(`${path}.draw`, `no painter ${q(pr?.draw)} (a function, or one of ${Object.keys(PROP_PAINTERS).join(', ')})`);
-      }
+      } else if (drawn && pr.draw === 'icon') bad(`${path}.draw`, "'icon' puts an emoji on the tile: draw the object (a painter function)");
       if (map && !(level.map.rows.some((r) => r.includes(pr?.tile)) && typeof pr?.tile === 'string' && pr.tile.length === 1)) {
         bad(`${path}.tile`, `${q(pr?.tile)} is not on the map`);
       }
       if (!isFn(pr?.state)) bad(`${path}.state`, 'not a function');
     }
     for (const [i, s] of (decor.zoneSeeds ?? []).entries()) if (!inMap(s?.x, s?.y)) bad(`decor.zoneSeeds[${i}]`, 'off the map');
+    if (decor.things !== undefined) {
+      if (!isObj(decor.things)) bad('decor.things', 'not an object');
+      else for (const [name, d] of Object.entries(decor.things)) painter(`decor.things.${name}`, d, 'not a thing');
+    }
+  }
+  const poses = level.poses;
+  if (poses !== undefined) {
+    if (!isObj(poses)) bad('poses', 'not an object');
+    else {
+      for (const field of ['arms', 'marks']) {
+        if (poses[field] === undefined) continue;
+        for (const [i, r] of list(`poses.${field}`, poses[field]).entries()) {
+          const path = `poses.${field}[${i}]`;
+          if (!isFn(r?.when)) bad(`${path}.when`, 'not a function (npc, world, game)');
+          if (!drawn || field !== 'arms' || r?.item === undefined) continue;
+          const name = isStr(r.item) && r.item.startsWith('#') ? r.item.slice(1) : null;
+          const things = isObj(decor?.things) ? decor.things : {};
+          const draws = name && ((has(items, name) && items[name]?.draw !== undefined) || has(things, name) || Object.hasOwn(THINGS, name));
+          if (!draws) bad(`${path}.item`, `${q(r.item)} is not a '#<thing>' that draws (an item type with a draw, a decor.things name or an engine thing)`);
+        }
+      }
+    }
   }
   const sounds = level.sounds;
   if (sounds !== undefined) {

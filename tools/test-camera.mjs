@@ -141,7 +141,7 @@ function day(level) {
   ok(caught && caught.payload.by === 'doreen' && caught.payload.via === 'test_cam', `on camera: caught by Doreen via the camera (${JSON.stringify(caught?.payload)})`);
   const ci = h.log.indexOf(caught);
   const said = h.log.slice(0, ci).reverse().find((e) => e.name === 'say' && e.payload.owner === 'doreen');
-  ok(said && said.payload.icons.join('') === '📺❗👉', `she points at the screen, then at you (${said?.payload.icons.join('')})`);
+  ok(said && said.payload.icons.join('') === '📺❗👉@player', `she points at the screen, then at you, your face (${said?.payload.icons.join('')})`);
   const line = h.lineAtCatch;
   ok(line && line.via && line.via.screen.x === CAM.monitor.x && line.via.lens.x === CAM.x, 'the sightline runs eyes → screen, lens → you');
 

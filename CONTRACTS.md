@@ -133,11 +133,11 @@ whole object at load: see "Errors" below.
 - Example: fixture `LEGEND` (calendar, microwave, cake stand, `own_desk`, and `F` with `draw: 'refrigerator'`).
 
 The renderer draws a tile as its legend `draw`, else its `kind`. The draws are `render/world.js` `TILE_DRAWS`:
-`wall`, `glass`, `entrance` (a glass door), `door`, `restroom` (a wall with a 🚻 door), `elevator` (a wall with
+`wall`, `glass`, `entrance` (a glass door), `door`, `restroom` (a wall with a restroom door), `elevator` (a wall with
 lift doors), `floor`, `outside` (lobby floor), `desk`, `own_desk`, `meeting_table`, `coffee_machine`, `plant`,
 `coat_rack`, `refrigerator`. The base letters' kinds are draws already. A `draw` not in the list is a load error.
-Any other kind draws only floor. To show something there, add a `decor.props` entry with `draw: 'icon'`
-(fixture: `B`, `M`, `W`).
+Any other kind draws only floor. To show something there, add a `decor.props` entry with a painter (fixture: `B`,
+`M`, `W`, drawn in `fixture/painters.js`).
 - Desk tiles (`desk`, `own_desk`, `meeting_table`, `coffee_machine`) that touch make one piece. A piece with
   `own_desk` is your desk, with `meeting_table` the meeting table, with `coffee_machine` the kitchen counter.
   Any other piece is drawn by the floor zone at its top-left tile: `kitchen` a kitchen table, `office` an
@@ -219,7 +219,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | Row field | Meaning |
 |---|---|
 | `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
-| `icon`, `text` | the ✋ hint, and the harness's words for it |
+| `text` | the harness's words for it. A player sees the target light up with the E key cap |
+| `icon` | legacy levels only (`src/levels/legacy.js`): the hint over the target. The validator refuses it elsewhere |
 | `duration` | real seconds; `instant: true` instead does it at once (never seen in progress) |
 | `sneaky` | witnesses matter while it runs |
 | `owner` | only this cast id minds (to anyone else it's harmless) |
@@ -229,8 +230,11 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
-- `items`: `{ [type]: { icon, place?, edible?, contraband?, owner?, keep?, bulky? } }`.
-  - `icon` (required): the emoji it draws as, held, carried or on the floor.
+- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner?, keep?, bulky? } }`.
+  - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
+  - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
+    and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
+  - `tint`: a colour, or `'owner'` (the owner's `look.body`; needs an `owner`). The painter gets it as `opts.tint`.
   - `place`: the `world` field that says where it is: `'player'` held, `'dropped'`, `'eaten'`, a spot name, or a
     cast id.
   - `edible`: the engine offers `eat_<type>` (sneaky to its owner, `idle`, sets `player.smeared`, event
@@ -243,6 +247,18 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
   - `bulky`: it fills your arms: no pretending (the busy button does nothing) while you hold it, so you can't
     hide it behind a folder or a phone call.
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
+
+**Things** (DESIGN.md "Visual language": the world is drawn). A thing is an object drawn in the world by a painter
+`(ctx, x, y, size, t, game, opts)`: centred on (x, y), about `size` px tall, shapes only (`box(ctx, x, y, size)` from
+`render/things.js` sets up a 16-unit box). `opts`: `{ held, tint, type }`: `held` in a hand, `tint` the item's colour
+or null, `type` the item type or null. A name resolves to `items[name].draw`, then `decor.things[name]`, then the
+engine's `THINGS[name]` (cup, mug, card, wrench, cigarette, paper, note, laptop, clipboard, plant, clock, muted). A
+thing shows up:
+- as an item: on the floor, in your hand, in the HUD's held slot, carried by the person who took it;
+- in a pose: `poses.arms[i].item: '#<name>'`;
+- in an end scene: `drawThing(ctx, game, name, x, y, size, held)` (false if nothing draws it);
+- as the glyph `'#<name>'` anywhere `render/util.js` `emoji()` draws (bubbles too, but people speak emoji).
+An emoji a painter or a scene draws in the world is recorded by the runtime check (`render/util.js` `worldEmoji`).
 
 ### Roles
 `roles` says who plays which part in the office rules (`play/rules.js`). Every cast member who is not the
@@ -336,17 +352,23 @@ Render and audio read these; the sim never does. All optional except `title`.
 - `decor`: set dressing (`chairs`, `windows`, `paintings`, `clock`, `screen`, `props`, `desks`, `deskOwners`,
   `zoneSeeds`, `elevator`, `legendAt`, ...), documented in `meeting/decor.js`. `props: [{ tile, draw,
   state(world, game) }]` draws on the first tile whose map letter is `tile` (the letter, not a draw or kind name);
-  `draw: 'icon'` with state `{ icon, size? }` works in any level. Example: fixture `DECOR`.
+  `draw` is a `render/world.js` `PROP_PAINTERS` name or the level's painter `(ctx, info, at, shown, t)` in map
+  pixels (`at`: the tile; `shown`: what `state` returned). Draw the state that decides the outcome on the object.
+  `draw: 'icon'` with state `{ icon, size? }` is for legacy levels only. `things: { [name]: painter | thing name }`
+  names things that are no item (Things, above). Example: fixture `DECOR` and `fixture/painters.js`.
 - `looks`: `{ [id]: look }` per person and `player` (fields in `meeting/looks.js`); anyone without one gets a
   generic look in his `color`.
 - `poses`: `{ arms: [{ when(npc, world, game), arms, item?, angry?, crank? }], marks: [{ when, angry?, badge?,
-  jacket? }] }`. The first `arms` rule that holds wins; every `marks` rule that holds applies.
+  jacket? }] }`. The first `arms` rule that holds wins; every `marks` rule that holds applies. `item` is the
+  `'#<thing>'` in the hand (legacy levels: an emoji); `arms: 'point'` with no item points with the bare hand, as does
+  anyone telling on you or catching you.
 - `cones`: `{ alert: [override] }`: overrides during which a cone glows red. A cone also glows while its NPC sees
   something the rules react to (`game.watch`) and when he catches you; the authority's also while his suspicion
   is above 0.
 - `endScenes`: `{ kindOf(outcome), scenes: { [kind]: { win, icons, draw(ctx, game, t, e, outcome) } } }`.
   `kindOf` must map every outcome to a scene. Absent: `render/screens.js` `DEFAULT_END_SCENES`, a plain scene per
-  result. Example: fixture `END_SCENES` (one big emoji per outcome).
+  result. `draw` paints a scene: people, furniture and things (`drawThing`, the level's painters), never an emoji
+  object; speech bubbles in it are fine. `icons` is the punchline row, in speech. Example: fixture `END_SCENES`.
 - `sounds`: what actions, events, signs, drops and repeats sound like (`meeting/sounds.js`). Absent: engine sounds
   only.
 - `voices`: `{ [name]: params }` (fields: `audio/babble.js` `VOICES`), added to the engine's `player` and `generic`.
@@ -503,9 +525,9 @@ game = {
   authority's suspicion (fills in 1.6 s of seeing you idle, decays in 3 s), work assignment and caught.
   - An action with an `owner` is sneaky only to that NPC. An `idle` action still counts as slacking.
   - The authority seeing a sneaky action, or his contraband in your hands, means caught.
-  - A witness who sees a sneaky action cancels it (`'witnessed'`) and shouts ❗👉 (`witness:tattle`). If the
+  - A witness who sees a sneaky action cancels it (`'witnessed'`) and shouts ❗👉 `@player` (`witness:tattle`). If the
     authority is on the floor (enforcing, not in `deafIn`) he hears it: work assigned (`'tattle'`). If not, the
-    witness keeps a grudge and points you out (👉 + the row's `saw`) 1.2 s after he is back (`late: true`).
+    witness keeps a grudge and points you out (👉 `@player` + the row's `saw`) 1.2 s after he is back (`late: true`).
   - Evidence and scene (roles): the same shout and tattle, with reason `'evidence'` or `'scene'`.
   - Owners take their thing back on sight (unless you pretend), while `when` holds. Carrying it is reason
     `'contraband'`: his `says`, no tattle.
@@ -514,12 +536,14 @@ game = {
     slacking) or `'witnessed'` (a tattle).
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
-  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉). Fail: you stand at
+  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you stand at
   `meeting.presenter`, and the 🦗 sign shows at `failSign`.
 
 ### Render (`src/render/*`)
 - `createRenderer(canvas)` returns `{ render(game) }`. It owns canvas sizing (fit the window, crisp on HiDPI) and
   draws title / day / end screens from `game.phase` and `game.outcome`. It never mutates gameplay state.
+- Level painters may import `render/things.js` (`box`, `THINGS`, `drawThing`) and the drawing helpers of
+  `render/util.js`, `render/characters.js` and `render/tableau.js`.
 
 ### Audio (`src/audio/*`)
 - `createAudio()` returns `{ attach(game), unlock(), update(game, realDt), setMuted(bool), setPaused(bool) }`.
@@ -606,6 +630,8 @@ exits 2 and lists the registry.
   - `random`: random plans win more than 1% of the time.
   - `crash`: a command threw, or a day never ended.
   - `<lesson id>`: a win that skips a `mustUse` lesson.
+  - `drawn`: the level is on the legacy list (`src/levels/legacy.js`), or its winning plans draw an emoji as an
+    object in the world (`tools/lib/drawn.mjs`; DESIGN.md "Visual language").
   - `cold-read:<stage>` (every level but the fixtures): a cold read stage (`premise`, `pictures`, `replay`) not
     recorded `works` in `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and
     never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
@@ -622,7 +648,8 @@ exits 2 and lists the registry.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.
 - **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--write`
-  re-records (plans from the file, or picked from the golden corpus).
+  re-records (plans from the file, or picked from the golden corpus). It also fails when a level that is not on the
+  legacy list draws an emoji as an object in the world.
 - **Routes** (`tools/routes.mjs`): scripted speedruns that must end with the expected outcome, from each level's
   `route-checks.js` (the format is in `meeting/route-checks.js`). A check is `{ name, expect: { result, routes? },
   cmds: [...] }` (harness commands) or the same with `play(ctx)` in place of `cmds`. `expect.routes` lists routes the

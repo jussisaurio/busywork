@@ -67,18 +67,18 @@ const NPC_DEFS = [
 
 const INTERACTIONS = {
   print: {
-    on: 'workstation', icon: '🖨️', text: 'send 40 pages to the printer', duration: 0.5, sneaky: false,
+    on: 'workstation', text: 'send 40 pages to the printer', duration: 0.5, sneaky: false,
     can: () => true,
     noise: { at: 'printer', radius: 5 }, // the printer across the room whirs into life
     done() {},
   },
   drink_water: {
-    on: 'water_cooler', icon: '🚰', text: 'drink some water', duration: 0.8, sneaky: false,
+    on: 'water_cooler', text: 'drink some water', duration: 0.8, sneaky: false,
     can: () => true,
     done() {},
   },
   eat_donut: {
-    on: 'donut', icon: '🍩', text: 'eat the last donut', duration: 0.6, sneaky: true, saw: '🍩',
+    on: 'donut', text: 'eat the last donut', duration: 0.6, sneaky: true, saw: '🍩',
     can: (p, w) => w.donut === 'box',
     done(game) {
       game.world.donut = 'eaten';

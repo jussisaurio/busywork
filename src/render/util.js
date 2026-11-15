@@ -45,20 +45,63 @@ export function textWidth(ctx, fontStr, text) {
   return w;
 }
 
-// Emoji drawn centred on (x, y).
-// Every icon is drawn here. An icon '@<castId>' ('@player' for you) is that person's face: characters.js
-// registers the painter, which returns false for an id it cannot draw (then the text shows, so a typo is seen).
+// Glyphs drawn centred on (x, y), about `size` px tall. Every icon is drawn here (bubbles, held things, the HUD):
+//   '@<castId>'  that person's face ('@player' is you): characters.js registers the painter
+//   '#<thing>'   a drawn object: things.js registers the painter (an item's draw, the level's decor.things, or an
+//                engine thing; CONTRACTS.md "Things")
+//   anything else  an emoji, drawn as text
+// A painter returns false for a name it cannot draw; the text then shows, so a typo is seen. `how` goes to the
+// thing painter: { held: true } when a hand holds it (characters.js), so a thing may look different in a hand.
+//
+// The visual language (DESIGN.md "Visual language"): people speak emoji, the world is drawn. The renderer marks
+// what it is drawing with glyphScope(): 'world' for the map, the people on it and an end card's scene, 'speech'
+// for bubbles and reactions, null for the HUD and screens. In a level that is not on the legacy list
+// (src/levels/legacy.js), an emoji drawn in the 'world' scope is a mistake: it is recorded in worldEmoji (the
+// runtime check tools/golden-render.mjs and tools/gate.mjs read) and still drawn.
 let facePainter = null;
 export function setFacePainter(fn) {
   facePainter = fn;
 }
+let thingPainter = null;
+export function setThingPainter(fn) {
+  thingPainter = fn;
+}
 
-export function emoji(ctx, ch, x, y, size) {
+const glyphs = { strict: false, scope: null, level: null };
+export const worldEmoji = []; // { glyph, level }, once per glyph and level
+// Per frame (renderer.js): strict = the level draws its world (not on the legacy list); level = its id.
+export function useGlyphs(strict, level = null) {
+  glyphs.strict = !!strict;
+  glyphs.level = level;
+}
+export const strictGlyphs = () => glyphs.strict;
+// Sets the scope ('world' | 'speech' | null); returns the one it replaces, to put back.
+export function glyphScope(scope) {
+  const was = glyphs.scope;
+  glyphs.scope = scope;
+  return was;
+}
+function noteWorldEmoji(ch) {
+  const glyph = String(ch);
+  if (!glyph.trim()) return;
+  if (worldEmoji.some((v) => v.glyph === glyph && v.level === glyphs.level)) return;
+  worldEmoji.push({ glyph, level: glyphs.level });
+  if (typeof process === 'undefined' && typeof console !== 'undefined') {
+    console.warn(`[glyphs] level ${glyphs.level}: the emoji ${glyph} is drawn as an object in the world (draw it instead)`);
+  }
+}
+
+export function emoji(ctx, ch, x, y, size, how = null) {
   ctx.font = font(size, EMOJI_FAMILY);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#000';
-  if (facePainter && typeof ch === 'string' && ch.charCodeAt(0) === 64 && facePainter(ctx, ch.slice(1), x, y, size)) return;
+  if (typeof ch === 'string') {
+    const c0 = ch.charCodeAt(0);
+    if (c0 === 64 && facePainter && facePainter(ctx, ch.slice(1), x, y, size)) return;
+    if (c0 === 35 && thingPainter && thingPainter(ctx, ch.slice(1), x, y, size, how)) return;
+  }
+  if (glyphs.strict && glyphs.scope === 'world') noteWorldEmoji(ch);
   ctx.fillText(ch, x, y);
 }
 

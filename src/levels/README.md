@@ -36,7 +36,8 @@ A level needs all of these. The validator rejects a level without them at load:
 - `cast`, `zones`, `interactions` (`{}` is fine), and `meeting` (its `room` is a zone).
 - `routes`, and `outcomeOrder` with every route id in it once.
 - `initialWorld()` that returns `items: []` and every world field the level reads.
-- an `icon` for each item type.
+- an `icon` for each item type (what people say for it), and a `draw` (how it is drawn: DESIGN.md "Visual
+  language"; the legacy list in `src/levels/legacy.js` excuses the levels not yet migrated).
 
 The tools also need `gate` and `route-checks.js`. `roles.authority` is optional: without one, nobody assigns work
 and only an inspection can catch you.

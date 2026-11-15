@@ -71,7 +71,7 @@ run, not read off this table.
 - **The scene.** From the moment the projector breaks until it's fixed, Kev blames whoever he sees in the meeting room
   (always) or within 3.5 tiles of its door (unless you pretend). Once per break.
 - **Evidence that outlives the act.** The spill leaves the empty mug ☕ in your hand. It won't drop (`keep`: not with
-  the ✋ drop, not when the boss marches you to your desk); only a put gets rid of it, at three spots: back on the
+  the generic drop, not when the boss marches you to your desk); only a put gets rid of it, at three spots: back on the
   coffee machine, on Kev's desk, or on your own desk. A put takes 0.8 s and is sneaky to everyone.
 - **Contraband.** The boss seeing you hold the keycard (not pretending) means caught. A dropped keycard he sees goes
   back in his pocket. Once the boss has seen the dead projector, the mug is his business too: holding it in his
@@ -90,8 +90,8 @@ run, not read off this table.
      projector to the ☕ to whoever has it: in your hand (pretending or not), you're BLAMED, the whole table pointing
      at you. Before that, on his 3:12 and 3:22 walks he looks in at the meeting-room door; a dead projector starts his
      mug hunt (📽️💥 … ☕❓) along the hallway, the coffee machine, Kev's desk and yours, until 3:34.
-   - Ways out: put it back on the coffee machine (he shrugs ☕🤷), or plant it on Kev's desk (☕❗😠🔧, and at 4:00
-     the table stares at Kev's empty chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
+   - Ways out: put it back on the coffee machine (he shrugs ☕🤷), or plant it on Kev's desk (☕❗, then 😠 and Kev's face;
+     at 4:00 the table stares at Kev's empty chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
      caught; unseen until 4:00, BLAMED. Lesson: evidence outlives the act.
 2. **Keycard** 🪪 (`world.bossLockedOut`). Steal the keycard from the boss's jacket on the coat rack, behind the boss,
    in view of Lin through the glass. The boss takes the jacket at 3:35, but the card isn't in it. At 3:48 he is
@@ -103,7 +103,7 @@ run, not read off this table.
    - **Combo (stretch):** steal Lin's sandwich before 3:00. When she finds the fridge empty, she hunts for it around
      the open plan until 3:24. That covers the boss's walk to the restroom and gives a clean keycard window. During
      the hunt she must not see the sandwich, in your hands or on your sweater. You can't put it down (with it in hand
-     the ✋ action is eat), and taking the keycard needs empty hands, so you eat it at some point. Eat it early (at the fridge, unseen) and
+     E eats it), and taking the keycard needs empty hands, so you eat it at some point. Eat it early (at the fridge, unseen) and
      you're marked for the whole hunt. Carry it hidden (typing at your desk, folder stride) and eat it late,
      somewhere her hunt doesn't reach (the coat-rack corner), and you're exposed only on the way out.
 
@@ -131,7 +131,8 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   knows (`_knows`), and his mug hunt starts.
 - **The mug hunt** (hunt). 📽️💥 then ☕❓ (`boss:mugHunt`), then he walks `mug_hunt` (meeting door, the coffee
   machine, Kev's desk, your desk) looking around, until 3:34 or until he sees the mug within 3.5 tiles: on Kev's desk
-  ☕❗ 😠🔧, on the machine ☕🤷 (`mug:found {spot}`). On your desk it's put down's business (`my_desk` is yours): caught.
+  ☕❗ then 😠 with Kev's face, on the machine ☕🤷 (`mug:found {spot}`). On your desk it's put down's business
+  (`my_desk` is yours): caught.
 - **The verdict** (`verdict.js`, at the gather, only with the projector broken and the boss in the room). The mug in
   your hand (`why: 'mug'`) or on your desk (`why: 'desk'`): BLAMED, the table staring at you. On Kev's desk with you
   in the room: still a win (`why: 'kev'`), the table staring at Kev's empty chair. End scenes `mug` and `kev`.

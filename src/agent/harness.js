@@ -383,12 +383,13 @@ function compass(rad) {
   const i = Math.round(((rad % (2 * Math.PI)) + 2 * Math.PI) / (Math.PI / 4)) % 8;
   return COMPASS8[i];
 }
-// The ✋ hint in words (a human sees the target highlighted plus an action icon).
+// The focus hint in words (a human sees the target lit up with the E key cap; a legacy level adds an action icon).
 function focusText(game) {
   const f = game.player.focus;
   if (!f) return 'none in reach';
   const verb = f.action === 'drop' ? `drop the ${game.player.held}` : actionRow(game, f.action)?.text ?? f.action ?? 'interact';
-  return f.kind === 'self' ? `${f.icon ?? ''} ${verb}` : `${f.icon ?? ''} ${f.id}: ${verb}`;
+  const icon = f.icon ? `${f.icon} ` : '';
+  return f.kind === 'self' ? `${icon}${verb}` : `${icon}${f.id}: ${verb}`;
 }
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
 
