@@ -31,7 +31,7 @@ export default [
     },
   },
   {
-    name: "jacket: the boss's jacket while Lin waves Kev off, edit the list as \"the boss\", hang it back → win",
+    name: "jacket: the boss's jacket while Lin glances away, edit the list as \"the boss\", hang it back → win",
     expect: { result: 'win', routes: ['jacket'] },
     play({ run, log }) {
       for (const c of ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact', 'goto boss_pc', 'interact', 'goto coat_rack', 'interact', 'goto my_seat', 'pretend until 3:45']) run(c);

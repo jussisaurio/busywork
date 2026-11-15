@@ -5,7 +5,7 @@
 const HOODIE = ['pretend until 3:25', 'goto kev_desk pretend', 'interact']; // Kev's hoodie off his chair, on
 const ASK = [...HOODIE, 'pretend until 3:33', 'goto boss_pc', 'interact']; // "Kev" offers to fix it
 const EDIT = [...ASK, 'wait 2s', 'interact']; // ...and takes your name off while the boss watches
-const JACKET = ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact']; // on, as Lin waves Kev off
+const JACKET = ['pretend until 3:15', 'goto coat_rack pretend', 'wait 1.7s', 'interact']; // on, while Lin glances away
 
 export default [
   {

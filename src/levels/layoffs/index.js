@@ -1,5 +1,5 @@
 // "The Layoff List": the same office as level 1, an hour later. At 3:45 the boss emails HR the layoff list, and you
-// are on it: a column of faces on his screen, yours marked in red (list.js). Get your name off it.
+// are on it: a row of faces on his screen, yours framed in red (list.js). Get your name off it.
 //
 // Nobody lets you at his computer as yourself. But clothes are who you are, to people who don't know better
 // (src/play/disguise.js):
