@@ -1,5 +1,7 @@
 // The meeting's carryable items (level.items), keyed by item type (player.held, floor items' type).
-//   icon        how it shows in hand, on the floor and in bubbles
+//   icon        what people say for it, in bubbles (speech: 🤤☕, 😠🥪)
+//   draw        how it is drawn in a hand, on the floor and in the HUD: an engine thing (render/things.js THINGS)
+//               or a painter of ours (painters.js). Never an emoji (DESIGN.md "Visual language")
 //   place       the world field that says where it is: set to 'player' on pick up, 'dropped' on drop,
 //               'eaten' when eaten, and the confiscator's id when contraband is picked up off the floor
 //               (coffee has none: world.coffee is the pot, and the poured cup is just held)
@@ -12,9 +14,12 @@
 //               (default: they carry it off, '<type>:confiscated' { by })
 //   put         seconds: putting it down on a spot is a sneaky timed action, not an instant one (putdown.js)
 //   keep        it leaves your hand only by a put: no drop, and assigned work sends you to your desk holding it
+import { sandwich } from './painters.js';
+
 export const ITEMS = {
   coffee: {
     icon: '☕',
+    draw: 'cup', // full and steaming
     // Only once he has found the pot empty (☕❓😩) does Kev know the cup is his. A desperate man: 🤤☕ … 😌
     owner: {
       id: 'kev',
@@ -22,13 +27,14 @@ export const ITEMS = {
       says: [{ say: ['🤤', '☕'] }, { say: ['😌'], after: 1.3 }],
     },
   },
-  keycard: { icon: '🪪', place: 'keycard', contraband: 'boss' },
+  keycard: { icon: '🪪', draw: 'card', place: 'keycard', contraband: 'boss' }, // an ID card on a lanyard
   // The cup, empty, once its coffee is all over the projector (interactions.js spill_coffee). It's evidence: you
   // can't just let it fall (keep), and setting it down anywhere is a furtive 0.8 s (put). Once the boss has seen
   // the projector (behaviours.js peek) the cup in your hand is all the proof he needs: he catches you with it.
   // Not at the meeting table, nor locked out: at 4:00 the verdict judges it instead (verdict.js).
   mug: {
     icon: '☕',
+    draw: 'mug', // the same cup, empty: a dried ring inside, a drip down its side
     place: 'mug',
     put: 0.8,
     keep: true,
@@ -36,6 +42,7 @@ export const ITEMS = {
   },
   sandwich: {
     icon: '🥪',
+    draw: sandwich,
     place: 'sandwich',
     edible: true,
     // Only Lin knows it's hers: to anyone else, taking or eating it is just lunch.

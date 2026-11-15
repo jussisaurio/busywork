@@ -43,7 +43,7 @@ function play(level, cmds) {
 }
 
 const STAY = ['pretend until 2:52']; // at your desk while he counts: laptop ✔️, you ✔️, Dave's desk ❌
-const tablet = { tablet: { icon: '📱' } };
+const tablet = { tablet: { icon: '📱', draw: 'laptop' } }; // drawn as a laptop: these tests read signs only
 
 // 1. The default sign is the mark alone (every level that names no `sign` looks as it did).
 {

@@ -4,11 +4,11 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
+  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, strictGlyphs, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
   MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
-import { itemIcon } from './characters.js';
+import { itemGlyph } from './characters.js';
 import { formatClock, dayCue, WORK_PENALTY_MIN } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
@@ -185,7 +185,7 @@ function drawClock(ctx, minute, t, day) {
 const NO_BADGE = [];
 function drawGoal(ctx, badge) {
   panel(ctx, 190, 6, 84, 44);
-  emoji(ctx, '🕓', 214, 28, 20);
+  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 214, 28, 20); // legacy: drop with the legacy list
   if (badge[0]) emoji(ctx, badge[0], 248, 28, 20);
   if (badge[1]) emoji(ctx, badge[1], 258, 36, 12);
 }
@@ -198,7 +198,7 @@ function drawHeld(ctx, items, held) {
   rrect(ctx, 292, 12, 32, 32, 6);
   ctx.stroke();
   ctx.setLineDash([]);
-  const ic = itemIcon(items, held);
+  const ic = itemGlyph(items, held);
   if (ic) emoji(ctx, ic, 308, 29, 24);
   else {
     ctx.globalAlpha = 0.18;
@@ -241,13 +241,13 @@ function drawStatus(ctx, game, clock, t) {
   let x = game.phase === 'day' ? PAUSE_BTN.x - 6 : 950;
   const cy = 28;
   if (game.settings && game.settings.muted) {
-    emoji(ctx, '🔇', x - 12, cy, 18);
+    emoji(ctx, strictGlyphs() ? '#muted' : '🔇', x - 12, cy, 18); // legacy: drop with the legacy list
     x -= 30;
   }
   const forced = fin(clock.forced);
   if (forced > 0) {
     const k = clamp(forced / WORK_PENALTY_MIN, 0, 1);
-    emoji(ctx, '📄', x - 50, cy + Math.sin(t * 6) * 1, 18);
+    emoji(ctx, strictGlyphs() ? '#paper' : '📄', x - 50, cy + Math.sin(t * 6) * 1, 18); // legacy: drop with the legacy list
     ctx.fillStyle = 'rgba(243,230,200,0.15)';
     rrect(ctx, x - 38, cy - 4, 32, 8, 3);
     ctx.fill();

@@ -71,7 +71,7 @@ run, not read off this table.
 - **The scene.** From the moment the projector breaks until it's fixed, Kev blames whoever he sees in the meeting room
   (always) or within 3.5 tiles of its door (unless you pretend). Once per break.
 - **Evidence that outlives the act.** The spill leaves the empty mug ☕ in your hand. It won't drop (`keep`: not with
-  the ✋ drop, not when the boss marches you to your desk); only a put gets rid of it, at three spots: back on the
+  the generic drop, not when the boss marches you to your desk); only a put gets rid of it, at three spots: back on the
   coffee machine, on Kev's desk, or on your own desk. A put takes 0.8 s and is sneaky to everyone.
 - **Contraband.** The boss seeing you hold the keycard (not pretending) means caught. A dropped keycard he sees goes
   back in his pocket. Once the boss has seen the dead projector, the mug is his business too: holding it in his
@@ -103,7 +103,7 @@ run, not read off this table.
    - **Combo (stretch):** steal Lin's sandwich before 3:00. When she finds the fridge empty, she hunts for it around
      the open plan until 3:24. That covers the boss's walk to the restroom and gives a clean keycard window. During
      the hunt she must not see the sandwich, in your hands or on your sweater. You can't put it down (with it in hand
-     the ✋ action is eat), and taking the keycard needs empty hands, so you eat it at some point. Eat it early (at the fridge, unseen) and
+     E eats it), and taking the keycard needs empty hands, so you eat it at some point. Eat it early (at the fridge, unseen) and
      you're marked for the whole hunt. Carry it hidden (typing at your desk, folder stride) and eat it late,
      somewhere her hunt doesn't reach (the coat-rack corner), and you're exposed only on the way out.
 

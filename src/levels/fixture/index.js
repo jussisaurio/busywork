@@ -9,6 +9,7 @@ import { at } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { CAST, BEHAVIOURS } from './cast.js';
 import { DECOR, LOOKS, TITLE, END_SCENES, VOICES } from './presentation.js';
+import { cake } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -60,7 +61,7 @@ const ZONES = {
 
 const INTERACTIONS = {
   nuke_popcorn: {
-    on: 'microwave', icon: '🍿', text: 'microwave the popcorn for twenty minutes', duration: 1.0, sneaky: true, saw: '🍿',
+    on: 'microwave', text: 'microwave the popcorn for twenty minutes', duration: 1.0, sneaky: true, saw: '🍿',
     can: (p, w) => !p.held && w.popcorn === 'bag',
     done(game, a) {
       game.world.popcorn = 'burning';
@@ -71,7 +72,7 @@ const INTERACTIONS = {
     },
   },
   fix_calendar: {
-    on: 'calendar', icon: '✏️', text: "move your birthday to Gus's", duration: 2.5, sneaky: true, saw: '📅', // longer than any glance away
+    on: 'calendar', text: "move your birthday to Gus's", duration: 2.5, sneaky: true, saw: '📅', // longer than any glance away
     can: (p, w) => w.birthday === 'player',
     done(game) {
       game.world.birthday = 'gus';
@@ -80,7 +81,7 @@ const INTERACTIONS = {
     },
   },
   take_cake: {
-    on: 'cake_stand', icon: '🎂', text: 'take the cake', duration: 0.8, sneaky: true, owner: 'gus', saw: '🎂',
+    on: 'cake_stand', text: 'take the cake', duration: 0.8, sneaky: true, owner: 'gus', saw: '🎂',
     can: (p, w) => !p.held && w.cake === 'stand',
     done(game) {
       game.player.held = 'cake';
@@ -92,7 +93,8 @@ const INTERACTIONS = {
 
 const ITEMS = {
   cake: {
-    icon: '🎂',
+    icon: '🎂', // what people say for it; draw: how it looks in a hand, on the floor and in the HUD (painters.js)
+    draw: cake,
     place: 'cake',
     edible: true, // eat_cake: sneaky to Gus, and Doreen reads it as slacking
     owner: {

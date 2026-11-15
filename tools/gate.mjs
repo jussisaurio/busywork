@@ -7,6 +7,7 @@
 //   crash     any crash or harness error (a command threw, or a day never ended)
 //   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend; a lesson with `routes`
 //             binds only the wins that include one of them)
+//   drawn     a level on the legacy list, or an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
 // and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
 //
@@ -16,6 +17,7 @@
 // reads level.routes and level.gate (src/levels/meeting/gate.js).
 import { fileURLToPath } from 'node:url';
 import { fuzz, winLines, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
+import { drawnCheck, worldGlyphs } from './lib/drawn.mjs';
 
 // Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
@@ -57,6 +59,8 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
     check(id, !skips.length, skips.length ? `a ${which} without ${id}: ${skips.join(', ')}` : `every ${which} uses ${id}`,
       skips.map((wk) => `${wk}: ${oneLine(r.wins[wk].without[id])}`));
   }
+  const d = drawnCheck(r);
+  check(d.name, d.ok, d.text, d.detail);
   return checks;
 }
 
@@ -103,6 +107,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}, ${opts.workers} workers)...`);
   try {
     const r = await fuzz(opts);
+    r.glyphs = worldGlyphs(opts.level, combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level))));
     const checks = checkGate(r, levelData(opts.level));
     console.log(gateReport(r, checks));
     process.exitCode = checks.every((c) => c.ok) ? 0 : 1;

@@ -2,7 +2,7 @@
 // The end card's picture and icon row come from the level (level.endScenes, e.g.
 // src/levels/meeting/end-scenes.js), else DEFAULT_END_SCENES below; the route slots take any number of routes.
 import {
-  VIEW_W, VIEW_H, clamp, fin, easeOutBack, easeOutCubic, emoji, text, font, textWidth,
+  VIEW_W, VIEW_H, clamp, fin, easeOutBack, easeOutCubic, emoji, strictGlyphs, glyphScope, text, font, textWidth,
   rrect, circle, loopIcon, keycap,
   MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY,
 } from './util.js';
@@ -124,7 +124,7 @@ export function drawTitle(ctx, game, t, mem) {
   ctx.save();
   ctx.translate(842, 330);
   ctx.rotate(Math.sin(t * 3) * 0.07);
-  emoji(ctx, '🕓', 0, 0, 72);
+  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 0, 0, 72); // legacy: drop with the legacy list
   ctx.restore();
   if (badge[0]) emoji(ctx, badge[0], 826, 394, 30);
   if (badge[1]) emoji(ctx, badge[1], 842, 404, 18);
@@ -245,14 +245,16 @@ export function drawEnd(ctx, game, t, mem) {
   ctx.save();
   rrect(ctx, TAB.x, TAB.y, TAB.w, TAB.h, 10);
   ctx.clip();
+  const was = glyphScope('world'); // a drawn scene: no emoji objects in it (its bubbles are speech)
   scene.draw(ctx, game, t, e, o);
+  glyphScope(was);
   ctx.restore();
   ctx.strokeStyle = C.ink;
   ctx.lineWidth = 3;
   rrect(ctx, TAB.x, TAB.y, TAB.w, TAB.h, 10);
   ctx.stroke();
 
-  // outcome icons
+  // outcome icons: the punchline, speech (DESIGN.md "Visual language" rule 5)
   const icons = scene.icons;
   for (let i = 0; i < icons.length; i++) {
     const d = clamp((e - 0.35 - i * 0.12) / 0.3, 0, 1);
@@ -313,7 +315,7 @@ export function drawEnd(ctx, game, t, mem) {
   const by = 492;
   loopIcon(ctx, 226, by, 9, C.ink, 3);
   text(ctx, String(Math.max(0, fin(o.loop) | 0)), 242, by + 1, font(24, MONO_FAMILY, 'bold'), C.ink, 'left');
-  emoji(ctx, '🕓', 404, by, 22);
+  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 404, by, 22); // legacy: drop with the legacy list
   text(ctx, clockDigits(fin(o.minute), game.level.day.start), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
   if (e > 0.6) playKey(ctx, 700, by, 110, 38, t);
   ctx.restore();

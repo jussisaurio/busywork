@@ -9,8 +9,8 @@
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
 //   interactions  the player's actions here (interactions.js; play/interactions.js adds eat_<type> per edible
 //                 item, then sit, drop, pick_up, put)
-//   items    carryable item types and their flags: icon (how it draws: held, carried, dropped, the HUD), place,
-//            edible, contraband, owner (items.js)
+//   items    carryable item types and their flags: icon (what people say for it), draw (how it is drawn: held,
+//            carried, dropped, the HUD; painters.js), place, edible, contraband, owner (items.js)
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up

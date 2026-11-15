@@ -63,7 +63,7 @@ export default {
   }],
   day: { start: 14 * 60 + 30, gatherAt: at('2:56'), meetingAt: at('3:00'), clockRedAt: at('2:55') },
   interactions: {},
-  items: { laptop: { icon: '💻', place: 'laptop', contraband: 'auditor' } },
+  items: { laptop: { icon: '💻', draw: 'laptop', place: 'laptop', contraband: 'auditor' } },
   roles: { authority: { id: 'auditor', offDuty: ['meeting'], helpless: [] } },
   title: { mission: ['3:00 PM. Inventory day: the auditor counts two laptops.', 'The office has one.'], badge: ['💻', '❌'] },
   routes: [{ id: 'audit', icon: '💻', achieved: (w) => w.audited }],

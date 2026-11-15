@@ -38,13 +38,40 @@ In the spirit of Jonathan Blow's games, the game explains nothing beyond the mis
 - Speech is pictograms in bubbles plus Sims-style gibberish babble. Each NPC has a voice.
 - Every ending gets a short in-world beat and an end card with a picture, never a paragraph.
 
+## Visual language: people speak emoji, the world is drawn
+**Characters can speak emoji, but emoji are never objects in the level.** A glyph on a tile makes the player guess
+what it is: a playtester won a level on "a heat emoji" without knowing it was a microwave. Speech never had that
+problem: when Kev says 🔧, he means he will fix something.
+1. **Speech is free.** Speech bubbles, thought bubbles and the end card's icon row may use any emoji.
+   - When a character means a person, they show that person's face (`'@<castId>'`, `'@player'`), never a stand-in
+     (👔 read as a shirt, not as the boss).
+   - A reaction shows what it is about: the bubble names it, or the speaker faces it at that moment.
+   - Speech never carries a fact on its own. The world or a body shows the fact; speech comments on it.
+2. **The world is drawn.** Every object on the map or in a hand is drawn as the real object: furniture, devices,
+   documents, what people carry. No emoji stands on a tile or in a hand. Level painters
+   (`src/levels/<id>/painters.js`) make this cheap.
+3. **The state that decides the outcome is drawn on the object.** Every world fact a win or a loss depends on changes
+   how something looks on the map (the calendar shows whose face is circled; the burning microwave glows and smokes).
+4. **To show you can use something, the object lights up, with the E key cap on its far side from you.** No icon
+   hovers over it: an icon over a tile reads as the object.
+5. **End cards are drawn scenes.** The icon row under the scene is the punchline, in speech emoji and faces.
+
+How it is held:
+- The validator (`src/levels/validate.js`) refuses emoji in the fields that draw the world: an item without a `draw`,
+  a prop drawn as `'icon'`, an emoji in a hand (`poses`), an icon on an interaction.
+- A runtime check (`render/util.js` `worldEmoji`) records any emoji drawn on the map, in a hand or in an end card's
+  scene. `tools/golden-render.mjs` and the gate's `drawn` check fail on it.
+- Speech is not checked. (`'#<thing>'` draws the object in a bubble too, but people speak emoji: no level uses it.)
+- Levels not yet migrated are on the legacy list (`src/levels/legacy.js`, with the migration steps). They draw as
+  before, and the gate fails them.
+
 ## Camera and controls
 There is no camera: the whole office is on screen (30×17 tiles), with the HUD band above it.
 
 | Key | Verb |
 |---|---|
 | WASD / arrows | walk |
-| E / Space | interact (the nearest valid target shows a ✋ hint) |
+| E / Space | interact (the nearest valid target lights up, with the E key cap beside it) |
 | **Shift (hold)**, or P | **PRETEND**: the HONK button |
 | R | restart the loop (give up) |
 | Esc, or the ⏸ button (top right) | pause; any click, or Esc again, resumes. Losing window focus pauses too |
