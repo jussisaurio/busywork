@@ -18,7 +18,7 @@ import { npcSees, seenVia, findNpc, inZone } from '../game/perception.js';
 import { SCREEN_ICON } from '../sim/mechanics/camera.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { judge } from '../sim/mechanics/index.js';
-import { cancelAction, dropHeld, actionRow } from './interactions.js';
+import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sitAtDesk } from './player.js';
 import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
 
@@ -239,7 +239,7 @@ function react(game, s, npc, offence) {
   }
   const p = game.player;
   // What a late tattle points at (the thing the witness saw you at).
-  const icon = offence === 'action' ? actionRow(game, p.action.type)?.saw : offence === 'scene' ? r.scene.icon
+  const icon = offence === 'action' ? p.action.saw ?? undefined : offence === 'scene' ? r.scene.icon
     : offence === 'evidence' ? r.evidence.icon : offence === 'disguise' ? itemFlags(game, p.held)?.icon : undefined;
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
@@ -296,7 +296,7 @@ function assignWork(game, reason) {
   // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
   // ends as 'idle'. Told on (a tattle): 'witnessed'.
   cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
-  dropHeld(game); // whatever you carried stays where you stood
+  if (!itemFlags(game, p.held)?.keep) dropHeld(game); // whatever you carried stays where you stood (`keep`: in your hand)
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
   sitAtDesk(game);
   burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });

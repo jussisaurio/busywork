@@ -23,10 +23,10 @@
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
 //   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
-//   meeting     { override, room (a zone), chair (a spot), presenter (a spot) }
+//   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot
-//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids
+//   items       optional; each an icon (the emoji it draws as); owner.id and contraband cast ids; put seconds; keep a boolean
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones
 //   lures, hunts, doors, inspections, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
@@ -42,7 +42,7 @@
 //   initialWorld  a function returning an object with an `items` list
 //   harness     optional; landmarks name spots (my_seat is built in: ENGINE_LANDMARKS)
 //   gate        optional; targets are interactable ids, landmarks (the level's or the engine's) or "x,y";
-//               interactable targets; mustUse
+//               interactable targets; mustUse (routes: route ids)
 //               { id, cmd | event }; milestones functions; renderEvents (optional) a list of event names
 //   decor       optional; chairs, deskOwners, ashtray, elevator name spots; a deskOwners spot faces onto a desk
 //               tile (render/world.js DESK_DRAWS); props draw with a renderer painter
@@ -141,6 +141,7 @@ export function levelProblems(level, key) {
       for (const [i, type] of list(`${path}.accepts`, s.accepts).entries()) itemType(`${path}.accepts[${i}]`, type);
       if (s.owner !== undefined && s.owner !== null && s.owner !== 'player') npc(`${path}.owner`, s.owner);
       if (s.found !== undefined && s.found !== 'take') behaviour(`${path}.found`, s.found);
+      if (s.unseen !== undefined && s.unseen !== 'take' && s.unseen !== 'leave') behaviour(`${path}.unseen`, s.unseen);
     }
   }
   if (!isObj(level.zones)) bad('zones', 'missing');
@@ -220,6 +221,7 @@ export function levelProblems(level, key) {
     zone('meeting.room', m.room);
     spot('meeting.chair', m.chair);
     spot('meeting.presenter', m.presenter);
+    if (m.verdict !== undefined && typeof m.verdict !== 'function') bad('meeting.verdict', 'not a function (game, { result, routes, present })');
   }
 
   // --- the player's actions, items, roles ---------------------------------------------------------
@@ -246,6 +248,8 @@ export function levelProblems(level, key) {
         if (it.disguise.greet !== undefined && !Array.isArray(it.disguise.greet)) bad(`items.${type}.disguise.greet`, 'not a list of lines');
       }
     }
+    if (it.put !== undefined && !(isNum(it.put) && it.put > 0)) bad(`items.${type}.put`, 'not a time in seconds (putting it down takes that long)');
+    if (it.keep !== undefined && typeof it.keep !== 'boolean') bad(`items.${type}.keep`, 'not true or false (true: it leaves your hand only by a put)');
   }
   const roles = level.roles;
   if (roles !== undefined) {
@@ -373,6 +377,7 @@ export function levelProblems(level, key) {
     for (const [i, tg] of (gate.interactable ?? []).entries()) if (!targets.includes(tg)) bad(`gate.interactable[${i}]`, `${q(tg)} is not in gate.targets`);
     for (const [i, u] of (gate.mustUse ?? []).entries()) {
       if (!isStr(u?.id) || !(isStr(u?.cmd) || isStr(u?.event))) bad(`gate.mustUse[${i}]`, 'needs { id, cmd } or { id, event }');
+      for (const [j, r] of (u?.routes ?? []).entries()) if (!(level.routes ?? []).some((x) => x.id === r)) bad(`gate.mustUse[${i}].routes[${j}]`, `no route ${q(r)} in level.routes`);
     }
     for (const [name, f] of Object.entries(gate.milestones ?? {})) if (!isFn(f)) bad(`gate.milestones[${q(name)}]`, 'not a function');
     if (gate.renderEvents !== undefined && !(Array.isArray(gate.renderEvents) && gate.renderEvents.every(isStr))) bad('gate.renderEvents', 'not a list of event names');

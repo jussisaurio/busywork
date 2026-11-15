@@ -12,7 +12,24 @@
 //   startHunt(game, npc)  start her hunt (level.hunts)
 // State a hook keeps goes on the NPC (fields with a leading underscore; a new loop builds new NPCs).
 
+// The boss looks in on the meeting room on his way past (his 3:12 and 3:22 walks: cast.js), once per walk. A dead
+// projector: he sees the coffee on it, and the cup it came from is somewhere in this office. He knows (items.js
+// mug: the cup in your hand is proof now) and goes looking for it (mechanics.js HUNTS: 📽️💥 … ☕❓).
+const peek = (flag) => ({
+  spot: 'meeting_door',
+  pending: (npc) => !npc._knows && !npc[flag],
+  arrive(game, npc, sim) {
+    npc[flag] = true;
+    if (game.world.projector !== 'broken') return;
+    npc._knows = true;
+    sim.startHunt(game, npc);
+  },
+});
+
 export const BEHAVIOURS = {
+  peekOut: peek('_peekOut'), // on his way to the restroom
+  peekBack: peek('_peekBack'), // on his way back
+
   // Lin opens the fridge, even if her 3:04 entry starts while she's still walking there (both entries name this).
   checkFridge: {
     spot: 'fridge',

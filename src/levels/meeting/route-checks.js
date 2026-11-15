@@ -69,9 +69,10 @@ export default [
     },
   },
   {
-    name: 'pour before Kev\'s coffee run, hide it, spill after he leaves → win',
-    expect: { result: 'win', routes: ['projector'] },
-    play({ run, waitFor, log }) {
+    // The teaching fail: the act is over, the evidence isn't. The boss looks in on his 3:12 walk.
+    name: 'pour before Kev\'s coffee run, hide it, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 blamed',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');
       run('interact');
       run('sit busy');
@@ -79,22 +80,81 @@ export default [
       if (!log.some((e) => e.name === 'coffee:missing' && e.payload.by === 'kev')) throw new Error('Kev never found the pot empty');
       run('goto projector busy');
       run('interact');
+      if (g.player.held !== 'mug') throw new Error(`the spill left ${g.player.held} in your hand, not the mug`);
       run('goto meeting_seat busy');
       run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (!log.some((e) => e.name === 'boss:mugHunt')) throw new Error('the boss never went looking for the mug');
+      if (g.outcome?.why !== 'mug') throw new Error(`blamed for ${g.outcome?.why}, not the mug in your hand`);
     },
   },
   {
-    name: 'same, but back at your desk at 4:00 → blamed',
-    expect: { result: 'blamed', routes: ['projector'] },
-    play({ run, waitFor }) {
+    name: 'same, but put the mug back on the coffee machine → the hunting boss shrugs ☕🤷 → win',
+    expect: { result: 'win', routes: ['projector'] },
+    play({ run, waitFor, g, log }) {
       run('goto coffee_machine busy');
       run('interact');
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
       run('interact');
+      run('put coffee busy');
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (!log.some((e) => e.name === 'mug:found' && e.payload.spot === 'coffee')) throw new Error('the boss never saw the mug back on the machine');
+      if (g.outcome?.why) throw new Error(`a plain win expected, got why ${g.outcome.why}`);
+    },
+  },
+  {
+    name: 'same, but plant the mug on Kev\'s desk → ☕❗😠🔧, and at 4:00 the table stares at Kev\'s empty chair → win',
+    expect: { result: 'win', routes: ['projector'] },
+    play({ run, waitFor, g, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector busy');
+      run('interact');
+      run('put kev_desk busy');
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (!log.some((e) => e.name === 'mug:found' && e.payload.spot === 'kev_desk')) throw new Error('the boss never found the mug on Kev\'s desk');
+      if (g.outcome?.why !== 'kev') throw new Error(`the table should stare at Kev's chair, why ${g.outcome?.why}`);
+    },
+  },
+  {
+    name: 'same, but hide the mug on your own desk → the hunting boss finds it there → caught',
+    expect: { result: 'caught' },
+    play({ run, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      run('busy until 3:01'); // Kev's on his way to the elevator: done before the boss's 3:12 walk
+      run('goto projector busy');
+      run('interact');
+      run('put my_desk busy');
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      if (g.world.mug !== 'my_desk') throw new Error(`the mug is at ${g.world.mug}, not your desk`);
+    },
+  },
+  {
+    name: 'same, mug back on the machine, but back at your desk at 4:00 → blamed (your empty chair)',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector busy');
+      run('interact');
+      run('put coffee busy');
       run('sit busy');
       run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.why) throw new Error(`blamed for the empty chair expected, got why ${g.outcome.why}`);
     },
   },
   {

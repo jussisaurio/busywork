@@ -10,6 +10,8 @@
 //               when: only while this holds does the owner know it's theirs. says: what they say on catching
 //               you just carrying it ({ say: icons, after?: seconds }). reclaim: what taking it back does
 //               (default: they carry it off, '<type>:confiscated' { by })
+//   put         seconds: putting it down on a spot is a sneaky timed action, not an instant one (putdown.js)
+//   keep        it leaves your hand only by a put: no drop, and assigned work sends you to your desk holding it
 export const ITEMS = {
   coffee: {
     icon: '☕',
@@ -21,6 +23,17 @@ export const ITEMS = {
     },
   },
   keycard: { icon: '🪪', place: 'keycard', contraband: 'boss' },
+  // The cup, empty, once its coffee is all over the projector (interactions.js spill_coffee). It's evidence: you
+  // can't just let it fall (keep), and setting it down anywhere is a furtive 0.8 s (put). Once the boss has seen
+  // the projector (behaviours.js peek) the cup in your hand is all the proof he needs: he catches you with it.
+  // Not at the meeting table, nor locked out: at 4:00 the verdict judges it instead (verdict.js).
+  mug: {
+    icon: '☕',
+    place: 'mug',
+    put: 0.8,
+    keep: true,
+    owner: { id: 'boss', when: (npc) => !!npc._knows && npc.override !== 'meeting' && npc.override !== 'lockedOut' },
+  },
   sandwich: {
     icon: '🥪',
     place: 'sandwich',

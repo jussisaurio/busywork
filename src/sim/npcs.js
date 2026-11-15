@@ -16,7 +16,7 @@ import {
 } from '../config.js';
 import { angleDiff } from '../core/vision.js';
 import { createRng } from '../core/rng.js';
-import { say } from '../core/fx.js';
+import { say, sightline } from '../core/fx.js';
 import { spotPos } from '../game/perception.js';
 import { findPath, smoothPath } from './nav.js';
 import { setOverride, npcSayLater, holdFor, speak, applyEffect, spotLeg } from './override.js';
@@ -437,16 +437,21 @@ export function npcTakes(npc, item) {
   if (npc.wants === item) npc.wants = null;
 }
 
-// 4:00, attendance rule: everyone at the table turns to your empty chair. 🪑❓ … 😠👉
-export function stareAtEmptyChair(game) {
+// 4:00: everyone at the table turns to one place, thinks, then says it. The default is the attendance rule: your
+// empty chair, 🪑❓ … 😠👉. A level's meeting.verdict can name another (scenario.js):
+//   at     a spot name, or 'player' (default: meeting.chair)
+//   think  the thought bubble (default ['🪑', '❓']); say  the speech 1 s later (default ['😠', '👉'])
+//   line   a sightline kind (fx.js) from each of them to the player, for the beat (optional)
+export function stareAt(game, stare = {}) {
   const m = game.level.meeting;
-  const c = spotPos(game, m.chair);
+  const c = stare.at === 'player' ? game.player : spotPos(game, stare.at ?? m.chair);
   for (const n of game.npcs) {
     if (!n.active || n.override !== m.override) continue;
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
     n._gl.hold = 0; // stop any glance: all eyes on the chair
-    say(game, n.id, ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
-    npcSayLater(n, 1.0, ['😠', '👉'], 'speech');
+    say(game, n.id, stare.think ?? ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
+    npcSayLater(n, 1.0, stare.say ?? ['😠', '👉'], 'speech');
+    if (stare.line) sightline(game, n.id, stare.line, 2.0);
   }
 }
 
