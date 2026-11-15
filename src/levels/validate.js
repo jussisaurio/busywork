@@ -32,6 +32,9 @@
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
 //   failSign    optional; spot a spot
+//   cameras     optional (src/sim/mechanics/camera.js); ids unique strings; x, y (the lens) on the map; dir, fov,
+//               radius numbers; sweep { arc, period > 0 }; aim, live functions; monitor an { x, y } on the map;
+//               npcs a non-empty list of cast ids; reach positive
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
 //   initialWorld  a function returning an object with an `items` list
@@ -292,6 +295,24 @@ export function levelProblems(level, key) {
     }
   }
   if (level.failSign !== undefined) spot('failSign.spot', level.failSign?.spot);
+  if (level.cameras !== undefined) {
+    const camIds = new Set();
+    for (const [i, c] of list('cameras', level.cameras).entries()) {
+      const path = `cameras[${i}]`;
+      if (!isStr(c?.id)) bad(`${path}.id`, 'not a string');
+      else if (camIds.has(c.id)) bad(`${path}.id`, `duplicate ${q(c.id)}`);
+      else camIds.add(c.id);
+      for (const f of ['x', 'y', 'dir', 'fov', 'radius']) if (!isNum(c?.[f])) bad(`${path}.${f}`, 'not a number');
+      if (isNum(c?.x) && isNum(c?.y) && !inMap(c.x, c.y)) bad(path, `lens (${c.x}, ${c.y}) is off the map`);
+      if (c?.sweep !== undefined && (!isNum(c.sweep?.arc) || !(c.sweep?.period > 0))) bad(`${path}.sweep`, 'not { arc, period > 0 }');
+      for (const f of ['aim', 'live']) if (c?.[f] !== undefined && !isFn(c[f])) bad(`${path}.${f}`, 'not a function');
+      if (!isNum(c?.monitor?.x) || !isNum(c?.monitor?.y) || !inMap(c.monitor.x, c.monitor.y)) bad(`${path}.monitor`, 'not an { x, y } on the map');
+      const watchers = list(`${path}.npcs`, c?.npcs);
+      if (Array.isArray(c?.npcs) && !watchers.length) bad(`${path}.npcs`, 'empty: nobody watches it');
+      for (const [k, id] of watchers.entries()) npc(`${path}.npcs[${k}]`, id);
+      if (c?.reach !== undefined && !(c.reach > 0)) bad(`${path}.reach`, 'not a positive number');
+    }
+  }
 
   // --- routes and the world ---------------------------------------------------------------------
   const routes = list('routes', level.routes);
