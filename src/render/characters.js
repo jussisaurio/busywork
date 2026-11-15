@@ -363,7 +363,7 @@ export function drawPerson(ctx, look, s, x, y) {
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
   }
 
-  if (look.hood) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.hoodColor ?? look.bodyDark);
+  if (look.hood && !noJacket) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.hoodColor ?? look.bodyDark);
   if (!north) drawArms(ctx, look, s, G, bodyDark);
 
   drawHead(ctx, look, s, h, 0, headY, hr);
@@ -551,7 +551,7 @@ function drawTorsoDetail(ctx, look, s, noJacket) {
     }
     return;
   }
-  if (look.torso === 'hoodie' && south) {
+  if (look.torso === 'hoodie' && south && !noJacket) {
     ctx.fillStyle = look.bodyDark;
     rrect(ctx, cx - 4.5, bodyY + 1, 9, 4, 1.5); // hoodie pocket
     ctx.fill();

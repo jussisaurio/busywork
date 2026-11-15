@@ -213,6 +213,35 @@ const sneaky = { type: 'fix_calendar', targetId: 'calendar', t: 0, duration: 99,
   ok(!fake.errors.length, `render: no fake-canvas errors${fake.errors.length ? ` (${fake.errors[0]})` : ''}`);
 }
 
+// 9. Render: a hoodie comes off like a jacket. A look with a `shirt`, a hood and a 'hoodie' torso, with a
+// `jacket: false` mark, is drawn in its shirt: no hood, no pocket (both in colours nothing else uses here).
+{
+  const HOOD = '#123456';
+  const DARK = '#654321';
+  const fills = new Set();
+  const fake = createFakeCanvas({ onSet(label, prop, v) { if (prop === 'fillStyle') fills.add(String(v).toLowerCase()); } });
+  fake.installDom();
+  const { createRenderer } = await import('../src/render/renderer.js');
+  const look = { ...BASE.looks.gus, bodyDark: DARK, hood: true, hoodColor: HOOD, torso: 'hoodie', shirt: '#e8e2d2', shirtDark: '#c8c0ae' };
+  const draw = (off) => {
+    fills.clear();
+    const level = {
+      ...BASE,
+      looks: { ...BASE.looks, gus: look },
+      poses: { arms: [], marks: off ? [{ when: (n) => n.id === 'gus', jacket: false }] : [] },
+    };
+    const { game, gus } = day(level);
+    Object.assign(gus, { x: 10.5, y: 8.5, dir: Math.PI / 2 }); // facing south: the pocket side
+    createRenderer(fake.makeCanvas('main'), { strict: true }).render(game);
+    return { hood: fills.has(HOOD), dark: fills.has(DARK) };
+  };
+  const on = draw(false);
+  const off = draw(true);
+  ok(on.hood && on.dark, `render: in his hoodie, the hood and the pocket are drawn (${JSON.stringify(on)})`);
+  ok(!off.hood && !off.dark, `render: jacket: false, the hoodie is off: no hood, no pocket (${JSON.stringify(off)})`);
+  ok(!fake.errors.length, `render: no fake-canvas errors${fake.errors.length ? ` (${fake.errors[0]})` : ''}`);
+}
+
 if (fails) {
   console.log(`\n${fails} FAILED`);
   process.exit(1);
