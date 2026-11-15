@@ -161,8 +161,8 @@ function write(game, who) {
 
 // 5:00, the end beat (2 s): who the board says it is. The boss filled it in on Monday and doesn't remember whom he
 // put down: he reads out whatever face is in the slot (cast.js readRoster). Now: Kev's (he points at Kev; Kev
-// protests and points at you, he waves it off at the board: the board says Kev), his own (he never put himself down: he wipes it,
-// draws yours, since Lin and Kev point at you as the reading ends, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
+// groans), his own (he never put himself down: he wipes it, draws yours, since Lin and Kev each point at you as the
+// reading ends, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
 // your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room
 // stare at it).
 function punchline(game, result) {
@@ -178,23 +178,14 @@ function punchline(game, result) {
   } else if (result === 'fail') {
     speak(game, boss, [{ say: ['👈'], ttl: 2, face: game.level.meeting.presenter }]);
   } else {
-    speak(game, boss, [
-      { say: ['👉', '@kev'], ttl: KEV_PROTEST_S + 0.5, face: 'meeting_kev' },
-      { say: ['👈', '🗓️'], ttl: 2 - KEV_PROTEST_S - 0.5, after: KEV_PROTEST_S + 0.5, face: 'board_look' }, // the board says Kev
-    ]);
+    // he points at Kev to the end of the beat; Kev groans (😩: again?!). Nobody disputes the board: nobody in this
+    // office reads it, they wait for it to be read out
+    speak(game, boss, [{ say: ['👉', '@kev'], ttl: 2, face: 'meeting_kev' }]);
     const kev = get('kev');
-    if (kev) {
-      speak(game, kev, [
-        // it wasn't me, it was them all week! The boss doesn't remember, and he doesn't take Kev's word over his own
-        // board: of course the one on it says it's someone else (on his own face the board is plainly wrong, and he
-        // listens: cast.js readRoster)
-        { say: ['🙅', '👉', '@player'], ttl: 1.0, after: KEV_PROTEST_S, face: game.level.meeting.chair },
-        { say: ['😩'], ttl: 2 - KEV_PROTEST_S - 1.0, after: KEV_PROTEST_S + 1.0, face: 'board_look' },
-      ]);
-    }
+    if (kev) speak(game, kev, [{ say: ['😩'], ttl: 2 - KEV_PROTEST_S, after: KEV_PROTEST_S, face: 'board_look' }]);
   }
 }
-const KEV_PROTEST_S = 0.4; // s into the beat Kev protests
+const KEV_PROTEST_S = 0.4; // s into the beat Kev groans
 
 // After a tell (Lin or Kev saw you at the board, pointed at you, and the boss heard), the boss walks over to the board,
 // looks at it and puts your face in Saturday's slot: he doesn't remember whose it was, but you were messing with it,
