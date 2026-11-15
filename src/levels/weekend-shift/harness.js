@@ -5,7 +5,7 @@ const name = (id) => NAME[id] ?? id;
 
 const COPIER = { ok: 'working', jammed: 'jammed, beeping ⚠️', fixing: 'Kev is fixing it, still beeping 🔧', fixed: 'working again' };
 const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is on it 📞', done: 'quiet' };
-const NOISE = { elevatorDing: 'DING! the microwave', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
+const NOISE = { elevatorDing: 'DING! the microwave: your noodles boil over, steam pouring out of it', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
 
 export default {
   mission: "MISSION: Friday, 4:00 PM. You're down for Saturday. At 5:00 the boss reads it out.",
@@ -54,7 +54,7 @@ export default {
     const w = game.world;
     const roster = `${w.roster === 'player' ? 'your' : w.roster === 'boss' ? "the boss's" : "Kev's"} face in Saturday's slot`;
     const left = w.noodles === 'cooking' && w.dingAt !== null ? Math.max(0, w.dingAt - game.clock.minute) : null;
-    const micro = w.noodles === 'cold' ? 'empty' : left > 0 ? `your noodles, ${Math.round(left * 10) / 10} min to go ⏲️` : 'your noodles, done 🍜';
+    const micro = w.noodles === 'cold' ? 'empty' : left > 0 ? `your noodles, ${Math.round(left * 10) / 10} min to go ⏲️` : 'your noodles, boiled over in it 🍜';
     return `WORLD: the Saturday board has ${roster}${w.rosterLocked ? ' (the boss sits by it, its marker in his hand)' : ''}; copier ${COPIER[w.copier] ?? w.copier}; the boss's phone: ${PHONE[w.phone] ?? w.phone}; microwave: ${micro}`;
   },
 

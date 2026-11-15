@@ -4,9 +4,10 @@
 // his own, which he knows is wrong: he puts yours back.) Both watchers face the board, so
 // you have to make them look away: level 1 taught "wait for a glance"; this one teaches "make one". The routes are
 // the two ways to make one (sim/mechanics/attention.js), and a third that backfires:
-//   - the microwave DINGs 6 s after you start it, about the walk back past the board to your desk: every head in
-//     earshot snaps east, to the kitchen, for 6 s, wondering whose noodles they are. The board is on the west side,
-//     on your way back: you're walking past it when it dings, not hanging about at it.
+//   - the microwave DINGs 6 s after you start it, about the walk back past the board to your desk, and your noodles
+//     boil over: steam pours out of it for 6 s, and every head in earshot snaps east, to the kitchen, and stays
+//     there watching it (nobody gets up). The board is on the west side, on your way back: you're walking past it
+//     when it dings, not hanging about at it.
 //   - the phone in the supply room (behind a wall, out of the boss's sight; his desk has none) rings his, on a
 //     side table in the corner of his office. He walks over and answers it standing there, facing the window, his
 //     back to the office: "Hello? ... Hello?" into a silent line, a few seconds, then he slams it down. The ring and
@@ -26,7 +27,7 @@ import gate from './gate.js';
 
 const START = 16 * 60; // 4:00 PM
 const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes of noodles): about the walk back past the board
-const DING_TURN = 6; // s every head in earshot stays turned to the ding
+const DING_TURN = 6; // s every head in earshot stays turned to the ding: as long as the noodles boil over (props.js BOIL_S)
 const WRITE_S = 2.5; // s a write takes: longer than any glance away
 const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he slams it down
 
@@ -103,9 +104,9 @@ const INTERACTIONS = {
       const w = game.world;
       w.noodles = 'cooking';
       w.dingAt = game.clock.minute + DING_S * GAME_MIN_PER_SEC;
-      // at the DING every head thinks of the noodles, all at once (the ripple is the noise's), and nobody comes for
-      // them: heads stay turned, wondering whose they are
-      for (const n of game.npcs) npcSayLater(n, DING_S, ['🍜', '❓'], 'thought', 2.4);
+      // at the DING the noodles boil over, steam pouring out of the microwave (props.js), and every head turns to
+      // it at once (the ripple is the noise's) and stays there watching it, as people do
+      for (const n of game.npcs) npcSayLater(n, DING_S, ['😮', '🍜'], 'thought', 2.4);
       game.events.emit('microwave:started', {});
     },
   },
@@ -160,7 +161,7 @@ function write(game, who) {
 
 // 5:00, the end beat (2 s): who the board says it is. The boss filled it in on Monday and doesn't remember whom he
 // put down: he reads out whatever face is in the slot (cast.js readRoster). Now: Kev's (he points at Kev; Kev
-// protests, he waves it off at the board: the board says Kev), his own (he never put himself down: he wipes it,
+// protests and points at you, he waves it off at the board: the board says Kev), his own (he never put himself down: he wipes it,
 // draws yours, since Lin and Kev point at you as the reading ends, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
 // your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room
 // stare at it).
@@ -184,7 +185,10 @@ function punchline(game, result) {
     const kev = get('kev');
     if (kev) {
       speak(game, kev, [
-        { say: ['🙅'], ttl: 0.9, after: KEV_PROTEST_S, face: 'board_boss' }, // I wasn't on it!
+        // it wasn't me, it was them all week! The boss doesn't remember, and he doesn't take Kev's word over his own
+        // board: of course the one on it says it's someone else (on his own face the board is plainly wrong, and he
+        // listens: cast.js readRoster)
+        { say: ['🙅', '👉', '@player'], ttl: 1.0, after: KEV_PROTEST_S, face: game.level.meeting.chair },
         { say: ['😩'], ttl: 2 - KEV_PROTEST_S - 1.0, after: KEV_PROTEST_S + 1.0, face: 'board_look' },
       ]);
     }
