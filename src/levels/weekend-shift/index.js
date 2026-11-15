@@ -55,7 +55,7 @@ const LEGEND = {
   X: { kind: 'copier', solid: true, opaque: false, interactable: 'copier' },
   R: { kind: 'roster', solid: true, opaque: false, interactable: 'roster' },
   M: { kind: 'microwave', solid: true, opaque: true, draw: 'desk', interactable: 'microwave' },
-  C: { kind: 'counter', solid: true, opaque: false, draw: 'coffee_machine' },
+  C: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // bare counter (props.js): no second appliance by the microwave
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // the counter and sink: props.js draws them
   F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
@@ -177,13 +177,13 @@ const LURES = [
     plan: 'copier',
     label: 'fix copier',
     spot: 'copier',
-    react: { wait: 1.5, says: [{ say: ['❗'] }], event: 'kev:alerted' }, // the beeping is his to fix: a small ❗
+    react: { wait: 1.5, says: [{ say: ['❗'], face: 'copier' }], event: 'kev:alerted' }, // the beeping is his to fix: ❗ at it
     work: {
       override: 'fixing',
       minutes: 4,
       progress: 'fixProgress',
       pose: 'sit', // down on the floor at it, as if kneeling
-      start: { set: { copier: 'fixing' }, event: 'copier:fixing' }, // a spanner in his hand (presentation.js)
+      start: { set: { copier: 'fixing' }, event: 'copier:fixing', says: [{ say: ['🔧'] }] }, // a spanner in his hand (presentation.js)
       done: { set: { copier: 'fixed' }, event: 'copier:fixed', says: [{ say: ['😊'] }] },
     },
   },
