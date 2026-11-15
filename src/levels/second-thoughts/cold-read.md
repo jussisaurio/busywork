@@ -1,45 +1,45 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"29961d8","hash":"37fdb16430ca63329cd6f7b48117e680f55ff0597b7c2c4a2863c5a2d56260d7","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"a85adf5631f78951a03a1d72897c89ff049fab8a9676ca7d3c33df69b4ab2d86","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":1,"nonsense":1},"problems":{"blocker":1,"should":3,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit 29961d8, by claude -p (model: default). Inputs 37fdb16430ca: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 7 sensible, 1 stretch, 1 nonsense.
-Problems: 1 blocker, 3 should, 1 nit.
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"0af7b0a","hash":"ada15b0a9c7e73976cc813c9301cefccbcbea9681ff2da5baf8fb1e86731dd2e","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"137f5d0de592b20539e5c3f465f533562c29294126979242c4b68beec51ee451","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":2,"nonsense":0},"problems":{"blocker":0,"should":4,"nit":2}} -->
+## sense: works
+Recorded 2026-11-15 at commit 0af7b0a, by claude -p (model: default). Inputs ada15b0a9c7e: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 2 stretch, 0 nonsense.
+Problems: 0 blocker, 4 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 53 s | $0.13 |
-| all | | 53 s (the steps add up to 53 s) | $0.13 |
+| 1-judge | report.md | 47 s | $0.11 |
+| all | | 47 s (the steps add up to 47 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] Kev shouts and reports you the moment you lift the jug, "before any water goes in." A real coworker who sees someone pick up the water jug at the coffee machine assumes they're filling it. He only reacts to something odd. — Kev reacts only when he sees you pour water down the back of the machine onto the wall socket: "Whoa, what are you doing?" Change the end card so the jug is part-poured, with the streak just starting.
-- E2 [should] In the blackout steps, water poured onto a live socket shorts straight away, whether or not the machine is switched on. As written, it waits until Lin switches the machine on at 3:10. Anyone who has seen a plug fizz will find that odd. — Pour the water into the machine's own back vent or cord inlet, so it only shorts when the machine runs. Or let the short happen at once when you pour, and drop the wait for Lin.
-- E3 [should] Step 1 of the blackout says to pour "before 3:10," but Lin is at the machine from 3:05. A real Lin standing at the counter would watch you pour water down the back of the machine she's about to use. — Make the deadline "before 3:05, before Lin comes in." Or say that Lin sees you if you pour after she arrives.
-- E4 [should] At 3:10, when the lights flicker, Kev looks "down the hall at the fuse box," so he can see it from his desk. In the breaker route, though, nobody notices you pulling the main breaker in full light. Also, Kev "walks down the whole hallway from the far end of the floor," which doesn't fit with him watching the box from his desk. — Pick one. Either Kev can't see the box from his desk (he only turns toward the hallway), or Kev sees and reports anyone who opens the box while the lights are on.
+- E1 [should] In the blackout, one short in the coffee machine trips the whole floor. A real fault trips only the kitchen circuit. The lights flickering at 3:10 earn some belief, but a half-awake player may still shrug. — Have Lin or Kev say the kitchen and the lights "share a circuit, it's ancient," or let the flicker reach the boss's office too so the link is clear.
+- E2 [should] Lin switches on a machine with water dripping out behind it. Someone making coffee might see a puddle on the counter and wipe it up first. — Make the drip go down behind the counter or into the drip tray, so there's nothing on the counter for her to notice.
+- E3 [should] Kev shouts and reports you to the boss straight away. A real coworker would first say "uh, what are you doing?" and only go to the boss if your answer was odd. Being sent to your desk for 20 minutes is fine as a result. — Kev calls out first, then reports you to the boss, who sends you to your desk.
+- E4 [should] In the switch route the boss walks down the hall himself. Some bosses would call out "Kev, my lights are off" instead. — Show that the open floor is busy or Kev is on a call, so going himself is the easy choice.
 
 ### 1-judge: report.md
 
-Verdict: fixable
-
-- The switch (win): sensible. A boss whose own office lights go out walks to the panel to fix them, and his desk sits empty while he's gone.
-- The blackout (win): stretch. Kev unplugging the machine and the boss holding the torch are both real. But a socket that's already live shorts the moment water hits it, not when Lin switches the machine on five minutes later. And Lin is standing right at the machine from 3:05.
-- The breaker (win): sensible. The lights go out, the boss goes to the box, and Kev finds the breaker that's down.
-- Eat it (win, last step): sensible. Chewing up and spitting out paper is gross but anyone could do it, and the result is unreadable.
-- 3:40, letter still in tray (lose): sensible. A boss reads an angry resignation letter in his tray.
-- Caught with it (lose): sensible. A boss who watches you take something from his own tray knows what you took.
-- Found at the panel (lose): sensible. The person standing at the switch is the one who flipped it.
-- Found at the fuse box (lose): sensible. Same reasoning as the panel.
-- Seen soaking the coffee machine (lose): nonsense. Lifting a water jug at a coffee machine is how people fill coffee machines. Nobody shouts at that.
+Verdict: works
+- The switch (win): sensible — when only your own office goes dark, you go to the panel and try switches, and the dark glass hides you on your way in.
+- The blackout (win): stretch — every person in it acts sensibly, but one wet appliance blacking out the whole floor is a lot, even with the flicker shown first.
+- The breaker (win): sensible — the main breaker goes, the boss goes to look, and Kev resets it by torchlight while the boss holds the light.
+- Chewing it up (win, last step): sensible — the method is just disgusting, not impossible, and a wet grey wad tells nobody anything.
+- 3:40, letter still in tray (lose): sensible — he reads his tray and finds it.
+- Caught with it (lose): sensible — he watched you take an envelope out of his own tray.
+- Found at the panel (lose): sensible — whoever is standing at the switch gets the blame.
+- Found at the fuse box (lose): sensible — the same, by torchlight.
+- Seen soaking the coffee machine (lose): stretch — a coworker would ask "what are you doing?" before going to the boss.
 
 ## Problems
-- blocker: Kev shouts and reports you the moment you lift the jug, "before any water goes in." A real coworker who sees someone pick up the water jug at the coffee machine assumes they're filling it. He only reacts to something odd. — Kev reacts only when he sees you pour water down the back of the machine onto the wall socket: "Whoa, what are you doing?" Change the end card so the jug is part-poured, with the streak just starting.
-- should: In the blackout steps, water poured onto a live socket shorts straight away, whether or not the machine is switched on. As written, it waits until Lin switches the machine on at 3:10. Anyone who has seen a plug fizz will find that odd. — Pour the water into the machine's own back vent or cord inlet, so it only shorts when the machine runs. Or let the short happen at once when you pour, and drop the wait for Lin.
-- should: Step 1 of the blackout says to pour "before 3:10," but Lin is at the machine from 3:05. A real Lin standing at the counter would watch you pour water down the back of the machine she's about to use. — Make the deadline "before 3:05, before Lin comes in." Or say that Lin sees you if you pour after she arrives.
-- should: At 3:10, when the lights flicker, Kev looks "down the hall at the fuse box," so he can see it from his desk. In the breaker route, though, nobody notices you pulling the main breaker in full light. Also, Kev "walks down the whole hallway from the far end of the floor," which doesn't fit with him watching the box from his desk. — Pick one. Either Kev can't see the box from his desk (he only turns toward the hallway), or Kev sees and reports anyone who opens the box while the lights are on.
-- nit: In the switch route, the boss pulls out his phone flash in a glass office surrounded by a lit floor at 3 PM. He wouldn't need it. — Drop the flash. A puzzled look and getting up is enough.
+- should: In the blackout, one short in the coffee machine trips the whole floor. A real fault trips only the kitchen circuit. The lights flickering at 3:10 earn some belief, but a half-awake player may still shrug. — Have Lin or Kev say the kitchen and the lights "share a circuit, it's ancient," or let the flicker reach the boss's office too so the link is clear.
+- should: Lin switches on a machine with water dripping out behind it. Someone making coffee might see a puddle on the counter and wipe it up first. — Make the drip go down behind the counter or into the drip tray, so there's nothing on the counter for her to notice.
+- should: Kev shouts and reports you to the boss straight away. A real coworker would first say "uh, what are you doing?" and only go to the boss if your answer was odd. Being sent to your desk for 20 minutes is fine as a result. — Kev calls out first, then reports you to the boss, who sends you to your desk.
+- should: In the switch route the boss walks down the hall himself. Some bosses would call out "Kev, my lights are off" instead. — Show that the open floor is busy or Kev is on a call, so going himself is the easy choice.
+- nit: The card line "he's watching it" makes it sound like he knows the letter is there and is guarding it. Someone who knew it was there would just read it. — Change it to "it's in his line of sight" so it's clear he simply hasn't got to his tray yet.
+- nit: Kev "looks through the unlabelled breakers" for the main one. A main breaker is usually the big obvious one. — Have him say "which one's the main…" and flip a couple of wrong breakers first, or just let him find it straight away.
 
 <!-- /cold-read:sense -->
 
