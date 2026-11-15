@@ -6,5 +6,12 @@ For each image, write one or two lines:
 - what you see: who, where, and what they are doing
 - what you think it means for the player
 - anything you can't read: a glyph, an object, a bubble, a colour
-Name things by what they look like, not by what you guess the designer meant. Then, in at most five lines, write
-the story you think this level tells. Reply with all of it. Your reply is saved as reading.md. Under 600 words.
+Name things by what they look like, not by what you guess the designer meant.
+
+If there is a verbs/ folder, look at each image in it too. Each is one object the player holds, in numbered panels:
+carrying it, then each thing the player can do with it. The box in a panel's corner shows what the player holds. For
+each panel, write one line: what the player does with the object and what became of it. Does each panel make sense
+for this object, and does the picture show what the action is? Say so when it doesn't.
+
+Then, in at most five lines, write the story you think this level tells. Reply with all of it. Your reply is saved
+as reading.md. Under 900 words.
