@@ -25,6 +25,9 @@
 //               absent: true           turned round: it passes when no such item lies there (who: she isn't there;
 //                                      not on a count)
 //               icon                   what the sign shows before the mark (an icon or a list), whatever `sign` says
+//               look                   seconds he stands at this check (default: the inspection's look)
+//               record                 a world field (the level's initialWorld has it): on a pass he writes the
+//                                      type of the item he ticked off there (item checks; a count: the list)
 //             On arrival: a sign over what he checked (the item's place, the person, or the zone if she isn't
 //             there), then he stands `look` s.
 //   pass      { set?, event?, says? } once every check passed; then he resumes his day
@@ -118,8 +121,9 @@ function arrive(game, npc, insp, index) {
   st.i = index + 1;
   say(game, r.at, signOf(game, insp, c, r), { kind: 'sign', ttl: SIGN_TTL });
   game.events.emit(r.ok ? 'inspect:pass' : 'inspect:fail', { by: npc.id, index });
-  holdFor(npc, insp.look ?? LOOK);
+  holdFor(npc, c.look ?? insp.look ?? LOOK);
   if (!r.ok) return fail(game, npc, insp, index);
+  if (c.record) game.world[c.record] = c.count !== undefined ? r.found.map((i) => i.type) : r.found[0]?.type ?? null;
   for (const item of r.found) st.passed.push({ index, item, spot: item.spot, moved: false }); // (none if absent)
   if (st.i < insp.checks.length) return;
   npc._insp = null;

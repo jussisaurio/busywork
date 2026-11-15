@@ -121,7 +121,25 @@ const tablet = { tablet: { icon: '📱' } };
   eq(r.insp.filter((e) => e === 'moved0').length, 1, 'count: inspect:moved once for the check');
 }
 
-// 7. The validator knows the new fields.
+// 7. record writes what a check ticked off into a world field; a check's look overrides the inspection's.
+{
+  const level = variant({
+    insp: { checks: [INSP.checks[0], INSP.checks[1], { ...INSP.checks[2], item: ['laptop', 'tablet'], record: 'counted' }] },
+    items: tablet,
+    world: () => ({ counted: null, items: [itemOn(SPOTS, 'player_desk', 'laptop'), itemOn(SPOTS, 'dave_desk', 'tablet')] }),
+  });
+  eq(play(level, STAY).game.world.counted, 'tablet', 'record: the type he ticked off');
+  const both = () => ({ counted: null, items: [itemOn(SPOTS, 'player_desk', 'laptop'), itemOn(SPOTS, 'dave_desk', 'tablet')] });
+  const count = { item: ['laptop', 'tablet'], count: 2, spots: ['player_desk', 'dave_desk'], from: 'check_mine', record: 'counted' };
+  eq(play(variant({ insp: { checks: [count] }, items: tablet, world: both }), STAY).game.world.counted, ['laptop', 'tablet'], 'record: a count writes the list');
+  // He sets off at 2:40; with 6 s at your desk instead of 1 he reaches Dave's desk 3 game minutes later.
+  const doneAt = (lv) => { const h = createHarness({ level: lv }); h.begin(); h.run('pretend until 2:52'); return h.log.find((e) => e.name === 'inspect:done').minute; };
+  const slow = variant({ insp: { checks: [{ ...INSP.checks[0], look: 6 }, INSP.checks[1], INSP.checks[2]] } });
+  const d = doneAt(slow) - doneAt(FI);
+  ok(Math.abs(d - 3) < 0.05, `look: per check (${d.toFixed(2)} game min later)`);
+}
+
+// 8. The validator knows the new fields.
 {
   const broken = (insp, re, what) => {
     let msg = '';
@@ -138,6 +156,9 @@ const tablet = { tablet: { icon: '📱' } };
   broken({ checks: [{ item: 'laptop', count: 2, spots: ['dave_desk', 'davedesk'] }] }, /inspections\[0\]\.checks\[0\]\.spots\[1\]: no spot 'davedesk'/, 'count: a spot');
   broken({ checks: [{ item: 'laptop', count: 2, zone: 'room_a' }] }, /inspections\[0\]\.checks\[0\]\.from: no spot 'undefined'/, 'count in a zone needs from');
   broken({ checks: [{ item: 'laptop', count: 2, spots: ['dave_desk'], absent: true }] }, /inspections\[0\]\.checks\[0\]\.absent: a count is never absent/, 'count: absent');
+  broken({ checks: [{ item: 'laptop', spot: 'dave_desk', look: -1 }] }, /inspections\[0\]\.checks\[0\]\.look: not a number of seconds/, 'look value');
+  broken({ checks: [{ item: 'laptop', spot: 'dave_desk', record: 'counted' }] }, /inspections\[0\]\.checks\[0\]\.record: 'counted' is no field of initialWorld\(\)/, 'record field');
+  broken({ checks: [{ who: 'player', zone: 'room_a', from: 'check_mine', record: 'audited' }] }, /inspections\[0\]\.checks\[0\]\.record: only an item or count check records/, 'record on a who check');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

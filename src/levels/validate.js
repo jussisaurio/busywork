@@ -32,7 +32,8 @@
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
 //               icon or a list, its absent true or false; a count check a whole count >= 1 with a non-empty spots
-//               list or a zone (then a from); a noise is not 'noise' or 'npc:heard'
+//               list or a zone (then a from); its look a number, its record (on an item or count check) a field of
+//               initialWorld(); a noise is not 'noise' or 'npc:heard'
 //   failSign    optional; spot a spot
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once
@@ -273,6 +274,7 @@ export function levelProblems(level, key) {
     zone(`doors[${i}].zone`, d?.zone);
     for (const [k, id] of list(`doors[${i}].npcs`, d?.npcs).entries()) npc(`doors[${i}].npcs[${k}]`, id);
   }
+  const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
     const path = `inspections[${i}]`;
     npc(`${path}.npc`, insp?.npc);
@@ -299,6 +301,11 @@ export function levelProblems(level, key) {
       if (c?.from !== undefined || c?.item === undefined || (c?.count !== undefined && c.zone !== undefined)) spot(`${cp}.from`, c?.from);
       if (c?.icon !== undefined) icons(`${cp}.icon`, c.icon);
       if (c?.absent !== undefined && typeof c.absent !== 'boolean') bad(`${cp}.absent`, 'not true or false');
+      if (c?.look !== undefined && !(isNum(c.look) && c.look >= 0)) bad(`${cp}.look`, 'not a number of seconds');
+      if (c?.record !== undefined) {
+        if (c.item === undefined || c.absent) bad(`${cp}.record`, 'only an item or count check records');
+        else records.push([`${cp}.record`, c.record]);
+      }
     }
     if (insp?.sign !== undefined && insp.sign !== 'mark' && insp.sign !== 'item') bad(`${path}.sign`, `${q(insp.sign)} is not 'mark' or 'item'`);
     const then = insp?.fail?.then;
@@ -337,6 +344,7 @@ export function levelProblems(level, key) {
     let w;
     try { w = level.initialWorld(); } catch (e) { bad('initialWorld()', `throws: ${e.message}`); }
     if (w !== undefined && !(isObj(w) && Array.isArray(w.items))) bad('initialWorld()', 'returns no { items: [] }');
+    else if (w !== undefined) for (const [path, f] of records) if (!isStr(f) || !Object.hasOwn(w, f)) bad(path, `${q(f)} is no field of initialWorld()`);
   }
 
   // --- tools: harness and gate ------------------------------------------------------------------
