@@ -15,11 +15,16 @@ that start with `fixture`).
 ## The three stages
 | Stage | The reader sees | The reader judges | When |
 |---|---|---|---|
-| **premise** | Step 1: the card alone. Step 2: the card, step 1's reading, `premise.md` and the level's own source files (not `shots.js`). | Stakes, motivation, deducibility, consistency, the joke, the name. | At the first playable cut, and whenever the card or premise changes. |
+| **premise** | Step 1: the card alone. Step 2: the card, step 1's reading, `premise.md` and the level's own source files (not `shots.js`). Its prompt adds the engine rules every level relies on (`tools/cold-read/prompts/engine.md`). | Stakes, motivation, deducibility, consistency, the joke, the name. | At the first playable cut, and whenever the card or premise changes. |
 | **pictures** | Step 1: the card and the screenshots from `shots.js`, numbered `01.png`, `02.png`, ... with no names and no intents. Step 2: a second reader compares step 1's reading with the intents. | Whether each picture says what it must. | Before the level goes to a human, and whenever the stage goes stale. |
 | **replay** | Step 1: the card and one strip of frames per route check, with captions that give only the clock and what the player knows. Step 2: a second reader compares those readings with what each run really was and with `premise.md`'s ways to win and lose. | Whether a player could tell why each loop ended, and which of their actions caused it. | Before the level goes to a human, and whenever the stage goes stale. |
 
 Each step is a separate fresh reader, so nothing the reader learns later can colour their first read.
+
+The premise reviewer reads the level's files, not the engine's, so `tools/cold-read/prompts/engine.md` gives them the
+engine's rules (pretending hides what you carry, a schedule time is when someone sets off, and so on). Keep it to
+rules that hold in every level, true to DESIGN.md and the engine, and never a level's solution. Add a rule when a
+review reports an engine behaviour as missing or wrong.
 
 Verdicts are `works`, `fixable` or `broken`. A reply whose first line is not a verdict is recorded as `unreadable`,
 which the gate treats as a failure. The gate needs `works` from every stage, for the current inputs.
@@ -67,7 +72,9 @@ holds:
   time)
 - every step's reply, verbatim
 
-A stage is fresh while its inputs still hash to the recorded value. Its inputs are:
+A stage is fresh while its inputs still hash to the recorded value. Every stage's inputs include the full text of
+the prompts its readers get (`tools/cold-read/prompts/`), so changing a prompt makes the stages that use it stale.
+The other inputs are:
 - **premise**: the card and `premise.md`
 - **pictures**: the card, `shots.js` (names, commands, intents) and the bytes of every rendered shot
 - **replay**: the card, `route-checks.js`, `premise.md`'s ways to win and lose, and every frame and caption

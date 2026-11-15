@@ -1,6 +1,7 @@
 Read first-read.md: another reader's take on the card alone. Then read card.txt, premise.md, and the level's source
 files in src/. premise.md and the code comments are the designer's claims. Check each claim against the code (the
-cast's schedules, the interactions, the routes) and against common sense. Budget: about 12 file reads, then write.
+cast's schedules, the interactions, the routes), the engine rules above, and common sense. Budget: about 12 file
+reads, then write.
 
 Judge:
 1. **Stakes.** Does the goal follow from the card? By the game's own comic logic, would succeeding actually save you
