@@ -1,19 +1,24 @@
 // Each shot: harness commands from the start of the day, and what the picture must tell a first-time player.
-// The switch: flip it, step into the shadow under his plants while his beam swings east, then take it while he is
-// at the switch (route-checks.js waits for him to set off; here, half a second).
+// The switch: flip his office lights at the hallway panel, walk off to his door before he comes out, wait for him to
+// pass on his way to the panel (route-checks.js waits for him; here, four seconds), then take it from his empty desk.
 const FLIP = ['goto office_switch pretend', 'interact'];
-const TAKE_SWITCH = [...FLIP, 'goto 1,4', 'goto 1,4', 'wait 0.5s', 'goto tray', 'goto tray', 'interact'];
-// The blackout: tip the jug over the machine from beside it (by the fridge, out of Kev's sight), back to your seat;
+const OUT = [...FLIP, 'goto boss_office_door', 'wait 4s'];
+const TAKE_SWITCH = [...OUT, 'goto tray', 'goto tray', 'interact'];
+// The blackout: pour the jug down the back of the machine from beside it (by the fridge, out of Kev's sight), back to
+// your seat;
 // at 3:10 Lin switches it on, it shorts (a stop), and its spark trips the fuse (another stop).
 const RIG = ['goto 20,2 pretend', 'interact', 'goto my_seat'];
 const SHORT = [...RIG, 'pretend until 3:11'];
 const TRIP = [...SHORT, 'pretend 5s'];
-const TAKE_BLACKOUT = [...TRIP, 'goto desk_side pretend', 'goto desk_side pretend', 'interact'];
+const TAKE_BLACKOUT = [...TRIP, 'goto desk_side pretend', 'goto desk_side pretend', 'wait 1s', 'interact']; // wait out Kev's unplug (a stop)
 const TAKE_BREAKER = ['goto fuse_box pretend', 'interact', 'goto desk_side pretend', 'interact'];
 // Eat it: take it in the breaker's dark, step off your desk (at it, E is the drawer) and hold E. It comes back up
 // ten game minutes later.
 const EAT = [...TAKE_BREAKER, 'goto my_seat pretend', 'goto my_seat pretend', 'move S 0.4s', 'eat'];
 const SICK = [...EAT, 'wait until 3:22', 'wait until 3:22', 'wait until 3:22', 'wait until 3:22'];
+// It came back up: Lin goes for paper towels (a stop: the boss gets up), then he walks over to the puddle.
+const COMING = [...SICK, 'wait 1s', 'wait 2s', 'wait 2s', 'wait 2s', 'wait 2s'];
+const LOOKED = [...COMING, 'wait 5s'];
 const SIT_TILL_3_41 = ['sit pretend', 'sit pretend', 'sit pretend', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'];
 
 export default [
@@ -23,18 +28,18 @@ export default [
   { name: 'boss-drums', cmds: ['wait until 3:03'], intent: 'The boss drums his fingers on his desk, eyes on his tray: still not working.' },
   { name: 'boss-clock', cmds: ['wait until 3:05'], intent: 'The boss reaches for the little brass alarm clock on the end of his desk and checks it: a glint off its face, its hands just past 3:00.' },
   { name: 'tray-pulled', cmds: ['wait until 3:39', 'wait until 3:39', 'wait until 3:39', 'wait 0.3s'], intent: "3:39: the desk clock rings, the boss sighs and drags his tray over to go through it; your letter is still in it." },
-  { name: 'switch', cmds: ['goto office_switch pretend'], intent: 'His office has its own light switch, in the corner behind his chair: you stand at it, lights on, behind his back and outside his view.' },
+  { name: 'switch', cmds: ['goto office_switch pretend'], intent: 'Out in the hallway, on the meeting-room wall well away from his glass office, a lighting panel of switches: you stand at it, outside his view.' },
   { name: 'fuse-box', cmds: ['goto fuse_box pretend', 'goto fuse_box pretend'], intent: 'A grey fuse box on the end wall of the hallway, door shut and green lamp on, around the corner where the boss cannot see it.' },
   { name: 'lin-coffee', cmds: ['wait until 3:05', 'wait 1s'], intent: 'At 3:05 Lin gets up from her desk thinking of coffee (☕) and heads for the old coffee machine in the kitchen.' },
-  { name: 'switch-flipped', cmds: [...FLIP, 'move S 0.3s'], intent: 'You flipped the switch and stepped off it: only his office is dark, the switch shows an amber lamp, and the boss, puzzled, holds up his phone: its beam starts at the glow in his hand.' },
-  { name: 'in-shadow', cmds: [...FLIP, 'goto 1,4', 'goto 1,4'], intent: 'You wait in the dark under his plants, just outside the edge of his phone beam, which points down past his desk as he gets up.' },
-  { name: 'boss-sweeps', cmds: [...FLIP, 'goto 1,4', 'goto 1,4', 'wait 0.7s'], intent: 'As he gets up and turns for the switch, his beam swings across the east half of his office, away from you in the shadow.' },
-  { name: 'switch-take', cmds: [...TAKE_SWITCH, 'wait 0.5s'], intent: 'The tray is empty and the envelope is in your hand at his desk while he stands at the switch in the corner, his beam on it, and his office tubes blink on for a moment.' },
+  { name: 'switch-flipped', cmds: [...FLIP, 'move S 0.3s'], intent: 'You flipped a switch on the hallway panel and stepped off it: the panel shows an amber lamp and only his glass office down the hall has gone dark; the floor and the hallway stay lit.' },
+  { name: 'boss-out', cmds: OUT, intent: 'The boss has left his dark office: he walks down the hallway with his phone toward the lighting panel, his back to you by his door; his desk and the tray sit unattended behind him.' },
+  { name: 'boss-at-panel', cmds: [...OUT, 'wait 1.5s'], intent: 'The boss stands at the hallway panel trying one unlabelled switch after another (the panel lamp blinks), far from his office.' },
+  { name: 'switch-take', cmds: [...TAKE_SWITCH, 'wait 0.5s'], intent: 'In his dark, empty office you stand at his desk with the envelope in your hand and the tray empty; he is still out in the hallway at the panel.' },
   { name: 'stash', cmds: [...TAKE_SWITCH, 'goto my_seat', 'goto my_seat', 'interact', 'wait 0.3s'], intent: 'Back at your own desk with the envelope, you slide it into your desk drawer and sit down: the drawer is open, the envelope going in.' },
   { name: 'stashed', cmds: [...TAKE_SWITCH, 'goto my_seat', 'goto my_seat', 'interact', 'wait 2s'], intent: 'The drawer is shut, a corner of your envelope sticking out of it; your hands are empty.' },
-  { name: 'torch-finds-you', cmds: [...FLIP, 'wait 30s'], intent: 'If you stay at the switch, the boss walks his phone torch over to it and its beam lands on you: in his dark office, whoever is at the switch flipped it.' },
+  { name: 'panel-finds-you', cmds: [...FLIP, 'wait 30s'], intent: 'If you stay at the panel, the boss comes out of his office to it and finds you standing there: he points at you (❗👉), a line from him to you.' },
   { name: 'flicker', cmds: ['pretend until 3:11', 'wait 0.4s'], intent: '3:10, nobody touched it: Lin switches on the old coffee machine and the lights all over the floor flicker; Lin startled, Kev at his desk turns to look down the hall at the fuse box. The lights steady and it brews, its green lamp blinking.' },
-  { name: 'rig', cmds: [...RIG.slice(0, 2), 'wait 0.3s'], intent: 'Before 3:10 you stand beside the coffee machine, by the fridge, and tip the water jug over it: water runs down its front into a puddle, the jug on its side. From his desk, Kev sees the front of the machine through the kitchen door, but not you here.' },
+  { name: 'rig', cmds: [...RIG.slice(0, 2), 'wait 0.3s'], intent: 'Before 3:10 you stand beside the coffee machine, by the fridge, and pour the water jug down its back onto its wall socket: the jug stands empty, a dark wet streak shows behind the machine and nothing shows on its front. From his desk, Kev sees the front of the machine through the kitchen door, but not you here.' },
   { name: 'rig-seen', cmds: ['goto 21,2 pretend', 'interact'], intent: 'Try it from in front of the machine and Kev, at his desk, sees you through the kitchen door: he points you out to the boss, who sends you to your desk with a pile of work.' },
   { name: 'surge', cmds: [...SHORT, 'wait 0.6s'], intent: '3:10, after you soaked it: Lin switches the coffee machine on and it shorts with a burst of sparks and grey smoke; a spark runs out of the kitchen and along the wiring toward the fuse box at the end of the hallway.' },
   { name: 'blackout', cmds: [...TRIP, 'wait 0.3s'], intent: 'The spark reaches the fuse box: its door flies open with a blinking red lamp and the whole floor goes dark; everyone holds up a phone as a torch (the boss at his desk, Kev at his).' },
@@ -44,16 +49,16 @@ export default [
   { name: 'kev-comes', cmds: ['goto fuse_box pretend', 'interact', 'goto desk_side pretend', 'wait 6s'], intent: 'Kev walks his phone torch down the hallway to the open fuse box to reset it; you are already at the boss\'s desk, out of his way.' },
   { name: 'kev-finds-you', cmds: ['goto fuse_box pretend', 'interact', 'wait 8s', 'wait 0.5s'], intent: 'If you wait at the fuse box, Kev arrives with his torch and finds you standing at it: he shouts and points at you (❗👉), a line from him to you.' },
   { name: 'sick', cmds: [...SICK, 'wait 0.9s'], intent: 'Ten minutes after you ate your letter it comes back up: you, green-faced (🤢), stand over a green puddle with the soggy, stained envelope in it; a ripple spreads over the whole floor and everyone turns to look.' },
-  { name: 'lin-pinches', cmds: [...SICK, 'wait 1s', 'move E 0.6s', 'wait 6.1s'], intent: 'Lin comes over (🤢) and picks the soggy envelope out of the puddle between two fingers.' },
-  { name: 'lin-carries', cmds: [...SICK, 'wait 1s', 'move E 0.6s', 'wait 7.9s'], intent: "Lin carries the dripping envelope at arm's length, arm held straight out, toward the boss's office, to drop it in his tray." },
-  { name: 'end-switch', cmds: [...TAKE_SWITCH, ...SIT_TILL_3_41], intent: 'Win by the switch, 3:40 with the lights on: he holds up his empty tray, baffled, glancing at the switch behind him; you stand at your desk outside his glass office, smug, the envelope in your hand.' },
-  { name: 'end-blackout', cmds: [...TAKE_BLACKOUT, ...SIT_TILL_3_41], intent: 'Win by the blackout, 3:40 with the lights on: he holds up his empty tray, baffled; you at your desk with the envelope; behind you the coffee machine you soaked, scorched black up the wall, the jug on its side in a puddle.' },
+  { name: 'lin-towels', cmds: [...SICK, 'wait 1s', 'wait 2s'], intent: 'After you threw up, nobody touches the envelope in the puddle: Lin (🤢) is in the kitchen tearing off paper towels, and the boss has got up from his desk to come and see what the retching was.' },
+  { name: 'boss-looks', cmds: COMING, beat: 1, intent: 'The boss stands over your green puddle and knows his own envelope in it: angry (😠), he points at you (❗👉).' },
+  { name: 'end-switch', cmds: [...TAKE_SWITCH, ...SIT_TILL_3_41], intent: 'Win by the switch, 3:40 with the lights on: he holds up his empty tray, baffled, glancing out through the glass at the hallway lighting panel; you stand at your desk outside his glass office, smug, the envelope in your hand.' },
+  { name: 'end-blackout', cmds: [...TAKE_BLACKOUT, ...SIT_TILL_3_41], intent: 'Win by the blackout, 3:40 with the lights on: he holds up his empty tray, baffled; you at your desk with the envelope; behind you the coffee machine you soaked, scorched black up the wall, a wet streak behind it, the water jug empty beside it.' },
   { name: 'end-breaker', cmds: [...TAKE_BREAKER, ...SIT_TILL_3_41], intent: 'Win by the breaker, 3:40 with the lights on: he holds up his empty tray, baffled; you at your desk with the envelope; behind you the fuse box, shut again.' },
   { name: 'end-fail', cmds: ['wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Loss at 3:40: he went through his tray, read your letter and holds it up, furious; you stand in front of his desk, sweating.' },
   { name: 'end-deskwork', cmds: ['goto fuse_box pretend', 'interact', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Loss at 3:40 after Kev told on you: the boss holds your letter up, furious; you sit at your desk behind a tall pile of paperwork. Icons: Kev, pointing, paperwork, the letter.' },
   { name: 'end-eaten', cmds: [...TAKE_BREAKER, 'goto my_seat pretend', 'goto my_seat pretend', 'wait until 3:32', 'wait until 3:32', 'wait until 3:32', 'move S 0.4s', 'eat', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Win, the letter eaten and still inside you at 3:40: he holds up his empty tray, baffled; you sit at your desk outside his glass office, green in the face.' },
-  { name: 'end-soggy', cmds: [...SICK, 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: "Loss: the letter came back up and Lin put it in his tray. At 3:40 he holds the soggy, dripping envelope out at arm's length, furious; you stand in front of his desk, green." },
+  { name: 'end-soggy', cmds: [...LOOKED, 'wait 5s', 'wait 5s'], intent: 'Loss: you ate it too early and it came back up; he came over to see what the retching was and stands over the green puddle on the floor, pointing at his own soggy envelope lying in it, furious; you stand beside it, green.' },
   { name: 'end-caught', cmds: ['goto desk_side pretend', 'interact', 'wait 5s', 'wait 5s'], intent: 'Loss: you took the letter while he could see you; the lights on, he points at you holding it beside his desk.' },
-  { name: 'end-torch', cmds: [...FLIP, 'wait 30s', 'wait 5s', 'wait 5s'], intent: 'Loss: in his dark office his phone torch is on you right under the switch, and your letter is still in his tray.' },
+  { name: 'end-panel', cmds: [...FLIP, 'wait 30s', 'wait 5s', 'wait 5s'], intent: 'Loss: out in the lit hallway he found you at the lighting panel, its switch still off: he points at you, sweating.' },
   { name: 'coffee-poured', cmds: ['wait until 3:20', 'wait until 3:20', 'wait until 3:20', 'goto coffee_machine', 'interact', 'move S 1.2s'], intent: 'Nobody soaked it, so the coffee machine brewed after its flicker: its lamp glows green, the pot is full and steaming, and you hold a cup you just poured.' },
 ];

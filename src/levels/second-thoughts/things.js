@@ -265,73 +265,44 @@ export function phoneThing(ctx, x, y, size) {
 // pixels from the machine's tile: render/world.js draws the machine itself (its body x 6..26, y 1..23 of the tile, its
 // pot at x 14.5, a red dot at 23.5, 11) and the pot (the engine's 'carafe').
 
-// The glass water jug on the counter right of the machine. tipped: you tipped it over the machine: it lies on its
-// side, empty, its mouth on the machine's top; water runs down the machine's front and pools on the floor in front.
+// The glass water jug on the counter right of the machine, upright. empty: you poured it down the back of the
+// machine, onto its wall socket, and stood it back: nothing at the front gives it away, only a dark wet streak down
+// the wall in the gap behind the machine's right shoulder, a drip still running.
 const WATER = 'rgba(96,170,232,';
 export function jugProp(ctx, info, at, shown, t) {
   const px = at.x * T;
   const py = at.y * T;
-  if (!shown.tipped) {
-    const x = px + T + 12; // upright on the counter, full
-    const y = py + 6;
-    ctx.fillStyle = 'rgba(0,0,0,0.22)';
-    rrect(ctx, x - 5, y + 13, 12, 3, 1.5);
+  if (shown.empty) {
+    ctx.fillStyle = 'rgba(40,52,64,0.35)'; // wet wall behind the machine, peeking out right of it
+    rrect(ctx, px + 25, py - 4, 4, 14, 2);
     ctx.fill();
-    ctx.fillStyle = 'rgba(214,236,246,0.55)'; // the glass
-    rrect(ctx, x - 5.5, y, 11, 15, 2.5);
-    ctx.fill();
+    const k = (t * 0.9) % 1;
+    fillCircle(ctx, px + 27, py + 1 + k * 8, 1.1, `${WATER}${(0.85 * (1 - k)).toFixed(3)})`);
+  }
+  const x = px + T + 12;
+  const y = py + 6;
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  rrect(ctx, x - 5, y + 13, 12, 3, 1.5);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(214,236,246,0.55)'; // the glass
+  rrect(ctx, x - 5.5, y, 11, 15, 2.5);
+  ctx.fill();
+  if (!shown.empty) {
     ctx.fillStyle = `${WATER}0.95)`; // the water in it, most of the way up
     rrect(ctx, x - 4.5, y + 4, 9, 10, 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(235,248,255,0.9)';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath(); // the handle
-    ctx.arc(x + 6, y + 7, 3.2, -Math.PI / 2, Math.PI / 2);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.fillRect(x - 3.5, y + 2, 1.3, 10); // a glint down the glass
-    return;
+  } else {
+    ctx.fillStyle = `${WATER}0.6)`; // a last drop in the bottom
+    rrect(ctx, x - 4.5, y + 12, 9, 2, 1);
+    ctx.fill();
   }
-  // The puddle in front of the machine (on the floor tile below it), with a glint.
-  const fx = px + 15;
-  const fy = py + T + 9;
-  ctx.fillStyle = `${WATER}0.5)`;
-  ctx.beginPath();
-  ctx.ellipse(fx, fy, 12, 5, 0, 0, Math.PI * 2);
-  ctx.ellipse(fx + 8, fy + 2, 6, 3.5, 0.3, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(230,246,255,0.7)';
-  ctx.beginPath();
-  ctx.ellipse(fx - 4, fy - 1.5, 3.5, 1, 0, 0, Math.PI * 2);
-  ctx.fill();
-  // Water down the machine's front, drips running.
-  ctx.strokeStyle = `${WATER}0.85)`;
-  ctx.lineCap = 'round';
-  for (const [dx, w] of [[9, 2.2], [16, 1.6], [23, 2]]) {
-    ctx.lineWidth = w;
-    ctx.beginPath();
-    ctx.moveTo(px + dx, py + 2);
-    ctx.lineTo(px + dx + Math.sin(dx) * 1.2, py + 24);
-    ctx.stroke();
-  }
-  for (let i = 0; i < 3; i++) {
-    const k = (t * 1.3 + i / 3) % 1;
-    fillCircle(ctx, px + 9 + i * 7, py + 24 + k * 9, 1.4, `${WATER}${0.9 * (1 - k)})`);
-  }
-  ctx.lineCap = 'butt';
-  // The jug, on its side on the counter, empty, mouth on the machine's top.
-  ctx.save();
-  ctx.translate(px + T + 6, py + 6);
-  ctx.rotate(-Math.PI / 2 - 0.25);
-  ctx.fillStyle = 'rgba(214,236,246,0.6)';
-  rrect(ctx, -5.5, -1, 11, 15, 2.5);
-  ctx.fill();
   ctx.strokeStyle = 'rgba(235,248,255,0.9)';
   ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.arc(6, 6, 3.2, -Math.PI / 2, Math.PI / 2);
+  ctx.beginPath(); // the handle
+  ctx.arc(x + 6, y + 7, 3.2, -Math.PI / 2, Math.PI / 2);
   ctx.stroke();
-  ctx.restore();
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.fillRect(x - 3.5, y + 2, 1.3, 10); // a glint down the glass
 }
 
 // The machine itself. lamp: 'brewing' (a small green lamp, blinking) | 'brewed' (a big green lamp, steady) | null.

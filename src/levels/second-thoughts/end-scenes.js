@@ -1,19 +1,20 @@
 // Second Thoughts' end cards: which scene an outcome gets, the icon row under it and its hand-drawn picture (level 1's
 // end-scenes.js documents the fields). Every card shows the day as it ended (DESIGN.md), drawn from the state:
-//   switch    3:40, the lights on: he holds up his empty tray, baffled, and squints at the switch on his wall; you
-//   blackout  stand outside his glass office with the letter (at your desk, if that's where you are). Behind you, the
-//   breaker   thing that went dark: the coffee machine you soaked, scorched, its jug lying in a puddle (blackout); the
-//             fuse box, shut again (breaker).
+//   switch    3:40, the lights on: he holds up his empty tray, baffled; you stand outside his glass office with the
+//   blackout  letter (at your desk, if that's where you are). Behind you, the thing that went dark: the hallway's
+//   breaker   lighting panel, his eyes going to it (switch); the coffee machine you soaked, scorched, its empty jug
+//             beside it and a wet streak down the wall behind it (blackout); the fuse box, shut again (breaker).
 //   fail      3:40: he holds your letter up, furious; you stand in front of his desk.
 //   eaten     3:40, the letter still in you: he holds up his empty tray, baffled; you sit green at your desk.
-//   soggy     it came back up and reached his tray: he holds the dripping letter out at arm's length, furious.
+//   soggy     it came back up and he came to see what the retching was: he stands over the sick on the floor,
+//             pointing at his own envelope in it; you, green, beside it.
 //   deskwork  as fail, but Kev told on you and you sit at your desk behind a pile of paperwork.
-//   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (by
-//             his desk, or under the switch you flipped). Each of you stands where you were; the letter is where it
-//             was (your hand, his tray, the floor).
+//   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (in
+//             his office), or in the hallway at the lighting panel you flipped. Each of you stands where you were; the
+//             letter is where it was (your hand, his tray, the floor).
 // 3:40 is never 'blamed' here (index.js meeting.verdict): wherever you are with the letter, you got away with it.
 // Nothing in a hand or on a desk is an emoji: the tray, the letter and the phone are things.js (in a hand through
-// decor.things, so render/characters.js draws them and the hand over them), the switch and the fuse box are the ones
+// decor.things, so render/characters.js draws them and the hand over them), the panel and the fuse box are the ones
 // drawn on the floor (render/darkness.js), only bigger. Speech is free: the bubbles and rows.
 import { rrect, fillCircle, fillEllipse } from '../../render/util.js';
 import { C } from '../../render/palette.js';
@@ -22,7 +23,7 @@ import { drawChair } from '../../render/world.js';
 import { paintSwitch, paintBreaker, paintLamp } from '../../render/darkness.js';
 import { isDark } from '../../game/darkness.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { paintTray, paintLetter, paintPhone } from './things.js';
+import { paintTray, paintLetter, paintPhone, soggyLetter } from './things.js';
 
 const WALL_H = 92;
 const VEIL = 'rgba(14,20,46,0.62)';
@@ -182,8 +183,9 @@ function counter(ctx, x0, x1) {
 }
 
 // The coffee machine on the counter at x, as the world shows it (presentation.js decor.props): soaked and shorted on
-// the blackout route, so scorched black up the wall behind it, its lamp dead, the water jug lying on its side in a
-// puddle beside it, and smoke off its back while the fuse it blew is out. Brewed (it never shorted): the pot full and
+// the blackout route, so scorched black up the wall behind it, its lamp dead, the water jug standing empty beside it
+// and a wet streak down the wall behind its shoulder, and smoke off its back while the fuse it blew is out (and Kev
+// hasn't unplugged it). Brewed (it never shorted): the pot full and
 // its brew lamp green.
 function coffeeMachine(ctx, x, t, w) {
   const y = TAB.y + WALL_H - 6; // sits on the counter
@@ -220,29 +222,26 @@ function coffeeMachine(ctx, x, t, w) {
     ctx.fillRect(x + 7, y - 39, 18, 18);
   }
   fillCircle(ctx, x + 16, y - 30, 2.6, brewed ? '#d8ffd0' : shorted ? '#161212' : '#6b2a22');
-  if (w.rigged) { // the jug you tipped, on its side in its puddle, still dripping off the counter's edge
-    fillEllipse(ctx, x + 30, y + 3, 34, 5, 'rgba(110,170,230,0.6)');
-    ctx.save();
-    ctx.translate(x + 44, y - 9);
-    ctx.rotate(-Math.PI / 2 - 0.2);
-    ctx.fillStyle = 'rgba(214,234,240,0.55)';
-    rrect(ctx, -9, -13, 18, 26, 4);
+  if (w.rigged) { // the water went down its back onto the socket: a wet streak behind its shoulder, the jug empty
+    ctx.fillStyle = 'rgba(96,140,184,0.6)';
+    rrect(ctx, x + 22, y - 44, 7, 44, 3);
     ctx.fill();
-    ctx.fillStyle = 'rgba(110,170,230,0.7)';
-    rrect(ctx, -7, 3, 14, 8, 3);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(214,234,240,0.8)';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(10, -2, 6, -Math.PI / 2, Math.PI / 2);
-    ctx.stroke();
-    ctx.restore();
-    for (let i = 0; i < 3; i++) {
-      const k = (t * 0.9 + i / 3) % 1;
-      fillCircle(ctx, x + 20 + i * 14, y + 6 + k * 40, 2.2, `rgba(110,170,230,${0.8 * (1 - k)})`);
-    }
+    const k = (t * 0.9) % 1;
+    fillCircle(ctx, x + 25, y - 30 + k * 30, 2.2, `rgba(110,170,230,${(0.85 * (1 - k)).toFixed(3)})`);
   }
-  if (!shorted || w.fuse === 'on') return;
+  ctx.fillStyle = 'rgba(214,234,240,0.55)'; // the water jug, standing beside it (on its left: the card's edge is right)
+  rrect(ctx, x - 62, y - 30, 22, 30, 5);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(110,170,230,0.75)';
+  if (w.rigged) rrect(ctx, x - 60, y - 6, 18, 4, 2); // a last drop
+  else rrect(ctx, x - 60, y - 22, 18, 20, 3);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(214,234,240,0.8)';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(x - 40, y - 15, 6, -Math.PI / 2, Math.PI / 2);
+  ctx.stroke();
+  if (!shorted || w.fuse === 'on' || w.unplugged) return;
   for (let i = 0; i < 3; i++) {
     const k = (t * 0.6 + i / 3) % 1;
     fillCircle(ctx, x + 10 + Math.sin(t + i) * 6, y - 56 - k * 40, 6 + k * 8, `rgba(90,90,96,${0.45 * (1 - k)})`);
@@ -323,8 +322,9 @@ const near = (game, who, spot, r) => {
 };
 
 // 3:40, the lights on. He holds up his empty tray (it's what he goes through), baffled; on the switch route his eyes
-// keep going to the switch behind him. You, outside his glass office, the letter in your hand (at your desk if you're
-// at it). Behind you, what went dark on your route: the scorched coffee machine, or the fuse box shut again.
+// keep going out to the lighting panel in the hallway. You, outside his glass office, the letter in your hand (at your
+// desk if you're at it). Behind you, what went dark on your route: the panel, the scorched coffee machine, or the fuse
+// box shut again.
 function sceneWin(route) {
   return (ctx, game, t, e) => {
     const w = game.world;
@@ -334,13 +334,14 @@ function sceneWin(route) {
       coffeeMachine(ctx, 724, t, w);
     } else if (route === 'breaker') {
       control(ctx, 'breaker', 716, 146, 3.2, w.fuse === 'on', false, t); // its door wears the sticker
+    } else {
+      control(ctx, 'switch', 716, 150, 3.2, w.officeLight !== 'off', false, t); // the hallway's lighting panel
     }
     glassWall(ctx, GLASS_X);
     lamp(ctx, 420, true, t);
-    control(ctx, 'switch', 238, 150, 3.2, w.officeLight !== 'off', false, t);
     chair(ctx, 420, 252);
-    const glance = route === 'switch' && Math.sin(t * 0.9) > 0.35; // a squint at the switch over his shoulder
-    const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + (glance ? 1.35 : 0.45) + Math.sin(t * 3) * 0.05 });
+    const glance = route === 'switch' && Math.sin(t * 0.9) > 0.35; // a squint out through the glass at the panel
+    const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + (glance ? -1.2 : 0.45) + Math.sin(t * 3) * 0.05 });
     drawPerson(ctx, game.level.looks.boss, b, 420, 228);
     desk(ctx, 420, 252);
     const atDesk = near(game, game.player, 'player_desk', 1.6);
@@ -369,7 +370,6 @@ function sceneEaten(ctx, game, t, e) {
   office(ctx);
   glassWall(ctx, GLASS_X);
   lamp(ctx, 420, true, t);
-  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
   chair(ctx, 420, 252);
   const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + 0.45 + Math.sin(t * 3) * 0.05 });
   drawPerson(ctx, game.level.looks.boss, b, 420, 228);
@@ -389,7 +389,6 @@ function sceneEaten(ctx, game, t, e) {
 function sceneFail(ctx, game, t, e) {
   office(ctx);
   lamp(ctx, 440, true, t);
-  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
   const b = boss(t, { arms: 'shrug', item: '#letter', angry: true, head: Math.PI / 2 + Math.sin(t * 6) * 0.06 });
   drawPerson(ctx, game.level.looks.boss, b, 440, 238);
   desk(ctx, 440, 252);
@@ -407,7 +406,6 @@ function sceneDeskwork(ctx, game, t, e) {
   office(ctx);
   glassWall(ctx, GLASS_X);
   lamp(ctx, 420, true, t);
-  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
   chair(ctx, 420, 252);
   const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#letter', angry: true, head: Math.PI / 2 + Math.sin(t * 6) * 0.06 });
   drawPerson(ctx, game.level.looks.boss, b, 420, 228);
@@ -420,23 +418,36 @@ function sceneDeskwork(ctx, game, t, e) {
   if (e > 0.4) bubble(ctx, ['@player', '😠'], 450, 150, e - 0.4, 'alert');
 }
 
-// 3:40, he read it after it came back up: he holds the soggy, dripping letter out at arm's length, furious and
-// queasy; you stand in front of his desk, still a bit green.
+// It came back up, and he came over to see what the retching was: he stands over the sick on the open floor,
+// pointing down at his own envelope in it, furious and queasy. You stand beside it, still green. Nobody picks a letter
+// out of that, so it lies where it landed.
 function sceneSoggy(ctx, game, t, e) {
+  const w = game.world;
   office(ctx);
-  lamp(ctx, 440, true, t);
-  control(ctx, 'switch', 238, 150, 3.2, true, false, t);
-  const b = boss(t, { arms: 'holdout', item: '#letter', angry: true, head: Math.PI / 2 - 0.4 + Math.sin(t * 6) * 0.06 });
-  drawPerson(ctx, game.level.looks.boss, b, 440, 238);
-  desk(ctx, 440, 252);
-  tray(ctx, 496, 252, false);
+  glassWall(ctx, 180);
+  puddle(ctx, 470, 300, 1 - 0.7 * (w.wipeProgress || 0));
+  soggyLetter(ctx, 470, 298, 2.4, t, 0.3);
+  const b = boss(t, { arms: 'point', angry: true, sweat: true });
+  b.dir = Math.atan2(60 / 0.6, 470 - 330);
+  b.head = b.dir + Math.sin(t * 6) * 0.06;
+  drawPerson(ctx, game.level.looks.boss, b, 330, 250);
   const p = person(t);
-  Object.assign(p, { dir: Math.PI - 0.5, head: Math.PI - 0.5, sweat: true, scale: 2.4 });
-  drawPerson(ctx, green(game.level.looks.player), p, 640, 306);
-  if (e > 0.4) bubble(ctx, ['✉️', '🤢', '😠'], 470, 170, e - 0.4, 'alert');
+  Object.assign(p, { dir: Math.PI - 0.4, head: Math.PI - 0.4 + Math.sin(t * 1.3) * 0.15, sweat: true, scale: 2.4 });
+  drawPerson(ctx, green(game.level.looks.player), p, 620, 286 - Math.abs(Math.sin(t * 1.1)) * 3);
+  if (e > 0.4) bubble(ctx, ['✉️', '😠'], 360, 150, e - 0.4, 'alert');
 }
 
-// Where someone stood in his office (tiles), in the picture: the switch's corner top left, his desk (tiles 3..5 of row
+// The sick on the floor at (x, y), as the world draws it but bigger; k shrinks it as Lin wipes.
+function puddle(ctx, x, y, k) {
+  fillEllipse(ctx, x, y + 4, 70 * k, 20 * k, 'rgba(0,0,0,0.12)');
+  fillEllipse(ctx, x, y, 66 * k, 18 * k, '#9dbb3c');
+  fillEllipse(ctx, x - 30 * k, y + 6 * k, 22 * k, 9 * k, '#9dbb3c');
+  fillEllipse(ctx, x + 34 * k, y - 4 * k, 18 * k, 8 * k, '#9dbb3c');
+  for (const [dx, dy, r] of [[-12, 2, 4], [14, -2, 3.4], [30, 4, 3]]) fillCircle(ctx, x + dx * k, y + dy * k, r * k, '#7d9a28'); // lumps
+  fillEllipse(ctx, x - 18 * k, y - 6 * k, 14 * k, 4 * k, 'rgba(255,255,255,0.35)');
+}
+
+// Where someone stood in his office (tiles), in the picture: its door corner top left, his desk (tiles 3..5 of row
 // 3, the tray on its east end) across the middle.
 const at = (who) => ({
   x: Math.min(TAB.x + TAB.w - 40, Math.max(TAB.x + 40, 236 + (who.x - 1.5) * 64)),
@@ -451,16 +462,16 @@ function sceneCaught(ctx, game, t, e) {
   const w = game.world;
   const you = game.player;
   const him = game.npcs.find((n) => n.id === 'boss');
+  if (you.y >= 6 || you.x >= 9) return caughtOutside(ctx, game, t, e);
   const dark = isDark(game, you.x, you.y);
   const atHisDesk = near(game, him, 'boss_desk', 0.9);
   const P = at(you);
-  // At his desk he is in his chair; off it, he walked over to you (the switch's corner): he stands at arm's length.
+  // At his desk he is in his chair; off it, he walked over to you: he stands at arm's length.
   const side = P.x + 120 < TAB.x + TAB.w - 40 ? 1 : -1;
   const B = atHisDesk ? { x: DESK.x, y: DESK.y - 22 } : { x: P.x + side * 120, y: P.y + 6 };
 
   office(ctx);
   lamp(ctx, DESK.x, !dark, t);
-  control(ctx, 'switch', 238, 150, 3.2, w.officeLight !== 'off', dark, t);
   const look = game.level.looks.boss;
   const b = boss(t, { angry: true });
   b.dir = Math.atan2((P.y - B.y) / 0.6, P.x - B.x);
@@ -492,6 +503,35 @@ function sceneCaught(ctx, game, t, e) {
   bubble(ctx, ['❗', '😠'], B.x + 30, Math.max(TAB.y + 66, B.y - 86), e, 'alert');
 }
 
+// Caught outside his office: he came out to the lighting panel to see why his lights were off and found you at it, or
+// Kev found you at the fuse box he came to fix. Whoever caught you points at you (in the dark, his phone torch is on
+// you); you sweat, the letter in your hand if you had it. The panel or the fuse box shows as it was.
+function caughtOutside(ctx, game, t, e) {
+  const w = game.world;
+  const you = game.player;
+  const by = game.npcs.find((n) => n.id === game.caught?.by) ?? game.npcs.find((n) => n.id === 'boss');
+  const dark = isDark(game, you.x, you.y);
+  office(ctx);
+  if (near(game, you, 'office_switch', 2.5)) control(ctx, 'switch', 470, 150, 3.2, w.officeLight !== 'off', dark, t);
+  else if (you.x < 4 && you.y < 10) control(ctx, 'breaker', 470, 146, 3.2, w.fuse === 'on', dark, t);
+  const P = { x: 470, y: 300 };
+  const B = { x: by && by.x < you.x ? 290 : 650, y: 290 };
+  const b = boss(t, { angry: true });
+  b.dir = Math.atan2((P.y - B.y) / 0.6, P.x - B.x);
+  b.head = b.dir;
+  if (dark) { b.arms = 'carry'; b.item = '#phone'; } else b.arms = 'point';
+  drawPerson(ctx, game.level.looks[by?.id ?? 'boss'], b, B.x, B.y);
+  const p = person(t);
+  Object.assign(p, { sweat: true, scale: 2.4 });
+  p.dir = Math.atan2((B.y - P.y) / 0.6, B.x - P.x);
+  p.head = p.dir + Math.sin(t * 9) * 0.25;
+  inHand(p, game);
+  drawPerson(ctx, game.level.looks.player, p, P.x, P.y);
+  if (w.letter === 'dropped') paintLetter(ctx, P.x + 26, P.y + 14, 2.2, 0.4);
+  if (dark) darkness(ctx, torchOn(b, B.x, B.y, P.x, P.y - 20));
+  bubble(ctx, ['❗', '😠'], B.x + 30, B.y - 86, e, 'alert');
+}
+
 // A win is the scene of its route (outcomeOrder puts the most dramatic first); 'blamed' never happens here (the
 // verdict makes it a win), but scores the same.
 const ROUTE_SCENE = { breaker: 'breaker', blackout: 'blackout' };
@@ -503,7 +543,7 @@ export const END_SCENES = {
     blackout: { win: true, icons: ['@lin', '☕', '⚡', '✉️'], draw: sceneWin('blackout') }, // Lin's coffee machine shorted the power, the letter
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneWin('breaker') }, // the fuse box, Kev fixed it, the letter
     eaten: { win: true, icons: ['✉️', '🤢', '@boss', '❓'], draw: sceneEaten }, // you ate it; he finds his tray empty
-    soggy: { win: false, icons: ['🤢', '✉️', '@boss', '😠'], draw: sceneSoggy }, // it came back up, and back to his tray
+    soggy: { win: false, icons: ['🤢', '@boss', '✉️', '😠'], draw: sceneSoggy }, // it came back up; he came to look and knew his envelope
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
     deskwork: { win: false, icons: ['@kev', '👉', '📄', '✉️'], draw: sceneDeskwork }, // Kev told; buried in work, you never got it back
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he finds you: in the light or in his torch
