@@ -27,7 +27,7 @@ change in order changes the digest. These are the usual ways to break it:
 - **Schedules are sorted by `at`.** The sim takes the latest entry whose time has passed.
 
 ## Conventions
-- Vanilla JS ES modules, no dependencies, no build step. Serve with `python3 -m http.server` from the repo root.
+- Vanilla JS ES modules, no dependencies, no build step. Serve with `node tools/serve.mjs` (port 8642, caching off, so a plain reload runs the files on disk).
   Node 22 runs the headless tests (`node tools/test-*.mjs`).
 - **No DOM access at module import time.** Only `createInput(window)`, `createRenderer(canvas)`, `createAudio()` and
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
