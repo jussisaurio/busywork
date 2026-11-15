@@ -1,4 +1,4 @@
-// Discreet Packaging's words for the AI-agent harness (the level's id is still 'monitor'; src/levels/meeting/
+// Discreet Packaging's words for the AI-agent harness (src/levels/meeting/
 // harness.js documents the fields). Only what a player would see on screen.
 import { cameraFeed } from '../../game/perception.js';
 import { TITLE } from './presentation.js';

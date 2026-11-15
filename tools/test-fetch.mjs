@@ -1,13 +1,13 @@
-// Headless tests for the fetch mechanic (src/sim/mechanics/fetch.js), on Discreet Packaging (src/levels/monitor, the
-// only level with level.fetches): whoever sees the pink parcel loose on the floor walks over, picks it up, reads the
-// label, and the office rules catch you for it (reason 'found').
+// Headless tests for the fetch mechanic (src/sim/mechanics/fetch.js), on Discreet Packaging
+// (src/levels/discreet-packaging, the only level with level.fetches): whoever sees the pink parcel loose on the floor
+// walks over, picks it up, reads the label, and the office rules catch you for it (reason 'found').
 //
 //   node tools/test-fetch.mjs
 import { createHarness } from '../src/agent/harness.js';
 import { levels } from '../src/levels/index.js';
 import { validateLevel } from '../src/levels/validate.js';
 
-const MON = levels.monitor;
+const MON = levels['discreet-packaging'];
 let fails = 0;
 const ok = (c, m) => {
   if (!c) { fails++; console.log('FAIL', m); } else console.log('ok  ', m);
@@ -90,7 +90,7 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
 // 5. The validator rejects a bad fetch.
 {
   const bad = (patch) => {
-    try { validateLevel({ ...MON, fetches: [{ ...MON.fetches[0], ...patch }] }, 'monitor'); return null; } catch (e) { return e.message; }
+    try { validateLevel({ ...MON, fetches: [{ ...MON.fetches[0], ...patch }] }, 'discreet-packaging'); return null; } catch (e) { return e.message; }
   };
   ok(bad({}) === null, 'the level as is validates');
   ok(/fetches\[0\]/.test(bad({ item: 'nope' }) ?? ''), 'an unknown item type is rejected');

@@ -1,4 +1,4 @@
-// How Discreet Packaging looks (the level's id is still 'monitor'): title card, set dressing, people and their
+// How Discreet Packaging looks: title card, set dressing, people and their
 // poses, sounds and voices (level 1's decor.js, looks.js and sounds.js document the fields). Every object on the
 // map is drawn by painters.js; the end scenes are in end-scenes.js.
 import { C } from '../../render/palette.js';

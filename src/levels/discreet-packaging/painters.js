@@ -1,4 +1,4 @@
-// Discreet Packaging's things, drawn (the level's id is still 'monitor'): no emoji stands in for an object. Mum's
+// Discreet Packaging's things, drawn: no emoji stands in for an object. Mum's
 // pink parcel, the pigeonholes it waits in, Bob's monitor and the wall camera that feeds it, the power strip with
 // the monitor's plug, the broom, the label printer and your desk drawer. The furniture painters are presentation.js
 // DECOR.props draw functions ((ctx, info, at, shown, t), map px); the things you can carry (the parcel, the broom,

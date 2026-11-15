@@ -1,4 +1,4 @@
-// Discreet Packaging's route checks for tools/routes.mjs (the level's id is still 'monitor'; format:
+// Discreet Packaging's route checks for tools/routes.mjs (format:
 // src/levels/meeting/route-checks.js).
 const UNPLUG = ['goto socket pretend', 'interact'];
 const POKE = ['goto broom_stand', 'interact', 'goto camera pretend', 'interact'];

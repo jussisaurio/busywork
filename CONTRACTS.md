@@ -108,7 +108,7 @@ Examples used below:
 | `interactions` | yes (`{}` is fine) | `play/interactions.js` | fixture `INTERACTIONS` |
 | `items` | no | interactions, rules, render | fixture `ITEMS` |
 | `roles` | no | rules | fixture `ROLES` |
-| `lures`, `hunts`, `doors`, `inspections`, `fetches` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection, monitor `FETCHES` |
+| `lures`, `hunts`, `doors`, `inspections`, `fetches` | no | `sim/mechanics/*` | fixture `LURES`, meeting `mechanics.js`, fixture-inspection, discreet-packaging `FETCHES` |
 | `noises` | no | `mechanics/attention.js` | (none yet) |
 | `behaviours` | if the cast names a hook | sim | `fixture/cast.js` `BEHAVIOURS` |
 | `failSign` | no | scenario | meeting `index.js` |
@@ -321,7 +321,7 @@ caught?, reason? }`. He goes for it when on the floor with no override but the m
 own eyes or on a screen he watches; he gives up if it is gone before he gets there. On pickup he carries it
 (`world[place]` = his id if the item has a place), then `found`. With `caught`, the rules catch the player
 `caught` s later (reason `reason`, default `'found'`, by him). `npc._fetch = { t }` while he holds it; an owner's
-`reclaim` may set it to start the same clock. Example: monitor `FETCHES` (the pink parcel).
+`reclaim` may set it to start the same clock. Example: discreet-packaging `FETCHES` (the pink parcel).
 
 **Attention** (`attention.js`): a noise turns heads. Two sources: an interaction row's `noise: { radius, at?,
 npcs? }` (at spot `at`, else where the action was aimed), and `level.noises: { [event]: { at, radius, npcs? } }`

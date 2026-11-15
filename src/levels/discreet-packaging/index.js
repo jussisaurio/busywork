@@ -1,4 +1,4 @@
-// Discreet Packaging (the level's id is still 'monitor'). Mum has sent a parcel to your office: a pink box covered in
+// Discreet Packaging. Mum has sent a parcel to your office: a pink box covered in
 // red hearts, your face on the label. It waits in the pigeonholes in the back office. At 3:50 Lin goes to collect
 // the mail, and at 4:00 she hands it out in your office, in front of everyone (Security Bob comes over for it too).
 // Bob sits at the counter with his back to the pigeonholes, facing the lobby. He doesn't need to turn round: the
@@ -281,7 +281,7 @@ function verdict(game, { routes }) {
 }
 
 export default {
-  id: 'monitor',
+  id: 'discreet-packaging',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,

@@ -1,4 +1,4 @@
-// Fetch: whoever sees a certain item lying loose on the floor walks over and picks it up. The Monitor: anyone who
+// Fetch: whoever sees a certain item lying loose on the floor walks over and picks it up. Discreet Packaging: anyone who
 // spots the pink parcel where you dropped it goes and gets it, reads the label, and that's you found out.
 //
 // Level data (level.fetches, a list, checked every step after the other mechanics):

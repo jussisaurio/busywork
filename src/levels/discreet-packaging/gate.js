@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Discreet Packaging (the level's id is still 'monitor'; src/levels/meeting/
+// What the fuzzer and the gate know about Discreet Packaging (src/levels/meeting/
 // gate.js documents the fields).
 export default {
   // The lesson: you can be seen from somewhere else. A win that takes the parcel or relabels it never does so on

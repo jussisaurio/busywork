@@ -1,4 +1,4 @@
-// Discreet Packaging's two people and their hooks (the level's id is still 'monitor'; cast.js and behaviours.js in
+// Discreet Packaging's two people and their hooks (cast.js and behaviours.js in
 // level 1 document the fields).
 import { at, deg } from '../../config.js';
 

@@ -1,4 +1,4 @@
-// Discreet Packaging's cold-read shots (the level's id is still 'monitor'; docs/COLD-READ.md): harness commands from
+// Discreet Packaging's cold-read shots (docs/COLD-READ.md): harness commands from
 // the start of the day, and what each picture must tell a first-time player who has read only the card.
 const UNPLUG = ['goto socket pretend', 'interact'];
 const TAKE = [...UNPLUG, 'goto pigeonholes pretend', 'interact'];

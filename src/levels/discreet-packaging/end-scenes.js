@@ -1,4 +1,4 @@
-// Discreet Packaging's end cards (the level's id is still 'monitor'): a drawn scene per outcome (contract:
+// Discreet Packaging's end cards: a drawn scene per outcome (contract:
 // src/levels/meeting/end-scenes.js). Each shows the day as it ended at the 4:00 mail call: where Lin and Bob are,
 // who has the pink box and whose face is on its label, and what you hold. The icon row retells the picture.
 // Every object is drawn (painters.js: the parcel, the broom, the label, Bob's monitor picture); only bubbles speak.
