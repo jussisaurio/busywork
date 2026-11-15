@@ -115,7 +115,7 @@ const INTERACTIONS = {
   },
   pour_coffee: pourCoffee(),
   drink_coffee: {
-    on: 'self', text: 'drink the coffee', duration: 1.2, sneaky: false,
+    on: 'self', text: 'drink the coffee', duration: 1.2, sneaky: false, hold: true, preview: 'lift', // hold E, as for eating; a tap too (the cup keeps: no drop)
     can: (p) => p.held === 'coffee',
     done(game) {
       game.player.held = null;
