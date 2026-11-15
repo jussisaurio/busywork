@@ -243,7 +243,7 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | Row field | Meaning |
 |---|---|
 | `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
-| `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`). The validator refuses a `'self'` row without one |
+| `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`), drinking lifts it and tips it at the lips (`'sip'`). The validator refuses a `'self'` row without one |
 | `hold` | `'self'` rows: `true` = holding E does it, a tap does the others |
 | `text` | the harness's words for it. A player sees the target light up with the E key cap |
 | `icon` | legacy levels only (`src/levels/legacy.js`): the hint over the target. The validator refuses it elsewhere |

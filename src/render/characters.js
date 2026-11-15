@@ -48,7 +48,7 @@ export function personState() {
 // The arm poses computeHands draws (personState().arms). A level 'self' row's `preview` names one (the validator
 // checks it): the pose the player strikes while that row is what E would do, and while doing it.
 export const ARM_POSES = ['idle', 'walk', 'desk', 'type', 'folder', 'carry', 'reach', 'phone', 'bang', 'shrug', 'puff',
-  'mug', 'box', 'point', 'cheer', 'lift', 'holdout'];
+  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout'];
 
 // What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
 const HELD = { held: true };
@@ -145,6 +145,7 @@ function computeHands(s, g) {
       lx = lsx - rx * 2; ly = lsy - 14 + Math.sin(t * 12) * 2;
       rxh = rsx + rx * 2; ryh = rsy - 14 + Math.sin(t * 12 + 2) * 2;
       break;
+    case 'sip': // a drink: lifted like a bite, then tipped at the lips (drawHeldItem tilts it)
     case 'lift': {
       // what you hold, lifted from the carry hold toward the mouth (s.lift 0..1; 1 = at the mouth: eating). Facing
       // away it goes up beside the head (drawn behind it, half showing), the way an elbow-up bite looks from behind.
@@ -260,7 +261,7 @@ function mugOverTorso(s, g) {
 
 // What you hold lifted to your mouth is drawn over your head (the head would hide it), except facing away: then it
 // is behind the head, the way the mouth is.
-const liftOverHead = (s) => s.arms === 'lift' && s.lift > 0.4 && G.sd >= -0.25;
+const liftOverHead = (s) => (s.arms === 'lift' || s.arms === 'sip') && s.lift > 0.4 && G.sd >= -0.25;
 
 function drawHeldItem(ctx, s, x, y) {
   if (s.crank) {
@@ -279,6 +280,15 @@ function drawHeldItem(ctx, s, x, y) {
     ctx.translate(x + G.fx * 5, y + G.fy * 5);
     if (G.fx < 0) ctx.scale(-1, 1);
     ctx.rotate(a);
+    emoji(ctx, s.item, 0, 0, 12, HELD);
+    ctx.restore();
+    return;
+  }
+  if (s.arms === 'sip' && s.lift > 0.5) {
+    // tipped toward the mouth, more the closer it gets (facing left it tips the other way)
+    ctx.save();
+    ctx.translate(x, y - 2);
+    ctx.rotate((G.fx < 0 ? 1 : -1) * (s.lift - 0.5) * 1.6);
     emoji(ctx, s.item, 0, 0, 12, HELD);
     ctx.restore();
     return;
@@ -956,6 +966,7 @@ function drawPlayer(ctx, game, t) {
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? p.action.pose ?? 'reach' : selfPreview(p, s, t) ?? (p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle');
   if (p.action && s.arms === 'lift') s.lift = 1 - 0.12 * Math.max(0, Math.sin(t * 14)); // eating: bites
+  if (p.action && s.arms === 'sip') s.lift = 1 - 0.05 * Math.max(0, Math.sin(t * 5)); // drinking: long sips
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
