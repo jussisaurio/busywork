@@ -174,6 +174,15 @@ These came from playtests of level 1 (details in its `LEVEL.md`).
   if a real person would believe it might work. Putting on a coworker's shirt does not make you that coworker, and a
   boss fooled by it makes the whole game look like it is cheating. Absurd results are welcome; an absurd method is
   not. Test every route with this question: "would this get past a real, half-awake boss?"
+  The first `sense` sweep failed every level on this rule, and the failures fell into three groups:
+  - **A view cone is not a reason.** Someone at arm's length notices, whatever their cone says. Every "he didn't see
+    it" needs a real distraction that takes him out of earshot or out of the room: a call, an errand, a summons.
+  - **Nobody swallows a big lie.** People notice an hour gone missing, their own face on a board, a clock an hour out
+    from the one they just looked at. A route can rely on someone not checking. It can't rely on someone believing
+    the impossible.
+  - **Reactions fit what was done.** A boss told that someone is editing his layoff list comes back and looks. A
+    coworker doesn't take your own parcel off you. Nobody picks a letter out of vomit. Ask what a real person would
+    do next, and make the level do that.
 - **Show the motive.** An NPC who grabs something from you must have shown first, on screen, why he wants it.
   Otherwise he looks like a thief.
 - **Red herrings are welcome; every failure shows its cause.** A thing that leads nowhere stops the player from
