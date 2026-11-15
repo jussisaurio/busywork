@@ -1,7 +1,7 @@
 // Second Thoughts' three people and their hooks (level 1's cast.js and behaviours.js document the fields).
-// The boss never leaves his desk on his own: only the dark (or the sound of you retching) gets him up. Lin makes her
+// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her
 // afternoon coffee at 3:10: the old machine makes the lights flicker and the fuse holds, unless you poured the water
-// jug down its back onto its socket first, and then it shorts and takes the fuse with it. Kev unplugs it and resets
+// jug into the vent on its back first, and then it shorts and takes the fuse with it. Kev unplugs it and resets
 // fuses: lures in index.js.
 import { at, deg } from '../../config.js';
 import { burst, shake } from '../../core/fx.js';
@@ -54,8 +54,8 @@ export const CAST = [
 
 export const BEHAVIOURS = {
   // Lin switches on the coffee machine (about 3:10). An old machine on an old fuse: the lights flicker, she 😳, Kev
-  // glances down the hall at the fuse box, and the fuse holds; it brews (index.js). If you poured the jug down its
-  // back, the wet socket shorts it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js
+  // glances up from his desk (❓, he doesn't turn: nothing to see), and the fuse holds; it brews (index.js). If you
+  // poured the jug into its back vent, its wet insides short it: sparks and smoke, and the short runs down the wiring to the fuse box (index.js
   // tick). If the power is already out, nothing happens.
   brew: {
     arrive(game, npc, sim) {
@@ -83,10 +83,7 @@ export const BEHAVIOURS = {
       game.events.emit('coffee:flicker', {});
       sim.speak(game, npc, [{ say: ['😳'], after: 0.3, ttl: 1.4 }]);
       const kev = game.npcs.find((n) => n.id === 'kev');
-      if (kev?.active && !kev.override) {
-        sim.lookAt(game, kev, 'fuse_box', 2.0);
-        sim.speak(game, kev, [{ say: ['❓'], kind: 'thought', after: 0.3, ttl: 1.3 }]);
-      }
+      if (kev?.active && !kev.override) sim.speak(game, kev, [{ say: ['❓'], kind: 'thought', after: 0.3, ttl: 1.3 }]);
     },
   },
   // 3:23: if it brewed she pours a cup and carries it off. Shorted, there is nothing to pour.

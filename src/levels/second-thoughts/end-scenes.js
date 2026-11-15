@@ -5,9 +5,8 @@
 //   breaker   lighting panel, his eyes going to it (switch); the coffee machine you soaked, scorched, its empty jug
 //             beside it and a wet streak down the wall behind it (blackout); the fuse box, shut again (breaker).
 //   fail      3:40: he holds your letter up, furious; you stand in front of his desk.
-//   eaten     3:40, the letter still in you: he holds up his empty tray, baffled; you sit green at your desk.
-//   soggy     it came back up and he came to see what the retching was: he stands over the sick on the floor,
-//             pointing at his own envelope in it; you, green, beside it.
+//   eaten     3:40, you chewed it up and spat it out as pulp: he holds up his empty tray, baffled; you sit green at
+//             your desk.
 //   deskwork  as fail, but Kev told on you and you sit at your desk behind a pile of paperwork.
 //   caught    where it happened, as it was: in the light he points at you; in the dark his phone torch is on you (in
 //             his office), or in the hallway at the lighting panel you flipped. Each of you stands where you were; the
@@ -23,7 +22,7 @@ import { drawChair } from '../../render/world.js';
 import { paintSwitch, paintBreaker, paintLamp } from '../../render/darkness.js';
 import { isDark } from '../../game/darkness.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { paintTray, paintLetter, paintPhone, soggyLetter } from './things.js';
+import { paintTray, paintLetter, paintPhone } from './things.js';
 
 const WALL_H = 92;
 const VEIL = 'rgba(14,20,46,0.62)';
@@ -222,7 +221,7 @@ function coffeeMachine(ctx, x, t, w) {
     ctx.fillRect(x + 7, y - 39, 18, 18);
   }
   fillCircle(ctx, x + 16, y - 30, 2.6, brewed ? '#d8ffd0' : shorted ? '#161212' : '#6b2a22');
-  if (w.rigged) { // the water went down its back onto the socket: a wet streak behind its shoulder, the jug empty
+  if (w.rigged) { // the water went into its back vent: it drips out, a wet streak behind its shoulder, the jug empty
     ctx.fillStyle = 'rgba(96,140,184,0.6)';
     rrect(ctx, x + 22, y - 44, 7, 44, 3);
     ctx.fill();
@@ -418,35 +417,6 @@ function sceneDeskwork(ctx, game, t, e) {
   if (e > 0.4) bubble(ctx, ['@player', '😠'], 450, 150, e - 0.4, 'alert');
 }
 
-// It came back up, and he came over to see what the retching was: he stands over the sick on the open floor,
-// pointing down at his own envelope in it, furious and queasy. You stand beside it, still green. Nobody picks a letter
-// out of that, so it lies where it landed.
-function sceneSoggy(ctx, game, t, e) {
-  const w = game.world;
-  office(ctx);
-  glassWall(ctx, 180);
-  puddle(ctx, 470, 300, 1 - 0.7 * (w.wipeProgress || 0));
-  soggyLetter(ctx, 470, 298, 2.4, t, 0.3);
-  const b = boss(t, { arms: 'point', angry: true, sweat: true });
-  b.dir = Math.atan2(60 / 0.6, 470 - 330);
-  b.head = b.dir + Math.sin(t * 6) * 0.06;
-  drawPerson(ctx, game.level.looks.boss, b, 330, 250);
-  const p = person(t);
-  Object.assign(p, { dir: Math.PI - 0.4, head: Math.PI - 0.4 + Math.sin(t * 1.3) * 0.15, sweat: true, scale: 2.4 });
-  drawPerson(ctx, green(game.level.looks.player), p, 620, 286 - Math.abs(Math.sin(t * 1.1)) * 3);
-  if (e > 0.4) bubble(ctx, ['✉️', '😠'], 360, 150, e - 0.4, 'alert');
-}
-
-// The sick on the floor at (x, y), as the world draws it but bigger; k shrinks it as Lin wipes.
-function puddle(ctx, x, y, k) {
-  fillEllipse(ctx, x, y + 4, 70 * k, 20 * k, 'rgba(0,0,0,0.12)');
-  fillEllipse(ctx, x, y, 66 * k, 18 * k, '#9dbb3c');
-  fillEllipse(ctx, x - 30 * k, y + 6 * k, 22 * k, 9 * k, '#9dbb3c');
-  fillEllipse(ctx, x + 34 * k, y - 4 * k, 18 * k, 8 * k, '#9dbb3c');
-  for (const [dx, dy, r] of [[-12, 2, 4], [14, -2, 3.4], [30, 4, 3]]) fillCircle(ctx, x + dx * k, y + dy * k, r * k, '#7d9a28'); // lumps
-  fillEllipse(ctx, x - 18 * k, y - 6 * k, 14 * k, 4 * k, 'rgba(255,255,255,0.35)');
-}
-
 // Where someone stood in his office (tiles), in the picture: its door corner top left, his desk (tiles 3..5 of row
 // 3, the tray on its east end) across the middle.
 const at = (who) => ({
@@ -536,14 +506,13 @@ function caughtOutside(ctx, game, t, e) {
 // verdict makes it a win), but scores the same.
 const ROUTE_SCENE = { breaker: 'breaker', blackout: 'blackout' };
 export const END_SCENES = {
-  kindOf: (o) => (o?.why === 'eaten' || o?.why === 'soggy' || o?.why === 'deskwork' ? o.why
+  kindOf: (o) => (o?.why === 'eaten' || o?.why === 'deskwork' ? o.why
     : o?.result === 'win' || o?.result === 'blamed' ? ROUTE_SCENE[o.routes?.[0]] ?? 'switch' : o?.result ?? 'fail'),
   scenes: {
     switch: { win: true, icons: ['💡', '@boss', '❓', '✉️'], draw: sceneWin('switch') }, // his light, him baffled, the letter yours
     blackout: { win: true, icons: ['@lin', '☕', '⚡', '✉️'], draw: sceneWin('blackout') }, // Lin's coffee machine shorted the power, the letter
     breaker: { win: true, icons: ['⚡', '@kev', '🔧', '✉️'], draw: sceneWin('breaker') }, // the fuse box, Kev fixed it, the letter
     eaten: { win: true, icons: ['✉️', '🤢', '@boss', '❓'], draw: sceneEaten }, // you ate it; he finds his tray empty
-    soggy: { win: false, icons: ['🤢', '@boss', '✉️', '😠'], draw: sceneSoggy }, // it came back up; he came to look and knew his envelope
     fail: { win: false, icons: ['@boss', '✉️', '😠', '📦'], draw: sceneFail }, // he read it; you pack your box
     deskwork: { win: false, icons: ['@kev', '👉', '📄', '✉️'], draw: sceneDeskwork }, // Kev told; buried in work, you never got it back
     caught: { win: false, icons: ['@boss', '👉', '@player'], draw: sceneCaught }, // he finds you: in the light or in his torch

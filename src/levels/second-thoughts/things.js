@@ -28,56 +28,25 @@ export function paintLetter(ctx, x, y, s = 1, rot = 0) {
 
 // The letter as an item's look (items.letter.draw; render/things.js calls it as (ctx, x, y, size, t)): in your hand,
 // in the boss's, on the floor and in the HUD slot. `size` is how big an emoji there would be.
-// Once it has come back up it is soggy: stained sick-green, sagging, dripping.
 export function letter(ctx, x, y, size, t, game) {
   const s = size / 14; // as wide as an emoji of that size
-  if (game?.world?.soggy) return soggyLetter(ctx, x, y, s, t ?? 0);
   paintLetter(ctx, x, y, s);
 }
 
-// The soggy letter: the envelope, a green-brown stain over it, its corner curled, drops falling off its bottom edge.
-export function soggyLetter(ctx, x, y, s = 1, t = 0, rot = 0) {
-  paintLetter(ctx, x, y, s, rot);
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(rot);
-  ctx.scale(s, s);
-  ctx.fillStyle = 'rgba(132,160,52,0.6)';
-  ctx.beginPath();
-  ctx.ellipse(-1, 0.5, 6.5, 4, 0.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(96,120,30,0.55)';
-  ctx.beginPath();
-  ctx.ellipse(3, 2, 3, 2, 0, 0, Math.PI * 2);
-  ctx.fill();
-  for (let i = 0; i < 3; i++) { // drips
-    const k = (t * 1.3 + i / 3) % 1;
-    fillCircle(ctx, -4 + i * 4, 4.5 + k * 6, 1.1 * (1 - k * 0.4), `rgba(150,180,60,${0.9 * (1 - k)})`);
-  }
-  ctx.restore();
-}
-
-// Where you threw up: a cartoon puddle, lumpy, sick-green, a shine on it. It spreads out over half a second.
-export function puddleProp(ctx, info, at, shown) {
+// The letter you spat out: a soggy grey-white wad of chewed paper, a few torn flecks round it, a wet shine. It lands
+// over a quarter of a second.
+export function wadProp(ctx, info, at, shown) {
   if (!shown.at) return;
   const k = Math.min(1, shown.k ?? 1);
-  const x = shown.at.x * T;
-  const y = shown.at.y * T;
   ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(0.4 + 0.6 * k, 0.4 + 0.6 * k);
-  ctx.fillStyle = '#9dbb3c';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 15, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
-  for (const [dx, dy, r] of [[-12, -3, 5], [11, 3, 6], [4, -6, 5], [-5, 6, 4]]) fillCircle(ctx, dx, dy, r, '#9dbb3c');
-  fillCircle(ctx, -3, 1, 2, '#7d9a28'); // lumps
-  fillCircle(ctx, 5, -1, 1.6, '#7d9a28');
-  fillCircle(ctx, 9, 4, 1.3, '#c8a74a');
-  ctx.fillStyle = 'rgba(255,255,255,0.55)'; // shine
-  ctx.beginPath();
-  ctx.ellipse(-6, -3, 4, 1.4, -0.3, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.translate(shown.at.x * T, shown.at.y * T);
+  ctx.scale(0.6 + 0.6 * k, 0.6 + 0.6 * k);
+  fillCircle(ctx, 0, 1.5, 6.5, 'rgba(0,0,0,0.15)');
+  fillCircle(ctx, 0, 0, 6, '#d9d6c8');
+  fillCircle(ctx, -3, -1, 3.5, '#e8e5d8');
+  fillCircle(ctx, 3, 1.5, 3, '#c9c5b4');
+  for (const [dx, dy] of [[-9, 3], [8, -4], [10, 5], [-6, -6]]) fillCircle(ctx, dx, dy, 1.2, '#ecebe2'); // flecks
+  fillCircle(ctx, -2, -2.5, 1.4, 'rgba(255,255,255,0.7)'); // wet shine
   ctx.restore();
 }
 
@@ -265,9 +234,9 @@ export function phoneThing(ctx, x, y, size) {
 // pixels from the machine's tile: render/world.js draws the machine itself (its body x 6..26, y 1..23 of the tile, its
 // pot at x 14.5, a red dot at 23.5, 11) and the pot (the engine's 'carafe').
 
-// The glass water jug on the counter right of the machine, upright. empty: you poured it down the back of the
-// machine, onto its wall socket, and stood it back: nothing at the front gives it away, only a dark wet streak down
-// the wall in the gap behind the machine's right shoulder, a drip still running.
+// The glass water jug on the counter right of the machine, upright. empty: you poured it into the vent on the back
+// of the machine and stood it back: nothing at the front gives it away, only a dark wet streak dripping out of it
+// down the wall in the gap behind the machine's right shoulder, a drip still running.
 const WATER = 'rgba(96,170,232,';
 export function jugProp(ctx, info, at, shown, t) {
   const px = at.x * T;
@@ -307,7 +276,7 @@ export function jugProp(ctx, info, at, shown, t) {
 
 // The machine itself. lamp: 'brewing' (a small green lamp, blinking) | 'brewed' (a big green lamp, steady) | null.
 // steam: a full hot pot. scorch: it shorted: soot up its top and the wall behind it, for the rest of the day.
-// smoke: it shorted and the fuse it blew is still out: smoke off its back, its socket glowing orange, so in the
+// smoke: it shorted and the fuse it blew is still out: smoke off its back, its back glowing orange, so in the
 // torchlight it is plain what took the floor down.
 export function machineProp(ctx, info, at, shown, t) {
   const px = at.x * T;
