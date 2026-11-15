@@ -1,12 +1,12 @@
 // Shared visual-effect state helpers. Gameplay/sim code calls these; the renderer
 // draws game.fx; audio listens to the 'say' event.
 //
-// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [] }
+// game.fx = { bubbles: [], particles: [], shake: { t, amount }, lines: [], ripples: [] }
 
 let bubbleSeq = 0;
 
 export function createFx() {
-  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [] };
+  return { bubbles: [], particles: [], shake: { t: 0, amount: 0 }, lines: [], ripples: [] };
 }
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
@@ -56,6 +56,13 @@ export function sightline(game, from, kind = 'notice', ttl = 0.8) {
   game.fx.lines.push({ from, to: 'player', kind, age: 0, ttl });
 }
 
+// A sound you can see: rings spreading from (x, y) out to `radius` tiles (a noise's earshot), fading out over ttl.
+// opts.color: a CSS colour (default the renderer's).
+export function ripple(game, x, y, radius, opts = {}) {
+  const list = game.fx.ripples ?? (game.fx.ripples = []);
+  list.push({ x, y, radius, color: opts.color ?? null, age: 0, ttl: opts.ttl ?? 1 });
+}
+
 export function shake(game, amount = 0.15, t = 0.3) {
   game.fx.shake.amount = Math.max(game.fx.shake.amount, amount);
   game.fx.shake.t = Math.max(game.fx.shake.t, t);
@@ -75,6 +82,10 @@ export function updateFx(game, dt) {
   fx.particles = fx.particles.filter((p) => p.age < p.ttl);
   for (const l of fx.lines) l.age += dt;
   fx.lines = fx.lines.filter((l) => l.age < l.ttl);
+  if (fx.ripples?.length) {
+    for (const r of fx.ripples) r.age += dt;
+    fx.ripples = fx.ripples.filter((r) => r.age < r.ttl);
+  }
   if (fx.shake.t > 0) fx.shake.t = Math.max(0, fx.shake.t - dt);
   else fx.shake.amount = 0;
 }

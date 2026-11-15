@@ -8,7 +8,7 @@ import { drawStaticLayer, drawWorldDynamic } from './world.js';
 import { drawCharacters } from './characters.js';
 import { drawCones } from './cones.js';
 import {
-  drawBubbles, drawParticles, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
+  drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
@@ -146,6 +146,7 @@ export function createRenderer(canvas, opts = {}) {
     drawCharacters(ctx, game, t, mem);
     if (!title) {
       drawParticles(ctx, game, t);
+      drawRipples(ctx, game); // a noise you can see (core/fx.js ripple)
       drawSightlines(ctx, game, t); // above people, below the bubbles
       drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t);

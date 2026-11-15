@@ -10,6 +10,8 @@ import { angleDiff } from '../src/core/vision.js';
 import { viewerOf, spotPos } from '../src/game/perception.js';
 import { makeNoise, setNoise } from '../src/sim/mechanics/attention.js';
 import { levelProblems } from '../src/levels/validate.js';
+import { updateFx } from '../src/core/fx.js';
+import { drawRipples } from '../src/render/effects.js';
 import { createHarness } from '../src/agent/harness.js';
 import { levels } from '../src/levels/index.js';
 import { levelData } from './fuzz.mjs';
@@ -335,6 +337,35 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
   const rowProbs = levelProblems({ ...BASE, interactions: { ...rows, [verb]: { ...rows[verb], noise: { radius: 3, every: -2 } } } }, 'meeting');
   ok(rowProbs.some((p) => p.includes(`interactions.${verb}.noise.every`)), 'validator: a row noise too');
   ok(levelProblems(BASE, 'meeting').length === 0, 'validator: level 1 is still fine');
+}
+
+// 13. ripple: rings you can see, out to the earshot, each time the noise sounds; render state only.
+{
+  const { game, log } = day(BASE);
+  makeNoise(game, { x: 5, y: 5, radius: 4 });
+  ok(game.fx.ripples.length === 0, 'no ripple unless the noise asks');
+  setNoise(game, { radius: 6, every: 1, ripple: { color: '#f00' } }, 5, 5);
+  const r = game.fx.ripples[0];
+  ok(game.fx.ripples.length === 1 && r.x === 5 && r.y === 5 && r.radius === 6 && r.color === '#f00', 'a ripple at the noise, as wide as its earshot');
+  ok(Object.keys(log.filter((e) => e.name === 'noise').at(-1).payload).join() === 'x,y,radius', 'the noise payload stays {x, y, radius}');
+  step(game, 1.01);
+  ok(game.fx.ripples.length === 2, 'a repeat ripples again');
+  const calls = [];
+  const ctx = new Proxy({}, {
+    get: (o, k) => (k in o ? o[k] : (...a) => calls.push([k, ...a])),
+    set: (o, k, v) => { o[k] = v; return true; },
+  });
+  updateFx(game, 0.3);
+  drawRipples(ctx, game);
+  const arcs = calls.filter((c) => c[0] === 'arc');
+  ok(arcs.length > 0 && arcs.every((c) => c[3] <= 6 * 32 + 1e-6) && ctx.strokeStyle === '#f00', `drawn as rings no wider than the earshot (${arcs.length} arcs)`);
+  updateFx(game, 1);
+  ok(game.fx.ripples.length === 0, 'gone after a second');
+  calls.length = 0;
+  drawRipples(ctx, game);
+  ok(calls.length === 0, 'and nothing is drawn without one');
+  const probs = levelProblems({ ...BASE, noises: { 'test:x': { at: 'player_desk', radius: 3, ripple: 'big' } } }, 'meeting');
+  ok(probs.some((p) => p.includes(`noises['test:x'].ripple`)), 'validator: ripple is true or { color }');
 }
 
 console.log(fails ? `${fails} FAILED` : 'all passed');

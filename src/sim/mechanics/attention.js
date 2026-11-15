@@ -24,6 +24,8 @@
 //   while(w)   (world) -> bool, asked at every sound, the first one too: false drops the noise, now and for good. A
 //              delayed noise with it is cancelled if the world changes meanwhile; without it a repeat goes all day
 //   turn       s heads stay turned (default TURN_TIME)
+// Show (optional): ripple   true or { color }: rings spread from the noise to its earshot each time it sounds
+//                           (core/fx.js ripple; render only, game.fx)
 // A waiting or repeating noise belongs to the loop: a new loop (createNpcs) drops it.
 // Events: 'noise' { x, y, radius }, then 'npc:heard' { id } for each NPC who heard it, in cast order, every time
 // it sounds. Nothing is emitted (and nothing is subscribed) unless a noise happens.
@@ -34,15 +36,17 @@ import { GLANCE_ANGLE, GLANCE_TURN_TIME } from '../../config.js';
 import { angleDiff } from '../../core/vision.js';
 import { spotPos, inZone } from '../../game/perception.js';
 import { holdFor } from '../override.js';
+import { ripple as showRipple } from '../../core/fx.js';
 
 // --- Tunables ------------------------------------------------------------------
 const TURN_TIME = 1.5; // s an NPC faces a noise
 const HEAD_MAX = GLANCE_ANGLE[1]; // a head-only turn goes no further than the widest glance
 const HEAD_SPEED = GLANCE_ANGLE[1] / GLANCE_TURN_TIME; // rad/s: as quick as a glance
 
-// Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME).
-export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME }) {
+// Make a noise now: every NPC in earshot turns toward it, for `turn` s (default TURN_TIME). `ripple`: show it.
+export function makeNoise(game, { x, y, radius, npcs, turn = TURN_TIME, ripple }) {
   game.events.emit('noise', { x, y, radius });
+  if (ripple && game.fx) showRipple(game, x, y, radius, ripple === true ? {} : ripple);
   const auth = game.level.roles?.authority;
   for (const npc of game.npcs) {
     if (npcs && !npcs.includes(npc.id)) continue;
@@ -76,7 +80,7 @@ export function setNoise(game, n, x, y) {
 }
 function sound(game, n, x, y) {
   if (n.while && !n.while(game.world)) return false;
-  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn });
+  makeNoise(game, { x, y, radius: n.radius, npcs: n.npcs, turn: n.turn, ripple: n.ripple });
   return true;
 }
 
