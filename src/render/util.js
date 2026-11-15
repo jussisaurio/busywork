@@ -46,11 +46,19 @@ export function textWidth(ctx, fontStr, text) {
 }
 
 // Emoji drawn centred on (x, y).
+// Every icon is drawn here. An icon '@<castId>' ('@player' for you) is that person's face: characters.js
+// registers the painter, which returns false for an id it cannot draw (then the text shows, so a typo is seen).
+let facePainter = null;
+export function setFacePainter(fn) {
+  facePainter = fn;
+}
+
 export function emoji(ctx, ch, x, y, size) {
   ctx.font = font(size, EMOJI_FAMILY);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#000';
+  if (facePainter && typeof ch === 'string' && ch.charCodeAt(0) === 64 && facePainter(ctx, ch.slice(1), x, y, size)) return;
   ctx.fillText(ch, x, y);
 }
 
