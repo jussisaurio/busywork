@@ -197,8 +197,8 @@ const plainScene = (win, icons, thought) => ({
     bubble(ctx, thought, x + 58, TAB.y + 92, e, 'thought');
   },
 });
-// The day lost with you sent to your desk (outcome.stopped, play/scenario.js): whoever stopped you points at you,
-// and you sit behind the paper stack. Any level's lost card gives way to it unless the level draws its own
+// The day lost with you still at the desk work you were sent to (outcome.stopped.working, play/scenario.js): whoever
+// stopped you points at you, and you sit behind the paper stack. Any level's lost card gives way to it unless the level draws its own
 // (endScenes.scenes.stopped, or a kindOf that answers 'stopped'). The icons: the face that told, 👉, the stack.
 const STOPPED_SCENE = {
   win: false,
@@ -264,7 +264,9 @@ export function drawEnd(ctx, game, t, mem) {
   const ends = game.level.endScenes || DEFAULT_END_SCENES;
   const kind = ends.kindOf(o);
   let scene = ends.scenes[kind] || NO_SCENE;
-  if (o.stopped && !scene.win && kind !== 'stopped') scene = ends.scenes.stopped || STOPPED_SCENE;
+  // Only while you were still at the work you were sent to: then the order is what lost you the day. Sent back
+  // earlier and lost some other way later, the card shows that other way (the step that broke).
+  if (o.stopped?.working && !scene.win && kind !== 'stopped') scene = ends.scenes.stopped || STOPPED_SCENE;
   const newRoutes = Array.isArray(o.newRoutes) ? o.newRoutes : [];
   const stampAt = (j) => 0.7 + j * 0.35;
 
