@@ -14,7 +14,7 @@
 //     the board stands between the copier and both watchers: at the beeping, it's in plain view.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
-import { say, burst } from '../../core/fx.js';
+import { burst } from '../../core/fx.js';
 import { CAST, BEHAVIOURS } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -22,6 +22,8 @@ import gate from './gate.js';
 
 const START = 16 * 60; // 4:00 PM
 const DING_S = 10; // s from starting the microwave to the ding (6 game minutes of noodles)
+const DING_TURN = 6; // s every head in earshot stays turned to the ding
+const WRITE_S = 2.5; // s a write takes: longer than any glance away
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier   R the Saturday roster (a whiteboard on a stand)
@@ -88,7 +90,7 @@ const INTERACTIONS = {
   start_microwave: {
     on: 'microwave', text: 'microwave your noodles', duration: 1.0, sneaky: false,
     can: (p, w) => w.noodles === 'cold',
-    noise: { at: 'microwave', radius: 20, delay: DING_S, turn: 6, ripple: true, sfx: 'elevatorDing' }, // DING
+    noise: { at: 'microwave', radius: 20, delay: DING_S, turn: DING_TURN, ripple: true, sfx: 'elevatorDing' }, // DING
     done(game) {
       const w = game.world;
       w.noodles = 'cooking';
@@ -103,7 +105,6 @@ const INTERACTIONS = {
       game.world.copier = 'jammed';
       game.world.jamAt = game.clock.minute; // its beacon flashes in time with the beeps (presentation.js)
       burst(game, 'puff', a.x, a.y, 6, { speed: 0.4, lift: 0.6, ttl: 1.0 });
-      say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.2 }); // whistling, innocent
       game.events.emit('copier:jammed', {});
     },
   },
@@ -117,26 +118,29 @@ const INTERACTIONS = {
   },
   // The board's Saturday slot: the boss's face, then (write again) Kev's, then the boss's again...
   write_boss: {
-    on: 'roster', text: "write the boss's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
+    on: 'roster', text: "write the boss's name in Saturday's slot on the roster", duration: WRITE_S, sneaky: true,
     saw: '🗓️', // the roster (its week strip, Saturday ringed); longer than any glance away
     can: (p, w) => w.roster !== 'boss' && !w.rosterLocked,
     done: (game) => write(game, 'boss'),
   },
   write_kev: {
-    on: 'roster', text: "write Kev's name in Saturday's slot on the roster", duration: 2.5, sneaky: true,
+    on: 'roster', text: "write Kev's name in Saturday's slot on the roster", duration: WRITE_S, sneaky: true,
     saw: '🗓️',
     can: (p, w) => w.roster === 'boss' && !w.rosterLocked,
     done: (game) => write(game, 'kev'),
   },
 };
 
-// A new face in Saturday's slot, and what kept the watchers off you: the boss's phone, or (any other way) a noise.
+// A new face in Saturday's slot, and what kept the watchers off you: the boss's phone, the ding (written while every
+// head was still turned to it), or neither (null: no route; the copier's beeping is no cover, it turns heads across
+// the board).
 function write(game, who) {
   const w = game.world;
+  const m = game.clock.minute;
+  const dinged = w.dingAt !== null && m >= w.dingAt && m <= w.dingAt + (DING_TURN + WRITE_S) * GAME_MIN_PER_SEC;
   w.roster = who;
-  w.wrote = w.phone === 'ringing' || w.phone === 'talking' ? 'phone' : 'ding';
-  w.wroteAt = game.clock.minute; // the ink glints a while (presentation.js)
-  say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.5 }); // whistling, innocent
+  w.wrote = w.phone === 'ringing' || w.phone === 'talking' ? 'phone' : dinged ? 'ding' : null;
+  w.wroteAt = m; // the face settles into the slot (presentation.js)
   game.events.emit('roster:changed', { to: who });
 }
 
@@ -225,18 +229,23 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  // verdict: the engine's rule stands; it records whose face the board showed (the end scenes draw them). Blamed:
-  // whoever isn't here gets Saturday. Every head turns to your empty place (outlined on the floor: presentation.js),
-  // wonders where you are, and points it out.
+  // verdict: the board decides: someone else's face there is a win if you're in your place (blamed if you aren't),
+  // however you got it there (a write with no route still counts; the engine's rule would call it a fail). It records
+  // whose face the board showed (the end scenes draw them). Blamed: whoever isn't here gets Saturday. Every head
+  // turns to your empty place (outlined on the floor: presentation.js), wonders where you are, and points it out.
   meeting: {
     override: 'meeting',
     room: 'roster_area',
     chair: 'meeting_player',
     presenter: 'meeting_presenter',
-    verdict: (game, { result }) => ({
-      why: game.world.roster,
-      ...(result === 'blamed' ? { stare: { think: ['@player', '❓'], say: ['👉', '@player'] } } : {}),
-    }),
+    verdict: (game, { present }) => {
+      const result = game.world.roster === 'player' ? 'fail' : present ? 'win' : 'blamed';
+      return {
+        result,
+        why: game.world.roster,
+        ...(result === 'blamed' ? { stare: { think: ['@player', '❓'], say: ['👉', '@player'] } } : {}),
+      };
+    },
   },
   // How you got a name onto the board unseen (the end card shows whose: world.roster).
   routes: [
@@ -246,7 +255,7 @@ export default {
   outcomeOrder: ['ding', 'phone'],
   initialWorld: () => ({
     roster: 'player', // whose face is in Saturday's slot: 'player' | 'boss' | 'kev'
-    wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' (see write())
+    wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' | null (see write())
     wroteAt: null, // game minute of the last write
     rosterLocked: false, // the boss is at the board (from about 4:51): no more writing on it
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'

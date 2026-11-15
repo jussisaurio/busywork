@@ -11,7 +11,7 @@ import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone,
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['Friday, 4:00 PM. At 5:00 the boss picks who works Saturday.', "Make sure it isn't you."],
+  mission: ["Friday, 4:00 PM. You're down for Saturday.", 'At 5:00 the boss reads it out.'],
   badge: ['🗓️', '@player'], // the roster's week, and you down for it
 };
 
