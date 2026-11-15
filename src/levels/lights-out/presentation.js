@@ -3,13 +3,14 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
+import { trayProp } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
   mission: ["3:00 PM. Your angry resignation letter is in the boss's tray.", 'He empties it at 3:40. Get it back first.'],
-  badge: ['✉️', '📥'],
+  badge: ['✉️', '@boss'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -46,10 +47,10 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
   ],
   clock: { x: 17, y: 6 },
-  // The in-tray on his desk, your letter on top while it's there. (The switch and the fuse box: darkness.controls.)
+  // The in-tray on his desk, your letter lying in it while it's there (things.js). (The switch and the fuse box:
+  // darkness.controls.)
   props: [
-    { tile: 'Y', draw: 'icon', state: () => ({ icon: '📥', size: 20 }) },
-    { tile: 'Y', draw: 'icon', state: (w) => ({ icon: w.letter === 'tray' ? '✉️' : '', size: 13 }) },
+    { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
     { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) }, // brewed once the power's back
   ],
   desks: {
@@ -58,14 +59,13 @@ export const DECOR = {
   legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
 
-// level.poses (level 1's looks.js documents it): a phone torch held up while the fuse is out, the boss feeling
-// his way along the wall, Kev at the fuse box, Lin with her coffee once it has brewed.
+// level.poses (level 1's looks.js documents it): Kev working at the fuse box, the boss feeling his way along the
+// wall, and a phone held out as a torch while the fuse is out (render/darkness.js draws the phone in that hand).
 export const POSES = {
   arms: [
-    { when: (n) => n.override === 'fixing', arms: 'reach', item: '🔧', crank: true },
+    { when: (n) => n.override === 'fixing', arms: 'reach' },
     { when: (n) => n.override === 'dark' || n.override === 'groping', arms: 'reach' },
-    { when: (n, w) => w.fuse !== 'on', arms: 'reach', item: '📱' },
-    { when: (n, w) => n.id === 'lin' && n.pose !== 'sit' && w.coffee === 'tripped', arms: 'mug', item: '☕' },
+    { when: (n, w) => w.fuse !== 'on', arms: 'reach' },
   ],
   marks: [
     { when: (n) => n.override === 'groping', angry: true },

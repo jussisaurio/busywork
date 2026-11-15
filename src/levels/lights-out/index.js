@@ -4,7 +4,7 @@
 //   switch    flip his office light switch (a loud clack). He says ❓ and gropes along the wall to it: be
 //             anywhere but in his way, because whoever he bumps into in the dark flipped it.
 //   blackout  3:10: Lin switches on the coffee machine, it sparks, and it trips the fuse for the whole floor.
-//             Everyone gets a phone torch 📱, and he sweeps his across the front of his desk. Kev walks his torch
+//             Everyone holds up a phone as a torch, and he sweeps his across the front of his desk. Kev walks his torch
 //             down the hallway to the fuse box (its door hangs open, its red lamp blinking) and resets it.
 //   breaker   pull the breaker yourself. Kev comes to the fuse box with his torch: don't be there.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
@@ -221,7 +221,12 @@ export default {
       { tile: 'X', kind: 'breaker', on: (w) => w.fuse === 'on' }, // off: its door hangs open, its red lamp blinks
     ],
   },
-  meeting: { override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front' },
+  // 3:40 is no meeting: he empties his tray at his desk. Nobody knows the letter ever existed, so wherever you are
+  // with it, you got away with it (never 'blamed').
+  meeting: {
+    override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
+    verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' } : null),
+  },
   routes: [
     { id: 'switch', icon: '💡', achieved: (w) => gotIt(w) && w.snatched === 'switch' },
     { id: 'blackout', icon: '☕', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },

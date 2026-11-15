@@ -54,6 +54,19 @@ export default [
     },
   },
   {
+    name: 'blackout: take it, then spend 3:40 in the kitchen → still a win (nobody knew the letter was there)',
+    expect: { result: 'win', routes: ['blackout'] },
+    play({ run, g, log }) {
+      run('pretend until 3:11');
+      run('goto desk_side pretend');
+      run('interact');
+      took(log, 'blackout');
+      run('goto kitchen_table');
+      const k = g.level.zones.kitchen; // off the floor: without the verdict this would be 'blamed'
+      if (!(g.player.x >= k.x0 && g.player.x < k.x1 && g.player.y >= k.y0 && g.player.y < k.y1)) throw new Error('not in the kitchen');
+    },
+  },
+  {
     name: 'blackout: take it from in front of his desk → frozen in his phone torch → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, g }) {

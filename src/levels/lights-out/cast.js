@@ -10,7 +10,7 @@ const s = (time, entry) => ({ at: at(time, START), ...entry });
 export const CAST = [
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss',
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'boss_desk',
@@ -23,7 +23,7 @@ export const CAST = [
   },
   {
     id: 'lin',
-    icon: '☕',
+    icon: '@lin',
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
@@ -38,7 +38,7 @@ export const CAST = [
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '@kev',
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'kev_desk',
