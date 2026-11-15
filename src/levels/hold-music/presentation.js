@@ -1,13 +1,13 @@
-// How Hold Music looks and sounds: title card, set dressing, people, voices, sounds and the end card (level 1's
-// decor.js, looks.js, voices.js, sounds.js and end-scenes.js document the fields).
+// How Hold Music looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
+// looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
 import { C } from '../../render/palette.js';
-import { emoji } from '../../render/util.js';
-import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
+import { PHONE_PROPS } from './painters.js';
+import { PHONE_IDS, PHONES, holdOf } from './phones.js';
 
 export const TITLE = {
   mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'She must miss it.'],
-  badge: ['📞', '❌'],
+  badge: ['@lin', '❌'],
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -15,50 +15,42 @@ const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
 const OLIVE = ['#5f6b3a', '#47512a'];
 
-// A phone's icon: ringing while someone is on his way to it, in use while someone is on hold on it.
-const phone = (p) => (w) => ({ icon: w[`line_${p}`] ? '📞' : w[`call_${p}`] ? '🔔' : '☎️', size: 15 });
-// Lin's own phone: unplugged, or ringing for her interview from 3:30.
-const linPhone = (w, game) => {
-  if (w.cord === 'out') return { icon: '🔌', size: 15 };
-  const interview = w.interview === 'due' && game.clock && game.clock.minute >= game.level.day.gatherAt;
-  return { icon: w.line_lin ? '📞' : w.call_lin || interview ? '🔔' : '☎️', size: 15 };
-};
-// The switchboard: one button per phone, with its owner's face.
-const button = (icon) => () => ({ icon, size: 16 });
-
 export const DECOR = {
+  zoneSeeds: [{ x: 3, y: 2, zone: 'office' }, { x: 20, y: 3, zone: 'kitchen' }],
   chairs: [
     { spot: 'boss_desk', face: 'S', color: OXBLOOD },
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     { spot: 'lin_desk', face: 'N', color: TEAL },
     { spot: 'kev_desk', face: 'N', color: OLIVE },
-    { spot: 'boss_hover', face: 'W', color: OXBLOOD }, // the visitor's chair by Lin's desk
-    { x: 19, y: 4, face: 'N', color: MUSTARD }, // kitchen table
-    { x: 20, y: 4, face: 'N', color: MUSTARD },
+    { x: 17, y: 4, face: 'N', color: MUSTARD }, // kitchen table
+    { x: 18, y: 4, face: 'N', color: MUSTARD },
   ],
-  windows: [{ x0: 4, x1: 7, y: 0 }, { x0: 10, x1: 13, y: 0 }, { x0: 17, x1: 19, y: 0 }],
-  paintings: [{ x: 5, y: 12, variant: 1 }, { x: 22, y: 12, variant: 0 }],
-  clock: { x: 20, y: 5 },
-  props: [
-    { tile: 'Y', draw: 'icon', state: phone('boss') },
-    { tile: 'Z', draw: 'icon', state: phone('kitchen') },
-    { tile: 'L', draw: 'icon', state: linPhone },
-    { tile: 'V', draw: 'icon', state: phone('kev') },
-    { tile: '1', draw: 'icon', state: button('👓') },
-    { tile: '2', draw: 'icon', state: button('👔') },
-    { tile: '3', draw: 'icon', state: button('🔧') },
-    { tile: '4', draw: 'icon', state: button('☕') },
-  ],
+  windows: [{ x0: 2, x1: 5, y: 0 }, { x0: 24, x1: 27, y: 0 }],
+  paintings: [{ x: 18, y: 5, variant: 1 }, { x: 23, y: 5, variant: 0 }],
+  clock: { x: 7, y: 5 },
+  props: PHONE_PROPS,
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
     lin: { screen: '#cfe2ee', screenArt: 'blankSlide', mug: C.teal, prop: 'plant' },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
+    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
   },
-  legendAt: { x: 22, y: 14.5 },
+  legendAt: { x: 15, y: 14.8 },
 };
 
 export const LOOKS = MEETING_LOOKS;
+
+// What the cast are seen doing (level 1's looks.js POSES documents the fields): a receiver to the ear on a line, or
+// while Lin checks hers; a shrug at someone else's interview; Kev crouched at the socket.
+export const POSES = {
+  arms: [
+    { when: (n, w) => n.override === 'on_job' && n.id !== 'lin' && w[`job_${n.id}`] > 0.55, arms: 'shrug' },
+    { when: (n) => n.override === 'on_job' || (!!holdOf(n) && n.override.startsWith('on_')), arms: 'phone' },
+    { when: (n, w) => n.id === 'lin' && !!w.linCheck, arms: 'phone' },
+    { when: (n, w, game) => n.id === 'kev' && game.clock && game.clock.minute < w.kevReach, arms: 'reach' },
+  ],
+  marks: [],
+};
 
 // Level 1's voices (src/levels/meeting/voices.js), copied: the same three people.
 export const VOICES = {
@@ -81,9 +73,8 @@ export const VOICES = {
   },
 };
 
-// Ringing phones beep until someone picks up; a phone on hold plays a little tune.
-const ringing = (p, spot) => ({ while: (w) => !!w[`call_${p}`] && !w[`line_${p}`], every: [0.45, 0.6], sfx: 'machineBeep', spot });
-const holdTune = (p, spot) => ({ while: (w) => !!w[`line_${p}`], every: [1.6, 2.4], sfx: 'jingle', spot, opts: { gain: 0.35 } });
+// The bell is the rings' noise (phones.js NOISES, sfx 'phoneRing'); a phone on hold plays a little tune.
+const holdTune = (p) => ({ while: (w) => !!w[`line_${p}`] && !(p === 'lin' && (w.interview === 'lin' || w.interview === 'other')), every: [1.6, 2.4], sfx: 'jingle', spot: PHONES[p].at, opts: { gain: 0.35 } });
 
 export const SOUNDS = {
   actions: {
@@ -93,37 +84,10 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'meeting:gather': { sfx: 'machineBeep', spot: 'lin_side' }, // 3:30: the interviewer calls
     'cord:in': { sfx: 'pickup', spot: 'lin_side' },
     'interview:busy': { sfx: 'machineBeep', spot: 'lin_side', opts: { gain: 0.5 } },
-    'interview:boss': { sfx: 'relief', who: 'boss' },
+    'interview:lin': { sfx: 'pickup', spot: 'lin_side' },
+    'interview:other': { sfx: 'pickup', spot: 'lin_side' },
   },
-  repeats: {
-    ring_lin: ringing('lin', 'lin_side'),
-    ring_boss: ringing('boss', 'boss_phone'),
-    ring_kev: ringing('kev', 'kev_side'),
-    ring_kitchen: ringing('kitchen', 'kitchen_phone'),
-    hold_lin: holdTune('lin', 'lin_side'),
-    hold_boss: holdTune('boss', 'boss_phone'),
-    hold_kev: holdTune('kev', 'kev_side'),
-    hold_kitchen: holdTune('kitchen', 'kitchen_phone'),
-  },
-};
-
-const picture = (icon) => (ctx, game, t) => {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  emoji(ctx, icon, TAB.x + TAB.w / 2, TAB.y + TAB.h / 2 + Math.sin(t * 2) * 3, 72);
-};
-
-export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? o.routes[0] : o?.result ?? 'fail'),
-  scenes: {
-    answered: { win: true, icons: ['📞', '👔', '💪'], draw: picture('👔') }, // "she's very motivated"
-    busy: { win: true, icons: ['📞', '📵', '🎵'], draw: picture('📵') },
-    unplugged: { win: true, icons: ['🔌', '📞', '🦗'], draw: picture('🔌') },
-    ringout: { win: true, icons: ['📞', '🔔', '🤷'], draw: picture('🔔') },
-    fail: { win: false, icons: ['📞', '👓', '😊'], draw: picture('😊') }, // she got the call, and your job
-    caught: { win: false, icons: ['👔', '👉', '😠'], draw: picture('👔') },
-    blamed: { win: false, icons: ['🪑', '👉', '📞'], draw: picture('🪑') }, // nowhere to be seen during the call
-  },
+  repeats: Object.fromEntries(PHONE_IDS.map((p) => [`hold_${p}`, holdTune(p)])),
 };
