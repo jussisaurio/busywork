@@ -2,7 +2,7 @@
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
 import {
-  T, clamp, fin, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+  T, clamp, fin, hash, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
 import { NOTICE } from '../config.js';
@@ -41,7 +41,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    badge: false, crank: false, stain: false,
+    badge: false, crank: false, stain: false, seed: 0,
   };
 }
 
@@ -387,6 +387,7 @@ export function drawPerson(ctx, look, s, x, y) {
   if (!north) drawArms(ctx, look, s, G, bodyDark);
 
   drawHead(ctx, look, s, h, 0, headY, hr);
+  if (s.arms === 'type' && !s.typing) drawKeys(ctx, s, G);
 
   if (s.arms === 'phone') {
     const ex = HAND.rx;
@@ -433,6 +434,38 @@ export function drawPerson(ctx, look, s, x, y) {
       ctx.rotate(Math.sin(s.t * 5 + i) * 0.6);
       drawPaper(ctx, 6, 8, 2);
       ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+// Typing without the paper flurry (a coworker at work: drawNpc atWork; a level's 'type' pose): keystrokes tick over
+// his hands, left and right in turn, so a back turned to you still reads as busy. s.seed staggers one typist from
+// the next.
+function drawKeys(ctx, s, g) {
+  const north = g.sd < -0.25;
+  const beat = s.t * 1.6 + fin(s.seed);
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (const side of [-1, 1]) {
+    const ph = (beat + (side > 0 ? 0.5 : 0)) % 1; // each hand taps in turn
+    if (ph > 0.4) continue;
+    const a = 0.45 + 0.55 * (1 - ph / 0.4); // a tap: bright, then fading, never quite gone before the next
+    const hx = side < 0 ? HAND.lx : HAND.rx;
+    const hy = side < 0 ? HAND.ly : HAND.ry;
+    const x = north ? hx * 1.6 : hx;
+    const y = north ? g.headY - g.hr - 2 : hy - 4;
+    const up = 2.5 + 2.5 * a;
+    for (const [w, c, k] of [[3, 'rgba(30,20,14,0.5)', 1], [1.4, C.cream, 1]]) {
+      ctx.globalAlpha = a * k;
+      ctx.strokeStyle = c;
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(x - 1.6, y);
+      ctx.lineTo(x - 2.4, y - up);
+      ctx.moveTo(x + 1.6, y);
+      ctx.lineTo(x + 2.4, y - up);
+      ctx.stroke();
     }
   }
   ctx.restore();
@@ -826,7 +859,7 @@ const NO_POSES = {};
 export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.badge = false; s.crank = false; s.stain = false;
+  s.badge = false; s.crank = false; s.stain = false; s.seed = 0;
 }
 
 // The emoji for a held item type: its level.items[type].icon (the validator requires one), '❔' for something
@@ -885,8 +918,9 @@ function drawNpc(ctx, game, n, t) {
   s.pose = n.pose === 'sit' ? 'sit' : n.pose === 'walk' || n.moving ? 'walk' : 'stand';
   s.moving = !!n.moving;
   s.phase = t * 10 + (n.id ? n.id.length * 1.3 : 0);
+  s.seed = n.id ? hash(n.id.length, n.id.charCodeAt(0), n.id.charCodeAt(n.id.length - 1)) : 0;
   // The level's poses (level.poses, e.g. src/levels/meeting/looks.js): the first arms rule that holds, else
-  // sitting at a desk or walking; then every marks rule that holds.
+  // sitting at a desk (typing, atWork) or walking; then every marks rule that holds.
   const poses = game.level.poses || NO_POSES;
   let rule = null;
   for (const r of poses.arms || NONE) if (r.when(n, world, game)) { rule = r; break; }
@@ -896,7 +930,7 @@ function drawNpc(ctx, game, n, t) {
     if (rule.angry) s.angry = true;
     if (rule.crank) s.crank = true;
   } else if (s.pose === 'sit') {
-    s.arms = 'desk';
+    s.arms = atWork(n, s) ? 'type' : 'desk';
   } else if (s.pose === 'walk') {
     s.arms = 'walk';
   }
@@ -931,6 +965,15 @@ function drawNpc(ctx, game, n, t) {
   if (mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
   drawPerson(ctx, look, s, px, py);
   if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
+}
+
+// Sat at his desk in his own routine, he types: no scripted moment (override), no look of the schedule's own
+// (anim), nothing holding his eyes (npc.heeding: a noise, a stare) and his head straight. A glance or a turn to a
+// noise rests his hands, so it reads as a break from typing. Silent, and without the paper flurry over you when
+// you type (drawPerson s.typing): your typing stays your own.
+const GLANCE_REST = 0.3; // rad of head turn that stops his hands
+function atWork(n, s) {
+  return !n.override && !n.anim && !n.heeding && s.glance < GLANCE_REST;
 }
 
 // Telling on you, or catching you (a 'tattle' or 'caught' sightline from him, core/fx.js): he turns to you, or to
