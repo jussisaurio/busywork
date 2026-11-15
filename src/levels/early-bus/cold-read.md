@@ -1,43 +1,118 @@
 # Cold reads: early-bus
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"1b1af7dadf1d7f2479b4c2fc30df009595e31b29bfabc861245d1af26f0d9e1d","parts":{"card":"0ab9d0b732ee148cbaa21f81104048483e6907745bdb00ea4c5c7b97b219769b","ways":"794fee5f12646e07b99b9b28dccf3a95b446c35294d28c34d8895e607f27f1cb","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":5,"stretch":2,"nonsense":1},"problems":{"blocker":2,"should":2,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 1b1af7dadf1d: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 5 sensible, 2 stretch, 1 nonsense.
-Problems: 2 blocker, 2 should, 1 nit.
+<!-- cold-read:title {"verdict":"fixable","date":"2026-11-15","commit":"b4ba5f0+dirty","hash":"e77f961215419e2bbd14b5565e6a14e6593dd1b465ed1cf105609617382cdbed","parts":{"card":"7852be85ef603b795e9fe8026fbbe91ea850f4aa50b8a7155dc54682ba19da73","ways":"d141e6bb21d617e98cc28cc7b0446bc74b6adcd4183eaecc9e9409d966f90b6e","prompts":"71812b7000506aab5e901a48dd63d8aa5d43c7546f39641d13d12179213bd417"},"model":"default","tally":{"miss":3,"near":1,"leak":1},"problems":{"blocker":2,"should":1,"nit":2}} -->
+## title: fixable
+Recorded 2026-11-15 at commit b4ba5f0+dirty, by claude -p (model: default). Inputs e77f96121541: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 3 miss, 1 near, 1 leak.
+Problems: 2 blocker, 1 should, 2 nit.
+Earlier problems: 2 fixed, 1 still there, 0 no longer applies.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 53 s | $0.12 |
-| all | | 53 s (the steps add up to 53 s) | $0.12 |
+| 1-guess | guesses.md | 9 s | $0.02 |
+| 2-judge | report.md | 35 s | $0.10 |
+| all | | 44 s (the steps add up to 44 s) | $0.12 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: The card is three exact clock times in a row (3:00 PM, 4:30, 4:50) and nothing else, so it reads like a sum about a clock. The first reader went straight from that to "move the clock". The player still needs the 20-minute gap, but it shouldn't be the only thing on the card. Say the times the way people do and put the weight on the boss, not on the clock. Change "The boss leaves at 4:50. Nobody leaves before him." to "The boss is never out the door before ten to five, and nobody goes home before the boss." (recurring: premise-level?) ("Ten to five" is now in words and the weight is on the boss. "3:00 PM" is still a clock stamp, and that's covered under E3.)
+- E2 fixed: Cutting "4:50" took out the trouble and the sum. ways.md says "the card gives the sums: he leaves at 4:50", but the card no longer does. The player isn't told the boss stays past their bus, and can't work out why +30 is enough and +20 isn't. Fix: add "The boss is never out the door before ten to five." Written in words, the time names the trouble without reading like a clock to fiddle with. ("The boss never leaves before ten to five" puts the trouble and the sum back on the card.)
+- E3 still there: Change the clock so the boss thinks it's later: leak — This is the key step of both routes (push the clocks). Led by "3:00 PM" and "4:30". (The guess still goes straight to "change the clocks", quoting the three times. The card needs 4:30 and ten to five to set the stakes. "3:00 PM" adds nothing, because the HUD already shows the time, and it's what makes the card read like a timetable to fiddle with. Fix: change "3:00 PM. Your last bus home is at 4:30." to "It's three o'clock and your last bus home is at half four.")
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In route 2 the boss "goes by his wall clock" (route 1), and he sat facing that clock until about 3:43, when it read 3:43. Then he walks under a hallway clock showing 4:43, and at 3:58 one showing 4:58, and believes it. A real boss says "that clock's an hour fast." Today the caretaker was seen fixing clocks, so it's even easier to blame. Only a puzzle piece leaves on that. — Fix: keep the boss out of his office from before 3:00, for example in a meeting room, so he walks straight to the kitchen and never sees his own clock. Or make the route need both clocks pushed so they agree.
-- E2 [blocker] Kev reads 3:01, gets a coffee, comes back at 3:10 and believes it is 4:10. Nobody believes a coffee break took an hour. Lin skipping the restroom only works if Kev's belief is believable. — Fix: do the push while Kev is away much longer, such as a 40-minute meeting or errand. Or have Kev frown and shrug it off, since the route doesn't need him to believe it.
-- E3 [should] Route 1's 3:22 → 4:05 jump within 13 minutes. A half-awake boss can just about take it, but it's thin. — Fix: make his last look at the clock earlier, around 3:05, before the long post-lunch email slog, so the gap feels like the time it claims.
-- E4 [should] The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier.
+- E1 [blocker] Change the clock so the boss thinks it's later: leak — This is the key step of both routes (push the clocks). Led by "3:00 PM" and "4:30". (recurring: premise-level?)
+- E2 [should] The second guess is near. "Never leaves before ten to five" points at making the boss leave early. That really is the goal, and the card has to say so, so this hurts very little. Fix: keep the line as it is, but put the weight on him being there rather than on his leaving: "The boss is never out the door before ten to five."
+- E3 [blocker] Change the clocks: leak — This is the key step of both routes (push the clocks). It came from "3:00 PM", "4:30" and "ten to five".
+
+### 1-guess: guesses.md
+
+1. **Make it look like the boss has already left** (his coat and bag gone, his light off, a "he just left" rumour), so everyone, you included, feels free to go. Suggested by: "Nobody goes home before him."
+2. **Get the boss to leave early.** Invent a meeting, a phone call or a family emergency that pulls him out before 4:30. Suggested by: "never leaves before ten to five."
+3. **Change the clocks.** Move the office clock forward so his routine thinks it's ten to five. Suggested by: "3:00 PM," "4:30," "ten to five."
+4. **Leave without being seen.** Leave a decoy behind (jacket on your chair, monitor on), then slip out. Suggested by: "Nobody goes home before him," which reads as a social rule, not a locked door.
+5. **Get sent out on an errand.** Arrange for the boss to send you out on a task that happens to take you past the bus stop. Suggested by: "Catch the bus."
+
+Stake: You miss the last bus home and get stuck with no way home tonight. "Last bus home" implies this, but the card doesn't say what happens after that.
+
+### 2-judge: report.md
+
+Verdict: fixable
+- Stake: clear. If they miss the last bus home they're stranded, and the boss stays twenty minutes past it. The card doesn't say what "stuck" means, but "last bus home" covers that.
+- Make it look like the boss has already left: miss. The coat matters in both routes, but no route fakes his leaving. It came from "Nobody goes home before him."
+- Get the boss to leave early: near. This is the right area, since both routes get him out before 4:30, but it doesn't find the key step (the clocks). It came from "never leaves before ten to five."
+- Change the clocks: leak. This is the key step of both routes (push the clocks). It came from "3:00 PM", "4:30" and "ten to five".
+- Leave without being seen: miss. Leaving before the boss is a way to lose. It came from "Nobody goes home before him."
+- Get sent out on an errand: miss. No route does this. It came from "Catch the bus."
+
+## Earlier problems
+- E1: fixed. "Ten to five" is now in words and the weight is on the boss. "3:00 PM" is still a clock stamp, and that's covered under E3.
+- E2: fixed. "The boss never leaves before ten to five" puts the trouble and the sum back on the card.
+- E3: still there (blocker). The guess still goes straight to "change the clocks", quoting the three times. The card needs 4:30 and ten to five to set the stakes. "3:00 PM" adds nothing, because the HUD already shows the time, and it's what makes the card read like a timetable to fiddle with. Fix: change "3:00 PM. Your last bus home is at 4:30." to "It's three o'clock and your last bus home is at half four."
+
+## Problems
+- should: The second guess is near. "Never leaves before ten to five" points at making the boss leave early. That really is the goal, and the card has to say so, so this hurts very little. Fix: keep the line as it is, but put the weight on him being there rather than on his leaving: "The boss is never out the door before ten to five."
+- nit: The card mixes how it writes times: "4:30" sits next to "ten to five". People in an office say "half four" in the same breath as "ten to five". Fix: change "at 4:30" to "at half four".
+- nit: "Catch the bus." is flat as a goal. Saying what happens if they don't would give it more pull. Fix: change "Catch the bus." to "Miss it and it's a long walk home."
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"b4ba5f0","hash":"22c9f0dbceb5b5827649a5cc0ccacab8d1eea5db9842e0b5a0584487096f82b2","parts":{"card":"eb082736df63f34512eb5ac8642161c3ca1fb76aa40063d06cee668ea310f809","ways":"d141e6bb21d617e98cc28cc7b0446bc74b6adcd4183eaecc9e9409d966f90b6e","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":6,"stretch":2,"nonsense":0},"problems":{"blocker":0,"should":5,"nit":1}} -->
+## sense: works
+Recorded 2026-11-15 at commit b4ba5f0, by claude -p (model: default). Inputs 22c9f0dbceb5: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 6 sensible, 2 stretch, 0 nonsense.
+Problems: 0 blocker, 5 should, 1 nit.
+Earlier problems: 2 fixed, 1 still there, 1 no longer applies.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 51 s | $0.13 |
+| all | | 51 s (the steps add up to 51 s) | $0.13 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: In route 2 the boss "goes by his wall clock" (route 1), and he sat facing that clock until about 3:43, when it read 3:43. Then he walks under a hallway clock showing 4:43, and at 3:58 one showing 4:58, and believes it. A real boss says "that clock's an hour fast." Today the caretaker was seen fixing clocks, so it's even easier to blame. Only a puzzle piece leaves on that. — Fix: keep the boss out of his office from before 3:00, for example in a meeting room, so he walks straight to the kitchen and never sees his own clock. Or make the route need both clocks pushed so they agree. (the boss is now out at lunch until about 3:54, and in route 2 he never goes into his office, so he never sees a correct clock.)
+- E2 fixed: Kev reads 3:01, gets a coffee, comes back at 3:10 and believes it is 4:10. Nobody believes a coffee break took an hour. Lin skipping the restroom only works if Kev's belief is believable. — Fix: do the push while Kev is away much longer, such as a 40-minute meeting or errand. Or have Kev frown and shrug it off, since the route doesn't need him to believe it. (Kev now frowns at the clock and keeps his own time, and neither route needs him to believe it.)
+- E3 no longer applies: Route 1's 3:22 → 4:05 jump within 13 minutes. A half-awake boss can just about take it, but it's thin. — Fix: make his last look at the clock earlier, around 3:05, before the long post-lunch email slog, so the gap feels like the time it claims. (the boss hasn't seen a clock since before lunch, so a +30 jump just reads as a long lunch.)
+- E4 still there: The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier. (he "rang you and fetches you back," but it doesn't say this happens before the bus pulls in at 4:26. If he only arrives at 4:29 with the bus waiting, a real worker gets on. It also overlaps with "caught in the street." Fix: make the call and the fetch-back come before 4:26, and merge it with "caught in the street.")
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [should] The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier. (recurring: premise-level?)
+- E2 [should] In route 2 the boss takes his coat and leaves without going into his office. Real bosses grab their laptop, bag or keys. Fix: show his keys and wallet in his coat pocket (he took them to lunch), so there is nothing in the office he needs.
+- E3 [should] In route 2 he believes it's 4:54 when he really left lunch about 3:45. A real person remembers roughly when they paid the bill. Fix: have the lunch end vaguely, e.g. he comes back from a long boozy client lunch, so a lost hour is believable from him.
+- E4 [should] Kev and Lin know the clock is wrong and watch the boss look surprised at it, yet say nothing. That's believable only if they want him gone too. Fix: give them a visible reason to keep quiet, e.g. Kev grins and checks his own bag when the boss takes his coat.
+- E5 [should] The caretaker leaves two stepladders up all afternoon, one standing over Kev's desk. A real caretaker takes them away, or Kev asks for his to be moved. Fix: the caretaker leaves them because he's coming back "after his tea" to do the other clocks, and says so.
 
 ### 1-judge: report.md
 
-Verdict: fixable
-- 1. Push the boss's clock (win): stretch — he read 3:22 at 3:22, then believes 4:05 at 3:35, so 13 minutes would feel like 43. A sleepy boss after lunch might just about swallow that.
-- 2. Push the open-plan clock (win): nonsense — the boss trusts the hallway clock over his own wall clock, which he goes by and saw moments earlier, though the two are an hour apart. Kev believes his 9-minute coffee took an hour.
-- Still in at 4:30, at your desk (lose): sensible — you stay because his coat is on the rack, and the bus leaves.
-- Still in at 4:30, at the stop (lose): stretch — with the bus at the kerb a real worker just gets on. The boss leaving his desk to walk you back from the street is a reach.
-- Caught on the stepladder (lose): sensible — he turns round and finds you up his ladder at his clock.
-- Caught in the street (lose): sensible — he sees you on his way back from lunch, or comes looking when he finds your chair empty.
-- Boss gone, you not at the stop (lose): sensible — you simply missed the bus.
-- Told on (lose): sensible — a coworker telling the boss, extra work and the clock set right is what really happens.
+Verdict: works
+- Push both clocks half an hour (win): sensible — the boss has been out with a flat phone, two clocks agree, and "lunch ran long" is an easy story to believe.
+- Push the open-plan clock an hour (win): stretch — he believes a whole lost hour and goes home without stopping at his office for keys or a bag.
+- Boss still in at 4:30, you at your desk (lose): sensible — you don't leave before the boss.
+- Boss still in at 4:30, you at the stop (lose): stretch — the bus is at the kerb from 4:26, and it's unclear why you don't just get on.
+- Caught on the stepladder (lose): sensible — anyone would know what you were doing.
+- Caught in the street (lose): sensible — he walks past the stop coming back from lunch, or comes looking when he sees your empty chair.
+- Boss went home early, you not at the stop (lose): sensible — you just missed the bus.
+- Told on, or found out (lose): sensible — Lin tells on a coworker she sees up a ladder in the boss's office; the boss puts a clock right when it disagrees.
+
+## Earlier problems
+- E1: fixed — the boss is now out at lunch until about 3:54, and in route 2 he never goes into his office, so he never sees a correct clock.
+- E2: fixed — Kev now frowns at the clock and keeps his own time, and neither route needs him to believe it.
+- E3: no longer applies — the boss hasn't seen a clock since before lunch, so a +30 jump just reads as a long lunch.
+- E4: still there (should) — he "rang you and fetches you back," but it doesn't say this happens before the bus pulls in at 4:26. If he only arrives at 4:29 with the bus waiting, a real worker gets on. It also overlaps with "caught in the street." Fix: make the call and the fetch-back come before 4:26, and merge it with "caught in the street."
 
 ## Problems
-- blocker: In route 2 the boss "goes by his wall clock" (route 1), and he sat facing that clock until about 3:43, when it read 3:43. Then he walks under a hallway clock showing 4:43, and at 3:58 one showing 4:58, and believes it. A real boss says "that clock's an hour fast." Today the caretaker was seen fixing clocks, so it's even easier to blame. Only a puzzle piece leaves on that. — Fix: keep the boss out of his office from before 3:00, for example in a meeting room, so he walks straight to the kitchen and never sees his own clock. Or make the route need both clocks pushed so they agree.
-- blocker: Kev reads 3:01, gets a coffee, comes back at 3:10 and believes it is 4:10. Nobody believes a coffee break took an hour. Lin skipping the restroom only works if Kev's belief is believable. — Fix: do the push while Kev is away much longer, such as a 40-minute meeting or errand. Or have Kev frown and shrug it off, since the route doesn't need him to believe it.
-- should: Route 1's 3:22 → 4:05 jump within 13 minutes. A half-awake boss can just about take it, but it's thin. — Fix: make his last look at the clock earlier, around 3:05, before the long post-lunch email slog, so the gap feels like the time it claims.
-- should: The losing route at the stop. When the bus pulls in at 4:26, nothing physical stops you boarding. In a real office the punishment for leaving before the boss comes the next day, not as a boss chasing you to the kerb. — Fix: have the boss see your empty chair before 4:26, phone you or wave from the lobby door, and you walk back sheepishly before the bus arrives. That's the existing "comes looking" behaviour, moved earlier.
-- nit: Every office worker has a clock on their computer or phone. The design asserts that "nobody checks a wall clock against his phone." That's an acceptable comic premise, but route 1 would be stronger if it showed why. — Fix: show the boss on paper or on the phone, or with a dead monitor, in his post-lunch shots, so a wall clock is his only clock.
+- should: In route 2 the boss takes his coat and leaves without going into his office. Real bosses grab their laptop, bag or keys. Fix: show his keys and wallet in his coat pocket (he took them to lunch), so there is nothing in the office he needs.
+- should: In route 2 he believes it's 4:54 when he really left lunch about 3:45. A real person remembers roughly when they paid the bill. Fix: have the lunch end vaguely, e.g. he comes back from a long boozy client lunch, so a lost hour is believable from him.
+- should: Kev and Lin know the clock is wrong and watch the boss look surprised at it, yet say nothing. That's believable only if they want him gone too. Fix: give them a visible reason to keep quiet, e.g. Kev grins and checks his own bag when the boss takes his coat.
+- should: The caretaker leaves two stepladders up all afternoon, one standing over Kev's desk. A real caretaker takes them away, or Kev asks for his to be moved. Fix: the caretaker leaves them because he's coming back "after his tea" to do the other clocks, and says so.
+- nit: The boss went to lunch without his coat but puts it on to go home. Fix: give him a reason, e.g. lunch was in the building next door, or it has started to rain.
 
 <!-- /cold-read:sense -->
 

@@ -1,52 +1,119 @@
 # Cold reads: second-thoughts
 Written by tools/cold-read.mjs (docs/COLD-READ.md). Each stage's section is replaced when the stage runs again.
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"a9fdf89","hash":"16f474486ca7318be93a503dc19f6b3cab183b2073ee21ef40eba55940e724a4","parts":{"card":"e0419a235f8914bf6c84462211304f84cf0ec3910947787f959fa9d54713a661","ways":"2b8f762fe43a5b0abd2700e9ed817b10c032d1e865da488091fd7946eabeaf53","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":4,"stretch":4,"nonsense":2},"problems":{"blocker":4,"should":3,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit a9fdf89, by claude -p (model: default). Inputs 16f474486ca7: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 4 sensible, 4 stretch, 2 nonsense.
-Problems: 4 blocker, 3 should, 1 nit.
+<!-- cold-read:title {"verdict":"works","date":"2026-11-15","commit":"b4ba5f0","hash":"906a62554fbffd94ccd0ae36ae4b9b320eaab38d4eef6d9751203057c50a71fb","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"b04c521230388f3d50b749b5849c587c4b387bbe69a1faf32cbd640e45f54754","prompts":"71812b7000506aab5e901a48dd63d8aa5d43c7546f39641d13d12179213bd417"},"model":"default","tally":{"miss":4,"near":1,"leak":0},"problems":{"blocker":0,"should":2,"nit":2}} -->
+## title: works
+Recorded 2026-11-15 at commit b4ba5f0, by claude -p (model: default). Inputs 906a62554fbf: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 miss, 1 near, 0 leak.
+Problems: 0 blocker, 2 should, 2 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 50 s | $0.11 |
-| all | | 50 s (the steps add up to 50 s) | $0.11 |
+| 1-guess | guesses.md | 11 s | $0.02 |
+| 2-judge | report.md | 32 s | $0.10 |
+| all | | 43 s (the steps add up to 43 s) | $0.11 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] In the switch route, his glass office goes dark while the floor around it stays lit, so he can only see "to arm's length." A lit floor lights a glass office. He also saw you walk in behind him a moment ago and would just say "Hey, did you just turn my light off?" — Move his office's switch outside the office, for example a lighting panel in the hallway or the meeting room. Then he gets up and goes looking for the cause, which really does leave his desk empty.
-- E2 [blocker] In the switch route, he spends about three minutes reaching a switch a few steps behind him. A real person flips it back in seconds. — Give him a reason to be away longer, such as the outside panel above, or a blind he has to sort out on the way.
-- E3 [blocker] In the vomit route, Lin picks the letter out of the puddle and carries it to the boss's tray, and the boss pockets a soggy letter off the floor. No coworker handles vomit-soaked paper, and the chewed paper wouldn't be readable anyway. — Lin goes for paper towels and a cleaner. The real risk is the boss walking over to see what the retching was about, and recognising his envelope in the mess.
-- E4 [blocker] Lin switches on a coffee machine that is soaked, sitting in a puddle, beside a tipped-over jug. A real person stops or wipes it down first. — Have the water go somewhere she wouldn't see it, like into the reservoir or behind the machine onto the socket, so she sees nothing wrong.
-- E5 [should] In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office.
-- E6 [should] In the blackout route, the dark lasts eight minutes, which is long for a single tripped breaker. — Justify it: Kev won't reset it until someone unplugs the smoking machine, and Lin is scared to touch it.
-- E7 [should] In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it.
+- E1 [should] The 📦 icon is meant as the "clearing out your desk" joke on the loss card, but on the title screen it reads as a real parcel. That gave the first reader two false guesses (4 and 5), so players may waste their first loop looking for a box. **Fix:** drop 📦 from the card icons and put the joke in the text instead: "…at 3:40. Keep your job, or you're packing a box by four."
+- E2 [should] Guess 3 lands near the routes. The "do something to the boss" idea comes partly from the @boss icon, which only repeats the "He" already in the card. **Fix:** drop @boss from the icons and leave ✉️. The text already names him.
+
+### 1-guess: guesses.md
+
+# Guesses
+
+1. **Get the letter back out of the tray before 3:40.** Suggested by "Second Thoughts", "in the boss's tray" and "Keep your job".
+2. **Put something else in the tray in its place**, like a decoy envelope or a nicer letter. Suggested by "✉️" and "tray".
+3. **Keep the boss away from his tray** so 3:40 comes and goes, for example by sending him somewhere or keeping him busy. Suggested by "He goes through his tray at 3:40" and "@boss".
+4. **Bury it or hide it** under other things or inside a box, so he skips it or never gets to it. Suggested by "📦" and "goes through his tray".
+5. **Use the box (a parcel or delivery) to cover or carry the letter out**, or have it delivered to him first so he's distracted. Suggested by "📦". This is a weak guess, because the icon is all there is to go on.
+
+Stake: if the boss reads the letter, I've quit (or I get fired for what it says). Either way I lose my job.
+
+### 2-judge: report.md
+
+Verdict: works
+- Stake: clear. "Keep your job" plus "angry resignation letter" tells the player that if he reads it, they're out. The first reader got this right away ("I lose my job"). The 3:40 deadline and the letter already sitting in his tray give it real tension.
+- Get the letter back out of the tray before 3:40: miss. This is the goal, and every route ends with it. It doesn't name any route's key step (killing his lights or getting him out of his chair). It comes from "in the boss's tray" and "Keep your job", which is exactly what the card should say.
+- Put something else in the tray: miss. No route swaps the letter. It comes from ✉️ and "tray".
+- Keep the boss away from his tray: near. It points at the right person and the right area: the switch route draws him out to the panel, and the blackout and breaker routes blind him. But it doesn't hint at lights or power, which is the actual trick. It comes from "He goes through his tray at 3:40" and @boss.
+- Bury it or hide it: miss. Hiding it in your drawer only happens after you've taken it. It comes from 📦.
+- Use the box: miss. No route uses a parcel. The 📦 icon caused this guess.
+
+## Problems
+- should: The 📦 icon is meant as the "clearing out your desk" joke on the loss card, but on the title screen it reads as a real parcel. That gave the first reader two false guesses (4 and 5), so players may waste their first loop looking for a box. **Fix:** drop 📦 from the card icons and put the joke in the text instead: "…at 3:40. Keep your job, or you're packing a box by four."
+- should: Guess 3 lands near the routes. The "do something to the boss" idea comes partly from the @boss icon, which only repeats the "He" already in the card. **Fix:** drop @boss from the icons and leave ✉️. The text already names him.
+- nit: The card doesn't say he's sitting right there, so a stranger asks "why not just walk over and grab it?" That's the obstacle that makes this a puzzle. **Fix:** "He's at his desk, and he goes through his tray at 3:40."
+- nit: "Your angry resignation letter" sounds a bit stiff read aloud. People in an office would say "the resignation letter you wrote in a temper at lunch" or "your 'I quit' letter". **Fix:** "3:00 PM. The 'I quit' letter you wrote at lunch is in the boss's tray."
+
+The name "Second Thoughts" is good. It sets up regret without hinting at a method.
+
+<!-- /cold-read:title -->
+
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"b4ba5f0","hash":"dab7365c3a524d51dd0eae9e1fd90c1a746ca37c9aab5fa8cb3c76eb3cbb5c66","parts":{"card":"eb57900a4db69b15fb4a603649a85b40f24c5e91f06fd49f05ca071b70db8658","ways":"b04c521230388f3d50b749b5849c587c4b387bbe69a1faf32cbd640e45f54754","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":7,"stretch":3,"nonsense":0},"problems":{"blocker":1,"should":5,"nit":1}} -->
+## sense: fixable
+Recorded 2026-11-15 at commit b4ba5f0, by claude -p (model: default). Inputs dab7365c3a52: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 7 sensible, 3 stretch, 0 nonsense.
+Problems: 1 blocker, 5 should, 1 nit.
+Earlier problems: 5 fixed, 2 still there, 0 no longer applies.
+
+| Step | Reply | Time | Cost |
+|---|---|---|---|
+| 1-judge | report.md | 59 s | $0.15 |
+| all | | 59 s (the steps add up to 59 s) | $0.15 |
+
+### Ledger
+The earlier record's open problems, as this run's reader marked them.
+
+- E1 fixed: In the switch route, his glass office goes dark while the floor around it stays lit, so he can only see "to arm's length." A lit floor lights a glass office. He also saw you walk in behind him a moment ago and would just say "Hey, did you just turn my light off?" — Move his office's switch outside the office, for example a lighting panel in the hallway or the meeting room. Then he gets up and goes looking for the cause, which really does leave his desk empty. (The switch is now on a hallway panel, so he has to leave his office.)
+- E2 fixed: In the switch route, he spends about three minutes reaching a switch a few steps behind him. A real person flips it back in seconds. — Give him a reason to be away longer, such as the outside panel above, or a blind he has to sort out on the way. (The trip to the panel and two minutes of trying switches is a real reason to be away.)
+- E3 fixed: In the vomit route, Lin picks the letter out of the puddle and carries it to the boss's tray, and the boss pockets a soggy letter off the floor. No coworker handles vomit-soaked paper, and the chewed paper wouldn't be readable anyway. — Lin goes for paper towels and a cleaner. The real risk is the boss walking over to see what the retching was about, and recognising his envelope in the mess. (Lin goes for paper towels. The danger is the boss coming to look.)
+- E4 fixed: Lin switches on a coffee machine that is soaked, sitting in a puddle, beside a tipped-over jug. A real person stops or wipes it down first. — Have the water go somewhere she wouldn't see it, like into the reservoir or behind the machine onto the socket, so she sees nothing wrong. (The water goes down the back onto the socket, and nothing shows on the front.)
+- E5 still there: In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office. (The dark now lasts nine minutes, but a pulled main breaker is the one big switch, and its door is hanging open. Kev would find it in seconds. Also, walking one hallway can't take "most of" nine minutes.)
+- E6 fixed: In the blackout route, the dark lasts eight minutes, which is long for a single tripped breaker. — Justify it: Kev won't reset it until someone unplugs the smoking machine, and Lin is scared to touch it. (Kev unplugs the smoking machine before resetting, so thirteen minutes holds up.)
+- E7 still there: In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it. ("Don't let him see you with it" still counts as caught when he sees a plain envelope in your hand. He hasn't checked his tray yet.)
+
+### Open problems
+The blockers and shoulds, carried to the next run's reader as earlier.md.
+
+- E1 [should] In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office. (recurring: premise-level?)
+- E2 [should] In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it. (recurring: premise-level?)
+- E3 [blocker] In both dark routes you walk in by the side door, stand beside his desk and pull a letter out of a tray within arm's reach. Meanwhile he sits there awake with a phone torch. A real person hears the door and the footsteps right next to him and says "Who's that?" A phone beam doesn't make him deaf. Fix: give him a reason to leave. With sparks and smoke in the kitchen, a real boss goes to look at the machine or follows Kev to the fuse box. That empties his desk the same way the switch route does.
+- E4 [should] The switch route says his desk is empty "about ten minutes." Walking to the panel and back plus two minutes at the switches comes to about four or five. Fix: give him a believable extra delay on the way back, like stopping to complain to someone, or say about five minutes.
+- E5 [should] In the late-vomit loss, the cause is given as "finds it empty." An empty tray proves nothing, because he didn't know a letter was there. What actually catches you is him seeing his envelope in the sick. Fix: say he comes over to the retching and sees it. Drop the empty-tray part.
+- E6 [should] "Nobody picks a letter out of that, you included" doesn't hold for you. Someone about to lose their job would grab their own envelope out of their own sick before the boss gets there. Fix: give a reason you can't. For example, Lin is already standing over it with towels, or the boss is already on his way over.
 
 ### 1-judge: report.md
 
 Verdict: fixable
 
-- The switch (win): nonsense — the boss's office is glass and the floor around it stays lit, so it wouldn't go dark. He also just watched you walk in behind him, and he takes three minutes to reach a switch a few steps away.
-- The blackout (win): stretch — the short and the floor going dark hold up, but Lin switches on a machine still dripping and standing in a puddle, next to a tipped-over jug.
-- The breaker (win): stretch — Kev gets there a second after you pull it, finds nothing wrong, and would push it straight back up. Your window would be a few seconds.
-- Eating it (win): stretch — panic-eating the letter is a fair comedy move, but swallowing a whole envelope is pushing it.
-- 3:40, still in tray (lose): sensible — he goes through his tray and finds it.
-- Caught with it (lose): stretch — reaching into his tray is fine. But once the light is back, a white envelope in your hand looks like any other envelope unless he knows his tray is missing one.
-- Found in his dark office (lose): sensible — whoever is standing in his dark office flipped the switch.
-- Found at the fuse box (lose): sensible — Kev finds you at a breaker someone pulled and tells the boss.
-- The letter came back up (lose): nonsense — nobody fishes paper out of vomit and delivers it to the boss.
-- Seen soaking the machine (lose): sensible — Kev sees you pour water on the coffee machine and reports it.
+- Eat it, after about 3:30 (win): sensible. Eating a letter in a panic is a classic gag, and it stays down long enough.
+- The switch (win): sensible. A boss whose lights go out walks to the panel himself and fiddles with unlabelled switches.
+- The blackout (win): stretch. Wet socket, Lin switching on, and Kev unplugging before resetting all hold up. But the boss doesn't notice someone reaching across his own desk beside him.
+- The breaker (win): stretch. Pulling it and Kev going to fix it make sense. The same close-up desk grab, and a main breaker is easy to spot.
+- 3:40, still in tray (lose): sensible. He reads it and you're out.
+- Caught with it (lose): stretch. Before 3:40 he doesn't know a letter is missing, so a white envelope in your hand means nothing to him.
+- Found at the panel (lose): sensible. Whoever is standing at the switch gets the blame.
+- Found at the fuse box (lose): sensible. Same reason.
+- Came back up and he saw it (lose): sensible. He comes over because of the retching and sees his name on the envelope.
+- Seen soaking the machine (lose): sensible. Kev reports it.
+
+## Earlier problems
+- E1: fixed. The switch is now on a hallway panel, so he has to leave his office.
+- E2: fixed. The trip to the panel and two minutes of trying switches is a real reason to be away.
+- E3: fixed. Lin goes for paper towels. The danger is the boss coming to look.
+- E4: fixed. The water goes down the back onto the socket, and nothing shows on the front.
+- E5: still there (should). The dark now lasts nine minutes, but a pulled main breaker is the one big switch, and its door is hanging open. Kev would find it in seconds. Also, walking one hallway can't take "most of" nine minutes.
+- E6: fixed. Kev unplugs the smoking machine before resetting, so thirteen minutes holds up.
+- E7: still there (should). "Don't let him see you with it" still counts as caught when he sees a plain envelope in your hand. He hasn't checked his tray yet.
 
 ## Problems
-- blocker: In the switch route, his glass office goes dark while the floor around it stays lit, so he can only see "to arm's length." A lit floor lights a glass office. He also saw you walk in behind him a moment ago and would just say "Hey, did you just turn my light off?" — Move his office's switch outside the office, for example a lighting panel in the hallway or the meeting room. Then he gets up and goes looking for the cause, which really does leave his desk empty.
-- blocker: In the switch route, he spends about three minutes reaching a switch a few steps behind him. A real person flips it back in seconds. — Give him a reason to be away longer, such as the outside panel above, or a blind he has to sort out on the way.
-- blocker: In the vomit route, Lin picks the letter out of the puddle and carries it to the boss's tray, and the boss pockets a soggy letter off the floor. No coworker handles vomit-soaked paper, and the chewed paper wouldn't be readable anyway. — Lin goes for paper towels and a cleaner. The real risk is the boss walking over to see what the retching was about, and recognising his envelope in the mess.
-- blocker: Lin switches on a coffee machine that is soaked, sitting in a puddle, beside a tipped-over jug. A real person stops or wipes it down first. — Have the water go somewhere she wouldn't see it, like into the reservoir or behind the machine onto the socket, so she sees nothing wrong.
-- should: In the breaker route, Kev reaches a breaker that was pulled, not tripped, and nothing is wrong with it. He would flip it back at once, and the text never says how long the dark lasts. — Have Kev take a while: he fumbles among unlabelled switches, or the reset needs a key from the boss's office.
-- should: In the blackout route, the dark lasts eight minutes, which is long for a single tripped breaker. — Justify it: Kev won't reset it until someone unplugs the smoking machine, and Lin is scared to touch it.
-- should: In "Caught with it," the boss can't recognise his letter in your hand once it's out of his office. — Only count it as caught if he has already noticed his tray is empty, or if you're still inside his office holding it.
-- nit: The letter comes back up whole after being chewed. — Have it come back up as a readable soggy wad, enough for someone to spot the boss's name or yours on it.
+- blocker: In both dark routes you walk in by the side door, stand beside his desk and pull a letter out of a tray within arm's reach. Meanwhile he sits there awake with a phone torch. A real person hears the door and the footsteps right next to him and says "Who's that?" A phone beam doesn't make him deaf. Fix: give him a reason to leave. With sparks and smoke in the kitchen, a real boss goes to look at the machine or follows Kev to the fuse box. That empties his desk the same way the switch route does.
+- should: The switch route says his desk is empty "about ten minutes." Walking to the panel and back plus two minutes at the switches comes to about four or five. Fix: give him a believable extra delay on the way back, like stopping to complain to someone, or say about five minutes.
+- should: In the late-vomit loss, the cause is given as "finds it empty." An empty tray proves nothing, because he didn't know a letter was there. What actually catches you is him seeing his envelope in the sick. Fix: say he comes over to the retching and sees it. Drop the empty-tray part.
+- should: "Nobody picks a letter out of that, you included" doesn't hold for you. Someone about to lose their job would grab their own envelope out of their own sick before the boss gets there. Fix: give a reason you can't. For example, Lin is already standing over it with towels, or the boss is already on his way over.
+- nit: Water on a live socket would short when it's poured, not later when Lin switches the machine on. Fix: say the socket is on the machine's own switched plug strip, or have the water drip down slowly onto it.
 
 <!-- /cold-read:sense -->
 

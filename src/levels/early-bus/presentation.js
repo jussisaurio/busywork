@@ -7,7 +7,7 @@ import { officeTimeClock, officeTimeStreet } from './painters.js';
 import { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:00 PM. The last bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him. Catch the bus.'],
+  mission: ['3:00 PM. Your last bus home is at 4:30. The boss never leaves before ten to five.', 'Nobody goes home before him. Catch the bus.'],
   badge: ['🚌'],
 };
 
