@@ -29,6 +29,7 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
 - **Lin** sits at her desk on the open floor.
   - 3:05: she goes to the kitchen for her afternoon coffee and switches on the old coffee machine at about 3:10. Left alone, the old machine only makes the lights flicker all over the floor: she's startled, Kev looks down the hall at the fuse box, the fuse holds and the lights steady. Three minutes later it has brewed: green lamp, full pot. A full pot pours a cup, for you too; the cup leads nowhere.
   - If someone tipped the water jug over it first, it shorts: sparks and smoke, and a spark runs down the wiring to the fuse box and trips it for the whole floor. A shorted machine brews nothing. If the power is already out, nothing happens and she's puzzled.
+  - If you throw up on the floor and the boss hasn't pocketed the letter, she walks over (🤢), picks the soggy envelope out of the puddle between two fingers, carries it at arm's length to the boss's office and drops it in his tray. It's addressed to him; she's delivering his mail.
   - 3:23: she pours herself a cup if it brewed, and drinks it at the kitchen table. 3:31: back at her desk, her cup beside her.
 - **Kev** sits at the far desk on the open floor. He's the one who resets fuses. From his chair he sees through the kitchen door to the front of the coffee machine.
   - Whenever the power goes out, he holds up his phone and walks down the hallway to the fuse box. He resets it, which takes about three minutes, and the lights come back on. A blackout lasts about eight minutes in all.
@@ -36,7 +37,9 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
 
 ## Ways to win
 
-Every route is the same last step: take the letter from the tray while it's too dark for the boss to see you, then keep it out of his sight once the light is back. Walk well away from his glass office (your own desk is far enough), or eat it.
+Every route is the same last step: take the letter from the tray while it's too dark for the boss to see you, then keep it out of his sight once the light is back. Walk well away from his glass office (your own desk is far enough), slip it into your desk drawer, or eat it.
+
+Eating it is a red herring. Hold E with the letter in hand (a tap drops it): you chew, wince (😖) and bits of paper fly. Ten minutes later it comes back up. Your face goes green (🤢), then you throw up on the floor behind your chair: a green puddle, the letter soggy in it, a retch heard all over the floor, and everyone turns. If the boss sees it lying there, he pockets it. If not, Lin comes over (🤢), picks it out of the puddle between two fingers, carries it at arm's length to the boss's office and drops it in his tray. You can pick it up again before she does, or take it back out of the tray. Eat it after about 3:30 and it is still inside you at 3:40: a win, with its own card.
 
 ### The switch
 
@@ -95,6 +98,7 @@ Facts, and where you see each one:
 - **Caught with it.** You reached for it while he could see you, or he saw it in your hand. The end card: his light on, he points at you from his chair, and you stand where he saw you, reaching for the tray or with the envelope in your hand.
 - **Found in his dark office.** You flipped his light and his torch found you. The end card: his office dark, his phone torch on you where you stood, and your letter still in his tray (or in your hand, if you'd taken it).
 - **Found at the fuse box.** Kev arrives and finds you standing at it, and tells the boss. You lose 20 minutes at your desk doing assigned work. That usually means the 3:40 card above.
+- **The letter came back up and went in his tray.** The end card: he holds the soggy, dripping envelope out at arm's length, furious (✉️🤢😠), and you stand in front of his desk, green.
 - **Seen soaking the coffee machine.** Kev sees you tip the jug from the front of the machine, and points you out to the boss: 20 minutes of assigned work at your desk, and the machine stays dry.
 
 ## The joke
@@ -104,3 +108,33 @@ The blackout win. The room is dark. The boss sits at his desk with his phone tor
 ## End cards
 
 Every card shows the day as it ended (3:40 for the 3:40 cards, the moment you were caught otherwise), drawn from the state: what you hold, where each person is, the lights. A win: the lights on, the boss at his desk holding up his empty tray, baffled (❓), and you at your desk (or wherever you are) with whatever you hold. Behind, the route's aftermath: the coffee machine you soaked, scorched, its jug on its side in a puddle, after the blackout; the fuse box after the breaker.
+
+Other cards: the letter eaten and still inside you at 3:40 (a win: he holds up his empty tray, baffled; you sit at your desk, green, thinking 🤢). Sent to your desk by Kev and still there at 3:40 (the boss at his desk, furious, your letter in his hand; you at your desk behind a pile of assigned paperwork; @kev 👉 📄 ✉️).
+
+## Who does what
+
+**The boss** comes back from lunch at 3:00 to a tray he does not want to open. He is a manager who hates paperwork, so he puts it off: he sits facing the tray, sighs at it, drums his fingers, and checks the brass clock on his desk every few minutes, hoping it is later than it is. He does no other work. At 3:39 the clock rings, he gives up, drags the tray over and at 3:40 goes through it, as every day. When his light goes out, he does what anyone does: holds up his phone and goes to the switch. When the whole floor goes out, he stays at his desk with his phone pointed at his door, because somebody will come and tell him what happened. If someone tells him a colleague was messing with the fuse box or the coffee machine, he gives that person a pile of work to keep them at their desk.
+
+**Lin** works at the desk nearest his office. At 3:05 she wants her afternoon coffee (☕), walks to the kitchen and at about 3:10 switches on the old machine that always makes the lights flicker. She waits for it, pours a cup at 3:23, drinks it at the kitchen table and is back at her desk at 3:31. She is helpful and a bit squeamish: if a colleague throws up and leaves an envelope in it addressed to the boss, she delivers it, holding it as far from her as she can.
+
+**Kev** works at the far desk. He is the floor's unofficial handyman: when the lights flicker he looks at the fuse box, and when the power goes he takes his phone torch to the fuse box and resets it. From his chair he can see through the kitchen door to the front of the coffee machine. He is also the office tattletale: if he finds someone at the fuse box or sees someone pour water on the coffee machine, he points them out to the boss (❗👉).
+
+**You** wrote an angry resignation letter at lunch and put it in his tray. It is 3:00, you have calmed down, and you want it back before he reads it.
+
+## Things in the office
+
+- **His in-tray (wire basket) and your envelope in it.** The goal, in plain view from the first frame.
+- **His desk and his brass desk clock.** Why he sits there all afternoon: he keeps checking the clock and at 3:39 it rings. It tells you the deadline without text.
+- **His glass office walls.** You can see the tray, and him, from the open floor. He can see out, too.
+- **His light switch** (north-west corner, behind his back). The switch route: his office goes dark, and only his.
+- **His hallway door and the side door to the meeting room.** The hallway door is where his torch points in a blackout; the side door, beside the tray, is the dark way in and out.
+- **The fuse box** (west end of the hallway, round the corner from his office). The breaker route, and where Kev goes in every blackout.
+- **The old coffee machine** (kitchen counter). It strains the wiring at 3:10 (the flicker), so a short in it plausibly trips the floor. Brewed, its pot pours a cup that leads nowhere.
+- **The glass water jug beside it.** Tip it over the machine and the 3:10 switch-on shorts it: the blackout route.
+- **The fridge.** Where you stand to tip the jug out of Kev's view.
+- **The kitchen table.** Where Lin drinks her coffee from 3:23 to 3:31, away from her desk.
+- **Your desk, with its drawer.** Where you sit; where Kev's assigned work lands; and a drawer you can hide the letter in, out of the boss's sight.
+- **Lin's and Kev's desks.** Where they sit when nothing is happening; Kev's has the view into the kitchen.
+- **Everyone's phone.** In the dark, each person lights only what their phone torch points at. This is the level's one rule.
+- **The glass lobby, the elevator and the restroom.** The rest of a real office floor. The lobby's daylight keeps one strip of floor lit in a blackout.
+- **The puddle** (only if you eat the letter). Where it came back up; what Lin picks the letter out of.

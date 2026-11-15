@@ -372,7 +372,7 @@ export function machineProp(ctx, info, at, shown, t) {
   if (shown.steam) {
     for (let i = 0; i < 5; i++) { // a tall plume off the hot pot
       const k = (t * 0.5 + i / 5) % 1;
-      fillCircle(ctx, px + 14.5 + Math.sin(t * 1.7 + i * 2.1) * 4 * k, py + 10 - k * 28, 2.5 + k * 6, `rgba(255,255,255,${0.75 * (1 - k)})`);
+      fillCircle(ctx, px + 14.5 + Math.sin(t * 1.7 + i * 2.1) * 4 * k, py + 10 - k * 28, 2.5 + k * 6, `rgba(255,255,255,${(0.75 * (1 - k)).toFixed(3)})`);
     }
   }
   if (!shown.smoke) return;

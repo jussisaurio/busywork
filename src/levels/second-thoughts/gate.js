@@ -1,8 +1,8 @@
 // What the fuzzer and the gate know about Second Thoughts (src/levels/meeting/gate.js documents the fields).
 export default {
   mustUse: [{ id: 'dark', event: 'letter:snatched' }], // the letter only ever leaves the tray in the dark
-  targets: ['tray', 'office_switch', 'fuse_box', 'desk_side', 'boss_desk', 'boss_office_door', 'lin_desk', 'kev_desk', 'coffee_machine', 'kitchen_table'],
-  interactable: ['tray', 'office_switch', 'fuse_box', 'coffee_machine'],
+  targets: ['tray', 'office_switch', 'fuse_box', 'desk_side', 'boss_desk', 'boss_office_door', 'lin_desk', 'kev_desk', 'coffee_machine', '20,2', 'kitchen_table', 'my_seat', 'own_desk'],
+  interactable: ['tray', 'office_switch', 'fuse_box', 'coffee_machine', '20,2', 'own_desk'], // 20,2: beside the machine, by the fridge (out of Kev's view); own_desk: the drawer
   milestones: {
     'switch:off': () => 'switchOff',
     'fuse:pulled': () => 'breaker',
@@ -11,12 +11,14 @@ export default {
     'fuse:fixed': () => 'fixed',
     'letter:taken': (p) => (p?.how === 'light' ? 'takenLit' : 'taken'),
     'letter:eaten': () => 'ate',
+    'letter:stashed': () => 'stashed',
+    'player:sick': () => 'sick',
     'letter:recovered': () => 'recovered',
     'witness:tattle': () => 'tattle',
     'boss:workAssigned': () => 'work',
     caught: () => 'caught',
   },
-  binKeys: ['switchOff', 'rigged', 'breaker', 'taken', 'takenLit', 'ate', 'recovered', 'work', 'caught'],
+  binKeys: ['switchOff', 'rigged', 'breaker', 'taken', 'takenLit', 'ate', 'stashed', 'sick', 'recovered', 'work', 'caught'],
   keyActions: ['switchOff', 'rigged', 'breaker', 'taken'],
   renderEvents: ['switch:off', 'coffee:rigged', 'coffee:shorted', 'fuse:tripped', 'fuse:pulled', 'boss:dark', 'fuse:fixed', 'letter:taken'],
   goldenPlans: [
