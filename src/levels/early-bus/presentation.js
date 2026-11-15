@@ -7,7 +7,7 @@ import { officeTimeClock, officeTimeStreet } from './painters.js';
 import { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:00 PM. Your bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him. Catch the bus.'],
+  mission: ['3:00 PM. The last bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him.'],
   badge: ['🚌'],
 };
 
@@ -64,6 +64,7 @@ export const DECOR = {
     wallClock('boss', 1),
     wallClock('open', -1),
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) }, // refilled all day: it pours (index.js)
+    { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.coat === 'hook', tag: false }) }, // his coat: he is in
     // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
     { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start, rows: game.level.map.rows }) },
   ],
@@ -85,11 +86,17 @@ export const DECOR = {
 export const LOOKS = OFFICE_LOOKS;
 
 export const POSES = {
-  arms: [],
-  marks: [],
+  arms: [
+    { when: (n, w, game) => n._reachUntil > game.loopTime, arms: 'reach' }, // setting a clock right
+    { when: (n, w, game) => n._shrugUntil > game.loopTime, arms: 'shrug' }, // not home time yet
+  ],
+  marks: [
+    { when: (n) => n.override === 'hunting', angry: true },
+    { when: (n, w) => n.id === 'boss' && w.coat === 'hook', jacket: false }, // in shirt sleeves: his coat is on the rack
+  ],
 };
 
-export const CONES = { alert: [] };
+export const CONES = { alert: ['hunting'] };
 
 export { END_SCENES };
 
@@ -108,7 +115,9 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'boss:herd': { sfx: 'shuffle', who: 'boss' },
+    'boss:hunt': { sfx: 'tension', who: 'boss' },
+    'boss:coat': { sfx: 'shuffle', who: 'boss' },
+    'clock:reset': { sfx: 'clockTick', who: 'boss' },
     'boss:left': { sfx: 'door', who: 'boss' },
     'lin:left': { sfx: 'door', who: 'lin' },
     'kev:left': { sfx: 'door', who: 'kev' },
