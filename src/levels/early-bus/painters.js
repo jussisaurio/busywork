@@ -1,4 +1,4 @@
-// Early Bus's own drawings: the big wall clocks with a stepladder under each, the street (pavement, kerb, road,
+// The Last Bus's own drawings: the big wall clocks with a stepladder under each, the street (pavement, kerb, road,
 // bus stop sign) and the 4:30 bus. The two world painters are the level's own prop painters (presentation.js
 // decor.props names them as draw functions); the end scenes (end-scenes.js) reuse the same pieces at a larger scale.
 // All coordinates are logical px.
@@ -17,7 +17,9 @@ const KERB = '#e7e2d6';
 // --- the wall clock -------------------------------------------------------------------------------------------
 // A round wall clock of radius r centred on (cx, cy), reading `minute` (game minutes since `start`), hung `tilt`
 // radians askew. Ticks at every hour, bold at 12/3/6/9; the 12 is a red pip, so a crooked clock reads as crooked.
-export function drawBigClock(ctx, cx, cy, r, minute, start, tilt = 0) {
+// ahead: the minutes it runs fast, shaded as a red wedge behind the minute hand (from where the hand should be to
+// where it is), so a pushed clock reads as pushed even at map scale.
+export function drawBigClock(ctx, cx, cy, r, minute, start, tilt = 0, ahead = 0) {
   fillEllipse(ctx, cx + r * 0.15, cy + r * 0.2, r, r, 'rgba(20,12,8,0.30)'); // its shadow on the wall
   ctx.save();
   ctx.translate(cx, cy);
@@ -28,6 +30,16 @@ export function drawBigClock(ctx, cx, cy, r, minute, start, tilt = 0) {
     const a = (i / 12) * Math.PI * 2;
     const big = i % 3 === 0;
     fillCircle(ctx, Math.cos(a) * r * 0.68, Math.sin(a) * r * 0.68, r * (big ? 0.09 : 0.05), C.ink);
+  }
+  if (ahead > 0) {
+    const a1 = (((start + minute) % 60) / 60) * Math.PI * 2 - Math.PI / 2;
+    const a0 = a1 - (Math.min(ahead, 59) / 60) * Math.PI * 2;
+    ctx.fillStyle = 'rgba(214,64,48,0.55)';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r * 0.8, a0, a1);
+    ctx.closePath();
+    ctx.fill();
   }
   fillCircle(ctx, 0, -r * 0.68, r * 0.11, C.tomato);
   clockHands(ctx, 0, 0, minute, r * 0.38, r * 0.15, r * 0.62, r * 0.09, C.tomatoDark, start);
@@ -244,12 +256,12 @@ export function drawStopSign(ctx, x, by, h) {
 
 // --- the world painters -----------------------------------------------------------------------------------------
 
-// { minute, start, tilt }: the clock on wall tile `at` (radius 10, hung low on the front face) and the stepladder
+// { minute, start, tilt, ahead }: the clock on wall tile `at` (radius 10, hung low on the front face) and the stepladder
 // on the floor tile under it, its top just under the clock.
 export function officeTimeClock(ctx, info, tile, shown) {
   const cx = tile.x * T + T / 2;
   drawStepladder(ctx, cx, (tile.y + 1) * T + T - 3, 25);
-  drawBigClock(ctx, cx, frontY(tile.y) + 5, 10, shown.minute, shown.start, shown.tilt || 0);
+  drawBigClock(ctx, cx, frontY(tile.y) + 5, 10, shown.minute, shown.start, shown.tilt || 0, shown.ahead || 0);
 }
 
 // The bus timetable (minutes of the day): it pulls in from the right edge at 4:26, stops by 4:27:30 and opens its
