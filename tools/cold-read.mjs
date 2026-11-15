@@ -246,10 +246,12 @@ export function claudeRunner({ timeoutMs = 30 * 60 * 1000 } = {}) {
   });
 }
 
+// The commit the inputs come from: HEAD, plus "+dirty" when files other than the cold-read records have changed
+// (a record written by an earlier stage changes nothing a reader sees).
 export function gitCommit() {
   try {
     const head = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
-    const dirty = execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' }).trim();
+    const dirty = execFileSync('git', ['status', '--porcelain', '--', '.', ':(exclude,glob)src/levels/*/cold-read.md'], { cwd: ROOT, encoding: 'utf8' }).trim();
     return dirty ? `${head}+dirty` : head;
   } catch {
     return 'unknown';
