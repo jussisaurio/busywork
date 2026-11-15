@@ -1,11 +1,12 @@
 // game.fx drawing (bubbles, particles, ripples, sightlines) plus small in-world overlays: interaction hint,
-// action progress ring, boss suspicion meter, the "loop N" stamp and the end-beat vignette.
+// legacy focus icon (hold-E progress is drawn by characters.js), boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
   T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, strictGlyphs, glyphScope, rrect, circle, ellipse, fillCircle,
   starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { headY, lookFor, playerHeld } from './characters.js';
+import { drawClock } from './things.js';
 import { findNpc } from '../game/perception.js';
 import { NOTICE, DOUBLE_TAKE } from '../config.js';
 
@@ -85,10 +86,13 @@ function signPlace(game, b, ax, ay, view = FULL_VIEW) {
 
 // How far a bubble's drawing reaches from its centre: { x, top, bot } px (the star's points, the cloud's bumps).
 const EXTENT = { x: 0, top: 0, bot: 0 };
+const REALIZE_RAY = 7; // how far the "oh!" bubble's light rays reach past its rim
 function bubbleExtent(kind, w, h) {
   if (kind === 'alert') {
     const r = Math.max(w, h) * 0.62 + 4;
     EXTENT.x = r; EXTENT.top = r; EXTENT.bot = r;
+  } else if (kind === 'realize') {
+    EXTENT.x = w / 2 + REALIZE_RAY; EXTENT.top = h / 2 + REALIZE_RAY; EXTENT.bot = h / 2 + 8;
   } else if (kind === 'thought') {
     EXTENT.x = w / 2 - 2 + h / 2; EXTENT.top = h / 2 + 6; EXTENT.bot = h / 2 + 5;
   } else {
@@ -109,11 +113,11 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   const alpha = clamp((ttl - age) / 0.3, 0, 1);
   if (alpha <= 0 || pop <= 0.01) return;
   const kind = b.kind || 'speech';
-  const isz = kind === 'alert' ? 24 : 15;
+  const isz = kind === 'alert' ? 24 : kind === 'realize' ? 18 : 15;
   const gap = 3;
   const n = Math.max(1, icons.length);
   const cw = n * isz + (n - 1) * gap;
-  const pad = kind === 'thought' ? 9 : 6;
+  const pad = kind === 'thought' || kind === 'realize' ? 9 : 6;
   const w = cw + pad * 2;
   const h = isz + (kind === 'thought' ? 12 : 10);
   const lift = kind === 'sign' ? 14 : kind === 'thought' ? 12 : 8;
@@ -157,6 +161,33 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
     ctx.strokeStyle = C.ink;
     ctx.lineWidth = 2;
     starPath(ctx, 0, 0, Math.max(w, h) * 0.62 + 4, Math.max(w, h) * 0.42, 10, age * 0.5);
+    ctx.fill();
+    ctx.stroke();
+  } else if (kind === 'realize') {
+    // "Oh!": a round pale-blue bubble with short light rays, no spikes (alarm is the star's alone)
+    const rx = w / 2, ry = h / 2;
+    const flash = 1 + 0.5 * Math.exp(-age * 5);
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 5; k++) { // a fan of rays over the top: the "ding" of a penny dropping
+      const a = Math.PI + (k + 0.5) * (Math.PI / 5);
+      const c = Math.cos(a), s = Math.sin(a);
+      ctx.beginPath();
+      ctx.moveTo(c * (rx + 3), s * (ry + 3));
+      ctx.lineTo(c * (rx + 3 + (REALIZE_RAY - 3) * flash * 0.75), s * (ry + 3 + (REALIZE_RAY - 3) * flash * 0.75));
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#cfe9ff';
+    ctx.beginPath();
+    ctx.moveTo(tailX - 4, ry - 2);
+    ctx.lineTo(tailX, Math.max(ry + 4, Math.min(ry + 8, tailY)));
+    ctx.lineTo(tailX + 4, ry - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
   } else if (kind === 'thought') {
@@ -243,11 +274,25 @@ export function drawBubble(ctx, b, ax, ay, place = null, view = FULL_VIEW) {
   for (let i = 0; i < icons.length; i++) {
     const ic = icons[i] == null ? '' : String(icons[i]);
     const hop = kind === 'speech' && age < 0.6 ? Math.sin(clamp((age - i * 0.06) / 0.25, 0, 1) * Math.PI) * -2 : 0;
-    emoji(ctx, ic, x, 1 + hop, isz);
+    const m = clockMinute(ic);
+    if (m === null) emoji(ctx, ic, x, 1 + hop, isz);
+    else { // a clock emoji is unreadable at bubble size: the wall clock instead, a bit larger
+      ctx.save();
+      drawClock(ctx, x, 1 + hop, isz * 1.25, m);
+      ctx.restore();
+    }
     x += isz + gap;
   }
   glyphScope(was);
   ctx.restore();
+}
+
+// 🕐..🕛 (U+1F550-1F55B) and 🕜..🕧 (the half hours): drawClock's minute (past three o'clock), else null.
+function clockMinute(ic) {
+  if (ic.length !== 2) return null;
+  const k = ic.codePointAt(0) - 0x1f550;
+  if (k < 0 || k > 23) return null;
+  return ((k % 12) + 1 - 3) * 60 + (k >= 12 ? 30 : 0);
 }
 
 function cloudPath(ctx, w, h) {
@@ -678,30 +723,15 @@ function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   else keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20) + bob, clamp(y - 7.5, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
 }
 
+// A hold-E action's progress is drawn on the floor under the player (characters.js drawActionProgress), so it
+// never covers her or what she holds. Here only the legacy focus icon beside her.
 export function drawActionRing(ctx, game, t) {
   const p = game.player;
-  const a = p && p.action;
-  if (!a) return;
-  const k = clamp(fin(a.t) / Math.max(0.001, fin(a.duration, 1)), 0, 1);
-  const x = fin(p.x) * T;
-  const y = fin(p.y) * T - 6;
-  const r = 17;
-  ctx.lineWidth = 4.5;
-  ctx.strokeStyle = 'rgba(24,19,15,0.45)';
-  circle(ctx, x, y, r);
-  ctx.stroke();
-  // Same look for every action: colouring "sneaky" ones would explain a rule (no hand-holding).
-  ctx.strokeStyle = C.ochre;
-  ctx.lineWidth = 3.2;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
-  if (p.focus && p.focus.icon && !strictGlyphs()) { // legacy: drop with the legacy list
-    fillCircle(ctx, x + r * 0.75, y - r * 0.75, 7.5, C.white);
-    emoji(ctx, p.focus.icon, x + r * 0.75, y - r * 0.75 + 0.5, 10);
-  }
+  if (!p || !p.action || !p.focus || !p.focus.icon || strictGlyphs()) return; // legacy: drop with the legacy list
+  const x = fin(p.x) * T + 13;
+  const y = fin(p.y) * T - 19;
+  fillCircle(ctx, x, y, 7.5, C.white);
+  emoji(ctx, p.focus.icon, x, y + 0.5, 10);
 }
 
 // The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id): an outlined gauge that

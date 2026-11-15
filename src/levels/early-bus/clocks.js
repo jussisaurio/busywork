@@ -5,7 +5,7 @@
 // turns to his clock for a second and thinks the time it shows (a clock face). He adopts it, earlier or later, and
 // does whatever his schedule says for that time (skipped bubbles fire at once). Nobody ever acts against a clock he has just read.
 //
-// A clock that has moved since he last read it: the face and 😮, a thought (he believes it, he is not alarmed).
+// A clock that has moved since he last read it: the face and 😮, a realize bubble ("oh!": he believes it, he is not alarmed).
 //
 // The boss reads O whenever he walks under it: on his way to the kitchen (readO) and back (passO). If it shows 4:50
 // or later, he goes home (world.herd); otherwise he shrugs and walks on. His coat hangs on a rack in the hallway, by
@@ -197,7 +197,7 @@ function lookUp(game, npc, sim) {
     const ahead = off > st.off;
     st.off = off;
     st.beat = beatAt(npc, believed(game, npc, st)); // (no second look for the jump itself)
-    clockSay(game, npc, clock, [face, '😮'], 'thought', LOOK_S + 0.3); // later than he thought: he believes it
+    clockSay(game, npc, clock, [face, '😮'], 'realize', LOOK_S + 0.3); // later than he thought: he believes it ("oh!", CONTRACTS "Bubbles")
     game.events.emit('clock:jump', { id: npc.id, clock: c.id, off, ahead });
     // His clock has just jumped and you are in his office: he looks from it to you, and sets it right.
     if (npc.id === 'boss' && clock === 'boss' && inZone(game, 'boss_office', game.player.x, game.player.y)) {
@@ -294,7 +294,7 @@ function readOpen(game, npc, sim) {
     st.beat = beatAt(npc, game.clock.minute + st.off);
     game.world.herd = true;
     game.world.herdShown = time; // the end card's clock
-    clockSay(game, npc, 'open', [face, '😮'], 'thought', LOOK_S + 0.4);
+    clockSay(game, npc, 'open', [face, '😮'], 'realize', LOOK_S + 0.4);
     game.events.emit('boss:herd', { shown: time });
   } else {
     npc._shrugUntil = game.loopTime + LOOK_S + 0.4;

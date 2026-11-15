@@ -60,6 +60,6 @@ export function resetLoop(game) {
   game.outcome = null;
   // rules.js: who saw what, the grudge, the disguise worn (disguise.js); sent: the walk to your desk after an order
   // (player.js steps it; render reads it), workFrom: forced minutes left when you sat down (the desk stack's height).
-  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null, worn: null, sent: null, workFrom: 0 };
+  game.rules = { seen: {}, lastNotice: {}, working: false, sceneTold: false, grudge: null, worn: null, sent: null, workFrom: 0, stackAt: null, stoppedBy: null, stoppedFor: null };
   game.scenario = { beatT: 0, crickets: false, walk: null, arrivedAt: 0, endAt: 0 }; // scenario.js only: the end beat (walk: to the front)
 }

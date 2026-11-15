@@ -5,7 +5,7 @@ import {
   T, clamp, fin, hash, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
-import { NOTICE, MARKS, HOLD_TIME } from '../config.js';
+import { NOTICE, MARKS, HOLD_TIME, WORK_PENALTY_MIN } from '../config.js';
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -48,7 +48,7 @@ export function personState() {
 // The arm poses computeHands draws (personState().arms). A level 'self' row's `preview` names one (the validator
 // checks it): the pose the player strikes while that row is what E would do, and while doing it.
 export const ARM_POSES = ['idle', 'walk', 'desk', 'type', 'folder', 'carry', 'reach', 'phone', 'bang', 'shrug', 'puff',
-  'mug', 'box', 'point', 'cheer', 'lift', 'holdout'];
+  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout', 'facepalm'];
 
 // What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
 const HELD = { held: true };
@@ -145,6 +145,7 @@ function computeHands(s, g) {
       lx = lsx - rx * 2; ly = lsy - 14 + Math.sin(t * 12) * 2;
       rxh = rsx + rx * 2; ryh = rsy - 14 + Math.sin(t * 12 + 2) * 2;
       break;
+    case 'sip': // a drink: lifted like a bite, then tipped at the lips (drawHeldItem tilts it)
     case 'lift': {
       // what you hold, lifted from the carry hold toward the mouth (s.lift 0..1; 1 = at the mouth: eating). Facing
       // away it goes up beside the head (drawn behind it, half showing), the way an elbow-up bite looks from behind.
@@ -170,6 +171,11 @@ function computeHands(s, g) {
       HAND.fx = ox; HAND.fy = 8 + oy;
       break;
     }
+    case 'facepalm':
+      // the free hand hangs; the other is flat over the face, the head bowed into it (a slow small rub)
+      lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
+      rxh = fx * hr * 0.75 + rx * 1.2 + Math.sin(t * 3) * 0.6; ryh = headY + 0.5 + fy * hr * 0.45 + ry * 1.2;
+      break;
     default:
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       rxh = rsx + fx * 1.5; ryh = rsy + 5 + fy * 1.5;
@@ -221,14 +227,15 @@ function drawArms(ctx, look, s, g, sleeve) {
   ctx.beginPath();
   ctx.moveTo(H.lsx, H.lsy);
   ctx.lineTo(H.lx, H.ly);
-  if (s.arms !== 'phone') {
+  const late = s.arms === 'phone' || palmOverFace(s); // that arm is drawn after the head
+  if (!late) {
     ctx.moveTo(H.rsx, H.rsy);
     ctx.lineTo(H.rx, H.ry);
   }
   ctx.stroke();
   ctx.lineCap = 'butt';
   fillCircle(ctx, H.lx, H.ly, 2.3, look.skin);
-  if (s.arms !== 'phone' && !(s.item && liftOverHead(s))) {
+  if (!late && !(s.item && liftOverHead(s))) {
     if (s.item && s.arms !== 'folder' && !mugOverTorso(s, g)) drawHeldItem(ctx, s, H.rx, H.ry);
     else if (!s.item && s.arms === 'point' && strictGlyphs()) drawFinger(ctx, H.rx, H.ry, look.skin);
     fillCircle(ctx, H.rx, H.ry, 2.3, look.skin);
@@ -260,7 +267,9 @@ function mugOverTorso(s, g) {
 
 // What you hold lifted to your mouth is drawn over your head (the head would hide it), except facing away: then it
 // is behind the head, the way the mouth is.
-const liftOverHead = (s) => s.arms === 'lift' && s.lift > 0.4 && G.sd >= -0.25;
+const liftOverHead = (s) => (s.arms === 'lift' || s.arms === 'sip') && s.lift > 0.4 && G.sd >= -0.25;
+// A hand over the face is drawn over the head, except facing away (then the head hides it, as it should).
+const palmOverFace = (s) => s.arms === 'facepalm' && G.sd >= -0.25;
 
 function drawHeldItem(ctx, s, x, y) {
   if (s.crank) {
@@ -279,6 +288,15 @@ function drawHeldItem(ctx, s, x, y) {
     ctx.translate(x + G.fx * 5, y + G.fy * 5);
     if (G.fx < 0) ctx.scale(-1, 1);
     ctx.rotate(a);
+    emoji(ctx, s.item, 0, 0, 12, HELD);
+    ctx.restore();
+    return;
+  }
+  if (s.arms === 'sip' && s.lift > 0.5) {
+    // tipped toward the mouth, more the closer it gets (facing left it tips the other way)
+    ctx.save();
+    ctx.translate(x, y - 2);
+    ctx.rotate((G.fx < 0 ? 1 : -1) * (s.lift - 0.5) * 1.6);
     emoji(ctx, s.item, 0, 0, 12, HELD);
     ctx.restore();
     return;
@@ -438,6 +456,17 @@ export function drawPerson(ctx, look, s, x, y) {
   if (s.item && liftOverHead(s)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
     fillCircle(ctx, HAND.rx, HAND.ry, 2.3, look.skin);
+  }
+  if (palmOverFace(s)) {
+    ctx.strokeStyle = bodyDark;
+    ctx.lineWidth = 3.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(HAND.rsx, HAND.rsy);
+    ctx.lineTo(HAND.rx, HAND.ry + 3);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+    fillEllipse(ctx, HAND.rx, HAND.ry, 3.2, 2.8, look.skin); // the flat palm
   }
 
   if (s.arms === 'phone') {
@@ -876,34 +905,61 @@ export function drawCharacters(ctx, game, t, mem) {
   }
 }
 
-// "You are here": a ring under the player's feet (under every character), and a ping of
-// expanding rings at the start of each loop.
+// "You are here", under every character. You: a steady ring at your feet, never pulsing or spreading (spreading rings are a noise: effects.js ripples).
+// At the loop's start a chevron bobs over your head: no rings at all, so nothing about you reads as a sound.
 function drawPlayerRing(ctx, game, t, mem) {
   const p = game.player;
   if (!p || game.phase !== 'day') return;
   const x = fin(p.x) * T;
   const y = fin(p.y) * T + 7;
   const since = t - fin(mem && mem.dayStart, -10);
-  if (since >= 0 && since < 2.2) {
-    ctx.strokeStyle = C.tomato;
-    for (let i = 0; i < 3; i++) {
-      const q = (since - i * 0.35) / 1.1;
-      if (q <= 0 || q >= 1) continue;
-      ctx.globalAlpha = 0.9 * (1 - q);
-      ctx.lineWidth = 1 + 3 * (1 - q);
-      ellipse(ctx, x, y, 14 + q * 46, 6 + q * 20);
-      ctx.stroke();
-    }
+  if (since >= 0 && since < 2.4) {
+    const a = clamp((2.4 - since) / 0.4, 0, 1);
+    const bob = Math.abs(Math.sin(since * Math.PI * 2.2)) * 5;
+    const cy = fin(p.y) * T - 34 - bob;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = C.tomato;
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - 7, cy - 5);
+    ctx.lineTo(x + 7, cy - 5);
+    ctx.lineTo(x, cy + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   }
-  const pulse = 0.5 + 0.5 * Math.sin(t * 3);
   ctx.globalAlpha = 1;
   fillEllipse(ctx, x, y, 14, 6, 'rgba(255,90,67,0.16)');
-  ctx.globalAlpha = 0.7 + 0.3 * pulse;
+  ctx.globalAlpha = 0.85;
   ctx.strokeStyle = C.tomato;
   ctx.lineWidth = 2;
-  ellipse(ctx, x, y, 14 + pulse, 6 + pulse * 0.4);
+  ellipse(ctx, x, y, 14, 6);
   ctx.stroke();
   ctx.globalAlpha = 1;
+  drawActionProgress(ctx, p, x, y);
+}
+
+// A hold-E action's progress: an ochre arc filling round the floor under her, from the front, clockwise. On the
+// floor, under her, so it never covers her or what she holds. Same look for every action: colouring "sneaky" ones
+// would explain a rule (no hand-holding).
+function drawActionProgress(ctx, p, x, y) {
+  const a = p.action;
+  if (!a) return;
+  const k = clamp(fin(a.t) / Math.max(0.001, fin(a.duration, 1)), 0, 1);
+  const rx = 18;
+  const ry = 8;
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = 'rgba(24,19,15,0.5)';
+  ellipse(ctx, x, y, rx, ry);
+  ctx.stroke();
+  ctx.strokeStyle = C.ochre;
+  ctx.lineWidth = 3.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, 0, Math.PI / 2, Math.PI / 2 + Math.PI * 2 * k);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
 }
 
 const NONE = [];
@@ -952,6 +1008,7 @@ function drawPlayer(ctx, game, t) {
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? p.action.pose ?? 'reach' : selfPreview(p, s, t) ?? (p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle');
   if (p.action && s.arms === 'lift') s.lift = 1 - 0.12 * Math.max(0, Math.sin(t * 14)); // eating: bites
+  if (p.action && s.arms === 'sip') s.lift = 1 - 0.05 * Math.max(0, Math.sin(t * 5)); // drinking: long sips
   s.smug = bp === 'folder';
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
@@ -964,6 +1021,22 @@ function drawPlayer(ctx, game, t) {
   playerHeld.on = !!at;
   playerHeld.t = t;
   if (at) { playerHeld.x = x + at.x * (s.scale || 1); playerHeld.y = y + at.y * (s.scale || 1); }
+  const forced = game.clock ? fin(game.clock.forced) : 0;
+  if (forced > 0 && !game.outcome) drawWorkMeter(ctx, x, y - 40, clamp(forced / WORK_PENALTY_MIN, 0, 1));
+}
+
+// The assigned work over your head while it lasts (game.clock.forced): a sheet of paper and the bar of it left.
+function drawWorkMeter(ctx, x, y, left) {
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillRect(x - 14, y - 5, 30, 12);
+  ctx.fillStyle = C.white;
+  ctx.fillRect(x - 13, y - 4, 8, 10);
+  ctx.fillStyle = 'rgba(42,33,27,0.55)';
+  for (let i = 0; i < 3; i++) ctx.fillRect(x - 12, y - 2 + i * 2.5, 6, 0.9);
+  ctx.fillStyle = '#2a211b';
+  ctx.fillRect(x - 3, y - 1, 18, 4);
+  ctx.fillStyle = C.tomato;
+  ctx.fillRect(x - 3, y - 1, 18 * left, 4);
 }
 
 // What E would do to what you hold, before the press (player.focus a 'self' target, play/interactions.js): its

@@ -1,6 +1,7 @@
 // Level prop painters: a decor.props entry's draw names a renderer painter (render/world.js PROP_PAINTERS) or is
 // the level's own function, called the same way, (ctx, info, tile, shown, t), so a level can draw its own
-// furniture from its folder. Checks the validator and one rendered frame on a fake canvas.
+// furniture from its folder. Checks the validator, one rendered frame on a fake canvas, and every level's props
+// over a whole day (a frame every half second).
 //   node tools/test-props.mjs
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
 
@@ -49,6 +50,29 @@ ok(c && c.tile.x === col && c.tile.y === row, `on the prop's tile (${c && c.tile
 ok(c && JSON.stringify(c.shown) === JSON.stringify(M.decor.props[i].state(g.world, g)), 'shown is state(world, game)');
 ok(c && typeof c.t === 'number' && c.info && c.info.props && typeof c.ctx.fillRect === 'function', 'with the time, the map info and a canvas');
 ok(fake.errors.length === 0, `the frame draws cleanly ${fake.errors.slice(0, 3).join(' ')}`);
+
+// 3. Every level's props over the whole day, not one frame: a do-nothing day rendered every SWEEP frames, so a
+// prop that changes or moves mid-loop (its state, the time) is drawn in each of its looks. Every frame clean.
+const SWEEP = 30;
+for (const id of Object.keys(levels)) {
+  const lh = createHarness({ level: id });
+  const lg = lh.game;
+  const r = createRenderer(fake.makeCanvas(`sweep ${id}`), { strict: true });
+  const before = fake.errors.length;
+  const looks = new Set();
+  let frames = 0;
+  let threw = null;
+  const clear = lg.input.clearPresses;
+  lg.input.clearPresses = () => {
+    clear();
+    if (++frames % SWEEP || threw) return;
+    try { r.render(lg); } catch (e) { threw = e; }
+    for (const pr of lg.level.decor?.props ?? []) if (pr.state) looks.add(`${pr.tile}:${JSON.stringify(pr.state(lg.world, lg))}`);
+  };
+  lh.begin();
+  for (let k = 0; k < 60 * 60 * 5 && lg.phase === 'day' && !threw; k++) lh.frame();
+  ok(!threw && fake.errors.length === before, `${id}: props drawn over the day, ${Math.floor(frames / SWEEP)} frames, ${looks.size} prop looks${threw ? `: threw ${threw.message}` : ''} ${fake.errors.slice(before, before + 2).join(' ')}`);
+}
 
 console.log(fails ? `${fails} FAILED` : 'all passed');
 process.exit(fails ? 1 : 0);

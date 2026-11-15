@@ -12,6 +12,11 @@
 //   caught    s after he picked it up, the office rules catch the player (play/rules.js caught, by him). Absent:
 //             he just keeps it and goes back to his day
 //   reason    the caught reason (default 'found')
+//   alert     icons the catcher says as he catches you (an alert bubble), instead of the rules' ❗👉 and your
+//             face, e.g. ['#parcel', '👉', '@player']: what he found, and whose it is
+// Owned items (items[type].owner) get a fetch of their own (entries): the owner who sees his thing on the floor
+// (while his `when` holds) walks over and picks it up: his owner.reclaim if he has one, else he carries it. Event
+// item:reclaimed { by, type }. A level fetch naming the same item and npc replaces it.
 // He goes for it while on the floor (active, not gone) with no override but the meeting's: a lure's job comes
 // first. He sees it with his own eyes or on a screen he watches (perception.js npcSees). If it is gone when he
 // gets there (the player took it back, someone else was quicker) he gives up (endOverride).
@@ -21,6 +26,17 @@ import { npcSees } from '../../game/perception.js';
 import { setOverride, endOverride, holdFor, speak } from '../override.js';
 
 export const keepsThroughMeeting = true; // the gather doesn't stop him picking it up
+
+// The level's fetches, plus one per owned item the level does not fetch itself.
+export function entries(level) {
+  const list = [...(level.fetches ?? [])];
+  for (const [type, flags] of Object.entries(level.items ?? {})) {
+    const id = flags?.owner?.id;
+    if (!id || id === 'player' || list.some((f) => f.item === type && f.npcs.includes(id))) continue;
+    list.push({ item: type, npcs: [id], override: 'picking_up', plan: `pickup_${type}`, label: `picking up his ${type}`, when: flags.owner.when, reclaim: flags.owner.reclaim, found: { event: 'item:reclaimed' } });
+  }
+  return list;
+}
 
 export const owns = (f, npc) => npc.override === f.override && f.npcs.includes(npc.id);
 
@@ -34,7 +50,7 @@ export function check(game, npc, f) {
   if (!npc.active || npc._gone || npc._fetch || owns(f, npc)) return;
   if (npc.override && npc.override !== game.level.meeting.override) return; // busy with something else
   const it = loose(game.world, f.item);
-  if (!it || !npcSees(game, npc, it.x, it.y)) return;
+  if (!it || (f.when && !f.when(npc)) || !npcSees(game, npc, it.x, it.y)) return;
   setOverride(npc, f.override);
   holdFor(npc, f.react?.wait ?? 0);
   speak(game, npc, f.react?.says);
@@ -55,9 +71,12 @@ function arrive(game, npc, f) {
   const it = loose(w, f.item);
   if (!it) return endOverride(npc);
   w.items = w.items.filter((i) => i !== it);
-  npc.carry = f.item;
-  const place = game.level.items?.[f.item]?.place;
-  if (place) w[place] = npc.id;
+  if (f.reclaim) f.reclaim(game, npc); // an owner's own way of taking it back (items[type].owner.reclaim)
+  else {
+    npc.carry = f.item;
+    const place = game.level.items?.[f.item]?.place;
+    if (place) w[place] = npc.id;
+  }
   npc._fetch = { t: game.loopTime };
   if (f.found?.set) Object.assign(w, f.found.set);
   speak(game, npc, f.found?.says);
@@ -78,7 +97,7 @@ export function judge(game, rules) {
     for (const npc of game.npcs) {
       if (!npc._fetch || !f.npcs.includes(npc.id)) continue;
       if (game.loopTime - npc._fetch.t < f.caught - 1e-9) continue;
-      rules.caught(game, f.reason ?? 'found', npc.id);
+      rules.caught(game, f.reason ?? 'found', npc.id, f.alert);
       return true;
     }
   }

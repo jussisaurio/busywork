@@ -40,6 +40,20 @@ export function castRay(map, ox, oy, dx, dy, maxDist) {
 
 const NO_CONES = {};
 
+// Red is the cone of whoever sees you, and only his (the notice mix below). A cast tint in the red-to-orange band
+// (hue under about 36°) is drawn amber instead, so a cone that sees nothing never passes for one that does.
+const calmed = new WeakMap();
+export function coneTint(npc) {
+  const t = npc.coneTint || CONE_TINT_DEFAULT;
+  let c = calmed.get(t);
+  if (!c) {
+    const [r, g, b] = t;
+    c = r > g && g >= b && r > b && (g - b) / (r - b) < 0.6 ? [r, Math.round(b + 0.75 * (r - b)), b] : t;
+    calmed.set(t, c);
+  }
+  return c;
+}
+
 // 0..1: how hard this NPC is "noticing" the player right now (derived, read-only): caught by him; the authority's
 // suspicion (game.suspicion, keyed by his id); one of the level's alert overrides (level.cones.alert); or something
 // the rules object to in his sight (game.watch, published by play/rules.js every step, so the glow is exactly
@@ -84,7 +98,12 @@ function clipTo(ctx, zones, map, outside) {
 }
 
 export function drawCones(ctx, game, t) {
-  if (!game.settings || !game.settings.showCones || !game.map) return;
+  if (!game.map) return;
+  if (game.settings && game.settings.showCones) drawFans(ctx, game, t);
+  drawGazes(ctx, game, t);
+}
+
+function drawFans(ctx, game, t) {
   const npcs = game.npcs || [];
   const map = game.map;
   const dark = darkZones(game); // [] without level.darkness, or with every light on: the plain path
@@ -94,7 +113,7 @@ export function drawCones(ctx, game, t) {
     if (!npc || !npc.active || !npc.vision) continue;
     const v = viewerOf(npc);
     const notice = noticeLevel(game, npc);
-    const tint = npc.coneTint || CONE_TINT_DEFAULT;
+    const tint = coneTint(npc);
     const near = dark.length ? nearViewer(game, v) : null;
     const sees = !!p && npcSees(game, npc, fin(p.x), fin(p.y)) && !seenVia(game, npc, fin(p.x), fin(p.y)); // his own eyes
     drawFan(ctx, map, v, tint, notice, CONE_BASE, t, dark, near, sees);
@@ -104,6 +123,90 @@ export function drawCones(ctx, game, t) {
 }
 
 const CONE_BASE = 0.2; // a cone's fill at its root, before any notice
+
+// --- what he looks at: a gaze line on each look --------------------------------------------------------------
+// When a standing or seated NPC's view settles on a new way (a turn, a glance, a noise), a dotted line runs from his
+// eyes to the first thing on it (a solid tile, or the noise he turned to: core/fx.js turned), closed by a viewfinder
+// bracket round it, for GAZE_TTL s. Cones overlap; the line says which thing is his. Drawn with or without cones (V).
+const GAZE_TTL = 1.6;
+const GAZE_MIN = 0.35; // rad his view must move to count as a new look
+const gazeMem = new WeakMap(); // npc -> { dir, last, show: { t0, x, y } | null }
+function drawGazes(ctx, game, t) {
+  const npcs = game.npcs || [];
+  const turns = (game.fx && game.fx.turns) || [];
+  for (let n = 0; n < npcs.length; n++) {
+    const npc = npcs[n];
+    if (!npc || !npc.vision) continue;
+    const v = viewerOf(npc);
+    let m = gazeMem.get(npc);
+    if (!m) { gazeMem.set(npc, (m = { dir: v.dir, last: v.dir, show: null })); continue; }
+    const step = Math.abs(angleDiff(v.dir, m.last));
+    m.last = v.dir;
+    if (!npc.active || npc.moving || npc.pose === 'walk') { m.dir = v.dir; m.show = null; continue; }
+    if (step < 0.01 && Math.abs(angleDiff(v.dir, m.dir)) > GAZE_MIN) {
+      m.dir = v.dir;
+      const tr = turns.find((x) => x.id === npc.id);
+      m.show = { t0: t, ...(tr ? { x: fin(tr.x), y: fin(tr.y) } : gazeTarget(game.map, v)) };
+    }
+    if (m.show && t - m.show.t0 < GAZE_TTL) drawGaze(ctx, v, m.show, (t - m.show.t0) / GAZE_TTL, coneTint(npc));
+  }
+}
+
+// The first solid tile on his gaze (its centre, tiles), past his own tile; else where a wall or his reach stops it.
+function gazeTarget(map, v) {
+  const dx = Math.cos(v.dir);
+  const dy = Math.sin(v.dir);
+  const R = Math.max(0.5, fin(v.radius, 6));
+  const ox = Math.floor(v.x);
+  const oy = Math.floor(v.y);
+  for (let d = 0.6; d <= R; d += 0.2) {
+    const x = v.x + dx * d;
+    const y = v.y + dy * d;
+    const mx = Math.floor(x);
+    const my = Math.floor(y);
+    if (map.isOpaque(mx, my)) return { x, y };
+    if ((mx !== ox || my !== oy) && d > 1.1 && map.isSolid(mx, my)) return { x: mx + 0.5, y: my + 0.5 };
+  }
+  return { x: v.x + dx * R, y: v.y + dy * R };
+}
+
+function drawGaze(ctx, v, g, k, tint) {
+  const a = (k < 0.15 ? k / 0.15 : 1) * (1 - Math.max(0, (k - 0.7) / 0.3));
+  const x0 = v.x * T;
+  const y0 = v.y * T;
+  const x1 = g.x * T;
+  const y1 = g.y * T;
+  const L = Math.hypot(x1 - x0, y1 - y0);
+  if (!(L > 8)) return;
+  const grow = Math.min(1, k / 0.15);
+  const col = `rgba(${Math.round(tint[0] * 0.3)},${Math.round(tint[1] * 0.3)},${Math.round(tint[2] * 0.3)},${(0.9 * a).toFixed(3)})`;
+  const ex = x0 + (x1 - x0) * grow;
+  const ey = y0 + (y1 - y0) * grow;
+  const r = 10;
+  const c = 4.5;
+  const finder = () => {
+    ctx.beginPath();
+    for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+      ctx.moveTo(x1 + sx * r, y1 + sy * (r - c));
+      ctx.lineTo(x1 + sx * r, y1 + sy * r);
+      ctx.lineTo(x1 + sx * (r - c), y1 + sy * r);
+    }
+  };
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (const [w, stroke] of [[4, `rgba(255,250,235,${(0.55 * a).toFixed(3)})`], [2, col]]) { // a light halo, then the ink
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = w;
+    ctx.setLineDash([2, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    if (grow >= 1) { ctx.lineWidth = w + 0.5; finder(); ctx.stroke(); } // a viewfinder round what he looks at
+  }
+  ctx.restore();
+}
 
 // --- a head turned to a noise (core/fx.js turned; sim/mechanics/attention.js) -----------------------------------
 // The swing of his cone, drawn where he stands: a dashed arc from the way he was looking to the way he looks now,
@@ -128,7 +231,7 @@ function drawTurns(ctx, game) {
     const cx = fin(v.x) * T;
     const cy = fin(v.y) * T;
     const R = Math.min(TURN_R, Math.max(0.8, fin(v.radius, 6) * 0.5)) * T;
-    const tint = npc.coneTint || CONE_TINT_DEFAULT;
+    const tint = coneTint(npc);
     // the old cone's edges, fading first
     const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
     ctx.setLineDash([3, 4]);
@@ -218,6 +321,13 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   ctx.strokeStyle = `rgba(${r},${g},${b},${Math.min(1, edge + 0.2).toFixed(3)})`;
   ctx.lineWidth = sees || notice > 0 ? 1.5 : 1;
   ctx.stroke();
+  if (sees && notice > 0) { // the red starts at his eyes: a ring round its root says whose it is
+    ctx.strokeStyle = `rgba(${RED[0]},${RED[1]},${RED[2]},${(0.55 + 0.35 * pulse).toFixed(3)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 9 + 2 * pulse, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   if (dark.length) {
     ctx.restore();
     const nr = Math.max(0.5, fin(near.radius, 1));
@@ -252,7 +362,7 @@ function drawCameraCones(ctx, game, t) {
       continue;
     }
     const watcher = feed.watcher ? findNpc(game, feed.watcher) : null;
-    const tint = watcher ? watcher.coneTint || CONE_TINT_DEFAULT : CAMERA_GREY;
+    const tint = watcher ? coneTint(watcher) : CAMERA_GREY;
     const onScreen = watcher && p && canSee(game.map, v, p.x, p.y);
     const notice = onScreen ? Math.max(0.35, noticeLevel(game, watcher)) : 0;
     drawFan(ctx, game.map, v, tint, notice, watcher ? 0.16 : 0.07, t);

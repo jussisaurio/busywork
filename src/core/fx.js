@@ -11,7 +11,8 @@ export function createFx() {
 
 // owner: entity id (string) or a fixed point { x, y } in tile units (for signs).
 // icons: array of emoji strings, read left to right.
-// opts.kind: 'speech' (babble audio) | 'thought' (silent, cloud style) | 'alert' (big, e.g. ❗) | 'sign'
+// opts.kind: 'speech' (babble audio) | 'thought' (silent, cloud style) | 'alert' (spiky star: someone has spotted YOU) |
+//   'realize' (round, pale blue, rays: "oh!", a belief changes, a trick works; never alarm) | 'sign'
 // opts.ttl: seconds. opts.voice: babble voice id (defaults to owner id).
 export function say(game, owner, icons, opts = {}) {
   const kind = opts.kind ?? 'speech';
@@ -25,13 +26,15 @@ export function say(game, owner, icons, opts = {}) {
     kind,
     age: 0,
     ttl: opts.ttl ?? 2.5,
+    voice: opts.voice ?? null, // who speaks from a point (a phone, a voice offstage); the harness names it
   };
   game.fx.bubbles.push(bubble);
   game.events.emit('say', { owner, icons, kind, voice: opts.voice ?? ownerKey });
   return bubble;
 }
 
-// kind: 'puff' | 'sparks' | 'crumbs' | 'paper' | 'zzz' | 'sweat' | 'confetti' | string
+// The burst kinds the renderer draws (render/effects.js); kind: one of them, or a string (the generic dot).
+export const BURST_KINDS = ['puff', 'sparks', 'crumbs', 'paper', 'zzz', 'sweat', 'confetti', 'glitter'];
 export function burst(game, kind, x, y, n = 8, opts = {}) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;

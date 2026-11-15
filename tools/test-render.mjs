@@ -203,7 +203,7 @@ for (const f of [
 }
 
 // Bubbles
-const KINDS = ['speech', 'thought', 'alert', 'sign', 'weird'];
+const KINDS = ['speech', 'thought', 'alert', 'realize', 'sign', 'weird'];
 for (const kind of KINDS) {
   for (const age of [0, 0.08, 0.5, 2.45, 3]) {
     day((g) => {

@@ -221,7 +221,7 @@ function sceneHerd(ctx, game, t, e) {
   walker('lin', 262, 0.2, true);
   walker('kev', 346, 0.3, true);
   walker('boss', 440, -1.2, false, { arms: 'carry', item: '#mug' }); // in his coat, mug in hand, a look up at the clock
-  if (e > 0.4) bubble(ctx, [faceFor(shown), '😮'], 476 + dx, 236, e - 0.4, 'thought');
+  if (e > 0.4) bubble(ctx, [faceFor(shown), '😮'], 476 + dx, 236, e - 0.4, 'realize');
   street(ctx, TAB.x + W + 14, TAB.w - W - 14, 64, 286);
   glassWall(ctx, TAB.x + W);
   confetti(ctx, TAB.x + W + 20, TAB.w - W - 20, TAB.y, TAB.h, e, 20);
