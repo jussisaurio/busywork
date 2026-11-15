@@ -14,8 +14,9 @@ Judge:
    the player saw? Does the fiction contradict itself?
 5. **The joke.** What is the funny moment? Does it happen on screen as a picture? Is it funnier than the obvious
    version?
-6. **Name and card.** Compare first-read.md with the real design. Every gap between the two is a finding. Does the
-   name make sense before the level is solved?
+6. **Name and card.** Compare first-read.md with the real design. Every gap between the two is a finding. The name,
+   the card and the badge (the card's icons) name the trouble, never the way out. Does any of them hint at a route, a
+   mechanic or a tool? If so, that is a finding, and the verdict is at best `fixable`.
 
 Reply with the report, under 450 words. Your reply is saved as report.md.
 - The first line is exactly `Verdict: works`, `Verdict: fixable` or `Verdict: broken`.

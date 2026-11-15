@@ -63,7 +63,8 @@ holds:
 - the verdict (the first line of the last step's reply)
 - the date, the commit and the model
 - a hash of the stage's inputs, and what went into it
-- a table of the steps, with each one's time and cost
+- a table of the steps, with each one's time and cost, and the stage's wall-clock time (steps can run at the same
+  time)
 - every step's reply, verbatim
 
 A stage is fresh while its inputs still hash to the recorded value. Its inputs are:
@@ -80,7 +81,7 @@ on another machine can show as stale. Run it again there.
 ## Card
 The two lines, exactly as in presentation.js.
 ## Name
-The name, and why it is the name. It must make sense to someone who has not solved the level.
+The name, and why it is the name. It names the trouble, never the way out.
 ## The situation
 Who you are. What you want. What happens at the deadline if you fail. Why succeeding prevents it.
 ## Cast
@@ -95,6 +96,8 @@ Each loss, and the picture that explains it.
 ## The joke
 The funniest moment, described as a picture.
 ```
+- The name, the card and the badge name the trouble, never the way out (DESIGN.md). If any of them hints at a route,
+  a mechanic or a tool, the premise review reports it, and the verdict is at best `fixable`.
 - The first heading is the level's name. `card.txt`, which every step 1 reader gets, holds that name, the card's two
   lines and the card's icons (the badge). Nothing else from `premise.md` goes in it.
 - `## Card` must hold the card's lines exactly as the level has them. If not, the stage does not run.
@@ -120,7 +123,8 @@ export default [
 - a noise is made, or a lure pulls someone
 - the day ends (the end card, 2 seconds after it comes up)
 
-Nobody picks the frames by hand. Moments less than 0.75 seconds apart share a frame, unless that would lose a bubble.
+Nobody picks the frames by hand. Moments less than 0.75 seconds apart share a frame, unless that would lose a bubble
+or put two of the player's actions in one frame.
 A run keeps at most 20 frames: the end card, every one of the player's own moments, then an even spread of the others.
 Frames are 960 x 600, the game's own view size, so that a dozen runs fit one reader. Step 1 readers get batches of
 about 60 frames (whole runs), and the batches run at the same time.

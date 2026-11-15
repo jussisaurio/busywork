@@ -146,6 +146,7 @@ try {
   ok(md.includes('## premise: works') && md.includes(R1) && md.includes('REVIEW-ONE') && md.includes('abc1234') && md.includes('2026-11-15'),
     'the record holds the verdict, every step\'s reply verbatim, the commit and the date');
   ok(readRecord(root).premise?.meta.hash === rec.hash, 'the record\'s marker carries the hash');
+  ok(/\| all \| \| \d+ s \(the steps add up to \d+ s\) \|/.test(md), 'the record gives the stage\'s wall clock and what its steps add up to');
 
   // --- staleness ---
   let s = await stageStatus('meeting', 'premise', { root });
@@ -327,6 +328,15 @@ try {
   ok(waving.length > 0 && waving.every((f) => minute(f.caption) < gone), 'replay: the wave shows when it comes up, and never in a frame after its life is over');
   const lunch = run.frames.find((f) => shows(f.png, '❓') && shows(f.png, '🥪') && minute(f.caption) >= gone);
   ok(lunch && !shows(lunch.png, '👋'), 'replay: Lin\'s 🥪❓ frame, pretending a few real seconds after the wave, leaves the wave out');
+
+  // --- two of the player's actions never share a frame ---
+  // Take the keycard and drop it at once (route check 14): each action gets its own frame, the card in hand between.
+  const meetingChecks = (await import('../src/levels/meeting/route-checks.js')).default;
+  const drop = meetingChecks.find((c) => c.name.startsWith('steal keycard, drop it'));
+  const dropRun = captureRun(meeting, drop, { lib: textLib() });
+  const used = dropRun.frames.filter((f) => /You used the thing here/.test(f.caption));
+  ok(used.length >= 3 && used.every((f) => (f.caption.match(/You used the thing here/g) ?? []).length === 1),
+    'replay: taking the keycard and dropping it at once make two frames, one action each');
 } catch (e) {
   fails++;
   console.log('FAIL', e.stack);

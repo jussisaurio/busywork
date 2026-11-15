@@ -268,6 +268,7 @@ export async function runStage(id, stage, opts = {}) {
   const results = {};
   const dirs = [];
   let done = false;
+  const t0 = Date.now();
   try {
     while (Object.keys(results).length < steps.length) {
       const ready = steps.filter((s) => !results[s.id] && s.needs.every((n) => n in replies));
@@ -292,16 +293,17 @@ export async function runStage(id, stage, opts = {}) {
   }
   const rec = makeRecord(inp, steps.map((s) => results[s.id]), {
     model: model ?? 'default', by: 'claude -p', commit: opts.commit ?? gitCommit(), now: opts.now ?? new Date(),
+    wallMs: Date.now() - t0,
   });
   writeSection(recordFile(inp.root), id, rec);
   return rec;
 }
 
-export function makeRecord(inp, results, { model, by, commit, now }) {
+export function makeRecord(inp, results, { model, by, commit, now, wallMs = null }) {
   const last = results[results.length - 1];
   return {
     stage: inp.stage, verdict: parseVerdict(last.text) ?? 'unreadable', date: now.toISOString().slice(0, 10), commit,
-    hash: inp.hash, parts: inp.parts, model, by, steps: results,
+    hash: inp.hash, parts: inp.parts, model, by, steps: results, wallMs,
   };
 }
 
@@ -343,7 +345,10 @@ export function renderSection(rec) {
     '| Step | Reply | Time | Cost |',
     '|---|---|---|---|',
     ...rec.steps.map((s) => `| ${s.id} | ${s.reply} | ${secs(s.ms)} | ${usd(s.costUsd)} |`),
-    `| all | | ${secs(total('ms'))} | ${usd(total('costUsd'))} |`,
+    // Steps can run at the same time: the stage's own time is its wall clock, when known.
+    rec.wallMs != null
+      ? `| all | | ${secs(rec.wallMs)} (the steps add up to ${secs(total('ms'))}) | ${usd(total('costUsd'))} |`
+      : `| all | | ${secs(total('ms'))} | ${usd(total('costUsd'))} |`,
     '',
   ];
   for (const s of rec.steps) lines.push(`### ${s.id}: ${s.reply}`, '', s.text.trim(), '');

@@ -8,7 +8,8 @@
 //   - a noise fires (the 'noise' event), or a lure pulls someone (his override turns to the lure's)
 //   - the day ends: the end card, END_AFTER s after it comes up (tools/lib/draw.mjs)
 // Moments less than MERGE_SEC after the first of a group share a frame (the last one's), unless that would lose a
-// bubble an earlier one showed. A run
+// bubble an earlier one showed, or put two of the player's own actions in one frame (each changes what the player
+// holds or where things are, and a player sees each one happen). A run
 // keeps at most MAX_FRAMES: the end card, every one of the player's own moments, and an even spread of the rest.
 //
 // Captions say only what the player knows: the clock, "You used the thing here" with where the player stands in the
@@ -94,7 +95,8 @@ export function captureRun(level, check, { lib = loadCanvas(), w = REPLAY_W, h =
       m.png = canvas.toBuffer('image/png');
       const prev = moments[moments.length - 1];
       const alive = m.bubbles;
-      if (prev && !prev.end && !m.end && m.t - prev.t0 < MERGE_SEC && [...prev.bubbles].every((b) => alive.has(b))) {
+      const twoActions = prev?.you.length && m.you.length;
+      if (prev && !prev.end && !m.end && !twoActions && m.t - prev.t0 < MERGE_SEC && [...prev.bubbles].every((b) => alive.has(b))) {
         m.t0 = prev.t0;
         m.you = [...prev.you, ...m.you];
         m.sound ||= prev.sound;

@@ -2,7 +2,8 @@ Read card.txt (the level's name and mission card). Then, for each folder in runs
 look at its pictures in order. Each folder is one loop of play, recorded automatically: a picture whenever the player
 finished an action, someone's bubble came up, or a sound was made, and the end-of-loop picture last. The captions
 give the clock time. "You used the thing here" marks where the player did something, but not what: work that out
-from the pictures, as a player would.
+from the pictures, as a player would. Each run was recorded on its own, as if it were the first loop, so the loop
+counter shows 1 in every run.
 
 For each run, write:
 - what happened, beat by beat: one line per beat, with the clock time
