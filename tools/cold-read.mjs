@@ -172,7 +172,8 @@ export const PASSES = [
     'does every NPC act for a reason shown first, keep his own rules, and does the card\'s rule bind coworkers too?'),
   textPass('props', ['things'], { good: ['fits'], meh: ['odd'], bad: ['pointless', 'misleading'] },
     'why is each thing in this office, and does it look usable when it is (and only then)?'),
-  textPass('joke', ['ways'], { good: ['funny', 'payoff'], meh: ['mild'], bad: ['chore', 'flat'] },
+  // Unfunny is a should, not a blocker (grades.md): no answer of the joke pass is a blocker by itself.
+  textPass('joke', ['ways'], { good: ['funny', 'payoff'], meh: ['mild', 'chore', 'flat', 'undescribed'], bad: [] },
     'what is the joke in each route, is any a dull chore, is there a payoff at the end?'),
   {
     id: 'premise', kind: 'text', broad: true, needs: ['premise'], answers: null,

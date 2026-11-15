@@ -371,19 +371,24 @@ try {
 
     // motives, props, joke: one step each, the card and their own prose.
     const seen = {};
-    for (const [pass, file, word] of [['motives', 'who.md', 'contradicts'], ['props', 'things.md', 'pointless'], ['joke', 'ways.md', 'chore']]) {
+    for (const [pass, file, word, want = 'fixable'] of [['motives', 'who.md', 'contradicts'], ['props', 'things.md', 'pointless'], ['joke', 'ways.md', 'chore', 'works']]) {
       fr = fakeRunner({ '1-judge': `Verdict: works\n- the thing: ${word} — a past failure\n\n## Problems\n- none` });
       rec = await runStage('meeting', pass, { runner: fr.runner, root: proot, log: silent, ...fixed });
       const c = fr.calls[0];
       seen[pass] = c;
       ok(fr.calls.length === 1 && files(c).join() === ['card.txt', file].sort().join() && c.prompt.startsWith(preamble('text.md')) && c.prompt.includes(preamble(`${pass}.md`)),
         `${pass}: the card and ${file} only, with text.md then ${pass}.md`);
-      ok(rec.verdict === 'fixable' && rec.tally[word] === 1, `${pass}: a ${word} item makes it at best fixable`);
+      ok(rec.verdict === want && rec.tally[word] === 1, want === 'works' ? `${pass}: a ${word} item alone is a should, not a blocker (works)` : `${pass}: a ${word} item makes it at best fixable`);
     }
     ok(/WHO-PROSE/.test(text(seen.motives, 'who.md')) && !/THINGS-PROSE|Ways to win/.test(text(seen.motives, 'who.md')), 'motives: who.md is the "Who does what" prose alone');
     ok(/THINGS-PROSE/.test(text(seen.props, 'things.md')) && !/WHO-PROSE/.test(text(seen.props, 'things.md')), 'props: things.md is the "Things in the office" prose alone');
     ok(/binds\|only-you/.test(seen.motives.prompt) && /walks under it without looking/.test(seen.motives.prompt), 'motives: asks whether the card\'s rule binds coworkers, and about a man breaking his own rule');
     ok(/looks usable but is not/.test(seen.props.prompt) && /payoff/.test(seen.joke.prompt), 'props asks about things that look usable and aren\'t; joke asks for a payoff');
+    ok(/premise\.md doesn't describe the end card/.test(seen.joke.prompt) && /Never say the game has no end card/.test(seen.joke.prompt) && !/are blockers/.test(seen.joke.prompt),
+      'joke: an ending prose does not describe is "premise.md doesn\'t describe the end card"; no joke answer is a blocker of its own');
+    fr = fakeRunner({ '1-judge': 'Verdict: fixable\n- the route: chore — errands\n- The ending: undescribed — premise.md doesn\'t describe the end card\n\n## Problems\n- should: errands — a joke\n- should: premise.md doesn\'t describe the end card — describe it' });
+    rec = await runStage('meeting', 'joke', { runner: fr.runner, root: proot, log: silent, ...fixed });
+    ok(rec.verdict === 'works' && rec.tally.undescribed === 1, `joke: chore and undescribed, graded should, are works (${rec.verdict})`);
     ok(passList('text').join() === 'title,sense,motives,props,joke', '--pass text: the five narrow text passes');
 
     // faces: every bubble alone, then each in its frame.
