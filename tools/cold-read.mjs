@@ -323,11 +323,13 @@ export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, 
   const level = getLevel(id);
   const pf = join(root, 'premise.md');
   if (!existsSync(pf)) throw new Error(`no ${rel(pf)} (docs/COLD-READ.md says what goes in it)`);
-  const premise = readFileSync(pf, 'utf8');
+  // The card lives in the level (title.mission). premise.md's '## Card' is filled from it here, so the readers
+  // always see the card the game shows, whatever premise.md says (a merge can bring back an old copy).
+  const live = `## Card\n${level.title.mission.join('\n')}\n\n`;
+  const raw = readFileSync(pf, 'utf8');
+  const premise = /^## Card\s*$/m.test(raw) ? raw.replace(/^## Card\s*\n[\s\S]*?(?=^## |(?![\s\S]))/m, live) : raw;
   const P = parsePremise(premise);
   if (!P.name) throw new Error(`${rel(pf)} has no '# <Level name>' first heading`);
-  const off = level.title.mission.filter((l) => !(P.sections.Card ?? '').includes(l));
-  if (off.length) throw new Error(`${rel(pf)}: '## Card' must hold the card's lines exactly as the level has them: ${off.map((l) => JSON.stringify(l)).join(', ')}`);
   const card = cardText(level, P.name);
   const parts = { card: sha(card) };
   const inp = { id, stage, pass, level, root, card, premise, parts, prompts };

@@ -187,9 +187,9 @@ try {
   writeFileSync(join(root, 'premise.md'), readFileSync(join(root, 'premise.md'), 'utf8') + '\nOne more line.\n');
   s = await stageStatus('meeting', 'premise', { root });
   ok(!s.ok && s.fresh === false && s.changed.join() === 'premise.md', 'status: an edit to premise.md makes premise stale, and says so');
-  writeFileSync(join(root, 'premise.md'), readFileSync(join(root, 'premise.md'), 'utf8').replace('You made none.', 'You made one.'));
+  writeFileSync(join(root, 'premise.md'), premise0.replace('You made none.', 'You made one.'));
   s = await stageStatus('meeting', 'premise', { root });
-  ok(!s.ok && /'## Card' must hold the card's lines/.test(s.error ?? ''), 'status: a premise.md whose card is not the level\'s is an error');
+  ok(s.ok && s.fresh, 'status: an old card copy in premise.md is filled from the level (the readers see the game\'s card), so it changes nothing');
   writeFileSync(join(root, 'premise.md'), premise0);
   ok((await stageStatus('meeting', 'premise', { root })).ok, 'status: fresh again when premise.md is back');
   const prompts = join(TMP, 'prompts');

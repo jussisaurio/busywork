@@ -186,7 +186,7 @@ The funniest moment, described as a picture.
   a mechanic or a tool, the premise review reports it, and the verdict is at best `fixable`.
 - The first heading is the level's name. `card.txt`, which every step 1 reader gets, holds that name, the card's two
   lines and the card's icons (the badge). Nothing else from `premise.md` goes in it.
-- `## Card` must hold the card's lines exactly as the level has them. If not, no pass runs.
+- `## Card` is filled from the level's card (title.mission) when the readers get it, so an old copy here does no harm. The game's card is the one that counts.
 - title, sense, joke, outcomes and replay need `## Ways to win` and `## Ways to lose`; motives needs `## Who does
   what`; props needs `## Things in the office`. Without its section a pass does not run, and `--status` and the gate
   say which section is missing.
