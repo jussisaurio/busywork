@@ -142,6 +142,7 @@ export default {
     linGone: false,
     kevGone: false,
     herd: false, // the boss went home by the open-plan clock (passing under it after his coffee)
+    herdShown: 0, // ... and the time it showed him then
     coat: 'hook', // the boss's coat: on the rack ('hook') or on him ('boss')
     fix: false, // he has been told about the clocks: he sets them right
     items: [],

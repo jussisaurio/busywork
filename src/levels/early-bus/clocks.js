@@ -281,6 +281,7 @@ export const CLOCK_BEHAVIOURS = {
         st.off = Math.max(st.off, game.world.openClock);
         st.beat = beatAt(npc, game.clock.minute + st.off);
         game.world.herd = true;
+        game.world.herdShown = time; // the end card's clock
         sim.speak(game, npc, [{ say: [face, '❗'], kind: 'alert', ttl: LOOK_S + 0.4 }]);
         game.events.emit('boss:herd', { shown: time });
       } else {

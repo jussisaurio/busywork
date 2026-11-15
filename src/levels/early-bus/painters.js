@@ -35,6 +35,58 @@ export function drawBigClock(ctx, cx, cy, r, minute, start, tilt = 0) {
   ctx.restore();
 }
 
+// --- the coat stand -------------------------------------------------------------------------------------------
+// The boss's wooden coat stand seen from the front, standing on (cx, by), h px tall; coat: his navy jacket hangs on it.
+export function drawCoatStand(ctx, cx, by, h, coat) {
+  const k = h / 40;
+  const top = by - h;
+  fillEllipse(ctx, cx, by, 11 * k, 2.6 * k, 'rgba(30,20,10,0.25)');
+  ctx.strokeStyle = C.walnutEdge;
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 2.2 * k;
+  for (const s of [-1, 0, 1]) { // the feet
+    ctx.beginPath();
+    ctx.moveTo(cx, by - 5 * k);
+    ctx.lineTo(cx + s * 9 * k, by);
+    ctx.stroke();
+  }
+  ctx.lineWidth = 2.6 * k; // the pole
+  ctx.beginPath();
+  ctx.moveTo(cx, by - 2 * k);
+  ctx.lineTo(cx, top + 2 * k);
+  ctx.stroke();
+  ctx.lineWidth = 1.6 * k; // the hooks
+  for (const s of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(cx, top + 5 * k);
+    ctx.quadraticCurveTo(cx + s * 6 * k, top + 4 * k, cx + s * 6 * k, top + 1 * k);
+    ctx.stroke();
+  }
+  fillCircle(ctx, cx, top + 1.5 * k, 2 * k, C.walnutTop);
+  if (!coat) return;
+  const ty = top + 5 * k; // the jacket's shoulders, on the left hook
+  ctx.fillStyle = C.navy;
+  ctx.beginPath();
+  ctx.moveTo(cx - 3 * k, ty);
+  ctx.quadraticCurveTo(cx - 8 * k, ty + 0.5 * k, cx - 8.5 * k, ty + 4 * k);
+  ctx.lineTo(cx - 9.5 * k, ty + 19 * k);
+  ctx.lineTo(cx + 6.5 * k, ty + 19 * k);
+  ctx.lineTo(cx + 5.5 * k, ty + 4 * k);
+  ctx.quadraticCurveTo(cx + 5 * k, ty + 0.5 * k, cx + 1 * k, ty);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = C.navyDark; // sleeves
+  ctx.fillRect(cx - 9.5 * k, ty + 5 * k, 2.6 * k, 13 * k);
+  ctx.fillRect(cx + 3.9 * k, ty + 5 * k, 2.6 * k, 13 * k);
+  ctx.fillStyle = C.navyLight; // lapels
+  ctx.beginPath();
+  ctx.moveTo(cx - 3 * k, ty);
+  ctx.lineTo(cx - 1.5 * k, ty + 9 * k);
+  ctx.lineTo(cx + 1 * k, ty);
+  ctx.closePath();
+  ctx.fill();
+}
+
 // --- the stepladder ---------------------------------------------------------------------------------------------
 // An aluminium A-frame stepladder seen from the front, standing on (cx, by) (its feet), h px tall.
 export function drawStepladder(ctx, cx, by, h) {

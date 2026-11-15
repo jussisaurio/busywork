@@ -74,6 +74,18 @@ export default [
     },
   },
   {
+    // Out at the stop while he is still in: he is still looking for you when the bus comes, and you don't get on.
+    name: 'slip out at 4:24 → his look at your empty chair → he is still looking for you at 4:30 → fail at the stop',
+    expect: { result: 'fail' },
+    play(ctx) {
+      ctx.run('pretend until 4:24');
+      until(ctx, 'goto bus_stop pretend', near('bus_stop'));
+      finish(ctx);
+      need(ctx.log, 'boss:hunt', 'he never came looking');
+      if (ctx.g.outcome?.why !== 'stop') throw new Error('not at the stop');
+    },
+  },
+  {
     // Told about the stepladder, the boss sets the clock right before he sits down again.
     name: "push the boss's clock while Lin watches it through the glass → she tells him → work, and he sets it right → fail",
     expect: { result: 'fail' },
