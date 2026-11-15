@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp } from './things.js';
+import { trayProp, smokeProp } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -47,11 +47,12 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
   ],
   clock: { x: 17, y: 6 },
-  // The in-tray on his desk, your letter lying in it while it's there (things.js). (The switch and the fuse box:
-  // darkness.controls.)
+  // The in-tray on his desk, your letter lying in it while it's there, and the coffee machine smoking while the fuse
+  // it blew is out (things.js). (The switch and the fuse box: darkness.controls.)
   props: [
     { tile: 'Y', draw: trayProp, state: (w) => ({ letter: w.letter === 'tray' }) },
     { tile: 'M', draw: 'carafe', state: (w) => ({ full: w.coffee === 'tripped' && w.fuse === 'on' }) }, // brewed once the power's back
+    { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on' }) }, // it blew the fuse
   ],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },

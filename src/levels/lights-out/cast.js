@@ -66,11 +66,11 @@ export const BEHAVIOURS = {
       w.coffee = 'tripped';
       w.fuse = 'off';
       w.fuseBy = 'lin';
-      burst(game, 'sparks', 22.5, 1.6, 16, { speed: 2.2, ttl: 0.9 });
-      burst(game, 'puff', 22.5, 1.4, 5, { speed: 0.6, ttl: 1.2 });
+      burst(game, 'sparks', 22.5, 1.6, 28, { speed: 3.6, ttl: 1.1 });
+      burst(game, 'puff', 22.5, 1.4, 8, { speed: 0.6, ttl: 1.6 });
       shake(game, 0.12, 0.3);
       game.events.emit('fuse:tripped', {});
-      sim.speak(game, npc, [{ say: ['😳'], ttl: 1.6 }]);
+      sim.speak(game, npc, [{ say: ['😳'], after: 0.8, ttl: 1.6 }]); // after the sparks: her bubble would hide them
     },
   },
   // 3:40: he empties his tray. If your letter is still in it, he reads it.

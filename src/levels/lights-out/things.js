@@ -1,8 +1,9 @@
 // Lights Out's own objects, drawn as the real thing (no emoji on a tile or in a hand): the boss's in-tray, your
-// letter, and a phone held up as a torch (end scenes only: on the floor, render/darkness.js draws it). The tray is
-// a decor.props painter (render/world.js calls it as (ctx, info, tile, shown, t)); the end scenes draw all three
-// bigger. Sizes are map pixels at s = 1 (a tile is 32).
-import { T, rrect } from '../../render/util.js';
+// letter, a phone held up as a torch (end scenes only: on the floor, render/darkness.js draws it), and the smoke off
+// the coffee machine that blew the fuse. The tray and the smoke are decor.props painters (render/world.js calls them
+// as (ctx, info, tile, shown, t)); the end scenes draw the tray, the letter and the phone bigger. Sizes are map
+// pixels at s = 1 (a tile is 32).
+import { T, rrect, fillCircle } from '../../render/util.js';
 
 // Your letter: a white envelope, 14 x 9, its flap folded down, centred on (x, y), turned `rot`.
 export function paintLetter(ctx, x, y, s = 1, rot = 0) {
@@ -108,4 +109,18 @@ export function paintPhone(ctx, x, y, s = 1, lit = true) {
   }
   ctx.restore();
   return { x, y: y - 3 * s };
+}
+
+// decor.props painter on the coffee machine: shown { smoke } (it blew the fuse and the power is still out). Smoke
+// curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the floor down.
+export function smokeProp(ctx, info, at, shown, t) {
+  if (!shown.smoke) return;
+  const x = at.x * T + T / 2 + 6;
+  const y = at.y * T + 6;
+  fillCircle(ctx, x, y + 3, 3 + 0.8 * Math.sin(t * 11), `rgba(255,140,50,${0.6 + 0.3 * Math.sin(t * 17)})`);
+  fillCircle(ctx, x, y + 3, 1.3, '#fff0b0');
+  for (let i = 0; i < 5; i++) {
+    const k = (t * 0.45 + i / 5) % 1;
+    fillCircle(ctx, x + Math.sin(t * 1.3 + i * 2) * 4 * k, y - k * 22, 3 + k * 6, `rgba(150,147,150,${0.8 * (1 - k)})`);
+  }
 }
