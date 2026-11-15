@@ -42,16 +42,16 @@ export const DECOR = {
   ],
   paintings: [
     { x: 9, y: 0, variant: 0 },
-    { x: 17, y: 6, variant: 1 },
+    { x: 27, y: 6, variant: 1 },
   ],
   clock: { x: 22, y: 6 },
   props: [
-    { tile: 'R', draw: 'icon', state: (w) => ({ icon: w.roster === 'boss' ? '👔' : '📋', size: 20 }) },
+    { tile: 'R', draw: 'icon', state: (w) => ({ icon: w.roster === 'boss' ? '👔' : '📋', size: 28 }) },
     { tile: 'K', draw: 'icon', state: (w) => ({ icon: w.sheet === 'tray' ? '📥' : '🗂️', size: 16 }) },
     {
       tile: 'X',
       draw: 'icon',
-      state: (w) => ({ icon: w.copier === 'jammed' ? '⚠️' : w.copier === 'fixing' ? '🔧' : '🖨️', size: 20 }),
+      state: (w) => ({ icon: w.copier === 'jammed' ? '⚠️' : w.copier === 'fixing' ? '🔧' : '🖨️', size: 24 }),
     },
     {
       tile: 'M',
