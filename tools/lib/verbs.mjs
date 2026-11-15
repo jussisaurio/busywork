@@ -7,7 +7,8 @@
 // plan search: this is about what a verb looks like, not a route), and each sequence is a fresh day:
 //   carry     walking with it; pretending with it, standing (held to your ear) and walking
 //   E         what a tap of E does with it in hand, nothing else in reach, whatever verb wins (a level 'self' row,
-//             else drop): before (the prompt), during (an action of MID_MIN seconds or more), after
+//             else drop): before (the prompt), during (an action of MID_MIN seconds or more), after (after a
+//             drop, a step off the item, so it shows on the floor and not under you)
 //   hold E    when holding E does something else (eating; play/interactions.js): before, E held (the preview pose),
 //             during, after
 //   <verb>    each other 'self' verb that takes it, which neither reaches there: its result (the row's done)
@@ -211,7 +212,7 @@ function finishAction(S, verb, label) {
 
 // Presses E on the current focus and shoots before (the prompt), during and after. Returns the focus verb, or null
 // when there was no prompt.
-function pressE(S, { verb: want = null, at = null, before, after, note = '' }) {
+function pressE(S, { verb: want = null, at = null, before, after, note = '', away = null }) {
   const { g, h } = S;
   const f = g.player.focus;
   if (!f || (want && f.action !== want)) return null;
@@ -225,7 +226,8 @@ function pressE(S, { verb: want = null, at = null, before, after, note = '' }) {
   h.frame();
   finishAction(S, verb, `${verb} · during`);
   S.run(AFTER);
-  S.shoot({ verb, phase: 'after', label: `${after ?? verb} · after`, intent: `${verb} done. It changed: ${S.since(m).join('; ')}.` }, target);
+  const off = verb === 'drop' && away ? stepOff(S, away) : null;
+  S.shoot({ verb, phase: 'after', label: `${after ?? verb} · after`, intent: `${verb} done. It changed: ${S.since(m).join('; ')}.${off?.said ?? ''}`, apart: off?.apart }, off?.item ?? target);
   return verb;
 }
 
@@ -251,13 +253,22 @@ function holdE(S, before) {
   return verb;
 }
 
-// After a drop at the player's feet, where the player's own figure hides it: steps away (still in reach), so the
-// item shows on the floor, then picks it up again.
-function pickUpAgain(S, dir) {
+// A drop leaves the item at the player's feet, where his own figure hides it, so the 'drop · after' panel showed
+// nothing dropped. Steps away (still in reach) before that panel, so the item shows on the floor beside him.
+// { apart: tiles between him and it, item: where it lies (the panel centres between the two), said: for the intent }.
+function stepOff(S, dir) {
+  const it = S.g.world.items.at(-1);
   S.input.setAxis(dir[0], dir[1]);
   S.run(STEP);
   S.input.releaseAll();
   S.h.frame();
+  const p = S.g.player;
+  if (!it) return { apart: 0, item: null, said: '' };
+  return { apart: Math.hypot(p.x - it.x, p.y - it.y), item: { x: it.x, y: it.y }, said: ` You stepped off it: the ${it.type} lies on the floor beside you.` };
+}
+
+// After a drop and the step off it: picks it up again.
+function pickUpAgain(S) {
   const type = S.g.player.focus?.id;
   return pressE(S, { verb: 'pick_up', before: 'on the floor, pick_up', note: `The dropped ${type} on the floor, a step away. ` });
 }
@@ -304,8 +315,8 @@ function tilePanels(level, lib, type, tile) {
       return;
     }
     out.holdVerb = f.hold ?? null;
-    out.eVerb = pressE(S, { before: `E → ${f.action}` });
-    if (out.eVerb === 'drop') pickUpAgain(S, tile.dir);
+    out.eVerb = pressE(S, { before: `E → ${f.action}`, away: tile.dir });
+    if (out.eVerb === 'drop') pickUpAgain(S);
   }));
 
   // Holding E, when that runs another verb (eating): a fresh day.
@@ -329,9 +340,10 @@ function tilePanels(level, lib, type, tile) {
       const m = S.mark();
       row.done(S.g, { type: verb, targetId: 'self', kind: 'self', id: 'self', x: p.x, y: p.y, item: null });
       S.run(AFTER);
+      const off = verb === 'drop' ? stepOff(S, tile.dir) : null;
       const by = out.eVerb ? `E does not reach it here: a tap runs ${out.eVerb}${out.holdVerb ? `, a hold ${out.holdVerb}` : ''}` : 'E does not reach it here';
-      S.shoot({ verb, phase: 'after', label: `${verb} · after (not on E)`, intent: `${rowText(verb, row)}; ${by}, so the sheet shows its result only. It changed: ${S.since(m).join('; ')}.` });
-      if (verb === 'drop') pickUpAgain(S, tile.dir);
+      S.shoot({ verb, phase: 'after', label: `${verb} · after (not on E)`, intent: `${rowText(verb, row)}; ${by}, so the sheet shows its result only. It changed: ${S.since(m).join('; ')}.${off?.said ?? ''}`, apart: off?.apart }, off?.item ?? null);
+      if (verb === 'drop') pickUpAgain(S);
     }));
   }
   return { ...out, trouble: [...out.trouble] };

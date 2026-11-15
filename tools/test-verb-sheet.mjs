@@ -86,6 +86,9 @@ function coverage(id) {
     for (const v of e.selves.filter((x) => x !== e.tap && x !== e.hold)) ok(has(s, v, 'after'), `${T}: ${v} (not on E), its result drawn`);
     ok(e.pickUp === has(s, 'pick_up', 'after'), `${T}: picked up again ${e.pickUp ? 'drawn' : 'not drawn, as nothing puts it down'}`);
     if (e.drop) ok(has(s, 'pick_up', 'before', 'on the floor'), `${T}: on the floor after the drop, a step away`);
+    // The drop's after panel shows the item: the player has stepped off it (it was drawn under him on every level).
+    const dropped = s.panels.filter((p) => p.verb === 'drop' && p.phase === 'after');
+    if (e.drop) ok(dropped.length > 0 && dropped.every((p) => p.apart >= 0.5 && /lies on the floor beside you/.test(s.intent)), `${T}: drop · after shows it on the floor, the player stepped off it (${dropped.map((p) => p.apart?.toFixed(2)).join(', ')} tiles)`);
     for (const sp of e.spots) {
       if (sp.taken) ok(s.missing.some((m) => m.startsWith(`put on ${sp.name}:`) && m.includes(sp.taken)), `${T}: put on ${sp.name} named as not drawn (the ${sp.taken} lies there)`);
       else ok(has(s, 'put', 'before', `put on ${sp.name}`) && has(s, 'put', 'after', `put on ${sp.name}`), `${T}: put on ${sp.name}, before and after`);

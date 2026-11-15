@@ -21,7 +21,8 @@ import { createHarness } from '../../src/agent/harness.js';
 import { createRenderer } from '../../src/render/renderer.js';
 import { findNpc } from '../../src/game/perception.js';
 import { formatClock } from '../../src/config.js';
-import { HUD_H, VIEW_W } from '../../src/render/util.js';
+import { HUD_H, VIEW_W, glyphScope } from '../../src/render/util.js';
+import { drawBubble } from '../../src/render/effects.js';
 import { loadCanvas, withDom, playToEndCard, playerView } from './draw.mjs';
 import { playCheck } from './route-ctx.mjs';
 
@@ -78,6 +79,7 @@ export function captureRun(level, check, { lib = loadCanvas(), w = REPLAY_W, h =
     const moments = [];
     const seen = new WeakSet(); // bubbles already drawn
     const lureWas = new Map();
+    const faces = []; // every bubble as it came up: { kind, icons, x, y, clock, png } (the faces pass)
     let logAt = 0;
 
     function snap(game, what) {
@@ -122,13 +124,20 @@ export function captureRun(level, check, { lib = loadCanvas(), w = REPLAY_W, h =
         if (on && !lureWas.get(lure)) lured = true;
         lureWas.set(lure, on);
       }
-      let bubble = false;
+      const fresh = [];
       for (const b of view.bubbles()) {
         if (seen.has(b) || view.age(b) < Math.min(BUBBLE_AGE, b.ttl / 2)) continue;
         seen.add(b);
-        bubble = true;
+        fresh.push(b);
       }
-      if (you || sound || lured || bubble) snap(game, { you, sound });
+      if (you || sound || lured || fresh.length) snap(game, { you, sound });
+      for (const b of fresh) {
+        const at = ownerAt(game, b.owner, k);
+        faces.push({
+          kind: b.kind ?? 'speech', icons: [].concat(b.icons ?? []).map(String), x: at?.x ?? null, y: at?.y ?? null,
+          clock: moments[moments.length - 1].clock, png: moments[moments.length - 1].png, solo: soloBubble(lib, b),
+        });
+      }
     }
 
     harness = createHarness({ level, onFrame: watch });
@@ -153,8 +162,144 @@ export function captureRun(level, check, { lib = loadCanvas(), w = REPLAY_W, h =
       outcome: g.outcome ?? null,
       err: err ? err.message : null,
       total: moments.length,
+      faces,
     };
   }, { w, h });
+}
+
+// A bubble drawn alone, fully popped in, on a plain ground, SOLO_K times the game's size: no speaker, no room. Called
+// right after a frame is drawn, so the level's face and thing painters are the ones the renderer just used.
+export const SOLO = { w: 180, h: 100, ax: 90, ay: 92 };
+export const SOLO_K = 2.5;
+function soloBubble(lib, b) {
+  const c = lib.createCanvas(SOLO.w * SOLO_K, SOLO.h * SOLO_K);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#e9e6df';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.scale(SOLO_K, SOLO_K);
+  const was = glyphScope('speech');
+  try {
+    drawBubble(ctx, { ...b, age: 1, ttl: 1e6 }, SOLO.ax, SOLO.ay);
+  } finally {
+    glyphScope(was);
+  }
+  return c.toBuffer('image/png');
+}
+
+// Every distinct bubble (kind and icons) across runs, first sighting first: [{ kind, icons, solo, png, x, y, clock,
+// run, count }]. runs: captureRuns' result.
+export function distinctFaces(runs) {
+  const out = new Map();
+  for (const run of runs) {
+    for (const f of run.faces ?? []) {
+      const key = `${f.kind}:${f.icons.join(' ')}`;
+      if (out.has(key)) out.get(key).count++;
+      else out.set(key, { ...f, run: run.dir, count: 1 });
+    }
+  }
+  return [...out.values()];
+}
+
+// The last `n` frames of every run (the end card is the last): the outcomes pass. [{ dir, name, expect, outcome, err,
+// frames }].
+export const OUTCOME_FRAMES = 3;
+export function runEnds(runs, n = OUTCOME_FRAMES) {
+  return runs.map((r) => ({ ...r, frames: r.frames.slice(-n) }));
+}
+
+// Tells: for each thing the player does in a route check (an interaction, a put, sitting down), the picture just
+// before and the picture when it is done, side by side, BEFORE on the left. A route depends on each of these state
+// changes; the tells pass asks whether a player can see what changed. The same action (its command and what the
+// engine says it did) is drawn once, from the first check that does it. At most max pairs.
+// Returns [{ file, png, label, check, clock, x, y }].
+export const MAX_TELLS = 40;
+export const TELL_GAP = 16;
+const ACTS = /^\s*(interact|put|sit)\b/i;
+export function captureTells(level, checks, { lib = loadCanvas(), w = REPLAY_W, h = REPLAY_H, max = MAX_TELLS } = {}) {
+  const out = [];
+  const keys = new Set();
+  for (const check of checks) {
+    if (out.length >= max) break;
+    withDom(lib, `tells:${check.name}`, () => {
+      const canvas = lib.createCanvas(w, h);
+      const k = w / VIEW_W;
+      let r = null;
+      let harness = null;
+      let view = null;
+      let open = null; // { c, line, clock, x, y }
+      let logAt = 0;
+      const draw = (game) => view.draw(() => r.render(game));
+      function close(game, label) {
+        const t = open;
+        open = null;
+        const key = `${t.line.trim()} => ${label}`;
+        if (keys.has(key) || out.length >= max) return;
+        keys.add(key);
+        draw(game);
+        t.c.getContext('2d').drawImage(canvas, w + TELL_GAP, 0);
+        out.push({ file: `${pad2(out.length + 1)}.png`, png: t.c.toBuffer('image/png'), label, check: check.name, clock: t.clock, x: t.x, y: t.y });
+      }
+      function watch(game) {
+        view.note();
+        if (!r) return;
+        const log = harness.log;
+        for (; logAt < log.length; logAt++) {
+          const e = log[logAt];
+          if (e.name === 'action:done' && open?.c) close(game, `${e.payload?.type ?? 'action'} ${e.payload?.targetId ?? ''}`.trim());
+        }
+      }
+      harness = createHarness({ level, onFrame: watch });
+      const g = harness.game;
+      view = playerView(g);
+      r = createRenderer(canvas, { strict: true });
+      harness.begin();
+      r.render(g);
+      // The BEFORE half is drawn when the player presses E, after any walk the command makes first (sit, put).
+      const press = g.input.press.bind(g.input);
+      g.input.press = (name, ...rest) => {
+        if (name === 'interact' && open && !open.c && g.phase === 'day') {
+          draw(g);
+          const c = lib.createCanvas(w * 2 + TELL_GAP, h);
+          const cx = c.getContext('2d');
+          cx.fillStyle = '#ffffff';
+          cx.fillRect(0, 0, c.width, h);
+          cx.drawImage(canvas, 0, 0);
+          const p = g.player;
+          Object.assign(open, { c, clock: formatClock(g.clock.minute, g.level.day.start), x: Math.round(p.x * TILE * k), y: Math.round((HUD_H + p.y * TILE) * k) });
+        }
+        return press(name, ...rest);
+      };
+      const run = harness.run;
+      harness.run = (line) => {
+        if (!ACTS.test(line) || g.phase !== 'day') return run(line);
+        logAt = harness.log.length;
+        open = { c: null, line };
+        try {
+          const res = run(line);
+          // An instant one (sitting down, a drop) has no action:done: the harness's reply says what it did.
+          if (open?.c && res.ok && g.phase === 'day' && /^interacted: /.test(res.text)) close(g, res.text.split('\n')[0].replace(/^interacted: /, ''));
+          return res;
+        } finally {
+          open = null;
+        }
+      };
+      playCheck(harness, check);
+    }, { w, h });
+  }
+  return out;
+}
+
+// What the tells reader is told about each pair: where the player stands and the clock, never what they did.
+export function tellsCaptions(tells) {
+  return ['Each picture is one moment, BEFORE on the left and AFTER on the right. The player used something between them.', '',
+    ...tells.map((t) => `${t.file}  ${t.clock}. You are at about x ${t.x}, y ${t.y} in each half.`), ''].join('\n');
+}
+
+// Where a bubble's owner stands in a picture k times the game's view: a person (by id) or a point ({ x, y } in tiles).
+function ownerAt(game, owner, k) {
+  const p = typeof owner === 'string' ? (owner === 'player' || owner === game.player?.id ? game.player : findNpc(game, owner)) : owner;
+  if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) return null;
+  return { x: Math.round(p.x * TILE * k), y: Math.round((HUD_H + p.y * TILE) * k) };
 }
 
 // The captions file of one run: the frames in order, one line each.
