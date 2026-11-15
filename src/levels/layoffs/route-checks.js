@@ -13,7 +13,7 @@ const FIX = ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact']
 
 export default [
   {
-    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → ✔️ → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss fixes it himself at 3:31 → 🧥📧 → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
       run('pretend until 3:45');
@@ -26,7 +26,7 @@ export default [
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
       mustSay(log, 'boss', ['😮‍💨']); // 3:31: a sigh, then down to the cable himself
       mustSay(log, 'boss', ['🔌']);
-      mustSay(log, 'boss', ['@player', '✔️']);
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
     },
   },
   {
@@ -58,7 +58,7 @@ export default [
       mustSay(log, 'boss', ['😤']); // fed up with the static
       mustSay(log, 'boss', ['☕', '👉', '@player']);
       mustFire(log, 'phone:called');
-      mustSay(log, 'boss', ['📋', '✔️']); // he ticks the sheet name by name: no face of yours to look up for
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it unread
     },
   },
   {
@@ -70,17 +70,32 @@ export default [
     },
   },
   {
-    name: 'edit while Lin is looking → ❗👉 you; too far for him to hear, she goes to tell him; he checks his screen, puts your face back, comes for you → caught',
+    name: 'edit while Lin is looking → she thinks of her own face on the list (📋 her 😨) and goes to tell him; he checks his screen, puts your face back, comes for you → caught',
     expect: { result: 'caught' },
     play({ run, log, g }) {
-      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'goto my_seat pretend']) run(c);
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'wait until 3:37.5', 'goto my_seat pretend']) run(c); // interact pauses as she sees you: finish the edit
       for (let i = 0; i < 6 && !g.caught; i++) run('pretend until 3:45'); // (her telling him stops a pretend)
-      mustSay(log, 'lin', ['❗', '👉', '@player']);
-      if (log.some((e) => e.name === 'witness:tattle' && e.payload.heard && !e.payload.late)) throw new Error('he heard her shout from the kitchen');
+      mustSay(log, 'lin', ['📋', '@lin', '😨']); // why she tells, before she does
+      if (log.some((e) => e.name === 'witness:tattle')) throw new Error('Lin shouted: she should tell him, not the floor');
+      mustFire(log, 'list:edited'); // she lets you finish: your face comes off, then goes back on
       mustSay(log, 'lin', ['👉', '@player', '🖥️']); // she told him to his face
       mustFire(log, 'boss:checks');
       mustFire(log, 'boss:checked');
       if (g.caught?.reason !== 'evidence') throw new Error(`caught for ${g.caught?.reason}, not on Lin's word`);
+    },
+  },
+  {
+    name: 'told on, keep out of his sight (the restroom) → 3:45 comes while he looks for you: he goes back to his desk and sends it → fail',
+    expect: { result: 'fail' },
+    play({ run, log, g }) {
+      for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'wait until 3:37.5']) run(c);
+      for (let i = 0; i < 6 && g.phase === 'day' && !g.outcome; i++) run('goto restroom');
+      for (let i = 0; i < 6 && g.phase === 'day' && !g.outcome; i++) run('wait until 3:45');
+      mustSay(log, 'lin', ['👉', '@player', '🖥️']);
+      // He sends it from his own desk: the list never goes with nobody there.
+      const sent = log.find((e) => e.name === 'boss:packsUp');
+      if (!sent) throw new Error('boss:packsUp never fired: he was not at his desk for the send');
+      if (sent.minute > g.level.day.meetingAt) throw new Error(`he sat down at ${sent.minute.toFixed(2)}, after the send`);
     },
   },
   {

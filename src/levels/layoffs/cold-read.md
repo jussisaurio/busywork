@@ -51,52 +51,42 @@ The rest reads like something a coworker would whisper: "You're on the layoff li
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"da5b940","hash":"856f17e55f8b3c8bd09b5b363f5ac7ed72b7ed1883ad5be1115c8a462417c0b5","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"cd9e47f9d24bf4cdfcdbc1d29b0bf19bf1d298e76609c15d912d928b7d3a1d42","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":3,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":2,"nit":1}} -->
+<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"6af4315","hash":"a1683d14330848adf8d938c2d7f93b0d773f7550aa4aaba3886170facfb6fb09","parts":{"card":"dbd1b383a7e3e2d9e135c3fb6f246d5391f04f9fb2a0805c98870e4b58c39d9c","ways":"53cb7c337db332438629c12e150c6ee360131ab81070a56a5d1d7b762b28a3b3","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":4,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":3,"nit":1}} -->
 ## sense: fixable
-Recorded 2026-11-15 at commit da5b940, by claude -p (model: default). Inputs 856f17e55f8b: the card, premise.md's ways to win and lose, the pass's prompts.
-Items: 3 sensible, 2 stretch, 0 nonsense.
-Problems: 1 blocker, 2 should, 1 nit.
-Earlier problems: 3 fixed, 1 still there, 0 no longer applies (now blockers).
+Recorded 2026-11-15 at commit 6af4315, by claude -p (model: default). Inputs a1683d143308: the card, premise.md's ways to win and lose, the pass's prompts.
+Items: 4 sensible, 2 stretch, 0 nonsense.
+Problems: 1 blocker, 3 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 46 s | $0.12 |
-| all | | 46 s (the steps add up to 46 s) | $0.12 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 fixed: In "Seen by Lin", the boss is told that someone on his layoff list is editing it on his computer, and he only sends you back to your desk to type. A real boss would come straight back from the kitchen, angry, check the screen and deal with you. This ending is also milder than "Caught by the boss", though the offence is the same. It also isn't clear how he hears Lin from the kitchen. — Have Lin's ❗ bring him back from the kitchen. He checks the screen, puts your face back and points you out, the same as in "Caught by the boss". If that ending feels too harsh, he can still put your face back, then glare at you and send you to your desk. Either way he has to come back and look. (Lin walks to the kitchen and tells him. He comes back, looks, puts your face back, locks the screen and comes for you. This matches "Caught by the boss".)
-- E2 still there: Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up. (Lin's only reaction is 😨 *after* she calls out. Nothing shows her afraid of being added to the list in your place, or any other reason, before she speaks up.)
-- E3 fixed: At 3:42 the boss checks the list against the people on the floor. He made a four-person list himself, and it now has three faces. He might well notice that someone is missing. — Have him tick the faces that are on the sheet, desk by desk, and never count them. Or make the check a glance from his doorway while he holds his coffee. A sleepy Friday boss who ticks what is in front of him is believable. A boss who doesn't notice a missing name while counting is not. (He ticks the faces that are on the sheet (📋✔️) and does not count heads.)
-- E4 fixed: He leaves you alone at his desk with the layoff list on the screen, and you are on that list. — This works only if he doesn't know the list will come back when the screen does. Show that he has forgotten: for example, he grumbles about the static and doesn't glance at the screen as he leaves. Don't show him thinking about the list. (He leaves angry at the static (😤 ☕ 👉 you) while the screen is dead. Nothing shows him thinking about the list, and he had no reason to lock a blank screen.)
+| 1-judge | report.md | 37 s | $0.09 |
+| all | | 37 s (the steps add up to 37 s) | $0.09 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] Lin has no clear reason to tell on a coworker she has just felt sorry for. Most real coworkers would look away. — Give her a motive she shows on screen, one a real person would have. When your face is crossed out, she worries the empty place will be filled with her (😨, then she looks at the list). That fear makes her speak up. (recurring: premise-level?)
-- E2 [should] In Route 2, Lin keeps her back to the office for the whole ring (about 6 s) at a desk she watched Kev leave. A real coworker glances at the phone and turns back, or puts up with it while keeping an eye on things. Fix: make it a short glance (about 3–4 s, just long enough for the 3 s edit). Better, give her a reason to keep looking: she half stands, thinking Kev may have come back for something, then sits down again.
-- E3 [should] At 3:42 the boss ticks a list that is one face short. The missing face belongs to the person he left alone at his desk 15 minutes earlier. Ticking what is in front of him is believable, but a moment of doubt would be more natural. Fix: when he ticks, he frowns at the sheet for a moment, sips his coffee, shrugs and sends it. He trusts what is on the screen, and nobody has to act like a puzzle piece.
+- E1 [blocker] The boss's handover contradicts itself. 🙅🖥️ ("don't touch my screen") reads as a refusal, the same refusal he gives before 3:15. The ☕ 👉 you after it then says the opposite. A player can't tell whether he agreed or why he left. A real boss would just say yes. **Fix:** drop 🙅🖥️ and show a plain go-ahead such as 👍🔌 then ☕, or a shrug at the dead screen then ☕.
+- E2 [should] A boss careful enough to lock the list at 3:11 doesn't usually leave its victim alone with it. It holds up only if he doesn't know you know, so make that explicit. **Fix:** have him glance at the list, then at you, then at the dead screen, and shrug, so the player sees he decides it's harmless. Or have him leave because of something more pressing than coffee, like a ringing kitchen or his own manager calling him out.
+- E3 [should] He fixes it himself at 3:31, which shows he knows it's just the plug. He still calls Kev at 3:26 and then hands the job to you. Bosses do avoid crawling under desks, but the story never shows that's why. **Fix:** at 3:31 show him getting down with visible effort and annoyance (a groan, a sore back), so the earlier choice to delegate reads as reluctance rather than ignorance.
+- E4 [should] In "Seen by Lin", the list goes at 3:45 while he is out hunting you, and nobody clicks send. **Fix:** he goes back to his desk at 3:45 and sends it himself, or the scheduled send fires on its own and is shown that way.
 
 ### 1-judge: report.md
 
 Verdict: fixable
-- Route 1: wait for Lin's phone (win): sensible. Lin reading a text is not watching the boss's office. The way in also holds up: a boss whose IT man has gone home lets whoever is already working on his cable fix it, and goes for coffee.
-- Route 2: ring Kev's desk (win): stretch. Anyone looks round at a ringing phone. But Lin saw Kev leave, so she would glance and turn back, not watch an empty desk for 6 seconds.
-- Do nothing (lose): sensible. Nothing changed, so the list goes out as he wrote it.
-- Seen by Lin (lose): stretch. The boss's part is now right: he comes back, checks the screen, puts your face back, locks it and comes for you. Lin still has no reason to tell on someone she just felt sorry for.
-- Caught by the boss (lose): sensible. Catching someone crossing themselves off his list gets an instant, angry response.
 
-## Earlier problems
-- E1: fixed. Lin walks to the kitchen and tells him. He comes back, looks, puts your face back, locks the screen and comes for you. This matches "Caught by the boss".
-- E2: still there. Lin's only reaction is 😨 *after* she calls out. Nothing shows her afraid of being added to the list in your place, or any other reason, before she speaks up.
-- E3: fixed. He ticks the faces that are on the sheet (📋✔️) and does not count heads.
-- E4: fixed. He leaves angry at the static (😤 ☕ 👉 you) while the screen is dead. Nothing shows him thinking about the list, and he had no reason to lock a blank screen.
+- Fix his computer, he goes for coffee (shared way in): stretch. A boss who handles the cable himself at 3:31, and who locked his screen at 3:11 to protect the list, walks off and leaves the person on that list alone with his computer. His signal (🙅🖥️ followed by ☕ 👉 you) also says "don't touch it" and "fix it" at once.
+- Route 1, wait for Lin's phone (win): sensible. Anyone who reads a buzzing phone looks away for a few seconds.
+- Route 2, ring Kev's phone (win): sensible. A phone ringing behind you makes you turn round, even at an empty desk.
+- Do nothing (lose): sensible. Nothing changed, so the list goes out as he wrote it.
+- Seen by Lin (lose): stretch. Her reason and his reaction both hold up. But if you stay out of his sight, the list still goes at 3:45 while he is away searching for you, and nobody is at the desk to click send.
+- Caught by the boss (lose): sensible. Catching someone crossing themselves off your layoff list gets them fired on the spot.
 
 ## Problems
-- should: In Route 2, Lin keeps her back to the office for the whole ring (about 6 s) at a desk she watched Kev leave. A real coworker glances at the phone and turns back, or puts up with it while keeping an eye on things. Fix: make it a short glance (about 3–4 s, just long enough for the 3 s edit). Better, give her a reason to keep looking: she half stands, thinking Kev may have come back for something, then sits down again.
-- should: At 3:42 the boss ticks a list that is one face short. The missing face belongs to the person he left alone at his desk 15 minutes earlier. Ticking what is in front of him is believable, but a moment of doubt would be more natural. Fix: when he ticks, he frowns at the sheet for a moment, sips his coffee, shrugs and sends it. He trusts what is on the screen, and nobody has to act like a puzzle piece.
-- nit: Nothing says what happens if he comes back and finds you sitting in his chair without having edited anything. Being "sent back to your desk" covers standing around, but sitting at his computer is bolder. Fix: he gives you a suspicious look, then sends you back to your desk.
+- blocker: The boss's handover contradicts itself. 🙅🖥️ ("don't touch my screen") reads as a refusal, the same refusal he gives before 3:15. The ☕ 👉 you after it then says the opposite. A player can't tell whether he agreed or why he left. A real boss would just say yes. **Fix:** drop 🙅🖥️ and show a plain go-ahead such as 👍🔌 then ☕, or a shrug at the dead screen then ☕.
+- should: A boss careful enough to lock the list at 3:11 doesn't usually leave its victim alone with it. It holds up only if he doesn't know you know, so make that explicit. **Fix:** have him glance at the list, then at you, then at the dead screen, and shrug, so the player sees he decides it's harmless. Or have him leave because of something more pressing than coffee, like a ringing kitchen or his own manager calling him out.
+- should: He fixes it himself at 3:31, which shows he knows it's just the plug. He still calls Kev at 3:26 and then hands the job to you. Bosses do avoid crawling under desks, but the story never shows that's why. **Fix:** at 3:31 show him getting down with visible effort and annoyance (a groan, a sore back), so the earlier choice to delegate reads as reluctance rather than ignorance.
+- should: In "Seen by Lin", the list goes at 3:45 while he is out hunting you, and nobody clicks send. **Fix:** he goes back to his desk at 3:45 and sends it himself, or the scheduled send fires on its own and is shown that way.
+- nit: If he finds you standing in his office, he just sends you back to your desk. A real boss would at least ask why you were there. **Fix:** add a suspicious ❓ before he points you back, still with no penalty.
 
 <!-- /cold-read:sense -->
 
