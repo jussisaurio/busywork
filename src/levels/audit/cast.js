@@ -5,7 +5,7 @@
 //   3:08-3:16  the boss smokes in the lobby. Lin sees into his office through the glass, and he sees her desk.
 //   3:10-3:22  Kev is out for lunch; back, he stops by your desk first (👋), and takes his laptop if it's there.
 //   3:13-3:24  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌, and she misses it (💻❓).
-//   3:24-3:41  Kev is in the kitchen; back, by your desk again: just after the auditor has ticked it.
+//   3:24-3:37  Kev has a coffee in the kitchen, in view; back, by your desk again, just after your tick.
 //   3:25       the auditor is out of the lift, coffee at the hallway machine, clipboard. 3:30 he starts ticking:
 //              the boss's desk, Lin's (she gets coffee 3:35-3:38 and walks right past you), yours, Kev's.
 //   3:33-      the boss, ticked off, goes for his smoke.
@@ -21,7 +21,7 @@ const KEV_BACK = '3:37.4'; // out of the kitchen: at your desk just after the au
 export const CAST = [
   {
     id: 'auditor',
-    icon: '🕵️',
+    icon: '@auditor',
     color: '#6b6f78', // grey suit
     voice: 'auditor',
     meetingSpot: 'audit_you', // he signs off at your desk
@@ -36,7 +36,7 @@ export const CAST = [
   },
   {
     id: 'boss',
-    icon: '👔',
+    icon: '@boss',
     color: '#2b3a55', // navy suit
     voice: 'boss',
     meetingSpot: 'boss_desk',
@@ -45,16 +45,14 @@ export const CAST = [
     coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // back to the glass, facing his window
-      s('3:07.5', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
       s('3:08', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
       s('3:16', { do: 'sit', spot: 'boss_desk', arrive: 'bossCheck' }),
-      s('3:32.5', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }), // his desk is ticked off: smoke
-      s('3:33', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
+      s('3:33', { do: 'visit', spot: 'smoke', anim: 'smoking' }), // his desk is ticked off: smoke
     ],
   },
   {
     id: 'lin',
-    icon: '👓',
+    icon: '@lin',
     color: '#2f8f83', // teal cardigan
     voice: 'lin',
     meetingSpot: 'lin_desk',
@@ -70,7 +68,7 @@ export const CAST = [
   },
   {
     id: 'kev',
-    icon: '🔧',
+    icon: '@kev',
     color: '#5f6b3a', // olive hoodie
     voice: 'kev',
     meetingSpot: 'kev_desk',
@@ -78,11 +76,10 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
-      s('3:09.5', { do: 'say', icons: ['🍔', '👋'], kind: 'speech' }),
+      s('3:09.5', { do: 'say', icons: ['👋'], kind: 'speech' }), // off to lunch
       s('3:10', { do: 'away', spot: 'elevator' }), // his laptop stays on his desk
       s('3:18', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
-      s('3:23.5', { do: 'say', icons: ['☕', '❓'], kind: 'thought' }),
-      s('3:24', { do: 'away', spot: 'kitchen' }), // his laptop stays on his desk
+      s('3:24', { do: 'visit', spot: 'kitchen', anim: 'coffee' }), // a coffee in the kitchen; his laptop stays on his desk
       s(KEV_BACK, { do: 'sit', spot: 'kev_desk', prelude: 'kevStopsAgain', arrive: 'kevSits' }), // via your desk
     ],
   },
@@ -91,7 +88,7 @@ export const CAST = [
 const on = (w, spot) => w.items.find((i) => i.spot === spot);
 
 // Kev's stop at your desk on his way back to his own (once per return: flag names the return).
-const stopBy = (flag, hi) => ({
+const stopBy = (flag) => ({
   spot: 'hallway_mid',
   state: { [flag]: false },
   pending: (npc) => !npc[flag],
@@ -106,7 +103,7 @@ const stopBy = (flag, hi) => ({
       sim.speak(game, npc, [{ say: ['💻', '❗'] }]);
       game.events.emit('kev:fetched', {});
     } else {
-      sim.speak(game, npc, [{ say: [hi, '👋'] }]);
+      sim.speak(game, npc, [{ say: ['👋'] }]);
     }
   },
 });
@@ -128,8 +125,8 @@ export const BEHAVIOURS = {
     },
   },
   // Kev, back from lunch and back from the kitchen, stops by your desk first: a wave, or his laptop, which he takes.
-  kevStops: stopBy('_lunch', '🍔'),
-  kevStopsAgain: stopBy('_coffee', '☕'),
+  kevStops: stopBy('_lunch'),
+  kevStopsAgain: stopBy('_coffee'),
   // At his own desk: his laptop goes back where it lives.
   kevSits: {
     arrive(game, npc, sim) {
@@ -151,7 +148,7 @@ export const BEHAVIOURS = {
       if (npc._signed) return;
       npc._signed = true;
       sim.faceSpot(game, npc, 'player_desk');
-      if (game.world.audited) sim.speak(game, npc, [{ say: ['🧾', '✍️'] }]);
+      if (game.world.audited) sim.speak(game, npc, [{ say: ['😊'] }]);
     },
   },
 };

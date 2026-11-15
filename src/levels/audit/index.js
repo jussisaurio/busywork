@@ -1,4 +1,4 @@
-// "The Audit": 3:30 laptop audit. There should be four. You sold yours.
+// "The Audit": 3:00 PM. A laptop audit at 3:30. There should be four. You sold yours. Make him count four.
 // An auditor comes up in the lift and ticks the desks off in order: the boss's, Lin's, yours, Kev's. Each desk is
 // judged when he gets to it, so a laptop he has already ticked off can run ahead of his clipboard to the next desk
 // and be counted twice. Move one too early and the desk it left gets the ❌.
@@ -113,7 +113,7 @@ const INSPECTIONS = [{
     { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: 2, record: 'atYou' },
     { item: LAPTOPS, spot: 'kev_desk', from: 'audit_kev', look: 2, record: 'atKev' },
   ],
-  pass: { set: { audited: true }, event: 'audit:passed', says: [{ say: ['💻', '💻', '💻', '💻', '👍'] }] },
+  pass: { set: { audited: true }, event: 'audit:passed', says: [{ say: ['💻', '😊'] }] }, // Kev's desk, the fourth tick
   fail: { then: 'caught', says: [{ say: ['💻', '❓'] }] },
 }];
 
@@ -144,9 +144,9 @@ export default {
   meeting: { override: 'signoff', room: 'desk', chair: 'player_desk', presenter: 'player_desk' },
   // A route: whose laptop he counted twice.
   routes: [
-    { id: 'boss', icon: '👔', achieved: (w) => twice(w, 'laptop_boss') },
-    { id: 'lin', icon: '👓', achieved: (w) => twice(w, 'laptop_lin') },
-    { id: 'kev', icon: '🔧', achieved: (w) => twice(w, 'laptop_kev') },
+    { id: 'boss', icon: '@boss', achieved: (w) => twice(w, 'laptop_boss') },
+    { id: 'lin', icon: '@lin', achieved: (w) => twice(w, 'laptop_lin') },
+    { id: 'kev', icon: '@kev', achieved: (w) => twice(w, 'laptop_kev') },
   ],
   outcomeOrder: ['boss', 'lin', 'kev'],
   initialWorld: () => ({
