@@ -2,7 +2,7 @@
 // State-space fuzzer: searches for player plans that do surprising things, especially wins that are
 // too easy. A plan is a short list of harness macro-steps (goto X [pretend], do, sit, pretend/wait
 // until T, pretend/wait N seconds, and put S [pretend] in levels with spots that take items), then a stance held
-// until 4:00. The day is deterministic, so every
+// until the level's day.meetingAt. The day is deterministic, so every
 // candidate replays from 2:30 (a day costs ~5-30 ms headless).
 //
 // Search: MAP-Elites. Every run is binned by what happened (result, routes, milestones such as
@@ -22,7 +22,7 @@
 //   NO-WIN    a route of the level that no plan won
 //   CRASH     a command threw or a day never ended (a game bug, or a harness bug)
 // The report also lists the time span of each route's key action across all wins found: the real
-// windows, to compare with the ones DESIGN.md claims.
+// windows, to compare with the ones the level's LEVEL.md claims.
 //
 // As a module: fuzz(opts) runs the search and returns plain results; report(), winLines() and toJson()
 // format them; evaluate(plan, L) plays one plan of the level levelData(id) describes. tools/gate.mjs uses

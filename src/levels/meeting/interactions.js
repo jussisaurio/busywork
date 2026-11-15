@@ -1,11 +1,13 @@
 // The meeting's player actions (level.interactions). The engine adds, after these, eat_sandwich (the sandwich is
-// edible, items.js) and the generic sit, drop and pick_up.
+// edible, items.js) and the generic sit, drop, pick_up and put.
 // Each row, keyed by verb:
 //   on        the target that offers it: an interactable type, 'item' (a floor item) or 'self' (what is in hand)
 //   icon      the ✋ hint (player.focus.icon); text: the harness's words for it
 //   duration  real seconds. sneaky: witnesses matter while in progress. owner: only that NPC minds (a sandwich
 //             is just a sandwich to everyone but Lin). idle: the authority reads it as slacking (his ❓ fills).
 //   saw       the icon a witness's grudge bubble shows for it
+//   instant   (instead of duration) done at once, never seen in progress. noise: { radius, at?, npcs? } a noise
+//             when done (sim/mechanics/attention.js)
 //   can(p, w, item)  offered only while this holds; a timed action is cancelled ('invalid') once it stops
 //   done(game, a)    the result, applied right after 'action:done'
 // For one target the first possible row wins.

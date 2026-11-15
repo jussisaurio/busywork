@@ -7,7 +7,8 @@
 //   patrols  named point lists for { do: 'patrol', route } schedule entries
 //   cast     the NPC definitions, in order: the order is behaviour (update, witness and event order)
 //   day      the day's times, in game minutes since 2:30 PM (config.js at())
-//   interactions  the player's actions here (interactions.js; play/interactions.js adds sit, drop, pick_up)
+//   interactions  the player's actions here (interactions.js; play/interactions.js adds eat_<type> per edible
+//                 item, then sit, drop, pick_up, put)
 //   items    carryable item types and their flags: icon, place, edible, contraband, owner (items.js)
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it

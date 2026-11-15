@@ -1,4 +1,4 @@
-// The office floor. 30 x 17 tiles. See DESIGN.md for the intended sightlines.
+// The office floor. 30 x 17 tiles. See LEVEL.md for the intended sightlines.
 //
 //  Boss office (glass S/E walls)  | Meeting room (projector J)      | Kitchen (fridge F, coffee C)
 //  ------------------------------ hallway (row 7) --------------------------------------------

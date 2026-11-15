@@ -45,7 +45,7 @@ export function resetLoop(game) {
     busy: false,
     busyPose: null,
     seated: true,
-    smeared: false, // mustard down your sweater: you ate Lin's sandwich, and it shows
+    smeared: false, // ate an edible item (play/interactions.js eat_<type>); a role's evidence `mark` may name it
     action: null,
     locked: false,
     focus: null,
