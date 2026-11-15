@@ -63,6 +63,7 @@ const SPOTS = {
   switchboard: { x: 10, y: 2, face: 'N' }, // in front of the switchboard
   boss_desk: { x: 3, y: 2, face: 'S' }, // behind his desk, watching the office through the glass
   boss_window: { x: 2, y: 2, face: 'N' }, // the boss on his own phone, back to the room
+  boss_window_view: { x: 2, y: 1 }, // what he stares at meanwhile: the window
   boss_front: { x: 2, y: 4, face: 'N' }, // anyone else at the boss's phone
   lin_desk: { x: 2, y: 7, face: 'N' },
   lin_side: { x: 1, y: 7, face: 'N' }, // anyone else at Lin's phone

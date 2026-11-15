@@ -42,8 +42,8 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'visit', spot: 'kitchen_kev' }), // coffee
-      s('3:03', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his cable round: the socket by Lin's desk
-      s('3:09', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
+      s('3:06', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his cable round: the socket by Lin's desk
+      s('3:13', { do: 'visit', spot: 'kitchen_kev' }), // more coffee
       s('3:27', { do: 'sit', spot: 'kev_desk' }),
     ],
   },

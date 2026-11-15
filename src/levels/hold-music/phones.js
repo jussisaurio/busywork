@@ -140,6 +140,11 @@ export function phoneTick(game, sim) {
   for (const p of PHONE_IDS) {
     const who = w[`line_${p}`];
     if (!who || (p === 'lin' && (w.interview === 'lin' || w.interview === 'other'))) continue;
+    // On hold he stares into space: his eyes stay ahead (no glances over his shoulder), though a ring still turns
+    // his head. This is what makes ringing someone a way past him.
+    const holder = byId(who);
+    const gaze = GAZE[who]?.[p];
+    if (holder && gaze && holder.override === `on_${p}_phone`) sim.lookAt(game, holder, gaze, 0.3);
     if (m < w[`noteAt_${p}`]) continue;
     w[`noteAt_${p}`] = m + NOTE_EVERY;
     const n = byId(who);
@@ -209,9 +214,15 @@ export const NOISES = {
 //   HOLD[npc][phone]: game minutes on hold. Lin hangs up her own line at once; anywhere else she hopes it is her
 //   interviewer and holds on. The boss loves the hold music.
 const HOLD = {
-  boss: { boss: 7, lin: 7, kev: 4, kitchen: 4 },
+  boss: { boss: 7, lin: 9, kev: 4, kitchen: 4 },
   lin: { lin: 0.3, boss: 10, kev: 10, kitchen: 10 },
   kev: { kev: 4, lin: 4, boss: 4, kitchen: 4 },
+};
+// Where each stares while on hold at each phone (a spot straight ahead of where he stands).
+const GAZE = {
+  boss: { boss: 'boss_window_view', lin: 'boss_front', kev: 'kev_desk', kitchen: null },
+  lin: { boss: 'boss_window', kev: 'kev_desk', kitchen: null },
+  kev: { lin: 'boss_front', boss: 'boss_window', kev: 'kitchen_kev', kitchen: null },
 };
 export const STAND = { // where each answers each phone
   boss: { boss: 'boss_window', lin: 'lin_side', kev: 'kev_side', kitchen: 'kitchen_phone' },
