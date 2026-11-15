@@ -26,6 +26,7 @@ export function say(game, owner, icons, opts = {}) {
     kind,
     age: 0,
     ttl: opts.ttl ?? 2.5,
+    voice: opts.voice ?? null, // who speaks from a point (a phone, a voice offstage); the harness names it
   };
   game.fx.bubbles.push(bubble);
   game.events.emit('say', { owner, icons, kind, voice: opts.voice ?? ownerKey });

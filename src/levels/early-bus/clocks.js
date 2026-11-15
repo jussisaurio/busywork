@@ -156,7 +156,7 @@ function reads(game, npc) {
   return c === 'boss' ? npc.id === 'boss' : c === 'open' && npc.id !== 'boss';
 }
 
-// A bubble by a clock (its face and ❗, a frown or a shrug; the boss's ❓ at his desk): beside his head on the side
+// A bubble by a clock (its face and 😮, a frown or a shrug; the boss's ❓ at his desk): beside his head on the side
 // away from the clock when he stands under it, so it never hides the clock.
 const SIDE = { boss: 1, open: -1 };
 function clockSay(game, npc, clock, icons, kind, ttl) {
