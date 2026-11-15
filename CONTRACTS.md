@@ -82,7 +82,8 @@ change in order changes the digest. These are the usual ways to break it:
 A level is one folder, `src/levels/<id>/`, whose `index.js` default-exports one object. Engine code reads it as
 `game.level` and never imports level files. The folder name must equal `id`: the tools find the goldens at
 `src/levels/<id>/golden.json` and `golden-render.json`, and the route checks at `route-checks.js` (see Tools).
-Register the level with one line in `src/levels/index.js`.
+Every level but the fixtures also has `premise.md`, `shots.js` and `cold-read.md`, for its cold reads
+(`docs/COLD-READ.md`). Register the level with one line in `src/levels/index.js`.
 
 Examples used below:
 - `fixture`: `src/levels/fixture/` ("Happy Birthday to Nobody"): one room, an authority, an owner, one lure.
@@ -585,7 +586,9 @@ exits 2 and lists the registry.
 - **Levels** (`tools/test-levels.mjs`): runs the validator on every registered level, and checks that a set of
   broken levels fail with the right line. It takes no `--level`.
 - **Harness** (`src/agent/harness.js`, `tools/play.mjs`): an LLM agent or a script plays the real game headlessly.
-  `createHarness({ level })` (a level object or id) builds a game with a scripted Input. `run('<command>')` runs
+  `createHarness({ level, onFrame })` (a level object or id) builds a game with a scripted Input. `onFrame(game)`,
+  if given, is called after every frame the harness steps (the replay strips use it to watch; it must not change the
+  game). `run('<command>')` runs
   human-level commands (`look`, `goto`, `move`, `interact`, `put [spot] [pretend]`, `sit`, `pretend`, `wait`,
   `continue`, `restart`) by pressing virtual keys frame by frame, like main.js. Commands stop early on notable
   events. `observe()` returns only what a human can see. `node tools/play.mjs new <session> --level <id>` starts a
@@ -603,7 +606,18 @@ exits 2 and lists the registry.
   - `random`: random plans win more than 1% of the time.
   - `crash`: a command threw, or a day never ended.
   - `<lesson id>`: a win that skips a `mustUse` lesson.
+  - `cold-read:<stage>` (every level but the fixtures): a cold read stage (`premise`, `pictures`, `replay`) not
+    recorded `works` in `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and
+    never runs the readers. It prints what is missing or stale and the command to run (`docs/COLD-READ.md`).
   `tools/test-gate.mjs` tests the verdict logic.
+- **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`;
+  `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`. Bubbles, sightlines and ripples are
+  drawn as a player at normal speed sees them at that clock time, even after pretending (`playerView`,
+  `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
+  `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
+- **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
+  level's premise, pictures and replays, and record a verdict per stage in `cold-read.md`. `--status` lists every
+  level's stages. `tools/test-cold-read.mjs` tests it with a fake reader. See `docs/COLD-READ.md`.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.
