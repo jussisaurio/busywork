@@ -11,11 +11,14 @@ import { drawCones } from './cones.js';
 import { drawDarkness } from './darkness.js';
 import {
   drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
+  drawWitnesses, FULL_VIEW,
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
 import { findNpc } from '../game/perception.js';
 import { isLegacyLevel } from '../levels/legacy.js';
+
+const VIEW = { x0: 0, y0: 0, x1: PLAY_W, y1: PLAY_H }; // the zoomed view (drawWorld)
 
 export function createRenderer(canvas, opts = {}) {
   const strict = !!opts.strict;
@@ -122,6 +125,7 @@ export function createRenderer(canvas, opts = {}) {
     ctx.translate(0, HUD_H);
 
     let beatK = 0;
+    let view = FULL_VIEW; // the part of the map on screen (map px): bubbles stay inside it
     if (mem.beatStart >= 0) {
       beatK = easeOutCubic((t - mem.beatStart) / 0.8);
       const p = game.player;
@@ -138,6 +142,11 @@ export function createRenderer(canvas, opts = {}) {
       ctx.translate(fx, fy);
       ctx.scale(z, z);
       ctx.translate(-fx, -fy);
+      VIEW.x0 = fx - fx / z;
+      VIEW.y0 = fy - fy / z;
+      VIEW.x1 = fx + (PLAY_W - fx) / z;
+      VIEW.y1 = fy + (PLAY_H - fy) / z;
+      view = VIEW;
     }
     const sh = game.fx && game.fx.shake;
     if (sh && fin(sh.t) > 0 && fin(sh.amount) > 0) {
@@ -158,9 +167,10 @@ export function createRenderer(canvas, opts = {}) {
       drawRipples(ctx, game); // a noise you can see (core/fx.js ripple)
       drawSightlines(ctx, game, t); // above people, below the bubbles
       drawActionRing(ctx, game, t);
-      drawSuspicion(ctx, game, t);
-      drawFocusHint(ctx, game, t);
-      drawBubbles(ctx, game);
+      drawSuspicion(ctx, game, t, view);
+      drawWitnesses(ctx, game, t, view); // a coworker's eye on you
+      drawFocusHint(ctx, game, t, view);
+      drawBubbles(ctx, game, view);
     }
     ctx.restore();
     glyphScope(was);

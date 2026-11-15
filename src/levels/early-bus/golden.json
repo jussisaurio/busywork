@@ -3,12 +3,14 @@
  "plans": [
   {
    "cmds": [
+    "goto boss_clock pretend",
     "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "c8af8ba9275aeb85",
-    "b7bf3a7ba98637ce"
+    "5ff31fd209a8f85a",
+    "6c6ce0e2c5d635d7",
+    "52e85dafd5aee734"
    ]
   },
   {
@@ -24,7 +26,7 @@
     "081cc6badea3a911",
     "e5e4611cc5a73e01",
     "1a8a6c7e2f247e32",
-    "7c8cd6e2c4b691ce"
+    "3b77f6fd16ce7c2d"
    ]
   },
   {
@@ -39,32 +41,30 @@
     "ee26c3112becbfff",
     "1a7f97f8d4b52839",
     "59e4c3b9e6f5108e",
-    "8ddb0bbd39054926",
-    "afff627006a1e4e1"
+    "f294f12146d6ce00",
+    "91d5315f6957d6ee"
    ]
   },
   {
    "cmds": [
-    "goto lin_desk",
     "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "49d788fdcef4506b",
-    "e9b7023eed6b7812",
-    "81b00f46e1a1958a"
+    "c8af8ba9275aeb85",
+    "f5e3f70f253b2da1"
    ]
   },
   {
    "cmds": [
-    "goto bus_stop",
+    "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
-    "5e1c26e8db83a5db",
-    "fa59f91a7b0c8dfe",
-    "9a9370235ee39ec4"
+    "5970cb999afee85f",
+    "7bb7aea84bf9518c",
+    "d26e4b288bfd0552"
    ]
   },
   {
@@ -78,7 +78,7 @@
     "dd2dad79e90b7289",
     "081cc6badea3a911",
     "3a834d4450c94189",
-    "b55b2c3947b6bdb7"
+    "749ea0fdbe8204ef"
    ]
   },
   {
@@ -89,8 +89,8 @@
    "summary": "fail",
    "digests": [
     "2afa48178c07e472",
-    "b5dafd6fd7abb5ca",
-    "d6c07f59ff733b34"
+    "d1123d6d91bacf4e",
+    "1f270a6b72e786fb"
    ]
   },
   {
@@ -105,32 +105,32 @@
   },
   {
    "cmds": [
-    "goto boss_clock",
+    "goto open_clock",
     "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "60b96a7ee2bc7368",
-    "942ae10ac5b4e568",
-    "b460e6a49d901cab"
+    "999e624edba1ee7c",
+    "c95447a96d50f402",
+    "c1405ceb8f5463e5"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:16",
-    "goto open_clock pretend",
+    "goto open_clock",
     "interact",
+    "wait until 3:45",
     "goto bus_stop pretend",
     "pretend until 4:30"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "d02e9911f4ac07ef",
-    "58560dffbd29ea86",
-    "aee04c788bb64187",
-    "16f3f786e8fa6ab6",
-    "356432cb1a0a9b33",
-    "356432cb1a0a9b33"
+    "999e624edba1ee7c",
+    "03a155ea3f8abc09",
+    "582c1644b14830a0",
+    "f7ff329f0e2b045c",
+    "1c75ee551d46a0bb",
+    "5fe36005fc46cbd8"
    ]
   },
   {
@@ -143,8 +143,8 @@
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
-    "fea0bc5d1651e4f5",
-    "c6d3fb7dfb3163b0"
+    "658460ed2bbb386a",
+    "4cd55e724886debb"
    ]
   },
   {
@@ -160,7 +160,7 @@
     "c2e3fae589bbf0ff",
     "57c88819f783d8ce",
     "c635cb949a211d2b",
-    "5177e5e75520df61"
+    "058e3c7193dd0c18"
    ]
   },
   {
@@ -180,35 +180,35 @@
   {
    "cmds": [
     "goto boss_clock pretend",
-    "pretend until 4:03",
+    "pretend until 3:29",
     "interact",
     "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
     "5ff31fd209a8f85a",
-    "7b53908b202851bf",
-    "2f35a1e8462f0c13",
-    "c5ce1dcaae0f4fe7",
-    "d035d1173f8cffc5"
+    "e4bb4c040a203cb5",
+    "20b56dc5e6d65121",
+    "6332f1cf20310f5a",
+    "f1a54f7dabfbb72e"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:33",
-    "goto open_clock",
+    "pretend until 3:30",
+    "goto open_clock pretend",
     "interact",
     "goto bus_stop",
     "pretend until 4:30"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "8bc6079d79e25d98",
-    "7c41e1b77e9218ab",
-    "ae8274462a44ff02",
-    "f47370a797e1e705",
-    "7cb094ca4b15021b",
-    "9a9f0f60df6b5a79"
+    "43e0d8b93d6e09f2",
+    "ef40f711c56b5b9f",
+    "a79db5adbd58382e",
+    "205fe7561179f199",
+    "36e72e1220cdf49a",
+    "3d382dc279b41ba4"
    ]
   },
   {
@@ -222,7 +222,7 @@
     "c8af8ba9275aeb85",
     "7be93ef2d389e618",
     "3913eea04751815d",
-    "2e81ce0fd9c61d81"
+    "3f89bfbbdd95f8ed"
    ]
   },
   {
@@ -254,47 +254,49 @@
     "081cc6badea3a911",
     "f3bad314a63eeb37",
     "7c0f6690b24ad17c",
-    "5d5bd3de1ceb5cb3"
+    "a2dcc9024728db42"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:33",
-    "goto open_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "8bc6079d79e25d98",
-    "76658a96dfc96533",
-    "e820a865cc5a5425",
-    "602f26a8c7dce075",
-    "5079c0945123911d",
-    "b3172a1e33e53455",
-    "3452b2776d081d04"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kitchen",
-    "goto open_clock",
+    "wait until 3:12",
+    "goto boss_clock pretend",
     "interact",
     "goto boss_clock pretend",
+    "interact",
+    "wait 1s",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "93e3eb4975205176",
+    "f78097acba064179",
+    "07d43576e97e05e1",
+    "d0217648ee8df84c",
+    "90b224c2edf549a5",
+    "cf2ef7629d7e25f3",
+    "50346f362121733f",
+    "856e50ecec70837c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto restroom_door pretend",
+    "goto open_clock",
+    "interact",
+    "goto boss_clock",
     "interact",
     "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "20ff7b594f2505b9",
-    "2674332fce378d9d",
-    "a41f4a1c08ccb9be",
-    "ab46cca5e02468cc",
-    "c5e40531fcd155ad",
-    "e04ef42aec5e6cb2",
-    "33aeff90702d1549"
+    "cb5257dc273884d7",
+    "ec46a3f992ba85da",
+    "2dced7ef24f9d35f",
+    "03decd27c4806ea2",
+    "6cfc6bf173bbe096",
+    "5d085b718e3f9c86",
+    "6614d6fde9b2cd79"
    ]
   },
   {
@@ -312,7 +314,7 @@
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
     "6c0d1e9b11447df1",
-    "44a8fb6da96404b7"
+    "cb25d1d42107d898"
    ]
   },
   {
@@ -331,7 +333,7 @@
   },
   {
    "cmds": [
-    "wait until 3:33",
+    "wait until 4:09",
     "goto boss_clock pretend",
     "interact",
     "wait until 4:30"
@@ -342,27 +344,27 @@
     "7be93ef2d389e618",
     "901be1ee6c9b519f",
     "a4774ade49b230cc",
-    "71bbde0a70efb07e"
+    "f1a54f7dabfbb72e"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:36",
-    "goto open_clock",
-    "interact",
+    "pretend until 3:33",
     "goto boss_clock pretend",
     "interact",
-    "pretend until 4:30"
+    "goto open_clock pretend",
+    "interact",
+    "wait until 4:30"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
-    "4efc4af9f25d43de",
-    "781c53a5b927ecc6",
-    "07c8e252c514d632",
-    "a8eef27181456809",
-    "469819f949ffe272",
-    "81cd60c329b546a9",
-    "bdf8bb8661a6b230"
+    "8bc6079d79e25d98",
+    "4656729d9eb7e92a",
+    "fa960b28c1cc312f",
+    "31b72f1a12bebb9c",
+    "3627728b008fcc71",
+    "050f18e9c45d84fe",
+    "8b0c842302286629"
    ]
   },
   {
@@ -378,7 +380,7 @@
     "081cc6badea3a911",
     "70bff5af68546fb3",
     "33a8fd16d43199b8",
-    "f1e2d21d76666b98"
+    "6b4c83e0d929d088"
    ]
   },
   {
@@ -395,8 +397,8 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "f15ea7bf96c497f8",
-    "8649d5cfd58a57ef"
+    "ca1126dc46fd918e",
+    "2ee5ca3281f537d6"
    ]
   },
   {
@@ -423,7 +425,7 @@
   },
   {
    "cmds": [
-    "wait until 3:48",
+    "wait until 4:09",
     "goto boss_clock pretend",
     "interact",
     "interact",
@@ -436,7 +438,7 @@
     "901be1ee6c9b519f",
     "ded3f73138bfcc67",
     "294184ac9a8ef04e",
-    "cc798f13ea3f4db4"
+    "5b6654a8c9dac7a4"
    ]
   },
   {
@@ -445,7 +447,7 @@
     "interact",
     "interact",
     "interact",
-    "goto lin_desk pretend",
+    "goto boss_clock pretend",
     "wait until 4:30"
    ],
    "summary": "fail",
@@ -454,25 +456,25 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "c6c183a64da495bd",
-    "efed39a26ad367d4",
-    "3e266f8f85e088bc"
+    "d1a7a85926b5cc27",
+    "48e2169b96d70917",
+    "f0dfb93c9dcd12bf"
    ]
   },
   {
    "cmds": [
     "goto open_clock pretend",
     "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
+    "goto bus_stop",
+    "wait until 4:30"
    ],
    "summary": "caught",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
-    "b9f844a2c16ea1f4",
-    "280efb9ca858221b",
-    "924b62e459f9f6ef"
+    "7ab03182af916549",
+    "1ea2dd12916494ab",
+    "08e67283ff649f18"
    ]
   },
   {
@@ -491,24 +493,26 @@
     "901be1ee6c9b519f",
     "ded3f73138bfcc67",
     "92bcae563734c044",
-    "56f35c8cbd83b529",
-    "cbdab19bcf0820ad"
+    "b72d22659311a99c",
+    "558b238c99d00093"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:54",
+    "pretend until 3:44",
     "goto boss_clock pretend",
     "interact",
-    "wait until 4:30"
+    "interact",
+    "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "22ca79affdb1cb1d",
-    "a0a95465b59217a6",
-    "2f6bfcfc9e4b76b0",
-    "847686d4d6f41a71",
-    "6dd55399336d614e"
+    "6677bdaf411af961",
+    "87d83dbd47996aeb",
+    "37e784e228855106",
+    "28ee3907f179dabc",
+    "36ed5b19e4f43d59",
+    "5fe36005fc46cbd8"
    ]
   },
   {
@@ -517,6 +521,7 @@
     "goto open_clock",
     "interact",
     "goto boss_clock pretend",
+    "interact",
     "interact",
     "wait until 4:30"
    ],
@@ -527,8 +532,9 @@
     "a41f4a1c08ccb9be",
     "ab46cca5e02468cc",
     "c5e40531fcd155ad",
-    "a5e43fb1ad9a760e",
-    "983cb8378642ec52"
+    "0118ba1fe8973650",
+    "f5f5a6a082082384",
+    "a77f98820de409b6"
    ]
   },
   {
@@ -538,7 +544,7 @@
     "interact",
     "goto open_clock pretend",
     "interact",
-    "goto bus_stop pretend",
+    "goto bus_stop",
     "pretend until 4:30"
    ],
    "summary": "fail",
@@ -549,13 +555,13 @@
     "a9886bb91a79ac3f",
     "1cb58acf52b5c7a6",
     "05f85611f91e5f70",
-    "684ba2a5fcef8103",
-    "68e86420b8c1db99"
+    "8d44582c7e5024d1",
+    "434ef7334f168471"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "wait until 3:33",
     "goto boss_clock pretend",
     "interact",
     "goto open_clock pretend",
@@ -569,13 +575,13 @@
     "901be1ee6c9b519f",
     "b9517e7d09e2d9e2",
     "9d4bdcc0b98c69cc",
-    "a7be1f537b3728bf",
-    "c6d3fb7dfb3163b0"
+    "aba744afd8ae07e6",
+    "3c04f8c558c77607"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "pretend 8s",
     "goto boss_clock pretend",
     "interact",
     "interact",
@@ -583,52 +589,50 @@
    ],
    "summary": "fail",
    "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "99579a8df9655246",
-    "cbdab19bcf0820ad"
+    "ee26c3112becbfff",
+    "1a7f97f8d4b52839",
+    "59e4c3b9e6f5108e",
+    "dc39fc915f183f6d",
+    "4bcfb40825bcea1b",
+    "530401d21368a271"
    ]
   },
   {
    "cmds": [
-    "goto boss_clock",
-    "pretend until 3:23",
+    "goto boss_clock pretend",
+    "pretend until 3:27",
     "interact",
     "interact",
     "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "60b96a7ee2bc7368",
-    "30dd4f6bc27da88c",
-    "f00a5f221e675edf",
-    "0b201522ba973bd9",
-    "f38ce6882fb1f208",
-    "2f92e6d3412d1bd3"
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "098f631a23a8fe86",
+    "5b6654a8c9dac7a4"
    ]
   },
   {
    "cmds": [
-    "wait until 3:12",
     "goto open_clock pretend",
     "interact",
+    "pretend until 3:33",
     "interact",
-    "wait until 4:29",
-    "goto bus_stop",
-    "wait until 4:30"
+    "goto bus_stop pretend",
+    "pretend until 4:30"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "93e3eb4975205176",
-    "205ad1532e921a68",
-    "a12bd930c3a1f92b",
-    "f07420f8b629f4f5",
-    "7bdeb7c141c61eea",
-    "ccdaa1839a4a3669",
-    "a531325fa96a2328",
-    "16412a8e2ad1681b"
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "92c73831878ba981",
+    "ec2cf9f1019dfff5",
+    "31ef93019ddd8082",
+    "9e0ecd0e6444c471",
+    "309cd0cbbbabd337"
    ]
   },
   {
@@ -653,7 +657,7 @@
     "interact",
     "interact",
     "interact",
-    "goto bus_stop",
+    "goto bus_stop pretend",
     "wait until 4:30"
    ],
    "summary": "caught",
@@ -662,32 +666,52 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "04805ab7d92d36a6",
-    "4007925b04ffe3fa",
-    "51f43c2aa7e4ee05"
+    "414ad9993c593678",
+    "2c2e3197984364dd",
+    "f5ae8fa0860ebb64"
    ]
   },
   {
    "cmds": [
     "goto open_clock pretend",
     "interact",
-    "pretend 3s",
-    "goto bus_stop pretend",
+    "wait until 3:45",
+    "goto bus_stop",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
-    "09525230733eb3d5",
-    "d4e896f24e44525d",
-    "5a58f2089de117c5",
-    "7b6181a78e8883cb"
+    "3a834d4450c94189",
+    "da3bb6b94a07f506",
+    "43c7c8bbd34c2ee9",
+    "9207c294c1fd1146"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "goto kitchen",
+    "goto open_clock",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "20ff7b594f2505b9",
+    "2674332fce378d9d",
+    "a41f4a1c08ccb9be",
+    "ab46cca5e02468cc",
+    "c5e40531fcd155ad",
+    "a5e43fb1ad9a760e",
+    "cb4ad66b7f29191e"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:09",
     "goto boss_clock pretend",
     "interact",
     "goto open_clock pretend",
@@ -702,13 +726,13 @@
     "b9517e7d09e2d9e2",
     "9d4bdcc0b98c69cc",
     "0d9a0940474466c2",
-    "6d32c07f1bc868b8"
+    "eccd196db9c86446"
    ]
   },
   {
    "cmds": [
-    "pretend until 3:27",
     "goto boss_clock pretend",
+    "pretend until 3:27",
     "interact",
     "interact",
     "interact",
@@ -716,18 +740,18 @@
    ],
    "summary": "fail",
    "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "7d3ebc4e01dd8e92",
-    "66133c9891a0750a",
-    "afff627006a1e4e1"
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "35512cc501207892",
+    "558b238c99d00093"
    ]
   },
   {
    "cmds": [
-    "wait until 3:48",
+    "wait until 3:33",
     "goto boss_clock pretend",
     "interact",
     "interact",
@@ -744,7 +768,7 @@
     "c353ae9cdf1de4b9",
     "cf9ae00e3afe990c",
     "1835dbac69e36d33",
-    "c0bb59c9a17cc25f"
+    "d22facd24b45fb62"
    ]
   },
   {
@@ -762,47 +786,47 @@
     "59713a2137b0546f",
     "0ae28c17e32837cf",
     "953e4485a1e01239",
-    "1a6587218481ce67"
+    "530401d21368a271"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "facd6dc179eb60ab",
+    "2942f1fbee5ea9d2",
+    "59713a2137b0546f",
+    "42f1a4e2164ea53e",
+    "3c475fb1967453f7",
+    "9231aa86411d882c"
    ]
   },
   {
    "cmds": [
     "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "caae0ebbbef72e03",
-    "0a2aebce026f0523",
-    "8a2a4f68e3bb2c59"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:48",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
     "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
     "interact",
     "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
     "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "a7b755d7b8e3e98d",
-    "7e6c2557a36360a6"
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "6aa88c139830d881",
+    "1438e26396ea277e",
+    "558b238c99d00093"
    ]
   },
   {
@@ -811,7 +835,8 @@
     "interact",
     "interact",
     "interact",
-    "goto restroom_door pretend",
+    "goto entrance",
+    "goto kitchen",
     "wait until 4:30"
    ],
    "summary": "fail",
@@ -820,9 +845,10 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "093cb10cd3f02002",
-    "cbbb16a39a0e1d66",
-    "1aa3e55361663d4b"
+    "1dcfd4ec804fd729",
+    "18766d9908bdace4",
+    "2de974b8bf7c1859",
+    "0e6be655376faeb4"
    ]
   },
   {
@@ -832,7 +858,7 @@
     "interact",
     "interact",
     "interact",
-    "interact",
+    "goto open_clock",
     "pretend until 4:30"
    ],
    "summary": "fail",
@@ -842,9 +868,9 @@
     "59713a2137b0546f",
     "0ae28c17e32837cf",
     "7d3ebc4e01dd8e92",
-    "1e5a60de91fa4e16",
-    "4a082686e56936c8",
-    "afff627006a1e4e1"
+    "035b230764cf9f39",
+    "c4823d799a963281",
+    "72fd8be33c2adc76"
    ]
   },
   {
@@ -866,192 +892,12 @@
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
     "7571ac47b4a7b561",
-    "05a0683f296fcf68"
+    "121e1a000a67cc6b"
    ]
   },
   {
    "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:49",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "1fc777efaff7d54b",
-    "09965cc13472b920",
-    "63ea6a9d29d93f4f",
-    "ac601a977371fe4d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait until 3:12",
-    "interact",
-    "interact",
-    "pretend until 4:21",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "1794277a7c673144",
-    "fb4b7bc098c94fb7",
-    "e0ec90ac0c159f1b",
-    "41724ec2bd73a0ae",
-    "8a576b39c00cb008",
-    "96c3ac2ce75c8f3b",
-    "57effa82d19441eb"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "a9886bb91a79ac3f",
-    "1cb58acf52b5c7a6",
-    "a42e058955ae48e3",
-    "e74996313cb38758",
-    "1f738d095c21e16d",
-    "5fe36005fc46cbd8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:12",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "35c9f8fafb3cbd55",
-    "470e11d1a2f0863c",
-    "9940b08c81708bbe",
-    "f9e01d059c98c26b"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:42",
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "f5d151e87f7231d0",
-    "281c463f92d8f40d",
-    "979cd1410ecfe38e",
-    "e82f16af7921e74d",
-    "6aa88c139830d881",
-    "9e84b6b11cd27ca9",
-    "a7731ecc25f6e6b5",
-    "ac4acf0df565cf9c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 4:21",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "58d5e265b9b74735",
-    "965f3a19790d100b",
-    "dc9d9487d862e9d2",
-    "cbdab19bcf0820ad"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:12",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "93e3eb4975205176",
-    "205ad1532e921a68",
-    "a12bd930c3a1f92b",
-    "f07420f8b629f4f5",
-    "006c5475136a0f6a",
-    "6c550813406b4dbd",
-    "1c499a9073e5b89e"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:46",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "23a052671f491a5d",
-    "edcf7c49f341cabe"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:48",
+    "wait until 4:09",
     "goto boss_clock pretend",
     "interact",
     "interact",
@@ -1066,7 +912,7 @@
     "ded3f73138bfcc67",
     "92bcae563734c044",
     "fa05a398a95082e2",
-    "098f8082a4497c11"
+    "1b218239e729ac81"
    ]
   },
   {
@@ -1075,9 +921,9 @@
     "interact",
     "interact",
     "interact",
-    "pretend until 3:16",
+    "pretend 10s",
     "goto bus_stop pretend",
-    "pretend until 4:30"
+    "wait until 4:30"
    ],
    "summary": "caught",
    "digests": [
@@ -1085,30 +931,10 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "b92fdbc66e0d3660",
-    "a685eaf76a17c1db",
-    "a65f14ded7313ca8",
-    "3ad1efebb2fd7501"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "b72aa5de4768a270",
-    "fbaeff189a4f944b",
-    "fd17b6c64ff86cc9"
+    "c049da248e79daad",
+    "301ab2ab826e2d2c",
+    "0cbf5f33dac4839b",
+    "ac601a977371fe4d"
    ]
   },
   {
@@ -1116,21 +942,67 @@
     "goto open_clock pretend",
     "interact",
     "goto boss_clock",
-    "pretend until 3:18",
+    "pretend until 3:13",
     "interact",
+    "pretend until 4:13",
     "interact",
-    "pretend until 4:30"
+    "pretend 2s",
+    "interact",
+    "wait until 4:30"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
     "756ebea58453b3b1",
-    "617bff684ca1e2cb",
-    "a4ded6da7cc58969",
-    "1550cae70497daa5",
-    "b848023ab1f10d1e",
-    "78f42b52514e3461"
+    "03562a2273697997",
+    "d7a97d759abd065a",
+    "1b5879792b3f7aae",
+    "a0c83671b3807494",
+    "8bc1554f7f405b04",
+    "8bc7cf7b69a8727d",
+    "1e994099e65682f1",
+    "7aaf67d6621c825c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "pretend until 3:47",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "facd6dc179eb60ab",
+    "2942f1fbee5ea9d2",
+    "59713a2137b0546f",
+    "311d5d98f23ec5f3",
+    "f74351e4ffebd99a",
+    "e0ab8ca6d7009903",
+    "21e88443b84acc5a",
+    "86a41462996af352"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 3:41",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "9747f1386813474f",
+    "bb1d56e538eeaa78",
+    "e976819015115616",
+    "fc01b91b6e2d3903"
    ]
   },
   {
@@ -1140,261 +1012,21 @@
     "interact",
     "interact",
     "interact",
-    "wait 2s",
+    "goto open_clock",
     "interact",
     "pretend until 4:30"
    ],
-   "summary": "caught",
+   "summary": "fail",
    "digests": [
     "facd6dc179eb60ab",
     "2942f1fbee5ea9d2",
     "59713a2137b0546f",
     "0ae28c17e32837cf",
     "7d3ebc4e01dd8e92",
-    "9e0511cfb9bd5ec2",
-    "c346f4b2b910fb65",
-    "b81d837d2a5d0c61",
-    "7ef2ad45d980d291"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait until 3:12",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "1794277a7c673144",
-    "fb4b7bc098c94fb7",
-    "e0ec90ac0c159f1b",
-    "9f10d44e5bfa3010",
-    "8abc6eb36d1582df",
-    "61079d05f1093e0d"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "a66e0cd1e5a6de61",
-    "36d4bc10747b78ed",
-    "6ac5de92740df8e7"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "c2137b426cce52d0",
-    "5a015ce42fe1c735"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait until 3:12",
-    "interact",
-    "interact",
-    "pretend until 4:21",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "1794277a7c673144",
-    "fb4b7bc098c94fb7",
-    "e0ec90ac0c159f1b",
-    "41724ec2bd73a0ae",
-    "8a576b39c00cb008",
-    "96c3ac2ce75c8f3b",
-    "57effa82d19441eb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "3d5ef02a7688270e",
-    "a305d02a43bd5e63"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "bfcda0e17a1e2981",
-    "136e7ec024e81acb",
-    "b2d88142ea646039"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c2029f2ea169ee77",
-    "a4847f34d8d88fe8",
-    "f23cf3e35cb02d0e",
-    "936d5178d0b6b648",
-    "f963b021353e794c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait until 3:12",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:20",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "1794277a7c673144",
-    "fb4b7bc098c94fb7",
-    "e0ec90ac0c159f1b",
-    "9f10d44e5bfa3010",
-    "39919ca1a43445b0",
-    "2458095e3ccc4b24",
-    "0be0010804f9ed2b",
-    "cab267211607bebe"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:17",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "07bc3cc38da6f5a3",
-    "575eddcbf1dab283",
-    "95aff106245cb42e",
-    "9d7db6fe7bb89d25",
-    "ed1d42048d021d54",
-    "61079d05f1093e0d"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:17",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "07bc3cc38da6f5a3",
-    "575eddcbf1dab283",
-    "95aff106245cb42e",
-    "6d002e59490f1fc3",
-    "382330ccab69adc4"
+    "035b230764cf9f39",
+    "c52699bcb14f0a09",
+    "ad294c5c59624e9b",
+    "72fd8be33c2adc76"
    ]
   },
   {
@@ -1420,491 +1052,31 @@
     "6f044fb52951a991",
     "1e4aa582f90edfa0",
     "21c9cc71e7d227a4",
-    "6d5fc651e0236747"
+    "d689edb3a74c7465"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "84048780291e3a7f",
-    "d5e4423f69d8aeb7",
-    "7f99f3edff4841d7",
-    "60f267bd24ca26ed"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:23",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "bd09fdbe4da58ed3",
-    "a620859105681c2c",
-    "056f1c243a766927",
-    "8dfacda86e2fb7ca"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:48",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "96ccb5e69f6d6fc9",
-    "f311e7d3dba2f1ca"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:12",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend 2s",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "1bc87f11273ca267",
-    "5ed93a8cd6912176",
-    "019e744bae826b5c",
-    "0242abf73726c9e4",
-    "f37618dc4ac9f233",
-    "a0e5b0ab130ded15",
-    "52c7d33c463627d4",
-    "9334433596b09017",
-    "d97a889347993f15"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "98347f42a2089034",
-    "958a3419f63d7e04"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:40",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "7d3ebc4e01dd8e92",
-    "c313f132c999dd29",
-    "dafb7eb8a2e203a4",
-    "a504b666e96ec8ec",
-    "91b798ea6b445893"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "e7ff9f3d8e99f092",
-    "b059ea7f12cff419"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "goto boss_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "0697209b5787209a",
-    "192ea46d880eb71c",
-    "c0cf493319c8afb5",
-    "e5a59c2a1d343bcf",
-    "0f058c82b971f143"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:23",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "73a2fd6bcfff0ad5",
-    "7b312dbc761c127c",
-    "907d0afe404f4dee",
-    "a3d31a866303c47b",
-    "d3cbbdff6a1cbc95",
-    "b2bf1d638b4b17f0",
-    "88e3f1e1987c410f",
-    "480d28b8d5318dde"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:23",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "bd09fdbe4da58ed3",
-    "a620859105681c2c",
-    "fe89e89ddb7971e9",
-    "e71e24bbb3676941",
-    "7b02c0dd21aa6a3b"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "e47a1c0ee3170b55",
-    "713c6e9011e3f78c",
-    "a251f2edebfcbec1",
-    "40d6e6faed68604a",
-    "760041dbb37ec4a3"
-   ]
-  },
-  {
-   "cmds": [
-    "goto kitchen",
+    "pretend 1s",
     "goto open_clock",
     "interact",
-    "goto boss_clock pretend",
+    "goto kitchen pretend",
+    "goto boss_clock",
     "interact",
     "sit pretend",
     "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "20ff7b594f2505b9",
-    "2674332fce378d9d",
-    "a41f4a1c08ccb9be",
-    "ab46cca5e02468cc",
-    "c5e40531fcd155ad",
-    "dd387da930239c2a",
-    "82743aae1fd1c34f",
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b71e0907f51cd31",
+    "858cd06800f01dc8",
+    "3b1eeb11a2a23117",
+    "f5e61d012f6b84ec",
+    "151df3d7bda96f56",
     "b93d882da642bc37"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "1fbe0a5cbd0b2f4a",
-    "8b0001286bcf699e"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "93c5943b1f306e55"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "sit pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "591d71ff1c97c030",
-    "aed75590ffe8d210",
-    "8649d5cfd58a57ef"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "sit pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "cab0a3670517ba2c",
-    "62d0af4648875a7c",
-    "15fb59a844d432a1"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "pretend until 3:27",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "148ea57a0d2a1f20",
-    "02850eaa88accf9a",
-    "460bfe4965bc18a9",
-    "985b9d9900a4d414",
-    "d4743cb3ad6110cd",
-    "6dfddd3331153ba2",
-    "b460e6a49d901cab"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:50",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "fd5ae54834486fe9",
-    "1eb72f8a9bcaf9e2",
-    "62a7c0bf3e406352"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "7d3ebc4e01dd8e92",
-    "7d73083296b4462c",
-    "6f47554891a74260",
-    "b0d25fc091d06147",
-    "f03c3e91886372d8",
-    "556803c2a68839f5",
-    "cbdab19bcf0820ad"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:31",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "256972c0111f6654",
-    "8ad616c68779e533",
-    "1b2908a2ace234d7",
-    "84cc7c4d45ad01a6",
-    "8dfb2fbd0e23f086"
    ]
   },
   {
@@ -1935,6 +1107,454 @@
   },
   {
    "cmds": [
+    "goto kitchen",
+    "goto open_clock",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "20ff7b594f2505b9",
+    "2674332fce378d9d",
+    "a41f4a1c08ccb9be",
+    "ab46cca5e02468cc",
+    "c5e40531fcd155ad",
+    "e80bb5ccbd38d67b",
+    "61eed5b5868cbac8",
+    "14f23331a9d20ac2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "facd6dc179eb60ab",
+    "2942f1fbee5ea9d2",
+    "59713a2137b0546f",
+    "0ae28c17e32837cf",
+    "7d3ebc4e01dd8e92",
+    "539db6401c708ac5",
+    "3c193cf4b8f9b275",
+    "0a52c783b20e047d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:34",
+    "goto boss_clock pretend",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "8919d5d2de46a822",
+    "65e440f952550aa7",
+    "cfe74171444672b0",
+    "e892d62161fd02ec"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "3d5ef02a7688270e",
+    "a305d02a43bd5e63"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:06",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "7b6fdd2623c09a7e",
+    "6cb5a91ec380e8cc",
+    "409d505ba210170b",
+    "ac4acf0df565cf9c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock",
+    "pretend until 4:13",
+    "interact",
+    "pretend 2s",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "756ebea58453b3b1",
+    "9a657bd27ea68442",
+    "9e44a163941ebb76",
+    "71c1ad88eeb1ecd8",
+    "f1ae8a32d22af5de",
+    "fcd399bcf5f588d1",
+    "bc4b04c42cec7ab8"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:33",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "96ccb5e69f6d6fc9",
+    "a7ea1c06b4400f18"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "7b59f14f18378772",
+    "59deb545e0ace220",
+    "558b238c99d00093"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "facd6dc179eb60ab",
+    "2942f1fbee5ea9d2",
+    "59713a2137b0546f",
+    "0ae28c17e32837cf",
+    "c693a9c4f82152a4",
+    "a4c3cabbaf2357e9",
+    "880edbaabd53a24c"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "6aa88c139830d881",
+    "2efb9cabab80d0d3",
+    "c8c79db94f941db7",
+    "ac4acf0df565cf9c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_clock pretend",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "19198b09c3136868",
+    "ab41e3940b388d1f",
+    "1529d48e23728906"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:29",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "6c0d1e9b11447df1",
+    "b02251adb61a5dec",
+    "6ac6a080f5195e32",
+    "9eff2a62f5fe4ebf"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 3:30",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "60b96a7ee2bc7368",
+    "734ff56287706c82",
+    "143b58f2dd2d8aff",
+    "b296b6bc268a47be",
+    "5cb4a367d82edf4a",
+    "2dec0aa218beb50e",
+    "c605f2452289ec89",
+    "1a597032393b08fc"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "e7ff9f3d8e99f092",
+    "eeeabdf46a683827"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "e2f510068ad849c4",
+    "266d7d8b609d6664",
+    "d78e1cbc36e9b35e",
+    "c6e820491125fb2e",
+    "f57a95906a57e10c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_clock pretend",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "91964e80f3ed9a18",
+    "8df3934d8b2e417b",
+    "0bcdcef048e4dc78"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "c2137b426cce52d0",
+    "3141dcbd6f4a2552"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:26",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "6c0d1e9b11447df1",
+    "8d2da90d6e11358e",
+    "a0dda8fa8653b541",
+    "4d35d34693c4b04a",
+    "668b9fcc1c29bc4a"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 12s",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "82ab6b4d55694fd2",
+    "d6296246c27ec80f",
+    "ee2e430f48e0a067",
+    "8b0c842302286629"
+   ]
+  },
+  {
+   "cmds": [
     "pretend until 3:25",
     "goto boss_clock pretend",
     "interact",
@@ -1948,87 +1568,151 @@
     "19e2b576aa3f3ce4",
     "c64aa0837a9e64a9",
     "af2b74c1020420ec",
-    "1a6587218481ce67"
+    "530401d21368a271"
    ]
   },
   {
    "cmds": [
-    "pretend 8s",
-    "goto open_clock",
-    "interact",
+    "pretend until 3:41",
     "goto boss_clock pretend",
     "interact",
     "interact",
     "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2377f8315f3cf11e",
+    "744a0919e939f390",
+    "78e66ebc50c3687e",
+    "8a930e4cc8deb6aa",
+    "1114c0b5035c2a3b",
+    "eebfbb65ca38b826",
+    "fd0bc91dd570fd89"
+   ]
+  },
+  {
+   "cmds": [
     "goto open_clock pretend",
     "interact",
+    "interact",
+    "interact",
+    "pretend until 3:45",
+    "interact",
+    "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
-    "ee26c3112becbfff",
-    "2722ca93063d9387",
-    "38ead6a08eb5dd02",
-    "b972d1c1ef5a92a2",
-    "fb27484187f9088f",
-    "1dc8b5d04a388a99",
-    "f28aed3ebc06b21f",
-    "a364d7272168dd56",
-    "ccf0aeb4b4053da9",
-    "ccf0aeb4b4053da9",
-    "ccf0aeb4b4053da9"
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "2a533b43435536f6",
+    "94fd99279c44900c",
+    "55955a74b3db5620",
+    "7932f6c6627802e1",
+    "6ca8e62119036ca4"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
     "goto open_clock pretend",
     "interact",
     "interact",
     "interact",
     "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
     "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "e0e009ffc9a1c8a9",
-    "3794f62fcdde1dbf"
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "d1a7a85926b5cc27",
+    "a753deae68df407f",
+    "eeed9ad18fd6746c",
+    "8db12f843df96e93",
+    "93dca7c131b1aaa6",
+    "86beb1997fb4bcf0"
    ]
   },
   {
    "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "interact",
-    "wait until 3:12",
+    "goto boss_clock pretend",
+    "pretend until 3:27",
     "interact",
     "interact",
     "interact",
+    "wait until 4:07",
+    "goto bus_stop pretend",
     "wait until 4:30"
    ],
-   "summary": "blamed clock",
+   "summary": "caught",
    "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "dd39ff4ebec66672",
-    "1794277a7c673144",
-    "fb4b7bc098c94fb7",
-    "e0ec90ac0c159f1b",
-    "9f10d44e5bfa3010",
-    "8abc6eb36d1582df",
-    "61079d05f1093e0d"
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "c9c892726e625bd4",
+    "330abbbf9f76f112",
+    "fbd3609291933320",
+    "5782735929fcbb3e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:46",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "08e5c22b81e3885b",
+    "34b7ecb971064246",
+    "de8d142ba26d54cf",
+    "3bfa1e325e7c0cd8",
+    "a948c2dcb567ddc7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:05",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "8a1eccfe895d2a25",
+    "63aa8e20925fb4c3",
+    "81f1dbb4ed44b6c6",
+    "708e3208c8836ff7"
    ]
   },
   {
@@ -2038,7 +1722,7 @@
     "interact",
     "interact",
     "interact",
-    "pretend until 4:30"
+    "wait until 4:30"
    ],
    "summary": "fail",
    "digests": [
@@ -2047,166 +1731,58 @@
     "91cfd7fa5cbf4b8f",
     "4b21aa798d3416be",
     "ff224a5e845bf16c",
-    "0bd12dfa6c298852",
-    "afff627006a1e4e1"
+    "c313f132c999dd29",
+    "560528771bce9fdf"
    ]
   },
   {
    "cmds": [
-    "goto boss_clock",
-    "pretend until 3:48",
-    "interact",
-    "pretend until 4:13",
-    "goto boss_clock pretend",
+    "goto open_clock pretend",
     "interact",
     "interact",
-    "pretend 3s",
-    "goto boss_clock",
-    "goto boss_clock",
     "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto kitchen pretend",
     "pretend until 4:30"
    ],
-   "summary": "caught",
-   "digests": [
-    "60b96a7ee2bc7368",
-    "36892491744b3a1d",
-    "5c419a3fb81fe926",
-    "b8ebaad328645711",
-    "86d97f77c4d34627",
-    "8f93a53c81615173",
-    "1a298efded5443d6",
-    "164f81a2af0354fd",
-    "0403c64403f2b1a1",
-    "d19de13657ba0a00",
-    "8af8997227182f7e",
-    "37fee57e9c14ba1f",
-    "ae53733c8844e20c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "6a672e57d8e7b3ca",
-    "aaa9513e2b155fb0",
-    "cdc5fb919252e1a5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
    "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "06f954983a761333",
-    "e2465a9c03c1499c"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:59",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "0f6499337007eb28",
-    "f3f4fd3471f7f796",
-    "4449fe63af0b7906",
-    "06241c5482e519f8",
-    "90cf7b208311619b",
-    "69267f60f04c70fb",
-    "93c10e64ce79e5ef"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_clock pretend",
-    "goto open_clock",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "sit pretend",
-    "goto boss_clock",
-    "pretend until 4:01",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "5ff31fd209a8f85a",
-    "d66b97eee8b3987a",
-    "227d7ad61d5b9736",
-    "226f050f1f904723",
-    "57a16a1cabad37ea",
-    "0c4a8c75bb24dee4",
-    "078822fbb4880138",
-    "d11eabb76c4b54c1",
-    "7f249c3e90619f47",
-    "e76e6e11a544aace",
-    "daeedaae44d3d6be"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto lin_desk pretend",
-    "goto boss_clock",
-    "interact",
-    "wait until 4:06",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "c6c183a64da495bd",
-    "be68c8829d039236",
-    "473f550719ed68dd",
-    "9cd73d0445416ee0",
-    "e3d52c97215f16ad",
-    "6251a3619de17b93",
-    "b0916faa9f79bf7e"
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "88c9bf55d7638954",
+    "fea75a6c5a6c6b65",
+    "c36f0a07596b7cd8"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:28",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6edd47049cccf298",
+    "4ef1b4c012135b93",
+    "2e57a1da55529dff",
+    "c1add645f0d03411",
+    "3a5fe4d13a40f445",
+    "3f65a01e3a87203d",
+    "65861566381f23bd",
+    "bc0124f061142992",
+    "13a7d25d3d3473d1"
    ]
   },
   {
@@ -2217,7 +1793,129 @@
     "interact",
     "interact",
     "interact",
+    "goto kitchen pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "e3b194ff3532dfa4",
+    "395c0ee97e55ab0b",
+    "103dd4ecc65a9e38"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
     "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "6aa88c139830d881",
+    "2efb9cabab80d0d3",
+    "675dec805970dcbd",
+    "425e14edce90f3fd",
+    "a948c2dcb567ddc7"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:33",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "23a052671f491a5d",
+    "edcf7c49f341cabe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:24",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "1cb43c23fbd91d7f",
+    "45a51f64ac9d4662",
+    "47481a5edb6287cf",
+    "031623df0cccbc8f",
+    "fb6dd037cf7c7246",
+    "dbee1e0bebca2701",
+    "4ac30aa46297a28f",
+    "541e7e0bc24af778"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 5s",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "facd6dc179eb60ab",
+    "2942f1fbee5ea9d2",
+    "59713a2137b0546f",
+    "0ae28c17e32837cf",
+    "7d3ebc4e01dd8e92",
+    "12b4cdc074f2812f",
+    "86c9b50cef606f26",
+    "98bff56f9f03c940",
+    "3e938d8bc6471be4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto bus_stop",
     "wait until 4:30"
    ],
    "summary": "caught",
@@ -2228,21 +1926,319 @@
     "5ba8f510b65c4cc2",
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
-    "cc51c4c8e783d4d5",
-    "3085a716ea4c7012",
-    "b3c8ee20b2990a9b"
+    "bca24ddab367bd02",
+    "ab7386aa8ee4340e",
+    "a572a598f2c0a0a2"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "c9c892726e625bd4",
+    "1b218239e729ac81"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:33",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 3:51",
+    "wait until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "84048780291e3a7f",
+    "d5e4423f69d8aeb7",
+    "e02b2917cf45c412",
+    "434d80427e79d5b8",
+    "a37e7dcf6eefd2f9"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto open_clock",
+    "interact",
+    "goto kitchen pretend",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b71e0907f51cd31",
+    "9ad6ab70448841dc",
+    "3bb257d25c984ac0",
+    "a23bbddecf4d6be4",
+    "ee690c33fc806795",
+    "eda9ec87a26fde44",
+    "6614d6fde9b2cd79"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:38",
+    "interact",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "0a4fc84d930e1147",
+    "ddc3f7908f07ae61",
+    "60d83cc09e0ed916",
+    "b51d9076ceec605c",
+    "9297107ff616f3a7"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto open_clock",
+    "interact",
+    "goto kitchen pretend",
+    "goto boss_clock",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b71e0907f51cd31",
+    "858cd06800f01dc8",
+    "3b1eeb11a2a23117",
+    "6896467254d88e84",
+    "ed8b795a265e0d3c",
+    "abe0481bd8304379",
+    "dc3b6f5da882f680"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "87f31196a27ddd84",
+    "1f4a05cedbef6c16",
+    "c6d73d4cf00f2fd2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:05",
+    "goto boss_office_door",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "0c9378195703ef11",
+    "77ba5ef13ba64572",
+    "23715a14a7f54eb5",
+    "0df37273d8747f35",
+    "24c60492772f1941"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:43",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "3b0b49a3c1464ec7",
+    "3d198253f4abfa1e",
+    "737d2150009cc119",
+    "94b5b402957aece0",
+    "6ca8e62119036ca4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "wait until 4:07",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "098f631a23a8fe86",
+    "17746d4aaec25a13",
+    "921c18118fbdaf50",
+    "5c617a544065770d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto open_clock",
+    "interact",
+    "goto kitchen pretend",
+    "goto boss_clock",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b71e0907f51cd31",
+    "858cd06800f01dc8",
+    "3b1eeb11a2a23117",
+    "6896467254d88e84",
+    "a396e338079eba67",
+    "bb30f7eaa0903b88",
+    "1afa9a717595dfd9",
+    "6cba74a9816b47e7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:13",
+    "interact",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "7571ac47b4a7b561",
+    "7b67e49e50465849",
+    "17c8f9e03576ec73",
+    "e7baf6120eb3df6d",
+    "fe11e643cad342f2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto open_clock",
+    "interact",
+    "goto kitchen pretend",
+    "goto boss_clock",
+    "interact",
+    "interact",
+    "sit pretend",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b71e0907f51cd31",
+    "858cd06800f01dc8",
+    "3b1eeb11a2a23117",
+    "6896467254d88e84",
+    "ed8b795a265e0d3c",
+    "186b7cfe5296ef85",
+    "6709ae86adf90be4"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:07",
     "goto boss_clock pretend",
     "interact",
     "goto open_clock pretend",
     "interact",
     "interact",
-    "interact",
-    "goto boss_clock",
     "interact",
     "pretend until 4:30"
    ],
@@ -2255,58 +2251,58 @@
     "9d4bdcc0b98c69cc",
     "c7a1282e3d74cdc0",
     "5181cb4f0b9e4442",
-    "32161bd3075fabb7",
-    "90364931cce679db",
-    "3c733002d3ded132",
-    "7a6d12b3655518df"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:41",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "7d3ebc4e01dd8e92",
-    "c9fa29db1fd28936",
-    "6dd6eb6696a1d875",
-    "0951d6e0b0987863",
-    "a310951198a6b8fc"
+    "1fbe0a5cbd0b2f4a",
+    "3b23b6a2e84eb124"
    ]
   },
   {
    "cmds": [
     "goto open_clock pretend",
-    "pretend until 3:27",
-    "interact",
-    "goto boss_clock pretend",
     "interact",
     "interact",
     "interact",
+    "sit pretend",
     "pretend until 4:30"
    ],
    "summary": "fail",
    "digests": [
     "dd2dad79e90b7289",
-    "148ea57a0d2a1f20",
-    "02850eaa88accf9a",
-    "460bfe4965bc18a9",
-    "985b9d9900a4d414",
-    "d4743cb3ad6110cd",
-    "c19c0688055408c9",
-    "427d38b453b692b6",
-    "b460e6a49d901cab"
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "591d71ff1c97c030",
+    "aed75590ffe8d210",
+    "8649d5cfd58a57ef"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto entrance pretend",
+    "wait until 3:56",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "84a3c791968b647b",
+    "3554693db8db451c",
+    "a02951043fe74238",
+    "472a6dfb859a5444",
+    "0410d403ecb161a4",
+    "67d9b67810a18659",
+    "331902e4955e4066"
    ]
   },
   {
@@ -2318,10 +2314,10 @@
     "interact",
     "interact",
     "interact",
-    "goto lin_desk pretend",
+    "pretend 9s",
     "wait until 4:30"
    ],
-   "summary": "blamed herd",
+   "summary": "fail",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
@@ -2330,9 +2326,41 @@
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
     "6f044fb52951a991",
-    "31eafcf364389613",
-    "2f18ac87ece9409e",
-    "7e444143c8af75f8"
+    "35a4f6c92e0ecd32",
+    "26e382850a94a894",
+    "06294c4bb8cf2f7d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1s",
+    "goto open_clock",
+    "interact",
+    "sit pretend",
+    "goto kitchen pretend",
+    "goto boss_clock",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd405b5ccfbbb7f0",
+    "d752c4d7e56ffcca",
+    "facd118b5a8a1c00",
+    "2b433b92caecfce3",
+    "12df4c90b51d39bb",
+    "4763f1c5ab9ab98f",
+    "4afc9bd96bf6968a",
+    "51ff660d1bb18f0a",
+    "efbd30b532cefbc6",
+    "04e569cba786b559",
+    "4bee22aed3e12261",
+    "0dbc6f861fb75d60",
+    "102369c7d9c41e0a"
    ]
   },
   {
@@ -2341,9 +2369,39 @@
     "interact",
     "interact",
     "interact",
-    "goto lin_desk pretend",
-    "goto boss_clock",
+    "goto boss_clock pretend",
     "interact",
+    "interact",
+    "interact",
+    "pretend until 3:19",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "d1a7a85926b5cc27",
+    "a753deae68df407f",
+    "eeed9ad18fd6746c",
+    "8db12f843df96e93",
+    "a4168bf7607420b7",
+    "9d91770763f05a0f",
+    "3a8eb9e1663ee11b",
+    "3ad2614714de2c90"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 9s",
     "wait until 4:30"
    ],
    "summary": "fail",
@@ -2352,90 +2410,130 @@
     "081cc6badea3a911",
     "f5cd496de86df698",
     "5ba8f510b65c4cc2",
-    "c6c183a64da495bd",
-    "be68c8829d039236",
-    "473f550719ed68dd",
-    "9cd73d0445416ee0",
-    "9d541de3c5d9fae4"
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "06d254f5e2e60236",
+    "2788b9acb8df7ec8",
+    "69835bbe3216c80f"
    ]
   },
   {
    "cmds": [
     "goto boss_clock pretend",
-    "pretend until 3:24",
+    "pretend until 3:27",
     "interact",
     "interact",
     "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "5ff31fd209a8f85a",
-    "1cb43c23fbd91d7f",
-    "45a51f64ac9d4662",
-    "cff269460726413b",
-    "778f8af1f3cbbb64",
-    "fa05a398a95082e2",
-    "098f8082a4497c11"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait 1s",
-    "pretend until 3:48",
     "interact",
     "pretend until 4:13",
-    "interact",
-    "pretend 2s",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "57b9b94dd8401564",
-    "8a26a9be8f6f2f8e",
-    "a32c6e7b67102dfc",
-    "b382468803ef2b28",
-    "556c170c8e9d4cce",
-    "f529b908ecc1973b",
-    "0d83e69387ad00ef",
-    "3f647f6b3172fd80",
-    "5177e5e75520df61"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
     "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "022206bcfc3e4d20",
-    "f2fae6208c2033c4",
-    "0852c29786389f92"
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "84a3c791968b647b",
+    "50af8024f65ebfe0",
+    "aba5cebf2b789b33",
+    "97a83854e9d2260b",
+    "b1dbafe8287fe87f"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "pretend until 3:27",
+    "wait 1s",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:03",
+    "pretend 6s",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "facd6dc179eb60ab",
+    "e2d868d8106e83f5",
+    "c65ff52b8bf2342c",
+    "d080ac83ed761b9e",
+    "a6cb1b9c5e882b67",
+    "2bc0fa4b7ddca857",
+    "4171a5999172ffec",
+    "89b3ccd12dcc274e",
+    "6abd9509894b7916",
+    "b83418a8295ff78e",
+    "cab267211607bebe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:07",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "win clock",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "84a3c791968b647b",
+    "7329fda7daa8119c",
+    "2f87d536d103e7e2",
+    "e3e0c08b823b8970",
+    "aaaf2ede34ce0cd0",
+    "bf747de5066d2a8a",
+    "e0769e91ce084577"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:02",
+    "wait 1.5s",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "b9517e7d09e2d9e2",
+    "9d4bdcc0b98c69cc",
+    "c7a1282e3d74cdc0",
+    "5181cb4f0b9e4442",
+    "0f59e727294f3772",
+    "335f641739ee832b",
+    "3b7c17150d1f16a3",
+    "b7b758b1592b6ce4",
+    "978759bbf4147c93"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 4:07",
     "goto boss_clock pretend",
     "interact",
     "goto open_clock pretend",
@@ -2454,57 +2552,31 @@
     "c7a1282e3d74cdc0",
     "5181cb4f0b9e4442",
     "3a89814e27586486",
-    "8393d25fda0ff74d"
+    "92686345b72a3fdc"
    ]
   },
   {
    "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto lin_desk pretend",
-    "goto boss_clock",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "c6c183a64da495bd",
-    "be68c8829d039236",
-    "473f550719ed68dd",
-    "72d7847a1592e4f1",
-    "33aeff90702d1549"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
+    "pretend until 3:23",
     "goto boss_clock pretend",
     "interact",
     "interact",
     "interact",
-    "goto open_clock pretend",
-    "interact",
+    "pretend until 4:12",
     "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "329415c25c0740fe",
-    "e32776d5e5f9224f",
-    "3a75a4c2aa5295da"
+    "73a2fd6bcfff0ad5",
+    "7b312dbc761c127c",
+    "907d0afe404f4dee",
+    "a3d31a866303c47b",
+    "d3cbbdff6a1cbc95",
+    "11038a94d4359679",
+    "3873da7f2effdaab",
+    "580ec325628d1dca",
+    "cee91b703e755846"
    ]
   },
   {
@@ -2513,2273 +2585,13 @@
     "interact",
     "interact",
     "interact",
-    "interact",
-    "interact",
-    "goto restroom_door pretend",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "f88f17bc5efaadd2",
-    "6acb116525d8b034",
-    "432f73abd85e9502",
-    "a986ebf3fb37fc55"
-   ]
-  },
-  {
-   "cmds": [
-    "goto boss_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend until 4:13",
-    "interact",
-    "pretend 2s",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "5ff31fd209a8f85a",
-    "f8a04553c361c493",
-    "2ec2645b6c92589e",
-    "31927cfb7da788b4",
-    "636d9569a72fbdf0",
-    "1e49aaa33ce040be",
-    "7ee36be977bc647f",
-    "a56d83bd2f21e3e6",
-    "f94f9186e0ed36ad"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock",
-    "interact",
-    "interact",
-    "sit pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "b8031389d21336ba",
-    "6a71aa064f8d79ed",
-    "3cbc36a0ecc3e7a5",
-    "bb2102e91794b27e",
-    "6559856107cab605",
-    "85abda2d817ca5ae"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto kitchen",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "2bbe48888a89888f",
-    "ce2487c0b05cecea",
-    "6954001baea2d12d"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:27",
     "goto boss_clock pretend",
     "interact",
     "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "facd6dc179eb60ab",
-    "2942f1fbee5ea9d2",
-    "59713a2137b0546f",
-    "0ae28c17e32837cf",
-    "7d3ebc4e01dd8e92",
-    "1e5a60de91fa4e16",
-    "e63cd40938fdf6f0",
-    "7fb5aa190603eca4",
-    "3995cd6ddc7a3b7a",
-    "0bf1390bfb1d7c61",
-    "05a8db0e902e8e6e",
-    "cbdab19bcf0820ad"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto kitchen",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "58020526cf633b5c",
-    "fff6d37093e485f0",
-    "5e1b90b788e61cfc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:16",
     "interact",
     "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "b92fdbc66e0d3660",
-    "dc447e337a4931dd",
-    "a7724954893bdb7f",
-    "f96cd635d3ed17e8",
-    "5fe36005fc46cbd8"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
     "goto open_clock pretend",
-    "interact",
     "pretend until 3:41",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "2cc2d0efcb89b446",
-    "a94db896900d42be",
-    "1f07b383d6606469",
-    "79608e1864bd151b",
-    "9e3d0db3ade90d08"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 3:41",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "f11a3c5d83729719",
-    "23a7b64697886568",
-    "6cde4ec939b931be",
-    "a75ba94bb95fcffe",
-    "54ea796745c25ee8"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:42",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "6910840c8888d1ab",
-    "3fad46817243c40a",
-    "8fe457d042e5ac20"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "ca1fdb0a0cb1eff3",
-    "2c8a5cb30e659d8d"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "7e122fbd29592d31",
-    "d048e558680d6daa",
-    "7515fc6764d3217b"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:32",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "93474f81d5617366",
-    "72b444f00677ddef",
-    "09df46dab922da0a",
-    "135fdaef35fb9359",
-    "0244269acc7148ca"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "pretend until 4:10",
-    "goto boss_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "f3c20e4899165001",
-    "2d7622d2c45fb043",
-    "fff1f28bfa6cd476",
-    "680c1bd66b670cdd",
-    "9d646d3670ba3df3",
-    "d07a679da9e92b19",
-    "53c3614c1b40a710"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend 1.5s",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "a6becbf9701f65e3",
-    "f95dff1a6da7ac60",
-    "7461a6521902140f",
-    "5f91cf5f8ddf8d7b"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c2029f2ea169ee77",
-    "a4847f34d8d88fe8",
-    "b71c1fb1553b7b68",
-    "85422515b1c8c91b",
-    "ad7f8f5749bf6d67",
-    "e10f40c26c4a0148"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "fb14f7202488f080",
-    "4b00d1f5e1b8cfd2"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "goto boss_clock pretend",
-    "pretend 1s",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "2d3ed940e3163aa1",
-    "c5e9d1169365c111",
-    "8eb91f5838a7730b",
-    "81585dc54ee84ae0",
-    "78ae133b64b7270f",
-    "89663caa53f06b3d",
-    "e6647af34573c9e8",
-    "0a52cb0dec1e32e1"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "2d3ed940e3163aa1",
-    "c5e9d1169365c111",
-    "8eb91f5838a7730b",
-    "81585dc54ee84ae0",
-    "4bfdfaebbc44c4c5",
-    "f15660e218544419",
-    "30975a54351d9efe"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:52",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "0d827b6a62284bd6",
-    "aada4323bcd42b5e",
-    "9fc7b732c0fd5d53",
-    "6159d3014862dcce"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "pretend until 3:48",
-    "interact",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "c4363487c92e05e0",
-    "51ba56fcba644361",
-    "0dfa9f024eeab0d4",
-    "14b25819a7f2890f",
-    "3f1009c5c10b09fe",
-    "0fa16012051b1636",
-    "8a20afa944e81433",
-    "74c5c3b90d0da3a7"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:54",
-    "goto open_clock pretend",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "c4363487c92e05e0",
-    "d2e7ae0ce5a7f624",
-    "c056eab72473681c",
-    "55dfe54c0bfdcf96",
-    "42c6a2559202ddf4",
-    "c5befc615d4f203c",
-    "545866678350af12"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_desk pretend",
-    "pretend until 3:48",
-    "interact",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "b4c71ffaf243d8bd",
-    "644ada56ac5f5624",
-    "4d3516a52a8c3522",
-    "a693882bfc9b9374",
-    "2d9fa8ed6a8536c2",
-    "61f36019cbff6411",
-    "cf341b081e6c82bc"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "22ff52bc7e051afc",
-    "6094b0e1d0d48725",
-    "d74ee2ed324a2a39",
-    "54b817958255a1b5",
-    "d53f749313e90071",
-    "da381785a4c537ab",
-    "3fddc333272ed4d9",
-    "306647c3987eaf08"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:57",
-    "goto open_clock pretend",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "a19cba09800d1e8c",
-    "a3b4e50cec6f9918",
-    "dd397806e7fb8517",
-    "0d0222336d3e8d17",
-    "1d65e98f1b1bd187",
-    "56ed62143b86a6b3",
-    "21a5c8d6c4c8d7aa",
-    "e1e003045788ace4",
-    "eca44fde7ce0252b",
-    "e9fb11fb5473e438",
-    "e826e502bc317688"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "4d691d4635329d32",
-    "55c0217b07783983",
-    "d2ed662f312dce6c",
-    "388db97f2e940675",
-    "6fac62c987c2f063",
-    "c4df567538d0abaa",
-    "b01ee27e298be9b3",
-    "df5a6f280272b1b6",
-    "1ad2a31d63bb1dbc",
-    "78f0515f4010fb29"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 1.5s",
-    "goto boss_clock pretend",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "5745da45fc695a21",
-    "e2f75be29de4f7d2",
-    "aa17b6d5f1de81ca",
-    "33dbfffb09f9d2ae",
-    "a6acd4c3fcb32022",
-    "e3641a99a5c0e234",
-    "c9c0489174f26bfb"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "f8d391bd1a26995a",
-    "e22a59852b7cfd0c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "goto boss_clock pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "2d3ed940e3163aa1",
-    "c5e9d1169365c111",
-    "8eb91f5838a7730b",
-    "81585dc54ee84ae0",
-    "907870edfb43bf87",
-    "aeb0552da4037309"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:12",
-    "interact",
-    "interact",
-    "interact",
-    "pretend 2s",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "01d5cdd84df2621e",
-    "c32182df7f525c9c",
-    "1ae4ff2a64f512e6",
-    "98a7fac73621fb65",
-    "9489fb43e5957778",
-    "4bea120ae89ca385",
-    "ac3ee3ea42e9784c",
-    "9e2e7904b90680dd",
-    "6f8d4b9a339e6d1d",
-    "70749092d06a8fd4",
-    "6ceac8a0bb0527e6",
-    "ee4a9ed1ba18fc67"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "wait until 3:13",
-    "interact",
-    "interact",
-    "sit pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "756ebea58453b3b1",
-    "a40aaa06bb1570e9",
-    "75626835e672b9f8",
-    "564ac91ee0766c32",
-    "4d8321c19cfa85dd",
-    "179be331c162929c",
-    "dc3b6f5da882f680"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 1.5s",
-    "goto boss_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "win clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "c4363487c92e05e0",
-    "1a0a3288740075e5",
-    "fd21bc027c2365f1",
-    "33bafa50044563f9",
-    "5f297a5a7445b440",
-    "d60e39555550a962",
-    "0e2fb6c8ba3fda32",
-    "9e37d137fd800be6",
-    "c0e7bbcaac83589e",
-    "fc27fb0bd6aef366"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:44",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "fa857e3b3ab59ecd",
-    "7f4244064bff24d5",
-    "afb94071ab9d86bc",
-    "a3d349f2c006fac2",
-    "d3f2de46539922bb"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "pretend until 3:27",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "148ea57a0d2a1f20",
-    "02850eaa88accf9a",
-    "460bfe4965bc18a9",
-    "985b9d9900a4d414",
-    "d4743cb3ad6110cd",
-    "c19c0688055408c9",
-    "dad59dad65bffdb8",
-    "5a732338118a29b7",
-    "b460e6a49d901cab"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:41",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "15fc0228e93ad690",
-    "44d561a07faedd95",
-    "2ac3fbac0011f3fa"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:13",
-    "interact",
-    "interact",
-    "pretend 2s",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "01d5cdd84df2621e",
-    "c32182df7f525c9c",
-    "1ae4ff2a64f512e6",
-    "3f573723b8b7a735",
-    "9a440d5042c63930",
-    "cb37ade52c07ae15",
-    "1c99244bdc84e977",
-    "aa39f39db90db986",
-    "61a2cebeeb92848e",
-    "7a9028f305645e24"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:51",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "54ea0db75b7158ea",
-    "f4200728d32e97a8",
-    "9731dd940450af85",
-    "9cb48ce9ad859cd6"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:26",
-    "interact",
-    "pretend until 3:54",
-    "goto open_clock pretend",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "cfe1a70e62753de5",
-    "794973b4959a0ebd",
-    "f0af4686b0cc9ea3",
-    "b3612f9089d715e9",
-    "b3612f9089d715e9",
-    "b3612f9089d715e9",
-    "b3612f9089d715e9"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:48",
-    "interact",
-    "wait until 4:09",
-    "goto boss_clock pretend",
-    "goto boss_clock",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "994027f11115f05e",
-    "30bcbb8c6140975d",
-    "2d28d07ed3faf518",
-    "fcfb00e3bb4eb969",
-    "6f694aec0bc399c7",
-    "afccac3c981f4e43",
-    "cff13d951015c648",
-    "ff39c19b0c4be0b4"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:48",
-    "interact",
-    "goto lin_desk pretend",
-    "pretend until 4:10",
-    "interact",
-    "goto boss_clock pretend",
-    "pretend until 4:06",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "994027f11115f05e",
-    "30bcbb8c6140975d",
-    "2d28d07ed3faf518",
-    "c687e76879ee337b",
-    "02b4e75374454bf3",
-    "d72a25ae588281b4",
-    "369d782f190e3024",
-    "00265e99508edc49",
-    "9aa8131fb424c832",
-    "f228d7e1246cc99a"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:44",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "9d8efed971039ee8",
-    "def484c8a09600f5",
-    "deed4cb004693837",
-    "1f8db03b60318582",
-    "1f8db03b60318582"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:46",
-    "interact",
-    "pretend until 4:10",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "7df5d5ebceee4e1e",
-    "574b1d48cbfa929b",
-    "c646e20d997350d0",
-    "a233c544ede68b26",
-    "47fbe47bd39e9667",
-    "c2f733252269b6dd"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "d48e1650abf78e1b",
-    "f696e951f68b1e78",
-    "7dbd1e180e759c28",
-    "065af142d816a507",
-    "ef3705d3be78d14a",
-    "fa4468397a990a75",
-    "bfd306767e8e0c4f",
-    "ff51f064ad544023",
-    "d74ee2ed324a2a39",
-    "0aa0bc81ad727ef4",
-    "21004c2a0dd069dd",
-    "1e62014262aa708e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "a3d0c5ba875c87d2",
-    "33aeff90702d1549"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "92fa7636d2bb7451",
-    "7969a3f23806a96e",
-    "02a083bed5fc7776"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:48",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "d150f8b6d044c9b0",
-    "3aa92b655f63d95f",
-    "731713e788434688",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:41",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:45",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "d150f8b6d044c9b0",
-    "3aa92b655f63d95f",
-    "731713e788434688",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:41",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:45",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "d150f8b6d044c9b0",
-    "3aa92b655f63d95f",
-    "731713e788434688",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "goto boss_clock",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "8c0c2545e9403293",
-    "93c788fe1a6ef745",
-    "1419ff80ce7fc6ac",
-    "fbfcbce8dc67b079",
-    "70dc550985473f59",
-    "0c17c3eee8e851c6",
-    "b852c649bcfbcd4f",
-    "0d91e753660ba7ff"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:43",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "f445682be0b577e5",
-    "7ccebfdf8c8b736b",
-    "a2cce37c4d92bdaf"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:48",
-    "interact",
-    "wait until 4:10",
-    "interact",
-    "goto boss_clock pretend",
-    "goto boss_clock",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "994027f11115f05e",
-    "30bcbb8c6140975d",
-    "2d28d07ed3faf518",
-    "fcfb00e3bb4eb969",
-    "3fc9a04c0b06938c",
-    "cf27c26455ecc5b0",
-    "c902af6f9c6f5487",
-    "c902af6f9c6f5487",
-    "c902af6f9c6f5487"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "b39716ba1d19498e",
-    "26b274f252c05d5e",
-    "a8761cd16a90379a",
-    "b200ca49430e7d9f",
-    "376878e6a06960ba"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "goto boss_clock pretend",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "9b96781ce396527b",
-    "d6cac098135be966",
-    "badb99268ac521a6"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:38",
-    "interact",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "c353ae9cdf1de4b9",
-    "cf9ae00e3afe990c",
-    "15731317f76fe789",
-    "84365ae9d1beb743",
-    "4d3c2fbfc53505f8",
-    "f4cf27f1e0cfa741",
-    "f4b7729aae09170a",
-    "f5db2e53565a5a5e",
-    "f5db2e53565a5a5e",
-    "f5db2e53565a5a5e"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:51",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "d150f8b6d044c9b0",
-    "3aa92b655f63d95f",
-    "731713e788434688",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 1.5s",
-    "goto kitchen pretend",
-    "goto boss_clock pretend",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "win clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "d5a29e8b3ca81812",
-    "c4363487c92e05e0",
-    "1a0a3288740075e5",
-    "fd21bc027c2365f1",
-    "33bafa50044563f9",
-    "5f297a5a7445b440",
-    "299cffeacac9a793",
-    "4e9b8fa9e6124373",
-    "420404d73dc8bdb8",
-    "d74e0c42de5bf52a",
-    "45f146e62a8a2fb8"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "goto boss_clock pretend",
-    "wait until 4:30"
-   ],
-   "summary": "blamed clock",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "2d3ed940e3163aa1",
-    "c5e9d1169365c111",
-    "8eb91f5838a7730b",
-    "81585dc54ee84ae0",
-    "1bd43d3891a0ab50",
-    "8a60ba1184496c21"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:41",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:45",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "9d4bdcc0b98c69cc",
-    "c7a1282e3d74cdc0",
-    "5181cb4f0b9e4442",
-    "efdc9ab8f7b9411c",
-    "5831fe4de9d2fc80",
-    "b156f8877b33a2a6",
-    "d150f8b6d044c9b0",
-    "3aa92b655f63d95f",
-    "731713e788434688",
-    "eada93e47fce42c9",
-    "eada93e47fce42c9"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "win herd",
-   "digests": [
-    "d48e1650abf78e1b",
-    "f696e951f68b1e78",
-    "7dbd1e180e759c28",
-    "065af142d816a507",
-    "ef3705d3be78d14a",
-    "fa4468397a990a75",
-    "bfd306767e8e0c4f",
-    "ff51f064ad544023",
-    "d74ee2ed324a2a39",
-    "54b817958255a1b5",
-    "725afdc944a6f009",
-    "6012124574dd29ce",
-    "d5a2977e44ad7d63",
-    "f7f7bc11373def6c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:48",
-    "pretend until 3:41",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:46",
-    "interact",
-    "goto boss_clock pretend",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "12f22d036a10fe4a",
-    "8405720c451f7434",
-    "c7381a8bd8e7545f",
-    "96939e853db952db",
-    "7f6a033648a4b4e9",
-    "407afcd60c6a66f0",
-    "27e2f8ece9c408af",
-    "a4383c4a777bed7a",
-    "4e68b39e1afee535",
-    "ac4acf0df565cf9c",
-    "cab267211607bebe",
-    "cab267211607bebe"
-   ]
-  },
-  {
-   "cmds": [
-    "pretend until 3:41",
-    "goto boss_clock pretend",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend 1.5s",
-    "goto kitchen pretend",
-    "goto boss_clock pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "2377f8315f3cf11e",
-    "744a0919e939f390",
-    "78e66ebc50c3687e",
-    "d1dbe6102dec504d",
-    "8a930e4cc8deb6aa",
-    "0ef29605150b458d",
-    "18de856f2997c511",
-    "dea5013dc0d8f7c3",
-    "8041deb9e315a715",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c",
-    "0f3898fbc77f727c"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "goto boss_clock pretend",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "win herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "8c0c2545e9403293",
-    "93c788fe1a6ef745",
-    "1419ff80ce7fc6ac",
-    "867c63796a194aee",
-    "451b65a03ff666b0",
-    "0773c3f8f87404f0",
-    "1ea703a7e2deafc7",
-    "01a26b38bacb0738"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:51",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "ebf649161151df81",
-    "608742e3a72f3ecc",
-    "3ac8db22f5b97101",
-    "7ae28d253380a014"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "71319650e5292224",
-    "2fb0a9a4f268ea33"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "goto boss_desk pretend",
-    "pretend until 3:48",
-    "interact",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "ded3f73138bfcc67",
-    "92bcae563734c044",
-    "66e33dc11cd3817d",
-    "b4b0c31be822e158",
-    "0c71d386bef46843",
-    "c33efe6c682caf12",
-    "a8f9e30a13177bf8",
-    "a49f09f7e67e6e67",
-    "df06bb8e37aedd64",
-    "8889bd5d130a2d3c",
-    "d3f37de7e693849a"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:10",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "win herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "14610ae7362a35c7",
-    "98322dded9012560",
-    "27b7523bebba5fb3",
-    "2bd8792c67e6d738"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:45",
-    "interact",
-    "goto boss_clock",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "634fd2092e504b02",
-    "cc6ca02476ffdfe0",
-    "1496d3468a060767",
-    "787eb62916e12293",
-    "520e88bfd0cf62ae",
-    "099631a5907a52b4"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend 2.26s",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "b8d8f1b2128e15b6",
-    "70bcb8aea1e1e6e5",
-    "9e8a723b2e785454",
-    "15cae4192370462f",
-    "949d32390b0f2079",
-    "e09f7bca3720bc5c",
-    "ad89006a716c154f",
-    "e7f4ef95d42e4fc3",
-    "11a8bb5a307cfbdb",
-    "104d15031b4d07f9",
-    "9c80003967113909",
-    "f22653b12d057ca5",
-    "d5556946cf70436e",
-    "06aebae2a8ef4540"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "goto boss_clock",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "win herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "8c0c2545e9403293",
-    "93c788fe1a6ef745",
-    "1419ff80ce7fc6ac",
-    "fbfcbce8dc67b079",
-    "70dc550985473f59",
-    "0c17c3eee8e851c6",
-    "07946257d60b6c62",
-    "485931a48a9924a8",
-    "b66d0d838b4bed53"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:57",
-    "goto open_clock pretend",
-    "goto kitchen",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "a19cba09800d1e8c",
-    "a3b4e50cec6f9918",
-    "dd397806e7fb8517",
-    "0d0222336d3e8d17",
-    "1d65e98f1b1bd187",
-    "56ed62143b86a6b3",
-    "8aab1461c1f8b0ee",
-    "4f1a8e4aa67092de",
-    "42461d68d4987e35",
-    "896ef96ccf5dc5cd",
-    "033e7c5e8201e1ee",
-    "1a0e553bf8241e49",
-    "9112fa02e651ecc8"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "interact",
-    "goto open_clock pretend",
-    "goto open_clock",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "wait until 3:48",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "901be1ee6c9b519f",
-    "b9517e7d09e2d9e2",
-    "cf0061eb4d798dd4",
-    "bbd3e7357cba8d67",
-    "85298e2a811ca002",
-    "fc18d900ddfdf984",
-    "5bd45ee59e20b40a",
-    "555827676459d0f5",
-    "b156f8877b33a2a6",
-    "6bb828dc44507a08",
-    "d2f36c6319469050",
-    "226c31b05a68fb16",
-    "226c31b05a68fb16",
-    "226c31b05a68fb16",
-    "226c31b05a68fb16",
-    "226c31b05a68fb16"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "pretend until 4:10",
-    "goto bus_stop pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "1e4aa582f90edfa0",
-    "21c9cc71e7d227a4",
-    "692bafea678d80a7",
-    "d621a4d65bd6bd1a",
-    "3a8eb9e1663ee11b",
-    "3ad2614714de2c90"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "pretend until 4:10",
     "goto bus_stop pretend",
     "wait until 4:30"
    ],
@@ -4793,10 +2605,152 @@
     "a753deae68df407f",
     "eeed9ad18fd6746c",
     "8db12f843df96e93",
-    "1cdd37d215732c3e",
-    "a9a9cd41ad180861",
-    "3a8eb9e1663ee11b",
-    "3ad2614714de2c90"
+    "d69914fc9f9f5da1",
+    "0fbd204f528ae963",
+    "2a0920fcc20c2512",
+    "f8654a84e58309b6",
+    "d7ee87a2a71f32c9",
+    "8dfb2fbd0e23f086"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 3:47",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "6aa88c139830d881",
+    "5d82499fb0305ffd",
+    "f7e68af8707e4fa0",
+    "12c241b4cecc95eb",
+    "3bb509282370757f",
+    "ef8b3dcc9b456235"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:13",
+    "wait until 4:08",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "c9c892726e625bd4",
+    "71a2ef9ca3fb16f1",
+    "f60f2ba9fcf8cfb3",
+    "9d00aefc81be0dc3",
+    "0d6d6ab45d868308"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:07",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "win clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "d5a29e8b3ca81812",
+    "c4363487c92e05e0",
+    "5266e5e6bfb777f1",
+    "b0019b9d2e2da1a4",
+    "8a67599844a38eab",
+    "05f83cfd89b95f93"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:56",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "e2f510068ad849c4",
+    "266d7d8b609d6664",
+    "0c4cb4c492437f55",
+    "54b3dea246d46e33",
+    "d52e9dd204681f74",
+    "9490617d62bc5ac3",
+    "09d141e8459cd3f7",
+    "d1b11183896b6659"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "pretend until 3:41",
+    "interact",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "55733f2e9f94c893",
+    "6aa88c139830d881",
+    "2efb9cabab80d0d3",
+    "675dec805970dcbd",
+    "425e14edce90f3fd",
+    "a948c2dcb567ddc7"
    ]
   },
   {
@@ -4807,13 +2761,12 @@
     "interact",
     "interact",
     "interact",
-    "goto restroom_door pretend",
-    "goto open_clock pretend",
     "interact",
+    "pretend until 3:42",
     "goto bus_stop pretend",
-    "wait until 4:30"
+    "pretend until 4:30"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
@@ -4821,12 +2774,141 @@
     "5ba8f510b65c4cc2",
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
-    "f88f17bc5efaadd2",
-    "e24396ff26c4ad27",
-    "b40d927f20744f46",
-    "3eabf78e24fdee91",
-    "073bf1c1077ce156",
-    "16412a8e2ad1681b"
+    "6f044fb52951a991",
+    "1b8129068e448983",
+    "9c5ab726594a9a1e",
+    "c1c8dc20d833067b",
+    "c2c204bf53589bf7"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 3:41",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "15fc0228e93ad690",
+    "ee12f70cce6a65c8",
+    "2454ec22ff8e1902",
+    "83b250d1c945f721"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:26",
+    "goto bus_stop pretend",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "7571ac47b4a7b561",
+    "8f78f9e82fc8b3c9",
+    "d2d1f8b9d71cec0a",
+    "72e860b169104589"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 4:13",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "3efda53a824a3fb8",
+    "246ea799ebff1aed",
+    "b7fc9b9963f2cbd0",
+    "f9295415c9e9a834",
+    "4a01b1d8a207417b",
+    "78b252a08077baa9",
+    "1b6a33adb2e77db4"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "sit pretend",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "3efda53a824a3fb8",
+    "246ea799ebff1aed",
+    "38acb2e88179239a",
+    "b4a3c4b2262e65ff",
+    "c7d6a5b460415d2e",
+    "0bd437b43fc02dff"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:04",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "d5a29e8b3ca81812",
+    "cf12de9c5f2f3e06",
+    "d1eadfe0032a82d8",
+    "0c263a9b9a104fd6",
+    "f8a7ca8e37c7995c",
+    "f8a7ca8e37c7995c"
    ]
   },
   {
@@ -4838,13 +2920,7 @@
     "interact",
     "interact",
     "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "pretend until 3:41",
+    "wait until 4:25",
     "goto bus_stop pretend",
     "wait until 4:30"
    ],
@@ -4857,16 +2933,60 @@
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
     "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "013cf02132f68b3f",
-    "b97f3012f6f3990c",
-    "fd8e374f8bdd398c",
-    "d8e987eff4c52a13",
-    "87c58eac405dfec1",
-    "3a8eb9e1663ee11b",
-    "2d8295db16391b45"
+    "e7ff9f3d8e99f092",
+    "399098ceb8274726",
+    "18cc007ef6b5153b",
+    "cc65e1d5fdce10ad"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:27",
+    "interact",
+    "interact",
+    "interact",
+    "goto kitchen pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "e2d76af6d27bb44b",
+    "620e4a38f1b71016",
+    "85e700de8a6fa03d",
+    "fd31e12f216a1051",
+    "e2ce4abc8c44c0ec",
+    "232fc05b190fd0da",
+    "78dde0edb7257714"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "interact",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "871eb0b3989ce5b9",
+    "07a5b8076c64ab1b",
+    "aa661c120ec1e1ab",
+    "eb9019ce06fdaabc",
+    "1a55b21d08e49495",
+    "69a0ef6816f3aa88",
+    "547a049e7d87c60f"
    ]
   },
   {
@@ -4877,16 +2997,33 @@
     "interact",
     "interact",
     "interact",
-    "goto boss_office_door pretend",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "interact",
+    "sit pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "cab0a3670517ba2c",
+    "62d0af4648875a7c",
+    "15fb59a844d432a1"
+   ]
+  },
+  {
+   "cmds": [
     "goto open_clock pretend",
     "interact",
-    "pretend until 3:41",
     "interact",
-    "goto bus_stop pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 8s",
+    "interact",
+    "goto bus_stop",
     "wait until 4:30"
    ],
    "summary": "caught",
@@ -4897,32 +3034,45 @@
     "5ba8f510b65c4cc2",
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
-    "095b4f58ba2113d2",
-    "3d8822d9d4fc17fe",
-    "27e56e5604cd5c44",
-    "0c13486fbfe60f35",
-    "d6396a41e155237c",
-    "f46ff21c11d9d3b7",
-    "decedbfa779de6bc",
-    "08217409be8e2545",
-    "8d557d6dcce31662",
-    "f8f643ca5de32d84",
-    "d7ee87a2a71f32c9",
-    "8dfb2fbd0e23f086"
+    "38908dc450588107",
+    "e5f46c633342ac5e",
+    "434e7b34a4febbeb",
+    "583147420271ff62",
+    "de611e9f557c1b88"
    ]
   },
   {
    "cmds": [
+    "pretend until 3:23",
+    "goto boss_clock pretend",
     "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:13",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "73a2fd6bcfff0ad5",
+    "7b312dbc761c127c",
+    "907d0afe404f4dee",
+    "a3d31a866303c47b",
+    "d3cbbdff6a1cbc95",
+    "b2bf1d638b4b17f0",
+    "3888f3d3c60c014a",
+    "d83e402e754103da",
+    "7edf8428f782a3da",
+    "97b51cff57b6855d"
+   ]
+  },
+  {
+   "cmds": [
     "goto open_clock pretend",
     "interact",
     "interact",
     "interact",
-    "interact",
-    "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 6.78s",
     "goto boss_clock pretend",
     "interact",
     "interact",
@@ -4930,25 +3080,257 @@
     "goto bus_stop pretend",
     "wait until 4:30"
    ],
-   "summary": "win herd",
+   "summary": "caught",
    "digests": [
-    "d48e1650abf78e1b",
-    "f696e951f68b1e78",
-    "7dbd1e180e759c28",
-    "065af142d816a507",
-    "ef3705d3be78d14a",
-    "fa4468397a990a75",
-    "bfd306767e8e0c4f",
-    "ff51f064ad544023",
-    "d74ee2ed324a2a39",
-    "e4265819ad2b8782",
-    "92e4a7a136dfb4bb",
-    "3857309c8c2b842d",
-    "c69480cdd9682a18",
-    "d5c5b92715e47768",
-    "d388ba00b185b5f7",
-    "86a29f7ecbd7f672",
-    "ad6aff56042efb18"
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "d1a7a85926b5cc27",
+    "a753deae68df407f",
+    "eeed9ad18fd6746c",
+    "8db12f843df96e93",
+    "d69914fc9f9f5da1",
+    "0a7e43248f127dfd",
+    "641238e8ca9375be"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:04",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "d5a29e8b3ca81812",
+    "4827c73a8da4c84f",
+    "f1045e40591fdca6",
+    "0248a1c7a668d673",
+    "f2704419b621762b",
+    "2443452ed7f43d67",
+    "ef839040c439dd44",
+    "5c8f8703b78b2ca9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:13",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "0c9378195703ef11",
+    "2c2d9d1be2faaf2e",
+    "84c4e70176714467",
+    "44256fd7becd75a5",
+    "0aedf245d93d9eb1",
+    "941fc22040b2f90a",
+    "4d0a40384a8ba987"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:07",
+    "pretend 5s",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "win clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "9e670847436f712c",
+    "d43b7d74fad37e25",
+    "ce9bb52b12677f49",
+    "f779432fe8f0cd02",
+    "4758c6fd13163cbe"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:24",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "1cb43c23fbd91d7f",
+    "45a51f64ac9d4662",
+    "47481a5edb6287cf",
+    "031623df0cccbc8f",
+    "fb6dd037cf7c7246",
+    "dbee1e0bebca2701",
+    "6fc6a9bb68aa748c",
+    "9a47f404209c7b7d"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:41",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "2377f8315f3cf11e",
+    "744a0919e939f390",
+    "78e66ebc50c3687e",
+    "8a930e4cc8deb6aa",
+    "72e90a44b46cc0c5",
+    "5bd6a71654ce79d4",
+    "7507d6403aed27eb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "interact",
+    "interact",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "56bdb5b58efb1996",
+    "ec3cd9a442279578",
+    "ee1e4d6f5b1720bd",
+    "f86641e3c80811a6",
+    "7002dc07b0c69053",
+    "dfa33ea502618e1d",
+    "f81a897655dc9c9b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:24",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "1cb43c23fbd91d7f",
+    "45a51f64ac9d4662",
+    "cff269460726413b",
+    "984811d827c4d776",
+    "203a4caf6657e076",
+    "57dc79dc2c6c7b10",
+    "e47f640edcfed780",
+    "ca9e21289679f06e",
+    "5590d60738afc32c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 4:13",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "0c9378195703ef11",
+    "2c2d9d1be2faaf2e",
+    "84c4e70176714467",
+    "98840cabacd17cbc",
+    "8006942c1916f5b6",
+    "cfaeb3701cc9fa30",
+    "d9d6d4fe1a25f971",
+    "aed81118379a7f53"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:25",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "99563e1a300070c5",
+    "73a872d9008ec9be",
+    "aa175b372c1c979b",
+    "866de7a2c2a3dcd3",
+    "cecd36c0c179187c",
+    "31e37466d6705e88",
+    "1c64ac7ce4bb4441",
+    "e4befb11c59de566"
    ]
   },
   {
@@ -4959,15 +3341,11 @@
     "interact",
     "interact",
     "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
     "interact",
-    "pretend 4.52s",
+    "pretend 16s",
     "interact",
-    "goto boss_clock",
-    "interact",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
+    "goto bus_stop",
+    "wait until 4:30"
    ],
    "summary": "win herd",
    "digests": [
@@ -4977,38 +3355,257 @@
     "5ba8f510b65c4cc2",
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
-    "22ff52bc7e051afc",
-    "6094b0e1d0d48725",
-    "d74ee2ed324a2a39",
-    "54b817958255a1b5",
-    "725afdc944a6f009",
-    "4171ae02ad67a2b5",
-    "5fb713f3b6cf6aa2",
-    "e61c485a9a982c5c",
-    "329fc24953cca025",
-    "aed01862cb9f5bcc"
+    "6f044fb52951a991",
+    "7c2476bbd7192129",
+    "9abb6d2124dafe37",
+    "243b41deddfe308a",
+    "87ccfbe7cce073a7",
+    "e127c5cd84e7137b"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:25",
+    "goto open_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "99563e1a300070c5",
+    "73a872d9008ec9be",
+    "aa175b372c1c979b",
+    "866de7a2c2a3dcd3",
+    "cecd36c0c179187c",
+    "31e37466d6705e88",
+    "48ff7d20765d1f54",
+    "a0626121f0e60315",
+    "e4befb11c59de566"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "pretend until 4:06",
+    "pretend until 3:08",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "7b6fdd2623c09a7e",
+    "ff868bbe92ed9a5f",
+    "48595aeb5c35a810",
+    "2f3bf207773e7b6c"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 16s",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "win herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "7c2476bbd7192129",
+    "576d446f243a6da1",
+    "7e022ad3451c2429",
+    "424dd242c45b13a0"
    ]
   },
   {
    "cmds": [
     "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
     "goto boss_clock pretend",
     "interact",
     "interact",
     "interact",
-    "goto open_clock pretend",
+    "pretend until 3:47",
     "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 1.5s",
-    "goto boss_clock pretend",
     "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "f5d151e87f7231d0",
+    "cb77ff09713c8190",
+    "cb5303bbd6aa1c77",
+    "e82f16af7921e74d",
+    "6aa88c139830d881",
+    "2efb9cabab80d0d3",
+    "aeb4f0b682fe624e",
+    "3f723a2065c08acf",
+    "6b93dfb621b102c9",
+    "fb343ae1f3f30236",
+    "ef8b3dcc9b456235"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 8s",
+    "interact",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "42c3f5321a086e0b",
+    "ea6d4fdf10e340ec",
+    "56012b77eac72af1",
+    "7465a4d2f816d9ce",
+    "de611e9f557c1b88"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_clock",
+    "interact",
+    "pretend 12s",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "994027f11115f05e",
+    "30f40649022d889f",
+    "9f9f33905589349b",
+    "4058fb3f872fa936",
+    "55ead162dbb8d9c4"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend 1.5s",
+    "goto open_clock",
+    "interact",
+    "goto kitchen pretend",
+    "goto boss_clock",
+    "interact",
+    "interact",
+    "sit pretend",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "6f7034a27336e6f0",
+    "2047663adedeb059",
+    "2ce1db6e60bf6090",
+    "5d91a28cc0521371",
+    "5caa8015e5bd12c7",
+    "bfb00a8417629202",
+    "68aa42322bbd0ba5",
+    "e67f31436ad59271",
+    "df24ece25847f78d",
+    "0eac5d8239db1354",
+    "1dd5c3ff1101f0db"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:12",
+    "interact",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "e7ff9f3d8e99f092",
+    "022fc6e8dbb9f5e6",
+    "2bd0c9b1057a0b5c",
+    "b23d1b6411bba00b",
+    "f9f95e44e1b28466"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 4:07",
+    "pretend 5s",
+    "interact",
+    "goto bus_stop",
+    "pretend until 4:30"
+   ],
+   "summary": "win clock",
    "digests": [
     "c8af8ba9275aeb85",
     "7be93ef2d389e618",
@@ -5018,15 +3615,12 @@
     "66e33dc11cd3817d",
     "b4b0c31be822e158",
     "2d3ed940e3163aa1",
-    "5049c64545b2ae35",
-    "46f63d2d2562dbd7",
-    "4f068a71f137ea17",
-    "61eaa9aa64b31db0",
-    "a7dc4242664d00fb",
-    "475337bf7192163f",
-    "7a9ec330439dc78f",
-    "99b41669072063d0",
-    "2bebe1172c83bc39"
+    "ab27bd8248708c4d",
+    "9b18fcce98cba453",
+    "66c7ae0c7b5daefb",
+    "238450f50f9cb8ee",
+    "608f94043f7de446",
+    "2b7669fbace180f7"
    ]
   },
   {
@@ -5039,11 +3633,96 @@
     "interact",
     "goto boss_clock",
     "interact",
-    "pretend until 3:51",
-    "wait until 4:10",
-    "interact",
+    "pretend 9s",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "994027f11115f05e",
+    "30f40649022d889f",
+    "bd118a7fe1815efe",
+    "9a75df93adfb7ed8",
+    "6614d6fde9b2cd79"
+   ]
+  },
+  {
+   "cmds": [
     "goto boss_clock pretend",
+    "pretend until 3:24",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "1cb43c23fbd91d7f",
+    "45a51f64ac9d4662",
+    "cff269460726413b",
+    "984811d827c4d776",
+    "203a4caf6657e076",
+    "57dc79dc2c6c7b10",
+    "e47f640edcfed780",
+    "06f954983a761333",
+    "987820f8878b309a"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend 10s",
+    "interact",
+    "goto bus_stop",
+    "pretend until 3:04",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "2d3ed940e3163aa1",
+    "426a09088bd35898",
+    "30720345eed4c583",
+    "1e9178ad57d3c73c",
+    "fad0e752a1205f48",
+    "3037cf9894bf53f4",
+    "5c8f8703b78b2ca9"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
     "goto boss_clock",
+    "interact",
+    "wait until 3:38",
+    "interact",
     "wait until 4:30"
    ],
    "summary": "caught",
@@ -5056,355 +3735,40 @@
     "fd03fcc24729868a",
     "994027f11115f05e",
     "30f40649022d889f",
-    "861b602116212b64",
-    "455e27af6676c731",
-    "e09887fb7c88b6d7",
-    "f2f62646a3cf8b78",
-    "dcd8a22575118e14",
-    "dcd8a22575118e14",
-    "dcd8a22575118e14"
+    "afd43b168389e3b4",
+    "8e48da1c540ba822",
+    "1a03fc585de2f484",
+    "af9dfb7be7e902e0"
    ]
   },
   {
    "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock",
-    "pretend until 3:48",
-    "interact",
-    "wait until 4:10",
-    "interact",
     "goto boss_clock pretend",
-    "goto boss_clock",
-    "wait until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "a0244794ad3e1796",
-    "56073ec8d04b444d",
-    "34fad74e306fc67c",
-    "832fa6cc92cb9875",
-    "70f44dbbd463f4cb",
-    "efec28c15e1e90cb",
-    "1fa0c7273319b703",
-    "87b63efcd10f09d4",
-    "0d91e753660ba7ff"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
+    "pretend until 3:25",
     "interact",
     "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:49",
-    "interact",
-    "goto open_clock pretend",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "124dbef0767a1b60",
-    "9371efd1b1a62324",
-    "5c8ed7932b8029ef",
-    "e7ba57212f969e3d",
-    "e7ba57212f969e3d"
-   ]
-  },
-  {
-   "cmds": [
-    "interact",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:48",
-    "interact",
-    "pretend 6.78s",
-    "goto boss_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "blamed herd",
-   "digests": [
-    "d48e1650abf78e1b",
-    "f696e951f68b1e78",
-    "7dbd1e180e759c28",
-    "065af142d816a507",
-    "ef3705d3be78d14a",
-    "fa4468397a990a75",
-    "bfd306767e8e0c4f",
-    "fe9c029371b53a3d",
-    "1b78d3cd2a55fdd6",
-    "0f52d23397009ea5",
-    "a4c6c4e608826bfa",
-    "8b7da324df1d7200",
-    "e41260b4fcd8f484",
-    "02dd18e6264c4b12",
-    "8dfbba09fd3f7839",
-    "e578a72a70a27c31",
-    "a6ac1c5a242b8d8e"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_office_door pretend",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "wait until 3:40",
-    "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "095b4f58ba2113d2",
-    "3d8822d9d4fc17fe",
-    "27e56e5604cd5c44",
-    "0c13486fbfe60f35",
-    "d6396a41e155237c",
-    "61644fa7c81bb42b",
-    "1db77c9964e94921",
-    "2c29ab58d8764178",
-    "d3708299f78fa6c4",
-    "ff288031d6eb3451",
-    "16412a8e2ad1681b"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "goto bus_stop pretend",
-    "pretend until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "0c37518cc4414b69",
-    "95738eb70efdc289",
-    "7e9ebeebf543c92d"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend 2.26s",
     "goto open_clock",
     "interact",
-    "wait until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "b8d8f1b2128e15b6",
-    "70bcb8aea1e1e6e5",
-    "9e8a723b2e785454",
-    "15cae4192370462f",
-    "949d32390b0f2079",
-    "e09f7bca3720bc5c",
-    "ad89006a716c154f",
-    "e7f4ef95d42e4fc3",
-    "11a8bb5a307cfbdb",
-    "104d15031b4d07f9",
-    "bb898dfd7d81cd1b",
-    "2bb7c01e77257265",
-    "0730586170e32ac1",
-    "8b0c842302286629"
-   ]
-  },
-  {
-   "cmds": [
-    "goto open_clock pretend",
     "interact",
     "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "pretend until 3:41",
-    "interact",
+    "goto kitchen pretend",
     "goto bus_stop pretend",
     "pretend until 4:30"
    ],
    "summary": "caught",
    "digests": [
-    "dd2dad79e90b7289",
-    "081cc6badea3a911",
-    "f5cd496de86df698",
-    "5ba8f510b65c4cc2",
-    "db5f13679ccbcfc4",
-    "fd03fcc24729868a",
-    "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "316023113a463766",
-    "0962962afc28af33",
-    "f6e24315f77857ff",
-    "6c2c946fc8276125",
-    "db7485561e094ed5"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend 0.84s",
-    "interact",
-    "goto bus_stop",
-    "pretend until 4:30"
-   ],
-   "summary": "fail",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "b8d8f1b2128e15b6",
-    "70bcb8aea1e1e6e5",
-    "9e8a723b2e785454",
-    "15cae4192370462f",
-    "949d32390b0f2079",
-    "e09f7bca3720bc5c",
-    "ad89006a716c154f",
-    "e7f4ef95d42e4fc3",
-    "11a8bb5a307cfbdb",
-    "136a256f44c7fdf6",
-    "3a4676588db4180d",
-    "5918abf81f532e37",
-    "7a2ad6cd3b396142",
-    "e22a59852b7cfd0c"
-   ]
-  },
-  {
-   "cmds": [
-    "wait until 3:47",
-    "goto boss_clock pretend",
-    "goto open_clock pretend",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "interact",
-    "goto boss_clock pretend",
-    "interact",
-    "pretend 1.69s",
-    "interact",
-    "goto bus_stop",
-    "wait until 4:30"
-   ],
-   "summary": "caught",
-   "digests": [
-    "c8af8ba9275aeb85",
-    "7be93ef2d389e618",
-    "b8d8f1b2128e15b6",
-    "70bcb8aea1e1e6e5",
-    "9e8a723b2e785454",
-    "15cae4192370462f",
-    "949d32390b0f2079",
-    "e09f7bca3720bc5c",
-    "ad89006a716c154f",
-    "e7f4ef95d42e4fc3",
-    "11a8bb5a307cfbdb",
-    "0f19d5d121610ca5",
-    "6ba0484898045726",
-    "c3da371088aada8d",
-    "d4b78f25e54271a8",
-    "de611e9f557c1b88"
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "871eb0b3989ce5b9",
+    "07a5b8076c64ab1b",
+    "aa661c120ec1e1ab",
+    "eb9019ce06fdaabc",
+    "cd3a1e17f3ae4db0",
+    "fd1e0b2f61e916aa",
+    "53cf352f824eca11",
+    "5d48a5cc61883db4"
    ]
   },
   {
@@ -5416,15 +3780,10 @@
     "interact",
     "interact",
     "interact",
-    "goto bus_stop pretend",
-    "goto boss_clock",
-    "interact",
-    "goto open_clock pretend",
-    "goto bus_stop pretend",
     "sit pretend",
     "pretend until 4:30"
    ],
-   "summary": "fail",
+   "summary": "blamed herd",
    "digests": [
     "dd2dad79e90b7289",
     "081cc6badea3a911",
@@ -5433,14 +3792,9 @@
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
     "6f044fb52951a991",
-    "8dc2addf829c1676",
-    "c59ad749dba8105c",
-    "683b41fa0f30bc04",
-    "233e995ce52121dd",
-    "0c37518cc4414b69",
-    "df59c3e91c7401dc",
-    "20794ec503349210",
-    "6fd5e8aa71aac94a"
+    "db6b3fe7bde7aa00",
+    "c3a63c64b2882241",
+    "85abda2d817ca5ae"
    ]
   },
   {
@@ -5451,14 +3805,108 @@
     "interact",
     "interact",
     "interact",
-    "pretend until 3:48",
-    "interact",
-    "pretend 4.52s",
-    "interact",
     "goto boss_clock",
     "interact",
     "interact",
-    "goto bus_stop pretend",
+    "interact",
+    "wait until 3:38",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "994027f11115f05e",
+    "30f40649022d889f",
+    "07d6d8998c627aca",
+    "99678c103648c791",
+    "41442a69e222d2d8",
+    "5dc39c57a11182d6",
+    "2928fa51839583a8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 3:13",
+    "goto boss_clock pretend",
+    "interact",
+    "goto boss_clock pretend",
+    "interact",
+    "wait 1s",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "3782b248ae723ede",
+    "192a254c85b28306",
+    "1e1df582e34b0ca9",
+    "d4ba292e73576f55",
+    "75810c3d7f3fbae9",
+    "2384579cb7cf04d7",
+    "b5c9473f5e68dc6d",
+    "6dd36c1257b915e7"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend until 4:07",
+    "pretend 5s",
+    "interact",
+    "interact",
+    "pretend until 3:04",
+    "pretend until 4:30"
+   ],
+   "summary": "blamed clock",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "2d3ed940e3163aa1",
+    "ab27bd8248708c4d",
+    "9b18fcce98cba453",
+    "66c7ae0c7b5daefb",
+    "75fb0b1011fe99df",
+    "6063b11927dc74a9",
+    "ab7c922e50d8c873",
+    "6c540d88ed91ee6e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend 16s",
+    "goto bus_stop",
     "wait until 4:30"
    ],
    "summary": "win herd",
@@ -5469,50 +3917,402 @@
     "5ba8f510b65c4cc2",
     "db5f13679ccbcfc4",
     "fd03fcc24729868a",
-    "8c0c2545e9403293",
-    "93c788fe1a6ef745",
-    "1419ff80ce7fc6ac",
-    "b7d2cbb2e016f83f",
-    "17d963b3fab73da7",
-    "5378d2aec004acdf",
-    "71fe5e0fa5403113",
-    "9f4597fbedc7066f",
-    "8499684f771f03c8",
-    "f3e5eacb0ed721e6"
+    "6f044fb52951a991",
+    "db6b3fe7bde7aa00",
+    "93cf2fd2d982127b",
+    "a82dcfc6e770f8dc",
+    "94d8752f5c2a9ea3",
+    "de04395518351af8"
    ]
   },
   {
    "cmds": [
-    "wait until 3:47",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
     "goto boss_clock",
+    "interact",
+    "interact",
+    "wait until 3:38",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "994027f11115f05e",
+    "30f40649022d889f",
+    "07d6d8998c627aca",
+    "066ec623ff152778",
+    "882dfe7606a5db3b",
+    "26f5b828faef6bfb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "interact",
+    "interact",
+    "goto kitchen pretend",
+    "goto open_clock pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "60b96a7ee2bc7368",
+    "c915909586772ac6",
+    "ba099005d1bc73d1",
+    "1161fbd509517fe1",
+    "89ffe86cf9b95771",
+    "6715d4182637b782",
+    "ef9e10b7cc0ec7aa",
+    "65e4ae00ddf3ea73",
+    "160ed6bc0cc32a8b",
+    "3446c274db5783c9",
+    "93729350b7172129",
+    "7ebe807646b7aa28"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 16s",
+    "goto boss_clock pretend",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "7c2476bbd7192129",
+    "8fd30c2bff90dc42",
+    "528a0922cc3bc7b0",
+    "29c22f76ed58b3cd",
+    "cb2bd2cf2cea7bdb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend 12s",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "caught",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "db6b3fe7bde7aa00",
+    "b84e942e6bf74bfc",
+    "b3c565a110c4bdf1",
+    "65b6ef658c86952c",
+    "91de8151a334cb0d"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_office_door pretend",
+    "pretend 16s",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "f3de5192779b3e3e",
+    "a2f08f45417430a1",
+    "960a6d15eb7294d0",
+    "e9e70c87b570f25c",
+    "f88e38a9602d1478",
+    "c90ce52be8453b57",
+    "8187ddbaf8e70c3e"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_clock pretend",
+    "pretend until 3:25",
+    "interact",
+    "interact",
+    "goto open_clock",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 5s",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "5ff31fd209a8f85a",
+    "68705c1f80a6f8ed",
+    "c6161b420fb69589",
+    "7a1d58a25039f3ed",
+    "871eb0b3989ce5b9",
+    "07a5b8076c64ab1b",
+    "aa661c120ec1e1ab",
+    "eb9019ce06fdaabc",
+    "30afc372bc74b868",
+    "63e8589d263f5941",
+    "39f2d5e24e71f3a5"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend until 4:25",
+    "interact",
+    "pretend until 3:42",
+    "goto bus_stop pretend",
+    "pretend until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "8b73020f4cc32c50",
+    "5a0f0d26e88c123d",
+    "d0164f2d2f724f2d",
+    "64a52b9f37750d49",
+    "c3eaa269fb17105b",
+    "09d28808dad14339"
+   ]
+  },
+  {
+   "cmds": [
+    "wait until 3:27",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "pretend 10s",
+    "interact",
+    "goto bus_stop",
+    "pretend until 3:01",
+    "wait until 4:30"
+   ],
+   "summary": "fail",
+   "digests": [
+    "c8af8ba9275aeb85",
+    "7be93ef2d389e618",
+    "901be1ee6c9b519f",
+    "ded3f73138bfcc67",
+    "92bcae563734c044",
+    "66e33dc11cd3817d",
+    "b4b0c31be822e158",
+    "2d3ed940e3163aa1",
+    "426a09088bd35898",
+    "30720345eed4c583",
+    "1e9178ad57d3c73c",
+    "fad0e752a1205f48",
+    "f469997439627a36",
+    "a9d94bc8c70d60fb"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "pretend 16s",
     "goto boss_clock pretend",
     "interact",
     "interact",
     "interact",
     "interact",
-    "interact",
-    "pretend until 3:55",
-    "goto open_clock pretend",
-    "wait until 4:26",
-    "goto bus_stop pretend",
     "wait until 4:30"
    ],
-   "summary": "caught",
+   "summary": "blamed herd",
    "digests": [
-    "c8af8ba9275aeb85",
-    "a19cba09800d1e8c",
-    "a3b4e50cec6f9918",
-    "dd397806e7fb8517",
-    "0d0222336d3e8d17",
-    "1d65e98f1b1bd187",
-    "56ed62143b86a6b3",
-    "8aab1461c1f8b0ee",
-    "4f1a8e4aa67092de",
-    "42461d68d4987e35",
-    "8abd9ef9cac506a7",
-    "ad102d5c594505d0",
-    "c7f1957854616017",
-    "e2b54aacec15ab87"
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "7c2476bbd7192129",
+    "8fd30c2bff90dc42",
+    "528a0922cc3bc7b0",
+    "46a92887acb2443f",
+    "eb199257710fb127",
+    "70f85d6df7d231d1",
+    "e2c0e1499ecd15f2",
+    "33a91febe63dc4b8"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto boss_clock pretend",
+    "pretend 16s",
+    "interact",
+    "goto bus_stop",
+    "wait until 4:30"
+   ],
+   "summary": "win herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "91964e80f3ed9a18",
+    "b3d7c87f8fd027a6",
+    "faf32f4eb64e36fc",
+    "b5b70fcf9fd6899c",
+    "3d68eb104fc774e0",
+    "fb77d5888936425b"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "sit pretend",
+    "pretend 16s",
+    "goto bus_stop",
+    "goto boss_clock pretend",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "db6b3fe7bde7aa00",
+    "93cf2fd2d982127b",
+    "a82dcfc6e770f8dc",
+    "85c84bdeff8dc8ed",
+    "25ba4eb2ef8fbef5",
+    "4ecd8fb7acb8b4e2",
+    "6de913d08c824bf2"
+   ]
+  },
+  {
+   "cmds": [
+    "goto open_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "goto lin_desk pretend",
+    "sit pretend",
+    "pretend 16s",
+    "goto bus_stop",
+    "goto boss_clock pretend",
+    "interact",
+    "interact",
+    "interact",
+    "interact",
+    "wait until 4:30"
+   ],
+   "summary": "blamed herd",
+   "digests": [
+    "dd2dad79e90b7289",
+    "081cc6badea3a911",
+    "f5cd496de86df698",
+    "5ba8f510b65c4cc2",
+    "db5f13679ccbcfc4",
+    "fd03fcc24729868a",
+    "6f044fb52951a991",
+    "31eafcf364389613",
+    "281fc37838863d15",
+    "c21ac4af2b86f097",
+    "de3535ac37f7d9ba",
+    "ad4c00fea85b99d2",
+    "68c678188619d672",
+    "0d8dff87b772b74c",
+    "72ce1941c41ed2d7",
+    "264da2bcddd95b1f",
+    "e24eaa38898e8af4",
+    "47874d26e499aeab"
    ]
   },
   {
@@ -5537,8 +4337,8 @@
     "735a27bb3cd22fe5",
     "e6fbcf6785e47592",
     "b27e2983baa20902",
-    "ec4f40edb305b1a5",
-    "c6d3fb7dfb3163b0"
+    "e5a09fdce98996dc",
+    "4cd55e724886debb"
    ]
   },
   {
@@ -5554,7 +4354,7 @@
     "a2ea682929fdc15f",
     "bec00be3b1efde10",
     "97f04bfdbbb53130",
-    "bb11fb3650dcd8e6"
+    "c8b62609e0b02030"
    ]
   },
   {

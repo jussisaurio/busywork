@@ -42,13 +42,15 @@ export function clockArg(minute, start = DAY_START) {
 
 // --- Movement / interaction -----------------------------------------------
 // Cosmetic cue times, game minutes like day.meetingAt. A level may set any of them in its day; the rest default to
-// a few minutes before day.meetingAt (dayCue reads one). They are not rules: nothing in the sim reads them.
+// day.meetingAt or a few minutes before it (dayCue reads one). They are not rules: nothing in the sim reads them.
 const CUE_DEFAULTS = {
   clockRedAt: (d) => d.meetingAt - 5, // the HUD clock turns red
   clockTickAt: (d) => dayCue(d, 'clockRedAt'), // audio: the wall clock starts ticking (with the red clock)
   tockAt: (d) => d.meetingAt - 2, // audio: tick-tock
   halfMinuteAt: (d) => d.meetingAt - 1, // audio: a tick every half minute
   beamAt: (d) => d.meetingAt - 5, // the meeting projector's beam lights the screen
+  deadlineAt: (d) => d.meetingAt, // the deadline clock face (mission panel, title screen): earlier if the moment
+  //                                 that counts comes before the verdict (a call at 3:30, judged at 3:34)
 };
 export const DAY_CUES = Object.keys(CUE_DEFAULTS);
 export function dayCue(day, name) {
@@ -65,6 +67,15 @@ export const INTERACT_RADIUS = 1.5; // from player centre to interactable tile c
 // Generic action timings (real seconds). The level's own actions carry theirs (level.interactions).
 export const PICK_UP_TIME = 0.3; // a floor item
 export const EAT_TIME = 2.0; // an edible item in hand
+// One E key, two verbs on what you hold: a tap drops it, holding E this long (standing still) eats it
+// (play/interactions.js: a 'self' row with `hold`). A tap is the drop, so eating never takes the drop key.
+export const HOLD_TIME = 0.35;
+// What eating leaves on you (an edible item's `edible: { leaves }`, null for nothing; player.smeared holds the
+// name). The renderer paints the mark in these colours and the agent harness names it with these words, so a
+// level can't describe it differently from what the screen shows.
+export const MARKS = {
+  splat: { color: '#f2c230', dark: '#c99512', words: 'a yellow splat down your front' },
+};
 
 // --- Perception --------------------------------------------------------------
 export const deg = (d) => (d * Math.PI) / 180;
@@ -80,5 +91,7 @@ export const GLANCE_TURN_TIME = 0.25; // head turn tween, gives a tiny telegraph
 
 // --- Rules -----------------------------------------------------------------
 export const SUSPICION_FILL_SEC = 1.6; // boss sees you idle this long -> work assigned
+export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts (play/rules.js; render: her eye)
+export const DOUBLE_TAKE = 0.8; // seconds of sight before a knowing NPC objects to a disguise (play/disguise.js)
 export const SUSPICION_DECAY_SEC = 3.0;
 export const CAUGHT_DELAY = 1.6; // seconds of "busted" beat before the end screen

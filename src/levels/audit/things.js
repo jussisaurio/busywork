@@ -1,39 +1,147 @@
-// The audit's things, drawn: no emoji stands in for an object (visual-language.md). Painters for the end scenes
-// (end-scenes.js) and for the floor (presentation.js DECOR.props: the sticker on each desk he has counted).
-// All of them draw in the current transform; sizes are in its pixels.
-import { T, rrect, fillCircle } from '../../render/util.js';
+// The audit's things, drawn: no emoji stands in for an object (DESIGN.md "Visual language"). The laptop (index.js
+// ITEMS: its draw), the marks on the four desks he counts (presentation.js DECOR.props), and painters for the end
+// scenes (end-scenes.js). All of them draw in the current transform; sizes are in its pixels.
+import { T, rrect, fillCircle, fillEllipse } from '../../render/util.js';
+import { box } from '../../render/things.js';
+import { SPOTS } from './spots.js';
 
 const SILVER = '#c3c7cd';
 const SILVER_DARK = '#8f949c';
-const BEZEL = '#2a2e35';
-const SCREEN = '#86b9dc';
-const COUNTED_GREEN = '#3e9b4f';
+const PALE = '#eef2f4';
+const TICK_GREEN = '#3e9b4f';
+const CROSS_RED = '#c8432f';
+const CABLE = '#2b2622';
 
-// The four desks he counts, in his order (index.js INSPECTIONS): the world field the count is recorded in, and the
-// right-hand end of the desk top on the map (tile units), where the sticker goes.
-const COUNTED = [
-  { rec: 'atBoss', x: 6, y: 3 },
-  { rec: 'atLin', x: 6, y: 8 },
-  { rec: 'atYou', x: 15, y: 8 },
-  { rec: 'atKev', x: 24, y: 8 },
+// --- The laptop ------------------------------------------------------------------------------------------------
+// items[type].draw, a things painter (render/things.js): open on a desk, its lid and its wallpaper in its owner's
+// colour (tint: 'owner'), so the three laptops show whose they are; shut in a hand, the whole lid in his colour.
+export function laptop(ctx, x, y, size, t, game, opts) {
+  box(ctx, x, y, size);
+  const lid = opts?.tint || '#3b3f46';
+  if (opts?.held) {
+    ctx.rotate(0.12);
+    ctx.fillStyle = SILVER_DARK;
+    rrect(ctx, -6.8, -4.4, 13.6, 10, 1.4);
+    ctx.fill();
+    ctx.fillStyle = lid;
+    rrect(ctx, -6.8, -4.8, 13.6, 9.4, 1.4);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fillRect(-5.8, -4, 11.6, 1.2);
+    fillCircle(ctx, 0, -0.2, 1.4, 'rgba(255,255,255,0.75)'); // the logo
+    return;
+  }
+  fillEllipse(ctx, 0.5, 7.2, 7.6, 1.4, 'rgba(25,15,8,0.22)');
+  ctx.fillStyle = lid; // a thick lid frame in his colour
+  rrect(ctx, -6.6, -7.6, 13.2, 10.2, 1.4);
+  ctx.fill();
+  ctx.fillStyle = PALE; // his wallpaper: his colour, washed out
+  ctx.fillRect(-4.8, -5.9, 9.6, 6.6);
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle = lid;
+  ctx.fillRect(-4.8, -5.9, 9.6, 6.6);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.fillRect(-3.8, -4.6, 5, 1);
+  ctx.fillRect(-3.8, -2.8, 3.4, 1);
+  ctx.fillStyle = SILVER; // the keyboard deck
+  ctx.beginPath();
+  ctx.moveTo(-6.4, 2.6);
+  ctx.lineTo(6.4, 2.6);
+  ctx.lineTo(7.8, 6.8);
+  ctx.lineTo(-7.8, 6.8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = SILVER_DARK;
+  ctx.fillRect(-5.2, 3.4, 10.4, 2);
+}
+
+// --- The four desks ---------------------------------------------------------------------------------------------
+// The desks he counts, in his order (index.js INSPECTIONS): the world field the tick is recorded in, the spot a
+// laptop lies on, and the right-hand end of the desk top on the map (tile units), where his sticker goes.
+export const COUNTED = [
+  { rec: 'atBoss', spot: 'boss_desk', x: 6, y: 3 },
+  { rec: 'atLin', spot: 'lin_desk', x: 6, y: 8 },
+  { rec: 'atYou', spot: 'your_desk', x: 15, y: 8 },
+  { rec: 'atKev', spot: 'kev_desk', x: 24, y: 8 },
 ];
+// Lin's paper pile: the left end of her desk top (tile units). He goes through it at her desk, which is why her
+// desk takes him longer (index.js INSPECTIONS, presentation.js POSES).
+const LIN_PILE = { x: 3.35, y: 8.62 };
 
-// DECOR.props entry: once he has counted a desk, a green sticker with a tick stays on its front edge, whatever
-// is on the desk afterwards. So a laptop moved off a counted desk leaves the sticker behind.
-export const COUNTED_STICKERS = {
+// DECOR.props entry. On each desk: the loose cable a laptop plugs into, while no laptop lies there (your desk from
+// the start); and once he has been to it, his sticker on its front edge, green with a tick or red with a cross,
+// whatever lies on the desk afterwards. So a laptop moved off a counted desk leaves the tick and the cable behind.
+export const DESK_MARKS = {
   tile: 'P', // any one tile will do: the painter draws on all four desks
-  draw: (ctx, info, at, shown) => {
-    for (const d of shown) if (d.on) sticker(ctx, (d.x - 0.34) * T, (d.y + 0.72) * T, 4.2);
+  draw(ctx, info, at, shown, t) {
+    paperPile(ctx, LIN_PILE.x * T, LIN_PILE.y * T, t);
+    for (const d of shown) {
+      if (d.empty) cable(ctx, d.lx * T, d.ly * T);
+      if (d.mark) sticker(ctx, (d.x - 0.34) * T, (d.y + 0.72) * T, 4.2, d.mark === 'cross');
+    }
   },
-  state: (w) => COUNTED.map((d) => ({ x: d.x, y: d.y, on: !!w[d.rec] })),
+  state: (w) => COUNTED.map((d, i) => {
+    const s = SPOTS[d.spot];
+    return {
+      x: d.x, y: d.y, lx: s.x + 0.5, ly: s.y - 0.5, // the laptop's place: the desk tile the spot faces (N)
+      empty: !w.items.some((it) => it.spot === d.spot),
+      mark: w[d.rec] ? 'tick' : w.crossed?.includes(i) ? 'cross' : null,
+    };
+  }),
 };
 
-// A round inspection sticker, r the radius: white rim, green face, a white tick.
-export function sticker(ctx, x, y, r) {
+// A laptop's charging cable lying loose on a desk, its plug where the laptop would sit: (x, y) that place's middle.
+function cable(ctx, x, y) {
+  ctx.strokeStyle = CABLE;
+  ctx.lineWidth = 1.6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x - 4, y - 12);
+  ctx.bezierCurveTo(x - 12, y - 4, x + 6, y - 6, x + 1, y + 2);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+  ctx.fillStyle = CABLE;
+  rrect(ctx, x - 1.6, y + 1, 5, 3.4, 0.8);
+  ctx.fill();
+  ctx.fillStyle = '#c8ccd0';
+  ctx.fillRect(x + 3.2, y + 1.6, 1.6, 0.8);
+  ctx.fillRect(x + 3.2, y + 3, 1.6, 0.8);
+}
+
+// A messy pile of forms, sheets askew: (x, y) its middle.
+function paperPile(ctx, x, y) {
+  const sheets = [[-1.5, 1.6, 0.22], [1.2, 0.6, -0.18], [-0.4, -0.6, 0.35], [0.8, -1.6, -0.05], [-0.6, -2.6, 0.14]];
+  fillEllipse(ctx, x + 1, y + 4, 8, 2.4, 'rgba(25,15,8,0.2)');
+  for (const [dx, dy, a] of sheets) {
+    ctx.save();
+    ctx.translate(x + dx, y + dy);
+    ctx.rotate(a);
+    ctx.fillStyle = 'rgba(120,110,95,0.35)';
+    ctx.fillRect(-5.6, -3.6, 11.2, 8);
+    ctx.fillStyle = '#fbfaf5';
+    ctx.fillRect(-5.6, -4.2, 11.2, 8);
+    ctx.fillStyle = 'rgba(40,44,70,0.35)';
+    ctx.fillRect(-4.2, -2.6, 7, 0.7);
+    ctx.fillRect(-4.2, -1, 5, 0.7);
+    ctx.restore();
+  }
+  ctx.fillStyle = '#f2d24b'; // a sticky note on top
+  ctx.save();
+  ctx.translate(x + 2.6, y - 3.4);
+  ctx.rotate(-0.2);
+  ctx.fillRect(-2, -2, 4, 4);
+  ctx.restore();
+}
+
+// A round inspection sticker, r the radius: white rim, a green face with a white tick, or a red one with a cross.
+export function sticker(ctx, x, y, r, cross = false) {
   fillCircle(ctx, x + 0.7, y + 0.9, r + 0.9, 'rgba(0,0,0,0.25)');
   fillCircle(ctx, x, y, r + 0.9, '#fbfbf7');
-  fillCircle(ctx, x, y, r, COUNTED_GREEN);
-  tick(ctx, x, y, r * 0.62, '#fff', Math.max(1.2, r * 0.32));
+  fillCircle(ctx, x, y, r, cross ? CROSS_RED : TICK_GREEN);
+  const w = Math.max(1.2, r * 0.32);
+  if (cross) crossMark(ctx, x, y, r * 0.5, '#fff', w);
+  else tick(ctx, x, y, r * 0.62, '#fff', w);
 }
 
 // A tick mark centred on (x, y), s its half-width.
@@ -51,9 +159,24 @@ export function tick(ctx, x, y, s, color, width) {
   ctx.lineJoin = 'miter';
 }
 
+// A cross centred on (x, y), s its half-width.
+export function crossMark(ctx, x, y, s, color, width) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x - s, y - s);
+  ctx.lineTo(x + s, y + s);
+  ctx.moveTo(x + s, y - s);
+  ctx.lineTo(x - s, y + s);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+}
+
+// --- End-scene painters ---------------------------------------------------------------------------------------
 // An open laptop turned toward us: (x, y) the middle of its front edge, w its width. tilt rotates it about that
-// point (one lying where it fell); tag is a sticker colour on the lid's corner (whose it is), or null.
-export function drawLaptop(ctx, x, y, w, tilt = 0, tag = null) {
+// point (one lying where it fell); lid is its owner's colour (the lid frame and the wallpaper), as on the floor.
+export function drawLaptop(ctx, x, y, w, tilt = 0, lid = '#2a2e35') {
   ctx.save();
   ctx.translate(x, y);
   if (tilt) ctx.rotate(tilt);
@@ -61,17 +184,19 @@ export function drawLaptop(ctx, x, y, w, tilt = 0, tag = null) {
   const lw = w * 0.84; // the lid
   const lh = w * 0.6;
   const top = -d - lh;
-  // lid: bezel, lit screen, a few lines of something on it
-  ctx.fillStyle = BEZEL;
+  const b = w * 0.07; // the lid frame
+  ctx.fillStyle = lid;
   rrect(ctx, -lw / 2, top, lw, lh + 1, w * 0.05);
   ctx.fill();
-  ctx.fillStyle = SCREEN;
-  ctx.fillRect(-lw / 2 + w * 0.05, top + w * 0.05, lw - w * 0.1, lh - w * 0.09);
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
-  for (let i = 0; i < 3; i++) ctx.fillRect(-lw / 2 + w * 0.1, top + w * (0.12 + i * 0.1), lw * (0.55 - i * 0.12), Math.max(1, w * 0.035));
-  if (tag) fillCircle(ctx, lw / 2 - w * 0.09, top + w * 0.08, Math.max(1.6, w * 0.045), tag);
-  // keyboard deck: a trapezoid, wider at the front
-  ctx.fillStyle = SILVER;
+  ctx.fillStyle = PALE;
+  ctx.fillRect(-lw / 2 + b, top + b, lw - 2 * b, lh - b * 1.6);
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle = lid;
+  ctx.fillRect(-lw / 2 + b, top + b, lw - 2 * b, lh - b * 1.6);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  for (let i = 0; i < 3; i++) ctx.fillRect(-lw / 2 + w * 0.13, top + w * (0.14 + i * 0.1), lw * (0.5 - i * 0.12), Math.max(1, w * 0.035));
+  ctx.fillStyle = SILVER; // keyboard deck: a trapezoid, wider at the front
   ctx.beginPath();
   ctx.moveTo(-lw / 2, -d);
   ctx.lineTo(lw / 2, -d);
@@ -92,88 +217,102 @@ export function drawLaptop(ctx, x, y, w, tilt = 0, tag = null) {
   ctx.restore();
 }
 
-// A shut laptop held by its edge, hanging from the hand at (x, y): w wide; tag a sticker colour on the lid.
-export function drawLaptopShut(ctx, x, y, w, tag = null) {
-  const h = w * 0.68;
+// A charging cable lying loose on an end-scene desk, from the monitor at (mx, my) to its plug at (x, y).
+export function drawCable(ctx, mx, my, x, y) {
+  ctx.strokeStyle = CABLE;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(mx, my);
+  ctx.bezierCurveTo(mx - 20, my + 14, x + 10, y - 14, x, y);
+  ctx.stroke();
+  ctx.fillStyle = CABLE;
+  rrect(ctx, x - 5, y - 2, 10, 6, 1.5);
+  ctx.fill();
+  ctx.fillStyle = '#c8ccd0';
+  ctx.fillRect(x - 3, y + 4, 2, 3);
+  ctx.fillRect(x + 1, y + 4, 2, 3);
+}
+
+// --- His dry pen (presentation.js POSES, at your desk) ---------------------------------------------------------
+// decor.things painters, held: his clipboard (as the engine draws it, in the same place) with a big pen over it.
+// 'penShake': the pen held up off the board's corner, flicked hard side to side, shake marks either side of it.
+// 'penScribble': the pen's tip in the board's top corner, going round in a grey scrawl that leaves no ink.
+const PEN = '#2c6fe0'; // a bright blue ballpoint: it shows against his grey suit and navy tie
+function heldClipboard(ctx) {
   ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(0.12);
-  ctx.fillStyle = SILVER_DARK;
-  rrect(ctx, -w / 2, -1, w, h + 1.2, w * 0.08);
+  ctx.rotate(-0.06);
+  ctx.fillStyle = 'rgba(25,15,8,0.22)';
+  rrect(ctx, -5, -6.4, 11, 14, 1.2);
   ctx.fill();
-  ctx.fillStyle = SILVER;
-  rrect(ctx, -w / 2, -1, w, h, w * 0.08);
+  ctx.fillStyle = '#9a6a3c';
+  rrect(ctx, -5.5, -7, 11, 14, 1.2);
   ctx.fill();
-  fillCircle(ctx, 0, h * 0.45, w * 0.09, 'rgba(255,255,255,0.7)'); // the logo
-  if (tag) fillCircle(ctx, w * 0.28, h * 0.72, w * 0.08, tag);
+  ctx.fillStyle = '#fbfbf8';
+  ctx.fillRect(-4.2, -4.6, 8.4, 10.6);
+  ctx.fillStyle = 'rgba(40,30,20,0.55)';
+  for (let i = 0; i < 4; i++) ctx.fillRect(-3, -2.6 + i * 2.2, i === 3 ? 3.6 : 6, 0.7);
+  ctx.fillStyle = '#b9bcc1';
+  rrect(ctx, -2.6, -8, 5.2, 2.6, 0.8);
+  ctx.fill();
   ctx.restore();
 }
-
-// A takeaway cup from the coffee machine: (x, y) its middle, s its height.
-export function drawCup(ctx, x, y, s, t = 0) {
-  const top = y - s / 2;
-  ctx.fillStyle = '#f4f1ea';
+// A ballpoint, its tip at (0, 0), pointing down from angle a (0: straight up from the tip).
+function pen(ctx, x, y, a) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(a);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  rrect(ctx, -1.2, -15.2, 3.2, 13.4, 1.4);
+  ctx.fill();
+  ctx.fillStyle = PEN;
+  rrect(ctx, -1.6, -15.6, 3.2, 13.4, 1.4);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.fillRect(-0.9, -14.6, 0.8, 11);
+  ctx.fillStyle = '#d7dae0'; // the metal cone and tip
   ctx.beginPath();
-  ctx.moveTo(x - s * 0.36, top + s * 0.12);
-  ctx.lineTo(x + s * 0.36, top + s * 0.12);
-  ctx.lineTo(x + s * 0.27, top + s);
-  ctx.lineTo(x - s * 0.27, top + s);
+  ctx.moveTo(-1.5, -2.4);
+  ctx.lineTo(1.5, -2.4);
+  ctx.lineTo(0.3, 0);
+  ctx.lineTo(-0.3, 0);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = '#a8763f'; // the sleeve
-  ctx.fillRect(x - s * 0.33, top + s * 0.4, s * 0.66, s * 0.3);
-  ctx.fillStyle = '#3a3330'; // the lid
-  rrect(ctx, x - s * 0.42, top, s * 0.84, s * 0.16, s * 0.06);
-  ctx.fill();
-  for (let i = 0; i < 2; i++) { // steam
-    const ph = (t * 0.6 + i * 0.5) % 1;
-    ctx.globalAlpha = 0.5 * (1 - ph);
-    fillCircle(ctx, x + (i ? 2 : -2) + Math.sin(t * 2 + i) * 1.2, top - 2 - ph * s * 0.7, 1 + ph * 1.4, '#e8e4dc');
-  }
-  ctx.globalAlpha = 1;
+  ctx.restore();
 }
-
-// A cigarette between the fingers at (x, y), pointing along (dx, dy) (a unit vector): s long, the tip glowing.
-export function drawCigarette(ctx, x, y, dx, dy, s, t = 0) {
+export function penShake(ctx, x, y, size, t) {
+  box(ctx, x, y, size);
+  heldClipboard(ctx);
+  const a = Math.sin(t * 26) * 0.75;
+  // held by its middle above the board's right corner, tip down: it swings about the hand
+  ctx.save();
+  ctx.translate(6, -9);
+  ctx.rotate(a);
+  pen(ctx, 0, 7, 0);
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(30,30,40,0.75)';
+  ctx.lineWidth = 1.2;
   ctx.lineCap = 'round';
-  ctx.strokeStyle = '#f3efe6';
-  ctx.lineWidth = Math.max(1.4, s * 0.24);
-  ctx.beginPath();
-  ctx.moveTo(x - dx * s * 0.2, y - dy * s * 0.2);
-  ctx.lineTo(x + dx * s * 0.8, y + dy * s * 0.8);
-  ctx.stroke();
-  ctx.strokeStyle = '#d9a35a'; // the filter
-  ctx.beginPath();
-  ctx.moveTo(x - dx * s * 0.2, y - dy * s * 0.2);
-  ctx.lineTo(x + dx * s * 0.05, y + dy * s * 0.05);
-  ctx.stroke();
-  ctx.lineCap = 'butt';
-  const glow = 0.7 + 0.3 * Math.sin(t * 3);
-  fillCircle(ctx, x + dx * s * 0.85, y + dy * s * 0.85, Math.max(0.9, s * 0.13), `rgba(240,110,40,${glow})`);
+  for (const side of [-1, 1]) {
+    for (const r of [10, 13]) {
+      ctx.beginPath();
+      ctx.arc(6, -9, r, -Math.PI / 2 + side * 0.95 - 0.2, -Math.PI / 2 + side * 0.95 + 0.2);
+      ctx.stroke();
+    }
+  }
 }
-
-// A pointing finger along +x from (x, y) (drawPerson's 'point' arm rotates the hand that way), in skin.
-export function drawFinger(ctx, x, y, skin) {
-  ctx.fillStyle = skin;
-  rrect(ctx, x - 4, y - 1.6, 9, 3.2, 1.6);
-  ctx.fill();
-}
-
-// Whatever a person in an end scene holds is drawn by one of the painters above, where the engine's drawPerson
-// would put an emoji: give the person `item: HELD` and draw them with holding(ctx, paint). paint(ctx, x, y) is
-// called in the person's own transform, at the spot drawPerson picked for that hand (and turned along a
-// pointing arm).
-export const HELD = '⁣held';
-export function holding(ctx, paint) {
-  return new Proxy(ctx, {
-    get(c, k) {
-      if (k === 'fillText') return (str, x, y, ...rest) => (str === HELD ? paint(c, x, y) : c.fillText(str, x, y, ...rest));
-      const v = c[k];
-      return typeof v === 'function' ? v.bind(c) : v;
-    },
-    set(c, k, v) {
-      c[k] = v;
-      return true;
-    },
-  });
+export function penScribble(ctx, x, y, size, t) {
+  box(ctx, x, y, size);
+  heldClipboard(ctx);
+  ctx.strokeStyle = 'rgba(95,100,110,0.8)';
+  ctx.lineWidth = 0.9;
+  ctx.beginPath();
+  for (let k = 0; k <= 28; k++) {
+    const a = k * 0.85;
+    const px = 0.2 + Math.cos(a) * 2.0 + k * 0.1;
+    const py = -2.6 + Math.sin(a) * 1.4;
+    if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+  }
+  ctx.stroke();
+  const a = t * 16;
+  pen(ctx, 1.6 + Math.cos(a) * 2.0, -2.6 + Math.sin(a) * 1.4, 0.45);
 }
