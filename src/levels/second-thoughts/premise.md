@@ -3,7 +3,7 @@
 ## Card
 
 3:00 PM. Your angry resignation letter is in the boss's tray.
-He empties it at 3:40. Get it back first.
+He goes through it at 3:40.
 
 ## Name
 
@@ -22,12 +22,13 @@ The trouble is that he sits facing his tray all afternoon, and in the light noth
 ## Cast
 
 - **The boss** sits at his desk facing his tray, from 3:00 until 3:40. He never gets up on his own.
-  - If his office goes dark (his light switch), he gets up and feels his way along the wall to the switch. That takes about four minutes, and then he switches the light back on, annoyed. Whoever he walks into at the switch in the dark is the one who flipped it.
+  - If his office goes dark (his light switch, in the corner behind his back), he says ❓ and holds up his phone as a torch. As he gets up, his beam swings across the east half of his office; then he walks it over to the switch and flips it back, annoyed. The tubes blink a few times before they catch, about three minutes after the flip. Whoever his torch finds in his dark office is the one who flipped it.
   - If the whole floor goes dark (the fuse), he stays put, holds up his phone as a torch and keeps it on the front of his desk, glancing about now and then.
-  - 3:40: he empties his tray, there at his desk.
+  - 3:40: he goes through his tray, there at his desk.
 - **Lin** sits at her desk on the open floor.
   - 3:05: she goes to the kitchen for her afternoon coffee and switches on the old coffee machine at about 3:10. It sparks, smokes and blows the fuse for the whole floor. If the power is already out, nothing happens and she's puzzled.
-  - 3:24: she drinks her coffee at the kitchen table (once it has brewed). 3:31: back at her desk.
+  - When Kev has the power back on, the machine brews what she switched it on for: its lamp glows green and the pot is full. A full pot pours a cup, for you too; the cup leads nowhere.
+  - 3:23: she pours herself a cup if it brewed, and drinks it at the kitchen table. 3:31: back at her desk, her cup beside her.
 - **Kev** sits at the far desk on the open floor. He's the one who resets fuses.
   - Whenever the power goes out, he holds up his phone and walks down the hallway to the fuse box. He resets it, which takes about three minutes, and the lights come back on. A blackout lasts about eight minutes in all.
   - If he finds someone standing at the fuse box, he takes them for the one who pulled it and tells the boss. You're sent to your desk to do assigned work for 20 minutes.
@@ -40,18 +41,18 @@ Every route is the same last step: take the letter from the tray while it's too 
 
 Steps:
 
-1. Walk into his office to the light switch on its west wall (pretend to be busy on the way) and flip it. It clacks loudly.
-2. Walk to his tray in the dark while he gropes his way to the switch, and take the letter.
-3. Leave his office, away from the switch, before his light comes back on.
+1. Walk into his office to the light switch in the corner behind his back (pretend to be busy on the way) and flip it.
+2. Get out of his torch's way: out of the east half of the office while he gets up, and away from the switch while he walks to it.
+3. Take the letter from his tray while he is at the switch, and get away from his office before his light comes back on.
 
 Facts, and where you see each one:
 
 - **Your letter is in his tray, and he's watching it.** 3:00, the opening frame: the white envelope lies in the wire basket on his desk, he sits facing it, and his sight cone covers the whole desk.
-- **Taking it in the light gets you caught.** Try it: he points at you, and the end card shows him pointing at you with the letter in your hand.
-- **His office has its own light switch.** From 3:00: a white wall switch on the west wall of his office. Stand by it and a prompt appears.
-- **Only his office goes dark, and in the dark he can't see past arm's length.** The moment you flip it: his office turns navy, the rest of the floor stays lit, the switch shows an amber lamp, and his sight cone shrinks to arm's length around him.
-- **He leaves his desk to fix it, the long way round.** Right after the flip: a puzzled thought over his head. Then he gets out from behind his desk the back way, arms out, and feels along the north and west walls to the switch, away from the tray. His light comes back on about four minutes later.
-- **Don't be at the switch when he gets there.** If you stay, he walks right into you in the dark. The end card shows his hand on you under the switch, with the amber lamp lit.
+- **Taking it in the light gets you caught.** Try it: he points at you, and the end card shows him pointing at you from his chair as you reach for his tray.
+- **His office has its own light switch.** From 3:00: a white wall switch in the north-west corner of his office, behind his back. Stand by it and a prompt appears.
+- **Only his office goes dark, and in the dark he can't see past arm's length.** The moment you flip it: his office turns navy, the rest of the floor stays lit, the switch shows an amber lamp, and his sight shrinks to arm's length, except along the beam of the phone he holds up.
+- **He leaves his desk to fix it, and his torch looks for you.** Right after the flip: a puzzled thought over his head and a phone flash in his hand. As he gets up, his beam swings across the east half of the office; then he walks it to the switch, his hand goes to it, and the tubes blink back on about three minutes after the flip.
+- **Don't be in his beam.** Whoever his torch finds in his dark office flipped it, pretending or not. The end card shows his torch on you, the office dark, your letter where it was.
 - **Don't let him see you with it.** If he sees the envelope in your hand once the light is back, he catches you. The end card shows him pointing at you holding it.
 
 ### The blackout
@@ -65,7 +66,7 @@ Steps:
 Facts, and where you see each one:
 
 - **At 3:10 the whole floor goes dark.** Any first loop, just by waiting. 3:05: Lin walks to the coffee machine on the kitchen counter. At about 3:10 it throws sparks and smoke, and she looks startled. The office, the meeting room, the kitchen and the open floor all go dark. Only the strip of floor by the glass lobby keeps its daylight. Down the hall the fuse box's door flies open and a red lamp blinks.
-- **The coffee machine did it.** For as long as the power is out, smoke curls off the machine and its socket glows orange in Lin's torchlight.
+- **The coffee machine did it.** For as long as the power is out, smoke curls off the machine and its socket glows orange in Lin's torchlight. Once the power is back, it has brewed: green lamp, full pot.
 - **In the dark, the boss only sees where his phone points.** From 3:10: everyone holds up a phone with its flash lit, and each throws a lit beam on the floor. His beam lies on the front of his desk and swings now and then. The east end of his desk, beside the tray, stays dark except when he glances that way.
 - **The dark lasts about eight minutes.** About 3:11: Kev gets a puzzled thought and walks his torch down the hallway to the fuse box. When he finishes, about 3:19, the lights come back.
 
@@ -86,11 +87,15 @@ Facts, and where you see each one:
 
 ## Ways to lose
 
-- **3:40 and the letter is still in his tray** (or he picked it up after you dropped it where he could see it). The end card: he holds your envelope up over his desk, furious, his tray empty, and you stand in front of him with your plant and mug in a cardboard box.
-- **Caught with it.** You reached for it while he could see you, or he saw it in your hand. The end card: his light on, he points at you, and you stand sweating beside his desk with the envelope in your hand.
-- **Caught at the switch.** You flipped his light and were still by the switch when he got there. The end card: his office dark, the switch's amber lamp lit, his groping hand on you, and your letter still in his tray behind him (or in your hand, if you'd taken it).
+- **3:40 and the letter is still in his tray** (or he picked it up after you dropped it where he could see it). The end card: he holds your envelope up over his desk, furious, his tray empty, and you stand sweating in front of it; the card's 📦 says the rest.
+- **Caught with it.** You reached for it while he could see you, or he saw it in your hand. The end card: his light on, he points at you from his chair, and you stand where he saw you, reaching for the tray or with the envelope in your hand.
+- **Found in his dark office.** You flipped his light and his torch found you. The end card: his office dark, his phone torch on you where you stood, and your letter still in his tray (or in your hand, if you'd taken it).
 - **Found at the fuse box.** Kev arrives and finds you standing at it, and tells the boss. You lose 20 minutes at your desk doing assigned work. That usually means the 3:40 card above.
 
 ## The joke
 
-The blackout win. The room is dark. The boss sits at his desk sweeping his phone torch back and forth across the front of it, guarding his tray, and the tray is empty. Just outside his beam you stand smug with the envelope in your hand. Behind him, in Lin's torchlight, her coffee machine is still sparking.
+The blackout win. The room is dark. The boss sits at his desk sweeping his phone torch back and forth across the front of it, guarding his tray, and the tray is empty. Just outside his beam you stand smug with the envelope in your hand. Behind him, in Lin's torchlight, her coffee machine is still smoking.
+
+## End cards
+
+Every card shows the day as it ended (3:40 for the 3:40 cards, the moment you were caught otherwise), drawn from the state: what you hold, where each person is, the lights. A win: the lights on, the boss at his desk holding up his empty tray, baffled (❓), and you at your desk (or wherever you are) with whatever you hold. Behind, the route's aftermath: the coffee machine with its green lamp and full pot after the blackout, the fuse box after the breaker.

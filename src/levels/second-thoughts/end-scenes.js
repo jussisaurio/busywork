@@ -14,7 +14,7 @@
 // drawn on the floor (render/darkness.js), only bigger. Speech is free: the bubbles and rows.
 import { rrect, fillCircle, fillEllipse } from '../../render/util.js';
 import { C } from '../../render/palette.js';
-import { drawPerson } from '../../render/characters.js';
+import { drawPerson, itemGlyph } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { paintSwitch, paintBreaker, paintLamp } from '../../render/darkness.js';
 import { isDark } from '../../game/darkness.js';
@@ -243,6 +243,13 @@ function flashOf(s, x, y) {
   return { x: x + (fx * 8 + rx * 3) * sc, y: y + (bodyY + fy * 8 + ry * 3 - 5) * sc, sc };
 }
 
+// What you held when the day ended, in your hand (the letter, a cup of coffee; nothing if you ate it).
+function inHand(p, game) {
+  const g = itemGlyph(game.level.items, game.player.held);
+  if (g) { p.arms = 'carry'; p.item = g; }
+  return !!g;
+}
+
 // His phone torch, held by s at (x, y), aimed at (tx, ty).
 function torchOn(s, x, y, tx, ty) {
   const f = flashOf(s, x, y);
@@ -281,8 +288,7 @@ function sceneWin(route) {
     const p = person(t);
     p.dir = Math.PI / 2;
     p.head = Math.PI / 2 + (Math.sin(t * 0.8) > 0.6 ? 0.9 : 0); // now and then a glance back at him
-    p.arms = 'carry';
-    p.item = '#letter';
+    inHand(p, game);
     p.smug = true;
     p.scale = 2.4;
     if (atDesk) {
@@ -309,8 +315,9 @@ function sceneFail(ctx, game, t, e) {
   tray(ctx, 496, 252, false);
   const p = person(t);
   Object.assign(p, { dir: Math.PI - 0.5, head: Math.PI - 0.5, sweat: true, scale: 2.4 });
+  inHand(p, game);
   drawPerson(ctx, game.level.looks.player, p, 640, 306);
-  if (e > 0.4) bubble(ctx, ['@player', '😠'], 470, 150, e - 0.4, 'alert');
+  if (e > 0.4) bubble(ctx, ['@player', '😠'], 470, 170, e - 0.4, 'alert');
 }
 
 // Where someone stood in his office (tiles), in the picture: the switch's corner top left, his desk (tiles 3..5 of row
@@ -354,12 +361,12 @@ function sceneCaught(ctx, game, t, e) {
 
   // You: the letter in your hand if you had it; else reaching for the tray if you were at it.
   const p = person(t);
-  const held = w.letter === 'player';
+  const held = !!game.player.held;
   const atTray = !held && w.letter === 'tray' && Math.hypot(P.x - TRAY_X, P.y - DESK.y) < 110;
   Object.assign(p, { sweat: true, scale: 2.4 });
   p.dir = atTray ? Math.atan2((DESK.y - P.y) / 0.6, TRAY_X - P.x) : Math.atan2((B.y - P.y) / 0.6, B.x - P.x);
   p.head = p.dir + Math.sin(t * 9) * 0.25;
-  if (held) { p.arms = 'carry'; p.item = '#letter'; } else if (atTray) p.arms = 'reach';
+  if (!inHand(p, game) && atTray) p.arms = 'reach';
   const drawYou = () => drawPerson(ctx, game.level.looks.player, p, P.x, P.y);
   if (w.letter === 'dropped') paintLetter(ctx, P.x + 26, P.y + 14, 2.2, 0.4);
   if (atHisDesk) drawYou();
