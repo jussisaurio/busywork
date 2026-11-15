@@ -1,4 +1,4 @@
-// Headless tests for the darkness mechanic (src/sim/mechanics/darkness.js): a dark room shrinks every view to
+// Headless tests for the darkness mechanic (src/game/darkness.js): a dark room shrinks every view to
 // arm's length, except along a torch beam; a lit point is seen as ever, from the dark or the light.
 // Uses level 1's map and cast with a darkness block added (the boss's office as the only room).
 //
@@ -7,7 +7,7 @@ import { createGame } from '../src/state.js';
 import { createNpcs } from '../src/sim/npcs.js';
 import { canSee } from '../src/core/vision.js';
 import { npcSees, viewerOf, findNpc } from '../src/game/perception.js';
-import { isDark, darkZones, NEAR_RADIUS } from '../src/sim/mechanics/darkness.js';
+import { isDark, darkZones, NEAR_RADIUS } from '../src/game/darkness.js';
 import { levelProblems } from '../src/levels/validate.js';
 import { levels } from '../src/levels/index.js';
 
@@ -102,6 +102,38 @@ function day(level) {
   ok(has(/^darkness\.rooms\[1\]\.zone\[1\]: no zone 'nope'/), 'a zone list with a bad name');
   ok(has(/^darkness\.near\.radius: not a number/), 'near.radius not a number');
   ok(has(/^darkness\.torch\.when: not a function/) && has(/^darkness\.torch: fov and radius/), 'a torch without when() or radius');
+}
+
+// 5. Render (fake canvas): a dark room draws its veil, cones clip to the light, a torch cuts a beam; with every
+// light on (or no darkness at all) the frame is drawn exactly as before (same calls).
+{
+  const { createFakeCanvas } = await import('./lib/fake-canvas.mjs');
+  const calls = [];
+  const fake = createFakeCanvas({ onCall: (label, method, args) => { if (label === 'main') calls.push(method); } });
+  fake.installDom({ innerWidth: 960, innerHeight: 600, devicePixelRatio: 1 });
+  const { createRenderer } = await import('../src/render/renderer.js');
+  const frame = (game) => {
+    const r = createRenderer(fake.makeCanvas('main'), { strict: true });
+    calls.length = 0;
+    r.render(game);
+    return calls.slice();
+  };
+  frame(day(M)); // warm the text-measure cache
+  const plain = frame(day(M));
+  const level = darkLevel({ rooms: [ROOM], torch: TORCH });
+  const lit = frame(day(level));
+  ok(JSON.stringify(lit) === JSON.stringify(plain), 'every light on: the same draw calls as a level without darkness');
+  const game = day(level);
+  game.world.officeLight = 'off';
+  const off = frame(game);
+  ok(off.filter((m) => m === 'clip').length > plain.filter((m) => m === 'clip').length, 'lights off: the dark is clipped and veiled');
+  game.world.torches = true;
+  const torch = frame(game);
+  ok(torch.filter((m) => m === 'clip').length > off.filter((m) => m === 'clip').length, 'a torch on: its beam is cut out of the veil');
+  game.player.x = 3.5;
+  game.player.y = 4.5;
+  frame(game);
+  ok(fake.errors.length === 0, `no canvas errors${fake.errors.length ? `: ${fake.errors.slice(0, 3).join('; ')}` : ''}`);
 }
 
 if (fails) {

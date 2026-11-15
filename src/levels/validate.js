@@ -32,7 +32,7 @@
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; a noise is not 'noise' or 'npc:heard'
 //   darkness    optional; rooms a list of { zone (a zone or a list of zones), lit() }; near.radius a number;
-//               torch { when(), fov, radius } (src/sim/mechanics/darkness.js)
+//               torch { when(), fov, radius } (src/game/darkness.js)
 //   failSign    optional; spot a spot
 //   routes      a non-empty list of { id, icon, achieved() }, ids unique
 //   outcomeOrder  every route id exactly once

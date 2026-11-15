@@ -14,7 +14,7 @@
 // of sight either way). Rules, witnesses, put-down finds and the harness all see through npcSees, so all of them
 // see the dark the same way. Render: render/cones.js (cones in the light, near sight in the dark) and
 // render/darkness.js (the dark itself, torch beams, eyes in the dark).
-import { canSee } from '../../core/vision.js';
+import { canSee } from '../core/vision.js';
 
 export const NEAR_RADIUS = 1.5; // tiles: you see into the dark about an arm's length
 

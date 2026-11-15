@@ -3,13 +3,14 @@
 import { T, clamp, fin } from './util.js';
 import { CONE_TINT_DEFAULT } from './palette.js';
 import { viewerOf } from '../game/perception.js';
+import { darkZones, nearViewer } from '../game/darkness.js';
 
 const RAYS = 56;
 const MAX_STEPS = 64;
 const RED = [255, 64, 44];
 
 // Distance (tiles) from (ox, oy) along unit (dx, dy) to the first opaque tile, capped at maxDist.
-function castRay(map, ox, oy, dx, dy, maxDist) {
+export function castRay(map, ox, oy, dx, dy, maxDist) {
   let mx = Math.floor(ox);
   let my = Math.floor(oy);
   const stepX = dx > 0 ? 1 : -1;
@@ -54,10 +55,37 @@ function noticeLevel(game, npc) {
   return lvl;
 }
 
+// The cone's fan: from (ox, oy) along dir, cut by walls at most `radius` tiles out (the current path).
+function fan(ctx, map, ox, oy, dir, fov, radius) {
+  const cx = ox * T;
+  const cy = oy * T;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  const a0 = dir - fov / 2;
+  for (let i = 0; i <= RAYS; i++) {
+    const ang = a0 + (fov * i) / RAYS;
+    const dx = Math.cos(ang);
+    const dy = Math.sin(ang);
+    const d = castRay(map, ox, oy, dx, dy, radius);
+    ctx.lineTo(cx + dx * d * T, cy + dy * d * T);
+  }
+  ctx.closePath();
+}
+
+// Dark rooms (level.darkness): the cone shows only on lit floor, and within arm's length (the near sight) in the
+// dark. Torch beams are drawn with the dark itself (render/darkness.js).
+function clipTo(ctx, zones, map, outside) {
+  ctx.beginPath();
+  if (outside) ctx.rect(0, 0, map.w * T, map.h * T);
+  for (const z of zones) ctx.rect(z.x0 * T, z.y0 * T, (z.x1 - z.x0) * T, (z.y1 - z.y0) * T);
+  ctx.clip(outside ? 'evenodd' : 'nonzero');
+}
+
 export function drawCones(ctx, game, t) {
   if (!game.settings || !game.settings.showCones || !game.map) return;
   const npcs = game.npcs || [];
   const map = game.map;
+  const dark = darkZones(game); // [] without level.darkness, or with every light on: the plain path
   const authority = game.level?.roles?.authority?.id ?? null; // his cone is a little stronger
   for (let n = 0; n < npcs.length; n++) {
     const npc = npcs[n];
@@ -86,6 +114,10 @@ export function drawCones(ctx, game, t) {
     grad.addColorStop(0.65, `rgba(${r},${g},${b},${(a * 0.65).toFixed(3)})`);
     grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
 
+    if (dark.length) {
+      ctx.save();
+      clipTo(ctx, dark, map, true);
+    }
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     const a0 = dir - fov / 2;
@@ -102,5 +134,20 @@ export function drawCones(ctx, game, t) {
     ctx.strokeStyle = `rgba(${r},${g},${b},${(0.18 + notice * 0.4 * pulse).toFixed(3)})`;
     ctx.lineWidth = notice > 0 ? 1.5 : 1;
     ctx.stroke();
+    if (dark.length) {
+      ctx.restore();
+      const nv = nearViewer(game, v);
+      const nr = Math.max(0.5, fin(nv.radius, 1));
+      ctx.save();
+      clipTo(ctx, dark, map, false);
+      const ng = ctx.createRadialGradient(cx, cy, 2, cx, cy, nr * T);
+      ng.addColorStop(0, `rgba(${r},${g},${b},${Math.min(0.6, a * 1.6).toFixed(3)})`);
+      ng.addColorStop(1, `rgba(${r},${g},${b},${(a * 0.5).toFixed(3)})`);
+      fan(ctx, map, ox, oy, fin(nv.dir), clamp(fin(nv.fov, 1.5), 0.05, Math.PI * 2), nr);
+      ctx.fillStyle = ng;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 }
