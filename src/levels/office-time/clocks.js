@@ -15,7 +15,8 @@ import { say } from '../../core/fx.js';
 import { inZone } from '../../game/perception.js';
 import { LOOK_UPS } from './cast.js';
 
-// Clock -> where it hangs: its interactable id, the zone it rules, the chair under it, its world field (minutes fast).
+// Clock -> where it hangs: its interactable id, the zone it rules, the stepladder under it, its world field (minutes
+// fast).
 export const CLOCKS = {
   boss: { id: 'boss_clock', zone: 'boss_office', spot: 'boss_clock_chair', field: 'bossClock' },
   open: { id: 'open_clock', zone: 'open_plan', spot: 'open_clock_chair', field: 'openClock' },
@@ -46,7 +47,10 @@ export function clockFor(game, npc, sim) {
   const now = game.clock.minute;
   const st = (npc._clk ??= { off: 0, beat: null, beats: beatsOf(npc), lookT: 0, saw: {}, herdT: HERD_S });
   st.lookT = Math.max(0, st.lookT - FIXED_DT);
-  if (npc.id === 'boss') followHerd(game, npc, sim, st, now);
+  if (npc.id === 'boss') {
+    followHerd(game, npc, sim, st, now);
+    if (!game.outcome) game.world.atStop = inZone(game, 'street', game.player.x, game.player.y); // for the end card
+  }
   const b = beatAt(npc, now + st.off);
   if (st.beat === null) st.beat = b; // the first step of the day: no look-up
   if (b !== st.beat) {

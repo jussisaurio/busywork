@@ -1,8 +1,8 @@
 // "Office Time": your bus leaves at 4:30, and nobody leaves before the boss. He leaves at 4:50.
-// Everyone lives by the wall clock in their zone (clocks.js), and you can stand on a chair and push a clock
-// forward. Push the boss's clock and he lives his afternoon early (Lin watches it through the glass). Push the
+// Everyone lives by the wall clock in their zone (clocks.js), and you can climb the stepladder under a clock and
+// push it forward. Push the boss's clock and he lives his afternoon early (Lin watches it through the glass). Push the
 // open-plan clock and Lin and Kev go home early; the boss sees two empty desks and follows the herd (Kev's coffee
-// run jumps forward too, right past your chair). You cheat time inside a time loop.
+// run jumps forward too). You cheat time inside a time loop.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
@@ -50,10 +50,10 @@ const LEGEND = {
 
 const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // your seat; you start here
-  boss_desk: { x: 4, y: 2, face: 'S' }, // his back to his clock: glancing aside, he never sees the chair behind him
+  boss_desk: { x: 4, y: 2, face: 'S' }, // his back to his clock: glancing aside, he never sees the stepladder behind him
   lin_desk: { x: 4, y: 9, face: 'N' }, // facing the glass, and the boss's clock beyond it
   kev_desk: { x: 19, y: 9, face: 'N' }, // facing the open-plan clock
-  boss_clock_chair: { x: 4, y: 1, face: 'N' }, // the chair you stand on to reach Q, right behind his seat
+  boss_clock_chair: { x: 4, y: 1, face: 'N' }, // the stepladder under Q, right behind his seat
   open_clock_chair: { x: 19, y: 7, face: 'N' }, // ... and O
   coffee: { x: 22, y: 2, face: 'N' },
   boss_door: { x: 6, y: 7, face: 'S' },
@@ -114,6 +114,7 @@ export default {
     linGone: false,
     kevGone: false,
     herd: false, // the boss left because everyone else had
+    atStop: false, // you are at the bus stop while the boss is in (the fail card shows you there, not inside)
     items: [],
   }),
   harness,

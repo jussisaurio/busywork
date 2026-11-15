@@ -152,9 +152,59 @@ function sceneHerd(ctx, game, t, e) {
   youOnTheBus(ctx, game, t, e, 528, 286, 230, 100);
 }
 
+// The fail when you went out to the stop anyway: the bus pulls away without you, because through the office window
+// behind you the boss is still at his desk under his 4:30 clock, and nobody leaves before him.
+function sceneFailAtStop(ctx, game, t, e) {
+  street(ctx, TAB.x, TAB.w, 124, 280);
+  // the window, and the boss in it
+  const wx = 560;
+  const wy = TAB.y + 12;
+  const ww = 176;
+  const wh = 96;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(wx, wy, ww, wh);
+  ctx.clip();
+  ctx.fillStyle = C.officeA;
+  ctx.fillRect(wx, wy, ww, wh);
+  ctx.fillStyle = C.wallFront;
+  ctx.fillRect(wx, wy, ww, 44);
+  drawBigClock(ctx, wx + 58, wy + 22, 16, 90, START, 0);
+  const b = figure(t, 1.5, Math.PI / 2, { pose: 'sit', arms: 'type', typing: true });
+  b.head = Math.PI / 2 + Math.sin(t * 1.3) * 0.1;
+  drawPerson(ctx, game.level.looks.boss, b, wx + 58, wy + 70);
+  ctx.fillStyle = C.walnutTop;
+  ctx.fillRect(wx + 20, wy + 76, 80, 20);
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fillRect(wx + 130, wy, 8, wh);
+  ctx.fillRect(wx + 144, wy, 3, wh);
+  ctx.restore();
+  ctx.strokeStyle = C.glassFrame;
+  ctx.lineWidth = 6;
+  ctx.strokeRect(wx, wy, ww, wh);
+  // the bus pulls away to the left, empty
+  const len = 250;
+  const busY = 330;
+  const bx = TAB.x + 60 - e * 18 - e * e * 1.2;
+  drawStopSign(ctx, 430, 272, 150);
+  drawBus(ctx, bx, busY, len, 100, 0);
+  drawExhaust(ctx, bx + len + 2, busY - 14, t, 6);
+  // you at the stop: facing the bus, looking back at the window
+  const p = figure(t, 2.3, Math.PI, { arms: 'shrug', sweat: true });
+  p.head = 0.25 + Math.sin(t * 2) * 0.1;
+  drawPerson(ctx, game.level.looks.player, p, 545, 268);
+  bubble(ctx, ['😳'], 505, 196, e, 'thought');
+}
+
+const atTheStop = (game) => !!game.world.atStop; // at 4:30 (the engine then puts you back at your desk)
+
 // The fail: 4:30 on the boss's untouched clock and he is still at his desk, so you are still in the office. Out of
 // the window your bus drives off.
 function sceneFail(ctx, game, t, e) {
+  if (atTheStop(game)) {
+    sceneFailAtStop(ctx, game, t, e);
+    return;
+  }
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, TAB.w, 170);
   // the window: the street outside, the bus pulling away
