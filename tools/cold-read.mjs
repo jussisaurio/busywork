@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 // Cold reads (docs/COLD-READ.md): fresh readers who see only what a player sees judge a level, in three stages.
 //   premise   step 1: the card alone. Step 2: the card, step 1's reading, premise.md and the level's source files.
-//   pictures  step 1: the card and the shots (src/levels/<id>/shots.js, drawn by tools/shots.mjs), numbered, not
-//             named. Step 2: that reading, what each shot must say (the intents), the shots.
+//   pictures  step 1: the card, the shots (src/levels/<id>/shots.js, drawn by tools/shots.mjs) and one verb sheet per
+//             item (tools/lib/verbs.mjs: the item in hand, every generic verb on it, drawn by the tool), numbered, not
+//             named. Step 2: that reading, what each shot must say (the intents, each with the game clock the shot
+//             landed on) and what each verb panel is (the engine's account), the shots and the verb sheets, labelled.
+//             Two shots that render pixel-identical stop the stage (tools/shots.mjs).
 //   replay    step 1: the card and a strip of frames per route check (tools/lib/replay.mjs), numbered, not named.
 //             Step 2: those readings, which check each run was, and premise.md's ways to win and lose.
 // Each step is a fresh `claude -p` (tools: Read and Glob) whose working folder is a new temp folder that holds only
@@ -14,7 +17,8 @@
 // step's reply verbatim. A stage is fresh while its inputs hash to the recorded value (every stage's inputs include
 // the full text of every prompt its readers get):
 //   premise   the card and premise.md
-//   pictures  the card, the shots list (names, commands, intents) and the PNG bytes of every shot
+//   pictures  the card, the shots list (names, commands, intents), the PNG bytes of every shot and verb sheet, and
+//             the verb panels' intents
 //   replay    the card, the route checks, premise.md's ways to win and lose, and every frame and caption
 // The PNGs are the same bytes on every run on one machine, but fonts and the canvas version change them: a stage
 // recorded on another machine can show as stale. tools/gate.mjs requires every stage `works` and fresh.
@@ -35,10 +39,11 @@ import { tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getLevel, levels } from '../src/levels/index.js';
-import { loadShots, renderShots } from './shots.mjs';
+import { loadShots, renderShots, shotWhen } from './shots.mjs';
 import { captureRuns, captionsText, runsIndex } from './lib/replay.mjs';
 import { loadChecks } from './lib/route-ctx.mjs';
 import { loadCanvas, SHOTS_DIR } from './lib/draw.mjs';
+import { captureVerbs, verbsIntents } from './lib/verbs.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const PROMPTS = join(ROOT, 'tools', 'cold-read', 'prompts');
@@ -54,7 +59,7 @@ const rel = (p) => relative(ROOT, p) || '.';
 
 // What a hash part is, for "stale: <what> changed".
 const PART_NAMES = {
-  card: 'the card', premise: 'premise.md', shots: 'shots.js', pictures: 'the rendered shots',
+  card: 'the card', premise: 'premise.md', shots: 'shots.js', pictures: 'the rendered shots', verbs: 'the verb sheets',
   checks: 'route-checks.js', ways: 'premise.md\'s ways to win and lose', frames: 'the replay strips',
   prompts: 'the stage\'s prompts',
 };
@@ -120,9 +125,12 @@ export async function stageInputs(id, stage, { root = levelDir(id), lib, shots, 
     inp.src = levelSources(id);
   } else if (stage === 'pictures') {
     const list = shots ?? (await loadShots(id));
-    inp.shots = await renderShots(id, { lib: lib ?? loadCanvas(), shots: list });
-    parts.shots = sha(JSON.stringify(list.map((s) => ({ name: s.name, cmds: s.cmds, intent: s.intent }))));
+    const L = lib ?? loadCanvas();
+    inp.shots = await renderShots(id, { lib: L, shots: list });
+    inp.verbs = captureVerbs(level, { lib: L }).sheets;
+    parts.shots = sha(JSON.stringify(list.map((s) => ({ name: s.name, cmds: s.cmds, intent: s.intent, beat: s.beat }))));
     parts.pictures = sha(...inp.shots.map((s) => s.png));
+    parts.verbs = sha(...inp.verbs.flatMap((s) => [s.png, s.labelled, s.intent]));
   } else {
     const ways = ['Ways to win', 'Ways to lose'].map((k) => P.sections[k]);
     if (ways.some((w) => !w)) throw new Error(`${rel(pf)} needs '## Ways to win' and '## Ways to lose' sections`);
@@ -170,13 +178,20 @@ export function stageSteps(inp, { batch = REPLAY_BATCH } = {}) {
     ];
   }
   if (inp.stage === 'pictures') {
-    // Numbered, not named: a shot's name ('lin-sees-theft') would tell the reader what to see.
+    // Numbered, not named: a shot's name ('lin-sees-theft') would tell the reader what to see. The same goes for a
+    // verb sheet's item and its panels' verbs: step 1 gets the sheets with numbers only, step 2 the labelled ones.
     const shots = Object.fromEntries(inp.shots.map((s, i) => [`shots/${pad2(i + 1)}.png`, s.png]));
-    const intents = ['What each screenshot in shots/ must tell a first-time player.', '',
-      ...inp.shots.map((s, i) => `- ${pad2(i + 1)}.png (${s.name}): ${s.intent}`), ''].join('\n');
+    const verbs = inp.verbs ?? [];
+    const plain = Object.fromEntries(verbs.map((s) => [`verbs/${s.file}`, s.png]));
+    const labelled = Object.fromEntries(verbs.map((s) => [`verbs/${s.file}`, s.labelled]));
+    // Each intent is a builder's words; the clock the shot landed on is the engine's, so a shot taken at another
+    // moment than its intent describes shows up here rather than as a puzzling misread.
+    const intents = ['What each screenshot in shots/ must tell a first-time player, and the game clock it was taken at.', '',
+      ...inp.shots.map((s, i) => `- ${pad2(i + 1)}.png (${s.name}, ${shotWhen(s)}): ${s.intent}`), '',
+      ...(verbs.length ? [verbsIntents(verbs)] : [])].join('\n');
     return [
-      { id: '1-read', prompt: 'pictures-1-read.md', reply: 'reading.md', needs: [], files: () => ({ 'card.txt': card, ...shots }) },
-      { id: '2-compare', prompt: 'pictures-2-compare.md', reply: 'report.md', needs: ['1-read'], files: (r) => ({ 'reading.md': r['1-read'], 'intents.md': intents, ...shots }) },
+      { id: '1-read', prompt: 'pictures-1-read.md', reply: 'reading.md', needs: [], files: () => ({ 'card.txt': card, ...shots, ...plain }) },
+      { id: '2-compare', prompt: 'pictures-2-compare.md', reply: 'report.md', needs: ['1-read'], files: (r) => ({ 'reading.md': r['1-read'], 'intents.md': intents, ...shots, ...labelled }) },
     ];
   }
   const runFiles = (list) => Object.assign({}, ...list.map((run) => {

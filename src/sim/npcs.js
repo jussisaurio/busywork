@@ -158,6 +158,7 @@ function updateNpc(game, npc, dt, now) {
   updateFacing(npc, dt);
   updateGlance(npc, dt);
   tickAttention(npc, dt);
+  npc.heeding = !!(npc._heard || npc._stare); // render: something holds his eyes (a seated NPC stops typing)
   const m = mechanicOf(game, npc);
   npc.label = (m && m.kind.label?.(game, npc, m.data)) ?? npc._plan.label;
   npc.anim = npc._plan.anim;

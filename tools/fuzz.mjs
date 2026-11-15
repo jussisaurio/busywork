@@ -64,7 +64,9 @@ export function levelData(id) {
   const meetingAt = level.day.meetingAt;
   // lastMinute: the last minute a timed wait can end on (3:59 in level 1).
   // putSpots: where a plan can `put` (the spots that take items, mechanics/putdown.js).
+  // edible: some item can be eaten (a plan's `eat`: holding E, since a tap drops it).
   const putSpots = Object.keys(level.spots).filter((name) => level.spots[name].accepts?.length);
+  const edible = Object.values(level.items ?? {}).some((item) => item.edible);
   const { milestones, binKeys } = level.gate;
   return (data[id] = {
     id,
@@ -76,6 +78,7 @@ export function levelData(id) {
     meetingAt,
     lastMinute: meetingAt - 1,
     putSpots,
+    edible,
   });
 }
 // =================================================================================================
@@ -99,6 +102,7 @@ function stepToCmd(s, L) {
   switch (s.k) {
     case 'goto': return `goto ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'do': return 'interact';
+    case 'eat': return 'eat';
     case 'sit': return 'sit pretend';
     case 'put': return `put ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'until': return `${s.busy ? 'pretend' : 'wait'} until ${fmt(s.m, L)}`;
@@ -117,7 +121,8 @@ function randomStep(rng, L) {
     const t = rng.chance(0.55) ? rng.pick(L.interactable) : rng.pick(L.targets);
     return { k: 'goto', t, busy: rng.chance(0.6) };
   }
-  if (r < 0.62) return { k: 'do' };
+  // Only levels with something edible eat (no rng draw otherwise).
+  if (r < 0.62) return L.edible && rng.chance(0.3) ? { k: 'eat' } : { k: 'do' };
   if (r < 0.82) return { k: 'until', m: rng.int(1, L.lastMinute), busy: rng.chance(0.7) };
   if (r < 0.94) return { k: 'for', s: rng.pick([0.5, 1, 1.5, 2, 3, 5, 8]), busy: rng.chance(0.6) };
   return { k: 'sit' };

@@ -12,18 +12,18 @@
 // once he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
 // A disguise (disguise.js) changes who you are to them: fooled, they object to nothing; knowing better, they object
 // to the disguise itself.
-import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN } from '../config.js';
-import { say, burst, shake, sightline } from '../core/fx.js';
+import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN, NOTICE } from '../config.js';
+import { say, shake, sightline } from '../core/fx.js';
 import { npcSees, seenVia, findNpc, inZone } from '../game/perception.js';
 import { SCREEN_ICON } from '../sim/mechanics/camera.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { judge } from '../sim/mechanics/index.js';
 import { cancelAction, dropHeld } from './interactions.js';
-import { setBusy, sitAtDesk } from './player.js';
+import { setBusy, sendToDesk } from './player.js';
 import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
 
 // Module tunables.
-export const NOTICE = 0.3; // seconds of continuous sight before a witness reacts
+export { NOTICE }; // config.js: seconds of continuous sight before a witness reacts
 const NOTICE_BUBBLE_GAP = 1.0; // min seconds between ❓ bubbles from the same NPC
 const TELL_DELAY = 1.2; // seconds after the authority is back on the floor before a witness tells on you
 // The scene's investigator blames whoever he sees in its zone, or within this many tiles of its door (unless
@@ -96,7 +96,7 @@ function offenceFor(game, s, npc) {
     return 'action';
   }
   if (atScene(game, s, npc)) return 'scene';
-  // Lin hunting for her sandwich spots the mustard down your sweater. Pretending doesn't hide a stain.
+  // The evidence role's witness, on her hunt, spots the mark on you (player.smeared). Pretending doesn't hide a stain.
   const ev = r.evidence;
   if (ev && npc.id === ev.by && npc.override === ev.while && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
   if (p.busy) return null; // phone call / folder stride hides contraband
@@ -273,7 +273,7 @@ function react(game, s, npc, offence) {
   say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉', '@player'] : ['❗', '👉', '@player']), { kind: 'alert', ttl: 1.6 });
   const heard = authorityHears(game, authorityNpc(game));
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
-  if (heard) assignWork(game, 'tattle');
+  if (heard) tattleHeard(game, npc.id, offence);
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
 }
 
@@ -284,32 +284,45 @@ function tellLate(game, s, w) {
   sightline(game, w.id, 'tattle', 1.4);
   say(game, w.id, ['👉', '@player', g.icon], { kind: 'alert', ttl: 1.6 });
   game.events.emit('witness:tattle', { by: w.id, reason: g.reason, heard: true, late: true, icon: g.icon });
-  assignWork(game, 'tattle');
+  tattleHeard(game, w.id, g.reason);
 }
 
-// The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes.
-function assignWork(game, reason) {
+// What the authority does on a tattle he hears (level.roles.authority.tattle): 'work' (the default) sends you to your
+// desk; 'caught' ends the day on her word; a function (game, { by, reason }) is the level's own answer (he walks
+// over and checks, say). Her shout runs to him first, whatever he does (a 'relay' line).
+function tattleHeard(game, by, reason) {
+  const auth = roles(game).authority;
+  const how = auth.tattle ?? 'work';
+  if (how === 'work') return assignWork(game, 'tattle', by);
+  const boss = findNpc(game, auth.id);
+  if (boss && boss.active) sightline(game, by, 'relay', 1.0, undefined, auth.id);
+  if (how === 'caught') caught(game, reason, auth.id);
+  else how(game, { by, reason });
+}
+
+// The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes. by: the witness who told
+// (her shout runs to him as a line: he looks at her, then at you, then gives the order). The order stands from
+// this step (forced, locked, workAssigned); you walk to your desk inside that time (player.js sendToDesk).
+function assignWork(game, reason, by = null) {
   const s = game.rules;
   const p = game.player;
   const id = roles(game).authority.id;
   const boss = findNpc(game, id);
-  // If the authority is off-floor (restroom), the order still lands: show it over the player.
-  say(game, boss && boss.active ? id : 'player', ['📄', '📄', '👉', '🖥️'], { kind: 'speech' });
+  const here = boss && boss.active;
+  if (by && here) sightline(game, by, 'relay', 1.0, undefined, id);
+  // If the authority is off-floor (restroom), the order still lands: shown over the player at once.
+  sendToDesk(game, by, here ? id : null);
   // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
   // ends as 'idle'. Told on (a tattle): 'witnessed'.
   cancelAction(game, reason === 'idle' ? 'idle' : 'witnessed');
   if (!itemFlags(game, p.held)?.keep) dropHeld(game); // whatever you carried stays where you stood (`keep`: in your hand)
-  burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
-  sitAtDesk(game);
-  burst(game, 'paper', p.x, p.y, 10, { speed: 1.8 });
-  setBusy(game, true, 'typing');
   p.locked = true;
   game.clock.forced = WORK_PENALTY_MIN;
   game.clock.ff = false;
   game.suspicion[id] = 0;
   s.working = true;
   s.seen = {};
-  s.grudge = null; // you're at your desk already: nothing left to tell
+  s.grudge = null; // you're on your way to your desk: nothing left to tell
   game.events.emit(`${id}:workAssigned`, { reason });
 }
 

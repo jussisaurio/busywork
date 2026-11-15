@@ -8,7 +8,7 @@ const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is 
 const NOISE = { elevatorDing: 'DING! the microwave', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
 
 export default {
-  mission: "MISSION: Friday, 4:00 PM. At 5:00 the boss picks who works Saturday. Make sure it isn't you.",
+  mission: "MISSION: Friday, 4:00 PM. You're down for Saturday. At 5:00 the boss reads it out.",
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -27,13 +27,13 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, X copier, R the Saturday roster (whiteboard),",
-    '     M microwave, C counter, F fridge, P your desk, Q your desk phone (the far end of your desk), L Lin\'s desk (her',
-    '     lunch box sits on it), B the boss\'s phone (side table), i item,',
+    '     M microwave, C counter, F fridge, P your desk, Q a phone on a little table in the supply room, L Lin\'s desk (her',
+    '     lunch box sits on it), B the boss\'s phone (side table; his desk has none), i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
   outcomeText: (o) => (o.result === 'win'
-    ? `WIN 🎉 (someone else's face is on the roster for Saturday; you wrote it during ${o.routes.includes('ding') ? 'the DING' : "the boss's phone call"})`
+    ? `WIN 🎉 (someone else's face is on the roster for Saturday${o.routes.includes('ding') ? '; you wrote it during the DING' : o.routes.includes('phone') ? "; you wrote it during the boss's phone call" : ''})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (you work every Saturday now)'
     : o.result === 'blamed' ? "BLAMED 👉 (you weren't round the roster when it was read out: the boss pointed at your empty place, and the Saturday went to you)"
     : 'FAIL: the boss read out your face on the roster. See you Saturday 👉😩'),

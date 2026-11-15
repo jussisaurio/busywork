@@ -15,11 +15,11 @@ export default [
   {
     name: 'eat the cake while Gus is away → win',
     expect: { result: 'win', routes: ['cake'] },
-    cmds: ['pretend until 2:44', 'goto cake_stand pretend', 'interact', 'interact', 'pretend until 3:00'],
+    cmds: ['pretend until 2:44', 'goto cake_stand pretend', 'interact', 'eat', 'pretend until 3:00'],
   },
   {
     name: 'both: the calendar, then the cake → win',
     expect: { result: 'win', routes: ['cake', 'calendar'] },
-    cmds: ['goto microwave pretend', 'interact', 'goto calendar pretend', 'interact', 'goto cake_stand pretend', 'interact', 'interact', 'interact', 'wait until 3:00'],
+    cmds: ['goto microwave pretend', 'interact', 'goto calendar pretend', 'interact', 'goto cake_stand pretend', 'interact', 'interact', 'eat', 'wait until 3:00'],
   },
 ];

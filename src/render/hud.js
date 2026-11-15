@@ -4,12 +4,12 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, clamp, fin, emoji, strictGlyphs, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
+  T, VIEW_W, VIEW_H, HUD_H, fin, emoji, strictGlyphs, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
   MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
 import { itemGlyph } from './characters.js';
-import { formatClock, dayCue, WORK_PENALTY_MIN } from '../config.js';
+import { formatClock, dayCue } from '../config.js';
 
 function panel(ctx, x, y, w, h, color = C.hudPanel) {
   ctx.fillStyle = color;
@@ -29,7 +29,10 @@ export function drawHud(ctx, game, t, mem) {
   ctx.fillRect(0, HUD_H - 1.5, VIEW_W, 1.5);
 
   const clock = game.clock || { minute: 0, ff: false, forced: 0 };
-  drawClock(ctx, fin(clock.minute), t, game.level.day);
+  // Once the day is decided the clock stops at the outcome's minute: it reads what the end card says, though the
+  // sim's clock runs on through the end beat.
+  const o = game.outcome;
+  drawClock(ctx, o ? Math.min(fin(clock.minute), fin(o.minute)) : fin(clock.minute), t, game.level.day);
   drawGoal(ctx, game.level.title?.badge ?? NO_BADGE);
   drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
@@ -180,7 +183,7 @@ function drawClock(ctx, minute, t, day) {
 }
 
 // Mission icons only: 🕓 📊❌.
-// The mission: the 🕓 deadline, then the level's title.badge [main icon, small overlay icon], drawn as the title
+// The mission: the 🕓 deadline (render/things.js clock: the level's deadline on its face), then the level's title.badge [main icon, small overlay icon], drawn as the title
 // screen draws it (screens.js).
 const NO_BADGE = [];
 function drawGoal(ctx, badge) {
@@ -244,18 +247,7 @@ function drawStatus(ctx, game, clock, t) {
     emoji(ctx, strictGlyphs() ? '#muted' : '🔇', x - 12, cy, 18); // legacy: drop with the legacy list
     x -= 30;
   }
-  const forced = fin(clock.forced);
-  if (forced > 0) {
-    const k = clamp(forced / WORK_PENALTY_MIN, 0, 1);
-    emoji(ctx, strictGlyphs() ? '#paper' : '📄', x - 50, cy + Math.sin(t * 6) * 1, 18); // legacy: drop with the legacy list
-    ctx.fillStyle = 'rgba(243,230,200,0.15)';
-    rrect(ctx, x - 38, cy - 4, 32, 8, 3);
-    ctx.fill();
-    ctx.fillStyle = C.hudRed;
-    rrect(ctx, x - 37, cy - 3, 30 * k, 6, 2.5);
-    ctx.fill();
-    x -= 62;
-  }
+  // Assigned work shows at your desk (world.js drawWorkStack), not up here.
   if (clock.ff) {
     const s = 18 + Math.abs(Math.sin(t * 6)) * 2;
     emoji(ctx, '⏩', x - 13, cy, s);
