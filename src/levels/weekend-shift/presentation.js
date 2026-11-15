@@ -2,15 +2,16 @@
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
 import { C } from '../../render/palette.js';
+import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
 import { READ_S, POINT_S } from './cast.js';
-import { paintRoster, paintCopier, paintMicrowave, paintPhones } from './props.js'; // decor.props' painters
+import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
   mission: ['5:00 PM. Someone works this Saturday.', "Make sure it isn't you."],
-  badge: ['🗓️', '✏️'], // the roster's week, and writing on it
+  badge: ['🗓️', '@player'], // the roster's week, and you down for it
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
@@ -35,6 +36,17 @@ function readS(game) {
   return s >= 0 ? s : null;
 }
 const WROTE_FRESH_MIN = 3; // game minutes the ink glints after you write
+
+// Where the renderer puts the boss's hand at his ear, on the phone (render/characters.js 'phone' arms, standing):
+// px, for the cord to his phone's handset (props.js paintBossPhone). null unless he's standing there talking.
+function bossPhoneHand(game) {
+  const b = boss(game);
+  if (!b || b.override !== 'onPhone' || b.moving) return null;
+  const L = LEVEL1_LOOKS.boss;
+  const r = L.head + 0.8;
+  const d = b.dir ?? 0;
+  return { x: b.x * T - Math.sin(d) * r, y: b.y * T - 2 - 10 * L.tall + 1 + Math.cos(d) * 0.6 * r };
+}
 
 export const DECOR = {
   chairs: [
@@ -83,14 +95,8 @@ export const DECOR = {
       draw: paintMicrowave,
       state: (w, game) => ({ noodles: w.noodles, left: dingIn(w, game), fish: linHeatsFish(game) }),
     },
-    {
-      tile: 'P',
-      draw: paintPhones,
-      state: (w, game) => {
-        const b = game?.level?.spots?.boss_desk;
-        return { phone: w.phone, boss: { x: b?.x ?? 0, y: (b?.y ?? 0) + 1 } }; // his desk, south of his chair
-      },
-    },
+    { tile: 'Q', draw: paintMyPhone, state: (w, game) => ({ phone: w.phone, to: game?.map?.find?.('B')?.[0] ?? null }) },
+    { tile: 'B', draw: paintBossPhone, state: (w, game) => ({ phone: w.phone, hand: bossPhoneHand(game) }) },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -109,14 +115,16 @@ export const LOOKS = LEVEL1_LOOKS;
 
 // level.poses (level 1's looks.js documents the fields). Things in hand are drawn by the renderer from emoji, so
 // nobody holds anything here: Kev reaches into the copier (props.js draws his spanner in it), the boss holds the
-// phone to his ear (the renderer draws a handset), and pointing is the arm.
+// phone to his ear (props.js draws the handset and its cord), and pointing is the arm.
 export const POSES = {
   arms: [
     // the reading: he points at the board, then at whoever's face is on it; at his own, he spreads his hands
     { when: (n, w, game) => n.id === 'boss' && readS(game) !== null && (w.roster !== 'boss' || readS(game) < POINT_S), arms: 'point' },
     { when: (n, w, game) => n.id === 'boss' && readS(game) !== null, arms: 'shrug' },
     { when: (n) => n.override === 'fixing', arms: 'reach' },
-    { when: (n) => n.override === 'onPhone', arms: 'phone' },
+    // item ' ': nothing drawn in his hand (the renderer's own phone there is a mobile); props.js draws his phone's
+    // handset under that hand, on its cord
+    { when: (n) => n.override === 'onPhone', arms: 'phone', item: ' ' },
   ],
   marks: [
     { when: (n, w, game) => n.id === 'boss' && w.roster === 'boss' && readS(game) >= POINT_S, angry: true }, // red to the ears

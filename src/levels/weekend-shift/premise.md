@@ -58,16 +58,16 @@ Steps:
 1. Stay at your desk until about 4:30.
 2. Ring the boss's phone.
 3. Walk to the board.
-4. Write while the boss is at his window and Lin is at the microwave.
+4. Write while the boss is on the phone in his corner and Lin is at the microwave.
 5. Stay near the board until 5:00.
 
 Facts, and where you see each one:
 
-- **Your desk has a phone that rings the boss's.** 4:00: a phone on your desk, and one on the boss's. While you're seated, a phone prompt appears. Ringing draws a dashed line from your phone to his, his phone shakes, and the boss jumps.
-- **The boss takes the call at his window, with his back to the office, for about 5 game minutes.** Right after the ring: he walks to the window at the top right of his office and stands facing it. Nobody is on the line, and he hangs up angry.
-- **Lin still watches the board from her desk.** Her cone still covers the board while the boss is on the phone. Write then and she points at you, and the boss sends you back to your desk to type for 20 minutes. You see the papers fly.
+- **Your desk has a phone that rings the boss's.** 4:00: a phone on your desk, and one on a little side table in the top-right corner of the boss's office, under his window. Whenever you're beside your desk, seated or standing, a phone prompt appears over your phone. Ringing draws a dashed line from your phone to his, his phone shakes, and the boss jumps.
+- **The boss takes the call standing at that phone, with his back to the office, for about 5 game minutes.** Right after the ring: he walks to the corner and stands beside the table, facing the window. The handset is gone from the base, and a coiled cord runs from the base to the handset at his ear, so it's plainly that phone. Nobody is on the line, and he hangs up angry.
+- **Lin still watches the board from her desk.** Her cone still covers the board while the boss is on the phone. Write then and she points at you, and the boss sends you back to your desk to type for 20 minutes. You see the papers fly. The phone is in reach from your seat at 4:00, so ringing straight away is the obvious first try, and this is how most players learn that Lin watches.
 - **Lin leaves at 4:30 for the microwave.** 4:30: she gets up and walks to the kitchen. 4:34: she stands at the microwave with her back to the room while a fish turns in it. 4:37: she's back at her desk with it.
-- **So ring at about 4:30.** The boss is at his window from about 4:32 to 4:37 and Lin is at the microwave from about 4:34 to 4:37. Both are facing away from the board, and you can walk from your desk and write.
+- **So ring at about 4:30.** The boss is on the phone in his corner from about 4:33 to 4:38 and Lin is at the microwave from about 4:34 to 4:37. Both are facing away from the board, and you can walk from your desk and write.
 
 ### The trap (not a win)
 
