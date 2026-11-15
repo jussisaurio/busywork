@@ -5,23 +5,24 @@ import { T } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
 import { listShown, drawListScreen } from './list.js';
 import { END_SCENES } from './end-scenes.js';
-import { kevbag, drapedHoodie } from './painters.js';
+import { kevbag, handset, deskPhone, mobile, socket } from './painters.js';
+import { SECS } from './cast.js';
 
 export { END_SCENES };
 
 export const TITLE = {
-  mission: ["3:00 PM. At 3:45 the boss emails HR the layoff list. You're on it.", 'Get your name off it.'],
+  mission: ["Friday, 3:00 PM. You're on the layoff list.", 'At 3:45 it goes to HR.'],
   badge: ['📧', '📦'], // the trouble: the email at 3:45, and the box you carry out
 };
 
 const OXBLOOD = ['#6b2f24', '#4e2019'];
 const MUSTARD = ['#d6a23a', '#a97b22'];
 const TEAL = ['#2f8f83', '#22675f'];
-const CHARCOAL = ['#4b5056', '#34383d']; // Kev's chair: his olive hoodie must stand out on it
+const CHARCOAL = ['#4b5056', '#34383d'];
 
 export const DECOR = {
   chairs: [
-    { spot: 'boss_desk', face: 'S', color: OXBLOOD },
+    { spot: 'boss_desk', face: 'N', color: OXBLOOD }, // his back to the glass
     { spot: 'player_desk', face: 'N', color: MUSTARD },
     { spot: 'lin_desk', face: 'N', color: TEAL },
     { spot: 'kev_desk', face: 'N', color: CHARCOAL },
@@ -46,20 +47,21 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
-    // His screen: the layoff list, a row of faces, yours framed in red; static while it acts up (list.js).
+    // His screen: the layoff list, a row of faces, yours framed in red; static while his cable is loose, a padlock
+    // while he's in the restroom (list.js).
     { tile: 'Q', draw: drawListScreen, state: listShown },
-    // Kev's desk (V, which you reach his chair from): his hoodie over his chair's back once he takes it off, and
-    // his screen off once he's gone home.
-    { tile: 'V', draw: drawKevDesk, state: kevDesk },
-    { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: false }) },
+    { tile: 'W', draw: drawCable, state: (w) => w.glitch }, // the plug half out of the floor socket behind his desk
+    { tile: 'F', draw: drawBossPhone, state: bossPhone },
+    { tile: 'V', draw: drawKevDesk, state: kevDesk }, // his desk phone; his screen off once he's gone home
+    { tile: 'M', draw: drawLinMobile, state: linMobile }, // her mobile on her desk, buzzing now and then
   ],
-  things: { kevbag },
+  things: { kevbag, handset },
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null }, // his desk phone instead (V)
+    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: null }, // her mobile instead (M)
   },
   elevator: { spot: 'elevator' },
   zoneSeeds: [
@@ -71,47 +73,69 @@ export const DECOR = {
   legendAt: { x: 20, y: 15.5 },
 };
 
-// Kev's desk, as it changes: his hoodie over his chair's back (one tile south of the desk tile; the chair faces the
-// desk, so its backrest is to the south and its seat stays bare), and his screen dark once he's gone home.
-// Kev's chair is charcoal so the olive stands out.
-const KEV = { hoodie: false, off: false };
-function kevDesk(w) {
-  KEV.hoodie = w.hoodie === 'chair';
-  KEV.off = !!w.kevGone;
-  return KEV;
+// The boss's cable, from the back of his desk down to the socket on the floor behind it (row 2).
+function drawCable(ctx, info, at, out) {
+  const cx = at.x * T + T / 2;
+  socket(ctx, cx + 3, at.y * T + 3, cx - 3, at.y * T - 5, out);
 }
 
-function drawKevDesk(ctx, info, at, shown) {
-  const cx = at.x * T + T / 2;
-  if (shown.off) { // the workstation's screen (render/world.js drawWorkstation), switched off
+// The boss's desk phone: its handset off while he calls Kev's desk.
+const BOSS_PHONE = { ringing: false, off: false };
+function bossPhone(w, game) {
+  BOSS_PHONE.off = w.bossPhoneUntil != null && (game.clock?.minute ?? 0) < w.bossPhoneUntil;
+  return BOSS_PHONE;
+}
+function drawBossPhone(ctx, info, at, shown, t) {
+  deskPhone(ctx, at.x * T + T / 2, at.y * T + 9, t, shown);
+}
+
+// Kev's desk: his phone (ringing, or its handset at his ear) at the right end, his screen dark once he's gone home.
+const KEV = { ringing: false, off: false, gone: false };
+function kevDesk(w) {
+  KEV.ringing = !!w.ringing;
+  KEV.off = !!w.kevCall;
+  KEV.gone = !!w.kevGone;
+  return KEV;
+}
+function drawKevDesk(ctx, info, at, shown, t) {
+  if (shown.gone) { // the workstation's screen (render/world.js drawWorkstation), switched off; the desk's centre tile
+    const cx = (at.x - 1) * T + T / 2;
     const sy = at.y * T + 3 + 3 + 8;
     ctx.fillStyle = '#16191c';
     ctx.fillRect(cx - 10, sy, 20, 7);
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
     ctx.fillRect(cx - 9, sy + 1, 6, 1);
   }
-  if (shown.hoodie) drapedHoodie(ctx, cx, (at.y + 1) * T + T / 2 + 5);
+  deskPhone(ctx, at.x * T + T / 2 + 2, at.y * T + 12, t, shown);
 }
 
-// Level 1's people. Kev wears a T-shirt under his hoodie (drawn once the hoodie is off: POSES).
-export const LOOKS = {
-  ...OFFICE,
-  kev: { ...OFFICE.kev, shirt: '#e8e2d2', shirtDark: '#c8c0ae' },
-};
+// Lin's mobile: buzzing for a moment (BUZZ_SECS) when a message comes in, gone while it's in her hand.
+const BUZZ_SECS = 1.0;
+const LIN = { shown: true, buzzing: false };
+function linMobile(w, game) {
+  LIN.shown = w.linPhone === 'desk';
+  LIN.buzzing = w.buzzAt != null && (game.clock?.minute ?? 0) - w.buzzAt < SECS(BUZZ_SECS);
+  return LIN;
+}
+function drawLinMobile(ctx, info, at, shown, t) {
+  if (shown.shown) mobile(ctx, at.x * T + T / 2 + 2, at.y * T + 13, t, shown.buzzing);
+}
+
+// Level 1's people.
+export const LOOKS = OFFICE;
 
 export const POSES = {
   arms: [
-    { when: (n, w) => n.id === 'kev' && w.pc === 'kev' && !n.moving, arms: 'type' }, // fixing the boss's computer
+    { when: (n, w) => n.id === 'kev' && w.kevCall, arms: 'phone', item: '#handset' }, // picking up the boss's call
+    { when: (n, w) => n.id === 'kev' && w.pc === 'kev' && !n.moving, arms: 'type' }, // at the plug behind his desk
     { when: (n, w) => n.id === 'kev' && w.kevUp, arms: 'carry', item: '#kevbag' }, // going home
-    // The boss, watching Kev (or "Kev") at his computer.
-    { when: (n, w) => n.id === 'boss' && !n.moving && (n.override === 'watching' || w.pc === 'kev'), arms: 'shrug' },
-    { when: (n, w) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving, arms: 'bang' }, // at the static
+    { when: (n, w, g) => n.id === 'boss' && w.bossPhoneUntil != null && g.clock.minute < w.bossPhoneUntil, arms: 'phone', item: '#handset' },
+    { when: (n, w) => n.id === 'boss' && w.coffee === 'done' && n.override !== 'brewing', arms: 'mug' }, // his cup, all the way back
+    { when: (n, w) => n.id === 'boss' && !n.moving && w.pc === 'kev', arms: 'shrug' }, // standing over Kev
+    { when: (n, w) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving && !n.override, arms: 'bang' }, // at the static
+    { when: (n, w) => n.id === 'lin' && w.linPhone === 'hand', arms: 'phone' }, // reading her mobile, turned away
   ],
-  marks: [
-    { when: (n, w) => n.id === 'kev' && w.hoodie !== 'kev', jacket: false }, // in his T-shirt
-    { when: (n) => n.id === 'boss', jacket: false }, // shirt and suspenders: his jacket is on the rack
-    { when: (n) => n.override === 'stepAside' || n.override === 'watching', angry: false },
-  ],
+  marks: [],
 };
 
 // How the cast talks (level 1's voices: src/levels/meeting/voices.js).
@@ -140,25 +164,17 @@ export const VOICES = {
 };
 
 export const SOUNDS = {
-  actions: {
-    start: {
-      take_jacket: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
-    },
-  },
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'jacket:taken': { sfx: 'rustle', who: 'player' },
-    'jacket:hung': { sfx: 'swish', who: 'player' },
-    'kev:hoodieOff': { sfx: 'rustle', who: 'kev' },
-    'kev:up': { sfx: 'swish', who: 'kev' },
-    'pc:actsUp': { sfx: 'rattle', who: 'boss' },
+    'pc:actsUp': { sfx: 'bang', who: 'boss' },
     'pc:fixed': { sfx: 'fixed', who: 'kev' },
-    'pc:thumped': { sfx: 'bang', who: 'boss' },
+    'pc:fixedByYou': { sfx: 'fixed', who: 'player' },
+    'pc:selfFixed': { sfx: 'fixed', who: 'boss' },
+    'lin:buzz': { sfx: 'rattle', spot: 'lin_desk', opts: { gain: 0.25 } },
+    'kev:up': { sfx: 'swish', who: 'kev' },
     'list:edited': { sfx: 'swish', who: 'player' },
-    'boss:unmasked': { sfx: 'caught', who: 'boss' },
     'kev:left': { sfx: 'elevator' },
   },
-  drops: { hoodie: 'soft', jacket: 'soft' },
   elevator: { spot: 'elevator', radius: 2.5 },
 };
