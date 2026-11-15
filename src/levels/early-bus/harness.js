@@ -1,4 +1,4 @@
-// Office Time's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
+// Early Bus's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
 import { clockArg } from '../../config.js';
 import { START } from './cast.js';
 

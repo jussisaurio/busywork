@@ -1,4 +1,4 @@
-// Office Time's cold-read shots (see the cold-read framework): harness commands from the start of the day, and what
+// Early Bus's cold-read shots (see the cold-read framework): harness commands from the start of the day, and what
 // each picture must tell a first-time player who has read only the card.
 const CLOCK = ['pretend until 3:20', 'goto boss_clock pretend', 'interact', 'interact', 'interact']; // +30, Lin away
 const HERD = ['goto open_clock pretend', 'interact', 'interact', 'interact', 'interact']; // +40 while Kev gets coffee

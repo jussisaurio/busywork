@@ -1,4 +1,4 @@
-// Office Time's mechanic: people live by the wall clock in their zone, not by the time.
+// Early Bus's mechanic: people live by the wall clock in their zone, not by the time.
 //
 // Each person has a home clock (HOME) and reads it only while standing in its zone. He looks up 🕐 on every
 // beat (each schedule entry and each of cast.js LOOK_UPS) and when he sits down (the `lookUp` behaviour): he turns

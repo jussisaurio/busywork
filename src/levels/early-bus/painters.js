@@ -1,4 +1,4 @@
-// Office Time's own drawings: the big wall clocks with a stepladder under each, the street (pavement, kerb, road,
+// Early Bus's own drawings: the big wall clocks with a stepladder under each, the street (pavement, kerb, road,
 // bus stop sign) and the 4:30 bus. The two world painters are the level's own prop painters (presentation.js
 // decor.props names them as draw functions); the end scenes (end-scenes.js) reuse the same pieces at a larger scale.
 // All coordinates are logical px.

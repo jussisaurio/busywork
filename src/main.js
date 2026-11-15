@@ -6,6 +6,7 @@ import { updateFx } from './core/fx.js';
 import { createInput } from './play/input.js';
 import { createRenderer } from './render/renderer.js';
 import { PAUSE_BTN } from './render/hud.js';
+import { playButton } from './render/screens.js';
 import { VIEW_W, VIEW_H } from './render/util.js';
 import { createAudio } from './audio/audio.js';
 import { getLevel, levels, defaultLevel } from './levels/index.js';
@@ -51,17 +52,33 @@ const pauseIfPlaying = () => {
 };
 window.addEventListener('blur', pauseIfPlaying);
 document.addEventListener('visibilitychange', () => document.hidden && pauseIfPlaying());
+const PAD = 6; // forgiving hit area around drawn buttons
+const viewPoint = (e) => {
+  const r = canvas.getBoundingClientRect();
+  return { x: ((e.clientX - r.left) / r.width) * VIEW_W, y: ((e.clientY - r.top) / r.height) * VIEW_H };
+};
+const inRect = (p, b) => !!b && p.x >= b.x - PAD && p.x <= b.x + b.w + PAD && p.y >= b.y - PAD && p.y <= b.y + b.h + PAD;
+// Anything drawn as a button is a button: the ⏸ mid-day, the ▶ on the mission and end cards.
+const buttonAt = (p) =>
+  game.phase === 'day' ? (inRect(p, PAUSE_BTN) ? 'pause' : null) : inRect(p, playButton.rect) ? 'play' : null;
 canvas.addEventListener('pointerdown', (e) => {
+  const p = viewPoint(e);
+  if (game.phase === 'title' || game.phase === 'end') {
+    if (buttonAt(p) === 'play') {
+      input.pressed('interact'); // as with the keys: starting the day uses nothing
+      startLoop(game);
+    }
+    return;
+  }
   if (game.phase !== 'day') return;
   if (game.paused) {
     game.paused = false;
     return;
   }
-  const r = canvas.getBoundingClientRect();
-  const x = ((e.clientX - r.left) / r.width) * VIEW_W;
-  const y = ((e.clientY - r.top) / r.height) * VIEW_H;
-  const b = PAUSE_BTN;
-  if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) pauseIfPlaying();
+  if (buttonAt(p) === 'pause') pauseIfPlaying();
+});
+canvas.addEventListener('pointermove', (e) => {
+  canvas.style.cursor = buttonAt(viewPoint(e)) ? 'pointer' : '';
 });
 let audioPaused = false;
 

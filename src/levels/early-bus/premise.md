@@ -1,15 +1,12 @@
-# Office Time
+# Early Bus
 
 ## Card
 3:00 PM. Your bus leaves at 4:30. The boss leaves at 4:50.
 Nobody leaves before him. Catch the bus.
 
 ## Name
-"Office Time": in this office it is whatever time the office's wall clocks say. Nobody looks at a watch. You see this
-before you solve anything: at 3:01 Kev turns to the wall clock over his desk to check the time, and at 3:19 the boss sits
-down and turns round to check the clock on his own wall. The start of the day shows both clocks, each high on a wall
-with a stepladder under it. The name says that the office keeps its own time, and that is the whole level: change the
-office's time and the office goes home early.
+"Early Bus": your bus leaves at 4:30, twenty minutes before the boss does, and nobody leaves before him. The name says
+what you want and why it is a problem. It says nothing about how you get out of it.
 
 ## The situation
 You work in an open-plan office. Your bus home stops outside the lobby's glass door at 4:30. The boss goes home at 4:50

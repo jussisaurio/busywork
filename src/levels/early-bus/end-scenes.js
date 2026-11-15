@@ -1,4 +1,4 @@
-// Office Time's end cards (src/levels/meeting/end-scenes.js documents the format): small drawn scenes, the people in
+// Early Bus's end cards (src/levels/meeting/end-scenes.js documents the format): small drawn scenes, the people in
 // level 1's looks, the clocks, stepladders and bus from painters.js. Each icon row retells its picture left to right.
 import { easeOutCubic, rrect } from '../../render/util.js';
 import { C } from '../../render/palette.js';

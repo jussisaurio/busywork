@@ -1,13 +1,13 @@
-// Lights Out's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
+// Second Thoughts' words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
 import { isDark } from '../../game/darkness.js';
 
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
-const LETTER = { tray: 'in his tray 📨', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
+const LETTER = { tray: 'in his tray 📥', player: 'in your hand', dropped: 'on the floor', boss: "in the boss's pocket", eaten: 'eaten' };
 
 export default {
-  mission: "MISSION: 3:00 PM. 🔌 Your angry resignation letter is in the boss's tray. Get it back.",
+  mission: "MISSION: 3:00 PM. Your angry resignation letter is in the boss's tray. He empties it at 3:40. Get it back first.",
 
   landmarks: {
     boss_desk: 'boss_desk',
@@ -15,7 +15,7 @@ export default {
     lin_desk: 'lin_desk',
     kev_desk: 'kev_desk',
     boss_office_door: 'boss_door',
-    microwave: 'microwave',
+    coffee_machine: 'coffee_machine',
     kitchen_table: 'kitchen_table',
     restroom_door: 'restroom',
   },
@@ -29,7 +29,7 @@ export default {
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance, Y the boss's tray,",
-    '     S his office light switch, X the fuse box, M microwave, F fridge, P your desk, R restroom, E elevator, i item,',
+    '     S his office light switch, X the fuse box, M coffee machine, F fridge, P your desk, R restroom, E elevator, i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
@@ -79,12 +79,12 @@ export default {
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switch:off': return "clack: the boss's office goes dark 💡";
       case 'switch:on': return "clack: the boss's office light is back on 💡";
-      case 'boss:dark': return 'the boss: 💡❓ He gets up to find the switch';
+      case 'boss:dark': return 'the boss: ❓ He gets up to find the switch';
       case 'switch:groping': return 'the boss gropes along the wall for the switch';
-      case 'switch:fixed': return "the boss finds the switch: his office light is back on 💡";
-      case 'fuse:tripped': return "Lin's microwave: ♨️💥 the fuse trips and the whole floor goes dark. Out come the phone torches 📱";
+      case 'switch:fixed': return "the boss finds the switch: his office light is back on 💡 (😠)";
+      case 'fuse:tripped': return "Lin switches on the coffee machine: sparks fly, the fuse trips and the whole floor goes dark. The fuse box's door flies open. Out come the phone torches 📱";
       case 'fuse:pulled': return 'you pulled the main breaker: the whole floor goes dark. Out come the phone torches 📱';
-      case 'kev:fuse': return 'Kev: 🔌❓ He heads for the fuse box with his phone torch';
+      case 'kev:fuse': return 'Kev: ❓ He heads for the fuse box with his phone torch';
       case 'fuse:fixing': return 'Kev is at the fuse box';
       case 'fuse:fixed': return 'Kev resets the fuse: the lights are back on 💡';
       case 'letter:taken': return 'you took your letter back ✉️';

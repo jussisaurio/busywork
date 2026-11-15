@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Office Time (src/levels/meeting/gate.js documents the fields).
+// What the fuzzer and the gate know about Early Bus (src/levels/meeting/gate.js documents the fields).
 export default {
   // The lesson: a clock you pushed. Every win must push one.
   mustUse: [{ id: 'clock', event: 'clock:pushed' }],
