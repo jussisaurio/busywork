@@ -6,7 +6,7 @@ import { TAB, floorCarpet } from '../../render/tableau.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
 
 export const TITLE = {
-  mission: ["3:00 PM. Lin's interview for your job is a phone call at 3:30.", 'She must miss it.'],
+  mission: ["3:00 PM. Lin wants your job. Her phone interview is at 3:30.", 'She must miss it.'],
   badge: ['📞', '❌'],
 };
 

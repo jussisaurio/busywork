@@ -11,7 +11,7 @@ const ANSWER = { // the interview's state, for the WORLD line
 };
 
 export default {
-  mission: "MISSION: 3:00 PM. Lin's interview for your job is a phone call at 3:30. She must miss it.",
+  mission: "MISSION: 3:00 PM. Lin wants your job. Her phone interview is at 3:30. She must miss it.",
 
   landmarks: {
     lin_desk: 'lin_desk',
