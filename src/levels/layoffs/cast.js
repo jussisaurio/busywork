@@ -195,7 +195,7 @@ export const BEHAVIOURS = {
       game.events.emit('kev:bye', {});
     },
   },
-  // 3:42: he turns round in his chair and counts the list's faces against the floor (the head count), then sends
+  // 3:42: he turns round in his chair and ticks off the list's faces against the floor (the head count), then sends
   // it at 3:45 (the list flies off his screen: list.js sending).
   sendList: {
     arrive(game, npc, sim) {
@@ -203,8 +203,16 @@ export const BEHAVIOURS = {
       w.pc = 'boss';
       w.glitch = false;
       w.locked = false;
-      sim.lookAt(game, npc, 'player_desk', 2.6);
-      sim.speak(game, npc, [{ say: w.list === 'on' ? ['@player', '✔️'] : ['🤷'], after: 0.9 }]);
+      // He goes down the sheet name by name, ticking each face off at its desk: he doesn't count them. Your face
+      // gone, there is no name on it to send him looking at your desk.
+      if (w.list === 'on') {
+        sim.lookAt(game, npc, 'player_desk', 2.6);
+        // Lin named you and he never found you: he points at your empty desk.
+        sim.speak(game, npc, [{ say: game.player.named ? ['👉', '@player', '😠'] : ['@player', '✔️'], after: 0.9 }]);
+      } else {
+        sim.lookAt(game, npc, 'screen', 2.6);
+        sim.speak(game, npc, [{ say: ['📋', '✔️'], after: 0.9 }]);
+      }
       game.events.emit('boss:headCount', { on: w.list === 'on' });
     },
   },

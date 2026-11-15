@@ -77,7 +77,7 @@ export function listShown(w, game) {
   popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
   const a = game.player?.action;
-  SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : 0;
+  SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : w.struck || 0; // struck: Lin stopped you mid-edit
   SHOWN.out = sending(game);
   SHOWN.looks = game.level.looks;
   return SHOWN;

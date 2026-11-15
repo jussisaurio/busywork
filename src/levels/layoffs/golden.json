@@ -7,8 +7,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "1721e1dd7494ca7e",
-    "ea0d0305a5f9501a"
+    "e58150363959c026",
+    "fc297a30d76656e6"
    ]
   },
   {
@@ -17,8 +17,8 @@
    ],
    "summary": "fail",
    "digests": [
-    "85c9cea15704dc90",
-    "d126da9ed9093dd3"
+    "d30a6a0e484f0c02",
+    "77db82e947d1acc3"
    ]
   },
   {
@@ -30,11 +30,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "b80b5a0b2784dea8",
-    "0bb066481b19d1c3",
-    "8f05e62048595776",
-    "4b3c632cb1ff1a7b",
-    "05e30fd444639669"
+    "dcb84e9b033382c7",
+    "ce6c9b01ff80bc6e",
+    "5ef222ba831aa1c3",
+    "0fcb70c525f2db7c",
+    "734599c51dae9d70"
    ]
   },
   {
@@ -46,11 +46,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "b80b5a0b2784dea8",
-    "0bb066481b19d1c3",
-    "8f05e62048595776",
-    "5cbfb53ad4066342",
-    "bd08e8e7bfe8995f"
+    "dcb84e9b033382c7",
+    "ce6c9b01ff80bc6e",
+    "5ef222ba831aa1c3",
+    "69f0d971a618df32",
+    "e9fe91f6abcd927c"
    ]
   },
   {
@@ -63,12 +63,12 @@
    ],
    "summary": "fail",
    "digests": [
-    "a88eea4221405a05",
-    "61536fe6084656b0",
-    "498e5d2490497b3f",
-    "5bcde38552bbcefd",
-    "1b1e510ce76393ac",
-    "fc4da66547575604"
+    "e4cf81a4fded22d4",
+    "5871083f4516eb44",
+    "3217f37f28c26d86",
+    "ccbedc659346ca9d",
+    "f2cbe183cffe38b1",
+    "e2a9ea1f8ab19740"
    ]
   },
   {
@@ -80,11 +80,11 @@
    ],
    "summary": "fail",
    "digests": [
-    "a88eea4221405a05",
-    "61536fe6084656b0",
-    "498e5d2490497b3f",
-    "43ed9d74c13a5b30",
-    "01a4cfc430f5c8d3"
+    "e4cf81a4fded22d4",
+    "5871083f4516eb44",
+    "3217f37f28c26d86",
+    "6daaa513571c345c",
+    "85a597ec73a93233"
    ]
   },
   {
@@ -96,17 +96,17 @@
    ],
    "summary": "fail",
    "digests": [
-    "a88eea4221405a05",
-    "61536fe6084656b0",
-    "498e5d2490497b3f",
-    "061529fade1dfce6",
-    "0e0d3e1ab2f9c2fd"
+    "e4cf81a4fded22d4",
+    "5871083f4516eb44",
+    "3217f37f28c26d86",
+    "7f7721101509ba80",
+    "8b0d7a48169a1dc2"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
+    "pretend until 3:27",
+    "goto behind_his_desk",
     "interact",
     "goto his_screen pretend",
     "interact",
@@ -114,13 +114,13 @@
    ],
    "summary": "win phone",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "deb6c444af68e083",
-    "8ef396d244932cc3",
-    "8eb040082e87211d",
-    "67afa848af4826df"
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "07769af9916e6f23",
+    "41c06cb260580ffb",
+    "cb6c93684dbbe240",
+    "9a5faac8aba4e3e1"
    ]
   },
   {
@@ -133,18 +133,18 @@
    ],
    "summary": "fail",
    "digests": [
-    "a88eea4221405a05",
-    "61536fe6084656b0",
-    "498e5d2490497b3f",
-    "5bcde38552bbcefd",
-    "be2c465a8de4c2ef",
-    "2e2eba418a48ee32"
+    "e4cf81a4fded22d4",
+    "5871083f4516eb44",
+    "3217f37f28c26d86",
+    "ccbedc659346ca9d",
+    "8b5e813572098820",
+    "cc9a098633318b59"
    ]
   },
   {
    "cmds": [
+    "pretend until 3:27",
     "goto behind_his_desk pretend",
-    "pretend until 3:29",
     "interact",
     "interact",
     "goto his_screen pretend",
@@ -153,20 +153,20 @@
    ],
    "summary": "win ring",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "9d2efd17f38cb076",
-    "1c2feeff1c1542be",
-    "d4a74f963ca4f687",
-    "42f6dbed1b997191",
-    "1abd65b6e5daac3b"
+    "b59f2e84cb9addec",
+    "f602f1c009f35a75",
+    "92ed9214ff5c2eb0",
+    "10b8ec8863405353",
+    "88c7e4e674cd6620",
+    "09c0bf0b2298e1a9",
+    "cb9724930ad7b115",
+    "57a40d30149177e9"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
+    "pretend until 3:27",
+    "goto behind_his_desk",
     "interact",
     "goto his_screen pretend",
     "interact",
@@ -175,42 +175,40 @@
    ],
    "summary": "win phone",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "deb6c444af68e083",
-    "8ef396d244932cc3",
-    "e7c8af84e2553270",
-    "6d45c4ef9198c714",
-    "948387e78ed3e5b1"
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "07769af9916e6f23",
+    "41c06cb260580ffb",
+    "5802506bc2c45c25",
+    "4ead88ed45baeb5d",
+    "fef5914650881e36"
    ]
   },
   {
    "cmds": [
     "goto behind_his_desk pretend",
-    "pretend until 3:29",
+    "pretend until 3:28",
     "interact",
-    "wait until 3:38",
     "goto his_screen pretend",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "bba7e8f8d46df56a",
-    "a68e84c9b20c1470",
-    "3f585ef766b59470",
-    "2fbc0b7870736d1c",
-    "e13bb01c617511c6"
+    "e4cf81a4fded22d4",
+    "5871083f4516eb44",
+    "3217f37f28c26d86",
+    "d582aa1b7135cbf5",
+    "fb803a3ccf2c3a1d",
+    "993594dacf8f5771",
+    "77efcea9ce3d9965"
    ]
   },
   {
    "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
+    "pretend until 3:27",
+    "goto behind_his_desk",
     "interact",
     "goto his_screen pretend",
     "interact",
@@ -218,13 +216,13 @@
    ],
    "summary": "win phone",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "deb6c444af68e083",
-    "8ef396d244932cc3",
-    "5a6f11b2e1b09dab",
-    "e77631c669bba8a9"
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "07769af9916e6f23",
+    "41c06cb260580ffb",
+    "e2e5cdbbb242ee0c",
+    "58e8e73aa1032ba2"
    ]
   },
   {
@@ -239,20 +237,20 @@
    ],
    "summary": "win phone",
    "digests": [
-    "ee501d25257be17a",
-    "34936196b5e51091",
-    "cd9bf474026b3762",
-    "7939c3531410a679",
-    "bb75a4f6fdc4e915",
-    "c61a1e370dad1f0c",
-    "ce6441557e957522",
-    "8598dba5aaa23e37"
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "edc0c3fba2d391e7",
+    "c99b46e766df6eee",
+    "61f00da52dbdec69",
+    "3e68dee9cee25f9b",
+    "8eaa7cf1cf8bf771",
+    "4899761fe3407340"
    ]
   },
   {
    "cmds": [
+    "pretend until 3:27",
     "goto behind_his_desk pretend",
-    "pretend until 3:29",
     "interact",
     "interact",
     "goto his_screen pretend",
@@ -261,67 +259,44 @@
    ],
    "summary": "win ring",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "9d2efd17f38cb076",
-    "1c2feeff1c1542be",
-    "d4a74f963ca4f687",
-    "326241be8fca6602",
-    "d0f7cb5db8a6a0b0"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
-    "interact",
-    "goto his_screen pretend",
-    "interact",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "win phone",
-   "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "deb6c444af68e083",
-    "8ef396d244932cc3",
-    "e7c8af84e2553270",
-    "0caada7fc680691e",
-    "511193015e0abf27"
-   ]
-  },
-  {
-   "cmds": [
-    "goto behind_his_desk pretend",
-    "pretend until 3:29",
-    "interact",
-    "interact",
-    "wait until 3:38",
-    "goto his_screen pretend",
-    "interact",
-    "wait until 3:45"
-   ],
-   "summary": "caught",
-   "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "9d2efd17f38cb076",
-    "c0cac63d46be0b32",
-    "1e5394b585e55954",
-    "cf4de4ba45eb91bf",
-    "c34613a55d2befcd",
-    "0af692b689ce796c"
+    "b59f2e84cb9addec",
+    "f602f1c009f35a75",
+    "92ed9214ff5c2eb0",
+    "10b8ec8863405353",
+    "88c7e4e674cd6620",
+    "09c0bf0b2298e1a9",
+    "450670d94956eaa2",
+    "bce0bc0e12b1f341"
    ]
   },
   {
    "cmds": [
     "goto boss_cable pretend",
     "wait 5s",
+    "goto boss_cable",
     "goto behind_his_desk pretend",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "facd99ce2c00d576",
+    "9a7b50a0d06a085f",
+    "7155985e441aa28f",
+    "5579ea83da145dd5",
+    "d58a014c49c52114",
+    "4505f21dc1d2e518",
+    "9c6ee2c00e8189bc"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
     "interact",
     "goto his_screen pretend",
     "interact",
@@ -330,21 +305,70 @@
    ],
    "summary": "win phone",
    "digests": [
-    "ee501d25257be17a",
-    "34936196b5e51091",
-    "cd9bf474026b3762",
-    "7939c3531410a679",
-    "bb75a4f6fdc4e915",
-    "c61a1e370dad1f0c",
-    "f224a44053b1ece4",
-    "87488c1a1b9c567d",
-    "05882b6b53db1a22"
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "07769af9916e6f23",
+    "41c06cb260580ffb",
+    "5802506bc2c45c25",
+    "a3283ac74ab23bad",
+    "34aa2b0ebc84cd07"
    ]
   },
   {
    "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "goto boss_phone",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "ca1c25840089a4c4",
+    "d1b1ce581ab6f2d4",
+    "ae4a58f1d14b0737",
+    "e094652f816c2f60",
+    "6c537354c8127cc0"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
     "goto behind_his_desk pretend",
-    "pretend until 3:29",
+    "interact",
+    "interact",
+    "goto his_screen pretend",
+    "wait 3s",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b59f2e84cb9addec",
+    "f602f1c009f35a75",
+    "92ed9214ff5c2eb0",
+    "10b8ec8863405353",
+    "88c7e4e674cd6620",
+    "b86b7b1984d500f5",
+    "1adbe8b88a378a4c",
+    "0c567ade8435ee37",
+    "e0110be73feaf2f4"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk pretend",
     "interact",
     "interact",
     "goto his_screen pretend",
@@ -354,37 +378,241 @@
    ],
    "summary": "win phone",
    "digests": [
-    "a88eea4221405a05",
-    "fce2acfe0531f4aa",
-    "8b29d864f0b77501",
-    "9d2efd17f38cb076",
-    "1c2feeff1c1542be",
-    "a91f881805cff483",
-    "69929f9a627b14e3",
-    "25279179a29b8cf1",
-    "75906cc35b3c1b37"
+    "b59f2e84cb9addec",
+    "f602f1c009f35a75",
+    "92ed9214ff5c2eb0",
+    "10b8ec8863405353",
+    "88c7e4e674cd6620",
+    "0c5b3ecdd5b07e56",
+    "e04cf8cd693dc971",
+    "16462bdf70dd64d7",
+    "d2c62477df299b22"
    ]
   },
   {
    "cmds": [
+    "goto boss_cable pretend",
+    "wait 5s",
     "goto behind_his_desk pretend",
-    "pretend until 3:26",
     "interact",
     "goto his_screen pretend",
-    "wait 1.5s",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "win phone",
+   "digests": [
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "edc0c3fba2d391e7",
+    "c99b46e766df6eee",
+    "61f00da52dbdec69",
+    "3e68dee9cee25f9b",
+    "3313ac0bebf53c53",
+    "f9216563a32a523d",
+    "fdf45dd3f4d306a2"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "pretend 1.5s",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "266b934512df43ee",
+    "b79c66a1b12993dd",
+    "ea4cd92667b3811f",
+    "57ddd9dddd23231a",
+    "956b8ac0417c9c83"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "pretend 1.5s",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "266b934512df43ee",
+    "b79c66a1b12993dd",
+    "91fc16ebc5eb8284",
+    "dfa1a58dc29e2e42"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_phone",
+    "pretend until 3:29",
+    "goto behind_his_desk pretend",
+    "interact",
+    "goto his_screen",
     "interact",
     "pretend until 3:45"
    ],
    "summary": "win phone",
    "digests": [
-    "a88eea4221405a05",
-    "39d5584a509704cf",
-    "44a7dca001363893",
-    "1729be25678b395a",
-    "fa6097fe12d3d480",
-    "9ce16e3527263944",
-    "52d6a8791f2804c4",
-    "c5175d3237904b05"
+    "1228356d0906a891",
+    "6692894b4b90c48a",
+    "25ee5d7fe716a1c2",
+    "1f8c0752c94c1c1d",
+    "173135a0e17e8e36",
+    "e35698a5fe238145",
+    "039481a145e3eb59",
+    "ec550f88524eff03"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 1.13s",
+    "interact",
+    "goto boss_phone pretend",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "66b0243eb81f0a4f",
+    "3673b1800750a6be",
+    "fe986e5a1c39f375",
+    "8754877957782d5e",
+    "4899c505df3d1489",
+    "46886ca367af4d7c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 1.5s",
+    "interact",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "788a74674b48265d",
+    "921c04de8f3a6378",
+    "ab15cfcd3f3cfb9f",
+    "510d3d9b2bd74d39",
+    "72563716da0dbb11"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 0.85s",
+    "interact",
+    "goto boss_phone pretend",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "7762b053752a8224",
+    "41b329722b52ecee",
+    "6815db21526619dc",
+    "d3779fef37f6faef",
+    "b499621a74caf0d3"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "pretend 1.5s",
+    "interact",
+    "goto boss_phone pretend",
+    "pretend until 3:45"
+   ],
+   "summary": "fail",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "266b934512df43ee",
+    "b79c66a1b12993dd",
+    "cb30025d2f9e8849",
+    "943a73bd19dfd656",
+    "4a80b46a17a5413c"
+   ]
+  },
+  {
+   "cmds": [
+    "pretend until 3:27",
+    "goto behind_his_desk",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 0.75s",
+    "interact",
+    "pretend until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "b59f2e84cb9addec",
+    "6dcb1eae3559efc3",
+    "1ca266b16882db45",
+    "4ecb268c3322d6d9",
+    "50c3c06d3899ab17",
+    "27f14f929530249f",
+    "26f7725037974a5a",
+    "8e01201af2f3e363",
+    "29aad99ec27ecbf0"
    ]
   },
   {
@@ -393,48 +621,154 @@
     "wait 5s",
     "goto behind_his_desk pretend",
     "interact",
-    "wait until 3:38",
+    "interact",
+    "goto lin_desk pretend",
     "goto his_screen pretend",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "ee501d25257be17a",
-    "34936196b5e51091",
-    "cd9bf474026b3762",
-    "7939c3531410a679",
-    "c2890d8460cf3aa6",
-    "890b542a65a53190",
-    "233b1abb5c44e5f0",
-    "785c1441a393af2b",
-    "054e6af32081a633"
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "edc0c3fba2d391e7",
+    "c99b46e766df6eee",
+    "ca1642e7d41faae8",
+    "3458dab8d7a52bd1",
+    "0ec650e99e3a7d94",
+    "49b65f5f01b31384",
+    "1a9dd642b78a3574",
+    "c43ab4c12c619d72"
    ]
   },
   {
    "cmds": [
     "goto boss_cable pretend",
     "wait 5s",
+    "goto boss_cable",
     "goto behind_his_desk pretend",
     "interact",
-    "interact",
-    "wait until 3:38",
     "goto his_screen pretend",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 2.25s",
     "interact",
     "wait until 3:45"
    ],
    "summary": "caught",
    "digests": [
-    "ee501d25257be17a",
-    "34936196b5e51091",
-    "cd9bf474026b3762",
-    "7939c3531410a679",
-    "512ff2e104775e6e",
-    "2a51d10a525c1420",
-    "996036cc51dc4b03",
-    "419a3533f1b9daa5",
-    "8b65bfd54a889ddb",
-    "e4f7298520ae2520"
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "facd99ce2c00d576",
+    "9a7b50a0d06a085f",
+    "7155985e441aa28f",
+    "5579ea83da145dd5",
+    "d58a014c49c52114",
+    "d407642cec967821",
+    "4505f21dc1d2e518",
+    "b95ef163cd7e78cb",
+    "c6d75e77afc81e8b",
+    "3388fb58fd1af923",
+    "c1b6a79e517ad310"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_cable pretend",
+    "wait 5s",
+    "goto boss_cable",
+    "goto behind_his_desk pretend",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "wait 2.25s",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "facd99ce2c00d576",
+    "9a7b50a0d06a085f",
+    "7155985e441aa28f",
+    "5579ea83da145dd5",
+    "d58a014c49c52114",
+    "d407642cec967821",
+    "4505f21dc1d2e518",
+    "b95ef163cd7e78cb",
+    "c6d75e77afc81e8b",
+    "f12f04d2d130b775",
+    "0eadc19322b75655",
+    "d6a806dc1c83b097"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_cable pretend",
+    "wait 5s",
+    "goto boss_cable",
+    "goto behind_his_desk pretend",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "interact",
+    "pretend 2.25s",
+    "interact",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "facd99ce2c00d576",
+    "9a7b50a0d06a085f",
+    "7155985e441aa28f",
+    "5579ea83da145dd5",
+    "d58a014c49c52114",
+    "4505f21dc1d2e518",
+    "2cf7157e8bf84e59",
+    "2581f34d086eb5e4",
+    "d9e63ab836dd0a25",
+    "eaaf60f315f821c0",
+    "84caf6db6a2cda49"
+   ]
+  },
+  {
+   "cmds": [
+    "goto boss_cable pretend",
+    "wait 5s",
+    "goto boss_cable",
+    "goto behind_his_desk pretend",
+    "interact",
+    "goto his_screen pretend",
+    "interact",
+    "goto his_screen",
+    "interact",
+    "pretend 2.25s",
+    "interact",
+    "wait until 3:45"
+   ],
+   "summary": "caught",
+   "digests": [
+    "56b11dd78bb73111",
+    "716413be06aad06d",
+    "facd99ce2c00d576",
+    "9a7b50a0d06a085f",
+    "7155985e441aa28f",
+    "5579ea83da145dd5",
+    "d58a014c49c52114",
+    "d407642cec967821",
+    "4505f21dc1d2e518",
+    "2cf7157e8bf84e59",
+    "2581f34d086eb5e4",
+    "a06608109d2573eb",
+    "624da329512d8ca0"
    ]
   },
   {
@@ -448,13 +782,13 @@
    ],
    "summary": "fail",
    "digests": [
-    "121595d750cdd3e4",
-    "d6c5896fc418da83",
-    "9ebcebd1dfa57ae1",
-    "d457e11b68932b8c",
-    "59151a5061dabbe8",
-    "7432bf02fbcbde04",
-    "7b25cf1f00c455c9"
+    "33b1cb0c1d61c2ff",
+    "0fd8bcc534ed4823",
+    "531fdc5068a14180",
+    "0c06fd681c857eaf",
+    "d6e479a2b555d7e6",
+    "1ab145326aba828f",
+    "1070fe1afedb08cd"
    ]
   },
   {
@@ -472,17 +806,17 @@
    ],
    "summary": "win ring",
    "digests": [
-    "8339dedd6f05216a",
-    "7553099c75c53c17",
-    "4d0483c6205b3d15",
-    "2d4d2ff674d0d2e4",
-    "c3bdc6765019b903",
-    "c98effaab7436b27",
-    "36cbed50f3458c56",
-    "282ca4b01ddde548",
-    "d1c7c10701f86946",
-    "8a5d1edd618713db",
-    "ee71f9d742309b89"
+    "ca1972e898f35622",
+    "259fdc42d42dcd83",
+    "924cb988fb68f3ea",
+    "5f8fb689d132d551",
+    "987d189fb2557ac4",
+    "e22a23043bc0b766",
+    "889ac5888df84fbc",
+    "a5f7da7812dd5bc4",
+    "39974120f50eec05",
+    "ac853388b37c1574",
+    "d02db43f3d9b8d2a"
    ]
   },
   {
@@ -495,16 +829,16 @@
     "interact",
     "wait until 3:45"
    ],
-   "summary": "fail",
+   "summary": "caught",
    "digests": [
-    "8339dedd6f05216a",
-    "7553099c75c53c17",
-    "4d0483c6205b3d15",
-    "2d4d2ff674d0d2e4",
-    "fcdf6c0b7b1062b1",
-    "b2ee23cdf217d55b",
-    "db9b3c1817460e14",
-    "8ed6d0f453caa34e"
+    "ca1972e898f35622",
+    "259fdc42d42dcd83",
+    "924cb988fb68f3ea",
+    "5f8fb689d132d551",
+    "e13945f5fc6998c9",
+    "fd15b7b3c41419b6",
+    "b7fb11173e63919c",
+    "88eaa1de1d9239a7"
    ]
   },
   {
@@ -523,18 +857,18 @@
    ],
    "summary": "fail",
    "digests": [
-    "a88eea4221405a05",
-    "a91696983af2671c",
-    "50151ed922e922ee",
-    "aa4267cb689f1f69",
-    "077634be920228f8",
-    "06da3ed42368adae",
-    "38486524000b860f",
-    "d85e02bb9843f582",
-    "8ce964bb1f0a507a",
-    "6dca368752bceff5",
-    "2c7b47429d0b38b9",
-    "55e8d30a54608f98"
+    "e4cf81a4fded22d4",
+    "2333493b85e014f7",
+    "25d3ecb6abb5ba7c",
+    "a03971f33f838ce9",
+    "20d87199ffbccd94",
+    "39ea9dda119e865e",
+    "9a363e2df4c85663",
+    "69132e06b337aae1",
+    "d4134d1dc50fb747",
+    "60315a151e1caad0",
+    "46b96ef93c7888ad",
+    "c6a37f549dab501f"
    ]
   }
  ]
