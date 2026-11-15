@@ -195,6 +195,7 @@ export function phoneTick(game, sim) {
   // back and looks at the clock; a dead line (the cord out) gets a ❓ and she pushes the plug back in (LURES). Back
   // from her tea she rehearses from her notes, with a glance at the clock now and then.
   if (lin && m < day.gatherAt) {
+    if (onPhone(lin)) w.checkAt = Math.max(w.checkAt, m + CHECK_EVERY); // just off a call: no check straight after
     const seated = !lin.override && !lin.moving && nearSpot(game, lin, 'lin_desk');
     if (w.linCheck && m >= w.linCheck) {
       w.linCheck = 0;

@@ -69,7 +69,7 @@ export const BEHAVIOURS = {
       w.kevReach = m + 1.6;
       w.kevCharge = m + 1.4;
       sim.holdFor(npc, 2.9);
-      sim.speak(game, npc, [{ say: ['❗'], ttl: 0.8 }, { say: ['😤'], after: 1.1, ttl: 1.1 }]);
+      sim.speak(game, npc, [{ say: ['❗'], ttl: 1.0 }, { say: ['😤'], after: 1.1, ttl: 1.1 }]); // ❗ lasts into the spark
     },
   },
 };
