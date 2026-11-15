@@ -1,4 +1,4 @@
-// "Lights Out": your angry resignation letter is in the boss's tray, and at 3:40 he empties it. Get it back.
+// "Second Thoughts": your angry resignation letter is in the boss's tray, and at 3:40 he empties it. Get it back.
 // He sits facing his tray all afternoon, so you can't take it in the light. In the dark, every view shrinks to
 // arm's length, except along a phone torch (src/game/darkness.js). Three ways to make it dark:
 //   switch    flip his office light switch (a loud clack). He says ❓ and gropes along the wall to it: be
@@ -188,7 +188,7 @@ const LURES = [
 const gotIt = (w) => w.letter === 'player' || w.letter === 'eaten';
 
 export default {
-  id: 'lights-out',
+  id: 'second-thoughts',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,

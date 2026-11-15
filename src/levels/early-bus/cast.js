@@ -1,4 +1,4 @@
-// Office Time's three people (level 1's cast.js documents the schedule fields). Every time below is what the
+// Early Bus's three people (level 1's cast.js documents the schedule fields). Every time below is what the
 // person BELIEVES it is: his home clock (clocks.js). He looks up at it on each schedule entry and on each of his
 // LOOK_UPS (silent beats: a glance at the clock with nothing else to do).
 //

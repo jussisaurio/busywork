@@ -1,4 +1,4 @@
-// Office Time's route checks for tools/routes.mjs (format: src/levels/meeting/route-checks.js).
+// Early Bus's route checks for tools/routes.mjs (format: src/levels/meeting/route-checks.js).
 const BUS = 'pretend until 4:30';
 
 export default [

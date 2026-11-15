@@ -1,4 +1,4 @@
-// What the fuzzer and the gate know about Lights Out (src/levels/meeting/gate.js documents the fields).
+// What the fuzzer and the gate know about Second Thoughts (src/levels/meeting/gate.js documents the fields).
 export default {
   mustUse: [{ id: 'dark', event: 'letter:snatched' }], // the letter only ever leaves the tray in the dark
   targets: ['tray', 'office_switch', 'fuse_box', 'desk_side', 'boss_desk', 'boss_office_door', 'lin_desk', 'kev_desk', 'coffee_machine', 'kitchen_table'],

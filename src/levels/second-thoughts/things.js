@@ -1,4 +1,4 @@
-// Lights Out's own objects, drawn as the real thing (no emoji on a tile or in a hand): the boss's in-tray, your
+// Second Thoughts' own objects, drawn as the real thing (no emoji on a tile or in a hand): the boss's in-tray, your
 // letter, a phone held up as a torch (end scenes only: on the floor, render/darkness.js draws it), and the smoke off
 // the coffee machine that blew the fuse. The tray and the smoke are decor.props painters (render/world.js calls them
 // as (ctx, info, tile, shown, t)); the end scenes draw the tray, the letter and the phone bigger. Sizes are map

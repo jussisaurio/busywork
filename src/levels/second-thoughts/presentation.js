@@ -1,4 +1,4 @@
-// How Lights Out looks and sounds: title card, set dressing, poses and sounds (level 1's decor.js, looks.js and
+// How Second Thoughts looks and sounds: title card, set dressing, poses and sounds (level 1's decor.js, looks.js and
 // sounds.js document the fields). The end cards are in end-scenes.js. People look as in level 1 (its looks.js,
 // read-only).
 import { C } from '../../render/palette.js';

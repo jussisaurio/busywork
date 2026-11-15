@@ -1,4 +1,4 @@
-// Lights Out's three people and their hooks (level 1's cast.js and behaviours.js document the fields).
+// Second Thoughts' three people and their hooks (level 1's cast.js and behaviours.js document the fields).
 // The boss never leaves his desk on his own: only the dark gets him up. Lin makes her afternoon coffee at 3:10,
 // and the old coffee machine takes the fuse with it. Kev resets fuses: a lure in index.js.
 import { at, deg } from '../../config.js';

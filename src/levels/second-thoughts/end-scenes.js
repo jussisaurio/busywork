@@ -1,4 +1,4 @@
-// Lights Out's end cards: which scene an outcome gets, the icon row under it and its hand-drawn picture (level 1's
+// Second Thoughts' end cards: which scene an outcome gets, the icon row under it and its hand-drawn picture (level 1's
 // end-scenes.js documents the fields). Every card is the boss's office at 3:40, or the moment it went wrong:
 //   switch    his light is back on, his hand still on the switch, fuming; his tray is empty; you have the letter
 //   blackout  dark: Lin's coffee machine still sparking in her torchlight, his torch on the front of his desk

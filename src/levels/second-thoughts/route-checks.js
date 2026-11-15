@@ -1,4 +1,4 @@
-// Lights Out's route checks for tools/routes.mjs (level 1's route-checks.js documents the format): the shortest
+// Second Thoughts' route checks for tools/routes.mjs (level 1's route-checks.js documents the format): the shortest
 // winning plan for each route, and the fail each route teaches.
 const sat = (g) => g.player.seated;
 const atDesk = (run, g) => { // a soft stop (the lights coming back, say) can cut the walk short

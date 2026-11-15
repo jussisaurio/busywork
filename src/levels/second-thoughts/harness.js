@@ -1,4 +1,4 @@
-// Lights Out's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
+// Second Thoughts' words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
 import { isDark } from '../../game/darkness.js';
 
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };

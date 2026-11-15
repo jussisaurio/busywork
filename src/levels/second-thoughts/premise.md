@@ -1,4 +1,4 @@
-# Lights Out
+# Second Thoughts
 
 ## Card
 
@@ -7,7 +7,7 @@ He empties it at 3:40. Get it back first.
 
 ## Name
 
-"Lights Out": the letter lies right under the boss's nose, and he watches his desk all afternoon. You can't take it while he can see it, so you have to put the lights out. The phrase also means the end: if he reads the letter, it's lights out for your job. A player who hasn't solved the level gets the first meaning from the card plus one look at the map: a man staring at a tray, a light switch on his wall, a fuse box down the hall.
+"Second Thoughts": you wrote the boss an angry resignation letter, left it in his tray, and now you regret it. The name says what you are in trouble for. It says nothing about how you get out of it.
 
 ## The situation
 
