@@ -7,7 +7,7 @@ import { officeTimeClock, officeTimeStreet } from './painters.js';
 import { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
-  mission: ['3:00 PM. Your bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him. Catch the bus.'],
+  mission: ['3:00 PM. The last bus leaves at 4:30. The boss leaves at 4:50.', 'Nobody leaves before him.'],
   badge: ['🚌'],
 };
 
@@ -55,7 +55,7 @@ export const DECOR = {
     { x0: 25, x1: 27, y: 0 },
   ],
   paintings: [
-    { x: 10, y: 6, variant: 0 },
+    { x: 19, y: 6, variant: 0 },
     { x: 25, y: 6, variant: 1 },
     { x: 15, y: 0, variant: 1 },
   ],
@@ -63,9 +63,10 @@ export const DECOR = {
   props: [
     wallClock('boss', 1),
     wallClock('open', -1),
-    { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
+    { tile: 'C', draw: 'carafe', state: () => ({ full: true }) }, // refilled all day: it pours (index.js)
+    { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.coat === 'hook', tag: false }) }, // his coat: he is in
     // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
-    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start }) },
+    { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start, rows: game.level.map.rows }) },
   ],
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -73,29 +74,29 @@ export const DECOR = {
     kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
     lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
   },
-  ashtray: { spot: 'smoke' },
-  elevator: { spot: 'elevator' },
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },
     { zone: 'meeting', x: 13, y: 2 },
     { zone: 'kitchen', x: 21, y: 2 },
     { zone: 'lobby', x: 4, y: 14 },
   ],
-  legendAt: { x: 21.45, y: 15.5 }, // on the blank strip right of the bus stop, above the road
+  legendAt: { x: 21.45, y: 14.55 }, // on the blank wall strip right of the lobby, above the pavement
 };
 
 export const LOOKS = OFFICE_LOOKS;
 
-// The boss smokes with his hand to his mouth and the smoke drawn (no glyph in his hand: nothing in a hand is an
-// emoji). Going home is the wave and the walk to the elevator.
 export const POSES = {
   arms: [
-    { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff') },
+    { when: (n, w, game) => n._reachUntil > game.loopTime, arms: 'reach' }, // setting a clock right
+    { when: (n, w, game) => n._shrugUntil > game.loopTime, arms: 'shrug' }, // not home time yet
   ],
-  marks: [],
+  marks: [
+    { when: (n) => n.override === 'hunting', angry: true },
+    { when: (n, w) => n.id === 'boss' && w.coat === 'hook', jacket: false }, // in shirt sleeves: his coat is on the rack
+  ],
 };
 
-export const CONES = { alert: [] };
+export const CONES = { alert: ['hunting'] };
 
 export { END_SCENES };
 
@@ -114,12 +115,13 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'boss:herd': { sfx: 'shuffle', who: 'boss' },
-    'boss:left': { sfx: 'elevator' },
-    'lin:left': { sfx: 'elevator' },
-    'kev:left': { sfx: 'elevator' },
+    'boss:hunt': { sfx: 'tension', who: 'boss' },
+    'boss:coat': { sfx: 'shuffle', who: 'boss' },
+    'clock:reset': { sfx: 'clockTick', who: 'boss' },
+    'boss:left': { sfx: 'door', who: 'boss' },
+    'lin:left': { sfx: 'door', who: 'lin' },
+    'kev:left': { sfx: 'door', who: 'kev' },
   },
-  elevator: { spot: 'elevator', radius: 2.5 },
 };
 
 // Level 1's voices (src/levels/meeting/voices.js), copied.
