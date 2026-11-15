@@ -9,15 +9,17 @@
 //   blackout  pour the water jug down the back of the coffee machine, onto its wall socket, before Lin switches it on
 //             at 3:10 (from beside it, by the fridge: from in front of it, Kev sees you from his desk through the
 //             kitchen door). Nothing shows from the front. Left alone the old machine only makes the lights flicker;
-//             with a wet socket it shorts, and the short trips the fuse for the whole floor. Everyone holds up a phone as a torch; his rests on his hallway door,
-//             so take it from the side of his desk and leave by the side door. Kev first unplugs the smoking machine,
-//             then walks his torch down the hallway to the fuse box (its door hangs open, its red lamp blinking) and
-//             hunts through its unlabelled breakers by phone light till he finds the one that tripped.
-//   breaker   pull the breaker yourself. Kev comes to the fuse box with his torch: don't be there.
+//             with a wet socket it shorts, and the short trips the fuse for the whole floor. Everyone holds up a phone
+//             as a torch. Kev first unplugs the smoking machine, then walks his torch down the hallway to the fuse box
+//             (its door hangs open, its red lamp blinking) and finds the breaker that's down by phone light.
+//   breaker   pull the breaker yourself, and get away from the box.
+// Whenever the whole floor goes dark, the boss gets up with his phone torch and goes out to the fuse box, round the
+// corner from his hallway door, and holds his light on it till Kev has the power back (he doesn't touch fuses). His
+// desk is empty all that time. Whoever he finds at the box pulled it, as at the panel.
 // Eat it, and ten minutes later it comes back up (sick). Before 3:40, the retch brings the boss over to look, and he
-// knows his envelope in the mess: caught. After 3:40, he has found his tray empty: a win.
+// knows his envelope in the mess: caught, unless you fished it back out first. After 3:40 it's too late to matter.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at, deg, EAT_TIME, PICK_UP_TIME } from '../../config.js';
+import { at, deg, EAT_TIME } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { isDark } from '../../game/darkness.js';
 import { sitAtDesk } from '../../play/player.js';
@@ -36,7 +38,7 @@ const t = (hhmm) => at(hhmm, START);
 // The panel and the fuse box are drawn by darkness.controls (render/darkness.js), the coffee machine by the map.
 // His chair is boxed in by plants and his desk (the tray on its east end): he gets out behind it. The office's south-west wall is solid,
 // so from his chair he can't see down the hallway to the fuse box. Two doors: the hallway door (south) and a side
-// door into the meeting room (east, beside the tray). In the dark his torch rests on the hallway door.
+// door into the meeting room (east, beside the tray).
 const MAP = [
   '##############################', // 0
   '#.......G..........#FMTT.....#', // 1
@@ -76,8 +78,9 @@ const SPOTS = {
   kev_desk: { x: 22, y: 9, face: 'N' },
   office_switch: { x: 17, y: 7, face: 'N' }, // stand here to reach S: out in the hallway, round the corner from his door
   fuse_box: { x: 1, y: 7, face: 'N' }, // stand here to reach X
+  fuse_watch: { x: 2, y: 8, face: 'N' }, // the boss in a blackout: at Kev's shoulder, his torch on the box
   coffee_machine: { x: 21, y: 2, face: 'N' }, // in front of M: Kev sees it from his desk, through the kitchen door
-  desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, by the side door: his torch never rests here
+  desk_side: { x: 6, y: 3, face: 'W' }, // beside the tray, by the side door
   in_front: { x: 5, y: 4, face: 'N' }, // in front of his desk
   called_in: { x: 5, y: 5, face: 'N' }, // where you're summoned at 3:40 if he reads it: a step back from his desk
   boss_door: { x: 6, y: 7, face: 'N' },
@@ -97,7 +100,6 @@ const ZONES = {
   floor_back: { x0: 10, y0: 12, x1: 29, y1: 13 }, // from the glass entrance, except past its end)
   meeting_room: { x0: 9, y0: 1, x1: 19, y1: 6 },
   kitchen: { x0: 20, y0: 1, x1: 29, y1: 6 },
-  fuse_nook: { x0: 1, y0: 7, x1: 3, y1: 9 }, // right at the fuse box: whoever Kev finds here pulled it
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 },
 };
 
@@ -125,10 +127,10 @@ const INTERACTIONS = {
       const w = game.world;
       game.player.held = 'letter';
       w.letter = 'player';
-      // A blink is still his dark; and in the light, with him gone from his desk (only the panel gets him up), it
-      // was the switch too.
+      // A blink is still his dark; and in the light, with him not back at his desk yet, it was whatever dark got
+      // him up.
       w.snatched = howDark(game, a.x, a.y)
-        ?? (w.officeLight === 'starting' || !atBossDesk(game.npcs[0]) ? 'switch' : 'light');
+        ?? (w.officeLight === 'starting' || !atBossDesk(game.npcs[0]) ? (w.bossOut ?? 'switch') : 'light');
       game.events.emit('letter:taken', { how: w.snatched });
       if (w.snatched !== 'light') game.events.emit('letter:snatched', { how: w.snatched });
     },
@@ -176,7 +178,7 @@ const INTERACTIONS = {
   // crumbs. Ten minutes later it comes back up (index.js sick). Replaces the engine's eat_letter.
   eat_letter: {
     on: 'self', text: 'eat your letter', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '✉️',
-    can: (p) => p.held === 'letter',
+    can: (p, w) => p.held === 'letter' && !w.soggy, // once was enough
     done(game) {
       const w = game.world;
       const p = game.player;
@@ -188,20 +190,6 @@ const INTERACTIONS = {
       game.events.emit('letter:eaten', {});
     },
   },
-  // The generic pick_up row (play/interactions.js), but not out of your sick: nobody picks a letter out of that.
-  pick_up: {
-    on: 'item', text: 'pick it up', duration: PICK_UP_TIME, sneaky: false,
-    can: (p, w, item) => !p.held && w.items.includes(item) && item.spot !== 'puddle',
-    done(game, a) {
-      const p = game.player;
-      const w = game.world;
-      w.items = w.items.filter((i) => i !== a.item);
-      p.held = a.item.type;
-      const place = game.level.items[a.item.type]?.place;
-      if (place) w[place] = 'player';
-      game.events.emit('item:pickup', { type: a.item.type });
-    },
-  },
   pull_breaker: {
     on: 'fuse_box', text: 'pull the main breaker', duration: 1.0, sneaky: true, saw: '⚡',
     can: (p, w) => w.fuse === 'on',
@@ -209,6 +197,7 @@ const INTERACTIONS = {
       const w = game.world;
       w.fuse = 'off';
       w.fuseBy = 'player';
+      game.player.switched = true; // it was you, if he finds you at it (tick clears it)
       burst(game, 'puff', a.x, a.y, 6, { speed: 0.5, ttl: 0.8 });
       game.events.emit('fuse:pulled', {});
     },
@@ -221,6 +210,7 @@ const ITEMS = {
     draw: letter, // the envelope (things.js), wherever it is held or lies
     place: 'letter',
     contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: back in his pocket
+    contrabandIn: 'office', // away from his desk, a white envelope in your hand is anyone's envelope
     edible: { leaves: null }, // eat your words
   },
   coffee: COFFEE_CUP,
@@ -228,14 +218,9 @@ const ITEMS = {
 
 const ROLES = {
   authority: { id: 'boss', offDuty: ['meeting'], helpless: [], deafIn: null },
-  // On his way to the panel: whoever he finds at it, or in his dark office, switched it off (pretending doesn't help;
-  // tick clears the mark once you are clear of both).
-  evidence: { by: 'boss', while: 'dark', mark: 'switched', knows: 'bossKnows', icon: '💡' },
-  // Kev at the fuse box: whoever he finds standing at it pulled the breaker.
-  scene: {
-    by: 'kev', while: ['fuse', 'fixing'], zone: 'fuse_nook', door: { x: 1, y: 7.5 }, radius: 2.5,
-    fresh: (w) => w.fuse === 'on', icon: '⚡',
-  },
+  // On his way to the panel or the fuse box: whoever he finds at the one you threw, or in his dark office, threw it
+  // (pretending doesn't help; tick clears the mark once you are clear of them).
+  evidence: { by: 'boss', while: ['dark', 'blackout'], mark: 'switched', knows: 'bossKnows', icon: '💡' },
 };
 
 const LURES = [
@@ -256,6 +241,24 @@ const LURES = [
       done: { set: { officeLight: 'on' }, event: 'switch:fixed', says: [{ say: ['😠'] }] },
     },
   },
+  { // The whole floor goes dark: he holds up his phone and goes out to the fuse box, round the corner from his door,
+    // and holds his torch on it for Kev (he doesn't touch fuses) till the power is back, then walks back to his desk.
+    // On the way he catches whoever he finds at it (ROLES.evidence), as on his way to the panel.
+    npc: 'boss',
+    when: (w) => w.fuse === 'off',
+    override: 'blackout',
+    plan: 'fusebox',
+    label: 'fuse box',
+    spot: 'fuse_watch',
+    react: { wait: 1.0, says: [{ say: ['❓'], kind: 'thought' }], event: 'boss:blackout' },
+    work: {
+      override: 'waiting',
+      minutes: 60, // never runs out: he waits till Kev has the fuse back on (start.set changes)
+      progress: 'waitProgress',
+      start: { set: { fuse: 'off' } },
+      done: {},
+    },
+  },
   { // The soaked machine shorted and smokes: Kev goes to unplug it first (Lin froze at it), or it would only trip the
     // fuse again.
     npc: 'kev',
@@ -273,8 +276,8 @@ const LURES = [
       done: { set: { unplugged: true }, event: 'coffee:unplugged' },
     },
   },
-  { // The fuse is out: Kev walks his phone torch down the hallway to the fuse box. Its breakers have no labels: he
-    // hunts through them by phone light till he finds the one that tripped.
+  { // The fuse is out: Kev walks his phone torch down the hallway to the fuse box and finds the breaker that's down
+    // by phone light (a few seconds of fumbling on screen).
     npc: 'kev',
     when: (w) => w.fuse === 'off' && (w.coffee !== 'shorted' || w.unplugged),
     override: 'fuse',
@@ -335,8 +338,9 @@ LURES.push(
 );
 
 // The boss comes over to see what the retching was: one look at the puddle (the engine's inspection, started by tick
-// setting `at`). Your envelope in it: ✉️❌, caught (the end card: 'soggy'). He comes once he is free (not while he
-// is out at the panel), and not after he sits down to his tray (the gather): then the 3:40 verdict says it.
+// setting `at`). Your envelope still in it: ✉️❌, caught (the end card: 'soggy'); fish it out first and he sees only
+// sick. He comes once he is free (not while he is out at the panel), and not after he sits down to his tray (the
+// gather): then the 3:40 verdict says it (he looks up at the retch and sees it from his desk).
 const INSPECT = {
   npc: 'boss', at: Infinity, override: 'retch', plan: 'retch', label: 'the retching', look: 1.4,
   checks: [{ item: 'letter', spot: 'puddle', absent: true, icon: '✉️' }],
@@ -345,8 +349,8 @@ const INSPECT = {
 };
 
 // Your letter comes back up: green first, then a puddle at your feet with the soggy letter in it, a noise all over the
-// floor (everyone turns), the screen shakes. Nobody picks a letter out of sick: it lies there (world.letter 'puddle',
-// not 'dropped', so the floor rules leave it) till Lin wipes it up or the boss sees it.
+// floor (everyone turns), the screen shakes. It lies there (world.letter 'puddle', not 'dropped', so the floor rules
+// leave it) till you fish it out, Lin wipes it up or the boss sees it.
 function sick(game) {
   const w = game.world;
   const p = game.player;
@@ -433,10 +437,15 @@ function tick(game) {
   // turn, before the sim checks his mechanics: see INSPECT).
   INSPECT.at = w.sick && w.puddle ? w.sickMin : Infinity;
   if (w.sick && !w.looked && game.clock.minute >= game.level.day.gatherAt) w.looked = true; // he sat down to his tray instead
-  // You switched his lights off: a mark only while you are at the panel or in his office (ROLES.evidence).
+  // You threw his lights or the floor's: a mark only while you are at the panel, the fuse box or in his office
+  // (ROLES.evidence).
   const p = game.player;
-  if (p.switched && Math.hypot(p.x - (SPOTS.office_switch.x + 0.5), p.y - (SPOTS.office_switch.y + 0.5)) > 2.5
-    && !inOffice(p)) p.switched = false;
+  const far = (spot) => Math.hypot(p.x - (SPOTS[spot].x + 0.5), p.y - (SPOTS[spot].y + 0.5)) > 2.5;
+  if (p.switched && far('office_switch') && far('fuse_box') && !inOffice(p)) p.switched = false;
+  // What got him up from his desk, for the route if you take it before he is back.
+  const boss = game.npcs[0];
+  if (boss.override === 'dark') w.bossOut = 'switch';
+  if (boss.override === 'blackout') w.bossOut = w.fuseBy === 'player' ? 'breaker' : 'blackout';
   if (game.rules?.working && !w.deskwork) w.deskwork = game.fx?.lines?.find((l) => l && l.kind === 'tattle')?.from ?? 'boss';
 }
 
@@ -531,13 +540,11 @@ export default {
       { zone: 'office', lit: (w) => w.fuse === 'on' && tubesLit(w), dip },
       { zone: ['floor_dark', 'floor_back', 'meeting_room', 'kitchen'], lit: (w) => w.fuse === 'on', dip },
     ],
-    // Seated in the dark, he points his phone at his hallway door (waiting for someone to come and fix it): the
-    // front of his desk and that door are lit, the side of his desk and the side door stay dark, the same every loop.
-    // Up and walking, his beam goes where he looks.
+    // At the fuse box the boss and Kev hold their beams on it. Walking, a beam goes where its holder looks.
     torch: {
       when: (n, w) => w.fuse !== 'on' || (w.officeLight !== 'on' && inOffice(n)), fov: deg(60), radius: 7,
-      aim: (n) => (n.id === 'boss' && atBossDesk(n) ? 'boss_door'
-        : n.id === 'kev' && (n.override === 'fuse' || n.override === 'fixing') ? 'fuse_box' : null),
+      aim: (n) => ((n.id === 'boss' && n.override === 'waiting')
+        || (n.id === 'kev' && (n.override === 'fuse' || n.override === 'fixing')) ? 'fuse_box' : null),
     },
     controls: [
       { tile: 'S', kind: 'switch', on: (w) => w.officeLight !== 'off' }, // its amber lamp lights while it's off
@@ -571,6 +578,8 @@ export default {
     officeLight: 'on', // his office switch: 'on' | 'off' | 'starting' (flipped back on, the tubes blinking)
     switchProgress: 0,
     fixProgress: 0,
+    waitProgress: 0,
+    bossOut: null, // what last got him up from his desk: 'switch' | 'blackout' | 'breaker'
     bossKnows: false,
     coffee: 'none', // Lin's: 'none' | 'brewing' | 'brewed' (the pot full) | 'shorted' (soaked, it blew) | 'cold' (no power)
     rigged: false, // you poured the water jug down the back of the machine, onto its socket

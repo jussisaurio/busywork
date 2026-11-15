@@ -258,7 +258,7 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
-- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, owner?, keep?, bulky? } }`.
+- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, contrabandIn?, owner?, keep?, bulky? } }`.
   - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
   - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
     and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
@@ -271,7 +271,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     for nothing. The validator refuses an edible item that doesn't say. `icon` (default `😋`): the row's and your
     thought's face, e.g. `🤢` for a letter. `burst` (default `'crumbs'`): an `fx.burst` kind, e.g. `'paper'`.
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
-    sees it on the floor (`<type>:recovered`). Needs a `place`.
+    sees it on the floor (`<type>:recovered`). Needs a `place`. `contrabandIn` (a zone): in your hand he knows it
+    only while you are in that zone (an envelope is anyone's envelope away from his desk).
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
     `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
     (default: he carries it, `<type>:confiscated {by}`). On the floor: if he sees it (while `when` holds) he walks
@@ -305,7 +306,7 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
   (a `'relay'` line). `roles` and `authority` are optional. Without an authority nobody assigns work and only an
   inspection can catch you.
 - `evidence`: `{ by, while, mark, knows, icon }`. A player field (`mark`) that pretending doesn't hide. The witness
-  `by`, in override `while` (one value), reads it as guilt; telling sets `world[knows]`. Reason `'evidence'`.
+  `by`, in override `while` (one value, or a list), reads it as guilt; telling sets `world[knows]`. Reason `'evidence'`.
 - `scene`: `{ by, while, zone, door, radius?, fresh(world), icon }`. While `by` is in one of the `while`
   overrides (a list), he blames whoever he sees in `zone`, or within `radius` (default 3.5) of the point `door`
   (`{ x, y }`) unless pretending. Once per scene; `fresh(world)` holding makes the next one fresh. Reason `'scene'`.

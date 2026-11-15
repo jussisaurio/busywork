@@ -101,9 +101,10 @@ function offenceFor(game, s, npc) {
   if (atScene(game, s, npc)) return 'scene';
   // The evidence role's witness, on her hunt, spots the mark on you (player.smeared). Pretending doesn't hide a stain.
   const ev = r.evidence;
-  if (ev && npc.id === ev.by && npc.override === ev.while && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
+  if (ev && npc.id === ev.by && [].concat(ev.while).includes(npc.override) && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
   if (p.busy) return null; // phone call / folder stride hides contraband
-  if (npc.id === itemFlags(game, p.held)?.contraband && enforcing(game, npc)) return 'contraband';
+  const held = itemFlags(game, p.held);
+  if (npc.id === held?.contraband && enforcing(game, npc) && (!held.contrabandIn || inZone(game, held.contrabandIn, p.x, p.y))) return 'contraband';
   if (claims(game, npc, p.held)) return 'contraband';
   return null;
 }

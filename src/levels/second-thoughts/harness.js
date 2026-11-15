@@ -24,7 +24,7 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'coffee:flicker', 'coffee:shorted', 'fuse:tripped', 'boss:dark', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered', 'player:sick', 'inspect:start'],
+    soft: ['boss:suspicious', 'coffee:flicker', 'coffee:shorted', 'fuse:tripped', 'boss:dark', 'boss:blackout', 'kev:fuse', 'fuse:fixed', 'switch:fixed', 'letter:recovered', 'player:sick', 'inspect:start'],
   },
 
   names: NAME,
@@ -45,7 +45,7 @@ export default {
     const p = game.player;
     const bits = [];
     if (game.level.darkness && isDark(game, p.x, p.y)) bits.push('standing in the dark');
-    if (p.switched) bits.push("you switched his office lights off (he'd know it was you if he found you here)");
+    if (p.switched) bits.push("you switched the lights off (he'd know it was you if he found you here)");
     const w = game.world;
     if (w.queasy && !w.sick) bits.push('your face has gone green 🤢');
     else if (w.sick) bits.push('you threw up 🤢');
@@ -63,12 +63,14 @@ export default {
     if (n.id === 'boss' && w.bossAct === 'clock') bits.push('checking his desk clock');
     if (n.id === 'boss' && w.pullAt !== null && !w.trayRead) bits.push('dragging his tray over');
     if (n.override === 'dark') bits.push('on his way out to the lighting panel in the hallway');
+    if (n.override === 'blackout') bits.push('on his way out to the fuse box with his phone torch');
+    if (n.override === 'waiting') bits.push('at the fuse box, holding his phone torch on it, waiting for Kev');
     if (n.override === 'switching') bits.push(`at the lighting panel, trying its unlabelled switches, his office tubes blinking ${Math.round(w.switchProgress * 100)}%`);
     if (n.override === 'retch') bits.push('coming over to see what the retching was');
     if (n.override === 'smoke') bits.push('on his way to the smoking coffee machine');
     if (n.override === 'unplugging') bits.push(`unplugging the coffee machine ${Math.round(w.unplugProgress * 100)}%`);
     if (n.override === 'fuse') bits.push('on his way to the fuse box');
-    if (n.override === 'fixing') bits.push(`hunting through the unlabelled breakers by phone light ${Math.round(w.fixProgress * 100)}%`);
+    if (n.override === 'fixing') bits.push(`looking through the unlabelled breakers by phone light ${Math.round(w.fixProgress * 100)}%`);
     if (n.override === 'towels') bits.push('going for the paper towels in the kitchen');
     if (n.override === 'tearing') bits.push('tearing off paper towels');
     if (n.override === 'mopping') bits.push('coming to wipe up your sick');
@@ -100,6 +102,7 @@ export default {
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'switch:off': return "clack: at the panel you switch the boss's office lights off 💡";
       case 'switch:on': return "clack: at the panel you switch the boss's office lights back on 💡";
+      case 'boss:blackout': return 'the boss: ❓ He holds up his phone torch 📱 and gets up to go out to the fuse box';
       case 'boss:dark': return 'the boss: ❓ He holds up his phone torch 📱 and gets up to go and see why';
       case 'switch:starting': return 'the boss tries the unlabelled switches on the panel one by one: his office tubes blink';
       case 'switch:fixed': return "the boss finds his switch: his office light is back on 💡 (😠)";
@@ -111,8 +114,8 @@ export default {
       case 'kev:smoke': return 'Kev: ❓ He heads for the smoking coffee machine with his phone torch';
       case 'coffee:unplugged': return 'Kev unplugs the coffee machine: the smoke stops';
       case 'kev:fuse': return 'Kev: 🔧 He heads for the fuse box with his phone torch';
-      case 'fuse:fixing': return 'Kev is at the fuse box, hunting through its unlabelled breakers by phone light';
-      case 'fuse:fixed': return 'Kev finds the tripped breaker and resets it: the lights are back on 💡';
+      case 'fuse:fixing': return 'Kev is at the fuse box, looking through its unlabelled breakers by phone light';
+      case 'fuse:fixed': return 'Kev finds the breaker that is down and pushes it back up: the lights are back on 💡';
       case 'boss:sigh': return null;
       case 'boss:checksClock': return null;
       case 'boss:chime': return "the boss's desk clock chimes 3:39 🔔";
