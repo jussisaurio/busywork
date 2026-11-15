@@ -555,7 +555,7 @@ try {
   ok(ids.includes('meeting') && ids.includes('weekend-shift') && !ids.some(isFixture) && ids.length >= 8, 'status covers every level but the fixtures');
   const cli = execFileSync('node', [join(ROOT, 'tools/cold-read.mjs'), '--status'], { encoding: 'utf8', env: { ...process.env, BUSYWORK_CANVAS_DIR: join(TMP, 'no-canvas') } });
   ok(ids.every((id) => cli.includes(`${id}\n`)) && !cli.includes('fixture') && cli.trim().split('\n').length === ids.length * (1 + STAGES.length), '--status prints every non-fixture level and all its passes');
-  ok(/TODO {2}sense {4}no cold read yet\n/.test(cli), '--status lists sense for every level (none has it yet)');
+  ok((cli.match(/^ {2}\S+ +sense +/gm) || []).length === ids.length, '--status lists sense for every level');
   ok(STAGES.slice(0, STAGES.indexOf('premise')).every((st) => PASSES.find((x) => x.id === st).kind === 'text'), 'the narrow text passes run and list first');
   ok(passList('sense,replay').join() === 'sense,replay' && passList('all').join() === STAGES.join(), '--pass: a list, or all');
   threw = '';
