@@ -59,6 +59,8 @@ problem: when Kev says 🔧, he means he will fix something.
      (👔 read as a shirt, not as the boss). The engine's bubbles do too: a tattle is ❗👉 and your face, a double
      take is the face of whom you pass for, an inspection's who-check sign is the face it checked.
    - A reaction shows what it is about: the bubble names it, or the speaker faces it at that moment.
+   - One bubble shape per meaning (CONTRACTS "Bubbles"): the spiky star only for "I've spotted YOU", a round
+     rayed "oh!" for a belief changing, a cloud for a private doubt (with what it is about).
    - Speech never carries a fact on its own. The world or a body shows the fact; speech comments on it.
 2. **The world is drawn.** Every object on the map or in a hand is drawn as the real object: furniture, devices,
    documents, what people carry. No emoji stands on a tile or in a hand. Level painters
@@ -111,8 +113,11 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 
 ## Vision and suspicion
 - **Vision cones.** Each NPC sees a cone (default 90° and 7 tiles; each cast member can differ). Walls block sight;
-  glass does not. V shows the cones. Every cone is as plain as the authority's, since anyone can tell on you; its
-  edge firms up while he has you in sight.
+  glass does not. V shows the cones. Red belongs only to the cone of whoever sees you, ringed at his eyes; no cast
+  tint is red. Every cone is as plain as the authority's, since anyone can tell on you; its
+  edge firms up while he has you in sight. Each time someone looks a new way (a turn, a glance, a noise), a dotted
+  gaze line runs from his eyes to the first thing on it, closed by a viewfinder bracket, so overlapping cones still
+  say what each one is watching.
 - **Seated NPCs work.** At a desk in his own routine a coworker types, silently. His hands stop when he glances,
   turns to a noise or is busy with something else, so a glance reads as a break.
 - **Seated NPCs glance around.** Every 5–9 s (each cast member can differ) they turn their head 60–125° to one side
@@ -120,20 +125,22 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
   learnable.
 - **Suspicion.** If the authority can see you and you are not looking busy (pretending, or doing an action; an idle
   action like eating doesn't count), his ❓ meter fills over 1.6 s. Otherwise it drains over 3 s. Full, he assigns
-  you work: he points, his order runs to you as a line, you walk to your desk, and a paper stack lands on it. You type until the stack is gone, with
-  time ×8. The work is 20 game minutes from his order, the walk included. Progress shows only in the stack.
+  you work: he says 📄👉 and your face, his order runs to you as a line, you walk to your desk, and one tidy paper
+  stack lands on it as you sit. You type until the stack is gone, with time ×8, a paper-and-bar meter over your head.
+  The work is 20 game minutes from his order, the walk included. Nothing of it is left lying about afterwards. A day
+  lost after you were sent ends on the "stopped" card: whoever told (else he) points at you behind the stack.
 - **Sneaky actions** take a second or two. If an NPC sees you for 0.3 s during one, it fails. The authority: you are
   caught, and the loop ends. Anyone else: they tattle.
 - **Who saw you.** A coworker who sees you do something reportable opens an eye beside her head, its pupil on you.
   The eye widens while she keeps looking. Wide open, she tells, with a hop. A grudge (below) keeps the eye red until
   she has told.
 - **Tattling.** A witness shouts and points ❗👉 at your face (whom she means) with a dashed sightline. If the
-  authority is on the floor, he hears it: a red line runs from her to him, he turns to her, then to you, and assigns
+  authority is on the floor, he hears it: after her shout's own beat a red line runs from her to him, he turns to her, then to you, and assigns
   you work. A level may set another cost for a heard tattle (you are caught, or its own). If he is away, the
-  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. An
+  witness keeps a grudge and points you out 👉 and your face (plus what they saw) as soon as he is back. A level may give him an earshot: then a shout from farther off is a grudge too, told when he comes near. An
   authority gone for good never hears it.
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
-  slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle.
+  slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle. An owner who sees his thing on the floor walks over and picks it up.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
 - **Evidence.** Some acts leave a mark on you for the rest of the loop. One witness, at one moment, reads it as guilt,
   and pretending doesn't hide it.
@@ -166,6 +173,8 @@ their desk.
   is decided it stops at the minute the end card shows. The mission badge's clock face shows the deadline.
 - Mission badge icons only. **No route status chips.** Objects show their state in the world.
 - Held item, loop number (⟳ 3) and ⏩ while fast-forwarding.
+- No words on the map: the only words in play are the mission card's. The key legend shows on the title and the
+  pause screen. Your marker is a steady ring (rings that spread are sounds); a loop opens with a chevron over you.
 - The authority's ❓ suspicion meter shows above his head when it is above 0.
 
 ## Lessons that hold for every level

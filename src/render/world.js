@@ -1292,57 +1292,31 @@ export function sparkle(ctx, x, y, r, color) {
   ctx.fill();
 }
 
-// The paper stack of assigned work on the player's desk (game.clock.forced). It drops onto the desk when the order is
-// given (game.rules.sent.stackAt, play/player.js), stays whole while you walk there, then goes a sheet at a time onto
-// a done pile beside it while you type: what is left on it is the work left.
+// The paper stack of assigned work on the player's desk (game.clock.forced). It drops onto the desk as you sit down
+// to it (game.rules.stackAt, play/player.js) and goes down a sheet at a time while you type: what is left on it is the
+// work left. One tidy stack: nothing is left lying about once it is done.
 const STACK_SHEETS = 12;
 const STACK_FALL = 0.22; // s for the stack to drop onto the desk
 function drawWorkStack(ctx, game, d, t) {
+  const r = game.rules;
   const forced = game.clock ? fin(game.clock.forced) : 0;
-  const sent = game.rules && game.rules.sent;
-  if (!(forced > 0) || (sent && !sent.said)) return;
-  const left = sent ? 1 : clamp(forced / (fin(game.rules && game.rules.workFrom) || WORK_PENALTY_MIN), 0, 1);
+  if (!(forced > 0) || !r || r.sent || r.stackAt == null) return;
+  const left = clamp(forced / (fin(r.workFrom) || WORK_PENALTY_MIN), 0, 1);
   const sx = d.x1 * T + 16;
   const sy = d.y0 * T + 22;
-  const px = sx - 19; // the done pile
-  const age = sent && sent.stackAt != null ? fin(game.loopTime) - sent.stackAt : 9;
+  const age = fin(game.loopTime) - r.stackAt;
   const fall = age < STACK_FALL ? -48 * (1 - age / STACK_FALL) ** 2 : 0;
   const thud = age >= STACK_FALL && age < STACK_FALL + 0.2 ? Math.sin(((age - STACK_FALL) / 0.2) * Math.PI) : 0;
   const todo = Math.max(1, Math.ceil(STACK_SHEETS * left - 1e-9));
-  const u = sent ? 0 : clamp(todo - STACK_SHEETS * left, 0, 1); // the top sheet's way to the done pile
-  const flying = u > 0.02;
-  const sheet = (x, y, i, tilt) => {
-    ctx.save();
-    ctx.translate(x + 7, y + 5);
-    if (tilt) ctx.rotate(tilt);
-    ctx.fillStyle = 'rgba(0,0,0,0.14)';
-    ctx.fillRect(-7, 4, 14, 1.2);
-    ctx.fillStyle = i % 2 ? '#e9e4d6' : C.white;
-    ctx.fillRect(-7, -5, 14, 10);
-    ctx.restore();
-  };
   if (age < STACK_FALL) fillEllipse(ctx, sx, sy + 9, 8 * (0.5 + (0.5 * age) / STACK_FALL), 2.5, 'rgba(0,0,0,0.18)');
-  const n = flying ? todo - 1 : todo;
   const h = 1.6 * (1 - 0.35 * thud);
-  for (let i = 0; i < n; i++) sheet(sx - 7.75 + hash(i, 3) * 1.5 + thud * (hash(i, 5) - 0.5) * 2, sy + fall - i * h, i, 0);
-  const done = STACK_SHEETS - todo;
-  for (let i = 0; i < done; i++) sheet(px - 7 + hash(i, 9) * 0.8, sy - i * 1.4, i, 0);
-  if (flying) { // lifted off the stack, over, and down onto the pile
-    const k = u * u * (3 - 2 * u);
-    const y0 = sy - (todo - 1) * 1.6;
-    const y1 = sy - done * 1.4;
-    sheet(sx - 7 + (px - sx) * k, y0 + (y1 - y0) * k - Math.sin(u * Math.PI) * 10, todo, Math.sin(u * Math.PI) * 0.5);
-  }
-  if (age >= STACK_FALL && age < STACK_FALL + 0.7) { // a few loose sheets skid off as it lands
-    const k = (age - STACK_FALL) / 0.7;
-    ctx.save();
-    ctx.globalAlpha = 1 - k * k;
-    for (let i = 0; i < 3; i++) {
-      const a = -0.9 + i * 0.9 + hash(i, 11) * 0.4;
-      const r = 6 + 16 * (1 - (1 - k) * (1 - k));
-      sheet(sx - 7 + Math.cos(a) * r, sy - 2 + Math.sin(a) * r * 0.5 - Math.sin(k * Math.PI) * 6, i, a + k * 2 * (i - 1));
-    }
-    ctx.restore();
+  for (let i = 0; i < todo; i++) {
+    const x = sx - 7.75 + hash(i, 3) * 1.5;
+    const y = sy + fall - i * h;
+    ctx.fillStyle = 'rgba(0,0,0,0.14)';
+    ctx.fillRect(x, y + 9, 14, 1.2);
+    ctx.fillStyle = i % 2 ? '#e9e4d6' : C.white;
+    ctx.fillRect(x, y, 14, 10);
   }
 }
 

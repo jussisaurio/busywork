@@ -197,6 +197,56 @@ const plainScene = (win, icons, thought) => ({
     bubble(ctx, thought, x + 58, TAB.y + 92, e, 'thought');
   },
 });
+// The day lost with you sent to your desk (outcome.stopped, play/scenario.js): whoever stopped you points at you,
+// and you sit behind the paper stack. Any level's lost card gives way to it unless the level draws its own
+// (endScenes.scenes.stopped, or a kindOf that answers 'stopped'). The icons: the face that told, 👉, the stack.
+const STOPPED_SCENE = {
+  win: false,
+  icons: ['👉', '📄'],
+  iconsFor: (o) => ['@' + o.stopped.by, '👉', '📄'],
+  draw(ctx, game, t, e, o) {
+    backWall(ctx, 72);
+    floorCarpet(ctx, TAB.x, TAB.y + 72, TAB.w, TAB.h - 72);
+    const by = o && o.stopped ? o.stopped.by : null;
+    const mx = TAB.x + TAB.w * 0.66;
+    const fy = TAB.y + 196;
+    // you, at your desk, behind the stack
+    const p = person(t);
+    p.dir = Math.PI / 2;
+    p.head = p.dir + Math.sin(t * 7) * 0.05;
+    p.pose = 'sit';
+    p.arms = 'type';
+    p.typing = true;
+    p.sweat = true;
+    p.scale = 2.3;
+    drawPerson(ctx, lookFor(game.level.looks, 'player'), p, mx, fy - 24);
+    ctx.fillStyle = '#7a5a3e';
+    ctx.fillRect(mx - 78, fy - 6, 156, 16);
+    ctx.fillStyle = '#5e4430';
+    ctx.fillRect(mx - 70, fy + 10, 10, 34);
+    ctx.fillRect(mx + 60, fy + 10, 10, 34);
+    for (let i = 0; i < 14; i++) {
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(mx + 14, fy - 8 - i * 4 + 3, 40, 1.5);
+      ctx.fillStyle = i % 2 ? '#e9e4d6' : C.white;
+      ctx.fillRect(mx + 14 + (i % 3) - 1, fy - 8 - i * 4, 40, 4);
+    }
+    bubble(ctx, ['😩'], mx - 30, TAB.y + 70, e, 'thought');
+    // whoever stopped you, pointing
+    if (by) {
+      const w = person(t);
+      w.dir = 0.15;
+      w.head = 0.15;
+      w.arms = 'point';
+      w.angry = true;
+      w.scale = 2.3;
+      const wx = TAB.x + TAB.w * 0.24;
+      drawPerson(ctx, lookFor(game.level.looks, by), w, wx, fy + 10);
+      bubble(ctx, ['❗', '👉', '@player'], wx + 40, TAB.y + 64, e, 'speech');
+    }
+  },
+};
+
 export const DEFAULT_END_SCENES = {
   kindOf: (o) => (o && (o.result === 'win' || o.result === 'caught' || o.result === 'blamed') ? o.result : 'fail'),
   scenes: {
@@ -212,7 +262,9 @@ export function drawEnd(ctx, game, t, mem) {
   const o = game.outcome || { result: 'fail', routes: [], newRoutes: [], loop: 0, minute: 0 };
   const e = Math.max(0, t - fin(mem.endStart, t));
   const ends = game.level.endScenes || DEFAULT_END_SCENES;
-  const scene = ends.scenes[ends.kindOf(o)] || NO_SCENE;
+  const kind = ends.kindOf(o);
+  let scene = ends.scenes[kind] || NO_SCENE;
+  if (o.stopped && !scene.win && kind !== 'stopped') scene = ends.scenes.stopped || STOPPED_SCENE;
   const newRoutes = Array.isArray(o.newRoutes) ? o.newRoutes : [];
   const stampAt = (j) => 0.7 + j * 0.35;
 
@@ -263,7 +315,7 @@ export function drawEnd(ctx, game, t, mem) {
   ctx.stroke();
 
   // outcome icons: the punchline, speech (DESIGN.md "Visual language" rule 5)
-  const icons = scene.icons;
+  const icons = scene.iconsFor ? scene.iconsFor(o) : scene.icons;
   for (let i = 0; i < icons.length; i++) {
     const d = clamp((e - 0.35 - i * 0.12) / 0.3, 0, 1);
     if (d <= 0) continue;

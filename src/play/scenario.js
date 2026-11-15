@@ -12,7 +12,7 @@ import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './p
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
 const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
-// A fail sends you to the front (meeting.presenter): you hurry there, at least this fast, and in at most WALK_MAX s.
+// A fail sends you to the front (meeting.presenter, if any): you hurry there, at least this fast, and in at most WALK_MAX s.
 const HURRY = PLAYER_SPEED * 1.5;
 const WALK_MAX = 2.5;
 const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
@@ -51,8 +51,15 @@ export function updateScenario(game, dt) {
   if (game.clock.minute >= game.level.day.meetingAt) startMeeting(game, s);
 }
 
+// stopped: { by, reason, working } when a lost day had you sent to your desk (rules.js assignWork): by, who stopped
+// you (the witness who told, else the authority); working: still at it when the day ended. End scenes show it.
 function makeOutcome(game, result, routes, newRoutes) {
-  return { result, routes, newRoutes, loop: game.persist.loop, minute: game.clock.minute };
+  const o = { result, routes, newRoutes, loop: game.persist.loop, minute: game.caught?.minute ?? game.clock.minute }; // caught: the minute it happened, not the end of the beat
+  const r = game.rules;
+  if (result !== 'win' && result !== 'caught' && r.stoppedBy) {
+    o.stopped = { by: r.stoppedBy, reason: r.stoppedFor, working: !!(r.sent || game.clock.forced > 0) };
+  }
+  return o;
 }
 
 function startMeeting(game, s) {
@@ -93,12 +100,14 @@ function startMeeting(game, s) {
 
   if (result === 'fail') {
     // You are now presenting. There are no slides. You hurry to the front (the beat waits for you to get there).
-    burst(game, 'paper', p.x, p.y, 8);
     standUp(game);
-    const spot = spotPos(game, game.level.meeting.presenter);
+    // No presenter spot: it happens where you stand.
+    const at = game.level.meeting.presenter;
+    const spot = at ? spotPos(game, at) : { x: p.x, y: p.y, dir: p.dir };
     const t = walkTo(game, s, spot, HURRY, false);
     burst(game, 'sweat', p.x, p.y, 6, { speed: 0.8 });
-    say(game, 'player', ['😅'], { kind: 'speech', ttl: t + END_BEAT });
+    // Never a smile on a loss (😅 reads as 😄 at bubble size): a wince on the way, 😩 up front (arrive).
+    if (t > 0) say(game, 'player', ['😬'], { kind: 'speech', ttl: t + 0.3 });
   } else if (result === 'blamed') {
     // Wherever you are, the room has noticed.
     stareAt(game, v?.stare);
@@ -140,6 +149,7 @@ function arrive(game, s, w) {
   p.dir = w.spot.dir;
   p.moving = false;
   if (w.sit) sitAtDesk(game);
+  else if (game.outcome?.result === 'fail') say(game, 'player', ['😩'], { kind: 'speech', ttl: END_BEAT });
 }
 
 function endDay(game) {

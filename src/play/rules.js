@@ -48,6 +48,7 @@ const roles = (game) => game.level.roles ?? NO_ROLE;
 const camVia = (game, npc) => seenVia(game, npc, game.player.x, game.player.y);
 const screenChain = (cam) => (cam ? { screen: cam.monitor, lens: { x: cam.x, y: cam.y } } : undefined);
 const withVia = (payload, cam) => (cam ? { ...payload, via: cam.id } : payload);
+const CAUGHT_ICONS = ['❗', '👉', '@player'];
 const pointing = (cam, icons) => (cam ? [cam.icon ?? SCREEN_ICON, ...icons] : icons);
 const itemFlags = (game, type) => (type ? game.level.items?.[type] : undefined);
 // The authority's NPC, or null.
@@ -61,14 +62,16 @@ function claims(game, npc, item) {
 }
 
 // Does this NPC (the authority) currently enforce suspicion/contraband?
-function enforcing(game, npc) {
+export function enforcing(game, npc) {
   return !!npc && npc.active && !(roles(game).authority?.offDuty ?? []).includes(npc.override);
 }
 
 // The authority hears a witness shout if he's on the floor (not away, not in the zone he's deaf in).
-function authorityHears(game, boss) {
-  const deafIn = roles(game).authority?.deafIn;
-  return enforcing(game, boss) && !(deafIn && inZone(game, deafIn, boss.x, boss.y));
+// `from`: the shouting witness. With `authority.earshot` (tiles) he hears her only that close; default the whole floor.
+function authorityHears(game, boss, from) {
+  const { deafIn, earshot } = roles(game).authority ?? {};
+  if (!enforcing(game, boss) || (deafIn && inZone(game, deafIn, boss.x, boss.y))) return false;
+  return earshot == null || !from || Math.hypot(from.x - boss.x, from.y - boss.y) <= earshot;
 }
 
 // The scene's investigator is on it and the player is where the culprit would be.
@@ -155,7 +158,7 @@ function rulesStep(game, dt) {
   // A witness who shouted at an empty office tells the authority once he's back within earshot.
   if (s.grudge) {
     const w = findNpc(game, s.grudge.by);
-    if (w && w.active && authorityHears(game, boss)) {
+    if (w && w.active && authorityHears(game, boss, w)) {
       s.grudge.t += dt;
       if (s.grudge.t >= TELL_DELAY) {
         tellLate(game, s, w);
@@ -217,14 +220,28 @@ function decaySuspicion(game, dt) {
   if (id) game.suspicion[id] = Math.max(0, game.suspicion[id] - dt / SUSPICION_DECAY_SEC);
 }
 
-// First sight of something sneaky: ❓ over the NPC (throttled). A disguise he sees through: a double take, the face
+// What the witness saw you at (a picture), for his ❓ and a late tattle's 👉: the act's `saw`, the scene's or the
+// evidence's icon, or the item in your hand (a disguise's, an owner's contraband). Undefined: just you.
+function seenIcon(game, offence) {
+  const p = game.player;
+  const r = roles(game);
+  if (offence === 'action') return p.action.saw ?? undefined;
+  if (offence === 'scene') return r.scene.icon;
+  if (offence === 'evidence') return r.evidence.icon;
+  if (offence === 'disguise' || offence === 'contraband') return itemFlags(game, p.held)?.icon;
+  return undefined;
+}
+
+// First sight of something sneaky (throttled): a thought cloud with WHAT he noticed, then ❓ (just your face when
+// it's only you). On a screen, the screen first (📺 what ❓). A disguise he sees through: a double take, the face
 // of whom she passes for, then ❓.
 function notice(game, s, npc, offence) {
   const last = s.lastNotice[npc.id];
   if (last !== undefined && game.loopTime - last < NOTICE_BUBBLE_GAP) return;
   s.lastNotice[npc.id] = game.loopTime;
   const cam = camVia(game, npc);
-  say(game, npc.id, pointing(cam, offence === 'disguise' ? doubleTakeIcons(game) : ['❓']), { kind: 'thought', ttl: 1.0 });
+  const icons = offence === 'disguise' ? doubleTakeIcons(game) : [seenIcon(game, offence) ?? '@player', '❓'];
+  say(game, npc.id, pointing(cam, icons), { kind: 'thought', ttl: 1.0 });
   sightline(game, npc.id, 'notice', 0.6, screenChain(cam));
   game.events.emit('witness:notice', { by: npc.id });
 }
@@ -239,9 +256,7 @@ function react(game, s, npc, offence) {
     return;
   }
   const p = game.player;
-  // What a late tattle points at (the thing the witness saw you at).
-  const icon = offence === 'action' ? p.action.saw ?? undefined : offence === 'scene' ? r.scene.icon
-    : offence === 'evidence' ? r.evidence.icon : offence === 'disguise' ? itemFlags(game, p.held)?.icon : undefined;
+  const icon = offence === 'contraband' ? undefined : seenIcon(game, offence); // what a late tattle points at
   if (offence === 'action') cancelAction(game, 'witnessed');
   if (offence === 'scene') s.sceneTold = true;
   if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)
@@ -271,7 +286,7 @@ function react(game, s, npc, offence) {
   // Caught in the act (or at the scene): they shout and point at you (your face: whom they mean). The authority
   // hears it if he's around.
   say(game, npc.id, pointing(cam, offence === 'evidence' ? [r.evidence.icon, '❗', '👉', '@player'] : ['❗', '👉', '@player']), { kind: 'alert', ttl: 1.6 });
-  const heard = authorityHears(game, authorityNpc(game));
+  const heard = authorityHears(game, authorityNpc(game), npc);
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
   if (heard) tattleHeard(game, npc.id, offence);
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
@@ -301,7 +316,8 @@ function tattleHeard(game, by, reason) {
 }
 
 // The authority sends you back to your desk to type for WORK_PENALTY_MIN game minutes. by: the witness who told
-// (her shout runs to him as a line: he looks at her, then at you, then gives the order). The order stands from
+// (her shout has its beat, then runs to him as a line: he looks at her, then at you, then gives the order; player.js).
+// s.stoppedBy: who stopped you this loop (the witness, else the authority), for the outcome. The order stands from
 // this step (forced, locked, workAssigned); you walk to your desk inside that time (player.js sendToDesk).
 function assignWork(game, reason, by = null) {
   const s = game.rules;
@@ -309,7 +325,6 @@ function assignWork(game, reason, by = null) {
   const id = roles(game).authority.id;
   const boss = findNpc(game, id);
   const here = boss && boss.active;
-  if (by && here) sightline(game, by, 'relay', 1.0, undefined, id);
   // If the authority is off-floor (restroom), the order still lands: shown over the player at once.
   sendToDesk(game, by, here ? id : null);
   // Sent back for standing around (reason 'idle': the only action left then is an idle one, eating): the action
@@ -321,24 +336,28 @@ function assignWork(game, reason, by = null) {
   game.clock.ff = false;
   game.suspicion[id] = 0;
   s.working = true;
+  s.stoppedBy = by ?? id;
+  s.stoppedFor = reason;
   s.seen = {};
   s.grudge = null; // you're on your way to your desk: nothing left to tell
   game.events.emit(`${id}:workAssigned`, { reason });
 }
 
 // What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
-const JUDGE = { claims, enforcing, caught: (game, reason, by) => caught(game, reason, by) };
+const JUDGE = { claims, enforcing, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
 
-// cam: the camera he saw you through (camVia), if only on a screen: he points at it, then at you.
-function caught(game, reason, by = roles(game).authority.id, cam = null) {
+// The catch: a spiky alert (CONTRACTS "Bubbles": the star means someone has spotted YOU), ❗👉 and your face by
+// default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what
+// he says instead (a mechanic's own words, e.g. a fetch's `alert`).
+function caught(game, reason, by = roles(game).authority.id, cam = null, icons = CAUGHT_ICONS) {
   if (game.caught) return;
   const p = game.player;
-  game.caught = { by, reason, t: 0, via: cam ? cam.id : null }; // via: the camera he saw you on (end scenes)
+  game.caught = { by, reason, t: 0, via: cam ? cam.id : null, minute: game.clock.minute }; // via: the camera he saw you on (end scenes); minute: when (the card's and the HUD's)
   cancelAction(game, 'caught');
   p.locked = true;
   setBusy(game, false, null);
   game.clock.ff = false;
-  say(game, by, cam ? pointing(cam, ['❗', '👉', '@player']) : ['❗', '😠'], { kind: 'alert' }); // on a screen: whom he means
+  say(game, by, pointing(cam, icons), { kind: 'alert' });
   game.events.emit('caught', withVia({ by, reason }, cam));
   shake(game, 0.3, 0.4);
 }

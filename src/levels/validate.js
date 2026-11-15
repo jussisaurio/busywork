@@ -23,7 +23,7 @@
 //   behaviours  optional; each { arrive(), spot?, pending()? }, spot a spot
 //   day         start (a minute-of-day: the clock shows it), gatherAt, meetingAt numbers, gatherAt <= meetingAt;
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
-//   meeting     { override, room (a zone), chair (a spot), presenter (a spot), verdict? (a function) }
+//   meeting     { override, room (a zone), chair (a spot), presenter? (a spot; none: a fail plays where you stand), verdict? (a function) }
 //   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
 //               noise.at (optional) a spot or an { x, y } on the map; no `icon` (*: the target lights up with the E key cap instead);
 //               a 'self' row's preview one of render/characters.js ARM_POSES (the player's pose while it is what E
@@ -33,10 +33,10 @@
 //   items       optional; each an icon (the emoji people say for it, in bubbles); a draw (*: required): how it is
 //               drawn on the floor, in a hand and in the HUD, an engine thing's name (render/things.js THINGS) or
 //               a painter function; tint (optional) a colour, or 'owner' with an owner; owner.id and contraband
-//               cast ids; put seconds; keep and bulky booleans; edible { leaves } with leaves a config.js MARKS name
+//               cast ids; put seconds; keep and bulky booleans; edible { leaves, icon?, burst? } with leaves a config.js MARKS name
 //               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
-//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones;
+//   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones; authority.earshot > 0;
 //               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
 //   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
@@ -68,7 +68,8 @@
 //               draws: an item type with a draw, a decor.things name or an engine thing, never an emoji)
 //   sounds      optional; every spec's spot a spot, `who` 'player' or a cast id; murmur and elevator spots
 //   endScenes   optional (default: render/screens.js DEFAULT_END_SCENES); kindOf() maps every possible outcome to a
-//               scene in scenes, each { win, icons, draw() }
+//               scene in scenes, each { win, icons, draw() }; a lost outcome with `stopped` (sent to your desk) may
+//               give 'stopped' without one (the engine's card: screens.js STOPPED_SCENE)
 //   voices      optional; an object of voice objects
 // (*) The visual language (DESIGN.md "Visual language": people speak emoji, the world is drawn). These rules hold
 // for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
@@ -83,6 +84,7 @@ import { THINGS } from '../render/things.js';
 import { ARM_POSES } from '../render/characters.js';
 import { isLegacyLevel } from './legacy.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
+import { BURST_KINDS as BURSTS } from '../core/fx.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
 const SPOT_DOS = new Set(['sit', 'visit', 'away', 'leave']);
@@ -272,7 +274,7 @@ export function levelProblems(level, key) {
     if (!isStr(m.override)) bad('meeting.override', 'missing');
     zone('meeting.room', m.room);
     spot('meeting.chair', m.chair);
-    spot('meeting.presenter', m.presenter);
+    if (m.presenter != null) spot('meeting.presenter', m.presenter);
     if (m.verdict !== undefined && typeof m.verdict !== 'function') bad('meeting.verdict', 'not a function (game, { result, routes, present })');
   }
 
@@ -317,6 +319,8 @@ export function levelProblems(level, key) {
       const marks = Object.keys(MARKS).map(q).join(', ');
       if (!isObj(it.edible) || !('leaves' in it.edible)) bad(`items.${type}.edible`, `not { leaves }: say what eating leaves on you (${marks}, or null for nothing)`);
       else if (it.edible.leaves !== null && !Object.hasOwn(MARKS, it.edible.leaves)) bad(`items.${type}.edible.leaves`, `no mark ${q(it.edible.leaves)} (config.js MARKS: ${marks}; or null for nothing)`);
+      if (isObj(it.edible) && it.edible.icon !== undefined && !isStr(it.edible.icon)) bad(`items.${type}.edible.icon`, 'not an icon (string)');
+      if (isObj(it.edible) && it.edible.burst !== undefined && !BURSTS.includes(it.edible.burst)) bad(`items.${type}.edible.burst`, `not a burst kind (${BURSTS.join(', ')})`);
     }
   }
   const roles = level.roles;
@@ -326,6 +330,8 @@ export function levelProblems(level, key) {
       if (roles.authority) {
         npc('roles.authority.id', roles.authority.id);
         if (roles.authority.deafIn != null) zone('roles.authority.deafIn', roles.authority.deafIn);
+        const es = roles.authority.earshot;
+        if (es != null && !(typeof es === 'number' && es > 0)) bad('roles.authority.earshot', 'not a positive number of tiles');
         const tt = roles.authority.tattle;
         if (tt !== undefined && tt !== 'work' && tt !== 'caught' && !isFn(tt)) bad('roles.authority.tattle', "not 'work', 'caught' or a function (what a heard tattle costs)");
       }
@@ -357,6 +363,7 @@ export function levelProblems(level, key) {
     for (const [k, id] of list(`fetches[${i}].npcs`, f?.npcs).entries()) npc(`fetches[${i}].npcs[${k}]`, id);
     if (!isStr(f?.override) || !isStr(f?.plan)) bad(`fetches[${i}]`, 'needs an override and a plan (strings)');
     if (f?.caught !== undefined && !(isNum(f.caught) && f.caught >= 0)) bad(`fetches[${i}].caught`, 'not a time in seconds');
+    if (f?.alert !== undefined && !(Array.isArray(f.alert) && f.alert.length && f.alert.every(isStr))) bad(`fetches[${i}].alert`, 'not a list of icons');
   }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
@@ -561,10 +568,12 @@ export function levelProblems(level, key) {
       for (const [name, sc] of Object.entries(ends.scenes)) {
         if (!isObj(sc) || typeof sc.win !== 'boolean' || !Array.isArray(sc.icons) || !isFn(sc.draw)) bad(`endScenes.scenes.${name}`, 'needs { win, icons, draw() }');
       }
-      for (const o of possibleOutcomes(order.filter((id) => routeIds.includes(id)))) {
+      const lost = (o) => o.result === 'fail' || o.result === 'blamed';
+      const outs = possibleOutcomes(order.filter((id) => routeIds.includes(id)));
+      for (const o of [...outs, ...outs.filter(lost).map((o) => ({ ...o, stopped: { by: roles?.authority?.id ?? null, reason: 'tattle', working: true } }))]) {
         let kind;
         try { kind = ends.kindOf(o); } catch (e) { bad('endScenes.kindOf', `throws for ${outcomeText(o)}: ${e.message}`); continue; }
-        if (!has(ends.scenes, kind)) bad('endScenes.kindOf', `${outcomeText(o)} gives ${q(kind)}, which is not in scenes`);
+        if (!has(ends.scenes, kind) && !(o.stopped && kind === 'stopped')) bad('endScenes.kindOf', `${outcomeText(o)} gives ${q(kind)}, which is not in scenes`);
       }
     }
   }
