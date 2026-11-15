@@ -68,32 +68,33 @@ export function actionRow(game, verb) {
   return actionsOf(game.level)[verb] ?? null;
 }
 
-// A level's rows grouped by target, each list in table order (built once per level: findFocus runs every tick).
+// A level's rows grouped by target ({ verb, row } lists in table order), its 'self' list and its put row (built
+// once per level: findFocus runs every tick, and looks them up once).
 const byTarget = new WeakMap();
-function rowsFor(level, target) {
-  let groups = byTarget.get(level);
-  if (!groups) {
-    groups = new Map();
+function rowsOf(level) {
+  let rows = byTarget.get(level);
+  if (!rows) {
+    const groups = new Map();
     for (const [verb, row] of Object.entries(actionsOf(level))) {
       if (!groups.has(row.on)) groups.set(row.on, []);
-      groups.get(row.on).push([verb, row]);
+      groups.get(row.on).push({ verb, row });
     }
-    byTarget.set(level, groups);
+    rows = { groups, self: groups.get('self') ?? NONE, put: actionsOf(level).put ?? null };
+    byTarget.set(level, rows);
   }
-  return groups.get(target) ?? NONE;
+  return rows;
 }
 const NONE = [];
 
-// The action a target offers right now, or null. target: an interactable type, 'self', or 'item' (with the item).
-function targetAction(game, target, item = null) {
-  for (const [verb, row] of rowsFor(game.level, target)) {
-    if (row.can(game.player, game.world, item)) return verb;
-  }
+// The first of a target's rows ({ verb, row }) possible right now, or null. item: the floor item, for 'item' rows.
+function possibleRow(game, list, item = null) {
+  for (const e of list) if (e.row.can(game.player, game.world, item)) return e;
   return null;
 }
 
 function findFocus(game) {
   const p = game.player;
+  const rows = rowsOf(game.level);
   let best = null;
   let bestD = Infinity;
   for (const it of game.map.interactables) {
@@ -101,24 +102,24 @@ function findFocus(game) {
     if (Math.abs(it.cx - p.x) > INTERACT_RADIUS || Math.abs(it.cy - p.y) > INTERACT_RADIUS) continue;
     const d = Math.hypot(it.cx - p.x, it.cy - p.y);
     if (!(d <= INTERACT_RADIUS && d < bestD)) continue; // can() is pure, so test reach first
-    const verb = targetAction(game, it.type);
-    if (verb) {
+    const e = possibleRow(game, rows.groups.get(it.type) ?? NONE);
+    if (e) {
       bestD = d;
-      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: actionRow(game, verb).icon, action: verb };
+      best = { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: e.row.icon, action: e.verb };
     }
   }
   for (const item of game.world.items) {
     const d = Math.hypot(item.x - p.x, item.y - p.y);
     if (!(d <= (item.spot ? INTERACT_RADIUS : ITEM_RADIUS) && d < bestD)) continue; // (a spot's: on a desk)
-    if (targetAction(game, 'item', item)) {
+    if (possibleRow(game, rows.groups.get('item') ?? NONE, item)) {
       bestD = d;
       best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: actionRow(game, 'pick_up').icon, action: 'pick_up', item };
     }
   }
-  best = putFocus(game, bestD, actionRow(game, 'put')) ?? best;
+  best = putFocus(game, bestD, rows.put) ?? best;
   if (!best) {
-    const verb = targetAction(game, 'self');
-    if (verb) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: actionRow(game, verb).icon, action: verb };
+    const e = possibleRow(game, rows.self);
+    if (e) best = { kind: 'self', id: 'self', x: p.x, y: p.y, icon: e.row.icon, action: e.verb };
   }
   return best;
 }
