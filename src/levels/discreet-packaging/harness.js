@@ -39,7 +39,7 @@ export default {
 
   mapKey: [
     "MAP (# wall, T desk/counter, D door, H plant, P your desk, Q/S the pigeonholes (S its parcel shelf), C the camera on the wall, F a tall",
-    "     potted plant, O the power strip with the monitor's plug, M Bob's monitor, B broom, E front door,",
+    "     potted plant, O the power strip with the camera's plug, M Bob's monitor, B broom, E front door,",
     '     i item, @ you, b Bob, l Lin, * floor someone can see right now, the camera included):',
   ],
 
@@ -60,7 +60,7 @@ export default {
     const bits = [];
     if (n.override === 'whacking') bits.push(`thumping the camera ${Math.round(w.whackProgress * 100)}%`);
     if (n.override === 'tugging') bits.push(`tugging at the camera jammed in the plant ${Math.round(w.tugProgress * 100)}%`);
-    if (n.override === 'plugging') bits.push(`plugging the monitor back in ${Math.round(w.plugProgress * 100)}%`);
+    if (n.override === 'plugging') bits.push(`plugging the camera back in ${Math.round(w.plugProgress * 100)}%`);
     if (n.override === 'fetching') bits.push('heading for the pink box on the floor');
     if (n.carry === 'parcel') bits.push('holding your pink box, reading the label');
     if (n.id === 'lin' && w.parcel === 'lin') bits.push(`carrying the pink box (${w.parcelFor === 'bob' ? "Bob's" : 'your'} face on the label)`);
@@ -84,7 +84,7 @@ export default {
     if (w.camAim === 'plant') bits.push('the camera is turned into the plant');
     bits.push(`the pink parcel (${face} on the label) is ${where}`);
     if (w.brown === 'shelf') bits.push(`Bob's plain brown parcel (${w.parcelFor === 'bob' ? 'your' : 'his'} face on the label) is on the parcel shelf`);
-    if (w.plug === 'out') bits.push("the monitor's plug hangs out of the power strip");
+    if (w.plug === 'out') bits.push("the camera's plug hangs out of the power strip");
     if (w.broom === 'stand') bits.push('a broom on its wall clip in the store room');
     if (floor.length) bits.push(`on the floor: ${floor.join(', ')}`);
     return `WORLD: ${bits.join('; ')}`;
@@ -100,7 +100,7 @@ export default {
       case 'meeting:gather': return 'Lin and Bob head to your office for the mail call 📬';
       case 'bob:suspicious': return 'Bob eyes you ❓ (a meter over his head starts filling)';
       case 'bob:workAssigned': return `Bob sat you at your desk with work 📄 (${p.reason})`;
-      case 'camera:unplugged': return "you pulled the monitor's plug: Bob's screen is static";
+      case 'camera:unplugged': return "you pulled the camera's plug: its light is out and Bob's screen is static";
       case 'camera:pushed': return 'clunk: the camera swivels into the plant and sticks; the monitor shows one giant leaf 🪴';
       case 'camera:blind': return null;
       case 'bob:static': return 'Bob frowns at the static 📺❓ and gets up';
@@ -110,7 +110,7 @@ export default {
       case 'bob:gave_up': return "Bob can't shift it: he leaves it for facilities, tomorrow";
       case 'bob:checked': return 'the camera looks fine to Bob 📹❓';
       case 'bob:tracing': return 'Bob follows the cable to the power strip 🔌';
-      case 'camera:replugged': return 'Bob plugged the monitor back in 😊';
+      case 'camera:replugged': return 'Bob plugged the camera back in 😊';
       case 'broom:taken': return 'you took the broom';
       case 'broom:returned': return 'you put the broom back';
       case 'parcel:swapped': return "you swapped the labels: Bob's face on the pink box, yours on his brown one; both back on the shelf";
@@ -120,7 +120,7 @@ export default {
       case 'parcel:found': return `${name(p.by)} picks up the pink box and reads the label`;
       case 'parcel:spotted_on_you': return `${name(p.by)} sees the pink box in your arms and exclaims over it out loud`;
       case 'parcel:collected': return p.for === 'bob' ? "Lin collects both boxes: the pink one has Bob's face on it, the brown one yours" : "Lin collects both boxes: Bob's brown one, and the pink one with your face on it";
-      case 'parcel:missing': return "Lin collects Bob's brown box; no pink box today 💝❓";
+      case 'parcel:missing': return "Lin collects Bob's brown box; no pink box on the shelf, and she doesn't miss it";
       case 'parcel:handed': return 'Lin hands Bob the box with his face on it';
       default: return undefined;
     }

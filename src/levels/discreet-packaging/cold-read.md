@@ -47,66 +47,47 @@ Neither the name nor the card mentions the camera, the plug, the broom or the la
 
 <!-- /cold-read:title -->
 
-<!-- cold-read:sense {"verdict":"fixable","date":"2026-11-15","commit":"ed5d617","hash":"8c6007da61fc88fa7ce242cca2530f3b8095675f2cbf95586d951dc846d0ba8c","parts":{"card":"0f72f49484f12e3a66f1e4bcbd3a390eafc25540e5d28773447dc323d666ee91","ways":"29edd1f1b864f0abcf5d82810671de146e085d5addab10d55f423943c9ecd045","prompts":"016aa683a72d416a002d56cc4d9abc6f52045f2ad4e6f1862e5593ed8c3882bb"},"model":"default","tally":{"sensible":9,"stretch":2,"nonsense":0},"problems":{"blocker":1,"should":2,"nit":1}} -->
-## sense: fixable
-Recorded 2026-11-15 at commit ed5d617, by claude -p (model: default). Inputs 8c6007da61fc: the card, premise.md's ways to win and lose, the pass's prompts.
+<!-- cold-read:sense {"verdict":"works","date":"2026-11-15","commit":"874a967","hash":"a3b32b4e493ce6d4fb7c92cb6871b7880a74ad6ee2b6f2ce5291f23484ac80cb","parts":{"card":"0f72f49484f12e3a66f1e4bcbd3a390eafc25540e5d28773447dc323d666ee91","ways":"28a60883ce2929ad8b4ea2268e4cc77337f1e5d99cecad70566d1853831a6153","prompts":"4efae5d3d9191596f5720cdf7e7483eea858a949c44cf5579c3f9b7d49f613b3"},"model":"default","tally":{"sensible":9,"stretch":2,"nonsense":0},"problems":{"blocker":0,"should":4,"nit":1}} -->
+## sense: works
+Recorded 2026-11-15 at commit 874a967, by claude -p (model: default). Inputs a3b32b4e493c: the card, premise.md's ways to win and lose, the pass's prompts.
 Items: 9 sensible, 2 stretch, 0 nonsense.
-Problems: 1 blocker, 2 should, 1 nit.
-Earlier problems: 7 fixed, 0 still there, 0 no longer applies.
+Problems: 0 blocker, 4 should, 1 nit.
 
 | Step | Reply | Time | Cost |
 |---|---|---|---|
-| 1-judge | report.md | 57 s | $0.14 |
-| all | | 57 s (the steps add up to 57 s) | $0.14 |
-
-### Ledger
-The earlier record's open problems, as this run's reader marked them.
-
-- E1 fixed: Lin takes the box off you when she sees you carrying it. It's your own parcel, and she'd never take it. — Have her react out loud instead ("Ooh, hearts! From your mum?"), so heads turn and you go red. That way you lose by being seen, which fits the theme. (Lin now asks about the box out loud. She doesn't take it.)
-- E2 fixed: In "Hidden, and you're not there," Lin and Bob point at your empty chair. The ways say nobody misses a parcel they didn't know about. And if Lin did know about it, the obvious reading is that you picked it up. — Cut this loss, so being away with the box hidden simply wins. Or, if a lose is needed: Lin, who signed for the parcel, phones your desk and announces "your pink parcel" across the office. (if you're away and the box is hidden, Lin just shrugs at your empty chair. That's a win.)
-- E3 fixed: After the poke, Bob is happy that his camera shows only a leaf all day. Someone paid to watch the pigeonholes would at least grumble. — He grumbles, finds the camera is too high to reach, and leaves it for facilities "tomorrow." It stays in the plant for the same reason, but the motive is real. (Bob is cross, tugs at the camera, can't free it and leaves it for facilities.)
-- E4 fixed: Bob's role is unclear. He's "a real guard" in the camera section, but he sets you work and his reaction to the swap reads as a boss's. — Make him plainly the boss who keeps the pigeonhole monitor on his counter. (Bob is now plainly the boss and manager.)
-- E5 fixed: Pulling a plug right behind a seated Bob. — Put the power strip under the counter's far end, or have him turned to his monitor with headphones on. (Bob faces the lobby, and easing a plug out makes no sound.)
-- E6 fixed: "Nobody ever goes into the mailroom," yet the mail clerk's broom hangs there. — Make it a supply cupboard Lin has no reason to open before 4:00. (the broom is in a store room that nobody opens before 6.)
-- E7 fixed: Lin, a mail clerk, "tells on you" for sneaking. — Have her mention it to Bob in passing ("Your lot are acting odd today"), which fills his ❓ meter. (Lin now calls out in surprise and Bob overhears. She no longer goes and tells on you.)
+| 1-judge | report.md | 57 s | $0.12 |
+| all | | 57 s (the steps add up to 57 s) | $0.12 |
 
 ### Open problems
 The blockers and shoulds, carried to the next run's reader as earlier.md.
 
-- E1 [blocker] When the monitor's plug is pulled, it goes dark. A dark screen says "monitor", and the plug is right by Bob's counter, so no real boss walks to the back office to thump the camera first. — Make the plug the camera's: its power runs from the strip by the counter. The monitor then shows "no signal"/static, and blaming the camera is the natural guess. Also cut the thumping to about a minute. Three and a half minutes is longer than anyone keeps hitting a camera.
-- E2 [should] In "Bob gets it", Bob was expecting his brown box. At the mail call he'd see Lin hand it to you and say "that's mine". — Have Lin call Bob's name first, so he's lost in the hearts box while she hands the brown one to you. Or have him expecting nothing today, so the brown box is an unplanned delivery.
-- E3 [should] Lin's `empty-pigeonhole` shot (pink box, ?) shows she knew about the parcel. But the route's reasoning is "nobody misses a parcel they never knew about". A post person who knew about it would at most think "must have collected it". — Show her thinking that (box, tick), not a question mark. Or drop the thought bubble so she never knew.
+- E1 [should] When the monitor goes to static, a real person first jiggles the cables at their own monitor. Walking to the camera only makes sense if Bob can see the camera's light is out from his counter, and ways.md never says he can. — Say the camera's light is visible from the counter, or have Bob check the monitor's own cables first and then go to the camera.
+- E2 [should] In the plug route you take the box, and possibly peel and swap two labels, a few steps behind Bob while he's in the same room. A grab-and-go behind someone absorbed in a gadget works. Several seconds of peeling labels behind him is a stretch. — Have Bob hunt for the fault somewhere out of the room (a fuse box, or calling facilities from the lobby), or make sure the shelf is out of his line of sight while he thumps the camera.
+- E3 [should] Bob gives up on the camera even though the broom or a chair would free it. — Have him try the broom from the floor or stand on a chair, fail because it's wedged deep in the plant, and mutter "facilities." Or have him call facilities, who say tomorrow. Either way it still stays stuck today.
+- E4 [should] Nothing says who put the parcel in the pigeonholes. If Bob, at the counter, signed for it, he has already seen it, and the "she never knew there was a pink one" logic breaks for him. — Say the courier dropped it straight into the back office, or that it was in the morning post that nobody sorted.
 
 ### 1-judge: report.md
 
-Verdict: fixable
+Verdict: works
 
-- Pull the plug (blind, both routes) (win): stretch — a monitor with its plug pulled goes black, not static, and the plug is at Bob's own feet, so a real boss checks there first.
-- Poke the camera into the plant (blind, both routes) (win): sensible — a knocked camera stuck near the ceiling that the manager can't free gets left for facilities.
-- 1. Bob gets it (win): stretch — swapping labels is just paperwork, but Bob is waiting for his own brown box and would see it handed to you.
-- 2. No parcel today (win): sensible — you quietly take your own parcel. The post person has nothing for you and shrugs.
-- The mail call (lose): sensible — Lin holds up a pink heart box with your name on it. That's exactly what she'd do.
-- The mail call, and you're not there (lose): sensible — she holds it up by your empty chair and the whole office looks.
-- Caught on camera (lose): sensible — the boss sees you on his monitor with the hearts box, or with a broom aimed at his camera.
-- Caught in person (lose): sensible.
-- Found (lose): sensible — a box in the corridor gets picked up and its label read.
-- Spotted (lose): sensible — a coworker who sees a pink heart parcel says something out loud.
-- Twenty minutes of work (lose): sensible — a boss gives work to someone hanging about doing nothing.
-
-## Earlier problems
-- E1: fixed — Lin now asks about the box out loud. She doesn't take it.
-- E2: fixed — if you're away and the box is hidden, Lin just shrugs at your empty chair. That's a win.
-- E3: fixed — Bob is cross, tugs at the camera, can't free it and leaves it for facilities.
-- E4: fixed — Bob is now plainly the boss and manager.
-- E5: fixed — Bob faces the lobby, and easing a plug out makes no sound.
-- E6: fixed — the broom is in a store room that nobody opens before 6.
-- E7: fixed — Lin now calls out in surprise and Bob overhears. She no longer goes and tells on you.
+- Pull the plug (camera blinder): stretch. Pulling a plug quietly and the camera thump both ring true. But the window only opens while Bob is standing in the back office with his back turned, a few steps from the shelf.
+- Poke the camera into the plant (camera blinder): stretch. A knocked camera with nobody watching is believable. A boss giving up without trying a chair, or the broom you just used, is a little convenient.
+- 1. Bob gets it (win): sensible. Whoever hands out the post goes by the label. Bob in tears is an absurd result, and the method is ordinary.
+- 2. No parcel today (win): sensible. Nobody misses a parcel they didn't know about. The drawer and the store room are both places nobody looks.
+- The mail call (lose): sensible. Calling out a parcel at mail call is exactly what happens.
+- The mail call, and you're not there (lose): sensible. Lin announcing a parcel for someone who isn't there is normal. Holding it up to an empty chair is just staging.
+- Caught on camera (lose): sensible. A boss watching his monitor would point at someone fiddling with parcels or poking his camera.
+- Caught in person (lose): sensible. Bob notices a pink box carried right past him.
+- Found (lose): sensible. Anyone picks up a stray box in the corridor and reads the label.
+- Spotted (lose): sensible. A coworker spotting a box covered in hearts asks about it loudly; that's how people are.
+- Twenty minutes of work (setback): sensible. A boss handing busywork to someone loitering is very real.
 
 ## Problems
-- blocker: When the monitor's plug is pulled, it goes dark. A dark screen says "monitor", and the plug is right by Bob's counter, so no real boss walks to the back office to thump the camera first. — Make the plug the camera's: its power runs from the strip by the counter. The monitor then shows "no signal"/static, and blaming the camera is the natural guess. Also cut the thumping to about a minute. Three and a half minutes is longer than anyone keeps hitting a camera.
-- should: In "Bob gets it", Bob was expecting his brown box. At the mail call he'd see Lin hand it to you and say "that's mine". — Have Lin call Bob's name first, so he's lost in the hearts box while she hands the brown one to you. Or have him expecting nothing today, so the brown box is an unplanned delivery.
-- should: Lin's `empty-pigeonhole` shot (pink box, ?) shows she knew about the parcel. But the route's reasoning is "nobody misses a parcel they never knew about". A post person who knew about it would at most think "must have collected it". — Show her thinking that (box, tick), not a question mark. Or drop the thought bubble so she never knew.
-- nit: In the start shot, Bob smiles when the plant drifts into his picture. That's an odd thing for a real boss to like, and it clashes with how cross he gets after the poke. — Give him a neutral glance, or have him nod at the plant he waters.
+- should: When the monitor goes to static, a real person first jiggles the cables at their own monitor. Walking to the camera only makes sense if Bob can see the camera's light is out from his counter, and ways.md never says he can. — Say the camera's light is visible from the counter, or have Bob check the monitor's own cables first and then go to the camera.
+- should: In the plug route you take the box, and possibly peel and swap two labels, a few steps behind Bob while he's in the same room. A grab-and-go behind someone absorbed in a gadget works. Several seconds of peeling labels behind him is a stretch. — Have Bob hunt for the fault somewhere out of the room (a fuse box, or calling facilities from the lobby), or make sure the shelf is out of his line of sight while he thumps the camera.
+- should: Bob gives up on the camera even though the broom or a chair would free it. — Have him try the broom from the floor or stand on a chair, fail because it's wedged deep in the plant, and mutter "facilities." Or have him call facilities, who say tomorrow. Either way it still stays stuck today.
+- should: Nothing says who put the parcel in the pigeonholes. If Bob, at the counter, signed for it, he has already seen it, and the "she never knew there was a pink one" logic breaks for him. — Say the courier dropped it straight into the back office, or that it was in the morning post that nobody sorted.
+- nit: With you not there, Lin would usually just put a parcel on your desk rather than hold it up to an empty chair. — Have her leave it on your desk, pink and plain for everyone to see. That's the same loss and more natural.
 
 <!-- /cold-read:sense -->
 

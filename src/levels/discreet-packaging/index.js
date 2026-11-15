@@ -6,7 +6,7 @@
 // camera on the wall sweeps the back office, and he watches its monitor.
 //
 // Lesson: you can be seen from somewhere else. The camera (src/sim/mechanics/camera.js) counts as Bob's eyes while
-// he watches the screen. Pull the monitor's plug and the screen turns to static: Bob walks over to the camera, gives
+// he watches the screen. Pull the camera's plug and its picture goes to static: Bob walks over to the camera, gives
 // it a whack, then follows the cable to the power strip. Poke the camera with the broom (while it sweeps the other
 // way) and it swivels into the potted plant for the rest of the day: the monitor shows one giant leaf. Bob grumbles,
 // goes to tug it free, can't shift it (it is up high and jammed), and leaves it for facilities tomorrow.
@@ -28,7 +28,7 @@ import gate from './gate.js';
 // 30 x 17. Your office (west), the corridor (north), the back office behind the counter (middle), the store room
 // (east), the lobby (south). Bob sits behind the counter facing the lobby, his monitor on the counter.
 //   P your desk   Q/S the pigeonholes, S the parcel shelf (your parcel)   C the camera, on the wall over the back office
-//   F the potted plant in the corner beside it   O the power strip with the monitor's plug   M Bob's monitor
+//   F the potted plant in the corner beside it   O the power strip with the camera's plug    M Bob's monitor
 //   B the broom   E the lobby's glass front door
 const MAP = [
   '##############################', // 0
@@ -68,7 +68,7 @@ const SPOTS = {
   bob_desk: { x: 16, y: 9, face: 'S' }, // behind the counter, his monitor in front of him, the lobby beyond
   pigeonholes: { x: 14, y: 8, face: 'W' }, // where Lin collects the mail
   camera: { x: 19, y: 5, face: 'N' }, // right under the camera: Bob whacks it from here, you poke it from here
-  socket: { x: 20, y: 8, face: 'S' }, // Bob plugs the monitor back in from here
+  socket: { x: 20, y: 8, face: 'S' }, // Bob plugs the camera back in from here
   corridor: { x: 16, y: 2, face: 'S' },
   mailroom: { x: 25, y: 7, face: 'E' },
   lobby: { x: 9, y: 13, face: 'N' },
@@ -108,7 +108,7 @@ const blind = (game, how) => {
 
 const INTERACTIONS = {
   unplug: {
-    on: 'socket', text: "pull the monitor's plug out of the power strip", duration: 0.8, sneaky: true, saw: '🔌',
+    on: 'socket', text: "pull the camera's plug out of the power strip", duration: 0.8, sneaky: true, saw: '🔌',
     can: (p, w) => w.plug === 'in',
     done(game, a) {
       game.world.plug = 'out';
@@ -341,7 +341,7 @@ export default {
     //                  | 'bob' (she handed it to him) | 'found' (someone picked it up off the floor)
     //                  | 'spotted' (in your arms, and Lin saw it: still yours, but everyone knows)
     parcelFor: 'player', // whose face is on the label: 'player' | 'bob'
-    plug: 'in', // the monitor's plug: 'in' | 'out'
+    plug: 'in', // the camera's plug: 'in' | 'out'
     camChecked: false, // Bob has given the camera its whack (and goes for the plug next)
     whackProgress: 0,
     tugProgress: 0,

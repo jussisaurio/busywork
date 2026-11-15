@@ -31,7 +31,7 @@ export const DECOR = {
     { tile: 'Q', draw: pigeonholes, state: pigeonholesState }, // Bob's brown box and your pink one on the shelf
     { tile: 'M', draw: monitor, state: monitorState }, // Bob's screen: the back office, one leaf, or static
     { tile: 'C', draw: wallCamera, state: wallCameraState }, // turned where it looks; askew in the plant once poked
-    { tile: 'O', draw: socket, state: socketState }, // the monitor's plug in the power strip, or hanging out
+    { tile: 'O', draw: socket, state: socketState }, // the camera's plug in the power strip, or hanging out
     { tile: 'B', draw: broomStand, state: broomState }, // and the store room's cobwebs and dust
     { tile: 'P', draw: drawer, state: drawerState }, // your drawer: open only while you stuff the box in
   ],
@@ -115,7 +115,6 @@ export const SOUNDS = {
     'parcel:spotted': { sfx: 'tension' },
     'parcel:found': { sfx: 'notice' },
     'parcel:spotted_on_you': { sfx: 'notice' },
-    'parcel:missing': { sfx: 'crickets' },
   },
   drops: { parcel: 'soft', broom: 'card' },
 };

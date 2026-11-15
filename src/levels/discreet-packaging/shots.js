@@ -27,12 +27,12 @@ export default [
   {
     name: 'power-strip',
     cmds: ['goto socket pretend', 'wait 0.3s'],
-    intent: "Out of the camera's cone, by the counter, a power strip with the monitor's plug in it; it lights up (E) to pull.",
+    intent: "Out of the camera's cone, by the counter, a power strip on the floor; a cable runs from it up the wall to the camera, and its plug lights up (E) to pull.",
   },
   {
     name: 'static',
     cmds: [...UNPLUG, 'wait 0.8s'],
-    intent: "The plug hangs out of the power strip. Bob's monitor shows grey static, its cone a faint dashed grey; Bob frowns at it (a snowy screen, ?) and gets up.",
+    intent: "The camera's plug hangs out of the power strip and the camera's red light is out. Bob's monitor shows grey static, its cone a faint dashed grey; Bob frowns at it (a snowy screen, ?) and gets up.",
   },
   {
     name: 'bob-thumps-the-camera',
@@ -42,7 +42,7 @@ export default [
   {
     name: 'bob-plugs-it-back',
     cmds: [...UNPLUG, 'goto corridor pretend', 'pretend until 3:30', 'wait 0.4s'], // the plug goes back in at 3:30.5
-    intent: 'Bob has given up on the camera and walks to the power strip: he has worked it out (plug, !). The monitor still shows static, but not for long.',
+    intent: "Bob has spotted the camera's cable (plug, !) and follows it down the wall to the power strip. The monitor still shows static, but not for long.",
   },
   {
     name: 'broom-on-its-clip',
@@ -87,7 +87,7 @@ export default [
   {
     name: 'empty-pigeonhole',
     cmds: [...DRAWER, 'sit', 'pretend until 3:53', 'wait 1.7s'],
-    intent: "Lin has only Bob's brown box: no pink box on the shelf today (pink box, ?). You sit at your desk, its drawer shut.",
+    intent: "At the pigeonholes Lin picks up only Bob's brown box: no pink box on the shelf today, and she doesn't miss it. You sit at your desk, its drawer shut.",
   },
   {
     name: 'mail-call-shrug',
