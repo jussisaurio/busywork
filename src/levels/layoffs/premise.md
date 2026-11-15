@@ -80,7 +80,8 @@ Steps, the same for both routes:
 1. Wait until Kev has gone home (about 3:15). Until then the boss wants Kev: if you try the cable while the
    static is on, he waves you off (🙅, then Kev's face).
 2. At 3:26 the static comes back, and nobody answers the phone. Before he gives up (3:31), go into his office,
-   kneel behind his desk where Kev knelt, and start on the cable ("plug his cable back in", 4 seconds).
+   kneel behind his desk where Kev knelt, and start on the cable ("plug his cable back in": 4 seconds of play, a couple of minutes on the office clock, with
+   the plug behind the desk and the screen still dead).
 3. As you start, he has had enough: 😤 at the static, then ☕ 👉 you. Fix it, he is getting a coffee. He hangs up on Kev's empty desk,
    gets up and walks out to the kitchen while the screen is still dead.
 4. The screen comes back on after he has gone, and the list is open on it. He locked his screen at 3:11 because
@@ -130,7 +131,7 @@ twice today when the boss called it. You look long enough to see nobody is there
 | A ring at Kev's desk turns Lin round | 3:01, and 3:26 | The ringing phone (rings spread from it), and Lin turned round to it |
 | His phone calls Kev's desk | 3:01, 3:26 | The boss's bubble: ☎️ and Kev's face, then Kev's phone rings |
 | The edit shows | whenever you edit | The sheet pops out big and a red line crosses out your face |
-| He sends what is on the screen | 3:42 to 3:45 | The head count: he ticks the faces on the list (✔️ by your face if you are on it, 📋✔️ if not), then clicks send |
+| He sends what is on the screen | 3:42 to 3:45 | The head count: he ticks the faces on the list (✔️ by your face if you are on it; if not, a frown at the short sheet and a shrug, 📋🤨🤷), then clicks send |
 | Why Lin tells | if she sees you edit | Her thought: the list, her own face, 😨. Then she gets up and walks to the boss to tell him |
 
 ## Why a real boss would fall for it
@@ -165,8 +166,7 @@ edit, the sheet comes up big and a red line goes through your face, in plain vie
   door, she points you out (👉 you, 🖥️). He leaves the coffee,
   walks back to his screen and looks (😠): your face pops back onto the list, and he locks the screen (🔒). Then he
   turns round and comes for you. When he sees you, he catches you (❗👉 you). Card: the same as caught by the boss.
-  If you hide where he cannot see you, he waits by your desk; at 3:42 he points at your empty desk (👉 you 😠) and
-  sends the list with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
+  If you keep out of his sight, he is still looking for you at 3:45, and the list goes with your face on it. In a real office: a coworker who has just escaped the list and sees the gap
   it would leave tells the boss, to keep her own name off it. A boss told that someone is editing his layoff list
   comes back, looks, puts it right, locks it, and goes to find the person.
 - **Caught by the boss.** He walks back with his coffee while you are taking your face off. ❗😠, his red line on
