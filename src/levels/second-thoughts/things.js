@@ -117,6 +117,16 @@ export function paintPhone(ctx, x, y, s = 1, lit = true) {
   return { x, y: y - 3 * s };
 }
 
+// decor.things (render/things.js calls them as (ctx, x, y, size)), for the end cards, where render/characters.js puts
+// them in a hand: his tray, empty (he holds it up at 3:40), and a phone held up as a torch. `size` is how big an
+// emoji there would be.
+export function trayThing(ctx, x, y, size) {
+  paintTray(ctx, x, y, false, size / 12);
+}
+export function phoneThing(ctx, x, y, size) {
+  paintPhone(ctx, x, y, size / 12);
+}
+
 // decor.props painter on the coffee machine: shown { smoke, brewing }. smoke: it blew the fuse and the power is still
 // out. Smoke curls up off its back and its scorched socket glows, so in Lin's torchlight it is plain what took the
 // floor down. brewing: the power is back and the machine runs what it was switched on for: its brew lamp glows green.

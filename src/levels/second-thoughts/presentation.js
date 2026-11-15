@@ -3,7 +3,7 @@
 // read-only).
 import { C } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
-import { trayProp, smokeProp } from './things.js';
+import { trayProp, smokeProp, trayThing, phoneThing } from './things.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -55,6 +55,8 @@ export const DECOR = {
     { tile: 'M', draw: 'carafe', state: () => ({ full: false }) },
     { tile: 'M', draw: smokeProp, state: (w) => ({ smoke: w.coffee === 'tripped' && w.fuse !== 'on', brewing: w.coffee === 'tripped' && w.fuse === 'on' }) },
   ],
+  // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
+  things: { tray: trayThing, phone: phoneThing },
   desks: {
     player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
   },

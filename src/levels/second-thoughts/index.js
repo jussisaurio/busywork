@@ -239,9 +239,10 @@ export default {
     override: 'meeting', room: 'floor', chair: 'player_desk', presenter: 'in_front',
     verdict: (game, { result }) => (result === 'blamed' ? { result: 'win' } : null),
   },
+  // A route's icon names your move: you flip his light 💡, you wait for Lin's blackout ⏳, you pull the breaker ⚡.
   routes: [
     { id: 'switch', icon: '💡', achieved: (w) => gotIt(w) && w.snatched === 'switch' },
-    { id: 'blackout', icon: '☕', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
+    { id: 'blackout', icon: '⏳', achieved: (w) => gotIt(w) && w.snatched === 'blackout' },
     { id: 'breaker', icon: '⚡', achieved: (w) => gotIt(w) && w.snatched === 'breaker' },
   ],
   outcomeOrder: ['breaker', 'blackout', 'switch'],
