@@ -8,9 +8,10 @@ live next to its code: level 1 is `src/levels/meeting/LEVEL.md`. To build a leve
 the data shapes, read `CONTRACTS.md`.
 
 ## The loop
-- Every level starts at 2:30 PM, with you seated at your desk. The day ends at the level's deadline
-  (`day.meetingAt`, called "the meeting" in the code whatever it is). Game time runs at 0.6 game minutes per real
-  second, so a 90-minute afternoon takes 2.5 real minutes.
+- Every level is one short stretch of a workday. It starts with you seated at your desk, at the level's start time
+  (`day.start`, 2:30 PM by default), and ends at the level's deadline (`day.meetingAt`, called "the meeting" in the
+  code whatever it is). Game time runs at 0.6 game minutes per real second, so a 90-minute afternoon takes 2.5 real
+  minutes. Keep a loop at 90 game minutes or less: the player replays it many times.
 - Each loop is identical. The same inputs give the same day, so the player can learn what happens and when.
 - Only the player's knowledge, the loop counter and the routes found carry over. Each level keeps its own routes.
 

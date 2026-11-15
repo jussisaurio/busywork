@@ -18,10 +18,9 @@ out. Game-wide rules (pretending, suspicion, tattling, outcomes) are in `DESIGN.
 | `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt (a hunt), the boss's lockout (a door) |
 | `behaviours.js` | hooks: `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
+| `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
 | `decor.js`, `looks.js`, `end-scenes.js`, `sounds.js`, `voices.js` | presentation |
 | `golden.json`, `golden-render.json` | recorded by the tools |
-
-`tools/routes.mjs` holds level 1's scripted speedruns (a win per route, the combo, and the near misses).
 
 ## The cast
 - **Boss** 👔 (navy suit, wide). The authority. His office has glass walls (south and east), top left. His jacket,
