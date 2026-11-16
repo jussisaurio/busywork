@@ -5,7 +5,7 @@ import { T } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
 import { listShown, drawListScreen } from './list.js';
 import { END_SCENES } from './end-scenes.js';
-import { kevbag, handset, deskPhone, mobile, socket } from './painters.js';
+import { kevbag, handset, pwstar, enterkey, deskPhone, mobile, socket } from './painters.js';
 import { SECS } from './cast.js';
 
 export { END_SCENES };
@@ -47,7 +47,7 @@ export const DECOR = {
   cabinets: { x0: 21, x1: 23, y: 0 },
   clock: { x: 17, y: 6 },
   props: [
-    // His screen: the layoff list, a row of faces, yours framed in red; static while his cable is loose, a padlock
+    // His screen: the layoff list, a row of faces, yours framed in red; black while its cable is loose, a padlock
     // while he's in the restroom (list.js).
     { tile: 'Q', draw: drawListScreen, state: listShown },
     { tile: 'W', draw: drawCable, state: (w) => w.glitch }, // the plug half out of the floor socket behind his desk
@@ -55,7 +55,7 @@ export const DECOR = {
     { tile: 'V', draw: drawKevDesk, state: kevDesk }, // his desk phone; his screen off once he's gone home
     { tile: 'M', draw: drawLinMobile, state: linMobile }, // her mobile on her desk, buzzing now and then
   ],
-  things: { kevbag, handset },
+  things: { kevbag, handset, pwstar, enterkey },
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
   deskOwners: ['lin_desk', 'kev_desk'],
   desks: {
@@ -73,16 +73,22 @@ export const DECOR = {
   legendAt: { x: 20, y: 15.5 },
 };
 
-// The boss's cable, from the back of his desk down to the floor socket behind it (W, row 2), drawn big enough to read
-// across the floor: the plug half out and sparking while his screen is static, pushed home once it's fixed.
+// His monitor's cable, from behind the screen down to the floor socket behind his desk (W, row 2), drawn big enough to
+// read across the floor: the plug half out and sparking while his screen is black, pushed home once it's fixed.
 const SOCKET_ZOOM = 1.7;
+const MONITOR = { x: 5, y: 3 }; // Q in the map (index.js)
 function drawCable(ctx, info, at, out, t) {
   const sx = at.x * T + T / 2;
   const sy = at.y * T + T / 2 + 2;
   ctx.save();
   ctx.translate(sx, sy);
   ctx.scale(SOCKET_ZOOM, SOCKET_ZOOM);
-  socket(ctx, (T * 0.9) / SOCKET_ZOOM, (T * 0.55) / SOCKET_ZOOM, -3, 0, out);
+  // The cable's other end goes in at the left edge of his monitor (Q, three tiles right and a row down), arching over
+  // the back of the desk past his phone, so the plug reads as the screen's.
+  const z = (v) => v / SOCKET_ZOOM;
+  const mx = MONITOR.x * T + T / 2 - 24 - sx;
+  const my = MONITOR.y * T + 1 - sy;
+  socket(ctx, z(mx), z(my), -3, 0, out, { x: z(4.4 * T - sx), y: z(2.7 * T - sy) });
   if (out && Math.floor(t * 6) % 3 !== 0) { // sparks off the bare prongs
     ctx.strokeStyle = '#ffd84a';
     ctx.lineWidth = 0.8;
@@ -149,7 +155,8 @@ export const POSES = {
     { when: (n, w, g) => n.id === 'boss' && w.bossPhoneUntil != null && g.clock.minute < w.bossPhoneUntil, arms: 'phone', item: '#handset' },
     { when: (n, w) => n.id === 'boss' && w.coffee === 'done' && n.override !== 'brewing', arms: 'mug' }, // his cup, all the way back
     { when: (n, w) => n.id === 'boss' && !n.moving && w.pc === 'kev', arms: 'shrug' }, // standing over Kev
-    { when: (n, w) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving && !n.override, arms: 'bang' }, // at the static
+    { when: (n, w, g) => n.id === 'boss' && w.loginUntil != null && g.clock.minute < w.loginUntil && n.pose === 'sit' && !n.moving, arms: 'type' }, // his password, into the black
+    { when: (n, w, g) => n.id === 'boss' && w.glitch && n.pose === 'sit' && !n.moving && !n.override && !(w.thumpFrom != null && g.clock.minute < w.thumpFrom), arms: 'bang' }, // at the black screen
     { when: (n, w) => n.id === 'lin' && w.linPhone === 'hand', arms: 'phone' }, // reading her mobile, turned away
   ],
   marks: [],
@@ -184,7 +191,8 @@ export const SOUNDS = {
   events: {
     'boss:suspicious': { sfx: 'tension', who: 'boss' },
     'boss:workAssigned': { sfx: 'workAssigned' },
-    'pc:actsUp': { sfx: 'bang', who: 'boss' },
+    'boss:key': { sfx: 'key', who: 'boss', opts: { gain: 4 } }, // his password, a clack per asterisk
+    'boss:enter': { sfx: 'key', who: 'boss', opts: { space: true, gain: 9 } }, // and the Enter, hard
     'pc:fixed': { sfx: 'fixed', who: 'kev' },
     'pc:fixedByYou': { sfx: 'fixed', who: 'player' },
     'pc:pulled': { sfx: 'bang', who: 'player' },

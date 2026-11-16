@@ -96,10 +96,14 @@ function popOf(w, game, into) {
 const easeInCubic = (x) => x * x * x;
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
-const SHOWN = { glitch: false, locked: false, jolt: 0, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
+const POWER_ON = 0.3; // game minutes, half a second
+const SHOWN = { glitch: false, on: 0, locked: false, jolt: 0, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
   SHOWN.locked = !!w.locked && !w.glitch;
+  // Plugged back in: the screen blinks on (white, fading) straight onto whatever the PC behind it was doing. 1 → 0.
+  const on = w.listUpAt == null ? Infinity : game.clock.minute - w.listUpAt;
+  SHOWN.on = !w.glitch && on >= 0 && on < POWER_ON ? 1 - on / POWER_ON : 0;
   // You tried his locked screen (index.js try_locked): the padlock jolts and flashes red for a moment. 1 → 0.
   const since = w.lockJolt == null ? Infinity : game.clock.minute - w.lockJolt;
   SHOWN.jolt = since < 0.45 ? 1 - since / 0.45 : 0;
@@ -139,14 +143,8 @@ export function drawListScreen(ctx, info, at, shown, t) {
   ctx.rect(sx, sy, sw, sh);
   ctx.clip();
   if (shown.glitch) {
-    const f = Math.floor(t * 14);
-    for (let j = 0; j < sh; j += 2) {
-      for (let i = 0; i < sw; i += 2) {
-        const g = Math.round(70 + 150 * hash(i, j, f));
-        ctx.fillStyle = `rgb(${g},${g},${g})`;
-        ctx.fillRect(sx + i, sy + j, 2, 2);
-      }
-    }
+    ctx.fillStyle = '#0b0c0e'; // the monitor's off: plain black, the PC behind it still running
+    ctx.fillRect(sx, sy, sw, sh);
   } else {
     ctx.fillStyle = '#2d5a78'; // the desktop behind the sheet
     ctx.fillRect(sx, sy, sw, sh);
@@ -175,6 +173,10 @@ export function drawListScreen(ctx, info, at, shown, t) {
     }
   }
   if (shown.locked) drawLock(ctx, sx, sy, sw, sh, shown.jolt);
+  if (shown.on > 0) {
+    ctx.fillStyle = `rgba(255,255,255,${(0.95 * shown.on).toFixed(3)})`;
+    ctx.fillRect(sx, sy, sw, sh);
+  }
   ctx.fillStyle = 'rgba(255,255,255,0.10)'; // glare
   ctx.beginPath();
   ctx.moveTo(sx, sy);
@@ -183,7 +185,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
   ctx.closePath();
   ctx.fill();
   ctx.restore();
-  fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#c0392b' : '#7be08a');
+  fillCircle(ctx, x + MON_W - 4, top + MON_H - 1.6, 0.9, shown.glitch ? '#1a1a1a' : '#7be08a'); // the power light: dark while it's unplugged
   if (shown.pop && shown.popK > 0) drawPop(ctx, sx, sy, sw, sh, shown, t);
 }
 

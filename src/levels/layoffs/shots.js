@@ -15,7 +15,7 @@ export default [
   {
     name: 'start',
     cmds: ['pretend until 3:00.5'],
-    intent: "3:00. You at your desk on the open floor; nothing near you to use. Behind glass, the boss at his desk is angry at his computer: its screen is static. Behind his desk, on the floor, a socket with the plug hanging out of it, sparking.",
+    intent: "3:00. You at your desk on the open floor; nothing near you to use. Behind glass, the boss at his desk is angry at his computer: its screen is plain black, the monitor off. Behind his desk, on the floor, a socket with the plug of the monitor's cable hanging out of it, sparking.",
   },
   {
     name: 'boss-rings-kev',
@@ -30,12 +30,12 @@ export default [
   {
     name: 'kev-kneels',
     cmds: ['pretend until 3:06'],
-    intent: "Kev kneels behind the boss's desk at the floor socket, pushing the plug in (a plug in his bubble). The boss stands aside, watching. His screen is still static.",
+    intent: "Kev kneels behind the boss's desk at the floor socket, pushing the plug in (a plug in his bubble). The boss stands aside, watching. His screen is still black.",
   },
   {
     name: 'list-pops',
     cmds: ['pretend until 3:08.6'],
-    intent: "Fixed: the static is gone and what's on the boss's screen pops out big beside it: a white sheet with a red title bar and a row of faces, yours in a throbbing red frame. You're on the list (your own frightened thought). Lin, through the glass, is frightened too.",
+    intent: "Fixed: the screen blinks on and what's on the boss's screen pops out big beside it: a white sheet with a red title bar and a row of faces, yours in a throbbing red frame. You're on the list (your own frightened thought). Lin, through the glass, is frightened too.",
   },
   {
     name: 'lin-relieved',
@@ -70,32 +70,42 @@ export default [
   {
     name: 'you-pull-the-plug',
     cmds: [...PULL, 'wait 0.3s'],
-    intent: "The boss is in the restroom. You've crept behind his desk and yanked his plug out of the floor socket: it hangs out, sparking, and his screen has gone to static. A bang.",
+    intent: "The boss is in the restroom. You've crept behind his desk and yanked his monitor's plug out of the floor socket (its cable runs from the back of his screen down to the socket): it hangs out, sparking, and his screen has gone plain black, its power light dark. A bang.",
   },
   {
     name: 'types-blind',
     cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:22.9'],
-    intent: "You're back at your desk. The boss is back from the restroom, at his desk, and his screen is static again (behind him the plug you pulled hangs out, sparking). He types at it anyway (a keyboard over his head): his password, into the static.",
+    intent: "You're back at your desk. The boss is back from the restroom at his desk, typing (hands on the keys), his screen plain black (behind him the plug you pulled hangs out, sparking). Over his head: five asterisks, a password going in.",
   },
   {
-    name: 'static-again',
-    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:23.7'],
-    intent: "Nothing happened: his screen is still static. The boss is angry at it.",
+    name: 'hard-enter',
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:23.6'],
+    intent: "The boss hits Enter, hard: a big key with a return arrow and impact lines over his head. His screen is still black.",
+  },
+  {
+    name: 'stares-at-black',
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:24.3'],
+    intent: "Nothing on the screen. The boss stares at it, puzzled (a thought cloud: a monitor and a question mark). It stays black.",
+  },
+  {
+    name: 'thumps-it',
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:24.95'],
+    intent: "The boss thumps the black screen, angry. It stays black.",
   },
   {
     name: 'nobody-answers',
-    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:24.6'],
-    intent: "The boss phones Kev's desk again, handset at his ear. Kev's empty desk phone rings and rings; Lin turns round to it.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:25.8'],
+    intent: "The boss phones Kev's desk, handset at his ear. Kev's empty desk phone rings and rings; Lin turns round to it.",
   },
   {
     name: 'gives-up',
-    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:26.1'],
-    intent: "Nobody came. The boss sighs and thinks of coffee, and gets up. His screen is still static: no padlock on it.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:27.25'],
+    intent: "Nobody came. The boss sighs and thinks of coffee, and gets up. His screen is still black: no padlock on it.",
   },
   {
     name: 'walks-to-kitchen',
-    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:28'],
-    intent: "Your trick worked: the boss walks out across the floor towards the kitchen. Behind him, his office is empty and his screen shows static.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:29'],
+    intent: "Your trick worked: the boss walks out across the floor towards the kitchen. Behind him, his office is empty and his screen is black.",
   },
   {
     name: 'you-at-the-plug',
@@ -103,9 +113,14 @@ export default [
     intent: "You stand behind the boss's empty desk at the floor socket again: the plug hangs out of it, sparking, and lights up to show you can use it. The boss is out of sight, at the coffee machine.",
   },
   {
+    name: 'powers-on',
+    cmds: [...FIX, 'wait 0.15s'],
+    intent: "You've pushed the plug home: the boss's screen blinks on, a white flash, straight onto his open desktop (no padlock): the PC behind it took the password he typed into the dark.",
+  },
+  {
     name: 'list-up-alone',
     cmds: [...FIX, 'wait 1s'],
-    intent: "The plug is home. The boss is gone, at the coffee machine in the kitchen. His screen works again, with the list open on it, unlocked: your face in its red frame.",
+    intent: "The plug is home. The boss is gone, at the coffee machine in the kitchen. His screen is on again, straight onto his desktop with the list open, unlocked (no padlock: he logged in blind): your face in its red frame.",
   },
   {
     name: 'ring-empty-desk',
@@ -181,7 +196,7 @@ export default [
   {
     name: 'sends-from-mobile',
     cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:43.9'],
-    intent: "You pulled his plug and never put it back: 3:43, the boss at his desk, coat on, his screen still static. Over his head: a coat, a mobile phone and an email. He sends it from his phone.",
+    intent: "You pulled his plug and never put it back: 3:43, the boss at his desk, coat on, his screen still black. Over his head: a coat, a mobile phone and an email. He sends it from his phone.",
   },
   {
     name: 'list-flies',

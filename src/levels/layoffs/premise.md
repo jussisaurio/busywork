@@ -23,31 +23,32 @@ anything.
 
 ## Cast
 - **The boss**: bald, navy suit, red tie, moustache.
-  - 3:00: at his desk. His screen shows static. He bangs on it, and the static stays.
+  - 3:00: at his desk. His monitor is off, plain black, its power light dark. He bangs on it, and it stays black.
   - 3:01: he phones Kev's desk (☎️ and Kev's face). Kev's desk phone rings (rings spread from it). Lin turns
     round in her chair to the ringing. Kev picks up.
   - 3:04 to 3:08: he stands beside his desk and watches Kev kneel behind it.
-  - About 3:08: the static clears and the list comes up. He smiles and sits down.
+  - About 3:08: the screen blinks on and the list comes up. He smiles and sits down.
   - 3:10: a restroom break. When he gets up, a padlock comes up on his screen over the list. He walks out across
     the floor. If you try his screen while he is away, the padlock jolts and flashes red (your thought: 🔒).
   - He walks back from the restroom and is at his desk about 3:22. At his desk the padlock goes away.
   - Left alone, the screen keeps working: he works on at his desk until 3:42 and never leaves again.
-  - If you pulled his plug out while he was away (behind his desk, where Kev knelt), his screen is static when he
-    sits down. He types his password into it anyway (⌨️): the static stays, and his login goes in blind, so when
-    the screen comes back it comes back unlocked. He is angry (😠). He phones Kev's desk again (☎️ and Kev's
+  - If you pulled his monitor's plug out while he was away (behind his desk, where Kev knelt), his monitor is black
+    when he sits down, but the PC behind it is still on. He types his password into it anyway: five asterisks over
+    his head and a clack for each (✱✱✱✱✱), then a hard Enter (⏎, a loud key). The PC logs him in, unseen. He
+    stares at the black screen (thought: 🖥️❓) and thumps it (😠). He phones Kev's desk again (☎️ and Kev's
     face). The phone rings and rings at the empty desk. Then he has a thought with Kev's face and a question mark.
     Nobody comes. Lin shrugs to herself (🤷): she saw Kev go home, and it is not her business.
   - If you are still in his office when he gives up (crouched behind his desk, say), he points you out of the door
     (👉 you, 🚪) and waits until you have gone: he never leaves anyone in there.
-  - About 3:26: he sighs and thinks of coffee (😮‍💨☕). He gives up on Kev and walks out to the kitchen, the length
-    of the floor, his screen still static. He is out of sight of his office from about 3:30 and waits at the
+  - About 3:27: he sighs and thinks of coffee (😮‍💨☕). He gives up on Kev and walks out to the kitchen, the length
+    of the floor, his screen still black. He is out of sight of his office from about 3:30 and waits at the
     coffee machine until 3:37, then walks back the long way; he is in sight of his office from about 3:41 and at
     his desk about 3:43.
   - 3:42 (or as soon as he is back at his desk): he opens the attachment one last time and counts the faces. The
     sheet pops out big beside his screen. Your face still on it: a tick (📋, your face, ✔️). Your face gone: one
     short, a raised eyebrow, and it is Friday, so he shrugs (📋🤨🤷). Then he packs up for the weekend: coat on
     (🧥), the email to HR open (📧). If his screen is still dead (you pulled the plug and never put it back), he
-    sends the same email from his mobile (🧥📱📧); the screen stays static.
+    sends the same email from his mobile (🧥📱📧); the screen stays black.
   - 3:45: he clicks send. The attachment pops out big, with three faces or four, and flies off his screen.
 - **Kev**: young, spiky hair, olive hoodie. The office's computer person. His desk is behind Lin's, by the
   entrance, and his desk phone is on it.
@@ -93,13 +94,14 @@ Steps, the same for both routes:
 1. 3:00 to 3:08: his screen is dead because the plug behind his desk is out, sparking. Kev kneels there, pushes it
    home, and the list comes up. At 3:10 the boss locks the screen and goes to the restroom.
 2. While he is away, go behind his desk and "pull his plug out" (1 second). It hangs out of the socket again,
-   sparking, and his screen goes to static. Go back to your desk before he walks back. While he sits at his desk,
+   sparking, and his monitor goes black. Go back to your desk before he walks back. While he sits at his desk,
    you can't get at the plug: he sends you back to work.
-3. About 3:22 he sits down to static. He types his password into it blind (⌨️), gets angry (😠), phones Kev's
-   desk, and nobody comes. About 3:26 he sighs, thinks of coffee (😮‍💨☕) and walks out to the kitchen.
+3. About 3:22 he sits down to a black screen. He types his password into it blind (✱✱✱✱✱ ⏎), stares (🖥️❓), thumps
+   it (😠), phones Kev's
+   desk, and nobody comes. About 3:27 he sighs, thinks of coffee (😮‍💨☕) and walks out to the kitchen.
 4. When he is out of sight (about 3:30), go back behind his desk and "plug his cable back in" (1.5 seconds). The
-   screen comes back on, and the list is open on it, unlocked: he logged in blind into the static, and when he
-   went for coffee there was nothing to lock.
+   screen blinks on straight onto his open desktop with the list, unlocked: the asterisks you saw went into the PC
+   behind the dark monitor, and when he went for coffee there was nothing to lock.
 5. Now you must take your face off without Lin seeing you do it. The two routes are the two ways to do this.
 6. Be finished before he walks back with his coffee (he leaves the kitchen at 3:37 and is in sight of his office
    from about 3:41). If he sees you taking your face off, you are caught. If he finds you standing around in his
@@ -130,17 +132,17 @@ twice today when the boss called it. You look long enough to see nobody is there
 |---|---|---|
 | You are on the list | about 3:08 onward | The sheet pops out large, your frame throbbing, and you shudder. Then his screen: four faces, yours framed in red |
 | Lin is not on it, and she knows you are | 3:08 to 3:10 | Lin's 😨 then 😌 as the list comes up, then she looks at you |
-| Banging does not fix it | 3:00 | He bangs on the screen, and the static stays |
-| The fix is behind his desk | 3:05 to 3:08 | Kev kneels behind the boss's desk, 🔌, a loose plug goes back in, and the static clears. The boss smiles |
+| Banging does not fix it | 3:00 | He bangs on the black screen, and it stays black |
+| The fix is behind his desk | 3:05 to 3:08 | Kev kneels behind the boss's desk, 🔌, a loose plug goes back in, and the screen blinks on. The boss smiles |
 | His screen is locked when he leaves it working | 3:10 | A padlock comes up over the list as he walks off. Try it, and the padlock jolts red |
 | Kev went home, and the boss doesn't know | about 3:15 | The boss is walking away. Kev says goodbye to Lin (👋, 🏠). She waves and watches him leave |
-| The plug is the fault | 3:00 to 3:08 | Static while the plug hangs out of its socket, sparking; the list when Kev pushes it home |
-| Pulling it kills his screen | while he is in the restroom | You pull it: a bang, the plug sparks again, his screen goes to static |
-| His login goes in blind | about 3:22 | Back at his desk, he types into the static (⌨️), then 😠 |
-| The boss wants Kev, and nobody comes | 3:22 to 3:26 | ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
-| He gives up and goes for coffee, the screen dead | about 3:26 | 😮‍💨☕, and he walks the length of the floor to the kitchen. His screen shows static, no padlock |
+| The plug is the fault | 3:00 to 3:08 | A black screen while the plug of the monitor's cable hangs out of its socket, sparking; the list when Kev pushes it home |
+| Pulling it kills his screen | while he is in the restroom | You pull it: a bang, the plug sparks again, his monitor goes black |
+| His login goes in blind | about 3:22 | Back at his desk, ✱✱✱✱✱ with a clack each, a hard ⏎, then 🖥️❓ and a thump (😠). Plugged back in, the screen lights up unlocked |
+| The boss wants Kev, and nobody comes | 3:22 to 3:27 | ☎️ with Kev's face, the empty desk ringing, then the thought: Kev's face and a question mark |
+| He gives up and goes for coffee, the screen dead | about 3:27 | 😮‍💨☕, and he walks the length of the floor to the kitchen. His screen black, no padlock |
 | Your edit landed | 3:42, before he sends | The sheet pops out big as he counts: three faces and 📋🤨🤷, or four and your face ticked ✔️ |
-| A dead screen does not stop the email | 3:42 | Still static, he sends it from his mobile: 🧥📱📧 |
+| A dead screen does not stop the email | 3:42 | Still black, he sends it from his mobile: 🧥📱📧 |
 | Lin watches his office | all day | Her view cone covers the office |
 | Lin's phone turns her away | all day, at uneven times | The phone shakes on her desk, she picks it up and her cone swings off the office for about 4 s |
 | A ring at Kev's desk turns Lin round | 3:01, and 3:24 | The ringing phone (rings spread from it), and Lin turned round to it (👀☎️ when you call) |
@@ -219,10 +221,10 @@ sees you crossing yourself off, she sees her own face filling your gap, and she 
 
 ## Things in the office
 - **The boss's screen** (the east end of his desk): big, facing out through the glass, so the floor can read it. It shows
-  static while the cable is loose, the list when it works, a padlock while he is in the restroom, and the edit
+  black while its cable is loose, the list when it works, a padlock while he is in the restroom, and the edit
   when you make it. If Lin tells him, he comes back, puts your face back and locks it. It is the level.
-- **The loose cable** (the socket on the floor behind his desk, at its west end): a power plug hanging out of its
-  socket, sparking, while the screen shows static, pushed home when it works. Kev kneels at it; you pull it out
+- **The loose cable** (the socket on the floor behind his desk, at its west end): the plug of the monitor's cable (it runs from the
+  screen's left edge to the socket) hanging out, sparking, while the screen is black, pushed home when it works. Kev kneels at it; you pull it out
   while the boss is in the restroom and push it back while he is at the coffee machine. It is the way in.
 - **The boss's desk phone** (his desk, between the cable and the screen): he calls Kev's desk on it at 3:01 and 3:24, and you can
   call Kev's desk on it too. It is route 2.
@@ -257,7 +259,7 @@ timer either: a screen that died by itself made the coffee trip something that h
 plug, and everything he does after that is your doing. A dead screen sends from his mobile.
 
 ## The joke
-You pull the boss's plug while he is in the restroom. He comes back, types his password into static, calls the
+You pull the boss's plug while he is in the restroom. He comes back, types his password into a black screen, calls the
 man who went home, and gives up and goes to make coffee. You fix it behind his back. Then you pick up his phone and call the desk of
 the man who went home, so that the one person watching turns round. While the empty desk rings, you delete
 yourself from the layoff list. He comes back, counts one face short, shrugs, and sends it.

@@ -29,14 +29,17 @@ export default [
     },
   },
   {
-    name: 'pull his plug while he is in the restroom → back, he types his password into the static (⌨️😠), nobody answers at Kev\'s desk (❓, Lin 🤷), he goes for a coffee (😮‍💨☕); leave it dead and he sends it from his mobile → 🧥📱📧 → fail',
+    name: 'pull his plug while he is in the restroom → back, he types his password into the black screen (✱✱✱✱✱ ⏎ 🖥️❓ 😠), nobody answers at Kev\'s desk (❓, Lin 🤷), he goes for a coffee (😮‍💨☕); leave it dead and he sends it from his mobile → 🧥📱📧 → fail',
     expect: { result: 'fail' },
     play({ run, log, g }) {
       for (const c of PULL) run(c);
       mustFire(log, 'pc:pulled');
       run('pretend until 3:45');
-      mustSay(log, 'boss', ['⌨️']);
+      mustSay(log, 'boss', ['#pwstar', '#pwstar', '#pwstar', '#pwstar', '#pwstar']); // his password, blind
+      mustSay(log, 'boss', ['#enterkey']);
+      mustSay(log, 'boss', ['🖥️', '❓']); // he stares at the black screen
       mustSay(log, 'boss', ['😠']);
+      mustFire(log, 'boss:enter');
       mustSay(log, 'boss', ['@kev', '❓']); // he rang Kev's desk, and nobody picked up
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
       mustSay(log, 'boss', ['😮‍💨', '☕']); // he gives up and goes for a coffee

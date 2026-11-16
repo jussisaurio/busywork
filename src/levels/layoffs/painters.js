@@ -2,13 +2,63 @@
 // Things (things.js painters (ctx, x, y, size, t): centred on (x, y), about `size` px tall, in the 16 px box):
 //   kevbag    Kev's bag, in his hand as he goes home (presentation.js POSES '#kevbag', decor.things)
 //   handset   a desk phone's handset, at Kev's ear when he picks up at 3:01 (POSES '#handset')
+//   pwstar    one asterisk of a password typed into a dark screen (the boss's bubble: '#pwstar' x5, cast.js backAtDesk)
+//   enterkey  the Enter key, hit hard (his next bubble: '#enterkey')
 // Map-scale painters (presentation.js props), (x, y) in world px:
 //   deskPhone  a desk phone: the handset on its cradle (or off it), shaking with a glow and ring arcs while it rings
 //   mobile     Lin's mobile lying on her desk, shaking with buzz lines while it buzzes
-//   socket     the boss's loose cable: a floor socket behind his desk, the plug half out (static) or pushed home
+//   socket     his monitor's cable: a floor socket behind his desk, the plug half out (screen black) or pushed home
 // The phone pieces follow the interview level's painters (src/levels/interview/painters.js), copied, not shared.
 import { box } from '../../render/things.js';
 import { fillCircle, rrect, circle, clamp } from '../../render/util.js';
+
+// One password asterisk: a bold black six-spoked star.
+export function pwstar(ctx, x, y, size) {
+  box(ctx, x, y, size);
+  ctx.strokeStyle = '#1b1b1f';
+  ctx.lineWidth = 2.6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  for (let i = 0; i < 3; i++) {
+    const a = (i * Math.PI) / 3 + Math.PI / 2;
+    ctx.moveTo(Math.cos(a) * 5, Math.sin(a) * 5);
+    ctx.lineTo(-Math.cos(a) * 5, -Math.sin(a) * 5);
+  }
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+}
+
+// The Enter key: a fat pale key cap with the return arrow on it, struck hard (impact lines).
+export function enterkey(ctx, x, y, size) {
+  box(ctx, x, y, size);
+  ctx.fillStyle = '#9d978a'; // the key's side
+  rrect(ctx, -6.5, -4.5, 13, 12, 2.4);
+  ctx.fill();
+  ctx.fillStyle = '#f1ece0'; // its top
+  rrect(ctx, -6.5, -6.5, 13, 11, 2.4);
+  ctx.fill();
+  ctx.strokeStyle = '#2b2b30';
+  ctx.lineWidth = 1.6;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath(); // the return arrow
+  ctx.moveTo(3, -4);
+  ctx.lineTo(3, 0);
+  ctx.lineTo(-3, 0);
+  ctx.moveTo(-1, -2.2);
+  ctx.lineTo(-3.2, 0);
+  ctx.lineTo(-1, 2.2);
+  ctx.stroke();
+  ctx.strokeStyle = '#e8392b'; // struck hard
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-8.5, -7); ctx.lineTo(-10.5, -9);
+  ctx.moveTo(0, -8.5); ctx.lineTo(0, -11);
+  ctx.moveTo(8.5, -7); ctx.lineTo(10.5, -9);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+  ctx.lineJoin = 'miter';
+}
 
 // A slate messenger bag, carried by its top handle: a flap with a buckle.
 export function kevbag(ctx, x, y, size) {
@@ -170,8 +220,8 @@ export function mobile(ctx, x, y, t, buzzing = false) {
 }
 
 // The boss's cable: from the back of his desk (x, y) down to a socket on the floor behind it (sx, sy). out: the
-// plug half out of the socket, its brass prongs showing (the static); else pushed home.
-export function socket(ctx, x, y, sx, sy, out) {
+// plug half out of the socket, its brass prongs showing (his monitor off); else pushed home.
+export function socket(ctx, x, y, sx, sy, out, bend = null) { // bend: the curve's control point, local; else a sag
   ctx.fillStyle = 'rgba(0,0,0,0.25)'; // the socket plate
   rrect(ctx, sx - 4.5, sy - 3.5, 10, 8, 1.6);
   ctx.fill();
@@ -186,7 +236,7 @@ export function socket(ctx, x, y, sx, sy, out) {
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(x, y);
-  ctx.quadraticCurveTo((x + px) / 2 + 4, (y + sy) / 2 + 3, px + 2.5, sy);
+  ctx.quadraticCurveTo(bend ? bend.x : (x + px) / 2 + 4, bend ? bend.y : (y + sy) / 2 + 3, px + 2.5, sy);
   ctx.stroke();
   ctx.lineCap = 'butt';
   if (out) {
