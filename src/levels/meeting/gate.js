@@ -20,8 +20,8 @@
 //                fuzzer's plan language never does (raw movement, several loops)
 
 export default {
-  // pretend: no win without it (fuzz, 20k days): a slacker on the move gets desk work. It hides nothing you carry
-  // (the cup is bulky, items.js): hiding is putting things down out of sight.
+  // pretend: no win without it (fuzz, 20k days): a slacker on the move gets desk work. It half hides the cup: held
+  // to your ear, Kev squints and takes it for a phone (clocks.js), but he asks for it on your folder stride.
   // put: the mug (items.js) leaves your hand only by a put, and at 4:00 it blames whoever holds it (verdict.js).
   // A projector win that never put it down is a bug; the keycard route never touches the mug.
   mustUse: [{ id: 'pretend', cmd: 'pretend' }, { id: 'put', event: 'item:put', routes: ['projector'] }],

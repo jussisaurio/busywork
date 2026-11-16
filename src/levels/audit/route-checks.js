@@ -3,13 +3,14 @@
 // stop him: he finishes his list and fires you at the sign-off (result 'fail', outcome.why: whose desk).
 import { npcSees } from '../../game/perception.js';
 import { LAPTOPS } from './spots.js';
+import { headDown } from './presentation.js';
 
 const ev = (log, name, p = {}) => log.find((e) => e.name === name && Object.entries(p).every(([k, v]) => e.payload?.[k] === v));
 const failedAt = (log) => ev(log, 'inspect:fail')?.payload.index;
 const HOME = ['put your_desk', 'goto my_seat pretend', 'sit']; // the laptop onto your desk, sit
 
 // The card's rule binds everyone (DESIGN.md): no coworker carries a laptop where the auditor, on duty, sees it.
-// Kev's walk home while the auditor is on the phone, the boss's walk home with his laptop before the auditor is on
+// Kev's walk home behind the auditor's back while he fights his pen, the boss's walk home with his laptop before the auditor is on
 // the floor: if either strays into his view, the level shows a rule that binds only you.
 function carriedInView(g) {
   const a = g.npcs.find((n) => n.id === 'auditor');
@@ -64,16 +65,21 @@ export default [
     },
   },
   {
-    name: 'Kev\'s laptop onto your desk while he\'s in the kitchen: he takes it home, openly, while the auditor is on the phone → win',
+    name: 'Kev\'s laptop onto your desk while he\'s in the kitchen: he strolls in and takes it home, openly, behind the auditor fighting his dry pen at your desk → win',
     expect: { result: 'win', routes: ['kev'] },
     play(ctx) {
-      const { log } = ctx;
-      home(ctx, ['pretend until 3:24', 'goto kev_desk', 'interact']);
+      const { log, npc, waitFor } = ctx;
+      for (const c of ['pretend until 3:24', 'goto kev_desk', 'interact', ...HOME]) ctx.run(c);
+      // The two in one frame: Kev's 💻🤦 lands while the auditor stands at your desk head down over his pen.
+      let atFetch = null;
+      waitFor((g) => { if (g.world.laptop_kev === 'kev') atFetch ??= headDown(npc('auditor')); return g.world.laptop_kev === 'kev_desk'; }, { maxSec: 90 });
+      sitOut(ctx);
       const tick = ev(log, 'inspect:pass', { index: 2 }), fetched = log.filter((e) => e.name === 'kev:fetched').pop();
-      const ring = ev(log, 'auditor:phone'), call = ev(log, 'auditor:call');
+      const ring = ev(log, 'auditor:phone');
       if (!tick || !fetched || fetched.minute < tick.minute) throw new Error('Kev should fetch his laptop after your desk is ticked');
-      // E2 (cold-read.md): he takes it while the auditor is away on his call, not behind his back at your desk.
-      if (!ring || !call || fetched.minute < ring.minute) throw new Error('Kev should take his laptop while the auditor is on the phone');
+      if (!ring || fetched.minute > ring.minute) throw new Error('Kev should take his laptop before the auditor\'s phone rings');
+      if (atFetch !== 3) throw new Error(`Kev should take it while the auditor fights his pen at your desk (headDown ${atFetch})`);
+      if (!log.some((e) => e.name === 'say' && e.payload.owner === 'kev' && e.payload.icons.includes('🎵'))) throw new Error('Kev should hum on his way home');
     },
   },
   {
@@ -82,16 +88,21 @@ export default [
     cmds: ['goto hallway_west pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3', 'goto my_seat', 'sit', 'wait until 3:47'],
   },
   {
-    // The fuzz found this win once: his pen dry, the auditor stood at Lin's desk while you unplugged the laptop at
-    // his elbow. An auditor sees whoever reaches for the laptop on the desk he is counting, from either side.
-    name: 'Lin\'s laptop from the hallway while the auditor shakes his dry pen at her desk → caught',
-    expect: { result: 'caught' },
-    cmds: ['goto hallway_west pretend', 'pretend until 3:37', 'interact', 'put your_desk'],
+    // Head down over his dry pen, he sees his clipboard and nothing past it: a hand at his elbow goes unseen. Gone
+    // down the hallway before he looks up, you're out of his sight.
+    name: 'Lin\'s laptop at his elbow while he shakes his dry pen at her desk, then off down the hallway before he looks up → win',
+    expect: { result: 'win', routes: ['lin'] },
+    play(ctx) {
+      const { log } = ctx;
+      home(ctx, ['goto hallway_west pretend', 'pretend until 3:37', 'interact']);
+      const lift = ev(log, 'item:pickup', { type: 'laptop_lin' }), tick = ev(log, 'inspect:pass', { index: 1 });
+      if (!lift || !tick || lift.minute > tick.minute + 2) throw new Error('the lift should come while he fights his pen at her desk');
+    },
   },
   {
-    name: 'Lin\'s laptop from her own chair while the auditor shakes his dry pen → caught',
+    name: 'Lin\'s laptop from her own chair while the auditor shakes his dry pen, still there when he looks up → caught',
     expect: { result: 'caught' },
-    cmds: ['pretend until 3:35', 'goto lin_desk pretend', 'interact', 'put your_desk'],
+    cmds: ['pretend until 3:35', 'goto lin_desk pretend', 'interact', 'wait 3s'],
   },
   {
     name: 'Lin\'s laptop while she\'s in the restroom, onto your desk → 💻❓, she stays at her desk, ❌ at her desk, fired',

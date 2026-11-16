@@ -220,8 +220,14 @@ section('brew -> carry -> spill');
   input.press('interact'); run(0.4); // pick it back up
   ok(p().held === 'coffee', 'picked the cup back up');
   input.hold('busy'); step();
-  ok(!p().busy && p().busyPose === null, 'the full cup is bulky (level 1): busy gives no phone pose');
+  ok(p().busy && p().busyPose === 'phone', 'the full cup to your ear like a phone (level 1)');
   input.release('busy'); step();
+  // A bulky thing (pinned on the cup here: player.js reads the flag live) leaves no hand for a phone.
+  game.level.items.coffee.bulky = true;
+  input.hold('busy'); step();
+  ok(!p().busy && p().busyPose === null, 'a bulky thing in hand: busy gives no phone pose');
+  input.release('busy'); step();
+  delete game.level.items.coffee.bulky;
   violations = 0;
   ok(walk(COFFEE_TO_PROJECTOR), 'carries coffee to the projector');
   ok(violations === 0, 'no wall overlap on the way');
@@ -239,14 +245,8 @@ section('brew -> carry -> spill');
 }
 
 section('cancel on movement, drop / pick-up, E while busy');
-// The busy pose resuming is an engine path: pin the cup as not bulky for it (player.js reads the flag live), not
-// level 1's bulky cup, so it tests the engine whatever the level decides. The cup still keeps (`keep`): it goes
-// down only on a spot, here the machine. (Drop at the feet: the keycard, below.)
+// The cup keeps (`keep`): it goes down only on a spot, here the machine. (Drop at the feet: the keycard, below.)
 {
-  const cupFlags = game.level.items.coffee;
-  const cupBulky = cupFlags.bulky;
-  delete cupFlags.bulky;
-  try {
   newDay();
   walk(DESK_TO_COFFEE);
   step();
@@ -288,9 +288,6 @@ section('cancel on movement, drop / pick-up, E while busy');
   input.press('interact');         // pressed during pick-up: must not drop right after
   run(0.5);
   ok(p().held === 'coffee', 'E pressed mid-action is swallowed (no instant re-drop)');
-  } finally {
-    cupFlags.bulky = cupBulky;
-  }
 }
 
 section('keycard: steal behind the boss (facing S)');

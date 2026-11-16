@@ -97,6 +97,8 @@ export default {
       case 'coffee:missing': return `${name(p.by)} found the coffee pot empty`;
       case 'coffee:kevTook': return `Kev spots the cup on ${SPOT[p.spot] ?? p.spot}, unattended, and takes it 🤤☕ … 😌`;
       case 'coffee:asked': return 'Kev eyes the cup in your hand ☕🥺❓ (he asks; he doesn\'t grab)';
+      case 'coffee:squint': return 'Kev squints at the cup at your ear ☕❓';
+      case 'coffee:shrug': return 'Kev decides you\'re on the phone 📱🤷 and lets you be';
       case 'keycard:takenBack': return 'the boss takes his keycard back off you 🪪';
       case 'boss:badge': return 'beep: the boss holds his keycard to the fire door\'s reader and comes back in 🪪';
       case 'meeting:calledOff': return 'the boss points at the dead projector 📽️💥🙅 and waves everyone out 👋🚪';

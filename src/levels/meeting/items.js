@@ -18,11 +18,11 @@
 import { sandwich } from './painters.js';
 
 export const ITEMS = {
-  // The day's last cup (decor.js: the empty coffee bag by the machine). Nobody's but whoever poured it, and too full
-  // and hot to swing about: no passing it off as a phone (bulky), and it leaves your hand only when you set it
-  // down (keep). Kev never takes it from you; he asks (clocks.js). Set down where he finds it unattended
-  // (the machine, his own desk), he takes it as free.
-  coffee: { icon: '☕', draw: 'cup', bulky: true, keep: true }, // full and steaming
+  // The day's last cup (decor.js: the empty coffee bag by the machine). Nobody's but whoever poured it, and it leaves
+  // your hand only when you set it down (keep). Kev never takes it from you; he asks (clocks.js). Pretend and it goes
+  // to your ear like a phone, steam and all: Kev squints at it (☕❓) and decides you're on a call (📱🤷). Set down
+  // where he finds it unattended (the machine, his own desk), he takes it as free.
+  coffee: { icon: '☕', draw: 'cup', keep: true }, // full and steaming
   keycard: { icon: '🪪', draw: 'card', place: 'keycard', contraband: 'boss' }, // an ID card on a lanyard
   // The cup, empty, once its coffee is all over the projector (interactions.js spill_coffee). It's evidence: you
   // can't just let it fall (keep), and setting it down anywhere is a furtive 0.8 s (put). Once the boss has seen

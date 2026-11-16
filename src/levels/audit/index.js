@@ -1,7 +1,8 @@
 // "The Audit": 3:00 PM. Laptop audit at 3:30. You sold yours.
 // An auditor comes up in the lift and ticks the desks off in order: the boss's, Lin's, yours, Kev's. Twice he leaves
 // his list for a moment, every loop: his pen runs dry at Lin's desk and he fetches one from the meeting room, and his
-// phone rings after your desk and he takes the call in there. Each desk is judged when he gets to it, so a laptop he has already ticked off can run ahead of his clipboard to the next desk
+// phone rings after your desk and he takes the call in there. And twice he stands head down over a dry pen, blind
+// past his clipboard: at Lin's desk, and at yours, where Kev strolls up beside him for his laptop. Each desk is judged when he gets to it, so a laptop he has already ticked off can run ahead of his clipboard to the next desk
 // and be counted twice. Move one too early and the desk it left gets the ❌. A ❌ doesn't stop him: he finishes his
 // list, then fires you at the sign-off.
 //
@@ -15,7 +16,7 @@ import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
 import { SPOTS, LAPTOPS } from './spots.js';
 import { laptop } from './things.js';
-import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, PEN_LOOK, penBeat } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, PEN_LOOK, PEN_LOOK_YOU, penBeat, headDown } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -142,8 +143,8 @@ const INSPECTIONS = [{
     // At Lin's desk his pen runs dry: he shakes it, scribbles on the clipboard's corner, shakes it again
     // (presentation.js POSES), then goes for a pen (errands, below). Every loop.
     { item: LAPTOPS, spot: 'lin_desk', from: 'audit_lin', look: PEN_LOOK, record: 'atLin' },
-    { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: 2, record: 'atYou' }, // then his phone rings
-
+    // At your desk the new pen is dry too: the same fight, till it writes. Then his phone rings.
+    { item: LAPTOPS, spot: 'your_desk', from: 'audit_you', look: PEN_LOOK_YOU, record: 'atYou' },
     { item: LAPTOPS, spot: 'kev_desk', from: 'audit_kev', look: 2, record: 'atKev' },
   ],
   // A ❌: angry, and on down his list (cast.js auditGoesOn). He fires you at the sign-off (cast.js signOff).
@@ -197,7 +198,7 @@ const HUNTS = [
 //   pens  his pen ran dry at Lin's desk (presentation.js PEN_BEATS): he takes one from the pot on the meeting table.
 //   call  after your desk's tick his phone rings (📱): he takes it at the meeting room window.
 const PEN_FETCH = 3; // s at the pen pot: the first pen he tries is dry too
-const CALL = 6; // s on the phone
+const CALL = 3.2; // s on the phone (short: the longer pen fight at your desk eats into his hour)
 const errandLegs = {
   audit_you: (game) => spotLeg(game, 'pens', {
     arrive(g, n) {
@@ -211,7 +212,7 @@ const errandLegs = {
     arrive(g, n) {
       n._callDone = true;
       holdFor(n, CALL);
-      speak(g, n, [{ say: ['💬'], ttl: 1.6 }, { say: ['💬'], ttl: 1.6, after: 2.6 }]);
+      speak(g, n, [{ say: ['💬'], ttl: 1.6 }, { say: ['💬'], ttl: 1.6, after: 1.9 }]);
       g.events.emit('auditor:call', {});
     },
   }),
@@ -247,15 +248,22 @@ function errandsShow(game, npc, sim) {
 // The minute each schedule reads (npcs.js clockFor).
 //   The boss and Lin skip the sign-off: it is the auditor's business at your desk, and they keep to their smoke
 //   and their coffee (back at their desks they would look for their laptops, cast.js).
-//   Kev stays over his coffee in the kitchen till the auditor's phone rings (his clock holds at KEV_GO): then he's
-//   back at his desk, and on to yours for his laptop if it lies there, while the auditor is on the phone.
-//   The auditor wonders at his dry pen (🖊️❓) as he starts to shake it, and runs his errands.
+//   Kev finishes his coffee at KEV_GO and walks back to his desk; if his laptop lies on yours he goes on for it,
+//   and gets there as the auditor, ticking your desk, fights his second dry pen head down. The clock holds him at
+//   KEV_GO till the auditor has his new pen (out of sight in the meeting room), so the two stay in step every loop.
+//   The auditor wonders at his dry pen (🖊️❓, then 🖊️😤 at your desk) as he starts to shake it, and runs his
+//   errands. Head down over the pen, he sees only his clipboard (HEAD_DOWN): a hand at his elbow goes unseen.
+const HEAD_DOWN = { fov: (70 * Math.PI) / 180, radius: 1 }; // tiles: the clipboard, and nothing past it
+const PEN_SAYS = { 2: ['🖊️', '❓'], 3: ['🖊️', '😤'] };
 function clockFor(game, npc, sim) {
   const now = game.clock.minute;
   if (npc.id === 'auditor') {
-    if (!npc._penDry && penBeat(npc) === 'shake') {
-      npc._penDry = true;
-      sim.speak(game, npc, [{ say: ['🖊️', '❓'], kind: 'thought', ttl: 1.6 }]);
+    const fight = headDown(npc);
+    npc._eyes ??= npc.vision;
+    npc.vision = fight ? HEAD_DOWN : npc._eyes;
+    if (fight && npc._penDry !== fight && penBeat(npc) === 'shake') {
+      npc._penDry = fight;
+      sim.speak(game, npc, [{ say: PEN_SAYS[fight], kind: 'thought', ttl: 1.6 }]);
     }
     errands(game, npc);
     errandsShow(game, npc, sim);
@@ -267,7 +275,7 @@ function clockFor(game, npc, sim) {
   npc._mineHome = w.laptop_kev === 'kev_desk' || w.laptop_kev === 'kev' || w.laptop_kev === 'drawer'; // kevLooks
   if (npc._released || now < KEV_GO) return now;
   const auditor = game.npcs.find((n) => n.id === 'auditor');
-  if (auditor?._rang || now >= game.level.day.gatherAt) npc._released = true;
+  if (auditor?._penDone || now >= game.level.day.gatherAt) npc._released = true;
   return npc._released ? now : KEV_GO - 1e-6;
 }
 

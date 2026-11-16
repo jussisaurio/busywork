@@ -43,7 +43,9 @@ him. At 3:54 everyone walks to the meeting room. At 4:00 he stands at the head o
 **Kev** sits at his desk. At 2:38 he goes to the kitchen for his afternoon coffee. The machine has one cup left in
 the pot, and the coffee bag beside it is empty. If the pot is full he pours it and drinks it. If it is empty he
 stares at it (☕❓, 😩) and wants that cup for the rest of his day. If he sees you carrying it, he asks for it (☕🥺❓)
-now and then, but it is yours and he leaves it with you. If he sees it set down unattended on the machine or on his
+now and then, but it is yours and he leaves it with you. If you stand there pretending, the cup held to your ear like
+a phone, he squints at it (☕❓); keep the act up and he decides you're on a call (📱🤷) and leaves you be. Lower it
+while he squints, and it's a cup after all: he asks. If he sees it set down unattended on the machine or on his
 own desk, it looks free, and he takes it, delighted (🤤☕, 😌). On your desk it is yours, and he leaves it alone. At
 2:58 he packs his bag and waves goodbye (🎒👋). He goes home early, down the lift (bottom left), gone by about 3:05.
 Whenever he is in the building and the projector breaks, he runs over (🔧❗), repairs it in about 5 game minutes,
@@ -58,8 +60,8 @@ away, she tells him when he is back.
 ## Things in the office
 - **The coffee machine** (kitchen, top right). Its pot has the day's last cup. Pour it and you hold it.
 - **The empty coffee bag** beside the machine. It is why there is no more coffee after this cup.
-- **The cup of coffee.** Full and hot: you can't swing it about, so you can't pretend to work while you hold it, and
-  it leaves your hand only when you set it down. You can set it down on your desk, on Kev's desk or on the machine.
+- **The cup of coffee.** Full and hot, and it leaves your hand only when you set it down: on your desk, on Kev's desk
+  or on the machine. Pretend standing still and it goes to your ear like a phone, steam and all. It fools Kev, just about.
 - **The projector** on the meeting-room table, with a "no coffee" sticker (☕🚫). Coffee kills it: sparks and smoke.
 - **The empty mug.** The cup, after the spill. It is evidence: you can't let it fall, only set it down, and that takes
   a moment.
@@ -80,7 +82,8 @@ away, she tells him when he is back.
 ## Ways to win
 ### 1. Break the projector
 Steps: pour the coffee before Kev's 2:38 coffee run. Keep it from Kev until he has gone: hold on to it (he asks,
-but it's yours), or set it down on your own desk (he leaves it alone there, and you can type). Don't leave it on the
+but it's yours), hold it to your ear like a phone (he squints, then takes it for a call), or set it down on your own
+desk (he leaves it alone there). Don't leave it on the
 machine or on his desk. After Kev has gone (about 3:05), spill it on the projector in the meeting room. You are left holding the empty
 mug. Get rid of it: put it back on the coffee machine, or plant it on Kev's desk. Be in the meeting room at 4:00.
 
@@ -93,7 +96,9 @@ Facts the player must know, and where they SEE them:
 - **There is one cup of coffee, and Kev wants it.** The coffee bag by the machine is empty. At 2:38 Kev walks to the
   machine. If you poured the cup, he finds the pot empty (☕❓, then 😩). If you didn't, he pours it himself.
 - **Kev asks, and takes a free cup.** He asks for the cup in your hand (☕🥺❓) and leaves it with you. A cup left on
-  the machine or on his desk he takes (🤤☕). You can't type at your desk holding a full cup: set it down on your desk.
+  the machine or on his desk he takes (🤤☕).
+- **The cup makes a poor phone, but a phone.** Pretend with it standing and you hold it to your ear. Kev squints at
+  it (☕❓), then shrugs (📱🤷): you're on a call. Lower it mid-squint and he asks for it.
 - **Kev fixes the projector.** Break it while Kev is in the building, and he runs to it (🔧❗), works on it, and gives
   a thumbs up (👍).
 - **Kev leaves early.** At 2:58 he waves goodbye with his bag (🎒👋) and walks to the lift. The lift dings when he is
