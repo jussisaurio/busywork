@@ -1,5 +1,5 @@
 // Second Thoughts' three people and their hooks (level 1's cast.js and behaviours.js document the fields).
-// The boss never leaves his desk on his own: only the dark gets him up. Lin makes her
+// The boss never leaves his desk on his own: only the dark (or the sound of you retching) gets him up. Lin makes her
 // afternoon coffee at 3:10: the old machine makes the lights flicker and the fuse holds, unless you poured the water
 // jug into the vent on its back first, and then it shorts and takes the fuse with it. Kev unplugs it and resets
 // fuses: lures in index.js.

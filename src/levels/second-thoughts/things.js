@@ -28,38 +28,74 @@ export function paintLetter(ctx, x, y, s = 1, rot = 0) {
 
 // The letter as an item's look (items.letter.draw; render/things.js calls it as (ctx, x, y, size, t)): in your hand,
 // in the boss's, on the floor and in the HUD slot. `size` is how big an emoji there would be.
+// Once it has come back up it is soggy: half chewed to pulp, stained sick-green, dripping, his name still on it.
 export function letter(ctx, x, y, size, t, game) {
   const s = size / 14; // as wide as an emoji of that size
+  if (game?.world?.soggy) return soggyLetter(ctx, x, y, s, t ?? 0);
   paintLetter(ctx, x, y, s);
 }
 
-// The letter you spat out: a dull, soggy grey wad of chewed paper in a little wet patch, drool still running off it.
-// It flies out of your mouth and drops onto the floor beside you over half a second, dripping on the way.
-export function wadProp(ctx, info, at, shown) {
+// The soggy letter, after it has been through you: the left half of the envelope still flat, with a scrap of his
+// name in ink on it (it's his, all right), the right half chewed to a lumpy grey pulp with a bite-shaped ragged edge,
+// a sick-green stain over it all, drops falling off its bottom edge.
+export function soggyLetter(ctx, x, y, s = 1, t = 0, rot = 0) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(s, s);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillRect(-6.5, -3.5, 9, 9);
+  ctx.fillStyle = '#ece6cf'; // the flat half, gone limp and yellowish
+  ctx.beginPath();
+  ctx.moveTo(-7, -4.5);
+  ctx.lineTo(1.5, -4.5);
+  for (const [bx, by] of [[3, -3], [1.2, -1.2], [3.2, 0.6], [1.4, 2.4], [3, 4.5]]) ctx.lineTo(bx, by); // the bitten edge
+  ctx.lineTo(-7, 4.5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#a8a091';
+  ctx.lineWidth = 0.9;
+  ctx.stroke();
+  ctx.strokeStyle = '#2b3a55'; // a scrap of his name, in ink
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-5.5, 1.5); ctx.lineTo(-4.5, -0.5); ctx.lineTo(-3.5, 1.5); ctx.lineTo(-2.5, -0.5); ctx.lineTo(-1.5, 1.2); ctx.lineTo(0.5, 0.2);
+  ctx.stroke();
+  for (const [dx, dy, r, c] of [[4.5, -2, 2.6, '#b9b6a8'], [6, 1.5, 2.4, '#a9a697'], [3.8, 2.8, 1.9, '#c6c3b4'], [7.2, -1, 1.5, '#9d9a8b']]) {
+    fillCircle(ctx, dx, dy, r, c); // the chewed half: lumps of pulp
+  }
+  ctx.fillStyle = 'rgba(132,160,52,0.55)'; // the sick stain
+  ctx.beginPath();
+  ctx.ellipse(1, 1, 6.5, 3.8, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  for (let i = 0; i < 3; i++) { // drips
+    const k = (t * 1.3 + i / 3) % 1;
+    fillCircle(ctx, -4 + i * 4, 4.5 + k * 6, 1.1 * (1 - k * 0.4), `rgba(150,180,60,${0.9 * (1 - k)})`);
+  }
+  ctx.restore();
+}
+
+// Where you threw up: a cartoon puddle, lumpy, sick-green, a shine on it. It spreads out over half a second.
+export function puddleProp(ctx, info, at, shown) {
   if (!shown.at) return;
   const k = Math.min(1, shown.k ?? 1);
-  const a = shown.at;
-  const fx = a.fromX ?? a.x;
-  const fy = a.fromY ?? a.y;
-  const x = (fx + (a.x - fx) * k) * T;
-  const y = (fy + (a.y - fy) * k) * T - Math.sin(Math.PI * k) * 8; // a little arc
+  const x = shown.at.x * T;
+  const y = shown.at.y * T;
   ctx.save();
-  if (k < 1) for (let i = 1; i <= 3; i++) { // drips trailing it from your mouth
-    const j = Math.max(0, k - i * 0.12);
-    fillCircle(ctx, (fx + (a.x - fx) * j) * T, (fy + (a.y - fy) * j) * T - Math.sin(Math.PI * j) * 8, 1.4, 'rgba(150,170,180,0.7)');
-  }
   ctx.translate(x, y);
-  ctx.scale(0.55 + 0.45 * k, 0.55 + 0.45 * k);
-  if (k >= 1) { ctx.fillStyle = 'rgba(70,80,90,0.3)'; rrect(ctx, -10, -2, 21, 10, 5); ctx.fill(); } // the wet patch
-  fillCircle(ctx, 0, 1.5, 6.5, 'rgba(0,0,0,0.2)');
-  fillCircle(ctx, 0, 0, 6, '#8e8c84');
-  fillCircle(ctx, -3, -1, 3.5, '#a3a199');
-  fillCircle(ctx, 3, 1.5, 3, '#77756e');
-  ctx.strokeStyle = '#5f5d57'; // crumple creases
-  ctx.lineWidth = 0.9;
-  ctx.beginPath(); ctx.moveTo(-4, 2); ctx.lineTo(-1, -1); ctx.lineTo(2, 2); ctx.moveTo(1, -4); ctx.lineTo(3, -1); ctx.stroke();
-  fillCircle(ctx, -2, -2.5, 1.2, 'rgba(220,235,245,0.55)'); // wet shine
-  if (k >= 1) fillCircle(ctx, 5, 6, 1.3, 'rgba(150,170,180,0.75)'); // a drip off it
+  ctx.scale(0.4 + 0.6 * k, 0.4 + 0.6 * k);
+  ctx.fillStyle = '#9dbb3c';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 15, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (const [dx, dy, r] of [[-12, -3, 5], [11, 3, 6], [4, -6, 5], [-5, 6, 4]]) fillCircle(ctx, dx, dy, r, '#9dbb3c');
+  fillCircle(ctx, -3, 1, 2, '#7d9a28'); // lumps
+  fillCircle(ctx, 5, -1, 1.6, '#7d9a28');
+  fillCircle(ctx, 9, 4, 1.3, '#c8a74a');
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; // shine
+  ctx.beginPath();
+  ctx.ellipse(-6, -3, 4, 1.4, -0.3, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
