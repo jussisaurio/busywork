@@ -1004,6 +1004,7 @@ function drawPlayer(ctx, game, t) {
   s.moving = !!p.moving && !p.seated;
   s.phase = t * 11;
   s.item = worn ? null : itemGlyph(game.level.items, p.held);
+  if (p.action?.held) s.item = p.action.held; // what the action has in her hand (a row's held: a receiver)
   const bp = p.busyPose;
   s.arms = bp === 'typing' ? 'type' : bp === 'folder' ? 'folder' : bp === 'phone' ? 'phone'
     : p.action ? p.action.pose ?? 'reach' : selfPreview(p, s, t) ?? (p.seated ? 'desk' : s.item ? 'carry' : p.moving ? 'walk' : 'idle');

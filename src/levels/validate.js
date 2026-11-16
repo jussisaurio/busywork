@@ -289,6 +289,7 @@ export function levelProblems(level, key) {
       if (row.noise?.at !== undefined) noiseAt(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
       if (drawn && row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
+      if (row.pose !== undefined && !ARM_POSES.includes(row.pose)) bad(`${path}.pose`, `no arm pose ${q(row.pose)} (one of ${ARM_POSES.join(', ')})`);
       if (row.on === 'self') {
         if (!ARM_POSES.includes(row.preview)) bad(`${path}.preview`, `${row.preview === undefined ? 'missing' : `no arm pose ${q(row.preview)}`}: the pose that shows what E does to what you hold (one of ${ARM_POSES.join(', ')})`);
         if (row.hold !== undefined && typeof row.hold !== 'boolean') bad(`${path}.hold`, 'not true or false (true: holding E does it, a tap does the others)');

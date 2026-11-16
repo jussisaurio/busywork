@@ -8,6 +8,9 @@
 //   duration  real seconds. sneaky: witnesses matter while in progress. owner: only that NPC minds (a sandwich
 //             is just a sandwich to everyone but Lin). idle: the authority reads it as slacking (his ❓ fills).
 //   saw       the icon a witness's grudge bubble shows for it
+//   pose, held  optional, a timed row on a target: the player's arm pose while doing it (render/characters.js
+//             ARM_POSES; default 'reach') and the glyph in that hand ('#name': a level thing), e.g. 'phone' and a
+//             receiver while she is on a line
 //   instant   (instead of duration) done at once, never seen in progress. noise: { radius, at?, npcs? } a noise
 //             when done (sim/mechanics/attention.js)
 //   can(p, w, item)  offered only while this holds; a timed action is cancelled ('invalid') once it stops

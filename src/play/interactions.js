@@ -233,7 +233,10 @@ function startAction(game, focus) {
     x: focus.x,
     y: focus.y,
     item: focus.item ?? null,
-    pose: focus.kind === 'self' ? row.preview ?? null : null, // an action on yourself shows its preview pose
+    // an action on yourself shows its preview pose; a row's own pose (and held: the glyph in that hand) shows how
+    // the player does it ('phone' and a receiver: on the line)
+    pose: focus.kind === 'self' ? row.preview ?? null : r.pose ?? null,
+    held: r.held ?? null,
   };
   game.events.emit('action:start', { type: verb, targetId: focus.id });
 }

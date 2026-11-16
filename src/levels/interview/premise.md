@@ -41,7 +41,9 @@ with Gary, he holds up a hand at it (bell, hand: not now) and talks on.
 
 **Lin** (teal cardigan) is nervous. From 3:00 she sits at her desk below the glass wall and checks her line: about
 3:01 she lifts the receiver, listens to the tone (a teal wavy line by her head), puts it back and looks up at the wall
-clock. At 3:03 she goes for a tea at the kitchen table, where she sits from about 3:07. At 3:22 she walks back with
+clock. Her switchboard lamp stays dark while she listens: she is only listening to the tone, and her line is free. Ring
+her phone then and it goes off in her ear: she jumps out of her skin (arms flung up, 😖), gets over it and answers it,
+and it is Gary. At 3:03 she goes for a tea at the kitchen table, where she sits from about 3:07. At 3:22 she walks back with
 her notes held up in front of her, mouthing her lines (notes), and from about 3:26 she sits in the chair beside her
 desk facing the open plan, rehearsing and glancing at the clock. At 3:30 her phone rings and she takes the call.
 One rule decides every call she answers: she stays on anything that could be her interview and gets off anything
@@ -80,7 +82,14 @@ ear. Kev's desk on the far right is out of its earshot too.
 - **The plug.** Lin's desk phone runs off a power adapter in the double wall socket by her desk. You can crouch at the
   socket and pull the adapter out (it takes a moment). It then lies on the floor, the top outlet shows two dark
   holes, her lamp on the switchboard goes black, and her phone is dead. You cannot do this while her phone is ringing
-  or in use.
+  or in use. Pull it while Lin is listening on her receiver and the tone dies in her ear (❓).
+- **Answering a phone.** Any ringing phone gives you an E: you lift the handset and hear whoever is on the line. On
+  your own rings, the caller you put through: Gary asks for the boss (golf flag, the boss's face), or head office's
+  queue says "please hold for HR". On Lin's phone at 3:30, her interviewer asks for Lin (briefcase, her face, ?). You
+  shrug and hang up. Nobody minds you answering a phone; it is what you do with a ringing phone. Someone already on
+  the way to it stops, glances at you holding it and leaves it to you (your face, the handset, then a thumbs-up or a
+  shrug). Lin, though, will not let you take her interview: if she is reaching for it, she snatches it out of your
+  hand (😠). Your own rings rarely wait for you: whoever is nearest usually gets there first.
 - Working the switchboard is nothing to see, and nobody minds you at it, with one exception: Lin, if she watches you
   put a call through to her own line, which she is keeping free. Pulling the plug is sneaky, and anyone within arm's
   reach of you notices it, whatever way they face. If the boss sees you at the socket, you are caught. If Lin sees you
@@ -152,6 +161,14 @@ The facts, and when you see them:
   `the-call-answered`).
 - **The boss takes Lin's phone when she is away.** At 3:30 he starts and gets up to answer it (shot
   `the-call-answered`).
+
+A variant: answer it yourself. With Lin on hold in the kitchen, stand at her desk at 3:30 and pick up her phone before
+the boss gets there. Her interviewer asks for Lin (briefcase, her face, ?); you shrug and hang up. The boss, halfway
+up, sees you have it and gives you a thumbs-up. In a real office: you picked up a phone ringing at an empty desk next
+to yours, which anyone would do, and told the caller nothing. It costs the same as route 1 (you still need Lin in the
+kitchen), plus a walk away from your desk while the boss keeps glancing at your chair, and you must be back by 3:34.
+The end card: you at her desk with her handset, shrugging, and Lin back from the kitchen, too late and cross (shots
+`you-take-her-call`, `end-answered-you`). If Lin is at her desk, she gets to it first or snatches it from you.
 
 A variant: Kev out of the way by timing instead of a phone call. Between about 3:14 and 3:19 Kev is at Lin's socket
 or walking back from it, out of earshot of the kitchen. Ring the kitchen phone alone then, and Lin, alone in the
@@ -253,7 +270,8 @@ The facts, and when you see them:
   socket, and points. The boss sends you to your desk with 20 minutes of work, and usually the window has closed when
   you are free.
 - The teaching fails: each picture shows why, and each ends with Lin taking her call. Ring only the kitchen late and
-  Kev answers it. Ring Lin's phone while she sits at it and she hangs up on Gary. Pull the plug before Kev's charging
+  Kev answers it. Ring Lin's phone while she sits at it and she hangs up on Gary; ring it while she has the receiver at her ear and
+  it goes off in her ear (😖, shot `lin-jolted`) before she hangs up on him. Pull the plug before Kev's charging
   stop and he jams it back in. Ring only the boss and Lin is at her desk at 3:30.
 
 ## The joke
