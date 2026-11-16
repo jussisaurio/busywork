@@ -231,10 +231,40 @@ export default [
       if (g.world.letter !== 'puddle') throw new Error('it never came back up');
       for (let i = 0; i < 3 && g.world.letter === 'puddle'; i++) run('interact'); // pick it out of the puddle
       if (g.world.letter !== 'player') throw new Error('could not pick it out of the puddle');
+      run('eat'); // once was enough: up to your lips, a gag, and it's still in your hand
+      if (!log.some((e) => e.name === 'letter:gagged') || g.world.letter !== 'player') throw new Error('no gag at the soggy letter');
       run('goto my_seat'); run('goto my_seat');
       if (g.world.letter !== 'drawer') run('interact');
       if (g.world.letter !== 'drawer') throw new Error('never got it into the drawer');
       for (let i = 0; i < 4 && !g.outcome; i++) run('wait until 3:41');
+    },
+  },
+  {
+    name: 'after the brew, pull the breaker and pour a cup in the dark: the full pot pours with the power out',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('wait until 3:15');
+      run('goto fuse_box pretend'); run('goto fuse_box pretend');
+      run('interact');
+      if (g.world.fuse !== 'off' || g.world.coffee !== 'brewed') throw new Error('not dark with a full pot');
+      run('goto coffee_machine pretend'); run('goto coffee_machine pretend');
+      run('interact');
+      if (g.player.held !== 'coffee') throw new Error('the full pot would not pour in the dark');
+      for (let i = 0; i < 6 && !g.outcome; i++) run('wait until 3:41');
+    },
+  },
+  {
+    name: 'the panel says what it does: off, then back on',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto office_switch pretend');
+      if (g.player.focus?.action !== 'flip_switch') throw new Error(`at the panel E is ${g.player.focus?.action}`);
+      run('interact');
+      if (g.world.officeLight !== 'off' || g.player.focus?.action !== 'flip_switch_on') throw new Error(`after the flip E is ${g.player.focus?.action}`);
+      run('interact');
+      if (g.world.officeLight === 'off') throw new Error('never came back on');
+      run('goto my_seat pretend'); run('goto my_seat pretend'); // away from the panel before he gets there
+      for (let i = 0; i < 6 && !g.outcome; i++) run('wait until 3:41');
     },
   },
   {

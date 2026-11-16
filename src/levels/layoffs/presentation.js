@@ -102,10 +102,12 @@ function drawCable(ctx, info, at, out, t) {
   ctx.restore();
 }
 
-// The boss's desk phone: its handset off while he calls Kev's desk.
-const BOSS_PHONE = { ringing: false, off: false };
+// The boss's desk phone: its handset off while he calls Kev's desk. While your call rings out at Kev's desk, its
+// handset lies off the cradle on the desk (line busy: that is why E is gone till the ringing stops).
+const BOSS_PHONE = { ringing: false, off: false, aside: false };
 function bossPhone(w, game) {
   BOSS_PHONE.off = w.bossPhoneUntil != null && (game.clock?.minute ?? 0) < w.bossPhoneUntil;
+  BOSS_PHONE.aside = !!w.ringing && !BOSS_PHONE.off && w.ringBy === 'player';
   return BOSS_PHONE;
 }
 function drawBossPhone(ctx, info, at, shown, t) {

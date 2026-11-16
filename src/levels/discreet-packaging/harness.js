@@ -44,7 +44,7 @@ export default {
   ],
 
   outcomeText: (o) => (o.result === 'win' ? (o.routes.includes('bob')
-    ? `WIN 🎉 (Lin hands Bob the pink box, his face on the label; he hugs it, in tears 🥹${o.why === 'away' ? '; the brown box waits for you' : ''})`
+    ? `WIN 🎉 (Lin hands Bob the pink box, his face on the label; he hugs it, in tears 🥹${o.why === 'away' ? '; nobody wonders where you are' : ''})`
     : `WIN 🎉 (no pink box at the mail call: nothing for you today 📭${o.why === 'away' ? '; nobody wonders where you are' : ''})`)
     : o.result === 'caught' ? 'CAUGHT 😳 (someone has your parcel, or saw you at it)'
     : o.why === 'noshow' ? 'BLAMED 🪑 (Lin holds up the pink box with your face on it over your empty chair)'
@@ -67,7 +67,7 @@ export default {
     if (n.id === 'lin' && w.brown === 'lin') bits.push(`carrying the brown box (${w.parcelFor === 'bob' ? 'your' : "Bob's"} face on the label)`);
     if (n.id === 'bob' && w.parcel === 'bob') bits.push('hugging the pink box');
     if (n.id === 'bob' && w.brown === 'bob') bits.push('holding his brown box');
-    if (n.id === 'lin' && w.mailEmpty && n._atMail) bits.push('shrugging');
+    if (n.id === 'lin' && n._atMail && (w.mailEmpty || (w.parcel === 'bob' && w.brown === 'player'))) bits.push('shrugging');
     return bits;
   },
 
@@ -84,6 +84,7 @@ export default {
     if (w.camAim === 'plant') bits.push('the camera is turned into the plant');
     bits.push(`the pink parcel (${face} on the label) is ${where}`);
     if (w.brown === 'shelf') bits.push(`Bob's plain brown parcel (${w.parcelFor === 'bob' ? 'your' : 'his'} face on the label) is on the parcel shelf`);
+    if (w.brown === 'player') bits.push(`Bob's brown box, your face on its label, is ${w.items.some((i) => i.type === 'brownbox') ? 'on the floor' : 'in your hands'}`);
     if (w.plug === 'out') bits.push("the camera's plug hangs out of the power strip");
     if (w.broom === 'stand') bits.push('a broom on its wall clip in the store room');
     if (floor.length) bits.push(`on the floor: ${floor.join(', ')}`);
@@ -113,13 +114,15 @@ export default {
       case 'camera:replugged': return 'Bob plugged the camera back in 😊';
       case 'broom:taken': return 'you took the broom';
       case 'broom:returned': return 'you put the broom back';
+      case 'brown:taken': return 'you take the brown box with your face on it: dull cardboard, nobody minds';
+      case 'brown:returned': return 'you put the brown box back on the parcel shelf';
       case 'parcel:swapped': return "you swapped the labels: Bob's face on the pink box, yours on his brown one; both back on the shelf";
       case 'parcel:taken': return 'you took your parcel';
       case 'parcel:stashed': return 'you stuffed the parcel in your desk drawer and slammed it shut';
       case 'parcel:spotted': return `${name(p.by)} spots the pink box on the floor 💝❗`;
       case 'parcel:found': return `${name(p.by)} picks up the pink box and reads the label`;
       case 'parcel:spotted_on_you': return `${name(p.by)} sees the pink box in your arms and exclaims over it out loud`;
-      case 'parcel:collected': return p.for === 'bob' ? "Lin collects both boxes: the pink one has Bob's face on it, the brown one yours" : "Lin collects both boxes: Bob's brown one, and the pink one with your face on it";
+      case 'parcel:collected': return !p.brown ? "Lin collects the pink box, Bob's face on it; the brown box is gone from the shelf (you have it)" : p.for === 'bob' ? "Lin collects both boxes: the pink one has Bob's face on it, the brown one yours" : "Lin collects both boxes: Bob's brown one, and the pink one with your face on it";
       case 'parcel:missing': return "Lin collects Bob's brown box; no pink box on the shelf, and she doesn't miss it";
       case 'parcel:handed': return 'Lin hands Bob the box with his face on it';
       default: return undefined;

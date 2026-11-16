@@ -86,11 +86,11 @@ export const BEHAVIOURS = {
       if (kev?.active && !kev.override) sim.speak(game, kev, [{ say: ['❓'], kind: 'thought', after: 0.3, ttl: 1.3 }]);
     },
   },
-  // 3:23: if it brewed she pours a cup and carries it off. Shorted, there is nothing to pour.
+  // 3:23: if it brewed she pours a cup and carries it off (in the dark too: the pot is full). Shorted, there is nothing to pour.
   pour: {
     arrive(game, npc, sim) {
       const w = game.world;
-      if (w.coffee === 'brewed' && w.fuse === 'on') npc.carry = 'coffee';
+      if (w.coffee === 'brewed') npc.carry = 'coffee';
       else if (w.coffee === 'shorted') sim.speak(game, npc, [{ say: ['😞'], kind: 'thought', ttl: 1.4 }]);
     },
   },

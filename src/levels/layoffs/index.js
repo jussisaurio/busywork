@@ -142,6 +142,7 @@ const INTERACTIONS = {
     can: (p, w) => w.pc === 'free' && w.kevGone && !w.ringing,
     done(game) {
       ringKev(game, RING_SECS);
+      game.world.ringBy = 'player'; // his handset lies off on the desk while it rings (presentation.js)
       game.events.emit('phone:called', {});
     },
   },
@@ -492,6 +493,7 @@ export default {
     pc: 'boss', // 'boss' (he's at it) | 'kev' (Kev at his cable) | 'free' (he's out)
     locked: false, // he locked it for the restroom (3:10 to 3:22)
     ringing: false, // Kev's desk phone is ringing
+    ringBy: null, // who is ringing it: 'player' (from the boss's phone) | null (the boss, or Kev's own calls)
     ringFrom: null, // the game minute it started ringing
     ringLook: false, // Lin is looking round at it (the first RING_LOOK seconds)
     ringUntil: null, // the game minute it gives up (null: until Kev picks up)

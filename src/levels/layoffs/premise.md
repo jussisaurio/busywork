@@ -121,6 +121,8 @@ seconds.
 ### Route 2: ring Kev's phone (a distraction)
 His desk phone is next to his screen. "Call Kev's desk." Behind Lin, the empty desk's phone rings. She turns round
 to it for about 4 seconds (👀☎️), sees nobody at the empty desk, and turns back. Take your face off while she looks.
+While it rings (about 6 seconds) his handset lies off its cradle on his desk, on its coiled cord, purring: the line is
+busy, so you can't call again till it stops. Then it is back on the cradle and you can.
 This is the boss's own call from 3:01 and 3:24, made by you: the same ring, the same desk, and Lin turns the same way.
 
 In a real office: a phone that rings at an empty desk behind you makes you turn round and look, the same as it did

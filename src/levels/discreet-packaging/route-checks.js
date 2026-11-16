@@ -28,6 +28,11 @@ export default [
     cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'interact', 'goto own_desk pretend', 'sit', 'wait until 4:00'],
   },
   {
+    name: 'swap the labels, then take the brown box with your face on it → win (Bob gets the pink box; Lin has nothing for you and shrugs)',
+    expect: { result: 'win', routes: ['bob'] },
+    cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'interact', 'interact', 'goto own_desk pretend', 'goto own_desk pretend', 'wait until 4:00'],
+  },
+  {
     name: 'same, but in the store room at 4:00 → still a win (nothing is missing, so nobody wonders where you are)',
     expect: { result: 'win', routes: ['bob'] },
     cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'interact', 'goto store_room pretend', 'pretend until 4:00'],

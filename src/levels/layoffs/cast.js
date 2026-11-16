@@ -73,6 +73,7 @@ const free = (n) => n?.active && !n.override;
 export function ringKev(game, secs = null) {
   const w = game.world;
   w.ringing = true;
+  w.ringBy = null; // the caller who has one says so (index.js call_kev)
   w.ringUntil = secs == null ? null : game.clock.minute + SECS(secs);
   // Set now, not on the next frame (index.js bossClock): the ring's noise asks ringLook on its first sound, and a
   // false there drops it for good: Lin would never turn round.

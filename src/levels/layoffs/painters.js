@@ -160,7 +160,9 @@ function cradled(ctx, x, y, w = 16) {
 
 // A desk phone at (x, y): ivory body with a keypad, the handset on its cradle (or gone: `off`, someone holds it),
 // shaking with a glow and the bell's arcs while it rings.
-export function deskPhone(ctx, x, y, t, { ringing = false, off = false } = {}) {
+// aside: the handset off its cradle, lying on the desk to the left on its coiled cord (a call ringing out through
+// it, nobody holding it).
+export function deskPhone(ctx, x, y, t, { ringing = false, off = false, aside = false } = {}) {
   if (ringing) {
     glow(ctx, x, y, 20, RING, 0.45 + 0.25 * Math.sin(t * 14));
     x += Math.sin(t * 55) * 1.3;
@@ -181,13 +183,46 @@ export function deskPhone(ctx, x, y, t, { ringing = false, off = false } = {}) {
   for (let i = 0; i < 3; i++) { // the keypad
     for (let j = 0; j < 2; j++) fillCircle(ctx, x - 3 + i * 3, y + j * 2.4, 0.7, '#6f6553');
   }
-  if (off) {
+  if (off || aside) {
     fillCircle(ctx, x - 5, y - 5, 1.4, IVORY_DARK);
     fillCircle(ctx, x + 5, y - 5, 1.4, IVORY_DARK);
   } else {
     cradled(ctx, x, y - 5);
   }
+  if (aside) lyingHandset(ctx, x - 21, y + 5, x - 7, y + 3, t);
   if (ringing) arcs(ctx, x, y - 3, RING, t);
+}
+
+// A handset lying on the desk at (x, y), tilted, its coiled cord running back to the phone's side (cx, cy); the
+// ringing tone purring out of its earpiece in little pulses.
+function lyingHandset(ctx, x, y, cx, cy, t) {
+  ctx.strokeStyle = '#6f6553'; // the coiled cord: a loopy line
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  const n = 7;
+  for (let i = 0; i <= n; i++) {
+    const k = i / n;
+    const px = x + 4 + (cx - x - 4) * k;
+    const py = y + 3 + (cy - y - 3) * k + Math.sin(k * Math.PI) * 3 + (i % 2 ? 1.6 : -1.6);
+    if (i) ctx.lineTo(px, py);
+    else ctx.moveTo(px, py);
+  }
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-0.55);
+  cradled(ctx, 0, 0, 15);
+  ctx.restore();
+  if (Math.floor(t * 2.5) % 2) { // brr... brr...: short lines off the earpiece end
+    ctx.strokeStyle = RING;
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x - 9, y - 1); ctx.lineTo(x - 12, y - 3);
+    ctx.moveTo(x - 8, y + 2); ctx.lineTo(x - 12, y + 2);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+  }
 }
 
 // Lin's mobile lying on her desk at (x, y), screen up. Buzzing: it rattles sideways, its screen lit, with short buzz

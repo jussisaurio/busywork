@@ -59,8 +59,9 @@ function handOver(game, sim) {
   sim.faceSpot(game, lin, 'bob_mail');
   sim.faceSpot(game, bob, 'mail_call');
   if (w.parcel === 'lin' && w.parcelFor === 'bob') {
-    w.parcel = 'bob'; // he hugs it; the dull brown one is yours
-    sim.speak(game, lin, [{ say: ['💝', '@bob'] }, { say: ['#brownbox', '@player'], after: 1.2 }]);
+    w.parcel = 'bob'; // he hugs it; the dull brown one is yours (or you already took it: nothing for you, a shrug)
+    const next = w.brown === 'player' ? ['📭', '@player'] : ['#brownbox', '@player'];
+    sim.speak(game, lin, [{ say: ['💝', '@bob'] }, { say: next, after: 1.2 }]);
     sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought' }]); // at once: the day's verdict comes 0.2 s later
     if (youHere(game)) say(game, 'player', ['😏'], { kind: 'thought', ttl: 2 }); // and you, smug, right beside him
   } else if (w.brown === 'lin') {
@@ -98,7 +99,7 @@ export const BEHAVIOURS = {
       }
       w.parcel = 'lin';
       sim.speak(game, lin, [{ say: ['💝', w.parcelFor === 'bob' ? '@bob' : '@player'], kind: 'thought' }]);
-      game.events.emit('parcel:collected', { for: w.parcelFor });
+      game.events.emit('parcel:collected', { for: w.parcelFor, brown: w.brown === 'lin' });
     },
   },
   // Lin at the mail call: your parcel goes up over her head for the whole office to see; then the hand-over.

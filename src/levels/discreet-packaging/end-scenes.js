@@ -312,7 +312,8 @@ function spotlight(ctx, x, y) {
 
 // bob: Lin has handed big, stern Bob the pink box covered in hearts, his face on the label. He hugs it, in tears.
 // She holds his dull brown box out to you (your face on it now); you stand by, smug. Away at 4:00: she holds it out
-// to your empty chair, and nobody minds.
+// to your empty chair, and nobody minds. If you took the brown box yourself, she shrugs (nothing for you) and you
+// stand there hugging Bob's cardboard while he weeps over the hearts.
 function bobScene(ctx, game, t, e) {
   const away = game.outcome?.why === 'away';
   office(ctx, 560);
@@ -321,8 +322,9 @@ function bobScene(ctx, game, t, e) {
   if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 300, 300, 2.6, t);
   bubble(ctx, ['🥹'], 300, 196, e, 'thought');
   if (away) emptyChair(ctx, 650, 320, false);
-  lin(ctx, game, t, 470, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6 });
-  bubble(ctx, ['#brownbox', '@player'], 470, 196, e - 0.2);
+  const took = game.world.brown === 'player'; // you took the brown box yourself: she has nothing for you, and shrugs
+  lin(ctx, game, t, 470, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6, arms: took ? 'shrug' : null });
+  bubble(ctx, took ? ['📭', '@player'] : ['#brownbox', '@player'], 470, 196, e - 0.2);
   if (!away) you(ctx, game, t, 650, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
 }
 

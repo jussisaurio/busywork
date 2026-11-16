@@ -125,7 +125,7 @@ export default [
   {
     name: 'ring-empty-desk',
     cmds: [...RING, 'wait 0.4s'],
-    intent: "You've picked up the boss's desk phone and called Kev's desk: Kev's empty desk phone, behind Lin, rings and glows. Lin turns round in her chair to look at it (eyes and a phone in her thought), her back to the boss's office.",
+    intent: "You've picked up the boss's desk phone and called Kev's desk: its handset lies off the cradle on his desk, on its coiled cord. Kev's empty desk phone, behind Lin, rings and glows. Lin turns round in her chair to look at it (eyes and a phone in her thought), her back to the boss's office.",
   },
   {
     name: 'face-off',
