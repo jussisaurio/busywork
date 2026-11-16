@@ -26,11 +26,11 @@ export const CAST = [
       s('3:03.6', { do: 'visit', spot: 'boss_aside' }), // he stands over Kev while Kev plugs the cable back in
       s('3:08.3', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
       s('3:10', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // he locks his screen: the list is on it
-      s('3:15', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
-      s('3:19', { do: 'sit', spot: 'boss_desk', arrive: 'actsUp' }), // static again; he calls Kev, who went home,
-      // then gives up and goes for a coffee (index.js clockFor, the coffee lure). Back from it to a dead screen, he
-      // sits it out; at 3:42 he sends the email from his mobile (sendList).
-      s('3:35', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
+      // Back from the restroom about 3:22. If you pulled his plug while he was out, the screen is dead: he types his
+      // password into the static (⌨️), bangs on it, calls Kev, who went home, then gives up and goes for a coffee
+      // (index.js clockFor, the coffee lure). Left alone, it keeps working and he works on until 3:42.
+      s('3:16.5', { do: 'sit', spot: 'boss_desk', arrive: 'backAtDesk' }),
+      s('3:35', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // back with his coffee
     ],
   },
   {
@@ -149,18 +149,19 @@ export const BEHAVIOURS = {
       game.events.emit('pc:fixed', {});
     },
   },
-  // About 3:23: the static is back. He bangs on it; then he calls Kev's desk (index.js clockFor: the ring, the ❓, coffee).
-  actsUp: {
+  // About 3:22, back in his chair from the restroom: he types his password and the padlock goes. If you pulled his
+  // plug while he was out, he types it blind into the static (⌨️), then bangs on it (😠); then he calls Kev's desk
+  // (index.js clockFor: the ring, the ❓, coffee).
+  backAtDesk: {
     arrive(game, npc, sim) {
       const w = game.world;
       const st = (npc._lay ??= {});
-      if (st.actedUp || w.coffee !== 'none') return;
-      st.actedUp = true;
-      st.callAt = game.clock.minute + SECS(1.6);
-      w.pc = 'boss'; // back in his chair from the restroom: he unlocked it (atDesk), and it dies on him
+      w.pc = 'boss';
       w.locked = false;
-      w.glitch = true;
-      sim.speak(game, npc, [{ say: ['😠'] }]);
+      if (!w.glitch || st.actedUp || w.coffee !== 'none') return;
+      st.actedUp = true;
+      st.callAt = game.clock.minute + SECS(2.6);
+      sim.speak(game, npc, [{ say: ['⌨️'] }, { say: ['😠'], after: 1.3 }]);
       game.events.emit('pc:actsUp', {});
     },
   },
@@ -191,8 +192,9 @@ export const BEHAVIOURS = {
       game.events.emit('kev:bye', {});
     },
   },
-  // 3:42: he packs up for the weekend at his desk, coat on (🧥), and at 3:45 clicks send on the email he left open,
-  // without opening the attachment (the list flies off his screen: list.js sending). Nobody reads the list again.
+  // 3:42: he opens the attachment one last time and counts the faces (the sheet pops out big: list.js, w.countAt).
+  // Yours on it: he ticks it (✔️). Yours gone: one short? He frowns, and it's Friday: he shrugs (📋🤨🤷). Then coat on
+  // (🧥📧), and at 3:45 he clicks send (the sheet flies off his screen, big: list.js sending).
   // His screen still dead (nobody plugged it in): he sends the same email from his mobile (📱📧), the screen static.
   sendList: {
     arrive(game, npc, sim) {
@@ -203,7 +205,16 @@ export const BEHAVIOURS = {
       // Lin named you: he glares across the floor at your desk (whatever he says, it waits for Monday).
       sim.lookAt(game, npc, game.player.named ? 'player_desk' : 'screen', 2.6);
       if (game.player.named) sim.speak(game, npc, [{ say: ['👉', '@player', '😠'], after: 0.9 }]);
-      else sim.speak(game, npc, [{ say: dead ? ['🧥', '📱', '📧'] : ['🧥', '📧'], after: 0.9 }]);
+      else if (dead) sim.speak(game, npc, [{ say: ['🧥', '📱', '📧'], after: 0.9 }]);
+      else {
+        w.countAt = game.clock.minute; // the sheet pops out: three faces, or four with yours
+        const on = w.list === 'on';
+        sim.speak(game, npc, [
+          { say: on ? ['📋', '@player', '✔️'] : ['📋', '🤨', '🤷'], after: 0.9 },
+          { say: ['🧥', '📧'], after: 2.2 },
+        ]);
+        game.events.emit('boss:headCount', { on });
+      }
       game.events.emit('boss:packsUp', {});
     },
   },

@@ -48,11 +48,24 @@ const POP_SECS = 2.8;
 const POP_OFF_SECS = 2.2; // after the edit: your face drops out (OUT_DELAY + OUT_SECS), then you close the sheet
 const POP_IN = 0.25;
 const POP_BACK = 0.35;
+const COUNT_SECS = 3.4; // the head count: the sheet out while he counts, ticks or shrugs
+const SEND_IN = 0.15; // of the send beat (0..1): the sheet pops out, then flies (SEND_FLY on)
+const SEND_FLY = 0.4;
 function popOf(w, game, into) {
   into.pop = null;
   into.popK = 0;
   into.popAge = 0;
-  if (w.glitch || w.locked || game.outcome) return;
+  if (w.glitch || w.locked) return;
+  // 3:45, sent: the attachment pops out big and flies off with the email (drawPop), three faces or four.
+  if (game.outcome) {
+    const out = sending(game);
+    if (out > 0) {
+      into.pop = 'send';
+      into.popAge = out;
+      into.popK = out < SEND_IN ? easeOutBack(out / SEND_IN) : 1;
+    }
+    return;
+  }
   const a = game.player?.action;
   if (a?.type === 'strike_name') {
     into.pop = 'edit';
@@ -61,6 +74,16 @@ function popOf(w, game, into) {
     return;
   }
   const now = game.clock?.minute ?? 0;
+  // 3:42, the head count (cast.js sendList): he opens the attachment and counts the faces on it.
+  if (w.countAt != null) {
+    const age = (now - w.countAt) / GAME_MIN_PER_SEC;
+    if (age >= 0 && age < COUNT_SECS) {
+      into.pop = 'count';
+      into.popAge = age;
+      into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > COUNT_SECS - POP_BACK ? 1 - easeOutCubic((age - COUNT_SECS + POP_BACK) / POP_BACK) : 1;
+      return;
+    }
+  }
   const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
   if (!from) return;
   const age = (now - from[1]) / GAME_MIN_PER_SEC + (from[0] === 'off' ? POP_IN : 0);
@@ -70,6 +93,7 @@ function popOf(w, game, into) {
   into.popAge = age;
   into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > dur - POP_BACK ? 1 - easeOutCubic((age - dur + POP_BACK) / POP_BACK) : 1;
 }
+const easeInCubic = (x) => x * x * x;
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
 const SHOWN = { glitch: false, locked: false, jolt: 0, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
@@ -83,7 +107,7 @@ export function listShown(w, game) {
   SHOWN.you = youOnList(w, game);
   // Your edit saved, you close the sheet as the pop goes back in: his screen is back on his email to HR, the sheet
   // attached. Nothing left on it to read across the floor.
-  SHOWN.closed = w.list === 'off' && SHOWN.pop !== 'off' && SHOWN.pop !== 'edit';
+  SHOWN.closed = w.list === 'off' && !['off', 'edit', 'count', 'send'].includes(SHOWN.pop);
   const a = game.player?.action;
   SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : w.struck || 0; // struck: Lin stopped you mid-edit
   SHOWN.out = sending(game);
@@ -126,7 +150,8 @@ export function drawListScreen(ctx, info, at, shown, t) {
   } else {
     ctx.fillStyle = '#2d5a78'; // the desktop behind the sheet
     ctx.fillRect(sx, sy, sw, sh);
-    const out = easeOutCubic(shown.out);
+    const small = shown.pop === 'send' ? 0 : shown.out; // the big one flies instead (drawPop)
+    const out = easeOutCubic(small);
     if (out < 1) {
       ctx.save();
       // Sent: the sheet shrinks and flies off to the top right.
@@ -136,7 +161,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
       else drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t);
       ctx.restore();
     }
-    if (shown.out > 0 && shown.out < 0.8) { // speed lines behind it
+    if (small > 0 && small < 0.8) { // speed lines behind it
       ctx.strokeStyle = 'rgba(255,255,255,0.6)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -223,21 +248,34 @@ const POP_DX = 163; // the pop's centre, from the screen's centre
 const POP_DY = -8;
 function drawPop(ctx, sx, sy, sw, sh, shown, t) {
   const k = shown.popK;
-  const z = 1 + (POP_ZOOM - 1) * k;
-  const cx = sx + sw / 2 + POP_DX * Math.min(k, 1);
-  const cy = sy + sh / 2 + POP_DY * Math.min(k, 1);
+  // Sent: it flies off to the top right, shrinking, after it has popped out.
+  const fly = shown.pop === 'send' ? easeInCubic(clamp((shown.popAge - SEND_FLY) / (1 - SEND_FLY), 0, 1)) : 0;
+  const z = (1 + (POP_ZOOM - 1) * k) * (1 - 0.6 * fly);
+  const cx = sx + sw / 2 + POP_DX * Math.min(k, 1) + 300 * fly;
+  const cy = sy + sh / 2 + POP_DY * Math.min(k, 1) - 170 * fly;
   const hw = (sw / 2) * z;
   const hh = (sh / 2) * z;
   ctx.save();
-  ctx.globalAlpha = clamp(k * 1.5, 0, 1);
-  ctx.fillStyle = 'rgba(244,242,236,0.22)'; // the zoom wedge, from the screen's right edge to the pop's left
-  ctx.beginPath();
-  ctx.moveTo(sx + sw, sy);
-  ctx.lineTo(cx - hw, cy - hh);
-  ctx.lineTo(cx - hw, cy + hh);
-  ctx.lineTo(sx + sw, sy + sh);
-  ctx.closePath();
-  ctx.fill();
+  ctx.globalAlpha = clamp(k * 1.5, 0, 1) * (1 - fly * fly);
+  if (fly > 0) { // speed lines behind it
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let i = -1; i <= 1; i++) {
+      ctx.moveTo(cx - hw - 4 + i * 6, cy + hh + 4 - i * 6);
+      ctx.lineTo(cx - hw - 4 - 30 * fly + i * 6, cy + hh + 4 + 17 * fly - i * 6);
+    }
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = 'rgba(244,242,236,0.22)'; // the zoom wedge, from the screen's right edge to the pop's left
+    ctx.beginPath();
+    ctx.moveTo(sx + sw, sy);
+    ctx.lineTo(cx - hw, cy - hh);
+    ctx.lineTo(cx - hw, cy + hh);
+    ctx.lineTo(sx + sw, sy + sh);
+    ctx.closePath();
+    ctx.fill();
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.3)'; // shadow, bezel
   ctx.fillRect(cx - hw - 3, cy - hh - 1, hw * 2 + 8, hh * 2 + 8);
   ctx.fillStyle = '#34312f';

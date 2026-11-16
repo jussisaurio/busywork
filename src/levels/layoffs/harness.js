@@ -69,7 +69,7 @@ export default {
   describe(e) {
     const p = e.payload ?? {};
     switch (e.name) {
-      case 'lin:sees': return 'Lin sees you crossing your face out; she thinks of the list with her own face on it 😨';
+      case 'lin:sees': return 'Lin sees you crossing your face out and shouts ❗👉; she thinks of the list with her own face on it 😨';
       case 'lin:tells': return 'Lin points you out to the boss 👉🖥️';
       case 'meeting:gather': return 'the boss goes back to his desk to pack up for the weekend 📧';
       case 'boss:packsUp': return 'the boss puts his coat on at his desk, the email to HR open 🧥📧';
@@ -84,7 +84,9 @@ export default {
       case 'phone:called': return "you call Kev's desk from the boss's phone";
       case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
       case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
-      case 'pc:actsUp': return "the boss's screen goes to static again 😠";
+      case 'pc:pulled': return "you pull the boss's plug half out: his screen goes to static";
+      case 'pc:actsUp': return "back at his desk, the boss types his password into the static ⌨️, and bangs on it 😠";
+      case 'boss:headCount': return p.on ? "the boss counts the list's faces and ticks yours ✔️" : "the boss counts the list's faces: one short? he shrugs 📋🤨🤷";
       case 'pc:locked': return 'the boss locks his screen and leaves for the restroom';
       case 'kev:fixing': return "Kev kneels behind the boss's desk at the plug, the boss standing over him";
       case 'kev:up': return 'Kev picks up his bag';

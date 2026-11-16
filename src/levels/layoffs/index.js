@@ -7,16 +7,18 @@
 //     boss stands over him. The list comes up: your face is on it (😨); Lin's isn't (her 😨, then 😌, then a look at
 //     you). At 3:10 he goes to the restroom and locks the screen (try it: the padlock jolts, 🔒). Kev goes home
 //     about 3:15 (👋🏠 to Lin).
-//   - About 3:20, back at his desk: the static is back. He phones Kev's desk again, but Kev went home: it just rings
-//     (❓). He gives up (😮‍💨☕) and goes for a coffee, his screen dead: there is nothing to lock. He walks the length
-//     of the floor to the kitchen and is out of sight from about 3:28.
+//   - While he is in the restroom, pull his plug half out (pull_cable): static. About 3:22 he is back, types his
+//     password into the static (⌨️, so it is unlocked), bangs on it (😠) and phones Kev's desk, but Kev went home:
+//     it just rings (❓). He gives up (😮‍💨☕) and goes for a coffee, his screen dead. He walks the length of the
+//     floor to the kitchen and is out of sight from about 3:25. Leave his plug alone and he never leaves his desk.
 //   - Then kneel at the socket behind his desk and push the plug home: the list comes back on, unlocked.
-//     Left alone, he comes back with his coffee to a dead screen and at 3:42 sends the email from his mobile (📱📧).
+//     Left dead, he comes back with his coffee and at 3:42 sends the email from his mobile (📱📧).
+//   - 3:42, the head count: he pops the sheet open and counts. Your face on it: ✔️. Gone: 📋🤨🤷, and he sends it.
 //   - Before he is back on the floor (about 3:36), make Lin look away for the 3 s the edit takes: ring Kev's empty
 //     desk from the boss's desk phone (she turns round to it, 👀☎️: the ring route), or wait for her mobile to
 //     buzz (she picks it up and turns away, 📱: the phone route). When the edit ends the sheet closes, saved, back
 //     to the email to HR: at 3:45 he sends that saved file (list.js drawEmail).
-// Seen by Lin: she doesn't shout. Your face off his list leaves a gap, and the next face in it could be hers: a
+// Seen by Lin: she shouts (❗👉 you). Your face off his list leaves a gap, and the next face in it could be hers: a
 // thought (📋, her face, 😨), then she gets up and goes to tell him (linWatch, the linTells lure), at the latest from
 // the kitchen door. He leaves his coffee, comes back, checks his screen, puts your face back and locks it. At 3:45 he
 // sends it and you are out (meeting.verdict: caught, no hunt: he knows who did it). Seen by the boss himself: caught.
@@ -107,10 +109,22 @@ const EDIT_SECS = 3.0;
 
 // The cable is at the floor behind his desk: you reach it from behind (row 2), not from his chair.
 const behindDesk = (p) => p.y < 3;
+const inOffice = (p) => p.x < 8 && p.y < 6; // his glass office (map rows 1-5, west of the glass at x 8)
 // His screen faces the floor: you work it from in front of or beside his desk, not from behind.
 const atScreen = (p) => p.y >= 3;
 
 const INTERACTIONS = {
+  // While he is out of his office (the restroom), pull his plug half out of the socket: the screen goes to static.
+  // He comes back to it, types his password into it blind, and it is no use (cast.js backAtDesk).
+  pull_cable: {
+    on: 'boss_cable', text: 'pull his plug out', duration: 1.0, sneaky: false,
+    can: (p, w) => !w.glitch && w.pc === 'free' && w.list === 'on' && behindDesk(p),
+    done(game) {
+      game.world.glitch = true;
+      game.world.pulledAt = game.clock.minute;
+      game.events.emit('pc:pulled', {});
+    },
+  },
   // He has gone for coffee and left his screen dead: anyone may push the plug back in. While he sits there, the
   // cable is his business, and you have no reason to be behind his desk (the engine sends you back to work).
   fix_cable: {
@@ -120,7 +134,7 @@ const INTERACTIONS = {
       const w = game.world;
       w.glitch = false;
       w.listUpAt = game.clock.minute; // the list comes up on his screen (list.js pops it out)
-      game.events.emit('pc:fixedByYou', {});
+      game.events.emit('pc:fixedByYou', { afterCoffee: w.coffee !== 'none' }); // or pulled and pushed straight back
     },
   },
   call_kev: {
@@ -143,7 +157,7 @@ const INTERACTIONS = {
   },
   strike_name: {
     on: 'boss_pc', text: 'take your face off the list', duration: EDIT_SECS, sneaky: true, owner: 'boss', saw: '🖥️',
-    // owner: only the boss catches you at it in the engine. Lin's reaction is her own (linClock): she doesn't shout.
+    // owner: only the boss catches you at it in the engine. Lin's reaction is her own (linClock): a shout, then she tells.
     can: (p, w) => w.list === 'on' && w.pc === 'free' && !w.locked && !w.glitch && atScreen(p),
     done(game, a) {
       const w = game.world;
@@ -178,7 +192,7 @@ const ROLES = {
 
 // Kev didn't answer: he gives up on him and goes for a coffee, his screen still dead (clockFor sets w.coffee). There
 // was nothing to lock: static. The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule.
-const BREW_UNTIL = at('3:35.2', START);
+const BREW_UNTIL = at('3:37', START);
 const LURES = [
   // Told on: he goes straight to his screen (😠), puts your face back (index.js listen: 'boss:checks') and locks it.
   {
@@ -286,7 +300,7 @@ function bossClock(game, npc, sim) {
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
-  // About 3:23 (cast.js actsUp): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
+  // About 3:24 (cast.js backAtDesk): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
   if (st.callAt != null && now >= st.callAt) {
     st.callAt = null;
     if (w.glitch && free(npc)) {
@@ -308,7 +322,13 @@ function bossClock(game, npc, sim) {
   // Nobody is coming: he leaves the dead screen and goes for a coffee (the coffee lure).
   if (st.goAt != null && now >= st.goAt) {
     st.goAt = null;
-    if (w.glitch && w.coffee === 'none' && free(npc)) {
+    const p = game.player;
+    if (w.glitch && w.coffee === 'none' && free(npc) && inOffice(p)) {
+      // You're still in his office (pretending behind his desk, say): he won't leave you there. Out first.
+      if (!st.shooed) sim.speak(game, npc, [{ say: ['👉', '@player', '🚪'] }]);
+      st.shooed = true;
+      st.goAt = now + SECS(1.0);
+    } else if (w.glitch && w.coffee === 'none' && free(npc)) {
       w.coffee = 'going';
       w.pc = 'free';
     }
@@ -375,13 +395,14 @@ function linClock(game, npc, sim) {
       game.events.emit('lin:looksAtYou', {});
     }
   }
-  linWatch(game, npc, now, st);
+  linWatch(game, npc, now, st, sim);
   return now;
 }
 
-// Lin watches his office. If she sees you crossing your face out, your gap on the list could be filled with hers:
-// a thought (📋, her face, 😨), then she gets up and goes to tell him (the linTells lure). No shout: she tells him.
-function linWatch(game, npc, now, st) {
+// Lin watches his office. If she sees you crossing your face out, she shouts (❗👉 you), and the thought behind it
+// follows: your gap on the list could be filled with hers (📋, her face, 😨). Then she gets up and goes to tell him
+// (the linTells lure); he is in the kitchen and doesn't hear the shout.
+function linWatch(game, npc, now, st, sim) {
   const w = game.world;
   const p = game.player;
   const dt = st.last == null ? 0 : now - st.last;
@@ -392,7 +413,10 @@ function linWatch(game, npc, now, st) {
       if (st.sawFor >= SECS(LIN_NOTICE)) {
         w.linTells = 'go';
         w.linSaw = true;
-        say(game, 'lin', ['📋', '@lin', '😨'], { kind: 'thought', ttl: 1.8 });
+        sim.speak(game, npc, [
+          { say: ['❗', '👉', '@player'], ttl: 1.2 },
+          { say: ['📋', '@lin', '😨'], kind: 'thought', ttl: 2.0, after: 1.2 },
+        ]);
         sightline(game, 'lin', 'notice', 1.0);
         game.events.emit('lin:sees', {});
       }
@@ -455,9 +479,9 @@ export default {
     linReadAt: null, // the game minute Lin read it over his shoulder (about 3:08, Kev fixed it)
     listOffAt: 0, // the game minute your face came off (list.js animates it)
     offVia: null, // what Lin was doing meanwhile: 'ring' | 'phone' | 'unseen' | 'seen' (she watched: he'll be told)
-    glitch: true, // static: his cable has worked loose (3:00 until Kev fixes it; again 3:26 until it's plugged in)
+    glitch: true, // static: his cable has worked loose (3:00 until Kev fixes it; again from your pull until you plug it back in)
     pc: 'boss', // 'boss' (he's at it) | 'kev' (Kev at his cable) | 'free' (he's out)
-    locked: false, // he locked it for the restroom (3:10 to 3:19)
+    locked: false, // he locked it for the restroom (3:10 to 3:22)
     ringing: false, // Kev's desk phone is ringing
     ringFrom: null, // the game minute it started ringing
     ringLook: false, // Lin is looking round at it (the first RING_LOOK seconds)

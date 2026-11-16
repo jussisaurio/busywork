@@ -7,21 +7,36 @@ const mustFire = (log, name) => {
   if (!log.some((e) => e.name === name)) throw new Error(`${name} never fired`);
 };
 
-// About 3:23 his screen is static again and Kev went home. Nobody answers Kev's phone: he gives up and goes for a
-// coffee, the screen dead. Then kneel at the plug behind his desk and push it home.
-const FIX = ['pretend until 3:28.8', 'goto behind_his_desk', 'interact'];
+// While he is in the restroom, pull his plug half out. About 3:22 he is back to a dead screen, and Kev went home.
+// Nobody answers Kev's phone: he gives up and goes for a coffee. Then kneel at the plug and push it home.
+const PULL = ['pretend until 3:14', 'goto behind_his_desk', 'interact', 'goto my_seat pretend'];
+const FIX = [...PULL, 'pretend until 3:30.3', 'goto behind_his_desk', 'interact'];
 
 export default [
   {
-    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), nobody answers at his desk (❓), he goes for a coffee (😮‍💨☕), back to a dead screen he sends it from his mobile → 🧥📱📧 → fail',
+    name: 'do nothing → Kev fixes it, the list comes up (Lin 😨😌), Kev goes home (👋🏠, Lin waves back), the boss works on at his desk; 3:42 he counts the list and ticks your face (📋✔️) → 🧥📧 → fail',
     expect: { result: 'fail' },
-    play({ run, log, g }) {
+    play({ run, log }) {
       run('pretend until 3:45');
       mustSay(log, 'boss', ['☎️', '@kev']);
       mustSay(log, 'lin', ['😨']);
       mustSay(log, 'lin', ['😌']);
       mustSay(log, 'kev', ['👋', '🏠']);
       mustSay(log, 'lin', ['👋']);
+      if (log.some((e) => e.name === 'boss:coffee')) throw new Error('he went for coffee with nobody at his plug');
+      mustSay(log, 'boss', ['📋', '@player', '✔️']); // the head count: your face is on it
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
+    },
+  },
+  {
+    name: 'pull his plug while he is in the restroom → back, he types his password into the static (⌨️😠), nobody answers at Kev\'s desk (❓, Lin 🤷), he goes for a coffee (😮‍💨☕); leave it dead and he sends it from his mobile → 🧥📱📧 → fail',
+    expect: { result: 'fail' },
+    play({ run, log, g }) {
+      for (const c of PULL) run(c);
+      mustFire(log, 'pc:pulled');
+      run('pretend until 3:45');
+      mustSay(log, 'boss', ['⌨️']);
+      mustSay(log, 'boss', ['😠']);
       mustSay(log, 'boss', ['@kev', '❓']); // he rang Kev's desk, and nobody picked up
       mustSay(log, 'lin', ['🤷']); // not her business where Kev went
       mustSay(log, 'boss', ['😮‍💨', '☕']); // he gives up and goes for a coffee
@@ -30,11 +45,11 @@ export default [
     },
   },
   {
-    name: 'his cable while he sits at the static → nothing to do there (he sends you back to work)',
+    name: 'his plug while he sits at his desk → nothing to do there (he sends you back to work)',
     expect: { result: 'fail' },
-    play({ run, g }) {
-      for (const c of ['pretend until 3:20.5', 'goto behind_his_desk', 'interact']) run(c);
-      if (!g.world.glitch) throw new Error('plugged his cable in under his nose');
+    play({ run, g, log }) {
+      for (const c of ['pretend until 3:25', 'goto behind_his_desk', 'interact']) run(c);
+      if (g.world.glitch || log.some((e) => e.name === 'pc:pulled')) throw new Error('pulled his plug under his nose');
       run('goto my_seat pretend');
       run('pretend until 3:45');
     },
@@ -62,7 +77,8 @@ export default [
       const edit = log.find((e) => e.name === 'list:edited');
       if (!look || !edit || look.minute > edit.minute) throw new Error('Lin never turned round to the ring before the edit');
       if (log.some((e) => e.name === 'lin:reads' && e.minute >= look.minute - 0.5 && e.minute <= edit.minute)) throw new Error('her mobile turned her away, not the ring');
-      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it unread
+      mustSay(log, 'boss', ['📋', '🤨', '🤷']); // the head count: one short? It's Friday
+      mustSay(log, 'boss', ['🧥', '📧']); // coat on, he sends it
     },
   },
   {
@@ -71,16 +87,18 @@ export default [
     play({ run, log }) {
       for (const c of [...FIX, 'goto his_screen', 'wait until 3:34.1', 'interact', 'goto my_seat pretend', 'pretend until 3:45']) run(c);
       mustFire(log, 'lin:reads');
+      mustSay(log, 'boss', ['📋', '🤨', '🤷']);
     },
   },
   {
-    name: 'edit while Lin is looking → she thinks of her own face on the list (📋 her 😨) and goes to tell him; he checks his screen, puts your face back, locks it and sends it at 3:45 → caught',
+    name: 'edit while Lin is looking → she shouts (❗👉 you), thinks of her own face on the list (📋 her 😨) and goes to tell him; he checks his screen, puts your face back, locks it and sends it at 3:45 → caught',
     expect: { result: 'caught' },
     play({ run, log, g }) {
       for (const c of [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact', 'wait until 3:37.5', 'goto restroom']) run(c); // interact pauses as she sees you: finish the edit, then keep out of his way
       for (let i = 0; i < 8 && !g.outcome; i++) run('wait until 3:45'); // (her telling him stops a wait)
-      mustSay(log, 'lin', ['📋', '@lin', '😨']); // why she tells, before she does
-      if (log.some((e) => e.name === 'witness:tattle')) throw new Error('Lin shouted: she should tell him, not the floor');
+      mustSay(log, 'lin', ['❗', '👉', '@player']); // she shouts as she sees it
+      mustSay(log, 'lin', ['📋', '@lin', '😨']); // and why she tells
+      if (log.some((e) => e.name === 'witness:tattle')) throw new Error('the engine tattled: Lin tells him herself');
       mustFire(log, 'list:edited'); // she lets you finish: your face comes off, then goes back on
       mustSay(log, 'lin', ['👉', '@player', '🖥️']); // she told him to his face
       mustFire(log, 'boss:checks');

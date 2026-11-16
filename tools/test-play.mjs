@@ -1029,24 +1029,27 @@ section('input module (createInput on a fake EventTarget)');
   ok(!inp.isDown('up'), 'destroy() removes listeners');
 }
 
-// The harness's interact watches for stop events from the key press's own frame: Layoffs, the boss's coffee
-// (boss:coffee, a soft stop) fires the moment you start on his cable, and the command pauses on it.
+// The harness's interact watches for stop events from the key press's own frame: Layoffs, the boss walking back
+// into sight of his office as you start on his list (witness:notice, a soft stop, fires on the press frame), and
+// the command pauses on it.
 {
+  const PLAN = ['pretend until 3:14', 'goto behind_his_desk', 'interact', 'goto my_seat pretend', 'pretend until 3:30.3',
+    'goto behind_his_desk', 'interact', 'goto his_screen', 'wait until 3:41.3']; // pull, plug back in, wait for him
   const press = (pressStops) => {
     const h = createHarness({ level: 'layoffs', pressStops });
     h.begin();
-    for (const c of ['pretend until 3:25.5', 'goto behind_his_desk pretend']) h.run(c);
+    for (const c of PLAN) h.run(c);
     return [h.run('interact').text, h];
   };
   const [r, h] = press(true);
-  ok(/^paused at 0% .*\(boss:coffee\)/.test(r), `pressStops: a stop on the press frame pauses interact (${r})`);
+  ok(/^paused at 0% .*\(witness:notice\)/.test(r), `pressStops: a stop on the press frame pauses interact (${r})`);
   const again = h.run('interact').text;
-  ok(/^did /.test(again), `pressStops: a second interact finishes the act (the press is swallowed mid-act) (${again})`);
+  ok(/^tried .*\(action:cancel\)/.test(again), `pressStops: a second interact carries on with the act (he stops it) (${again})`);
   const [old] = press(false);
-  ok(/^did /.test(old), `without pressStops the press frame's stop is missed (${old})`);
+  ok(/^tried .*\(action:cancel\)/.test(old), `without pressStops the press frame's stop is missed (${old})`);
   // tools/press-stops.mjs: the extra interact that brings the old command results back.
-  const fix = fixShot(getLevel('layoffs'), ['pretend until 3:25.5', 'goto behind_his_desk pretend', 'interact', 'goto boss_phone']);
-  ok(fix.adds.length === 1 && fix.adds[0].i === 2 && fix.cmds.join() === 'pretend until 3:25.5,goto behind_his_desk pretend,interact,interact,goto boss_phone' && fix.same,
+  const fix = fixShot(getLevel('layoffs'), [...PLAN, 'interact']);
+  ok(fix.adds.length === 1 && fix.adds[0].i === PLAN.length && fix.cmds.join() === [...PLAN, 'interact', 'interact'].join() && fix.same,
     `press-stops: one interact after the paused one, and every old result comes back (${fix.cmds.join(' ; ')})`);
 }
 

@@ -187,6 +187,7 @@ export const SOUNDS = {
     'pc:actsUp': { sfx: 'bang', who: 'boss' },
     'pc:fixed': { sfx: 'fixed', who: 'kev' },
     'pc:fixedByYou': { sfx: 'fixed', who: 'player' },
+    'pc:pulled': { sfx: 'bang', who: 'player' },
     'lin:buzz': { sfx: 'rattle', spot: 'lin_desk', opts: { gain: 0.25 } },
     'kev:up': { sfx: 'swish', who: 'kev' },
     'list:edited': { sfx: 'swish', who: 'player' },

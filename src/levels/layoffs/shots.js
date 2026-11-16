@@ -2,10 +2,12 @@
 // from the start of the day, and what the picture must tell a first-time player. An end card is the picture after
 // the day ends; the last command of each end shot is the one that ends the day. A command that stops early (on a
 // soft stop such as someone noticing you) is repeated.
-const FIX = ['pretend until 3:28.8', 'goto behind_his_desk', 'interact']; // he's out of sight at the coffee: his plug
+const PULL = ['pretend until 3:14', 'goto behind_his_desk', 'interact']; // he's in the restroom: pull his plug
+const FIX = [...PULL, 'goto my_seat pretend', 'pretend until 3:30.3', 'goto behind_his_desk', 'interact']; // he's off to the coffee: plug it in
 const RING = [...FIX, 'goto boss_phone', 'wait until 3:33', 'interact']; // ring Kev's empty desk
 const RING_EDIT = [...RING, 'goto his_screen', 'interact'];
-const TOLD = [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact']; // Lin sees you at it, the boss in the kitchen
+const SEEN = [...FIX, 'goto his_screen', 'wait until 3:35.4', 'interact']; // Lin sees you at it, the boss in the kitchen
+const TOLD = [...SEEN, 'interact']; // her shout pauses the edit: finish it
 const PHONE = [...FIX, 'goto his_screen', 'wait until 3:34.1']; // Lin's mobile buzzes at 3:33.6: she turns to read it
 const END = ['goto my_seat pretend', 'pretend until 3:45', 'pretend until 3:45']; // to your desk, then the end card
 
@@ -66,29 +68,39 @@ export default [
     intent: "Kev has gone: his chair is empty, his monitor dark, his desk phone on its cradle. The boss is walking back to his office from the restroom.",
   },
   {
+    name: 'you-pull-the-plug',
+    cmds: [...PULL, 'wait 0.3s'],
+    intent: "The boss is in the restroom. You've crept behind his desk and yanked his plug out of the floor socket: it hangs out, sparking, and his screen has gone to static. A bang.",
+  },
+  {
+    name: 'types-blind',
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:22.9'],
+    intent: "You're back at your desk. The boss is back from the restroom, at his desk, and his screen is static again (behind him the plug you pulled hangs out, sparking). He types at it anyway (a keyboard over his head): his password, into the static.",
+  },
+  {
     name: 'static-again',
-    cmds: ['pretend until 3:20.6'],
-    intent: "The boss is back at his desk and his screen goes to static again. He's angry. Behind his desk the plug hangs out of its socket again, sparking.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:23.7'],
+    intent: "Nothing happened: his screen is still static. The boss is angry at it.",
   },
   {
     name: 'nobody-answers',
-    cmds: ['pretend until 3:21.8'],
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:24.6'],
     intent: "The boss phones Kev's desk again, handset at his ear. Kev's empty desk phone rings and rings; Lin turns round to it.",
   },
   {
     name: 'gives-up',
-    cmds: ['pretend until 3:23.4'],
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:26.1'],
     intent: "Nobody came. The boss sighs and thinks of coffee, and gets up. His screen is still static: no padlock on it.",
   },
   {
     name: 'walks-to-kitchen',
-    cmds: ['pretend until 3:26'],
-    intent: "The boss walks out across the floor towards the kitchen. Behind him, his office is empty and his screen shows static.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:28'],
+    intent: "Your trick worked: the boss walks out across the floor towards the kitchen. Behind him, his office is empty and his screen shows static.",
   },
   {
     name: 'you-at-the-plug',
-    cmds: ['pretend until 3:28.8', 'goto behind_his_desk pretend'],
-    intent: "You stand behind the boss's empty desk at the floor socket, where Kev knelt at 3:05: the plug hangs out of it, sparking, and lights up to show you can use it. The boss is out of sight, at the coffee machine.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:30.3', 'goto behind_his_desk pretend'],
+    intent: "You stand behind the boss's empty desk at the floor socket again: the plug hangs out of it, sparking, and lights up to show you can use it. The boss is out of sight, at the coffee machine.",
   },
   {
     name: 'list-up-alone',
@@ -117,8 +129,13 @@ export default [
   },
   {
     name: 'told-on',
-    cmds: TOLD,
-    intent: "Lin, facing the office, sees a red X being drawn across your face the list on the big sheet beside the screen. Her thought: the list, her own face, frightened. The boss is far off in the kitchen at the coffee machine.",
+    cmds: SEEN,
+    intent: "Lin, facing the office, sees a red X being drawn across your face on the big sheet beside the screen. She shouts and points at you (an exclamation, a pointing hand, your face). The boss is far off in the kitchen at the coffee machine.",
+  },
+  {
+    name: 'lin-thinks',
+    cmds: [...SEEN, 'wait 1.6s'],
+    intent: "After shouting, Lin thinks it through (a thought cloud): the list, her own face, frightened. If you go, she's next.",
   },
   {
     name: 'lin-goes-to-tell',
@@ -132,29 +149,45 @@ export default [
   },
   {
     name: 'face-back',
-    cmds: [...TOLD, 'goto my_seat pretend', 'pretend until 3:42.4', 'pretend until 3:42.4', 'pretend until 3:42.4'],
+    cmds: [...TOLD, 'goto my_seat pretend', 'goto my_seat pretend', 'pretend until 3:43.3', 'pretend until 3:43.3'],
     intent: "The boss is back at his screen, angry (😠). The list pops out of it again with your face on it, the red line gone: he has put you back.",
   },
   {
     name: 'he-knows',
-    cmds: [...TOLD, 'wait until 3:37.5', 'goto my_seat pretend', 'pretend until 3:44.1', 'pretend until 3:44.1', 'pretend until 3:44.1'],
+    cmds: [...TOLD, 'goto my_seat pretend', 'goto my_seat pretend', 'pretend until 3:44.9', 'pretend until 3:44.9'],
     intent: "The boss sits back at his desk, the list open on his screen again with your face back on it, and looks out across the floor at you: a pointing hand, your face, angry. He doesn't get up.",
   },
   {
     name: 'caught',
-    cmds: [...FIX, 'goto his_screen', 'wait until 3:39.8', 'interact'],
+    cmds: [...FIX, 'goto his_screen', 'wait until 3:41.2', 'interact'],
     beat: true,
     intent: "The boss is back with his coffee and sees you at his screen, editing his list: he stops, angry, and points at you.",
   },
   {
+    name: 'head-count-gone',
+    cmds: [...RING_EDIT, 'goto my_seat pretend', 'pretend until 3:43.9'],
+    intent: "Nearly 3:44: the boss, back at his desk with his coffee, opens the list one last time: it pops out big beside his screen with three faces, yours gone. Over his head: the list, a raised eyebrow, a shrug. He didn't notice.",
+  },
+  {
+    name: 'head-count-you',
+    cmds: ['pretend until 3:42.9'],
+    intent: "You did nothing: 3:42, the boss at his desk opens the list one last time: it pops out big with four faces, yours in its red frame. Over his head: the list, your face, a tick.",
+  },
+  {
     name: 'packs-up',
     cmds: [...RING_EDIT, 'goto my_seat pretend', 'pretend until 3:44.4'],
-    intent: "3:44: the boss is back at his desk, packing up for the weekend: a coat and an email over his head. He doesn't look at the list again.",
+    intent: "3:44: the boss is back at his desk, packing up for the weekend after his head count: a coat and an email over his head.",
   },
   {
     name: 'sends-from-mobile',
-    cmds: ['pretend until 3:43'],
-    intent: "Nobody plugged his screen in: 3:43, the boss at his desk, coat on, his screen still static. Over his head: a coat, a mobile phone and an email. He sends it from his phone.",
+    cmds: [...PULL, 'goto my_seat pretend', 'pretend until 3:43.9'],
+    intent: "You pulled his plug and never put it back: 3:43, the boss at his desk, coat on, his screen still static. Over his head: a coat, a mobile phone and an email. He sends it from his phone.",
+  },
+  {
+    name: 'list-flies',
+    cmds: [...RING_EDIT, 'goto my_seat pretend', 'pretend until 3:44.9'],
+    beat: 0.3,
+    intent: "3:45: the boss clicks send. The attached sheet pops out big beside his screen, three faces on it and none of them yours, and starts to fly off. You sit at your desk, celebrating.",
   },
   {
     name: 'end-win-ring',
@@ -178,7 +211,7 @@ export default [
   },
   {
     name: 'end-caught',
-    cmds: [...FIX, 'goto his_screen', 'wait until 3:39.8', 'interact', 'interact', 'interact', 'pretend until 3:45', 'wait 2s'],
+    cmds: [...FIX, 'goto his_screen', 'wait until 3:41.2', 'interact', 'interact', 'interact', 'pretend until 3:45', 'wait 2s'],
     intent: "Lose. Caught: the boss, furious, points the way out; you go with your box. Your red face is still on the list.",
   },
 ];
