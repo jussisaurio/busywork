@@ -45,7 +45,7 @@ export default {
 
   outcomeText: (o) => (o.result === 'win' ? (o.routes.includes('bob')
     ? `WIN 🎉 (Lin hands Bob the pink box, his face on the label; he hugs it, in tears 🥹${o.why === 'away' ? '; the brown box waits for you' : ''})`
-    : `WIN 🎉 (no pink box at the mail call: nothing comes for you today${o.why === 'away' ? '; nobody wonders where you are' : ''})`)
+    : `WIN 🎉 (no pink box at the mail call: nothing for you today 📭${o.why === 'away' ? '; nobody wonders where you are' : ''})`)
     : o.result === 'caught' ? 'CAUGHT 😳 (someone has your parcel, or saw you at it)'
     : o.why === 'noshow' ? 'BLAMED 🪑 (Lin holds up the pink box with your face on it over your empty chair)'
     : o.why === 'found' ? 'FAIL 😳 (someone picked up your parcel and read the label: your face)'
@@ -67,6 +67,7 @@ export default {
     if (n.id === 'lin' && w.brown === 'lin') bits.push(`carrying the brown box (${w.parcelFor === 'bob' ? 'your' : "Bob's"} face on the label)`);
     if (n.id === 'bob' && w.parcel === 'bob') bits.push('hugging the pink box');
     if (n.id === 'bob' && w.brown === 'bob') bits.push('holding his brown box');
+    if (n.id === 'lin' && w.mailEmpty && n._atMail) bits.push('shrugging');
     return bits;
   },
 
@@ -96,7 +97,7 @@ export default {
       case 'witness:tattle': return p.late
         ? `${name(p.by)} points you out to Bob 👉${p.icon ?? ''} (seen earlier, told now)`
         : `${name(p.by)} shouts and points at you${via(p)} ❗👉${p.heard ? ' (Bob heard)' : ''}`;
-      case 'meeting:gather': return 'the mail call: Lin brings what is left for you to your office (nothing left: back to her desk) 📬';
+      case 'meeting:gather': return 'Lin and Bob head to your office for the mail call 📬';
       case 'bob:suspicious': return 'Bob eyes you ❓ (a meter over his head starts filling)';
       case 'bob:workAssigned': return `Bob sat you at your desk with work 📄 (${p.reason})`;
       case 'camera:unplugged': return "you pulled the camera's plug: its light is out and Bob's screen is static";
@@ -120,7 +121,7 @@ export default {
       case 'parcel:spotted_on_you': return `${name(p.by)} sees the pink box in your arms and exclaims over it out loud`;
       case 'parcel:collected': return p.for === 'bob' ? "Lin collects both boxes: the pink one has Bob's face on it, the brown one yours" : "Lin collects both boxes: Bob's brown one, and the pink one with your face on it";
       case 'parcel:missing': return "Lin collects Bob's brown box; no pink box on the shelf, and she doesn't miss it";
-      case 'parcel:handed': return 'over his counter, Lin hands Bob the box with his face on it';
+      case 'parcel:handed': return 'Lin hands Bob the box with his face on it';
       default: return undefined;
     }
   },

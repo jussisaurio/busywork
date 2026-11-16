@@ -1,6 +1,7 @@
 // Discreet Packaging's two people and their hooks (cast.js and behaviours.js in
 // level 1 document the fields).
 import { at, deg } from '../../config.js';
+import { say } from '../../core/fx.js';
 
 export const START = 15 * 60 + 20; // 3:20 PM: the day's start (level.day.start), what at() counts from
 export const t = (time) => at(time, START);
@@ -12,8 +13,8 @@ export const CAST = [
     icon: '@bob',
     color: '#2f3d5c', // navy uniform
     voice: 'bob',
-    meetingSpot: 'bob_desk', // the mail call is in your office; his box reaches him at his counter
-    meetingArrive: 'bobAtDesk',
+    meetingSpot: 'bob_mail', // he comes over for the mail call like everyone else
+    meetingArrive: 'bobAtMailCall',
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [9999, 9999], // eyes on the lobby and the screen, never anywhere else
     coneTint: [130, 170, 245],
@@ -28,8 +29,8 @@ export const CAST = [
     icon: '@lin',
     color: '#2f8f8a', // teal cardigan
     voice: 'lin',
-    meetingSpot: 'mail_call', // 4:00: she hands out the mail in your office (collectMail picks where she goes)
-    meetingArrive: 'linAtMeeting',
+    meetingSpot: 'mail_call', // 4:00: she hands out the mail in your office
+    meetingArrive: 'linAtMailCall',
     vision: { fov: deg(90), radius: 7 },
     coneTint: [120, 220, 200],
     schedule: [
@@ -40,39 +41,40 @@ export const CAST = [
 ];
 
 const npc = (game, id) => game.npcs.find((n) => n.id === id);
-const near = (game, n, spot, r) => {
-  const p = game.level.spots[spot];
-  return n && Math.hypot(n.x - (p.x + 0.5), n.y - (p.y + 0.5)) <= r;
+// You, in your office for the mail call (not off hiding in the store room).
+const youHere = (game) => {
+  const p = game.player;
+  const m = game.level.spots.mail_call;
+  return p && Math.hypot(p.x - m.x, p.y - m.y) < 7;
 };
 
-// At the pigeonholes Lin reads the labels and hands Bob the box with his face on it there and then, over his
-// counter: his brown one, or the pink one if you swapped the labels. If he is off at the camera she waits there
-// with it until he sits back down. Then she takes whatever is left for you to your office for 4:00, or, with nothing
-// for you, goes back to her desk.
-function giveBob(game, sim) {
+// At the mail call, once Lin and Bob are both there, each box goes to the face on its label: Bob gets his (the brown
+// one, or the pink one if you swapped the labels), and Lin turns to you with whatever is left.
+function handOver(game, sim) {
   const w = game.world;
   const lin = npc(game, 'lin');
   const bob = npc(game, 'bob');
-  if (!lin?._collected || lin._gaveBob) return;
-  if (!near(game, lin, 'pigeonholes', 1.2) || !near(game, bob, 'bob_desk', 0.8)) return;
-  lin._gaveBob = true;
-  sim.faceSpot(game, lin, 'bob_desk');
-  sim.faceSpot(game, bob, 'pigeonholes');
+  if (!lin?._atMail || !bob?._atMail || lin._handed) return;
+  lin._handed = true;
+  sim.faceSpot(game, lin, 'bob_mail');
+  sim.faceSpot(game, bob, 'mail_call');
   if (w.parcel === 'lin' && w.parcelFor === 'bob') {
     w.parcel = 'bob'; // he hugs it; the dull brown one is yours
-    sim.speak(game, lin, [{ say: ['💝', '@bob'] }]);
-    sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought', after: 0.5 }]);
+    sim.speak(game, lin, [{ say: ['💝', '@bob'] }, { say: ['#brownbox', '@player'], after: 1.2 }]);
+    sim.speak(game, bob, [{ say: ['🥹'], kind: 'thought' }]); // at once: the day's verdict comes 0.2 s later
+    if (youHere(game)) say(game, 'player', ['😏'], { kind: 'thought', ttl: 2 }); // and you, smug, right beside him
   } else if (w.brown === 'lin') {
     w.brown = 'bob';
-    sim.speak(game, bob, [{ say: ['🙂'], kind: 'thought', after: 0.4 }]);
+    sim.speak(game, bob, [{ say: ['🙂'], kind: 'thought' }]);
+    if (w.mailEmpty) {
+      sim.speak(game, lin, [{ say: ['📭', '@player'] }]); // nothing for you today (and a shrug: presentation.js)
+      if (youHere(game)) say(game, 'player', ['🎵'], { kind: 'thought', ttl: 2 }); // you hum, all innocence
+    }
   }
   game.events.emit('parcel:handed', {});
-  const forYou = w.parcel === 'lin' || w.brown === 'lin';
-  lin.meetingSpot = forYou ? 'mail_call' : 'lin_desk';
-  if (lin.override === game.level.meeting.override) lin._ovSeq++; // waiting for him at 3:56: off she goes now
 }
 
-// Standing where the meeting would sit them down.
+// At the mail call people stand (the meeting would sit them down).
 function stand(npc) {
   npc.pose = 'stand';
   npc._atMail = true;
@@ -85,36 +87,41 @@ export const BEHAVIOURS = {
     arrive(game, lin, sim) {
       if (lin._collected) return;
       lin._collected = true;
-      lin.meetingSpot = 'pigeonholes'; // until Bob has his box
       const w = game.world;
       if (w.brown === 'shelf') w.brown = 'lin';
       if (w.parcel !== 'shelf') {
         w.mailEmpty = true;
+        // Bob's box, as every day; nothing else, and she never knew there was. Crickets.
+        sim.speak(game, lin, [{ say: ['#brownbox', '✔️'], kind: 'thought' }, { say: ['🦗'], kind: 'thought', after: 1.4 }]);
         game.events.emit('parcel:missing', {});
-      } else {
-        w.parcel = 'lin';
-        sim.speak(game, lin, [{ say: ['💝', w.parcelFor === 'bob' ? '@bob' : '@player'], kind: 'thought' }]);
-        game.events.emit('parcel:collected', { for: w.parcelFor });
+        return;
       }
-      giveBob(game, sim);
+      w.parcel = 'lin';
+      sim.speak(game, lin, [{ say: ['💝', w.parcelFor === 'bob' ? '@bob' : '@player'], kind: 'thought' }]);
+      game.events.emit('parcel:collected', { for: w.parcelFor });
     },
   },
-  // Bob back at his counter (after the camera, or at 3:56): if Lin is waiting with his box, he gets it now.
+  // Lin at the mail call: your parcel goes up over her head for the whole office to see; then the hand-over.
+  linAtMailCall: {
+    arrive(game, lin, sim) {
+      stand(lin);
+      const w = game.world;
+      if (w.parcel === 'lin' && w.parcelFor !== 'bob') sim.speak(game, lin, [{ say: ['💝', '@player'] }]);
+      handOver(game, sim);
+    },
+  },
+  // Back at his counter after giving up on the camera: his screen is all leaf now, and he finds he rather likes it.
   bobAtDesk: {
     arrive(game, bob, sim) {
-      giveBob(game, sim);
+      if (!game.world.camReported || bob._fondLeaf) return;
+      bob._fondLeaf = true;
+      sim.speak(game, bob, [{ say: ['🪴', '😊'], kind: 'thought', after: 0.6 }]);
     },
   },
-  // Lin at 3:56: still waiting at the pigeonholes for Bob, at her desk with nothing for you, or in your office,
-  // where your parcel goes up over her head for everyone to see (or Bob's brown box, your face on it, comes to you).
-  linAtMeeting: {
-    arrive(game, lin, sim) {
-      const w = game.world;
-      if (lin.meetingSpot === 'lin_desk') return;
-      stand(lin);
-      if (lin.meetingSpot === 'pigeonholes') return giveBob(game, sim);
-      if (w.parcel === 'lin') sim.speak(game, lin, [{ say: ['💝', '@player'] }]);
-      else if (w.brown === 'lin') sim.speak(game, lin, [{ say: ['#brownbox', '@player'] }]);
+  bobAtMailCall: {
+    arrive(game, bob, sim) {
+      stand(bob);
+      handOver(game, sim);
     },
   },
 };

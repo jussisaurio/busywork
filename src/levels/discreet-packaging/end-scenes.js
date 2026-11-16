@@ -243,8 +243,8 @@ function tears(ctx, look, x, y, sc, t) {
   ctx.globalAlpha = 1;
 }
 
-// Lin, standing, with what she has left: your parcel (carried, or held overhead for the whole office), or Bob's
-// brown box held out (to you, once you swapped the labels).
+// Lin, standing, with what she has left: your parcel (carried, or held overhead for the whole office), Bob's brown
+// box held out (to you, once you swapped the labels), or nothing and a shrug (no pink box for you today).
 function lin(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, smug = false, overhead = false, arms: a = null } = {}) {
   const w = game.world;
   const p = person(t);
@@ -257,6 +257,7 @@ function lin(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, smug = false, 
   if (a) p.arms = a;
   else if (has && overhead) p.arms = 'cheer';
   else if (has) { p.arms = 'carry'; p.item = '#parcel'; } else if (brown) p.arms = 'reach';
+  else if (w.mailEmpty) p.arms = 'shrug';
   drawPerson(ctx, looks(game).lin, p, x, y);
   if (!a && has && overhead) boxOverhead(ctx, looks(game).lin, x, y, p.scale, w.parcelFor, t);
   if (!a && !has && brown) boxHeldOut(ctx, looks(game).lin, x, y, p.scale, brownFace(w), true);
@@ -309,90 +310,48 @@ function spotlight(ctx, x, y) {
 
 // --- Scenes ------------------------------------------------------------------------------------------------------
 
-// Two rooms side by side: the back office (lino, Bob's counter) on the left, your office on the right, a wall
-// between them at x = split.
-function twoRooms(ctx, split, clockX) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(TAB.x, TAB.y, split - TAB.x, TAB.h);
-  ctx.clip();
-  backRoom(ctx);
-  counter(ctx, TAB.x - 10, split - 60, 222);
-  ctx.restore();
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(split, TAB.y, TAB.x + TAB.w - split, TAB.h);
-  ctx.clip();
-  office(ctx, clockX);
-  ctx.restore();
-  ctx.fillStyle = C.wallFront;
-  ctx.fillRect(split - 7, TAB.y, 14, TAB.h);
-  ctx.fillStyle = 'rgba(0,0,0,0.18)';
-  ctx.fillRect(split + 5, TAB.y, 2, TAB.h);
-}
-
-// bob: at his counter Lin handed big, stern Bob the pink box covered in hearts, his face on the label. He hugs it, in
-// tears. In your office she holds his dull brown box out to you (your face on it now); you stand by, smug. Away at
-// 4:00: she holds it out to your empty chair, and nobody minds.
+// bob: Lin has handed big, stern Bob the pink box covered in hearts, his face on the label. He hugs it, in tears.
+// She holds his dull brown box out to you (your face on it now); you stand by, smug. Away at 4:00: she holds it out
+// to your empty chair, and nobody minds.
 function bobScene(ctx, game, t, e) {
   const away = game.outcome?.why === 'away';
-  twoRooms(ctx, 440, 640);
+  office(ctx, 560);
   confetti(ctx, TAB.x + 360, 220, TAB.y, TAB.h, e, 22);
-  bob(ctx, game, t, 310, 304 - Math.abs(Math.sin(t * 2)) * 1.5, { sc: 2.6 });
-  if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 310, 304, 2.6, t);
-  bubble(ctx, ['🥹'], 310, 200, e, 'thought');
-  if (away) emptyChair(ctx, 680, 320, false);
-  lin(ctx, game, t, 530, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6 });
-  bubble(ctx, ['#brownbox', '@player'], 530, 196, e - 0.2);
-  if (!away) you(ctx, game, t, 680, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
+  bob(ctx, game, t, 300, 300 - Math.abs(Math.sin(t * 2)) * 1.5, { sc: 2.6 });
+  if (game.world.parcel === 'bob') tears(ctx, looks(game).bob, 300, 300, 2.6, t);
+  bubble(ctx, ['🥹'], 300, 196, e, 'thought');
+  if (away) emptyChair(ctx, 650, 320, false);
+  lin(ctx, game, t, 470, 296, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6 });
+  bubble(ctx, ['#brownbox', '@player'], 470, 196, e - 0.2);
+  if (!away) you(ctx, game, t, 650, 318, { smug: true, head: Math.PI / 2 + Math.sin(t * 1.3) * 0.15, wob: Math.abs(Math.sin(t * 3)) * 2 });
 }
 
-// hidden: no pink box on the parcel shelf today, so nothing comes for you at 4:00. Lin is back at her desk, typing,
-// her back to you; you stand at your desk humming, its drawers shut (or the box in your arms, or on the floor by
-// you). Away: your chair stands empty and unlit, and nobody looks at it.
-let hiddenIcons = ['@lin', '⌨️', '@player', '🎵'];
+// hidden: no pink box on the parcel shelf today. Lin shrugs at you, nothing for you; Bob has his brown box; you
+// stand at your desk whistling, its drawers shut (or the box in your arms, or under your desk).
 function hiddenScene(ctx, game, t, e) {
   const w = game.world;
-  const away = game.outcome?.why === 'away';
-  hiddenIcons = away ? ['@lin', '⌨️', '🪑'] : ['@lin', '⌨️', '@player', '🎵'];
   office(ctx, 420);
   const loose = w.items.find((it) => it.type === 'parcel' && !it.spot);
   const looseHere = loose && inZone(game, loose.x, loose.y, 'office');
   if (looseHere) drawParcel(ctx, 640, 318, 40, w.parcelFor);
   desk(ctx, 600, 262, 190);
-  linDesk(ctx, 320, 252, 170);
-  const p = person(t);
-  p.dir = -Math.PI / 2; // her back to us, at her screen
-  p.head = -Math.PI / 2;
-  p.arms = 'type';
-  p.scale = 2.3;
-  drawPerson(ctx, looks(game).lin, p, 320, 300);
-  if (away) return emptyChair(ctx, 520, 322, false); // you're elsewhere; nobody minds
+  lin(ctx, game, t, 290, 296, { head: Math.PI / 2 + Math.sin(t * 1.5) * 0.2 });
+  bubble(ctx, ['📭', '@player'], 290, 204, e);
+  bob(ctx, game, t, 390, 300, { dir: Math.PI / 2 - 0.2, sc: 2.5 });
+  if (game.outcome?.why === 'away') return emptyChair(ctx, 520, 322, false); // you're elsewhere; nobody minds
   you(ctx, game, t, 470, 324, { smug: true, head: Math.PI / 2 - 0.4 + Math.sin(t * 1.1) * 0.2 });
   bubble(ctx, ['🎵'], 470, 232, e - 0.3, 'thought');
 }
 
-// Lin's desk from her side: the slab and the back of her screen.
-function linDesk(ctx, cx, y, w) {
-  ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, 30);
-  ctx.fillStyle = WOOD_TOP;
-  rrect(ctx, cx - w / 2, y, w, 10, 3);
-  ctx.fill();
-  ctx.fillStyle = '#4a4646';
-  rrect(ctx, cx - 26, y - 38, 52, 36, 3);
-  ctx.fill();
-  ctx.fillStyle = '#3a3636';
-  ctx.fillRect(cx - 6, y - 4, 12, 4);
-}
-
-// mail: Lin holds your pink box up over her head, your face on the label, for the whole office to see. You go red.
+// mail: Lin holds your pink box up over her head, your face on the label, for the whole office to see. Bob turns to
+// look at you. You go red.
 function mailScene(ctx, game, t, e) {
   office(ctx, 330);
-  lin(ctx, game, t, 420, 296, { head: Math.PI / 2 - 0.5, overhead: true });
-  bubble(ctx, ['💝', '@player'], 520, 150, e);
-  you(ctx, game, t, 630, 318, { red: true, sweat: true, head: Math.PI / 2 + 0.3 });
-  bubble(ctx, ['😳'], 630, 226, e - 0.4, 'thought');
+  bob(ctx, game, t, 270, 300, { dir: Math.PI / 2 - 0.9, head: -0.05, sc: 2.5 });
+  lin(ctx, game, t, 440, 296, { head: Math.PI / 2 - 0.5, overhead: true });
+  bubble(ctx, ['💝', '@player'], 540, 150, e);
+  you(ctx, game, t, 650, 318, { red: true, sweat: true, head: Math.PI / 2 + 0.3 });
+  bubble(ctx, ['😳'], 650, 226, e - 0.4, 'thought');
 }
 
 // noshow: you weren't there, but your parcel was. Lin holds it up over your empty chair, your face on the label.
@@ -400,8 +359,9 @@ function noshowScene(ctx, game, t, e) {
   office(ctx, 330);
   desk(ctx, 640, 270, 170);
   emptyChair(ctx, 560, 322);
-  lin(ctx, game, t, 400, 296, { head: Math.PI / 2 - 0.5, overhead: true });
-  bubble(ctx, ['💝', '@player'], 400, 140, e);
+  bob(ctx, game, t, 270, 300, { dir: Math.PI / 2 - 0.5, head: Math.PI / 2 - 0.6, sc: 2.5 });
+  lin(ctx, game, t, 420, 296, { head: Math.PI / 2 - 0.5, overhead: true });
+  bubble(ctx, ['💝', '@player'], 420, 140, e);
 }
 
 // Who found your parcel: whoever caught you with it, or is holding it, or went for it.
@@ -528,7 +488,7 @@ export const END_SCENES = {
   kindOf,
   scenes: {
     bob: { win: true, icons: ['💝', '@bob', '🥹', '#brownbox', '@player'], draw: bobScene },
-    hidden: { win: true, get icons() { return hiddenIcons; }, draw: hiddenScene },
+    hidden: { win: true, icons: ['@lin', '📭', '@player', '🎵'], draw: hiddenScene },
     mail: { win: false, icons: ['💝', '@player', '😳'], draw: mailScene },
     noshow: { win: false, icons: ['💝', '@player', '🪑'], draw: noshowScene },
     // found and caught: whose face leads the row is decided by the picture (draw runs before the row is read)

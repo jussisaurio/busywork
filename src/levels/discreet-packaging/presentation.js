@@ -82,6 +82,7 @@ export const POSES = {
     { when: (n, w) => LIN(n) && w.brown === 'lin', arms: 'carry', item: '#brownbox' },
     { when: (n, w) => BOB(n) && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
     { when: (n, w) => BOB(n) && w.brown === 'bob', arms: 'carry', item: '#brownbox' },
+    { when: (n, w) => LIN(n) && w.mailEmpty && n._atMail, arms: 'shrug' }, // nothing for you on the shelf today
   ],
   marks: [
     { when: (n) => n.id === 'bob', badge: true },

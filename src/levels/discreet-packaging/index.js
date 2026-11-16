@@ -74,6 +74,7 @@ const SPOTS = {
   mailroom: { x: 25, y: 7, face: 'E' },
   lobby: { x: 9, y: 13, face: 'N' },
   mail_call: { x: 7, y: 4, face: 'W' }, // 4:00: Lin hands out the mail here, facing your desk
+  bob_mail: { x: 10, y: 4, face: 'W' }, // and Bob stands beside her for it
 };
 
 const ZONES = {
@@ -211,7 +212,7 @@ const ITEMS = {
 };
 
 const ROLES = {
-  authority: { id: 'bob', offDuty: [], helpless: [], deafIn: null }, // at his counter all day, mail call or not
+  authority: { id: 'bob', offDuty: ['mail'], helpless: [], deafIn: null }, // at the mail call he's just Bob
 };
 
 // Whoever sees the pink box lying loose walks over, picks it up and reads the label (src/sim/mechanics/fetch.js).
@@ -315,7 +316,7 @@ export default {
   cast: CAST,
   day: {
     start: START,
-    gatherAt: at('3:56'), // Lin (at the pigeonholes since about 3:54) takes what is left for you to your office
+    gatherAt: at('3:56'), // Lin (at the pigeonholes since about 3:54) and Bob go to the mail call
     meetingAt: at('4:00'), // and she hands it out
     clockRedAt: at('3:50'),
     clockTickAt: at('3:50'),
@@ -333,9 +334,9 @@ export default {
   behaviours: BEHAVIOURS,
   meeting: { override: 'mail', room: 'office', chair: 'player_desk', verdict },
   routes: [
-    // At the pigeonholes Lin hands Bob the pink box with his face on it (and at 4:00 you his brown one).
+    // At the mail call Lin hands Bob the pink box with his face on it (and you his brown one).
     { id: 'bob', icon: '@bob', achieved: (w) => w.parcelFor === 'bob' && ['shelf', 'lin', 'bob'].includes(w.parcel) },
-    // The shelf is empty and nobody has your parcel: nothing comes for you at 4:00.
+    // The shelf is empty and nobody has your parcel: Lin has nothing for you, and shrugs.
     { id: 'hidden', icon: '@lin', achieved: (w) => w.parcel === 'drawer' || w.parcel === 'player' },
   ],
   outcomeOrder: ['bob', 'hidden'],
