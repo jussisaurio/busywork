@@ -258,7 +258,7 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
-- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, contrabandIn?, owner?, keep?, bulky? } }`.
+- `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, contrabandIn?, pockets?, owner?, keep?, bulky? } }`.
   - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
   - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
     and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
@@ -270,8 +270,11 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     paints its colours on the player's front, the harness says its `words`) stored in `player.smeared`, or `null`
     for nothing. The validator refuses an edible item that doesn't say. `icon` (default `😋`): the row's and your
     thought's face, e.g. `🤢` for a letter. `burst` (default `'crumbs'`): an `fx.burst` kind, e.g. `'paper'`.
-  - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and pockets it if he
-    sees it on the floor (`<type>:recovered`). Needs a `place`. `contrabandIn` (a zone): in your hand he knows it
+  - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and goes for it if he
+    sees it on the floor while on duty (an implicit fetch, `fetch.js`): a double take (`[icon, '❗']`, realize),
+    he walks over, picks it up (`world[place]` = his id, `<type>:recovered {by, type}`), holds it up a beat
+    (`npc.pocketing`) and pockets it with a face (`pockets`: lines, default a huff `😤`), then back to his day.
+    Taken from under his nose on the way: he stops, `[icon, '❓']`, looks round. Needs a `place`. `contrabandIn` (a zone): in your hand he knows it
     only while you are in that zone (an envelope is anyone's envelope away from his desk).
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
     `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
@@ -631,7 +634,7 @@ These are the engine's events. A level adds its own through data (`react.event`,
 | `item:put` | `{type, spot}` | put down |
 | `item:found` | `{type, spot, by}` | put down (a spot's cast owner found it) |
 | `<type>:eaten` | `{}` | interactions (an edible item) |
-| `<type>:recovered` | `{}` | rules (contraband pocketed off the floor) |
+| `<type>:recovered` | `{by, type}` | fetch (contraband picked up off the floor by its confiscator) |
 | `<type>:confiscated` | `{by}` | rules / put down (an owner took it back, no `reclaim`) |
 | `item:reclaimed` | `{by, type}` | fetch (an owner picked his thing up off the floor) |
 | `inspect:start` | `{by}` | inspection |

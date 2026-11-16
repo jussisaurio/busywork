@@ -31,16 +31,6 @@ const TELL_DELAY = 1.2; // seconds after the authority is back on the floor befo
 export const SCENE_RADIUS = 3.5;
 
 const NO_ROLE = {};
-// The level's items that are contraband and tracked in world (cached per level: updateRules runs every step).
-const contrabandCache = new WeakMap();
-function contrabandItems(level) {
-  let list = contrabandCache.get(level);
-  if (!list) {
-    list = Object.entries(level.items ?? {}).filter(([, item]) => item.contraband && item.place);
-    contrabandCache.set(level, list);
-  }
-  return list;
-}
 const roles = (game) => game.level.roles ?? NO_ROLE;
 // Seen on a screen (sim/mechanics/camera.js): the camera the NPC saw you through, when not with his own eyes. A
 // reaction then points at the screen first (its icon leads the bubble, the sightline runs eyes -> screen, lens ->
@@ -186,19 +176,7 @@ function rulesStep(game, dt) {
     }
   }
 
-  // Contraband lying where its confiscator can see it goes straight back into his pocket (the keycard).
-  for (const [type, item] of contrabandItems(game.level)) {
-    if (game.world[item.place] !== 'dropped') continue;
-    const by = findNpc(game, item.contraband);
-    if (!enforcing(game, by)) continue;
-    const it = game.world.items.find((i) => i.type === type);
-    if (it && npcSees(game, by, it.x, it.y)) {
-      game.world.items = game.world.items.filter((i) => i !== it);
-      game.world[item.place] = by.id;
-      say(game, by.id, [item.icon, '❗'], { kind: 'speech', voice: by.voice });
-      game.events.emit(`${type}:recovered`, {});
-    }
-  }
+  // Contraband on the floor where its confiscator sees it: he walks over and pockets it (sim/mechanics/fetch.js).
   const auth = roles(game).authority;
   if (!auth) return;
 

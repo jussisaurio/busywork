@@ -77,8 +77,11 @@ run, not read off this table.
 - **Evidence that outlives the act.** The spill leaves the empty mug ☕ in your hand. It won't drop (`keep`: not with
   the generic drop, not when the boss marches you to your desk); only a put gets rid of it, at three spots: back on the
   coffee machine, on Kev's desk, or on your own desk. A put takes 0.8 s and is sneaky to everyone.
-- **Contraband.** The boss seeing you hold the keycard (not pretending) means caught. A dropped keycard he sees goes
-  back in his pocket. Once the boss has seen the dead projector, the mug is his business too: holding it in his
+- **Contraband.** The boss seeing you hold the keycard (not pretending) means caught. A dropped keycard he sees
+  is his again: a double take (🪪❗), he walks over, picks it up, holds it up and pockets it with a huff 😤. The
+  card lies there until he reaches it: snatch it first in his view and you are caught; snatch it unseen and he
+  finds bare floor (🪪❓) and goes back to his day. Seen from the balcony, he heads in for it and the fire door
+  locks him out (a card dropped by the fire door is a way to the lockout). Once the boss has seen the dead projector, the mug is his business too: holding it in his
   view (not pretending) means caught, and so does the mug on your own desk (your spot, his find).
 - **One cup of coffee per loop.** The pot holds the day's last cup, and the coffee bag beside the machine is empty
   (decor `emptyBag`). Kev pours it at 2:38 if it's still there and carries it around ☕. Pour it first and he finds
