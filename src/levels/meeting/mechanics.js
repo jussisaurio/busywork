@@ -1,6 +1,6 @@
-// The meeting's NPC mechanics: the engine's generic lure and hunt (src/sim/mechanics/*, where each field is
-// documented) set up as Kev's projector repair, Lin's sandwich hunt and the boss's hunt for the cup. (The keycard
-// lockout happens downstairs, out of sight: clocks.js.)
+// The meeting's NPC mechanics: the engine's generic lure, hunt and door (src/sim/mechanics/*, where each field is
+// documented) set up as Kev's projector repair, Lin's sandwich hunt, the boss's hunt for the cup and the fire door
+// that locks him out on the balcony.
 // Order is behaviour: the sim checks each list in this order.
 
 import { at } from '../../config.js';
@@ -79,5 +79,47 @@ export const HUNTS = [
     },
     until: at('3:34'), // gives up in time for his smoke
     found: cupFound,
+  },
+];
+
+// Doors (level.doors): listed NPCs coming in from `zone` must open it, or they're shut out for the day.
+// The fire door onto the smokers' balcony, at the far end past the toilets: it swings shut and locks behind you, and
+// from outside only a keycard opens it. Nobody sits down that end since Kev went home, and Lin's at the other end:
+// only you hear him.
+const KNOCK = [0.05, 0.15];
+const BANG = [0.12, 0.25];
+const POUND = [0.2, 0.32];
+export const DOORS = [
+  {
+    spot: 'fire_door',
+    zone: 'outside',
+    npcs: ['boss'],
+    // His card from his jacket on the reader: a beep, and he's back in. (The player sees what the card is for.)
+    opens(game, npc) {
+      if (game.world.keycard !== npc.id) return false;
+      speak(game, npc, [{ say: ['🪪'], kind: 'thought', ttl: 0.9 }]);
+      npc._badgeAt = game.loopTime; // the reader's green blink (decor.js)
+      game.events.emit('boss:badge', {});
+      return true;
+    },
+    override: 'lockedOut',
+    plan: 'lockout',
+    label: 'locked out',
+    locked: { set: { bossLockedOut: true }, event: 'boss:lockedOut' },
+    // The escalation: pockets, a polite knock, a bang, both fists, a fuming cigarette, begging. Then round again from
+    // the bang: he never goes back to polite. arms: his pose for the line (looks.js POSES; default fists on the door).
+    bang: {
+      first: 0.7,
+      lines: [
+        { say: ['🪪', '❓'], kind: 'thought', ttl: 1.6, next: 2.0, arms: 'shrug', event: 'boss:pockets', shake: null }, // pats his pockets
+        { say: ['✊', '🚪'], ttl: 1.6, next: 2.2, event: 'boss:knock', shake: KNOCK }, // knock knock
+        { say: ['😠', '🚪', '🪪'], kind: 'alert', ttl: 1.6, next: 2.4, shake: BANG },
+        { say: ['👊', '👊', '🚪'], kind: 'alert', ttl: 1.6, next: 2.6, event: 'boss:pound', shake: POUND },
+        { say: ['🚬', '😤'], ttl: 1.6, next: 2.8, arms: 'puff', event: 'boss:fume', shake: null }, // lights another, fuming
+        { say: ['🙏', '🚪'], ttl: 1.6, next: 2.4, event: 'boss:knock', shake: KNOCK }, // please?
+      ],
+      loopFrom: 2,
+      event: 'boss:bang',
+    },
   },
 ];

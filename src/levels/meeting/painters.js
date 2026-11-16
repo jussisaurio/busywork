@@ -5,6 +5,8 @@
 //   cricket   the failed meeting's lone cricket (end-scenes.js)
 //   emptyBag  a decor prop (decor.js; render/world.js PROP_PAINTERS signature): the empty coffee bag on the counter
 //             east of the machine, rolled open and flat. Why the pot's cup is the last one today
+//   fireDoor, balcony  decor props, same signature: the fire door onto the smokers' balcony and the balcony, where
+//             the boss ends up locked out without his keycard (mechanics.js DOORS)
 // Each is a things.js painter (ctx, x, y, size, t): centred on (x, y), about `size` px tall, in the 16 px box.
 import { box } from '../../render/things.js';
 import { fillEllipse, fillCircle, rrect, fin, T } from '../../render/util.js';
@@ -173,4 +175,121 @@ export function emptyBag(ctx, info, at) {
   ctx.restore();
   fillEllipse(ctx, x + 9.5, y + 2.5, 1.2, 0.8, '#4a2c16'); // two stray beans: all that's left
   fillEllipse(ctx, x + 8, y + 4.6, 1.1, 0.75, '#4a2c16');
+}
+
+// The fire door onto the smokers' balcony (decor prop on the X tile; mechanics.js DOORS): a red steel door set in
+// the wall, a wired window, a push bar, a green EXIT sign over it and a card reader by the handle. state:
+//   locked  the boss is out there without his card: the reader blinks red
+//   beep    seconds since his card opened it (green for a moment), or null
+//   hit     seconds since his last go at it, or null: the door shudders and dust puffs off it
+export function fireDoor(ctx, info, at, state, t) {
+  const px = at.x * T;
+  const py = at.y * T;
+  const hit = Number.isFinite(state.hit) && state.hit >= 0 && state.hit < 0.45 ? state.hit : null;
+  const dx = hit === null ? 0 : Math.sin(hit * 70) * 2.2 * (1 - hit / 0.45);
+  ctx.fillStyle = '#4a4f55'; // steel frame
+  ctx.fillRect(px + 2, py, T - 4, T - 1);
+  ctx.save();
+  ctx.translate(dx, 0);
+  ctx.fillStyle = '#b8402f'; // the door, fire red
+  ctx.fillRect(px + 4, py + 2, T - 8, T - 4);
+  ctx.fillStyle = 'rgba(255,255,255,0.14)';
+  ctx.fillRect(px + 4, py + 2, T - 8, 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.fillRect(px + T - 6, py + 2, 2, T - 4);
+  ctx.fillStyle = '#cfe0e6'; // the wired window
+  ctx.fillRect(px + 10, py + 5, 12, 8);
+  ctx.strokeStyle = 'rgba(70,80,90,0.55)';
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  for (let k = 0; k <= 12; k += 4) { ctx.moveTo(px + 10 + k, py + 5); ctx.lineTo(px + 10 + k, py + 13); }
+  for (let k = 0; k <= 8; k += 4) { ctx.moveTo(px + 10, py + 5 + k); ctx.lineTo(px + 22, py + 5 + k); }
+  ctx.stroke();
+  ctx.fillStyle = '#b9bfc3'; // push bar
+  ctx.fillRect(px + 6, py + 18, T - 12, 3);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillRect(px + 6, py + 21, T - 12, 1);
+  ctx.restore();
+  ctx.fillStyle = '#1f7a3e'; // EXIT sign over the door, green
+  rrect(ctx, px + 9, py - 6, 14, 6, 1);
+  ctx.fill();
+  ctx.fillStyle = '#d9ffe4';
+  ctx.fillRect(px + 11, py - 4, 10, 1.4);
+  ctx.fillRect(px + 11, py - 2.6, 6, 1);
+  // the card reader by the handle: dark; blinking red while he's locked out, green on his card
+  ctx.fillStyle = '#2b2e33';
+  rrect(ctx, px + T - 4, py + 12, 4, 8, 1);
+  ctx.fill();
+  const green = Number.isFinite(state.beep) && state.beep >= 0 && state.beep < 1.2;
+  const red = state.locked && Math.floor(t * 2.5) % 2 === 0;
+  if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
+  fillCircle(ctx, px + T - 2, py + 14.5, 1.3, green ? '#5dff8a' : red ? '#ff3b30' : '#5a2a28');
+  if (hit !== null) { // dust off the door, and thud lines in the air
+    const k = hit / 0.45;
+    const dust = `rgba(230,225,215,${0.6 * (1 - k)})`;
+    for (let i = 0; i < 5; i++) {
+      const a = i * 1.3 + 0.4;
+      fillCircle(ctx, px + T / 2 + Math.cos(a) * (6 + k * 10), py + T - 2 + Math.sin(a) * 3 + k * 4, 1.2, dust);
+    }
+    ctx.strokeStyle = `rgba(255,255,255,${0.8 * (1 - k)})`;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (const s of [-1, 1]) {
+      ctx.moveTo(px + T / 2 + s * (10 + k * 6), py + 10);
+      ctx.lineTo(px + T / 2 + s * (14 + k * 8), py + 7);
+      ctx.moveTo(px + T / 2 + s * (11 + k * 6), py + 16);
+      ctx.lineTo(px + T / 2 + s * (16 + k * 8), py + 16);
+    }
+    ctx.stroke();
+  }
+}
+
+// The smokers' balcony (decor prop on its first = tile, spanning the = tiles: 3 x 2 here): concrete pavers, a
+// railing on its open side, a sand-bucket ashtray, and the butts he grinds out while locked out. state:
+//   butts  cigarette butts on the slab (more the longer he's been out there)
+export function balcony(ctx, info, at, state) {
+  const w = 3, h = 2;
+  const px = at.x * T;
+  const py = at.y * T;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      ctx.fillStyle = (x + y) & 1 ? '#9ea3a6' : '#a7acaf';
+      ctx.fillRect(px + x * T, py + y * T, T, T);
+      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      ctx.fillRect(px + x * T, py + y * T, T, 1);
+      ctx.fillRect(px + x * T, py + y * T, 1, T);
+    }
+  }
+  fillEllipse(ctx, px + 9, py + 40, 4, 2.4, 'rgba(60,60,60,0.22)'); // an old stain
+  ctx.fillStyle = 'rgba(0,0,0,0.18)'; // the wall's shadow along the top
+  ctx.fillRect(px, py, w * T, 4);
+  const ry = py + h * T - 5; // railing along the south edge: a rail on posts
+  ctx.fillStyle = '#5c6670';
+  ctx.fillRect(px, ry, w * T, 2.5);
+  for (let x = 4; x < w * T; x += 10) ctx.fillRect(px + x, ry, 1.6, 5);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fillRect(px, ry, w * T, 0.8);
+  const ax = px + w * T - 9; // the ashtray: a sand bucket in the east corner
+  const ay = py + 13;
+  fillEllipse(ctx, ax + 1, ay + 6, 6, 2, 'rgba(0,0,0,0.25)');
+  ctx.fillStyle = '#c0392b';
+  rrect(ctx, ax - 5, ay - 4, 10, 10, 2);
+  ctx.fill();
+  fillEllipse(ctx, ax, ay - 4, 5, 2, '#d8c690'); // sand
+  const butts = Math.max(0, Math.min(24, Math.floor(fin(state.butts, 0))));
+  for (let i = 0; i < 3 + butts; i++) { // three in the sand, the rest ground out on the slab around it
+    const inSand = i < 3;
+    const a = i * 2.39996;
+    const r = inSand ? 2 : 8 + (i % 5) * 2.2;
+    const bx = ax + Math.cos(a) * r - (inSand ? 0 : 6);
+    const by = (inSand ? ay - 4 : ay + 4) + Math.sin(a) * (inSand ? 1 : r * 0.45);
+    ctx.save();
+    ctx.translate(bx, by);
+    ctx.rotate(a);
+    ctx.fillStyle = '#f2ede2';
+    ctx.fillRect(-1.6, -0.5, 2.2, 1);
+    ctx.fillStyle = '#d58a3a';
+    ctx.fillRect(0.6, -0.5, 1.2, 1);
+    ctx.restore();
+  }
 }

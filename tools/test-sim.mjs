@@ -63,12 +63,12 @@ function runDay({ hooks = [], until = MEETING_AT + 0.5, sampleAt = [], onStep, g
     updateFx(game, FIXED_DT);
     if (onStep) onStep(game);
     for (const n of game.npcs) {
-      // 6. never inside a solid tile (the entrance L only while passing through)
+      // 6. never inside a solid tile (the doors NPCs pass, entrance L and fire door X, only while passing through)
       const tx = Math.floor(n.x), ty = Math.floor(n.y);
       const ch = game.map.char(tx, ty);
-      if (game.map.isSolid(tx, ty) && ch !== 'L') R.solidViolations.push(`${n.id} in '${ch}' (${n.x.toFixed(2)},${n.y.toFixed(2)}) at ${fmt(m)}`);
-      onL[n.id] = ch === 'L' ? onL[n.id] + 1 : 0;
-      if (onL[n.id] === 90) R.lStuck.push(`${n.id} on L for 1.5 s at ${fmt(m)}`);
+      if (game.map.isSolid(tx, ty) && ch !== 'L' && ch !== 'X') R.solidViolations.push(`${n.id} in '${ch}' (${n.x.toFixed(2)},${n.y.toFixed(2)}) at ${fmt(m)}`);
+      onL[n.id] = ch === 'L' || ch === 'X' ? onL[n.id] + 1 : 0;
+      if (onL[n.id] === 90) R.lStuck.push(`${n.id} on ${ch} for 1.5 s at ${fmt(m)}`);
       // arrivals: moving -> stopped
       if (wasMoving[n.id] && !n.moving && n.active !== false) {
         const name = spotAt[`${tx},${ty}`] ?? `(${tx},${ty})`;
@@ -176,11 +176,12 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   const jk = evAt(R, 'boss:jacket');
   ok(jk != null && jk >= at('3:35') && jk < at('3:37'), `boss takes jacket ~3:35 (${fmtS(jk)})`);
   ok(R.game.world.keycard === 'boss' && R.game.world.jacket === 'boss', 'keycard and jacket -> boss');
-  const bl = ev(R, 'npc:vanish', (p) => p.id === 'boss').map((e) => e.m).find((m) => m >= at('3:35'));
-  ok(bl != null && bl < at('3:48'), `boss goes down the lift for a smoke 3:35–3:48 (${fmt(bl)})`);
+  const bl = arr(R, 'boss', 'smoke', at('3:35'), at('3:48'));
+  ok(bl != null, `boss out on the balcony for a smoke 3:35–3:48 (${fmt(bl)})`);
+  const gone = ev(R, 'npc:vanish', (p) => p.id === 'boss').map((e) => e.m).filter((m) => m >= at('3:35') && m < at('3:54'));
+  ok(!gone.length, `boss stays on the map through his smoke (no lift)${gone.length ? ` (vanished ${gone.map(fmt)})` : ''}`);
   const bb = evAt(R, 'boss:badge');
-  ok(R.counts['boss:badge'] === 1 && bb >= at('3:48') && bb < at('3:54'), `boss badges back in once, after 3:48 (${fmt(bb)})`);
-  ok(arr(R, 'boss', 'boss_desk', at('3:48'), at('3:54')) != null, `boss back at desk before 3:54 (${fmt(arr(R, 'boss', 'boss_desk', at('3:48')))})`);
+  ok(R.counts['boss:badge'] === 1 && bb >= at('3:48') && bb < at('3:51'), `boss badges back in at the fire door once, after 3:48 (${fmt(bb)})`);
   ok(!R.game.world.bossLockedOut && !R.counts['boss:lockedOut'], 'boss NOT locked out');
 
   // Lin
@@ -205,7 +206,7 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
 
 // ---------------------------------------------------------------- 2. keycard stolen
 {
-  let leftOffice = false, reentered = false, lockedAt = null;
+  let leftOffice = false, reentered = false, lockedAt = null, maxBanged = 0;
   const R = runDay({
     hooks: [{ at: at('3:20'), fn: (g) => { g.world.keycard = 'player'; } }],
     onStep: (g) => {
@@ -213,15 +214,21 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
       if (inZone(g, 'outside', b.x, b.y)) leftOffice = true;
       if (g.world.bossLockedOut && lockedAt == null) lockedAt = g.clock.minute;
       if (lockedAt != null && !inZone(g, 'outside', b.x, b.y)) reentered = true;
+      if (lockedAt != null && b.active && Math.hypot(b.x - g.level.spots.fire_door.x, b.y - g.level.spots.fire_door.y) < 1.2) maxBanged++;
     },
   });
   const b = npc(R, 'boss');
   ok(R.counts['boss:jacket'] === 1 && R.game.world.keycard === 'player', 'stolen: boss takes jacket, keycard stays with player');
   const jacketAt = evAt(R, 'boss:jacket');
-  ok(leftOffice && lockedAt != null && lockedAt >= jacketAt, 'stolen: he walks out to the lift with his jacket; locked out only once he has gone down');
+  ok(leftOffice && lockedAt != null && lockedAt >= jacketAt, 'stolen: he steps out onto the balcony with his jacket; locked out only on the way back');
   ok(R.game.world.bossLockedOut && R.counts['boss:lockedOut'] === 1, `stolen: boss locked out (${fmtS(lockedAt)})`);
-  ok(!b.active && !R.counts['boss:badge'], 'stolen: out of sight at the street gate (no badge-in, not on the map)');
-  ok(!R.says.some((x) => x.owner === 'boss' && x.m > lockedAt), 'stolen: not a word from him after (nobody upstairs hears him stuck)');
+  ok(lockedAt >= at('3:48') && lockedAt < at('3:51'), `stolen: locked out right after his smoke, 3:48–3:51 (${fmtS(lockedAt)})`);
+  ok(b.active && b.override === 'lockedOut' && !R.counts['boss:badge'], 'stolen: still on the map, on the balcony (no badge-in)');
+  ok(maxBanged > 0, 'stolen: he stands at the fire door');
+  const after = R.says.filter((x) => x.owner === 'boss' && x.m > lockedAt);
+  ok(after.length >= 4, `stolen: he keeps at it, on screen (${after.length} lines after the lockout)`);
+  for (const icon of ['🪪❓', '😠🚪🪪', '👊👊🚪']) ok(said(R, 'boss', icon).length >= 1, `stolen: boss says ${icon}`);
+  ok((R.counts['boss:bang'] ?? 0) >= 2 && (R.counts['boss:pound'] ?? 0) >= 1, `stolen: bangs (${R.counts['boss:bang']}) and pounds (${R.counts['boss:pound']}) on the door`);
   ok(!reentered, 'stolen: boss never re-enters');
   ok(R.counts['meeting:gather'] === 1 && arr(R, 'lin', 'meeting_lin', MEETING_GATHER_AT) != null, 'stolen: lin still gathers');
   common(R, 'stolen');
@@ -398,8 +405,8 @@ let projRun = null;
     const last = anims[anims.length - 1];
     if (b.anim !== (last?.anim ?? null)) anims.push({ m: g.clock.minute, anim: b.anim, label: b.label });
   } });
-  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'away elevator' && fmt(anims[0].m) === '3:35'
-    && anims[1].anim === null, `anim: boss 'smoking' only during his smoke break, down the lift (${anims.map((a) => `${fmt(a.m)} ${a.anim} '${a.label}'`).join(', ')})`);
+  ok(anims.length === 2 && anims[0].anim === 'smoking' && anims[0].label === 'visit smoke' && fmt(anims[0].m) === '3:35'
+    && anims[1].anim === null, `anim: boss 'smoking' only during his smoke break, on the balcony (${anims.map((a) => `${fmt(a.m)} ${a.anim} '${a.label}'`).join(', ')})`);
 
   // A hook name the level doesn't define fails when the NPC is created, not mid-day.
   const badCast = LEVEL.cast.map((d) => (d.id === 'kev'

@@ -32,7 +32,8 @@ export default {
   ],
   interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge'],
   renderEvents: [
-    'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:workAssigned',
+    'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:lockedOut', 'boss:bang', 'boss:pound',
+    'boss:workAssigned',
     'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'keycard:takenBack', 'coffee:kevTook',
     'coffee:asked', 'kev:alerted', 'item:put', 'boss:mugHunt', 'mug:found', 'meeting:calledOff',
   ],

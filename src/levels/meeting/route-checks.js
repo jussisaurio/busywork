@@ -173,7 +173,7 @@ export default [
       run('goto projector busy');
       run('interact');
       run('goto kitchen_table busy'); // out of the way of the boss's 3:12 walk
-      waitFor(() => !npc('boss').active, { busy: true, maxSec: 120 }); // in the restroom
+      waitFor(() => g.world.jacket === 'boss' && npc('boss').x > 24, { busy: true, maxSec: 120 }); // past you, off to the balcony for his smoke
       run('goto my_desk_spot busy');
       run('put my_desk busy');
       run('goto meeting_seat busy');
