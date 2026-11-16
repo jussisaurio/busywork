@@ -21,7 +21,7 @@ import { say, burst, shake } from '../../core/fx.js';
 import { npcTakes } from '../../sim/npcs.js';
 import { CAST, BEHAVIOURS, START, t as at } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, CONES } from './presentation.js';
-import { parcelThing, broomThing } from './painters.js';
+import { parcelThing, broomThing, brownBoxThing } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -170,6 +170,28 @@ const INTERACTIONS = {
       game.events.emit('parcel:swapped', {});
     },
   },
+  // Swapped, the brown box on the shelf has your face on it: it's yours now, so take it (DESIGN.md "A thing that
+  // looks usable is usable"). It's only Bob's dull daily box, so nobody minds you carrying it; but Lin, at 3:54,
+  // finds just the pink one, his face on it, and at the mail call she has nothing for you (📭) and shrugs, while Bob
+  // weeps over Mum's hearts and you hug his cardboard.
+  take_brown: {
+    on: 'pigeonholes', text: 'take the brown box with your face on it', duration: 0.6, sneaky: false,
+    can: (p, w) => !p.held && w.brown === 'shelf' && w.parcelFor === 'bob',
+    done(game) {
+      game.player.held = 'brownbox';
+      game.world.brown = 'player';
+      game.events.emit('brown:taken', {});
+    },
+  },
+  return_brown: {
+    on: 'pigeonholes', text: 'put the brown box back on the shelf', duration: 0.6, sneaky: false,
+    can: (p, w) => p.held === 'brownbox' && w.brown === 'player',
+    done(game) {
+      game.player.held = null;
+      game.world.brown = 'shelf';
+      game.events.emit('brown:returned', {});
+    },
+  },
   stash_parcel: {
     on: 'drawer', text: 'stuff it in your desk drawer', duration: 1.0, sneaky: true, saw: '💝',
     can: (p) => p.held === 'parcel',
@@ -209,6 +231,8 @@ const ITEMS = {
     },
   },
   broom: { icon: '🧹', draw: broomThing, place: 'broom', bulky: true }, // both hands on it: no pretending to work
+  // Bob's brown box, your face on it once the labels are swapped (take_brown): dull, so nobody minds it in your arms.
+  brownbox: { icon: '📦', draw: brownBoxThing, bulky: true },
 };
 
 const ROLES = {
@@ -354,6 +378,7 @@ export default {
     camAim: 'room', // 'room' (sweeping) | 'plant' (poked round into the plant)
     broom: 'stand', // 'stand' | 'player' | 'dropped'
     brown: 'shelf', // Bob's brown box: 'shelf' | 'lin' (collected) | 'bob' (handed to whoever's face is on it)
+    //                 | 'player' (your face on it, you took it: held, or put down somewhere)
     mailEmpty: false, // Lin found no pink box on the parcel shelf
     spotT: null, // when Lin saw the parcel in your arms (loopTime)
     items: [],

@@ -4,6 +4,7 @@ const UNPLUG = ['goto socket pretend', 'interact'];
 const TAKE = [...UNPLUG, 'goto pigeonholes pretend', 'interact'];
 const DRAWER = [...TAKE, 'goto drawer pretend', 'interact'];
 const SWAP = [...TAKE, 'interact']; // holding your box at the shelf: swap the labels
+const TOOK = [...SWAP, 'interact']; // then the brown box, your face on it now: yours to take
 // The broom fills your arms (no pretending): you wait in the corridor by the back office door, and go in once the
 // sweep has swung away from the door and the spot under the camera (it sees that spot at 3:27.5 and 3:33.5).
 const BROOM = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'wait 4s', 'goto camera', 'goto camera'];
@@ -82,6 +83,11 @@ export default [
     intent: "At the pigeonholes, right after you swapped the labels: both boxes back on the shelf, your hands empty, a little puff. The close-up card shows the pink box now has Bob's face on its label, and the brown box has yours.",
   },
   {
+    name: 'took-the-brown-box',
+    cmds: [...TOOK, 'wait 0.3s'],
+    intent: "Right after the swap you took the brown box: it has your face on its label now. You hold the dull brown box at the pigeonholes; on the shelf only the pink box is left, Bob's face on its label.",
+  },
+  {
     name: 'drawer',
     cmds: [...DRAWER, 'wait 0.3s'],
     intent: "You stand at your desk; its drawer is shut, nothing pink showing anywhere. On the shelf in the pigeonholes only Bob's brown box is left.",
@@ -121,6 +127,11 @@ export default [
     name: 'end-bob',
     cmds: [...SWAP, 'goto own_desk pretend', 'sit', ...END],
     intent: "Win: Bob hugs the pink heart box with his face on the label, moved (tears); Lin holds the dull brown box out to you, your face on its label (brown box, your face); confetti; you grin. Icons: box, Bob's face, tears, brown box, your face.",
+  },
+  {
+    name: 'end-bob-took',
+    cmds: [...TOOK, 'goto own_desk pretend', 'goto own_desk pretend', ...END],
+    intent: "Win: Bob hugs the pink heart box with his face on the label, moved (tears); Lin has nothing left for you and shrugs (empty mailbox, your face), because you are already hugging Bob's dull brown box, your face on its label; confetti.",
   },
   {
     name: 'end-bob-away',

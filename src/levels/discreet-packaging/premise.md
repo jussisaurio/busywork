@@ -78,9 +78,12 @@ fills your arms**: while you hold it, pretending does nothing, and everyone can 
   from the spot under the camera, poke the camera (a moment, sneaky) and it swivels into the plant and stays there.
 - **The pigeonholes** (back office): the cubbies are empty today; on the parcel shelf sit Bob's brown box and your
   pink one. Up close a card shows both labels. Take your box (sneaky), or, holding it, swap your box's label with
-  Bob's (sneaky): both boxes go back on the shelf, the pink one with Bob's face, the brown one with yours.
+  Bob's (sneaky): both boxes go back on the shelf, the pink one with Bob's face, the brown one with yours. A box with
+  your face on it is yours to take, so after the swap you can take the brown one (not sneaky: it's dull cardboard
+  addressed to you) and put it back.
 - **The brown box**: Bob's ordinary daily parcel. It shows the rule (a box goes to the face on its label) every loop,
-  and it is the only other label in the building.
+  and it is the only other label in the building. Swapped, it has your face on it and you can carry it about: nobody
+  minds a dull brown box.
 - **The pink box**: the trouble.
 - **Your desk**: the drawer at its right-hand end takes the pink box (sneaky) and shuts on it. Nothing shows.
 - **Lin's desk, the counter, the lobby's glass door, the store room**: Lin's desk faces away from yours, so you can
@@ -140,6 +143,10 @@ In a real office: nobody reads a parcel but its label, and whoever does the post
 
 If you are not at the mail call, it still works: nothing is missing, so nobody wonders where you are. Lin holds the
 brown box out to your empty chair, and nobody minds (shot `end-bob-away`).
+
+If you took the brown box yourself after the swap, Lin finds only the pink one at 3:54 and at the mail call has
+nothing left for you (empty mailbox, your face) and shrugs, while Bob weeps over Mum's hearts and you stand there
+hugging his dull cardboard (shots `took-the-brown-box`, `end-bob-took`).
 
 The facts, and when you see them:
 - **Lin hands each parcel to the face on its label.** Every loop Bob's brown box is on the shelf with his face on it,

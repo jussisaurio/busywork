@@ -81,7 +81,7 @@ export default {
       case 'pc:triedLocked': return "the boss's screen is locked: the padlock jolts 🔒";
       case 'boss:hasCoffee': return 'the boss has his coffee and heads back';
       case 'phone:ring': return "Kev's desk phone rings ☎️";
-      case 'phone:called': return "you call Kev's desk from the boss's phone";
+      case 'phone:called': return "you call Kev's desk from the boss's phone and leave the handset lying off its cradle on his desk while it rings";
       case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
       case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
       case 'pc:pulled': return "you pull the boss's plug half out: his monitor goes black";

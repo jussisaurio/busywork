@@ -83,6 +83,7 @@ export const POSES = {
     { when: (n, w) => BOB(n) && w.parcel === 'bob', arms: 'carry', item: '#parcel' }, // his now: he hugs it
     { when: (n, w) => BOB(n) && w.brown === 'bob', arms: 'carry', item: '#brownbox' },
     { when: (n, w) => LIN(n) && w.mailEmpty && n._atMail, arms: 'shrug' }, // nothing for you on the shelf today
+    { when: (n, w) => LIN(n) && n._atMail && w.parcel === 'bob' && w.brown === 'player', arms: 'shrug' }, // you took yours
   ],
   marks: [
     { when: (n) => n.id === 'bob', badge: true },
@@ -97,6 +98,8 @@ export const SOUNDS = {
     start: {
       take_parcel: { sfx: 'rustle', spot: 'pigeonholes' },
       swap_labels: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
+      take_brown: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
+      return_brown: { sfx: 'rustle', spot: 'pigeonholes', opts: { gain: 0.5 } },
     },
   },
   events: {
@@ -116,7 +119,7 @@ export const SOUNDS = {
     'parcel:found': { sfx: 'notice' },
     'parcel:spotted_on_you': { sfx: 'notice' },
   },
-  drops: { parcel: 'soft', broom: 'card' },
+  drops: { parcel: 'soft', broom: 'card', brownbox: 'soft' },
 };
 
 // How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.

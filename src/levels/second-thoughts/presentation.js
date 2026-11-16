@@ -86,8 +86,8 @@ export const DECOR = {
       tile: 'M',
       draw: machineProp,
       state: (w) => ({
-        lamp: w.coffee === 'brewed' ? 'brewed' : w.coffee === 'brewing' && w.fuse === 'on' ? 'brewing' : null,
-        steam: w.coffee === 'brewed',
+        lamp: w.fuse !== 'on' ? null : w.coffee === 'brewed' ? 'brewed' : w.coffee === 'brewing' ? 'brewing' : null,
+        steam: w.coffee === 'brewed' && w.fuse === 'on', // power out: the warming plate goes cold, the pot still full
         scorch: w.coffee === 'shorted',
         smoke: w.coffee === 'shorted' && w.fuse !== 'on' && !w.unplugged,
       }),
@@ -132,6 +132,7 @@ export const SOUNDS = {
     },
     done: {
       flip_switch: { sfx: 'clank', spot: 'office_switch' },
+      flip_switch_on: { sfx: 'clank', spot: 'office_switch' },
     },
   },
   events: {

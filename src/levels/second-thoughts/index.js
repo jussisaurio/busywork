@@ -121,6 +121,14 @@ const tubesLit = (w) => w.officeLight === 'on'
 const atBossDesk = (n) => Math.abs(n.x - (SPOTS.boss_desk.x + 0.5)) < 0.3 && Math.abs(n.y - (SPOTS.boss_desk.y + 0.5)) < 0.3;
 const inOffice = (n) => n.x >= ZONES.office.x0 && n.x < ZONES.office.x1 && n.y >= ZONES.office.y0 && n.y < ZONES.office.y1;
 
+function flipSwitch(game) {
+  const w = game.world;
+  w.officeLight = w.officeLight === 'off' ? 'on' : 'off';
+  if (w.officeLight === 'off') game.player.switched = true; // it was you, if he finds you at it (tick clears it)
+  shake(game, 0.04, 0.12);
+  game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
+}
+
 const INTERACTIONS = {
   take_letter: {
     on: 'tray', text: 'take your letter back', duration: 2.5, sneaky: true, saw: '✉️', // longer than any glance
@@ -150,17 +158,18 @@ const INTERACTIONS = {
       game.events.emit('letter:stashed', {});
     },
   },
+  // The hallway lighting panel: one switch, two prompts, so E always says what it will do.
   flip_switch: {
     on: 'office_switch', text: "switch his office lights off", duration: 0.5, sneaky: false,
     noise: { radius: 2 }, // the clack: out in the hallway, far from his chair
-    can: () => true,
-    done(game) {
-      const w = game.world;
-      w.officeLight = w.officeLight === 'off' ? 'on' : 'off';
-      if (w.officeLight === 'off') game.player.switched = true; // it was you, if he finds you at it (tick clears it)
-      shake(game, 0.04, 0.12);
-      game.events.emit(w.officeLight === 'off' ? 'switch:off' : 'switch:on', {});
-    },
+    can: (p, w) => w.officeLight !== 'off',
+    done: flipSwitch,
+  },
+  flip_switch_on: {
+    on: 'office_switch', text: "switch his office lights back on", duration: 0.5, sneaky: false,
+    noise: { radius: 2 },
+    can: (p, w) => w.officeLight === 'off',
+    done: flipSwitch,
   },
   // The water jug beside the coffee machine, poured into the vent on its back: the machine is off, so nothing happens
   // till Lin switches it on; then its wet insides short and blow the fuse. The jug goes back empty and a puddle drips
@@ -176,14 +185,14 @@ const INTERACTIONS = {
       game.events.emit('coffee:rigged', {});
     },
   },
-  // Once Lin's coffee has brewed, the full pot pours a cup (DESIGN.md "A thing that looks usable is usable"). The cup
-  // leads nowhere: it only fills your hands.
-  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'brewed' && w.fuse === 'on' },
+  // Once Lin's coffee has brewed, the full pot pours a cup (DESIGN.md "A thing that looks usable is usable"), power or
+  // no power: pouring needs none. The cup leads nowhere: it only fills your hands.
+  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'brewed' },
   // Eating your letter (hold E, as any edible thing): paper, not food, so no 😋 but a wince, and bits of paper, not
   // crumbs. Ten minutes later it comes back up (index.js sick). Replaces the engine's eat_letter.
   eat_letter: {
     on: 'self', text: 'eat your letter', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '✉️',
-    can: (p, w) => p.held === 'letter' && !w.soggy, // once was enough
+    can: (p, w) => p.held === 'letter' && !w.soggy, // once was enough: eat_soggy
     done(game) {
       const w = game.world;
       const p = game.player;
@@ -193,6 +202,17 @@ const INTERACTIONS = {
       burst(game, 'paper', p.x, p.y, 5, { speed: 0.8, ttl: 0.6 });
       say(game, 'player', ['😖'], { kind: 'thought', ttl: 1.5 });
       game.events.emit('letter:eaten', {});
+    },
+  },
+  // The soggy letter, back up to your mouth (hold E, as before): you get it as far as your lips, gag (🤢) and lower
+  // it. Once was enough, and the screen says so.
+  eat_soggy: {
+    on: 'self', text: 'try to eat your soggy letter again', duration: 0.9, hold: true, preview: 'lift', idle: true, saw: '✉️',
+    can: (p, w) => p.held === 'letter' && w.soggy,
+    done(game) {
+      say(game, 'player', ['🤢'], { kind: 'thought', ttl: 1.4 });
+      shake(game, 0.03, 0.15);
+      game.events.emit('letter:gagged', {});
     },
   },
   pull_breaker: {

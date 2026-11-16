@@ -84,7 +84,7 @@ export default {
       : w.officeLight === 'starting' ? "the boss's office tubes are blinking back on; the rest of the floor is lit"
       : w.officeLight !== 'on' ? "the boss's office is dark; the rest of the floor is lit" : 'all the lights are on';
     const floor = w.items.length ? `; on the floor: ${w.items.map((i) => i.type).join(', ')}` : '';
-    const machine = MACHINE[w.coffee] ?? '';
+    const machine = w.coffee === 'brewed' && w.fuse !== 'on' ? ' has brewed (its lamp dark with the power out, the pot still full)' : MACHINE[w.coffee] ?? '';
     const jug = w.rigged ? 'the empty water jug stands beside it; water drips from the vent on its back' : 'a full water jug stands beside it';
     const soggy = w.soggy ? ' (soggy: it came back up)' : '';
     const puddle = w.puddle ? '; a green puddle of sick on the floor where you threw up' : '';
@@ -123,6 +123,7 @@ export default {
       case 'letter:taken': return 'you took your letter back ✉️';
       case 'letter:snatched': return null;
       case 'letter:eaten': return 'you ate your resignation letter';
+      case 'letter:gagged': return 'you lift the soggy letter to your mouth again, gag (🤢) and lower it: once was enough';
       case 'player:queasy': return 'your face goes green 🤢';
       case 'player:sick': return 'you throw up: a green puddle at your feet, your letter soggy in it; everyone turns';
       case 'lin:sees': return 'Lin sees the puddle 🤢 and goes for the paper towels';
