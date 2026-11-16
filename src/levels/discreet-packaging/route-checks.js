@@ -1,7 +1,10 @@
 // Discreet Packaging's route checks for tools/routes.mjs (format:
 // src/levels/meeting/route-checks.js).
 const UNPLUG = ['goto socket pretend', 'interact'];
-const POKE = ['goto broom_stand', 'interact', 'goto camera pretend', 'interact'];
+// The broom fills your arms (no pretending): wait in the corridor by the back office door until the camera's sweep
+// swings away from the door and the spot under it, then in and poke.
+const BROOM_IN = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'wait 4s', 'goto camera', 'goto camera'];
+const POKE = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'goto camera', 'goto camera', 'interact'];
 export default [
   { name: 'do nothing → Lin holds up the pink box at the mail call', expect: { result: 'fail' }, cmds: ['wait until 4:00'] },
   {
@@ -17,7 +20,7 @@ export default [
   {
     name: 'pull the plug, take the parcel, drawer → win (hidden)',
     expect: { result: 'win', routes: ['hidden'] },
-    cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto own_desk pretend', 'interact', 'sit', 'wait until 4:00'],
+    cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto drawer pretend', 'interact', 'sit', 'wait until 4:00'],
   },
   {
     name: 'pull the plug, swap the labels → win (Bob gets the pink box)',
@@ -32,17 +35,17 @@ export default [
   {
     name: 'pull the plug, drawer, then out of the office at 4:00 → still a win (nobody knew of a parcel to miss)',
     expect: { result: 'win', routes: ['hidden'] },
-    cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto own_desk pretend', 'interact', 'goto lobby pretend', 'pretend until 4:00'],
+    cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto drawer pretend', 'interact', 'goto lobby pretend', 'pretend until 4:00'],
   },
   {
     name: 'broom: poke the camera into the plant while it looks away, then the drawer → win (hidden)',
     expect: { result: 'win', routes: ['hidden'] },
-    cmds: ['goto broom_stand', 'interact', 'goto camera pretend', 'pretend 0.5s', 'interact', 'goto broom_stand', 'interact', 'goto pigeonholes', 'interact', 'goto own_desk pretend', 'interact', 'sit', 'wait until 4:00'],
+    cmds: [...BROOM_IN, 'interact', 'goto broom_stand', 'goto broom_stand', 'interact', 'goto pigeonholes', 'interact', 'goto drawer pretend', 'interact', 'sit', 'wait until 4:00'],
   },
   {
     name: 'broom: poke it into the plant, then hang about under it → Bob, coming over, sends you to your desk with work; the parcel waits for the mail call (fail)',
     expect: { result: 'fail' },
-    cmds: ['goto broom_stand', 'interact', 'goto camera pretend', 'pretend 0.5s', 'interact', 'wait until 3:45', 'wait until 3:45', 'wait until 3:45'],
+    cmds: [...BROOM_IN, 'interact', 'wait until 3:45', 'wait until 3:45', 'wait until 3:45'],
   },
   {
     name: 'broom: poke it while it looks at you → caught',
@@ -55,7 +58,7 @@ export default [
     cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto corridor pretend', 'interact', 'goto own_desk pretend', 'sit', 'wait until 4:00'],
   },
   {
-    name: 'drop the parcel in the store room, back to your desk → win (hidden: Lin shrugs)',
+    name: 'drop the parcel in the store room, back to your desk → win (hidden: nothing comes for you)',
     expect: { result: 'win', routes: ['hidden'] },
     cmds: [...UNPLUG, 'goto pigeonholes pretend', 'interact', 'goto 25,7 pretend', 'interact', 'goto 5,6 pretend', 'wait until 4:00'],
   },

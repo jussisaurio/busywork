@@ -5,10 +5,10 @@ export default {
   // camera, so it blinds the camera first (unplugged, or poked into the plant).
   mustUse: [{ id: 'camera', event: 'camera:blind' }],
   targets: [
-    'socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk',
+    'socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk', 'drawer',
     'bob_desk', 'lin_desk', 'corridor', 'store_room', 'lobby', 'mail_call',
   ],
-  interactable: ['socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk'],
+  interactable: ['socket', 'pigeonholes', 'camera', 'broom_stand', 'own_desk', 'drawer'],
   renderEvents: [
     'camera:unplugged', 'camera:pushed', 'bob:static', 'bob:whacking', 'bob:leaf', 'bob:tugging', 'bob:gave_up', 'camera:replugged',
     'parcel:collected', 'parcel:missing', 'parcel:spotted', 'parcel:found', 'parcel:spotted_on_you', 'parcel:handed',
@@ -36,9 +36,9 @@ export default {
     // Raw movement into the back office, idling on camera, then taking the parcel in plain view of it.
     ['move E 1.5s', 'move S 1s', 'wait 2s', 'goto pigeonholes', 'wait 2s', 'interact', 'wait until 4:00'],
     // Pull the plug, grab the parcel, stuff it in the drawer.
-    ['goto socket pretend', 'interact', 'goto pigeonholes pretend', 'interact', 'goto own_desk pretend', 'interact', 'sit', 'wait until 4:00'],
+    ['goto socket pretend', 'interact', 'goto pigeonholes pretend', 'interact', 'goto drawer pretend', 'interact', 'sit', 'wait until 4:00'],
     // The broom: poke the camera into the plant, then swap the labels.
-    ['goto broom_stand', 'interact', 'goto camera pretend', 'interact', 'goto broom_stand', 'interact', 'goto pigeonholes pretend', 'interact', 'interact', 'sit', 'wait until 4:00'],
+    ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'wait 4s', 'goto camera', 'goto camera', 'interact', 'goto broom_stand', 'goto broom_stand', 'interact', 'goto pigeonholes pretend', 'interact', 'interact', 'sit', 'wait until 4:00'],
     // The parcel dropped in the corridor: someone finds it.
     ['goto socket pretend', 'interact', 'goto pigeonholes pretend', 'interact', 'goto corridor pretend', 'interact', 'goto own_desk pretend', 'sit', 'wait until 4:00'],
     // Several loops: restart mid-day, a full day, continue into the next one.

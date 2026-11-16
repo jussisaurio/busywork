@@ -2,11 +2,13 @@
 // the start of the day, and what each picture must tell a first-time player who has read only the card.
 const UNPLUG = ['goto socket pretend', 'interact'];
 const TAKE = [...UNPLUG, 'goto pigeonholes pretend', 'interact'];
-const DRAWER = [...TAKE, 'goto own_desk pretend', 'interact'];
+const DRAWER = [...TAKE, 'goto drawer pretend', 'interact'];
 const SWAP = [...TAKE, 'interact']; // holding your box at the shelf: swap the labels
-const BROOM = ['goto broom_stand', 'interact', 'goto camera pretend']; // there at 3:27
-// The sweep sees the spot under the camera at 3:27.5 and 3:33.5, and looks furthest away at 3:30.5.
-const POKE_SAFE = [...BROOM, 'pretend until 3:29', 'wait 1s', 'interact'];
+// The broom fills your arms (no pretending): you wait in the corridor by the back office door, and go in once the
+// sweep has swung away from the door and the spot under the camera (it sees that spot at 3:27.5 and 3:33.5).
+const BROOM = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'wait 4s', 'goto camera', 'goto camera'];
+const POKE_SAFE = [...BROOM, 'interact'];
+const POKE_SEEN = ['goto broom_stand', 'interact', 'goto 17,3', 'wait until 3:27', 'goto camera', 'goto camera', 'interact'];
 const UNPLUG_TAKE_TO_OFFICE = [...TAKE, 'goto 5,6 pretend']; // Lin sees it
 const CORRIDOR_DROP = [...TAKE, 'goto corridor pretend', 'interact', 'goto own_desk pretend', 'sit'];
 // To the end card: a notice or a catch stops a pretend early, the next one goes on; 4:00 stops the last, and the day
@@ -51,23 +53,28 @@ export default [
   },
   {
     name: 'under-the-camera',
-    cmds: [...BROOM, 'pretend until 3:30', 'wait 0.5s'],
+    cmds: [...BROOM, 'wait 0.3s'],
     intent: "You stand under the camera with the broom in your hands. The camera's blue eye and its cone point away from you, down into the room; you are outside the cone. The leafy plant stands right beside the camera. Bob's monitor shows the back office.",
   },
   {
     name: 'poked-into-the-plant',
     cmds: [...POKE_SAFE, 'wait 1.4s'],
-    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob gets up from his counter, fed up with it (leaf, angry), and turns to come and look. The broom is still in your hands: time to go.",
+    intent: "The camera now points sideways, into the leafy plant beside it, and stays there. Bob's monitor shows one giant green leaf; Bob gets up from his counter, fed up with it (screen with the leaf, angry), and turns to come and look. The broom is still in your hands: time to go.",
   },
   {
     name: 'bob-tugs-the-camera',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:32', 'wait 1s'],
+    cmds: [...POKE_SAFE, 'goto corridor', 'goto corridor', 'wait until 3:32', 'wait 1s'],
     intent: "Bob has left his counter and stands under the camera, reaching up and tugging at it: it rattles on its bracket but stays jammed in the plant's leaves. No impact star. You wait in the corridor, the broom in your hands.",
   },
   {
     name: 'bob-gives-up',
-    cmds: [...POKE_SAFE, 'goto corridor pretend', 'pretend until 3:33', 'wait 1.5s'],
-    intent: "Bob gives up on the camera, still jammed in the plant: he says (wrench, calendar): someone will fix it, another day. His monitor still shows the leaf.",
+    cmds: [...POKE_SAFE, 'goto corridor', 'goto corridor', 'wait until 3:33', 'wait 1.5s'],
+    intent: "Bob gives up on the camera, still jammed in the plant: he says (wrench, shrug): someone will fix it, some time. His monitor still shows the leaf.",
+  },
+  {
+    name: 'bob-fond-of-the-leaf',
+    cmds: [...POKE_SAFE, 'goto corridor', 'goto corridor', 'wait until 3:35', 'wait 0.5s'],
+    intent: "Bob is back behind his counter. His monitor still shows one giant green leaf, and he smiles at it fondly (plant, smile). You wait in the corridor, the broom in your hands.",
   },
   {
     name: 'labels-swapped',
@@ -87,12 +94,12 @@ export default [
   {
     name: 'empty-pigeonhole',
     cmds: [...DRAWER, 'sit', 'pretend until 3:53', 'wait 1.7s'],
-    intent: "At the pigeonholes Lin picks up only Bob's brown box: no pink box on the shelf today, and she doesn't miss it. You sit at your desk, its drawer shut.",
+    intent: "At the pigeonholes Lin picks up only Bob's brown box: no pink box on the shelf today, and she doesn't miss it: a bored thought (brown box, tick), then crickets. You sit at your desk, its drawer shut.",
   },
   {
     name: 'mail-call-shrug',
     cmds: [...DRAWER, 'sit', 'pretend until 3:59', 'wait 1.4s'],
-    intent: "4:00: Lin and Bob stand in your office for the mail call. Bob holds his brown box. Lin has nothing for you (empty mailbox, your face) and shrugs, palms up. You sit at your desk.",
+    intent: "4:00: Lin and Bob stand in your office for the mail call. Bob holds his brown box. Lin has nothing for you (empty mailbox, your face) and shrugs, palms up. You sit at your desk and hum (a note).",
   },
   {
     name: 'dropped-box-spotted',
@@ -107,7 +114,7 @@ export default [
   {
     name: 'handover',
     cmds: [...SWAP, 'goto own_desk pretend', 'sit', 'pretend until 3:59', 'wait 1.45s'], // the handover at 1.3 s, the day's verdict at 1.5 s
-    intent: "At the mail call in your office Lin hands Bob the pink box (box, Bob's face); big stern Bob hugs it, moved (tears). Lin still has the brown box. You sit at your desk.",
+    intent: "At the mail call in your office Lin hands Bob the pink box (box, Bob's face); big stern Bob hugs it, moved (tears). Lin still has the brown box. You sit at your desk, smug (smirk).",
   },
   // The end cards.
   {
@@ -142,7 +149,7 @@ export default [
   },
   {
     name: 'end-caught-broom',
-    cmds: [...BROOM, 'interact', ...END],
+    cmds: [...POKE_SEEN, ...END],
     intent: 'Lose: Bob jabs a finger at his monitor (angry, @you). On it you stand right under the lens with the broom raised at the camera, its bristles big at the top of the picture. You stand behind him and go red, the broom in your hands. Icons: screen, pointing, you.',
   },
   {

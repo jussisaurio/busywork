@@ -118,15 +118,15 @@
     "interact",
     "pretend until 4:00"
    ],
-   "summary": "blamed",
+   "summary": "caught",
    "digests": [
     "45719df2bb76d529",
     "899ce21b497105c7",
-    "b5508a45bd9ffd6f",
-    "f46eeaeefe87c798",
-    "a9d8b7eef7f257d4",
-    "15b1c20a28505ff5",
-    "b15156ca698aba20"
+    "0bc1a0bc7bb488ee",
+    "f585a53e68d597af",
+    "082936cf1a7ae500",
+    "2eae55f7b1cf0d73",
+    "7915a2d6e29c0d4d"
    ]
   },
   {
@@ -178,13 +178,13 @@
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "44e8548d1f6d0727",
-    "5cb520d88bae67e2",
-    "3955b728a9a49c1b",
-    "cb25fa918ccf2a92",
-    "ee7f5a8c5a687da6"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "84c27963d050760d",
+    "80130d04c5e4b6f5",
+    "a1bfec0d42f0cb13",
+    "74c100025b02b384",
+    "bbdfcd28d9c9022a"
    ]
   },
   {
@@ -217,10 +217,10 @@
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "44e8548d1f6d0727",
-    "77e121f6ec7ee527"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "84c27963d050760d",
+    "33b3519a51c8584e"
    ]
   },
   {
@@ -315,16 +315,16 @@
     "interact",
     "pretend until 4:00"
    ],
-   "summary": "caught",
+   "summary": "blamed",
    "digests": [
     "45719df2bb76d529",
     "899ce21b497105c7",
-    "52a5361986b006fa",
-    "934acbb179b40d94",
-    "0db0421b33d605bd",
-    "1d907db06e742824",
-    "132aaabef08ee8ae",
-    "974e602147fe2061"
+    "703f9040d0a3ea3a",
+    "f76e0b76ba4483a0",
+    "7abf36e796241700",
+    "89adf466f66d37a1",
+    "b27d8050f596f82a",
+    "030a774b28cdae6a"
    ]
   },
   {
@@ -336,15 +336,15 @@
     "sit pretend",
     "wait until 4:00"
    ],
-   "summary": "win hidden",
+   "summary": "caught",
    "digests": [
     "cadd0b7644c01762",
     "41ac1e28bf596cb0",
     "f3c9edc250e60c9c",
     "4447d99b4d78d873",
-    "feb8a18499e628ea",
-    "34cc5c03dede3eae",
-    "370dc90884812745"
+    "11f3cedbf351a6cd",
+    "10b8ffa71187b50c",
+    "26e4fb0300b283ab"
    ]
   },
   {
@@ -396,17 +396,17 @@
     "pretend until 3:26",
     "pretend until 4:00"
    ],
-   "summary": "caught",
+   "summary": "blamed",
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "f90b7ba000d22309",
-    "2298ba719bbaca0e",
-    "709b1ee3e609cfcc",
-    "307770026ba8b0e0",
-    "d9bcdf26c2434c88"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "81bde56b900bd5d2",
+    "a198566fd9c38c88",
+    "1ffd3d88214ff483",
+    "024179bfab900a94",
+    "45a3076912082f2a"
    ]
   },
   {
@@ -428,7 +428,7 @@
     "18ef28b9aa14b8ac",
     "5f0be26f5058ace7",
     "482c034c60e9fdb7",
-    "b382aff8be6867b0"
+    "75855fc297110f56"
    ]
   },
   {
@@ -442,17 +442,17 @@
     "interact",
     "pretend until 4:00"
    ],
-   "summary": "blamed",
+   "summary": "fail",
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "52de01914bc572a1",
-    "39d5fdea0906dca2",
-    "57d9a1887613c216",
-    "fc0eec31569495b0",
-    "47cce20187fe7b99"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "47c68111ddb0bce5",
+    "f9c02b46eab95d25",
+    "c3537914b27a20bd",
+    "640eee55e8805b97",
+    "954d90c5852544e2"
    ]
   },
   {
@@ -472,7 +472,7 @@
     "4447d99b4d78d873",
     "6a15ecba38526dd8",
     "06b131feef39d016",
-    "cfc5ff3b8f9cf422"
+    "33049a2530a9294d"
    ]
   },
   {
@@ -486,17 +486,17 @@
     "interact",
     "wait until 4:00"
    ],
-   "summary": "win hidden",
+   "summary": "caught",
    "digests": [
     "cadd0b7644c01762",
     "41ac1e28bf596cb0",
     "f3c9edc250e60c9c",
     "4447d99b4d78d873",
-    "feb8a18499e628ea",
-    "47953b955ec7d906",
-    "1870a518ef475a48",
-    "54b6a43c5ace81a2",
-    "121a3587e1fa151e"
+    "11f3cedbf351a6cd",
+    "0c6da5e65518c177",
+    "3492d6ee9062eb96",
+    "4f55a3e91efbc231",
+    "f35fef2c8d26ec80"
    ]
   },
   {
@@ -516,7 +516,7 @@
     "4447d99b4d78d873",
     "b54e8aae395fd95a",
     "83e72935c1b82c54",
-    "e803b37dfa24dd1e"
+    "d2da5d204142b8dd"
    ]
   },
   {
@@ -536,9 +536,9 @@
     "f3c9edc250e60c9c",
     "b33df19b3f9850c9",
     "f7377ab74dbc8133",
-    "916798687aa621e5",
-    "c4f9959d22d879ba",
-    "d2781084764b3cc9"
+    "9ae7e43dea4a6407",
+    "10b8ffa71187b50c",
+    "26e4fb0300b283ab"
    ]
   },
   {
@@ -560,7 +560,7 @@
     "c14d8a7abb4b3398",
     "2eefb691fa98b3cb",
     "3642cbf2e10a7f83",
-    "17c1b7beb504752f"
+    "79458b82d6611ac8"
    ]
   },
   {
@@ -579,8 +579,8 @@
     "f3c9edc250e60c9c",
     "4447d99b4d78d873",
     "e55f7885208f0aca",
-    "fa7cf585401b3914",
-    "4207468ad6228ed6"
+    "4e23ef15b8fb74f6",
+    "ec7cb784a9baa7a8"
    ]
   },
   {
@@ -604,7 +604,7 @@
     "6bc0abd0ea95475f",
     "d7efe6f46684096c",
     "b00c95dee62c13c7",
-    "7d482b7029bac282"
+    "9a0a568ff66e08e9"
    ]
   },
   {
@@ -623,7 +623,7 @@
     "f3c9edc250e60c9c",
     "4447d99b4d78d873",
     "ca63a9556f80113f",
-    "f8fff35c537b3548",
+    "d068a1b540f26caf",
     "59534e79c2ee13d2"
    ]
   },
@@ -666,13 +666,13 @@
    "digests": [
     "45719df2bb76d529",
     "899ce21b497105c7",
-    "52a5361986b006fa",
-    "cf8aa68d658daead",
-    "92215c42575beda9",
-    "0d413db3281763d4",
-    "c9813a19fa033f55",
-    "6315c7f30a2a12fc",
-    "f0abd42ef2bdcaaa"
+    "703f9040d0a3ea3a",
+    "852ff0f2f930b861",
+    "35583fbf54dd8317",
+    "6acc61e3618ec7a1",
+    "b5655b480e37a673",
+    "9bcbaad6eea1837b",
+    "e800960a1af4d7c6"
    ]
   },
   {
@@ -690,13 +690,13 @@
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "52de01914bc572a1",
-    "7afde110c469b409",
-    "e32eab733baa9047",
-    "3e7bf4c67179d51f",
-    "b6ea58261a8bb916"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "47c68111ddb0bce5",
+    "b1fabd61465e4998",
+    "96fe24566b13062f",
+    "adc5e061ab1063e5",
+    "b5eef89718db8f4a"
    ]
   },
   {
@@ -715,14 +715,14 @@
    "digests": [
     "2cd249fac72dc9c4",
     "f57227dc9f82f791",
-    "0471cf7674dfda36",
-    "a00d4b1aded69ba2",
-    "52de01914bc572a1",
-    "39d5fdea0906dca2",
-    "57d9a1887613c216",
-    "abbe366362897cd4",
-    "a6e1cc148ce6fbc9",
-    "8083fba1c7f61bb7"
+    "80def2f32e2d8e5c",
+    "4df5249dd26212cc",
+    "47c68111ddb0bce5",
+    "f9c02b46eab95d25",
+    "c3537914b27a20bd",
+    "0dbfd42b659eee78",
+    "adc5e061ab1063e5",
+    "b5eef89718db8f4a"
    ]
   },
   {
@@ -742,13 +742,13 @@
     "45719df2bb76d529",
     "0eed2fdb453324c0",
     "c97260f41224e66c",
-    "d1c033b3562637d4",
-    "8bf42643782d1800",
-    "68c71187f10578dc",
-    "d499ab3a8fc5b1d6",
-    "251739a63adb5484",
-    "1ee78be3a114128d",
-    "558d36d55f2ebe4e"
+    "e03be2babc64a3e5",
+    "91d6bb360853fc78",
+    "bff7e486d03df7bd",
+    "9f56b4e4f193cf97",
+    "8cbdf10d43e70acf",
+    "48d9bae5666228bd",
+    "66c569897f930f9c"
    ]
   },
   {
@@ -773,7 +773,7 @@
     "3a337ce1107830f1",
     "3d63f8ec953d2532",
     "7e0cdeca2586ab34",
-    "f572718d67151898",
+    "cf031c8de5670dfb",
     "b1cb216e52ada3d5"
    ]
   },
@@ -810,17 +810,17 @@
     "sit",
     "wait until 4:00"
    ],
-   "summary": "win hidden",
+   "summary": "caught",
    "digests": [
     "cadd0b7644c01762",
     "41ac1e28bf596cb0",
     "f3c9edc250e60c9c",
     "4447d99b4d78d873",
     "b54e8aae395fd95a",
-    "130f072160e20cce",
-    "1ec0d9836deb39a8",
-    "583e8246371a1779",
-    "27aff4718e2254f9"
+    "79f6d185ef8f901f",
+    "5abc686ca6f893b1",
+    "621d014361c1b949",
+    "26e4fb0300b283ab"
    ]
   },
   {
@@ -841,16 +841,16 @@
    "digests": [
     "45719df2bb76d529",
     "899ce21b497105c7",
-    "f6ac8203fa6d62e8",
-    "378ea2de1f5c5e73",
-    "6819fd98bee67828",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4",
-    "63f01bc5475d2ca4"
+    "703f9040d0a3ea3a",
+    "f76e0b76ba4483a0",
+    "9f4d2bc7f4a049f3",
+    "d7e2fab12a364beb",
+    "94bf96d5a0c3c1bd",
+    "4bd7c35b32ff3c80",
+    "ddc852bc495ba36a",
+    "a99718ffbe0c6265",
+    "a99718ffbe0c6265",
+    "a99718ffbe0c6265"
    ]
   },
   {
@@ -876,7 +876,7 @@
     "f2c40232c9a359f8",
     "d4d6750ffbed4ead",
     "8e300d1c3101a3c2",
-    "0a5671741cfc28ab"
+    "cb1fa1ebafdd297a"
    ]
   },
   {
