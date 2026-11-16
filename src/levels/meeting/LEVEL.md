@@ -83,8 +83,10 @@ run, not read off this table.
 - **One cup of coffee per loop.** The pot holds the day's last cup, and the coffee bag beside the machine is empty
   (decor `emptyBag`). Kev pours it at 2:38 if it's still there and carries it around ☕. Pour it first and he finds
   the pot empty. There is no refill.
-- **The full cup** is `bulky` (no pretending while you hold it, so no typing at your desk) and `keep` (only a put gets
-  it out of your hand). To work at your desk with it, set it down on your desk (`put my_desk`).
+- **The full cup** is `keep` (only a put gets it out of your hand). Pretend standing and it goes to your ear like a
+  phone: Kev, who would ask for it, squints (☕❓) and, if you keep up the act through his squint, decides you're on a
+  call (📱🤷) and lets you be (clocks.js). Lower it mid-squint and he sees a cup and asks. Walking (folder) or typing,
+  the cup is in plain view.
 - **Caught** end card: fired, carrying a box of your things out.
 
 ## Routes

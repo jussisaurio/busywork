@@ -56,7 +56,7 @@ export const DECOR = {
     { zone: 'lobby', x: 4, y: 14 },
   ],
   legendAt: { x: 20, y: 15.5 },
-  things: { penShake, penScribble }, // his dry pen at your desk (POSES)
+  things: { penShake, penScribble }, // his dry pen at Lin's desk and yours (POSES)
 };
 
 export const LOOKS = {
@@ -70,15 +70,35 @@ export const LOOKS = {
   },
 };
 
-// At Lin's desk his pen runs dry, every loop (index.js INSPECTIONS, look PEN_LOOK s). Seconds into the stay: he
-// writes and nothing comes, shakes the pen, scribbles on the clipboard's corner, shakes it again, gives up, and goes
-// into the meeting room for a pen from the pot on the table (index.js errands). That walk is Lin's desk unwatched.
+// His pen, every loop (index.js INSPECTIONS, look PEN_LOOK / PEN_LOOK_YOU s). Seconds into the stay at a desk:
+//   Lin's desk   he writes and nothing comes (🖊️❓), shakes the pen, scribbles on the clipboard's corner, shakes it
+//                again, gives up, and goes into the meeting room for a pen from the pot on the table (index.js
+//                errands). That walk is Lin's desk unwatched.
+//   your desk    the pen from the pot is no better (🖊️😤): shake, scribble, shake, and at last it writes. Then his
+//                phone rings.
+// Through each fight he is head down over the clipboard, eyes on the nib (headDown: index.js clockFor shrinks his
+// view cone onto the clipboard). A hand at his elbow goes unseen: yours on Lin's laptop, Kev's on his own, as Kev
+// strolls home with it behind the auditor's back (cast.js kevStopsAgain).
 export const PEN_LOOK = 3.6;
-const PEN_BEATS = [[0.5, null], [1.4, 'shake'], [2.6, 'scribble'], [3.4, 'shake']];
+export const PEN_LOOK_YOU = 4.8;
+const PEN_FIGHTS = {
+  2: { look: PEN_LOOK, beats: [[0.5, null], [1.4, 'shake'], [2.6, 'scribble'], [3.4, 'shake']] },
+  3: { look: PEN_LOOK_YOU, beats: [[0.5, null], [1.6, 'shake'], [2.8, 'scribble'], [4.0, 'shake']] },
+};
+// Seconds into his pen fight at this desk and its beats, or null when he isn't standing at a pen desk.
+function penFight(n) {
+  const atDesk = !n._reaching && !n._phone; // not at the pen pot or on the phone (index.js errands)
+  const f = n.override === 'audit' && atDesk && !n.moving && n._wait > 0 && PEN_FIGHTS[n._insp?.i];
+  return f ? { into: f.look - n._wait, beats: f.beats } : null;
+}
 export function penBeat(n) {
-  if (n.override !== 'audit' || n._insp?.i !== 2 || n.moving || !(n._wait > 0)) return null;
-  const into = PEN_LOOK - n._wait;
-  return PEN_BEATS.find(([until]) => into < until)?.[1] ?? null;
+  const f = penFight(n);
+  return f ? (f.beats.find(([until]) => f.into < until)?.[1] ?? null) : null;
+}
+// Which desk's pen fight he is in (2 Lin's, 3 yours) while it lasts, head down; 0 otherwise.
+export function headDown(n) {
+  const f = penFight(n);
+  return f && f.into < f.beats[f.beats.length - 1][0] ? n._insp.i : 0;
 }
 
 export const POSES = {

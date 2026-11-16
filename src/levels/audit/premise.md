@@ -38,11 +38,14 @@ hallway coffee machine. At 3:30 he starts his list. He stands behind each desk, 
 the desk: the boss's at 3:32.8, Lin's at 3:36.3. At Lin's desk his pen runs dry, every loop (a thought: pen,
 question mark). He shakes it and scribbles on the corner of his clipboard, then gives up and walks off to the meeting
 room (3:38.5). He takes a pen from the mug on the meeting table, his back to the door (3:42-3:43.7), and walks to
-your desk: its sign goes up at 3:44.9. Then his phone rings (3:46.1, a phone at his ear). He takes the call at the
-meeting-room window, his back to the door and the office, talking (3:48.7-3:52.4). Then he walks to Kev's desk
-(3:56.6), the last on his list. At 3:57.8 he heads back to your desk to sign off, and he is there at 3:59.9: a smile
+your desk: its sign goes up at 3:44.9. The new pen is dry too (a thought: pen, fuming, 3:45.2): he shakes it,
+scribbles, shakes it again, and at last it writes (3:47.3). Then his phone rings (3:47.8, a phone at his ear). He
+takes the call at the meeting-room window, his back to the door and the office, talking (3:50.4-3:52.3). Then he
+walks to Kev's desk (3:56.6), the last on his list. At 3:57.8 he heads back to your desk to sign off, and he is there at 3:59.9: a smile
 for four ticks; for a cross, a thought of the cross (laptop, cross), then angry, pointing at you. He looks only where
 his list tells him to look, and he walks facing forward. A cross makes him angry, but he finishes his list.
+While he fights a dry pen (at Lin's desk 3:36.6-3:38, at yours 3:45.2-3:47.3) he is head down over his clipboard: his
+view cone shrinks to the clipboard, and he sees nothing past it, not even a hand at his elbow.
 
 The boss goes down to the lobby for a smoke at 3:06. He smokes facing the lift and seldom looks round. His laptop
 stays on his desk. He is back at his desk at 3:17.8. If his laptop is gone, he wonders where it went (laptop,
@@ -58,11 +61,11 @@ Lin goes to the restroom at 3:11 and is back at her desk at 3:22. If her laptop 
 Kev goes to lunch at 3:10, every loop. He packs his laptop, stops at the end of your desk, puts it down to wave
 goodbye (a wave), and goes to the lift without it. Back at 3:19.9, he finds it on your desk and slaps his forehead
 (laptop, facepalm): silly him. He carries it home to his desk. If it is not there (you took it), he wonders where he
-left it. At 3:24 he has a coffee in the kitchen, in view; his laptop stays on his desk. When the auditor's phone
-rings (3:46.1), Kev walks back to his desk. If his laptop is not on it, he wonders where it went (laptop, question
-mark) and looks over at your desk. If it is there, he walks over, picks it up openly, slaps his forehead again
-(laptop, facepalm: mine, silly me) and carries it home (3:49.7-3:51.7). The auditor is on the phone in the meeting
-room meanwhile.
+left it. At 3:24 he has a coffee in the kitchen, in view; his laptop stays on his desk. At 3:42.4 he finishes it and
+walks back to his desk. If his laptop is not on it, he wonders where it went (laptop, question mark, 3:44) and looks
+over at your desk. If it is there, he strolls over, not hiding anything: he is fetching his own laptop. The auditor
+stands right there, head down over his dry pen. Kev picks the laptop up beside him, slaps his forehead again (laptop,
+facepalm: mine, silly me, 3:46) and carries it home humming (a note), behind the auditor's back (home 3:48).
 
 Anyone who comes home with his laptop and finds another laptop on his desk (you put it there) wonders at it
 (laptop, question mark) and puts his own in a drawer, out of sight. Nobody holds a laptop at his desk.
@@ -126,28 +129,33 @@ Steps: wait in the hallway. He ticks Lin's desk at 3:36.3 while she is getting c
 gives up and walks off to the meeting room (3:38.5), unplug her laptop (3:39.6). Wait at her desk until he is inside
 the meeting room (3:41.3), carry it to your desk, put it down, sit.
 
+The cheeky version: take it at his elbow while he is head down shaking his dry pen (3:36.6-3:38), and get away down
+the hallway before he looks up. Still standing at her desk when he does, and he sees you with it.
+
 In a real office: an auditor who has to go and find a pen leaves the desk he has just counted, and he does not count
 it again. Lin is at the coffee pot in the kitchen until after the sign-off: she does not see her desk.
 
 - **Her desk is ticked while she is away.** Seen in the first loop at 3:35-3:36: Lin walks off to the kitchen, and
   the tick sign goes up over her desk while her chair is empty.
 - **His pen runs dry at her desk, and he goes for another.** Seen every loop at 3:36.6-3:42, as above.
+- **Head down over a dry pen, he is blind past his clipboard.** Seen every loop at 3:36.6-3:38: his view cone shrinks
+  to the clipboard while he shakes and scribbles, and grows back when he looks up.
 - **Lin stays in the kitchen.** Seen in the first loop: she is at the pot from 3:40 until the end.
 
 ### Kev's laptop (counted on your desk, then on his)
 Steps: after Kev goes to the kitchen (3:24), unplug his laptop from his desk, put it on yours, sit. The auditor ticks
-your desk at 3:44.9, then his phone rings and he takes the call in the meeting room. Kev comes back, misses his
-laptop, sees it on your desk, and takes it home (mine, silly me) while the auditor is on the phone. The auditor ticks
+your desk at 3:44.9 and stands there fighting his second dry pen. Kev comes back, misses his laptop, sees it on your
+desk, strolls over and takes it home (mine, silly me) right beside the head-down auditor, humming. The auditor ticks
 it on Kev's desk at 3:56.6: the fourth tick.
 
 In a real office: Kev leaves his laptop on your desk every day, so finding it there again is no surprise to him; he
-picks it up openly and blames himself. The auditor, on a phone call in another room, does not see a laptop moved
-from a desk he has already counted.
+picks it up openly and blames himself. The auditor, glaring at a pen that will not write, does not look up at a
+colleague fetching his own laptop from a desk already ticked.
 
 - **Kev leaves his laptop on your desk and comes back for it.** Seen every loop at 3:11.7 and 3:19.9.
-- **Kev stays in the kitchen until the auditor's phone rings.** Seen in the first loop from 3:24 to 3:46.1.
-- **The auditor's phone rings after your desk, every loop, and he takes the call in the meeting room.** Seen at
-  3:46.1-3:52.4: the phone at his ear, then the talking at the meeting-room window, his back to the door.
+- **Kev has his coffee in the kitchen, then goes back to his desk.** Seen in the first loop from 3:24 to 3:44.
+- **The pen from the pot is dry too, and he stands head down over it at your desk.** Seen every loop at
+  3:45.2-3:47.3: the fuming pen thought, the shaking and scribbling, his view cone shrunk to the clipboard.
 - **His desk comes after yours.** Seen in the first loop: the order is the boss's, Lin's, yours, and Kev's is the
   only desk left.
 
@@ -159,7 +167,7 @@ from a desk he has already counted.
   the cross is at your desk.
 - **He sees you with a laptop** (unplugging it, carrying it, or sitting with it in your hands). He bursts out (alert,
   pointing at you). Standing at a desk he is counting, he sees anyone who reaches for its laptop, from either side
-  of the desk: even while his pen is dry, Lin's laptop must wait until he has walked off. End picture: the laptop on
+  of the desk, unless he is head down over his dry pen; and when he looks up he sees you if you are still there. End picture: the laptop on
   the floor, the auditor points, you walk to the lift with a box.
 - **You are away from your desk when he comes to sign off at 3:59.9.** The count passed, but your chair is empty. End
   picture: a light on your empty chair, the auditor glaring at it and asking where you are (your face, question
@@ -171,6 +179,6 @@ from a desk he has already counted.
 
 ## The joke
 Kev's route. Kev comes back from the kitchen, finds his laptop on your desk again, blames himself, and carries it
-home, while the auditor is on the phone in the next room. Your desk has just been ticked with it; a few minutes later
+home humming, right behind the auditor, who is glaring at a pen that will not write. Your desk has just been ticked with it; a few minutes later
 Kev's desk is ticked with it too. The win picture: you smug behind an empty desk, the auditor beaming over four ticks,
 and Kev with the laptop that was counted twice, thanks to him.

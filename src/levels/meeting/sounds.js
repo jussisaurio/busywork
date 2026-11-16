@@ -38,6 +38,7 @@ export const SOUNDS = {
     'sandwich:taken': { sfx: 'fridgeClose', spot: 'fridge' },
     'sandwich:eaten': { sfx: 'munch', who: 'player' },
     'sandwich:returned': { sfx: 'swish', who: 'player' },
+    'coffee:shrug': { sfx: 'swish', who: 'kev', opts: { gain: 0.4 } }, // 📱🤷 he turns away
     'coffee:kevTook': { sfx: 'slurp', who: 'kev' }, // 🤤☕ … 😌 a cup left out: Kev's at last
     'coffee:taken': { sfx: 'machineBeep', spot: 'coffee', when: (p) => !!(p?.by && p.by !== 'player') }, // someone else got the last cup
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },

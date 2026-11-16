@@ -40,6 +40,17 @@ export default [
       'looks at your cup and asks for it (☕🥺❓). He does not take it: it is yours while you hold it.',
   },
   {
+    name: 'kev-squints',
+    cmds: [...POUR, 'goto kev_desk busy', 'busy until 2:46.2'],
+    intent: 'You stand by Kev\'s desk pretending, the full cup held to your ear like a phone. Kev, who wants that ' +
+      'cup, squints at it (☕❓): is that a phone?',
+  },
+  {
+    name: 'kev-shrugs',
+    cmds: [...POUR, 'goto kev_desk busy', 'busy until 2:47'],
+    intent: 'You keep up the act, the cup still at your ear. Kev decides you are on a call (📱🤷) and lets you be.',
+  },
+  {
     name: 'kev-takes-cup',
     cmds: [...POUR, 'put coffee', 'sit busy', 'busy until 2:40', 'wait 2s', 'wait 0.6s'],
     intent: 'You left the cup on the coffee machine and went back to your desk. Kev, finding it there unattended, ' +

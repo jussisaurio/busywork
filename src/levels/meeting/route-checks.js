@@ -57,6 +57,35 @@ export default [
     },
   },
   {
+    // The cup held to your ear half works: he squints at it, then decides you're on the phone.
+    name: 'pour early, hold it to your ear like a phone at Kev\'s desk → he squints ☕❓, decides you\'re on a call 📱🤷 → fail',
+    expect: { result: 'fail' },
+    play({ run, waitFor, g, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto kev_desk busy');
+      waitFor(() => log.some((e) => e.name === 'coffee:shrug'), { busy: true, maxSec: 60 });
+      const squint = log.find((e) => e.name === 'coffee:squint'), shrug = log.find((e) => e.name === 'coffee:shrug');
+      if (!squint || shrug.minute - squint.minute < 0.6) throw new Error('Kev should squint at the cup before he shrugs');
+      if (log.some((e) => e.name === 'coffee:asked')) throw new Error('Kev asked for a cup he took for a phone');
+      if (g.player.held !== 'coffee') throw new Error('the cup should still be in your hand');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'same, but lower the cup while he squints → it\'s a cup after all: ☕🥺❓',
+    expect: { result: 'fail' },
+    play({ run, waitFor, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto kev_desk busy');
+      waitFor(() => log.some((e) => e.name === 'coffee:squint'), { busy: true, maxSec: 60 });
+      waitFor(() => log.some((e) => e.name === 'coffee:asked'), { busy: false, maxSec: 4 });
+      if (log.some((e) => e.name === 'coffee:shrug')) throw new Error('Kev shrugged off a cup in plain view');
+      run('busy until 4:00');
+    },
+  },
+  {
     name: 'pour early, leave the cup on the machine → Kev finds it there, takes it as free 🤤☕ → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {

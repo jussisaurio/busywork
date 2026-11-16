@@ -9,11 +9,12 @@
 //   Back at their desks, the boss and Lin miss a laptop that's gone (💻❓). The boss looks for his along the hallway
 //   till 3:22; seen on your desk (😠👀), he walks over, takes it (😠💻) and carries it home (index.js HUNTS,
 //   bossFetches). Lin, back at 3:22, stays put.
-//   3:24-      Kev has a coffee in the kitchen, in view, till the auditor's phone rings (index.js clockFor). Back at
-//              his desk, his laptop gone (💻❓), he sees it on yours, goes and takes it (💻🤦): silly him, again.
+//   3:24-3:42  Kev has a coffee in the kitchen, in view (index.js clockFor holds him till the auditor has his new
+//              pen). Back at his desk, his laptop gone (💻❓), he sees it on yours and strolls over: right beside the
+//              auditor, head down over his dry pen, he takes it (💻🤦: silly him, again) and hums home (🎵).
 //   3:25       the auditor is out of the lift, coffee at the hallway machine, clipboard. 3:30 he starts ticking:
 //              the boss's desk, Lin's (she goes for a coffee in the kitchen at 3:35; his pen runs dry there and he
-//              fetches one from the meeting room), yours (then his phone rings: he takes the call in the meeting
+//              fetches one from the meeting room), yours (that pen is dry too, 😤; then his phone rings: he takes the call in the meeting
 //              room), Kev's. A ❌ makes him angry; he finishes his list all the same and fires you at the sign-off.
 //   3:33-      the boss, ticked off, goes for his smoke. He and Lin stay out through the sign-off (index.js clockFor).
 import { at as atClock, deg } from '../../config.js';
@@ -24,7 +25,7 @@ import { SPOTS } from './spots.js';
 export const START = 15 * 60; // 3:00 PM
 const at = (time) => atClock(time, START);
 const s = (time, entry) => ({ at: at(time), ...entry });
-export const KEV_GO = at('3:36'); // back to his desk (index.js clockFor holds him in the kitchen for the phone call)
+export const KEV_GO = at('3:42.4'); // coffee done: back to his desk (index.js clockFor keeps him in step with the pen)
 
 export const CAST = [
   {
@@ -142,7 +143,7 @@ const stopBy = (flag, expects, onlyIfThere) => ({
       w.items = w.items.filter((i) => i !== it);
       npc.carry = 'laptop_kev';
       w.laptop_kev = npc.id;
-      sim.speak(game, npc, [{ say: ['💻', '🤦'] }]);
+      sim.speak(game, npc, [{ say: ['💻', '🤦'] }, { say: ['🎵'], ttl: 1.6, after: 0.9 }]); // and home, humming
       npc._palmAt = game.clock.minute; // presentation.js POSES: a facepalm as he picks it up
       sim.holdFor(npc, 0.6);
       game.events.emit('kev:fetched', {});
