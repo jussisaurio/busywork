@@ -93,7 +93,7 @@ export default {
       case 'auditor:call': return 'the auditor talks on the phone at the meeting-room window 💬, his back to the door';
       case 'laptop:reclaimed': return `${name(p.by)} took ${WHOSE[p.type]} laptop back 😠💻`;
       case 'kev:packed': return 'Kev unplugs his laptop and takes it under his arm';
-      case 'kev:forgot': return 'Kev sets his laptop down on your desk to wave 👋, and walks off without it';
+      case 'kev:forgot': return 'Kev sets his laptop down on your desk to dig in his pockets for his wallet 💳❓';
       case 'kev:fetched': return 'Kev finds his laptop on your desk, facepalms 💻🤦 and takes it home, humming 🎵';
       case 'laptop:missing': return `${name(p.by)} stares at an empty desk 💻❓`;
       case 'laptop:drawer': return `${name(p.by)} finds a laptop on ${THEIRS[p.by] ?? 'the'} desk 💻❓ and puts ${THEIRS[p.by] ?? 'the'} own in a drawer`;

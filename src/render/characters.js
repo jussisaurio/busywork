@@ -48,7 +48,7 @@ export function personState() {
 // The arm poses computeHands draws (personState().arms). A level 'self' row's `preview` names one (the validator
 // checks it): the pose the player strikes while that row is what E would do, and while doing it.
 export const ARM_POSES = ['idle', 'walk', 'desk', 'type', 'folder', 'carry', 'reach', 'phone', 'bang', 'shrug', 'puff',
-  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout', 'facepalm'];
+  'mug', 'box', 'point', 'cheer', 'lift', 'sip', 'holdout', 'facepalm', 'pat'];
 
 // What a hand holds is drawn with this `how` (render/util.js emoji): a thing may look different in a hand.
 const HELD = { held: true };
@@ -176,6 +176,14 @@ function computeHands(s, g) {
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       rxh = fx * hr * 0.75 + rx * 1.2 + Math.sin(t * 3) * 0.6; ryh = headY + 0.5 + fy * hr * 0.45 + ry * 1.2;
       break;
+    case 'pat': {
+      // patting his pockets for something: both hands at his hips, slapping up and down out of step
+      const a = Math.sin(t * 13) > 0 ? -2.5 : 1.5;
+      const b = Math.sin(t * 13 + Math.PI) > 0 ? -2.5 : 1.5;
+      lx = lsx - rx * 2 + fx * 2.5; ly = bodyY + 4 + a + fy * 2.5 - ry * 2;
+      rxh = rsx + rx * 2 + fx * 2.5; ryh = bodyY + 4 + b + fy * 2.5 + ry * 2;
+      break;
+    }
     default:
       lx = lsx + fx * 1.5; ly = lsy + 5 + fy * 1.5;
       rxh = rsx + fx * 1.5; ryh = rsy + 5 + fy * 1.5;

@@ -3,8 +3,10 @@
 //
 // The half hour before the audit is the level: everyone's routine opens and closes windows.
 //   3:06-3:14  the boss smokes in the lobby. Lin sees into his office through the glass.
-//   3:10-3:20  Kev goes to lunch. He packs his laptop, sets it down on your desk to wave, and leaves without it;
-//              back, he finds it there (💻🤦: silly him) and takes it home. Every loop: he's like that.
+//   3:08-3:20  Kev goes to lunch. He packs his laptop and stops at the end of your desk: his wallet? (💳❓) He sets
+//              the laptop down to pat his pockets with both hands, finds the wallet (😌), thinks of lunch (🍔) and
+//              wanders off without the laptop; back, he finds it there (💻🤦: silly him) and takes it home. Every
+//              loop: he's like that.
 //   3:11-3:22  Lin is in the restroom. Her desk is ticked second: an empty desk is a ❌.
 //   Back at their desks, the boss and Lin miss a laptop that's gone (💻❓). The boss looks for his along the hallway
 //   till 3:22; seen on your desk (😠👀), he walks over, takes it (😠💻) and carries it home (index.js HUNTS,
@@ -26,6 +28,11 @@ export const START = 15 * 60; // 3:00 PM
 const at = (time) => atClock(time, START);
 const s = (time, entry) => ({ at: at(time), ...entry });
 export const KEV_GO = at('3:42.4'); // coffee done: back to his desk (index.js clockFor keeps him in step with the pen)
+// His wallet stop at the end of your desk, in seconds (kevWallet, kevLeavesIt, kevFindsIt; presentation.js POSES): a
+// thought, both hands patting his pockets, the wallet held up. He walks off at about 3:11.7, the laptop left behind.
+export const KEV_WONDER = 1.0;
+export const KEV_PAT = 1.5;
+export const KEV_FOUND = 1.3;
 
 export const CAST = [
   {
@@ -84,7 +91,8 @@ export const CAST = [
     coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
-      s('3:10', { do: 'away', spot: 'elevator', prelude: ['kevPacks', 'kevLeavesIt'] }), // lunch: forgets his laptop
+      // Lunch: off with his laptop, a stop at your desk for his wallet, and off without the laptop (KEV_WONDER...).
+      s('3:07.7', { do: 'away', spot: 'elevator', prelude: ['kevPacks', 'kevWallet', 'kevLeavesIt', 'kevFindsIt'] }),
       s('3:16', { do: 'sit', spot: 'kev_desk', prelude: 'kevStops', arrive: 'kevSits' }), // via your desk
       s('3:24', { do: 'visit', spot: 'kitchen', anim: 'coffee' }), // a coffee in the kitchen; his laptop stays home
       // Back when the auditor's phone rings: his desk, his laptop not on it (💻❓), then yours for it if it's there.
@@ -178,7 +186,7 @@ export const BEHAVIOURS = {
   },
   linCheck: deskCheck('laptop_lin', 'lin_desk', false),
 
-  // Kev's lunch: his laptop off his desk into his hands, then down on yours while he waves, and off he goes.
+  // Kev's lunch: his laptop off his desk into his hands, then down on yours while he digs for his wallet.
   kevPacks: {
     spot: 'kev_desk',
     state: { _packed: false },
@@ -194,8 +202,21 @@ export const BEHAVIOURS = {
       game.events.emit('kev:packed', {});
     },
   },
+  // At the end of your desk: lunch money? (💳❓). He needs both hands for his pockets, so the laptop goes down on
+  // your desk; he pats his hoodie (presentation.js POSES, npc._patAt), digs out his wallet (😌), thinks of lunch (🍔)
+  // and wanders off happy, hands empty, the laptop forgotten. Back at 3:19.9 the facepalm pays it off (stopBy).
+  kevWallet: {
+    spot: 'kev_pockets',
+    state: { _wondered: false },
+    pending: (npc) => !npc._wondered,
+    arrive(game, npc, sim) {
+      npc._wondered = true;
+      sim.speak(game, npc, [{ say: ['💳', '❓'], kind: 'thought', ttl: KEV_WONDER + KEV_PAT - 0.1 }]); // on through the pat
+      sim.holdFor(npc, KEV_WONDER);
+    },
+  },
   kevLeavesIt: {
-    spot: 'hallway_mid',
+    spot: 'kev_pockets',
     state: { _left: false },
     pending: (npc) => !npc._left,
     arrive(game, npc, sim) {
@@ -207,7 +228,19 @@ export const BEHAVIOURS = {
         w.laptop_kev = 'your_desk';
         game.events.emit('kev:forgot', {});
       }
-      sim.speak(game, npc, [{ say: ['👋'] }]);
+      npc._patAt = game.clock.minute; // both hands at his pockets
+      sim.holdFor(npc, KEV_PAT);
+    },
+  },
+  kevFindsIt: {
+    spot: 'kev_pockets',
+    state: { _found: false },
+    pending: (npc) => !npc._found,
+    arrive(game, npc, sim) {
+      npc._found = true;
+      npc._walletAt = game.clock.minute; // his wallet held up: there it is
+      sim.speak(game, npc, [{ say: ['😌'], ttl: 0.9 }, { say: ['🍔'], kind: 'thought', ttl: 1.4, after: 0.9 }]);
+      sim.holdFor(npc, KEV_FOUND);
     },
   },
   kevStops: stopBy('_lunch', true),

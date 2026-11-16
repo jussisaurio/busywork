@@ -20,6 +20,7 @@ export const SPOTS = {
   office_door: { x: 6, y: 7, face: 'N' }, // outside the boss's door
   hallway_west: { x: 5, y: 7, face: 'S' }, // beside where he stands to tick Lin's desk
   hallway_mid: { x: 15, y: 8, face: 'W' }, // the east end of your desk, from the hallway side
+  kev_pockets: { x: 15, y: 8, face: 'S' }, // the same, turned to the room: Kev hunting his pockets (cast.js kevWallet)
   door_in: { x: 4, y: 12, face: 'S' },
   restroom: { x: 25, y: 12, face: 'S' },
   smoke: { x: 7, y: 15, face: 'W' }, // the lobby: the boss smokes by the ashtray, side-on to the glass, facing the lift

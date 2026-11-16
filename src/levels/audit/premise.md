@@ -58,9 +58,13 @@ Lin goes to the restroom at 3:11 and is back at her desk at 3:22. If her laptop 
 (laptop, question mark) and stays at her desk: the auditor is due, and he is out of the lift three minutes later. At
 3:35 she goes for a coffee in the kitchen and stays at the pot through the sign-off.
 
-Kev goes to lunch at 3:10, every loop. He packs his laptop, stops at the end of your desk, puts it down to wave
-goodbye (a wave), and goes to the lift without it. Back at 3:19.9, he finds it on your desk and slaps his forehead
-(laptop, facepalm): silly him. He carries it home to his desk. If it is not there (you took it), he wonders where he
+Kev goes to lunch at 3:07.7, every loop. He packs his laptop under his arm and walks off, then stops at the end of
+your desk (3:09.4), turned to the room: where's his wallet? (a thought: a bank card, a question mark). He needs both
+hands for his pockets, so he sets the laptop down on the end of your desk (3:10) and pats his hoodie with both hands.
+He digs out his wallet and holds it up, relieved (3:10.9), thinks of lunch (a thought: a burger) and wanders off to
+the lift, hands empty, the laptop forgotten on your desk (3:11.7). Each step is on screen, so the player sees why the
+laptop is there: he put it down for a reason and forgot it, not to give it to you. Back at 3:19.9, he finds it on
+your desk and slaps his forehead (laptop, facepalm): silly him, the payoff of the forgetting. He carries it home to his desk. If it is not there (you took it), he wonders where he
 left it. At 3:24 he has a coffee in the kitchen, in view; his laptop stays on his desk. At 3:42.4 he finishes it and
 walks back to his desk. If his laptop is not on it, he wonders where it went (laptop, question mark, 3:44) and looks
 over at your desk. If it is there, he strolls over, not hiding anything: he is fetching his own laptop. The auditor
@@ -95,8 +99,8 @@ Each route ends the same way: a borrowed laptop is on your desk when he ticks it
 are at your desk when he comes to sign off at 3:59.9.
 
 Facts that all three routes need:
-- **Laptops can be unplugged, carried and put on your desk.** Seen at 3:11.7 every loop: Kev puts his down on your
-  desk, and it lights up as something you can take. Holding one beside your desk lights up the place to put it.
+- **Laptops can be unplugged, carried and put on your desk.** Seen at 3:10 every loop: Kev puts his down on your
+  desk to dig for his wallet, and it lights up as something you can take. Holding one beside your desk lights up the place to put it.
 - **He ticks the desks one by one, in order, and judges each one when he gets there.** Seen in the first loop,
   3:30-3:45: the boss's desk gets a laptop-and-tick sign at 3:32.8, Lin's at 3:36.3, and your empty desk gets the
   laptop-and-cross sign at 3:44.9. Each sign goes up the moment he arrives at that desk, and each desk keeps its
@@ -152,7 +156,7 @@ In a real office: Kev leaves his laptop on your desk every day, so finding it th
 picks it up openly and blames himself. The auditor, glaring at a pen that will not write, does not look up at a
 colleague fetching his own laptop from a desk already ticked.
 
-- **Kev leaves his laptop on your desk and comes back for it.** Seen every loop at 3:11.7 and 3:19.9.
+- **Kev leaves his laptop on your desk and comes back for it.** Seen every loop at 3:10-3:11.7 (down for his wallet, forgotten) and 3:19.9.
 - **Kev has his coffee in the kitchen, then goes back to his desk.** Seen in the first loop from 3:24 to 3:44.
 - **The pen from the pot is dry too, and he stands head down over it at your desk.** Seen every loop at
   3:45.2-3:47.3: the fuming pen thought, the shaking and scribbling, his view cone shrunk to the clipboard.

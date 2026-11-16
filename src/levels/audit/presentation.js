@@ -3,7 +3,9 @@
 // read-only; the auditor is new.
 import { C } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
-import { DESK_MARKS, penShake, penScribble } from './things.js';
+import { GAME_MIN_PER_SEC } from '../../config.js';
+import { DESK_MARKS, penShake, penScribble, wallet } from './things.js';
+import { KEV_PAT, KEV_FOUND } from './cast.js';
 
 // The card names the trouble, the time first, and never the way out.
 export const TITLE = {
@@ -56,7 +58,7 @@ export const DECOR = {
     { zone: 'lobby', x: 4, y: 14 },
   ],
   legendAt: { x: 20, y: 15.5 },
-  things: { penShake, penScribble }, // his dry pen at Lin's desk and yours (POSES)
+  things: { penShake, penScribble, wallet }, // his dry pen at Lin's desk and yours, Kev's wallet (POSES)
 };
 
 export const LOOKS = {
@@ -101,10 +103,17 @@ export function headDown(n) {
   return f && f.into < f.beats[f.beats.length - 1][0] ? n._insp.i : 0;
 }
 
+// Game minutes since a stamp npc._...At (Infinity if never).
+const since = (game, at) => (at === undefined ? Infinity : game.clock.minute - at);
+
 export const POSES = {
   arms: [
     // A coffee, standing: the auditor before 3:30, Kev and Lin in the kitchen.
     { when: (n) => !n.override && n.anim === 'coffee' && !n.moving, arms: 'carry', item: '#cup' },
+    // Kev at the end of your desk before lunch (cast.js kevLeavesIt, kevFindsIt): the laptop down, both hands patting
+    // his pockets; then his wallet held up, found.
+    { when: (n, w, game) => n.id === 'kev' && since(game, n._patAt) < KEV_PAT * GAME_MIN_PER_SEC, arms: 'pat' },
+    { when: (n, w, game) => n.id === 'kev' && since(game, n._walletAt) < KEV_FOUND * GAME_MIN_PER_SEC, arms: 'reach', item: '#wallet' },
     // Kev, his laptop on your desk again: silly him (cast.js stopBy).
     { when: (n, w, game) => n.id === 'kev' && n._palmAt !== undefined && game.clock.minute - n._palmAt < 0.6, arms: 'facepalm' },
     { when: (n) => n.id === 'auditor' && n._reaching, arms: 'reach' }, // a pen out of the pot (index.js errands)

@@ -298,6 +298,30 @@ function pen(ctx, x, y, a) {
   ctx.fill();
   ctx.restore();
 }
+// Kev's wallet, held up: there it is (presentation.js POSES, cast.js kevFindsIt). A brown leather fold, its stitching,
+// a bank card peeking out of the top.
+export function wallet(ctx, x, y, size) {
+  box(ctx, x, y, size);
+  ctx.rotate(-0.15);
+  ctx.fillStyle = '#3f7fc4'; // the card
+  rrect(ctx, -3.4, -6.4, 6.2, 4.2, 0.8);
+  ctx.fill();
+  ctx.fillStyle = '#d9b44a';
+  ctx.fillRect(-2.4, -5.4, 1.6, 1.2);
+  ctx.fillStyle = '#5a3a22'; // the leather
+  rrect(ctx, -6, -3.4, 12, 8.4, 1.6);
+  ctx.fill();
+  ctx.fillStyle = '#7a5032';
+  rrect(ctx, -6, -3.4, 12, 3.2, 1.4);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(240,220,180,0.55)';
+  ctx.lineWidth = 0.6;
+  ctx.setLineDash([1, 1]);
+  rrect(ctx, -5, -2.4, 10, 6.4, 1);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
 export function penShake(ctx, x, y, size, t) {
   box(ctx, x, y, size);
   heldClipboard(ctx);
