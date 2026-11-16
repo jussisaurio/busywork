@@ -42,7 +42,9 @@ export default {
     : o.result === 'blamed' ? `BLAMED 🪑👉 (Lin missed it, via ${o.routes.join(' + ')}, but you weren't at your desk)`
     : 'FAIL: Lin took her interview call 📞😊'),
 
-  playerText: () => [],
+  playerText: (game) => (game.world.youOn ? [`on ${PHONE[game.world.youOn]}: ${
+    game.world.tookJob === 'player' && game.world.youOn === 'lin' ? 'her interviewer asking for Lin 💼❓'
+    : game.world.youOn === 'kitchen' ? '"please hold for HR" 🎵' : 'Gary asking for the boss ⛳'}`] : []),
 
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),
 

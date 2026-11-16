@@ -17,8 +17,20 @@
 //                                         else the nearest free NPC: 💼❓ 🤷, hangs up   'other'  route 'answered'
 //   nobody answers by RING_OUT minutes    'rangOut'                                       route 'ringout'
 // A ring of yours on Lin's phone is let finish before the call.
+//
+// You can answer any ringing phone yourself (answer_<p>; the call is the action, LISTEN s, the receiver at your
+// ear): what's on the line is what anyone gets. Gary asks you for the boss (⛳ @boss), head office's queue puts you
+// on hold (💼 ⏳); whoever was on his way to it stops (@you, 🤷). On Lin's phone at 3:30 the interviewer asks you
+// for Lin (💼 @lin ❓): you 🤷 and hang up, and they move on ('other', route 'answered', as when the boss takes it).
+// Only if Lin is the one already reaching for it does she snatch it out of your hand (😠): it's her call.
+//
+// Lin checking her line (linCheck, the receiver at her ear): ring her now and it goes off in her ear: she jumps
+// (😖), and then answers it like any ring at her desk. Pull her plug now and the tone dies in her ear (❓).
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { spotPos, inZone } from '../../game/perception.js';
+import { say } from '../../core/fx.js';
+import { endOverride } from '../../sim/override.js';
+import { cancelAction } from '../../play/interactions.js';
 
 export const START = 15 * 60; // 3:00 PM
 export const RING_RADIUS = 6; // tiles, straight line: earshot of a ring
@@ -27,7 +39,7 @@ export const JOB_EVERY = 1.1; // the interview's
 const RING_FOR = 1.5; // game minutes a ring nobody hears goes on
 const RING_OUT = 2; // game minutes the interviewer lets it ring
 const CHECK_EVERY = 2.6; // game minutes between Lin's checks of her line, before her tea
-const CHECK_FOR = 0.8; // game minutes she holds the receiver to her ear
+const CHECK_FOR = 1.0; // game minutes she holds the receiver to her ear (long enough to reach the board from your desk)
 const LAUGH_EVERY = 1.6; // game minutes between the boss's laughs on the phone with Gary
 const ARM = 2.5; // tiles: within this, someone notices you at the socket whatever way they face
 const GLANCE_EVERY = 1.7; // game minutes between her glances at the clock after her tea, rehearsing
@@ -35,6 +47,9 @@ export const BACK_AT = at('3:21', START); // from here on Lin is back from her t
 export const NOTES_AFTER = 0.6; // game minutes from picking up to the hold tune
 export const TUNE_ENDS = 0.9; // hold progress where the tune stops; he hangs up when it reaches 1
 export const SLAM = 0.68; // Lin on her own phone: the hold progress where she slams it down (😠)
+export const LISTEN = 2.4; // real s you stay on a line you answered (answer_<p>)
+const MID = 0.75; // game minutes into your call: your face at what's on it
+const JOLT = 0.7; // game minutes Lin is startled by a ring in her ear before she answers it
 
 // tile: the map letter the phone is drawn on; at: the spot its noise comes from (heads turn to it); bell: where the
 // phone itself is (tiles): earshot and the rings; lamp: its colour on the switchboard, its handset and its rings.
@@ -60,7 +75,7 @@ export function initialPhones() {
     jobBy: null, // who is going to answer it
     cord: 'in', // Lin's phone cord: 'in' | 'out'
     linCheck: 0, // Lin holds her receiver to her ear until this minute
-    checkAt: 0.6, // her next check (the clock's minutes count from 3:00)
+    checkAt: 0.9, // her next check (the clock's minutes count from 3:00)
     glanceAt: 0, // her next glance at the clock, rehearsing
     linFix: false, // she found her line dead: she is going to push the plug back in
     kevAt: 0, // Kev crouched at the socket at this minute (cast.js plugIn)
@@ -77,6 +92,11 @@ export function initialPhones() {
     bossRise: false, // the boss half-rises at Lin's phone ringing (LURES)
     laughAt: 0, // the boss's next laugh on the phone with Gary
     roseFor: -1, // ... once per ring: the ring's ringAt_lin
+    youOn: null, // the phone you are on (you answered it), or null
+    youAt: 0, // ... since this minute
+    youMid: false, // ... your face at what's on it shown
+    tookJob: null, // who took Lin's interview call when it wasn't Lin: an npc id or 'player'
+    jolt: 0, // Lin, checking her line, got a ring in her ear: startled until this minute
   };
   for (const p of PHONE_IDS) {
     w[`ring_${p}`] = null; // null | 'you' (your ring) | 'job' (the interview)
@@ -110,9 +130,31 @@ export function phoneTick(game, sim) {
     return best;
   };
 
+  // You on a phone: picked up as your hand reaches it, hung up when the action ends (or you walk off).
+  const act = game.player?.action;
+  const answering = act && /^answer_/.test(act.type) ? act.type.slice(7) : null;
+  if (w.youOn && answering !== w.youOn) hangUp(game, w.youOn);
+  if (answering && w.youOn !== answering && w[`ring_${answering}`]) pickUp(game, sim, answering, byId);
+  if (w.youOn && !w.youMid && m - w.youAt >= MID) {
+    w.youMid = true;
+    if (w.youOn === 'lin' && w.tookJob === 'player') say(game, 'player', ['@lin', '🪑'], { ttl: 1.3 }); // she's not at her desk
+    else say(game, 'player', ['😑'], { kind: 'thought', ttl: 1.3 }); // Gary talks golf at you; HR's tune plays on
+  }
+
+  // Lin checking her line gets your ring in her ear: she jumps, the receiver flies off her ear, then she answers.
+  if (byId('lin') && w.linCheck && w.ring_lin === 'you') {
+    const l = byId('lin');
+    w.linCheck = 0;
+    w.jolt = m + JOLT;
+    sim.holdFor(l, JOLT / GAME_MIN_PER_SEC);
+    sim.speak(game, l, [{ say: ['😖'], ttl: 1.1 }]);
+    game.events.emit('lin:jolted', {});
+  }
+
   // Your rings.
   for (const p of PHONE_IDS) {
     if (w[`ring_${p}`] !== 'you' || w[`call_${p}`]) continue;
+    if (p === 'lin' && m < w.jolt) continue; // she gets over the fright first
     const n = pick(p, PHONES[p].owner);
     if (n) {
       w[`call_${p}`] = n.id;
@@ -188,7 +230,6 @@ export function phoneTick(game, sim) {
 
   // Someone at arm's length notices you crouch at the socket, whatever way they faced: Lin or Kev within ARM of you
   // while you pull the cord turns to look at it, and the engine's witness rules take it from there (told on).
-  const act = game.player?.action;
   if (act && act.type === 'unplug') {
     for (const id of ['lin', 'kev']) {
       const n = byId(id);
@@ -291,8 +332,8 @@ export function phoneTick(game, sim) {
 
 // --- The switchboard and the cord ------------------------------------------------------------------
 const WHOSE = { lin: "Lin's phone", boss: "the boss's phone", kev: "Kev's phone", kitchen: 'the kitchen phone' };
-export const ringable = (w, p) => !w[`ring_${p}`] && !w[`call_${p}`] && !w[`line_${p}`]
-  && (p !== 'lin' || (w.cord === 'in' && !w.linCheck));
+export const ringable = (w, p) => !w[`ring_${p}`] && !w[`call_${p}`] && !w[`line_${p}`] && w.youOn !== p
+  && (p !== 'lin' || w.cord === 'in');
 // Working the old switchboard is nothing to see; only Lin minds you putting a call through to her own line (and
 // only she knows to: she is keeping it free).
 const ring = (p) => ({
@@ -308,6 +349,56 @@ const ring = (p) => ({
   },
 });
 
+// Answering a ringing phone yourself: the receiver at your ear for LISTEN s (picked up and hung up by the phone
+// tick, which sees the action start and end).
+const answer = (p) => ({
+  on: `phone_${p}`, text: `answer ${WHOSE[p]}`, duration: LISTEN, pose: 'phone', held: `#handset_${p}`,
+  can: (pl, w) => w.youOn === p || (!w.youOn && !!w[`ring_${p}`]),
+  done() {},
+});
+
+// You pick up phone p (ringing). Whoever was on his way to it stops.
+function pickUp(game, sim, p, byId) {
+  const w = game.world;
+  if (w[`ring_${p}`] === 'job') {
+    const by = w.jobBy && byId(w.jobBy);
+    if (w.jobBy === 'lin') { // she was already reaching for it: she snatches it out of your hand
+      cancelAction(game, 'snatched');
+      if (by) sim.speak(game, by, [{ say: ['@player', '😠'], ttl: 1.2 }]);
+      say(game, 'player', ['😳'], { kind: 'thought', ttl: 1.2 });
+      game.events.emit('job:snatched', {});
+      return;
+    }
+    if (by && by.override === 'to_job') {
+      endOverride(by);
+      sim.speak(game, by, [{ say: ['@player', '#handset_lin'], ttl: 1.2 }, { say: ['👍'], after: 1.3, ttl: 1 }]);
+    }
+    Object.assign(w, { jobBy: null, ring_lin: null, interview: 'other', tookJob: 'player' });
+    game.events.emit('interview:other', { by: 'player' });
+    say(game, 'player', ['💼', '@lin', '❓'], { ttl: 1.3 }); // they ask you for Lin
+  } else {
+    const by = w[`call_${p}`] && byId(w[`call_${p}`]);
+    if (by && by.override === `to_${p}_phone`) {
+      endOverride(by);
+      sim.speak(game, by, [{ say: ['@player', `#handset_${p}`], ttl: 1.2 }, { say: ['🤷'], after: 1.3, ttl: 1 }]);
+    }
+    w[`call_${p}`] = null;
+    w[`ring_${p}`] = null;
+    say(game, 'player', CALLER[p] === 'hr' ? ['💼', '⏳'] : ['⛳', '@boss'], { ttl: 1.3 });
+  }
+  w.youOn = p;
+  w.youAt = game.clock.minute;
+  w.youMid = false;
+  game.events.emit('player:answers', { phone: p });
+}
+
+function hangUp(game, p) {
+  const w = game.world;
+  w.youOn = null;
+  say(game, 'player', ['🤷'], { ttl: 1.0 });
+  game.events.emit('player:hungUp', { phone: p });
+}
+
 export const INTERACTIONS = {
   ring_lin: ring('lin'),
   ring_boss: ring('boss'),
@@ -315,12 +406,14 @@ export const INTERACTIONS = {
   ring_kitchen: ring('kitchen'),
   unplug: {
     on: 'lin_socket', text: "pull Lin's phone cord out of the wall", duration: 2.5, sneaky: true, saw: '🔌',
-    can: (pl, w) => w.cord === 'in' && !w.ring_lin && !w.call_lin && !w.line_lin && !w.linCheck,
+    can: (pl, w) => w.cord === 'in' && !w.ring_lin && !w.call_lin && !w.line_lin,
     done(game) {
       game.world.cord = 'out';
       game.events.emit('cord:out', {});
+      if (game.world.linCheck) say(game, 'lin', ['❓'], { ttl: 1.2 }); // the tone dies in her ear
     },
   },
+  ...Object.fromEntries(PHONE_IDS.map((p) => [`answer_${p}`, answer(p)])),
 };
 
 // Every ring is a noise at the phone itself (its bell): heads in earshot turn, the bell sounds, and the engine's

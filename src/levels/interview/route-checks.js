@@ -139,6 +139,64 @@ export default [
       must(saw(log, 'interview:rangOut'), 'it did not ring out');
     },
   },
+  // Answering phones yourself: whatever is on the line is what anyone gets.
+  {
+    name: "answered, by you: set up the ring-out, then take Lin's 3:30 call yourself → 💼@lin❓, you 🤷 → win",
+    expect: { result: 'win', routes: ['answered'] },
+    play({ run, log, g }) {
+      run('pretend until 3:18');
+      go(run, 'ring_kev');
+      run('interact');
+      go(run, 'ring_kitchen');
+      run('interact');
+      run('pretend until 3:25');
+      go(run, 'ring_boss');
+      run('interact');
+      go(run, 'phone_lin');
+      run('wait until 3:30');
+      run('wait 0.5s');
+      run('interact');
+      backToDesk(run);
+      toTheEnd(run, g);
+      must(log.some((e) => e.name === 'interview:other' && e.payload.by === 'player'), 'you did not take the call');
+      must(g.outcome?.why === 'you', 'the end card does not show you at her phone');
+    },
+  },
+  {
+    name: "answered, by you, first: Lin on hold in the kitchen, you at her phone at 3:30 → you beat the boss to it, he stops (@you 👍) → win",
+    expect: { result: 'win', routes: ['answered'] },
+    play({ run, log, g }) {
+      run('pretend until 3:18');
+      go(run, 'ring_kev');
+      run('interact');
+      go(run, 'ring_kitchen');
+      run('interact');
+      backToDesk(run);
+      run('pretend until 3:28');
+      go(run, 'phone_lin');
+      run('pretend until 3:30');
+      run('wait 0.3s');
+      run('interact');
+      backToDesk(run);
+      toTheEnd(run, g);
+      must(log.some((e) => e.name === 'job:answering' && e.payload.by === 'boss'), 'the boss never set off for it');
+      must(log.some((e) => e.name === 'interview:other' && e.payload.by === 'player'), 'you did not take the call');
+    },
+  },
+  {
+    name: "ring Lin's phone while she listens to her receiver → it goes off in her ear (😖), she answers and hangs up on Gary → fail",
+    expect: { result: 'fail' },
+    play({ run, log, g }) {
+      go(run, 'ring_lin');
+      while (!g.world.linCheck && g.clock.minute < 4) run('wait 0.2s');
+      run('interact');
+      backToDesk(run);
+      toTheEnd(run, g);
+      must(saw(log, 'lin:jolted'), 'Lin did not jump');
+      must(rang(log, 'lin', 'lin'), 'Lin did not answer her phone');
+      must(saw(log, 'interview:lin'), 'Lin never took her call');
+    },
+  },
   {
     name: 'ringout, teaching fail: ring only the boss → Lin is back at her desk and takes her call → fail',
     expect: { result: 'fail' },

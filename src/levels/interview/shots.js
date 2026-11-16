@@ -9,6 +9,7 @@ const BOSS = ['pretend until 3:14', 'goto ring_boss', 'interact']; // the boss's
 const UNPLUG = [...BOSS, 'goto lin_socket', 'interact'];
 const RINGOUT = [...ANSWERED, 'pretend until 3:25', 'goto ring_boss', 'interact'];
 const CALL = ['pretend until 3:30', 'wait 0.2s']; // to the 3:30 call (it stops one of the two)
+const YOURS = [...RINGOUT, 'goto phone_lin', 'wait until 3:30', 'wait 0.5s', 'interact']; // take her call yourself
 
 export default [
   {
@@ -72,6 +73,11 @@ export default [
     intent: "You rang Lin's phone while she sits at it: she picked up, Gary asked for the boss (golf flag, the boss's face), and she has just slammed the receiver down: it rattles on the cradle and she is angry.",
   },
   {
+    name: 'lin-jolted',
+    cmds: ['goto ring_lin', 'interact', 'wait 0.3s'],
+    intent: "3:01: Lin, at her desk with her teal receiver to her ear checking her line, has jumped out of her skin: arms flung up, a 😖 over her head, red rings bursting off her phone: you rang it from the switchboard while she was listening, and it went off in her ear.",
+  },
+  {
     name: 'boss-on-lins-phone',
     cmds: [...BUSY, 'wait 3.05s'],
     intent: "Lin is at her tea and her teal phone rings on her empty desk (a teal burst on it and teal rings spreading out, its handset hopping), so the boss comes out of his office door to answer it (Lin's teal handset, !).",
@@ -102,9 +108,19 @@ export default [
     intent: "3:30: Lin's empty desk phone rings red; Lin is on hold for HR at the kitchen phone (white notes); the boss, on the phone with Gary at his window with his back to the room (white talk marks), holds up a hand at the ring (bell, hand: not now) and talks on; Kev sits at his desk across the office, far off: nobody comes.",
   },
   {
+    name: 'you-take-her-call',
+    cmds: [...YOURS, 'wait 0.4s'],
+    intent: "3:30: you stand at Lin's empty desk having just put her teal handset back on its cradle and shrug (🤷): you answered her interview, the interviewer asked for Lin (briefcase, Lin's face, ?), and you hung up on him; Lin on hold at the kitchen phone, the boss on the phone at his window, back turned.",
+  },
+  {
     name: 'end-answered',
     cmds: [...ANSWERED, ...SEAT, ...END],
     intent: "Win: at Lin's desk (her chair, plant, mug and nameplate) the boss holds her teal handset, puzzled (briefcase, ?); Lin comes back empty-handed from the kitchen, too late, cross; you smug.",
+  },
+  {
+    name: 'end-answered-you',
+    cmds: [...YOURS, ...SEAT, ...END],
+    intent: "Win: at Lin's desk (her chair, plant, mug and nameplate) you hold her teal handset, smug, shrugging (🤷); Lin comes back from the kitchen, too late, cross.",
   },
   {
     name: 'end-busy',

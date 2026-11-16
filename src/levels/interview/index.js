@@ -45,10 +45,10 @@ const MAP = [
 
 const jack = (phone) => ({ kind: 'switchboard', solid: true, opaque: false, draw: 'floor', interactable: `ring_${phone}` });
 const LEGEND = {
-  W: { kind: 'wall_phone', solid: true, opaque: true, draw: 'wall' },
-  B: { kind: 'desk', solid: true, opaque: false, draw: 'desk' },
-  L: { kind: 'desk', solid: true, opaque: false, draw: 'desk' },
-  V: { kind: 'desk', solid: true, opaque: false, draw: 'desk' },
+  W: { kind: 'wall_phone', solid: true, opaque: true, draw: 'wall', interactable: 'phone_kitchen' },
+  B: { kind: 'desk', solid: true, opaque: false, draw: 'desk', interactable: 'phone_boss' },
+  L: { kind: 'desk', solid: true, opaque: false, draw: 'desk', interactable: 'phone_lin' },
+  V: { kind: 'desk', solid: true, opaque: false, draw: 'desk', interactable: 'phone_kev' },
   O: { kind: 'socket', solid: true, opaque: true, draw: 'wall', interactable: 'lin_socket' },
   5: { kind: 'switchboard', solid: true, opaque: false, draw: 'floor' },
   1: jack('lin'),
@@ -117,7 +117,11 @@ export default {
   hunts: [],
   doors: [],
   behaviours: BEHAVIOURS,
-  meeting: { override: 'interview', room: 'my_desk', chair: 'player_desk', presenter: 'player_desk' },
+  meeting: {
+    override: 'interview', room: 'my_desk', chair: 'player_desk', presenter: 'player_desk',
+    // You took Lin's interview call yourself: the end card shows you at her phone, not the boss.
+    verdict: (game, { routes }) => (game.world.tookJob === 'player' && routes[0] === 'answered' ? { why: 'you' } : null),
+  },
   routes: [
     { id: 'answered', icon: '🤷', achieved: (w) => w.interview === 'other' || (w.interview === 'ringing' && !!w.jobBy && w.jobBy !== 'lin') },
     { id: 'busy', icon: '⛳', achieved: (w) => w.interview === 'busy' },

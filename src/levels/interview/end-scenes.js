@@ -312,7 +312,9 @@ function smugYou(ctx, game, t, x, y) {
 
 // answered: the boss took Lin's ringing phone at her desk and is puzzled by the interviewer asking for her. Lin,
 // back from a long wait at the kitchen phone (hung up behind her), comes in empty-handed and cross, too late.
-function answered(ctx, game, t, e) {
+// You took it yourself (phones.js pickUp: outcome.why 'you'): you behind her desk with her receiver, shrugging at
+// the interviewer, smug, and no boss in it.
+function answered(ctx, game, t, e, you = false) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_Y - TAB.y);
   kitchenSide(ctx, 590);
@@ -323,12 +325,15 @@ function answered(ctx, game, t, e) {
   b.arms = 'phone';
   b.head = Math.PI / 2 + Math.sin(t * 1.8) * 0.2;
   b.scale = 2.3;
-  drawPerson(ctx, looks(game).boss, b, 316, 252);
+  if (you) b.smug = true;
+  const who = you ? looks(game).player : looks(game).boss;
+  drawPerson(ctx, who, b, 316, 252);
   desk(ctx, 330, 246, 230);
   linsThings(ctx, 246, t, 2, { px: 236, nx: 418 });
   phone(ctx, 370, 244, 2.1, PHONES.lin.lamp, t, { lifted: true });
-  heldHandset(ctx, looks(game).boss, b, 316, 252, PHONES.lin.lamp, 356, 252);
+  heldHandset(ctx, who, b, 316, 252, PHONES.lin.lamp, 356, 252);
   bubble(ctx, ['💼', '@lin', '❓'], 316, 160, e);
+  if (you) bubble(ctx, ['🤷'], 230, 200, e - 0.6, 'thought');
   // the kitchen phone back on its hook; Lin walking in from it, empty-handed
   kitchenPhone(ctx, 700, 150, 2.2, false);
   const l = person(t);
@@ -340,7 +345,7 @@ function answered(ctx, game, t, e) {
   l.angry = true;
   l.scale = 2.3;
   drawPerson(ctx, looks(game).lin, l, 650 - enter(e, 0.2) * 14, 268);
-  smugYou(ctx, game, t, 480, 322);
+  if (!you) smugYou(ctx, game, t, 480, 322);
 }
 
 // busy: the boss is on Lin's phone at her desk, happily on hold, and won't get off it; Lin, back for her call,
@@ -668,9 +673,14 @@ function blamed(ctx, game, t, e) {
 }
 
 export const END_SCENES = {
-  kindOf: (o) => (o?.result === 'win' ? (Array.isArray(o.routes) && o.routes[0]) || 'fail' : o?.result ?? 'fail'),
+  kindOf: (o) => {
+    if (o?.result !== 'win') return o?.result ?? 'fail';
+    const r = (Array.isArray(o.routes) && o.routes[0]) || 'fail';
+    return r === 'answered' && o.why === 'you' ? 'answeredYou' : r;
+  },
   scenes: {
     answered: { win: true, icons: ['@boss', '💼', '❓', '@lin', '😠'], draw: answered },
+    answeredYou: { win: true, icons: ['@player', '💼', '❓', '🤷', '@lin', '😠'], draw: (ctx, game, t, e) => answered(ctx, game, t, e, true) },
     busy: { win: true, icons: ['@boss', '⛳', '@lin', '😠'], draw: busy },
     unplugged: { win: true, icons: ['🔌', '@lin', '🕞', '❓'], draw: unplugged },
     ringout: { win: true, icons: ['🔔', '🪑'], draw: ringout },

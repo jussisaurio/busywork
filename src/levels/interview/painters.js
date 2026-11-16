@@ -37,8 +37,9 @@ const sinceMin = (game, minute) => (minuteOf(game) - minute) / GAME_MIN_PER_SEC;
 // Lin slams her own phone down (phones.js SLAM): back on the cradle.
 const slammed = (w) => w.line_lin === 'lin' && w.hold_lin > SLAM;
 
-// Who holds phone p's handset (an npc), or null: someone on its line, or Lin checking her own.
+// Who holds phone p's handset (an npc, or you), or null: someone on its line, or Lin checking her own.
 function holderOf(w, game, p) {
+  if (w.youOn === p && game.player) return game.player;
   if (p === 'lin' && slammed(w)) return null;
   if (w[`line_${p}`]) return npcById(game, w[`line_${p}`]);
   if (p === 'lin' && w.linCheck) return npcById(game, 'lin');
@@ -340,6 +341,11 @@ export function talkFrom(ctx, x, y, t, k = 1) {
 // The line's caller (phones.js tune_<p>), out of the handset at the holder's ear: head office's hold music on the
 // outside line (the kitchen), notes; Gary talking on the inside lines, talk.
 function holdNotes(ctx, info, at, { w, game }, t) {
+  const you = w.youOn && game.player;
+  if (you) { // you on a line you answered: HR's tune, or talk (Gary, the interviewer)
+    if (w.youOn === 'kitchen') notesFrom(ctx, you.x * T + 4, you.y * T - 22, NOTE, t, 1.35);
+    else talkFrom(ctx, you.x * T + 6, you.y * T - 18, t, 1.2);
+  }
   for (const p of PHONE_IDS) {
     if (!w[`tune_${p}`]) continue;
     const n = npcById(game, w[`line_${p}`]);
@@ -465,7 +471,8 @@ function switchboard(ctx, info, at, { w, game }, t) {
 
   const blink = Math.sin(t * 12) > -0.2;
   const minute = minuteOf(game);
-  const job = w.interview === 'ringing' || ((w.interview === 'lin' || w.interview === 'other') && !!w.line_lin);
+  const job = w.interview === 'ringing' || ((w.interview === 'lin' || w.interview === 'other') && (!!w.line_lin || w.youOn === 'lin'));
+  const yours = (p) => w.youOn === p && !(p === 'lin' && job); // on a line you answered (your own ring)
   const busyFlash = w.interview === 'busy' && minute - w.busyAt < 1.6;
   const act = game.player && game.player.action;
   const pressing = act && /^ring_/.test(act.type) ? act.type.slice(5) : null;
@@ -479,11 +486,11 @@ function switchboard(ctx, info, at, { w, game }, t) {
     else if (p === 'lin' && w.interview === 'ringing') on = blink;
     else if (p === 'lin' && job) on = true;
     else if (w[`ring_${p}`] === 'you') on = sinceMin(game, w[`ringAt_${p}`]) < 1.2 || blink; // lit at once, then blinking
-    else if (w[`line_${p}`]) on = true;
+    else if (w[`line_${p}`] || yours(p)) on = true;
     else if (p === 'lin' && w.cord === 'out') on = 'dead';
     lamp(ctx, x, LAMP_Y, colour, on);
     // jack: lit in its line's colour while your hand is at it, and while its cord is in
-    const patched = p !== 'out' && (w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`]);
+    const patched = p !== 'out' && (w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`] || yours(p));
     if (pressing === p || patched || (job && (p === 'out' || p === 'lin'))) {
       glow(ctx, x, JACK_Y, 13, colour, pressing === p ? 0.75 + 0.2 * Math.sin(t * 10) : 0.5);
     }
@@ -501,7 +508,7 @@ function switchboard(ctx, info, at, { w, game }, t) {
   for (let i = 1; i < COLS.length; i++) {
     const p = COLS[i];
     const x = colX(i);
-    const patched = w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`];
+    const patched = w[`ring_${p}`] === 'you' || !!w[`call_${p}`] || !!w[`line_${p}`] || yours(p);
     // the plug goes up into the jack as your hand does it (the action's progress), and stays
     const k = patched ? 1 : pressing === p ? clamp(act.t / act.duration, 0, 1) : 0;
     const restX = x + 7;

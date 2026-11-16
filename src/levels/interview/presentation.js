@@ -55,6 +55,7 @@ export const POSES = {
     ...PHONE_IDS.map((p) => ({ when: onLine(p), arms: 'phone', item: `#handset_${p}` })),
     { when: (n) => n.override === 'on_job', arms: 'phone', item: '#handset_lin' },
     { when: (n, w) => n.id === 'lin' && !!w.linCheck, arms: 'phone', item: '#handset_lin' },
+    { when: (n, w, game) => n.id === 'lin' && m(game) < w.jolt, arms: 'cheer' }, // a ring in her ear: she jumps
     { when: (n, w, game) => n.id === 'kev' && !n.override && !!w.kevJamAt && m(game) >= w.kevLift, arms: 'reach', item: '#plug', angry: true },
     { when: (n, w, game) => n.id === 'kev' && w.sparkAt >= w.kevAt && m(game) < w.kevJam, arms: 'bang', angry: true },
     { when: (n, w, game) => n.id === 'kev' && m(game) < w.kevReach, arms: 'reach', item: '#mobile' },
@@ -106,6 +107,7 @@ export const SOUNDS = {
     'interview:busy': { sfx: 'machineBeep', spot: 'lin_side', opts: { gain: 0.5 } },
     'interview:lin': { sfx: 'pickup', spot: 'lin_side' },
     'interview:other': { sfx: 'pickup', spot: 'lin_side' },
+    'player:answers': { sfx: 'pickup', who: 'player' },
   },
   repeats: { hold_kitchen: holdTune('kitchen') },
 };
