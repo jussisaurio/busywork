@@ -16,9 +16,10 @@
 // behind his back and he hears the stepladder right behind his chair, turns, and sets it right (suspect).
 //
 // Nobody leaves before the boss, and his coat on the rack says he is in (world.coat). At 3:13 Kev picks up his
-// laptop, sees the coat, and puts it down again (bagCheck). At their 4:50 Lin and Kev stand up and look at the rack:
-// coat there, 🧥😬, they sit down again (and glance at their clock) and try again a few seconds later. Once the coat
-// is gone and he is out of the door, they follow him out.
+// laptop, sees the coat, and puts it down again (bagCheck). Lin and Kev may doubt a clock, but they obey a coat: the
+// moment the boss takes his off the rack, whatever the time, they look at it (🧥👀), look at each other and shrug
+// (🤷: not their call), and once he is out of the door they wave and follow him out (follow). At their own 4:50 with
+// the coat still there they stand up, look at the rack (🧥😬), sit down again and try again a few seconds later.
 //
 // After each look at his own clock the boss glances at your desk: you there, [@player, ✔️]; empty, [@player, ❓],
 // and he goes looking for you (index.js hunts: office, open plan, lobby, the street); you already out of the door,
@@ -47,6 +48,8 @@ const LOOK_GAP_S = 3.0; // real s after a look before sitting down makes him loo
 const DESK_S = 0.8; // real s the boss looks over at your desk after his clock
 const SUSPECT_S = 1.2; // real s the boss stares at you in his office after his clock jumped
 const COAT_S = 1.2; // real s Lin or Kev looks at the boss's coat rack
+const SEE_S = 0.7; // real s after the boss takes his coat (his 👋) before Lin and Kev turn to it
+const SHRUG_S = 1.2; // real s Lin and Kev look at each other and shrug, the coat gone
 const RECHECK_S = 8; // real s sitting before Lin or Kev stands up to look at the rack again
 const REACH_S = 1.2; // real s the boss reaches up to set a clock right
 const BATTERY_S = 2.0; // real s the caretaker reaches up to the boss's clock at 3:00
@@ -116,7 +119,10 @@ export function clockFor(game, npc, sim) {
   st.w = game.world;
   st.lookT = Math.max(0, st.lookT - FIXED_DT);
   tickTimers(st);
-  if (npc.id !== 'boss') homeCheck(game, st);
+  if (npc.id !== 'boss') {
+    follow(game, npc, st, sim);
+    homeCheck(game, st);
+  }
   else {
     heardLadder(game, npc, st, sim);
     callOut(game, npc, st);
@@ -161,6 +167,44 @@ function callOut(game, npc, st) {
   say(game, npc.id, ['📱', '@player', '❓'], { kind: 'speech', voice: npc.voice, ttl: 1.8 });
   say(game, { x: p.x, y: p.y - 0.2 }, ['📳'], { kind: 'thought', ttl: 1.8 }); // your phone buzzes
   game.events.emit('boss:call', {});
+}
+
+// The boss takes his coat off the rack, whatever the time: Lin (or Kev) at his desk looks at it (🧥👀), then at the
+// other one, and shrugs (🤷); then it is home time for him too (he stands up, waits for the boss to be out of the
+// door, waves and goes: the schedule's 4:50 entries). Held while he is busy (a shout, say) and fired when he is free.
+const OTHER = { lin: 'kev_desk', kev: 'lin_desk' };
+function follow(game, npc, st, sim) {
+  if (st.follow || game.world.coat !== 'boss' || game.phase !== 'day') return;
+  if (!npc.active || npc._gone || npc.override || !inZone(game, 'open_plan', npc.x, npc.y)) return;
+  if (game.clock.minute + st.off >= HOME_AT) return; // his own home time came first: coatCheck has it
+  st.follow = 'look';
+  st.timers.push({
+    t: SEE_S,
+    fn: () => {
+      sim.lookAt(game, npc, 'coat', COAT_S);
+      sim.speak(game, npc, [{ say: ['🧥', '👀'], kind: 'thought', ttl: COAT_S }]);
+      game.events.emit('coat:seen', { by: npc.id, coat: false, follow: true });
+    },
+  });
+  st.timers.push({
+    t: SEE_S + COAT_S,
+    fn: () => {
+      st.follow = 'shrug';
+      sim.lookAt(game, npc, OTHER[npc.id], SHRUG_S);
+      npc._shrugUntil = game.loopTime + SHRUG_S;
+      sim.speak(game, npc, [{ say: ['🤷'], kind: 'thought', ttl: SHRUG_S }]);
+      game.events.emit('coat:shrug', { by: npc.id });
+    },
+  });
+  st.timers.push({
+    t: SEE_S + COAT_S + SHRUG_S,
+    fn: () => {
+      st.follow = 'go';
+      st.off = HOME_AT - game.clock.minute; // home time: the boss's coat says so
+      st.check = 'wait';
+      game.events.emit('coat:follow', { by: npc.id });
+    },
+  });
 }
 
 // Lin and Kev at home time, while the boss is in: 'stand' (up to look at his coat rack, coatCheck), 'looking',
@@ -439,6 +483,7 @@ export const CLOCK_BEHAVIOURS = {
       const st = npc._clk;
       const w = game.world;
       st.coat = w.coat;
+      if (st.follow) return; // he saw the coat go (follow): up, and after the boss
       sim.lookAt(game, npc, 'coat', COAT_S);
       if (w.coat === 'hook') {
         sim.speak(game, npc, [{ say: ['🧥', '😬'], kind: 'thought', ttl: COAT_S }]);

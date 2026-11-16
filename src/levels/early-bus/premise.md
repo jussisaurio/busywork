@@ -22,6 +22,9 @@ you are at the stop. The day is a time loop: when you lose, it is 3:00 again.
   reads a clock stands near it. Every time below is what the person believes.
 - **Nobody believes a clock that jumped under his nose.** Lin and Kev look at the open-plan clock all afternoon. If it
   says something different from what they saw last, they frown at it (the time, 🤨) and keep their own time.
+- **But everybody believes a coat.** Lin and Kev may doubt a clock, but they obey the boss's coat. The moment he takes
+  it off the rack, whatever the time, they look at it (🧥👀), look at each other and shrug (🤷: not their call), and
+  get up, wave (👋) and follow him out over the crossing.
 - **The boss believes the first clock he sees after lunch.** He is out at a long lunch from before 3:00, and his phone
   is flat (📱🪫), so he has not seen the time for an hour. Back at about 3:45, he fetches a coffee and walks back under
   the open-plan clock. He believes whatever it says (if it is later than he thought: the time, 😮). Then he sits at his
@@ -30,7 +33,7 @@ you are at the stop. The day is a time loop: when you lose, it is 3:00 again.
 - **He has seen his own clock tick.** Once he is at his desk, his clock cannot jump without him knowing. If it moves
   while you are in his office, he looks from the clock to you (your face, 🤨) and sets it right.
 - **Nobody leaves before the boss.** He takes his coat only when he goes home. At 3:13 Kev picks up his laptop to go,
-  looks at the coat on the rack (🧥😬) and puts the laptop down again.
+  looks at the coat on the rack (🧥😬) and puts the laptop down again. When the coat goes, so do they.
 - **He checks your desk.** After each look at his clock the boss looks out through the glass at your desk. You there:
   your face, ✔️. Your chair empty: your face, ❓, and he comes looking for you: his office, the open plan, the lobby,
   the bus stop. If you are already out of the door, he rings you first (📱, your face, ❓; your phone buzzes, 📳). If he
@@ -55,11 +58,13 @@ you are at the stop. The day is a time loop: when you lose, it is 3:00 again.
   the glass and sees the boss's stepladder through it. Anyone who climbs it gets told on.
   - She looks up at the open-plan clock at 3:12, 3:50, 4:10 and 4:25.
   - 3:20: she goes to the restroom (🚻, bottom right). She is out of sight until about 3:35.
+  - When the boss takes his coat: 🧥👀, a shrug at Kev (🤷), and she follows him home.
 - **Kev** (olive hoodie, the desk right under the open-plan clock, facing it). Anyone on that stepladder is in front of
   his eyes.
   - 3:01 to about 3:07: a coffee from the pot in the kitchen (top right). He goes again at 3:25, back at about 3:31.
   - He looks up at the open-plan clock when he sits down, and at 3:20, 3:55, 4:10 and 4:25.
   - 3:13: the laptop and the coat (see the rules).
+  - When the boss takes his coat: 🧥👀, a shrug at Lin (🤷), and he follows him home.
 - **You** (red jumper, the middle desk). You can climb the stepladder under either clock and push the clock 10 minutes
   forward. Each push takes a moment, moves the hands on 10 minutes, paints the extra time red on the face and makes
   the clock hang a little more crooked. Walking about you take a phone call ('pretend'); at your desk you type.
@@ -85,12 +90,14 @@ him, he takes his coat off the rack in the hallway, waves and goes home over the
 Lin works at the desk below the boss's glass wall. She faces it, so she sees his stepladder through the glass. She
 looks up at the open-plan clock every quarter of an hour or so. If it has jumped, she frowns and keeps her own time.
 At 3:20 she goes to the restroom and comes back at about 3:35. If she sees someone on a stepladder, she shouts and
-points. She tells the boss at once if he is in, or when he walks back in.
+points. She tells the boss at once if he is in, or when he walks back in. When the boss takes his coat, she looks at
+it, looks at Kev, shrugs, and follows him out, whatever her clock says.
 
 Kev works at the desk right under the open-plan clock, facing it. At 3:01 he goes to the kitchen for a coffee and comes
 back at about 3:07. If the clock over his desk has jumped while he was away, he frowns at it and keeps his own time. At
 3:13 he picks up his laptop to go home, sees the boss's coat on the rack, puts the laptop down and sits down again. At
 3:25 he goes for another coffee and comes back at about 3:31. Like Lin, he tells on anyone he sees on a stepladder.
+When the boss takes his coat, Kev looks at it, looks at Lin, shrugs, and follows him out.
 
 ## Things in the office
 - **The boss's wall clock**, in his office behind his chair. He keeps the time by it once he is at his desk, but only
@@ -100,8 +107,8 @@ back at about 3:07. If the clock over his desk has jumped while he was away, he 
 - **Two stepladders**, one under each clock. The caretaker leaves them there after the battery change. They are how
   you reach a clock, and anyone on one is easy to see.
 - **The coat rack and the boss's coat**, in the hallway by his office door. The coat on the rack means he is in. It
-  shows the rule (Kev at 3:13) and shows when he has gone. Because it hangs in the hallway, the boss can go home from
-  there without going back into his office.
+  shows the rule (Kev at 3:13) and shows when he has gone. Lin and Kev go home when it goes, whatever the clock says.
+  Because it hangs in the hallway, the boss can go home from there without going back into his office.
 - **The boss's flat phone.** It is why the wall clocks are all he has after lunch.
 - **The glass wall** of the boss's office. He sees your desk through it, and Lin sees his stepladder through it.
 - **The desks**: the boss's desk, yours, Lin's and Kev's. Your empty chair is what makes him look for you. The empty
@@ -130,6 +137,7 @@ Steps:
 4. Walking back with his coffee he reads the open-plan clock: half an hour later than he thought (😮); lunch ran long.
    At his desk his own clock agrees, so he believes it, and sees you at your desk (✔️). From now on he lives half an
    hour early: he takes his coat at about 4:22 and walks out through the lobby; he is over the crossing by about 4:28.
+   Lin and Kev see the coat go, shrug at each other and follow him out.
 5. Follow him out, behind him, and wait at the stop. It is close: you reach it just before 4:30.
 
 In a real office: a boss back from a long lunch with a flat phone looks at the hallway clock and then at his own. If
@@ -160,7 +168,7 @@ The facts, and when you see them:
   right (shot `boss-sets-it-right`). Stay in his office and he looks at you (shot `boss-suspects`). Be on the
   stepladder when he walks in and he catches you there (shot `end-caught`).
 - **His coat means he is in.** At 3:13 Kev looks at it and stays (shot `kev-sees-the-coat`); the boss puts it on when
-  he goes (shot `boss-takes-his-coat`).
+  he goes (shot `boss-takes-his-coat`), and Lin and Kev follow him (shot `end-clock`).
 - **+30 is enough and +20 is not.** The card gives the sums: he leaves at 4:50 by his clock and your bus goes at 4:30,
   and he needs a few minutes to walk out. With +20 he is still at his desk at 4:30.
 - **Don't go before him.** Leave your desk while he is in and he finds your chair empty, rings you and comes looking
@@ -174,11 +182,13 @@ Steps:
 
 Kev sits down, looks up and frowns (🤨): it said 3:01 a moment ago. Lin frowns at it at 3:12. They keep their own time.
 At about 3:54 the boss, back from lunch with his coffee, walks under the open-plan clock: it says 4:54, and he believes
-it (😮). He takes his coat off the rack in the hallway at about 3:56 and goes home without going back into his office,
-so he never sees his own clock. He is gone by about 4:02. Then go out to the stop.
+it (😮). He takes his coat off the rack in the hallway at about 3:55 and goes home without going back into his office,
+so he never sees his own clock. Lin and Kev look at the coat (🧥👀), look at each other and shrug (🤷), wave and follow
+him out. All three are gone by about 4:04. Then go out to the stop.
 
 In a real office: a boss back from a long lunch with a flat phone sees home time on the hallway clock with a coffee in
-his hand. His coat is right there, so he takes it and goes.
+his hand. His coat is right there, so he takes it and goes. And when the boss goes home at four, nobody asks why: they
+go too.
 
 The facts, and when you see them:
 - **Kev is away at 3:01.** You see him walk off to the kitchen and pour a coffee (shots `open-clock-close`,
@@ -189,6 +199,8 @@ The facts, and when you see them:
   `boss-reads-the-open-clock`).
 - **At 4:50 or later he goes.** He believes the clock (shot `boss-reads-home-time`) and takes his coat from the
   hallway rack (shot `boss-takes-his-coat-early`).
+- **The coat beats the clock.** Lin and Kev see him take it, look at each other and shrug (shot `lin-and-kev-shrug`),
+  and wave and follow him (shot `lin-and-kev-follow`).
 - **+60 is enough and +50 is not.** +50 shows 4:44, so he walks on to his desk, where his own clock disagrees.
 - **Don't go before him.** Go out before he has taken his coat and he catches you in the street (shot
   `end-caught-in-the-street`).
@@ -206,12 +218,13 @@ The facts, and when you see them:
   boss pointing at you from the lobby door, his coat glowing on its rack through the window (shot
   `end-caught-in-the-street`).
 - **The boss went home early, but you were not at the stop at 4:30.** The end card: you at your desk in the empty
-  office, the coat rack empty, and out of the window the bus pulls away (shot `end-blamed`).
+  office, the coat rack empty, and out of the window your bus pulls away with the boss in it, waving, Lin and Kev
+  beside him (shot `end-blamed`).
 - **Told on, or found out.** Not a loss by itself. Lin or Kev points at you, or the boss sees that his clock disagrees
   or moved. He sets the clocks right, and usually the window has closed.
 
 ## The joke
 3:54 on the open-plan route. The boss, whose rule keeps everyone at their desks, comes back from a long lunch with a
 flat phone and a fresh coffee, glances at the hallway clock, believes it, and grabs his coat off the rack in a hurry.
-Kev and Lin, who frowned at that clock an hour ago, stay at their desks and watch the man who makes the rule leave at
-four.
+Kev and Lin, who frowned at that clock an hour ago, see the coat go, look at each other, shrug, and bolt after him:
+they doubt a clock, but they obey a coat. And if you were not at the stop, all three wave at you from your bus.

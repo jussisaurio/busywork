@@ -183,7 +183,7 @@ export default [
   },
   {
     // Route 1: both clocks, so they agree. The first clock he sees after lunch says 4:24, and so does his own.
-    name: "both clocks +30 (O while Kev gets coffee, Q while Lin is in the restroom) → they agree: he takes his coat at 4:20 → follow him out → win",
+    name: "both clocks +30 (O while Kev gets coffee, Q while Lin is in the restroom) → they agree: he takes his coat at 4:20, Lin and Kev follow → follow him out → win",
     expect: { result: 'win', routes: ['clock'] },
     play(ctx) {
       const { run, log, waitFor, npc } = ctx;
@@ -198,6 +198,7 @@ export default [
       if (has(log, 'boss:mismatch') || has(log, 'boss:suspect')) throw new Error('he doubted his clock');
       need(log, 'boss:coat', 'he never took his coat');
       waitFor(() => npc('boss').y >= 14, { maxSec: 60 }); // out behind him, never in front of him
+      for (const id of ['lin', 'kev']) need(log, 'coat:follow', `${id} never followed him`, (p) => p.by === id);
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
     },
@@ -206,7 +207,7 @@ export default [
     // Route 2: the open-plan clock while Kev fetches his coffee. Kev frowns at it and keeps his own time; the boss,
     // back from lunch with his coffee, walks under it: the first clock he has seen for an hour says home time, and
     // he goes from the hallway, never seeing his own.
-    name: 'open-plan clock +60 while Kev gets coffee → Kev frowns → back from lunch the boss reads 4:54 under it → straight home → win',
+    name: 'open-plan clock +60 while Kev gets coffee → Kev frowns → back from lunch the boss reads 4:54 under it → straight home, Lin and Kev shrug and follow → win',
     expect: { result: 'win', routes: ['herd'] },
     play(ctx) {
       const { run, log, waitFor, npc } = ctx;
@@ -217,6 +218,9 @@ export default [
       need(log, 'boss:herd', 'he never read home time on the open-plan clock');
       if (log.some((e) => e.name === 'clock:look' && e.payload?.id === 'boss' && e.payload.clock === 'boss_clock')) throw new Error('he looked at his own clock');
       waitFor(() => npc('boss').y >= 14, { maxSec: 60 });
+      // Lin and Kev doubted the clock, but they obey the coat: a look at it, at each other, a shrug, and out after him.
+      for (const id of ['lin', 'kev']) need(log, 'coat:shrug', `${id} never shrugged at the coat`, (p) => p.by === id);
+      waitFor((g) => g.world.linGone && g.world.kevGone, { maxSec: 60 });
       until(ctx, 'goto bus_stop pretend', near('bus_stop'));
       finish(ctx);
     },
@@ -228,6 +232,7 @@ export default [
       push(ctx, 'open_clock', 6);
       sit(ctx);
       finish(ctx);
+      if (!ctx.g.world.linGone || !ctx.g.world.kevGone) throw new Error('Lin and Kev stayed with you');
     },
   },
   {

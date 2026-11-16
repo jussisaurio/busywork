@@ -82,8 +82,9 @@ function clockAndLadder(ctx, x, r, minute, tilt, wallH, ladderH, ahead = 0) {
   drawBigClock(ctx, x, TAB.y + r + 10, r, minute, START, tilt, ahead);
 }
 
-// An office window at (wx, TAB.y + 14), ww x wh: the street outside, the bus pulling away (empty, without you).
-function windowWithBus(ctx, t, e, wx, ww, wh) {
+// An office window at (wx, TAB.y + 14), ww x wh: the street outside, the bus pulling away (without you). bus: its
+// size; riders(bx, top, h): who waves from its windows (drawn over the dark glass, clipped to it).
+function windowWithBus(ctx, t, e, wx, ww, wh, bus = { len: 150, h: 64 }, riders = null) {
   const wy = TAB.y + 14;
   ctx.save();
   ctx.beginPath();
@@ -100,8 +101,19 @@ function windowWithBus(ctx, t, e, wx, ww, wh) {
   ctx.fillStyle = '#e7e2d6';
   ctx.fillRect(wx, wy + 98, ww, 4);
   const bx = wx + 70 - e * 18 - e * e * 1.2; // pulls away slowly, so it stays in the window for a while
-  drawBus(ctx, bx, wy + wh - 4, 150, 64, 0);
-  drawExhaust(ctx, bx + 150, wy + wh - 12, t, 5);
+  const by = wy + wh - 4;
+  drawBus(ctx, bx, by, bus.len, bus.h, 0);
+  drawExhaust(ctx, bx + bus.len, by - 8, t, 5);
+  if (riders) {
+    const top = by - bus.h;
+    const w0 = bx + bus.h * 0.82; // the passenger windows (painters.js drawBus)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(w0, top + bus.h * 0.16, bx + bus.len - bus.h * 0.1 - w0, bus.h * 0.34);
+    ctx.clip();
+    riders(w0, top, bus.h);
+    ctx.restore();
+  }
   ctx.restore();
   ctx.strokeStyle = C.glassFrame;
   ctx.lineWidth = 6;
@@ -183,15 +195,21 @@ function youOnTheBus(ctx, game, t, e, x, kerbY, len, h) {
 
 // --- the scenes -------------------------------------------------------------------------------------------------
 
-// The clock win: under his crooked clock (it says 4:50) the boss heads home with his backpack, waving; you are
-// already in the door of the bus.
+// The clock win: under his crooked clock (it says 4:50) the boss heads home with his backpack, waving, and Lin and
+// Kev hurry out on his heels with theirs; you are already in the door of the bus.
 function sceneClock(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, 260, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, 260, 104);
   clockAndLadder(ctx, 280, 30, 110, 0.4, 104, 64, game.world?.bossClock || 30);
+  const bx = walkIn(e, 230, 380, 2.4);
+  for (const [id, x, head] of [['kev', bx - 132, 0.3], ['lin', bx - 70, 0.2]]) {
+    const p = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 9 + x });
+    p.head = head;
+    backpack(ctx, x, 290, 1.9);
+    drawPerson(ctx, game.level.looks[id], p, x, 290);
+  }
   const b = figure(t, 2.3, 0, { pose: 'walk', moving: true, phase: t * 7 });
   b.head = 0.9;
-  const bx = walkIn(e, 230, 360, 2.4);
   backpack(ctx, bx, 284, 2.3);
   drawPerson(ctx, game.level.looks.boss, b, bx, 284);
   if (e > 0.6) bubble(ctx, ['👋'], bx + 6, 210, e - 0.6);
@@ -202,8 +220,8 @@ function sceneClock(ctx, game, t, e) {
 }
 
 // The herd win: under the crooked open-plan clock (the time it showed him, red where it gained) the boss, his
-// coffee mug still in his hand, heads home in his coat, 😮 at the clock; the coat rack stands empty. You are in the
-// door of the bus.
+// coffee mug still in his hand, heads home in his coat, 😮 at the clock; the coat rack stands empty, and Lin and Kev
+// follow him out with their backpacks, a shrug between them. You are in the door of the bus.
 function sceneHerd(ctx, game, t, e) {
   const W = 330;
   floorCarpet(ctx, TAB.x, TAB.y, W, TAB.h, C.officeA, C.officeB);
@@ -212,10 +230,17 @@ function sceneHerd(ctx, game, t, e) {
   clockAndLadder(ctx, 430, 26, shown, -0.45, 96, 56, game.world?.openClock || 60);
   drawCoatStand(ctx, 212, 250, 110, false);
   const dx = walkIn(e, -40, 0, 2.6);
-  const b = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 7 + 440, arms: 'carry', item: '#mug' });
-  b.head = -1.2; // in his coat, mug in hand, a look up at the clock
-  drawPerson(ctx, game.level.looks.boss, b, 440 + dx, 292);
+  const walker = (id, x, head, pack, extra) => {
+    const p = figure(t, 1.9, 0, { pose: 'walk', moving: true, phase: t * 7 + x, ...extra });
+    p.head = head;
+    if (pack) backpack(ctx, x + dx, 292, 1.9);
+    drawPerson(ctx, game.level.looks[id], p, x + dx, 292);
+  };
+  walker('lin', 262, 0.2, true);
+  walker('kev', 346, 0.3, true);
+  walker('boss', 440, -1.2, false, { arms: 'carry', item: '#mug' }); // in his coat, mug in hand, a look up at the clock
   if (e > 0.4) bubble(ctx, [faceFor(shown), '😮'], 476 + dx, 236, e - 0.4, 'realize');
+  if (e > 0.9) bubble(ctx, ['🤷'], 304 + dx, 236, e - 0.9, 'thought'); // not their call: the coat went
   street(ctx, TAB.x + W + 14, TAB.w - W - 14, 64, 286);
   glassWall(ctx, TAB.x + W);
   confetti(ctx, TAB.x + W + 20, TAB.w - W - 20, TAB.y, TAB.h, e, 20);
@@ -341,20 +366,31 @@ function sceneCaught(ctx, game, t, e) {
   bubble(ctx, ['😠'], 616, 210, e, 'alert');
 }
 
-// Blamed: it worked, the boss went home (the coat rack stands empty, his office dark), and the others with him;
-// you are still at your desk in the empty office (where the day's last frame left you), and out of the window the
-// bus pulls away.
+// Blamed: it worked, the boss went home (the coat rack stands empty), and the others with him; you are still at
+// your desk in the empty office (where the day's last frame left you), and out of the window your bus pulls away
+// with the boss in it, waving from the window, and whoever followed him out beside him.
 function sceneBlamed(ctx, game, t, e) {
+  const w = game.world || {};
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
   wall(ctx, TAB.x, TAB.w, 170);
-  windowWithBus(ctx, t, e, 470, 270, 136);
-  drawCoatStand(ctx, 250, 270, 130, false); // the empty rack
-  desk(ctx, 210, 292, 110); // an empty desk
+  const riders = ['boss', ...(w.linGone ? ['lin'] : []), ...(w.kevGone ? ['kev'] : [])];
+  let wave = null;
+  windowWithBus(ctx, t, e, 420, 340, 150, { len: 250, h: 100 }, (w0, top, h) => {
+    riders.forEach((id, i) => {
+      const x = w0 + 22 + i * 46;
+      const p = figure(t, 1.5, Math.PI / 2, id === 'boss' ? { arms: 'cheer', smug: true, jacket: true } : {});
+      p.head = Math.PI / 2 + (id === 'boss' ? Math.sin(t * 5) * 0.2 : 0);
+      drawPerson(ctx, game.level.looks[id], p, x, top + h * 0.5 + 6);
+      if (id === 'boss') wave = { x, y: top - 6 };
+    });
+  });
+  if (wave && e > 0.5) bubble(ctx, ['👋'], wave.x, wave.y, e - 0.5);
+  drawCoatStand(ctx, 230, 270, 130, false); // the empty rack
   const p = figure(t, 2.3, -Math.PI / 2 + 0.6, { pose: 'sit', arms: 'idle', sweat: true });
   p.head = -Math.PI / 2 + 1.2 + Math.sin(t * 3) * 0.2;
-  drawPerson(ctx, game.level.looks.player, p, 480, 262);
-  desk(ctx, 390, 280, 180);
-  bubble(ctx, ['😰'], 490, 182, e, 'thought');
+  drawPerson(ctx, game.level.looks.player, p, 370, 262);
+  desk(ctx, 290, 280, 170);
+  bubble(ctx, ['😰'], 380, 182, e, 'thought');
 }
 
 export const END_SCENES = {
@@ -365,8 +401,8 @@ export const END_SCENES = {
     return o?.result ?? 'fail';
   },
   scenes: {
-    clock: { win: true, icons: ['🕐', '@boss', '👋', '🚌', '@player'], draw: sceneClock },
-    herd: { win: true, icons: ['@boss', '☕', '🕔', '😮', '🚌', '@player'], draw: sceneHerd },
+    clock: { win: true, icons: ['🕐', '@boss', '👋', '@lin', '@kev', '🚌', '@player'], draw: sceneClock },
+    herd: { win: true, icons: ['@boss', '☕', '🕔', '😮', '@lin', '@kev', '🤷', '🚌', '@player'], draw: sceneHerd },
     fail: { win: false, icons: ['@boss', '🕐', '@player', '😩', '🚌', '💨'], draw: sceneFail },
     // at the stop while his coat was still on the rack: fetched back to your desk, the bus goes
     stop: { win: false, icons: ['🧥', '📱', '@player', '@boss', '😠', '🚌', '💨'], draw: sceneStop },
@@ -374,6 +410,7 @@ export const END_SCENES = {
     street: { win: false, icons: ['🧥', '@player', '😳', '@boss', '😠'], draw: sceneFetched },
     // up the stepladder (sceneCaught; it draws the street too if an outcome reaches it without its why)
     caught: { win: false, icons: ['@player', '😳', '@boss', '😠'], draw: sceneCaught },
-    blamed: { win: false, icons: ['@boss', '👋', '🚌', '💨', '@player', '😰'], draw: sceneBlamed },
+    // the boss rides off on your bus, waving from its window
+    blamed: { win: false, icons: ['@boss', '🚌', '👋', '💨', '@player', '😰'], draw: sceneBlamed },
   },
 };

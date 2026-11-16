@@ -137,7 +137,7 @@ export default [
   {
     name: 'end-clock',
     cmds: [...CLOCK, 'pretend until 4:25', ...TO_STOP, 'pretend until 4:30'],
-    intent: 'Win: the boss goes home with his backpack under his crooked clock, waving, while you cheer in the door of the bus.',
+    intent: 'Win: the boss goes home with his backpack under his crooked clock, waving, Lin and Kev hurrying after him with theirs, while you cheer in the door of the bus.',
   },
   {
     name: 'boss-reads-home-time',
@@ -150,9 +150,19 @@ export default [
     intent: 'Straight from the hallway the boss has taken his coat off the rack and put it on, and waves: going home. The rack is empty. He never went back into his office.',
   },
   {
+    name: 'lin-and-kev-shrug',
+    cmds: [...HERD, ...SIT, 'pretend until 3:55', 'wait 3.4s', 'wait 1.3s'],
+    intent: "The boss has his coat on and is walking off down the hallway. At their desks Lin and Kev, who frowned at the clock, look at each other and shrug (🤷 each): his coat has gone, so it is home time.",
+  },
+  {
+    name: 'lin-and-kev-follow',
+    cmds: [...HERD, ...SIT, 'pretend until 3:59', 'wait 1s'],
+    intent: 'The boss is out through the lobby; Lin and Kev are up with their bags, waving, hurrying out after him.',
+  },
+  {
     name: 'end-herd',
     cmds: [...HERD, ...SIT, 'pretend until 4:05', ...TO_STOP, 'pretend until 4:30'],
-    intent: 'Win: the boss, his coffee mug in hand, heads home in his coat under the crooked open-plan clock (surprised), past the empty coat rack; you cheer in the bus door. Icons: boss, coffee, the clock, 😮.',
+    intent: 'Win: the boss, his coffee mug in hand, heads home in his coat under the crooked open-plan clock (surprised), past the empty coat rack, Lin and Kev on his heels with their backpacks (a shrug between them); you cheer in the bus door. Icons: boss, coffee, the clock, 😮, Lin, Kev, 🤷.',
   },
   {
     name: 'end-caught',
@@ -167,7 +177,7 @@ export default [
   {
     name: 'end-blamed',
     cmds: [...HERD, ...SIT, 'pretend until 4:30', 'pretend until 4:30'],
-    intent: 'Lost: the boss did go home early (the coat rack is empty, waving in the icons), but you are still at your desk in the empty office; out of the window the bus pulls away.',
+    intent: 'Lost: the boss did go home early (the coat rack is empty), but you are still at your desk in the empty office; out of the window your bus pulls away with the boss in it, waving from the window, Lin and Kev beside him.',
   },
   {
     name: 'end-fail',

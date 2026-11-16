@@ -85,7 +85,11 @@ export default {
       case 'boss:herd': return `the boss, walking under the open-plan clock, reads ${clockArg(p.shown, START)} 😮: home time`;
       case 'boss:shrug': return `the boss, walking under the open-plan clock, reads ${clockArg(p.shown, START)} and shrugs`;
       case 'boss:coat': return 'the boss takes his coat off the rack 👋';
-      case 'coat:seen': return `${name(p.by)} ${p.early ? 'picks up his laptop to go and ' : 'stands up and '}looks at the coat rack${p.coat ? ": the boss's coat is still there 🧥😬, back to the desk" : ': empty'}`;
+      case 'coat:seen': return p.follow
+        ? `${name(p.by)} sees the boss take his coat off the rack 🧥👀`
+        : `${name(p.by)} ${p.early ? 'picks up his laptop to go and ' : 'stands up and '}looks at the coat rack${p.coat ? ": the boss's coat is still there 🧥😬, back to the desk" : ': empty'}`;
+      case 'coat:shrug': return `${name(p.by)} looks at ${p.by === 'lin' ? 'Kev' : 'Lin'} and shrugs 🤷`;
+      case 'coat:follow': return `${name(p.by)} gets up to follow the boss out`;
       case 'boss:left': return 'the boss goes home over the zebra crossing';
       case 'lin:left': return 'Lin goes home over the zebra crossing';
       case 'kev:left': return 'Kev goes home over the zebra crossing';

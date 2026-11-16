@@ -3,7 +3,8 @@
 // clock and push it forward. The boss, back from a long lunch with a flat phone, believes the open-plan clock (Kev
 // sits facing it) and then checks his own clock (Lin watches it through the glass) against it. Push both and he lives
 // his afternoon early; push the open-plan clock far enough and he sees home time on his way back from his coffee and
-// goes straight from the hallway. Lin and Kev frown at a jumped clock and keep their own time. Leave your desk
+// goes straight from the hallway. Lin and Kev frown at a jumped clock and keep their own time, but they obey his
+// coat: when it leaves the rack they shrug and follow him out. Leave your desk
 // while he is in and he comes looking for you; seen out in the street, you are caught. A time loop.
 //
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
