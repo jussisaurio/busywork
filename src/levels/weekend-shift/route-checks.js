@@ -63,6 +63,49 @@ export default [
     }),
   },
   {
+    name: 'ring again after his first call → he stomps over, one sharp hello, slams it down (😠) and is back before your write is done → caught',
+    expect: { result: 'caught' },
+    play: play(['pretend until 4:26', 'goto desk_phone pretend', 'interact', 'wait 9s', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log, w) => {
+      must(saw(log, 'phone:hungUp'), 'the first call never ended');
+      must(saw(log, 'phone:slammed'), 'the boss never slammed the second call down');
+      must(w.calls === 2, `rang ${w.calls} times`);
+    }),
+  },
+  {
+    name: 'ring a third time → he takes it off the hook (📞❌); a fourth ring is engaged (📞🚫) and he stays put → fail',
+    expect: { result: 'fail' },
+    play: play(['goto desk_phone pretend', 'interact', 'wait 9s', 'interact', 'wait 6s', 'interact', 'wait 5s', 'interact', 'wait 3s', 'pretend until 5:00'], (log, w) => {
+      must(saw(log, 'phone:offhook'), 'the boss never took the phone off the hook');
+      must(saw(log, 'phone:engaged'), 'the fourth ring was not engaged');
+      must(w.phone === 'offhook' && w.calls === 3, `phone ${w.phone} after ${w.calls} calls`);
+      must(log.filter((e) => e.name === 'phone:answered').length === 3, 'he answered the engaged line');
+    }),
+  },
+  {
+    name: 'eat your noodles dry → a crunch (😬), no cup left, no microwave, no ding → fail',
+    expect: { result: 'fail' },
+    play: play(['goto microwave pretend', 'move N 0.3s', 'interact', 'move W 1s', 'eat', 'goto microwave pretend', 'interact', 'pretend until 5:00'], (log, w) => {
+      must(saw(log, 'noodles:crunched'), 'you never ate them');
+      must(!saw(log, 'microwave:started'), 'the microwave started with no cup');
+      must(!saw(log, 'noise', (p) => p.sfx === 'elevatorDing'), 'it dinged');
+      must(w.noodles === 'crunched', `noodles ${w.noodles}`);
+    }),
+  },
+  {
+    name: "slurp your noodles after the ding (😋🍜) → nobody turns, Lin's fish still gets the microwave → fail",
+    expect: { result: 'fail' },
+    play: ({ run, log, g }) => {
+      for (const c of [...DING, 'wait 10s', 'goto microwave pretend', 'move N 0.3s', 'interact', 'move W 1s']) run(c);
+      const from = log.length;
+      run('eat');
+      must(saw(log, 'noodles:slurped'), 'you never ate them');
+      must(!log.slice(from).some((e) => e.name === 'npc:heard' || e.name === 'noise'), 'the slurp turned someone');
+      run('pretend until 4:33');
+      must(g.npcs.find((n) => n.id === 'lin').anim === 'fishIn', 'Lin is not at the microwave with her fish');
+      run('pretend until 5:00');
+    },
+  },
+  {
     name: 'ring the phone with Lin at her desk → Lin ❗👉, the boss hears',
     expect: { result: 'fail' },
     play: play(['goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'pretend until 5:00'], (log) => {
