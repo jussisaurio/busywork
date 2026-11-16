@@ -4,7 +4,7 @@
 // The plain fail card has no shot: no play reaches it (a ❌ always names a desk: fired_<desk>; four ticks always
 // count one laptop twice: a win).
 const HOME = ['put your_desk', 'goto my_seat pretend', 'sit']; // the laptop onto your desk, back in your seat
-const BOSS = ['goto boss_desk pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3', ...HOME];
+const BOSS = ['goto hallway_west pretend', 'pretend until 3:38.8', 'goto boss_desk pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3', ...HOME];
 const LIN = ['goto hallway_west pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3', ...HOME];
 const KEV = ['pretend until 3:24', 'goto kev_desk', 'interact', ...HOME];
 // Lin's laptop while she's in the restroom, kept in the meeting room till Kev's is off your desk.
@@ -126,12 +126,12 @@ export default [
     intent: 'Loss: you took Lin\'s laptop too early. Her desk (teal chair) got the first cross and stands bare; the auditor points the way out, and you go to the lift with a box.' },
   { name: 'end-fired-boss', cmds: [...BOSS_EARLY, ...END],
     intent: 'Loss: the boss took his laptop back off your desk, and your desk got the cross; the auditor points the way out, and you go to the lift with a box.' },
-  { name: 'caught-seen', cmds: ['goto boss_desk pretend', 'pretend until 3:33', 'interact'], beat: true,
+  { name: 'caught-seen', cmds: ['goto office_door pretend', 'pretend until 3:33.4', 'goto boss_desk pretend', 'interact'], beat: true,
     intent: 'Caught: you reach for the boss\'s laptop at his desk, and the auditor, at the glass office door on his way out, has seen you. An alert (❗😠) goes up over the desk; his view cone fills the office doorway.' },
   { name: 'caught-holding', cmds: [...LIN.slice(0, 4), 'goto my_seat', 'sit', 'wait until 3:47'], beat: 0.4,
     intent: 'Caught: you sit at your desk holding Lin\'s laptop (it shows in your hand slot) as the auditor comes to tick it. His view cone goes red over you and an alert (❗👉 you) goes up over him.' },
-  { name: 'end-caught-seen', cmds: ['goto boss_desk pretend', 'pretend until 3:33', 'interact', ...END],
+  { name: 'end-caught-seen', cmds: ['goto office_door pretend', 'pretend until 3:33.4', 'goto boss_desk pretend', 'interact', ...END],
     intent: 'Loss: the auditor saw you reach for a laptop. It lies on the floor, he points, and you go to the lift with a box.' },
-  { name: 'end-blamed', cmds: [...BOSS.slice(0, 5), 'goto hallway_west pretend', ...END],
+  { name: 'end-blamed', cmds: [...BOSS.slice(0, 7), 'goto hallway_west pretend', ...END],
     intent: 'Loss: the audit passed, but your chair was empty when he came to sign it off. He glares at it and asks where you are (your face, ?), and you go to the lift with a box.' },
 ];

@@ -227,6 +227,8 @@ const ROLES = {
   // On his way to the panel or the fuse box: whoever he finds at the one you threw, or in his dark office, threw it
   // (pretending doesn't help; tick clears the mark once you are clear of them).
   evidence: { by: 'boss', while: ['dark', 'blackout'], mark: 'switched', knows: 'bossKnows', icon: '🌑' },
+  // His office: if he finds you in it, he shows you out (👉 you 🚪). The tray is yours only while he is out at a switch.
+  private: [{ zone: 'office', owner: 'boss' }],
 };
 
 const LURES = [

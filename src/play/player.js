@@ -1,5 +1,6 @@
 // The player: movement with tile collision, the busy button ("pretend" on screen), sitting at the desk, and the
-// walk back to it when the authority sends you there (rules.js assignWork -> game.rules.sent).
+// walk back to it when the authority sends you there (rules.js assignWork -> game.rules.sent) or shows you out of
+// his office (rules.js showOutOf -> game.rules.out).
 //
 // Runs first in tick(). Reads game.input (any object with the Input interface; null = no input).
 // Sets player.{x, y, dir, moving, busy, busyPose, seated} and game.clock.ff.
@@ -42,6 +43,12 @@ export function updatePlayer(game, dt) {
       sitAtDesk(game);
       setBusy(game, true, 'typing');
     }
+    return;
+  }
+  // Shown out of someone's private place: the walk back to your desk.
+  if (game.rules.out && !game.caught && !game.outcome) {
+    game.clock.ff = false;
+    serveOut(game, game.rules.out, dt);
     return;
   }
   // Caught / end beat / externally locked: frozen.
@@ -146,6 +153,36 @@ function serveOrder(game, sent, dt) {
   game.rules.stackAt = game.loopTime; // render drops the paper stack on your desk now
   sitAtDesk(game);
   setBusy(game, true, 'typing');
+}
+
+// --- Shown out ----------------------------------------------------------------------
+// rules.js showOutOf: the owner of a private place found you in it (👉 you 🚪). You stand a beat and take it, then
+// walk back to your desk at a normal walk and sit down; then you're free. No work, no fast-forward: the walk and the
+// lost position are the cost. game.rules.out = { t, by, walk }.
+const OUT_GO = 0.8; // seconds you stand there before you go
+export function showOut(game, by) {
+  const p = game.player;
+  game.rules.out = { t: 0, by, walk: null };
+  p.locked = true;
+  p.moving = false;
+  setBusy(game, false, null);
+  game.clock.ff = false;
+}
+
+function serveOut(game, out, dt) {
+  setBusy(game, false, null);
+  out.t += dt;
+  if (out.t < OUT_GO - 1e-9) return;
+  if (!out.walk) {
+    const walk = planWalk(game, spotPos(game, 'player_desk'));
+    out.walk = walk && walkLength(game, walk) > 1e-6 ? walk : { path: [], wp: 0 };
+    if (out.walk.path.length) standUp(game);
+  }
+  if (!stepWalk(game, out.walk, PLAYER_SPEED, dt)) return;
+  game.rules.out = null;
+  game.player.locked = false;
+  sitAtDesk(game);
+  game.events.emit('trespass:out', { by: out.by });
 }
 
 // A walk the player is made to take (to her desk, to the front of the room): the path from where she is to `to`

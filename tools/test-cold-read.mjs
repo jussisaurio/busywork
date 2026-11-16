@@ -470,7 +470,7 @@ try {
     'shots: twin caught end cards: the error says how to draw the caught beat instead (not for other end cards)');
   ok(sameShots(rendered).length === 0, 'shots: the stand-in list has no two alike');
   // A catch: the next command would run its beat out to the end card, so only beat: true can draw the beat.
-  const CAUGHT = ['busy 7.8s', 'goto boss_office_door busy', 'goto coat_rack busy', 'busy 0.17s', 'interact']; // meeting's end-caught
+  const CAUGHT = ['pretend until 3:18', 'goto coat_rack pretend', 'wait until 3:26.6', 'interact']; // meeting's end-caught
   const ended = renderShot(meeting, { name: 'c', cmds: CAUGHT }, lib);
   const beat = renderShot(meeting, { name: 'c', cmds: CAUGHT, beat: true }, lib);
   ok(ended.phase === 'end' && beat.phase === 'day' && beat.beat && !ended.png.equals(beat.png),

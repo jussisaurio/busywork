@@ -28,6 +28,7 @@ import { at } from '../../config.js';
 import { say, sightline } from '../../core/fx.js';
 import { spotPos, findNpc, npcSees } from '../../game/perception.js';
 import { endOverride, npcSayLater } from '../../sim/override.js';
+import { showOutNow } from '../../play/rules.js';
 import { CAST, BEHAVIOURS, START, SECS, ringKev } from './cast.js';
 import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -95,6 +96,7 @@ const SPOTS = {
 const ZONES = {
   desk: { x0: 11, y0: 9, x1: 16, y1: 11 },
   floor: { x0: 0, y0: 0, x1: 30, y1: 14 }, // anywhere in the office: he counts the list against the floor
+  boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // his glass office: his private place (ROLES)
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 },
 };
 
@@ -126,7 +128,7 @@ const INTERACTIONS = {
     },
   },
   // He has gone for coffee and left his screen dead: anyone may push the plug back in. While he sits there, the
-  // cable is his business, and you have no reason to be behind his desk (the engine sends you back to work).
+  // cable is his business, and you have no reason to be behind his desk (he shows you out of his office).
   fix_cable: {
     on: 'boss_cable', text: 'plug his cable back in', duration: 1.5, sneaky: false,
     can: (p, w) => w.glitch && w.pc === 'free' && behindDesk(p),
@@ -188,6 +190,8 @@ const ROLES = {
   // Lin is not an engine witness (strike_name's owner is the boss): she tells him herself (linClock), and toldOn
   // is what her word costs you.
   authority: { id: 'boss', offDuty: ['toCheck', 'checking'], helpless: [], deafIn: null },
+  // His office: if he sees you in it, 🤨, then 👉 you 🚪 and you walk back to your desk. Get in while he's away.
+  private: [{ zone: 'boss_office', owner: 'boss' }],
 };
 
 // Kev didn't answer: he gives up on him and goes for a coffee, his screen still dead (clockFor sets w.coffee). There
@@ -333,9 +337,9 @@ function bossClock(game, npc, sim) {
     st.goAt = null;
     const p = game.player;
     if (w.glitch && w.coffee === 'none' && free(npc) && inOffice(p)) {
-      // You're still in his office (pretending behind his desk, say): he won't leave you there. Out first.
-      if (!st.shooed) sim.speak(game, npc, [{ say: ['👉', '@player', '🚪'] }]);
-      st.shooed = true;
+      // You're still in his office (pretending behind his desk, say): he won't leave you there. Out first (the
+      // engine's private place: 👉 you 🚪, and you walk back to your desk).
+      showOutNow(game, 'boss');
       st.goAt = now + SECS(1.0);
     } else if (w.glitch && w.coffee === 'none' && free(npc)) {
       w.coffee = 'going';

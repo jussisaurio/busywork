@@ -298,6 +298,13 @@ export function createAudio(opts = {}) {
       if (h !== undefined && fin(E.ctx.currentTime, 0) - h < 0.15) return;
       sfx.notice(E, atEnt(p?.by, { f: sfxPitch(voiceFor(p?.by), voices()).notice }));
     },
+    'trespass:notice': (p) => {
+      // his 🤨 in his private place (rules.js): the same "hm?" as a ❓.
+      const vid = voiceOf(p?.by, voices());
+      const h = last[`hum:${vid}`];
+      if (h !== undefined && fin(E.ctx.currentTime, 0) - h < 0.15) return;
+      sfx.notice(E, atEnt(p?.by, { f: sfxPitch(voiceFor(p?.by), voices()).notice }));
+    },
     'witness:tattle': (p) => tattleOnce(p),
     'work:done': () => sfx.relief(E, { t: now() }),
     caught: (p) => {

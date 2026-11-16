@@ -24,4 +24,7 @@ export const ROLES = {
     fresh: (w) => w.projector === 'ok',
     icon: '📽️',
   },
+  // His glass office: if he finds you in it, he shows you out (👉 you 🚪), keycard back on its hook if you hold it.
+  // Empty while he is in the restroom: that is when the coat rack is yours.
+  private: [{ zone: 'boss_office', owner: 'boss' }],
 };

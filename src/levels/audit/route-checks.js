@@ -50,7 +50,8 @@ export default [
   {
     name: 'the boss smokes after his tick: his laptop once the auditor has walked off for a pen, onto your desk → win',
     expect: { result: 'win', routes: ['boss'] },
-    play: (ctx) => home(ctx, ['goto boss_desk pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3']),
+    // His office is his (roles private): wait in the hallway till he has gone down for his smoke, then slip in.
+    play: (ctx) => home(ctx, ['goto hallway_west pretend', 'pretend until 3:38.8', 'goto boss_desk pretend', 'pretend until 3:39.6', 'interact', 'wait until 3:41.3']),
   },
   {
     name: 'Lin\'s laptop once the auditor has walked off for a pen, onto your desk while he is in the meeting room → win',

@@ -37,7 +37,8 @@
 //               or null, said out loud (no default: what eating leaves on you is the item's); disguise { as (a cast id), look? (an object of look
 //               fields), greet? (a list of lines) } (src/play/disguise.js)
 //   roles       optional; authority.id, evidence.by, scene.by cast ids; authority.deafIn and scene.zone zones; authority.earshot > 0;
-//               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard)
+//               authority.tattle 'work', 'caught' or a function (src/play/rules.js tattleHeard); private a list of
+//               { zone, owner (a cast id), offDuty? (a list) }
 //   lures, hunts, doors, inspections, fetches, noises, spots' put-down fields: every npc, spot, zone, route, item type
 //               and behaviour they name exists (src/sim/mechanics/* documents each); an inspection that fails
 //               into 'hunt' needs a hunt for its npc; an inspection's sign is 'mark' or 'item', a check's icon an
@@ -343,6 +344,14 @@ export function levelProblems(level, key) {
       if (roles.scene) {
         npc('roles.scene.by', roles.scene.by);
         if (roles.scene.zone !== undefined) zone('roles.scene.zone', roles.scene.zone);
+      }
+      if (roles.private !== undefined) {
+        if (!Array.isArray(roles.private)) bad('roles.private', 'not a list of { zone, owner, offDuty? }');
+        else for (const [i, e] of roles.private.entries()) {
+          zone(`roles.private[${i}].zone`, e?.zone);
+          npc(`roles.private[${i}].owner`, e?.owner);
+          if (e?.offDuty !== undefined && !Array.isArray(e.offDuty)) bad(`roles.private[${i}].offDuty`, 'not a list of overrides');
+        }
       }
     }
   }

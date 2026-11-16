@@ -84,6 +84,7 @@ export const SPOTS = {
 // Areas in tile units, half-open: x0 <= x < x1, y0 <= y < y1 (perception.js inZone(game, name, x, y)).
 export const ZONES = {
   meeting_room: { x0: 9, y0: 1, x1: 19, y1: 6 }, // where you must be at 4:00 (attendance rule)
+  boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // his glass office: he shows you out if he finds you in it (roles.js private)
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby, beyond the glass entrance; the balcony, beyond the fire door
 };
 

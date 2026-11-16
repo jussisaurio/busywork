@@ -315,16 +315,16 @@ export default [
     },
   },
   {
-    name: 'steal keycard while the boss glances back → caught',
-    expect: { result: 'caught' },
-    play({ run, waitFor, npc }) {
+    // His office is his (roles private): he sees you come in at his door, 🤨, and shows you out before the rack.
+    name: 'walk in for the keycard while he sits there → 🤨, 👉 you 🚪, back at your desk without it',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
       waitFor(() => npc('lin').label?.startsWith('visit') || npc('lin').override === 'hunting' || npc('lin').x > 15); // Lin off to the kitchen (3:00)
       run('goto boss_office_door busy');
       run('goto coat_rack busy');
-      // boss faces S (π/2); a positive head offset turns him west, toward the rack
-      waitFor(() => npc('boss').glance.offset > 1.25, { maxSec: 40 });
-      run('interact');
-      run('wait 10s');
+      waitFor(() => log.some((e) => e.name === 'trespass:out'), { maxSec: 20 });
+      if (!log.some((e) => e.name === 'trespass')) throw new Error('the boss never showed you out');
+      if (g.player.held) throw new Error('you left his office holding ' + g.player.held);
     },
   },
 ];

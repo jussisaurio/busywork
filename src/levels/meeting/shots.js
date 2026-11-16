@@ -160,7 +160,7 @@ export default [
   },
   {
     name: 'end-caught',
-    cmds: ['busy 7.8s', 'goto boss_office_door busy', 'goto coat_rack busy', 'busy 0.17s', 'interact'],
+    cmds: ['pretend until 3:18', 'goto coat_rack pretend', 'wait until 3:26.6', 'interact'], // he walks back in from the restroom (🤨) as you reach
     intent: 'End card, a loss: the boss caught you at his jacket, reaching for his keycard (😠🪪). The card is on his ' +
       'pocket, and you are fired, carrying your things out in a box.',
   },

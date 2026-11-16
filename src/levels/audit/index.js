@@ -58,6 +58,7 @@ const LEGEND = {
 
 const ZONES = {
   desk: { x0: 10, y0: 7, x1: 17, y1: 11 }, // at your desk when he signs off (meeting.room)
+  boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // the boss's glass office (roles private)
 };
 
 // Owned laptops go straight back on their owner's desk, or into his drawer if something lies there: never into his
@@ -129,6 +130,9 @@ const INTERACTIONS = {
 
 const ROLES = {
   authority: { id: 'auditor', offDuty: ['signoff'], helpless: [] },
+  // The boss's glass office: if he finds you in it, he shows you out (👉 you 🚪) and keeps his laptop if you hold it.
+  // Empty while he smokes in the lobby.
+  private: [{ zone: 'boss_office', owner: 'boss' }],
 };
 
 const INSPECTIONS = [{
