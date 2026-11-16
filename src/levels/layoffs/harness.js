@@ -58,7 +58,7 @@ export default {
     const w = game.world;
     const people = w.list === 'off' ? 'three faces; yours is gone'
       : w.struck ? 'a row of four faces, yours framed in red and half crossed out' : 'a row of four faces, yours framed in red';
-    const screen = w.glitch ? 'static; behind his desk, a plug hangs half out of the floor socket'
+    const screen = w.glitch ? 'black, the monitor off (its power light dark); behind his desk, a plug hangs half out of the floor socket'
       : w.locked ? 'a lock screen with a padlock' : `the layoff list: ${people}`;
     const bits = [`WORLD: the boss's screen shows ${screen}`];
     if (w.ringing) bits.push("Kev's desk phone is ringing");
@@ -77,15 +77,15 @@ export default {
       case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
-      case 'boss:coffee': return 'the boss gives up waiting for Kev and goes for a coffee, his screen still static ☕';
+      case 'boss:coffee': return 'the boss gives up waiting for Kev and goes for a coffee, his screen still black ☕';
       case 'pc:triedLocked': return "the boss's screen is locked: the padlock jolts 🔒";
       case 'boss:hasCoffee': return 'the boss has his coffee and heads back';
       case 'phone:ring': return "Kev's desk phone rings ☎️";
       case 'phone:called': return "you call Kev's desk from the boss's phone";
       case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
       case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
-      case 'pc:pulled': return "you pull the boss's plug half out: his screen goes to static";
-      case 'pc:actsUp': return "back at his desk, the boss types his password into the static ⌨️, and bangs on it 😠";
+      case 'pc:pulled': return "you pull the boss's plug half out: his monitor goes black";
+      case 'pc:actsUp': return "back at his desk, the boss types his password into the black screen (✱✱✱✱✱ then a hard ⏎), stares at it 🖥️❓ and thumps it 😠";
       case 'boss:headCount': return p.on ? "the boss counts the list's faces and ticks yours ✔️" : "the boss counts the list's faces: one short? he shrugs 📋🤨🤷";
       case 'pc:locked': return 'the boss locks his screen and leaves for the restroom';
       case 'kev:fixing': return "Kev kneels behind the boss's desk at the plug, the boss standing over him";

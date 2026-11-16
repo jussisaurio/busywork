@@ -3,12 +3,12 @@
 //
 // His screen faces the floor through his glass wall, and Lin, at her desk facing his office, reads it over his
 // shoulder. To edit it you need (1) the boss away from a working, unlocked screen, and (2) Lin looking away:
-//   - 3:00: his cable has worked loose (static). He phones Kev's desk; Kev kneels at the plug and fixes it while the
+//   - 3:00: his monitor's cable has worked loose (black screen). He phones Kev's desk; Kev kneels at the plug and fixes it while the
 //     boss stands over him. The list comes up: your face is on it (😨); Lin's isn't (her 😨, then 😌, then a look at
 //     you). At 3:10 he goes to the restroom and locks the screen (try it: the padlock jolts, 🔒). Kev goes home
 //     about 3:15 (👋🏠 to Lin).
-//   - While he is in the restroom, pull his plug half out (pull_cable): static. About 3:22 he is back, types his
-//     password into the static (⌨️, so it is unlocked), bangs on it (😠) and phones Kev's desk, but Kev went home:
+//   - While he is in the restroom, pull his monitor's plug half out (pull_cable): black. About 3:22 he is back, types his
+//     password into the black screen (✱✱✱✱✱ ⏎, so the PC behind it unlocks unseen), thumps it (😠) and phones Kev's desk, but Kev went home:
 //     it just rings (❓). He gives up (😮‍💨☕) and goes for a coffee, his screen dead. He walks the length of the
 //     floor to the kitchen and is out of sight from about 3:25. Leave his plug alone and he never leaves his desk.
 //   - Then kneel at the socket behind his desk and push the plug home: the list comes back on, unlocked.
@@ -114,7 +114,7 @@ const inOffice = (p) => p.x < 8 && p.y < 6; // his glass office (map rows 1-5, w
 const atScreen = (p) => p.y >= 3;
 
 const INTERACTIONS = {
-  // While he is out of his office (the restroom), pull his plug half out of the socket: the screen goes to static.
+  // While he is out of his office (the restroom), pull his plug half out of the socket: the monitor goes black, the PC behind it still on.
   // He comes back to it, types his password into it blind, and it is no use (cast.js backAtDesk).
   pull_cable: {
     on: 'boss_cable', text: 'pull his plug out', duration: 1.0, sneaky: false,
@@ -191,7 +191,7 @@ const ROLES = {
 };
 
 // Kev didn't answer: he gives up on him and goes for a coffee, his screen still dead (clockFor sets w.coffee). There
-// was nothing to lock: static. The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule.
+// was nothing to lock: the monitor's off. The machine is slow; he walks back with his cup (presentation.js POSES) on his schedule.
 const BREW_UNTIL = at('3:37', START);
 const LURES = [
   // Told on: he goes straight to his screen (😠), puts your face back (index.js listen: 'boss:checks') and locks it.
@@ -232,7 +232,7 @@ const LURES = [
     plan: 'coffee',
     label: 'get a coffee',
     spot: 'coffee',
-    // fed up with the static and nobody coming: a sigh, and he goes for a coffee while he waits
+    // fed up with the black screen and nobody coming: a sigh, and he goes for a coffee while he waits
     react: { wait: 0.6, says: [{ say: ['😮‍💨', '☕'], kind: 'thought' }], event: 'boss:coffee' },
     work: { override: 'brewing', minutes: 60, progress: 'brewProgress', start: { set: { brewing: true } } },
   },
@@ -300,7 +300,16 @@ function bossClock(game, npc, sim) {
   w.ringLook = w.ringing && now < w.ringFrom + SECS(RING_LOOK);
   const a = game.player.action;
   if (a?.type === 'strike_name') w.strikeT = Math.min(1, a.t / Math.max(a.duration, 0.001)); // how far you got
-  // About 3:24 (cast.js backAtDesk): a beat after the static, he phones Kev's desk; it rings out, and he wonders where Kev is.
+  // His blind login (cast.js backAtDesk): a clack per asterisk, then the Enter, hard.
+  if (st.keys?.length && now >= st.keys[0]) {
+    st.keys.shift();
+    game.events.emit('boss:key', {});
+  }
+  if (st.enterAt != null && now >= st.enterAt) {
+    st.enterAt = null;
+    game.events.emit('boss:enter', {});
+  }
+  // About 3:24 (cast.js backAtDesk): a beat after the thump, he phones Kev's desk; it rings out, and he wonders where Kev is.
   if (st.callAt != null && now >= st.callAt) {
     st.callAt = null;
     if (w.glitch && free(npc)) {
@@ -479,7 +488,7 @@ export default {
     linReadAt: null, // the game minute Lin read it over his shoulder (about 3:08, Kev fixed it)
     listOffAt: 0, // the game minute your face came off (list.js animates it)
     offVia: null, // what Lin was doing meanwhile: 'ring' | 'phone' | 'unseen' | 'seen' (she watched: he'll be told)
-    glitch: true, // static: his cable has worked loose (3:00 until Kev fixes it; again from your pull until you plug it back in)
+    glitch: true, // monitor black: its cable has worked loose (3:00 until Kev fixes it; again from your pull until you plug it back in)
     pc: 'boss', // 'boss' (he's at it) | 'kev' (Kev at his cable) | 'free' (he's out)
     locked: false, // he locked it for the restroom (3:10 to 3:22)
     ringing: false, // Kev's desk phone is ringing

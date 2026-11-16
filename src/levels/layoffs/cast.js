@@ -20,14 +20,14 @@ export const CAST = [
     glanceEvery: [3, 5.5],
     coneTint: [255, 160, 82],
     schedule: [
-      s('3:00', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // static on his screen (index.js glitch): he bangs on it
+      s('3:00', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // his monitor black (index.js glitch): he bangs on it
       s('3:00.3', { do: 'say', icons: ['😠'] }),
       s('3:00.8', { do: 'sit', spot: 'boss_desk', arrive: 'callKev' }), // ☎️ Kev's desk: it rings behind Lin
       s('3:03.6', { do: 'visit', spot: 'boss_aside' }), // he stands over Kev while Kev plugs the cable back in
       s('3:08.3', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }),
       s('3:10', { do: 'away', spot: 'restroom', prelude: 'leaveDesk' }), // he locks his screen: the list is on it
       // Back from the restroom about 3:22. If you pulled his plug while he was out, the screen is dead: he types his
-      // password into the static (⌨️), bangs on it, calls Kev, who went home, then gives up and goes for a coffee
+      // password into the black screen (✱✱✱✱✱ ⏎), stares, thumps it, calls Kev, who went home, then gives up and goes for a coffee
       // (index.js clockFor, the coffee lure). Left alone, it keeps working and he works on until 3:42.
       s('3:16.5', { do: 'sit', spot: 'boss_desk', arrive: 'backAtDesk' }),
       s('3:35', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // back with his coffee
@@ -131,7 +131,7 @@ export const BEHAVIOURS = {
       game.events.emit('kev:fixing', {});
     },
   },
-  // Done: the plug goes home, the static clears and the list comes up (it pops out big: list.js). Lin reads it over
+  // Done: the plug goes home, the screen blinks on and the list comes up (it pops out big: list.js). Lin reads it over
   // the boss's shoulder (index.js clockFor: 😨, 😌, a look at you).
   pcFixed: {
     spot: 'cable',
@@ -150,7 +150,8 @@ export const BEHAVIOURS = {
     },
   },
   // About 3:22, back in his chair from the restroom: he types his password and the padlock goes. If you pulled his
-  // plug while he was out, he types it blind into the static (⌨️), then bangs on it (😠); then he calls Kev's desk
+  // monitor's plug while he was out, he types it blind into the black screen (✱✱✱✱✱ ⏎), stares (🖥️❓), thumps it
+  // (😠); then he calls Kev's desk
   // (index.js clockFor: the ring, the ❓, coffee).
   backAtDesk: {
     arrive(game, npc, sim) {
@@ -160,8 +161,21 @@ export const BEHAVIOURS = {
       w.locked = false;
       if (!w.glitch || st.actedUp || w.coffee !== 'none') return;
       st.actedUp = true;
-      st.callAt = game.clock.minute + SECS(2.6);
-      sim.speak(game, npc, [{ say: ['⌨️'] }, { say: ['😠'], after: 1.3 }]);
+      const now = game.clock.minute;
+      // His password, typed into the black screen: five asterisks, one clack each (index.js bossClock), then a hard
+      // Enter. The PC behind the dark monitor logs him in; he can't see it. He stares (🖥️❓), thumps it (😠).
+      w.loginUntil = now + SECS(1.8); // typing arms (presentation.js POSES)
+      w.thumpFrom = now + SECS(3.1); // after that, the bang arms at the black screen again
+      st.keys = [0.2, 0.42, 0.62, 0.86, 1.06].map((k) => now + SECS(k));
+      st.enterAt = now + SECS(1.55);
+      st.callAt = now + SECS(4.6);
+      const star = '#pwstar';
+      sim.speak(game, npc, [
+        { say: [star, star, star, star, star], ttl: 1.45 },
+        { say: ['#enterkey'], ttl: 0.9, after: 1.45 }, // (each `after` counts from now: the queue ticks together)
+        { say: ['🖥️', '❓'], kind: 'thought', ttl: 1.3, after: 2.35 },
+        { say: ['😠'], ttl: 1.0, after: 3.6 },
+      ]);
       game.events.emit('pc:actsUp', {});
     },
   },
@@ -195,7 +209,7 @@ export const BEHAVIOURS = {
   // 3:42: he opens the attachment one last time and counts the faces (the sheet pops out big: list.js, w.countAt).
   // Yours on it: he ticks it (✔️). Yours gone: one short? He frowns, and it's Friday: he shrugs (📋🤨🤷). Then coat on
   // (🧥📧), and at 3:45 he clicks send (the sheet flies off his screen, big: list.js sending).
-  // His screen still dead (nobody plugged it in): he sends the same email from his mobile (📱📧), the screen static.
+  // His screen still dead (nobody plugged it in): he sends the same email from his mobile (📱📧), the screen still black.
   sendList: {
     arrive(game, npc, sim) {
       const w = game.world;
