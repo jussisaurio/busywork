@@ -6,7 +6,7 @@ import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
-import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S } from './cast.js';
+import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
 import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
 export { END_SCENES } from './end-scenes.js';
 
@@ -62,7 +62,7 @@ const reading = (game, from) => {
   return s !== null && s >= from;
 };
 // He has the board's marker while he sits by it (index.js tick): in his hand, gone from the tray
-const bossHasMarker = (n, w) => n.id === 'boss' && !!w.rosterLocked && n.override !== 'onPhone';
+const bossHasMarker = (n, w) => n.id === 'boss' && !!w.rosterLocked && !onPhone(n);
 // 5:00, the end beat (index.js punchline): the result, and s into the beat
 const result = (game) => game?.outcome?.result ?? null;
 const beatT = (game) => game?.scenario?.beatT ?? 0;
@@ -157,7 +157,7 @@ function redrawOf(game, w) {
 // px, for the cord to his phone's handset (props.js paintBossPhone). null unless he's standing there talking.
 function bossPhoneHand(game) {
   const b = boss(game);
-  if (!b || b.override !== 'onPhone' || b.moving) return null;
+  if (!b || !onPhone(b) || b.moving) return null;
   const L = LEVEL1_LOOKS.boss;
   const r = L.head + 0.8;
   const d = b.dir ?? 0;
@@ -252,7 +252,7 @@ export const POSES = {
     { when: (n, w, game) => n.id === 'boss' && pointing(game), arms: 'point', item: '#marker' },
     { when: (n, w) => bossHasMarker(n, w), arms: 'mug', item: '#marker' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#spanner', crank: true },
-    { when: (n) => n.override === 'onPhone', arms: 'phone', item: '#handset' },
+    { when: (n) => onPhone(n), arms: 'phone', item: '#handset' },
     // 4:30 she stands up with her lunch box and takes it to the microwave; 4:37 she brings it back, open, hot
     { when: (n, w, game) => n.id === 'lin' && n.anim === 'fishIn' && !n._ate && !linAtMicrowave(n, game), arms: 'mug', item: '#lunchbox' },
     { when: (n, w, game) => n.id === 'lin' && n.anim === 'fish' && !n._ate, arms: 'mug', item: '#lunchhot' },
@@ -295,6 +295,8 @@ export const SOUNDS = {
       start_microwave: { sfx: 'machineBeep', spot: 'microwave', opts: { gain: 0.5 } },
       jam_copier: { sfx: 'scratch', spot: 'copier' },
       call_boss: { sfx: 'clockTick', who: 'player', opts: { gain: 0.6 } },
+      eat_noodles: { sfx: 'munch', who: 'player', opts: { gain: 1.4 } }, // crunch, crunch, crunch
+      eat_hot_noodles: { sfx: 'slurp', who: 'player', opts: { gain: 1.2 } }, // ooh ... sluuurp ... ahh
       write_boss: { sfx: 'scratch', spot: 'meeting_presenter', opts: { gain: 0.5 } },
       write_kev: { sfx: 'scratch', spot: 'meeting_presenter', opts: { gain: 0.5 } },
     },
@@ -306,8 +308,11 @@ export const SOUNDS = {
     'kev:alerted': { sfx: 'grumble', who: 'kev' },
     'copier:fixing': { sfx: 'clank', spot: 'copier', opts: { soft: true }, rearm: { repair: 0.9 } },
     'copier:fixed': { sfx: 'fixed', spot: 'copier' },
+    'noodles:crunched': { sfx: 'munch', who: 'player', opts: { gain: 1.1 } }, // the last of the dry block
     'phone:answered': { sfx: 'pickup', who: 'boss' },
     'phone:hungUp': { sfx: 'drop', who: 'boss', opts: { gain: 0.5 } },
+    'phone:slammed': { sfx: 'drop', who: 'boss', opts: { gain: 1 } },
+    'phone:offhook': { sfx: 'drop', who: 'boss', opts: { gain: 0.3 } },
   },
   repeats: {
     repair: { while: (w) => w.copier === 'fixing', every: [1.1, 2.0], sfx: 'clank', spot: 'copier', opts: { soft: true, gain: 0.7 } },

@@ -139,3 +139,6 @@ export const BEHAVIOURS = {
     },
   },
 };
+
+// On the phone: the boss's work override on any of his three calls (onPhone, onPhone2, onPhone3).
+export const onPhone = (n) => typeof n.override === 'string' && n.override.startsWith('onPhone');

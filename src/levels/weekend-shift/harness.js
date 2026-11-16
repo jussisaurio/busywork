@@ -1,10 +1,12 @@
 // Weekend Shift's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields). Text and
 // command stops only: nothing here changes what happens in a day.
+import { onPhone } from './cast.js';
 const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
 const name = (id) => NAME[id] ?? id;
 
 const COPIER = { ok: 'working', jammed: 'jammed, beeping ⚠️', fixing: 'Kev is fixing it, still beeping 🔧', fixed: 'working again' };
-const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is on it 📞', done: 'quiet' };
+const PHONE = { idle: 'quiet', ringing: 'ringing ☎️', talking: 'the boss is on it 📞', offhook: 'off the hook: the handset lies beside it 📞❌' };
+const NOODLES = { cold: 'a cup on the counter by the microwave, lid on', held: 'in your hand, dry, lid on', cooking: 'in the microwave', ready: 'back on the counter, open and steaming', heldHot: 'in your hand, hot and steaming', crunched: 'gone: you ate them dry', slurped: 'gone: you slurped them up' };
 const NOISE = { elevatorDing: 'DING! the microwave: your noodles boil over, steam pouring out of it', machineBeep: 'the copier beeps', phoneRing: "the boss's phone rings" };
 
 export default {
@@ -43,7 +45,7 @@ export default {
   npcText(game, n) {
     const bits = [];
     if (n.override === 'fixing') bits.push(`fixing the copier ${Math.round(game.world.fixProgress * 100)}%`);
-    if (n.override === 'onPhone') bits.push(`on the phone ${Math.round(game.world.callProgress * 100)}%`);
+    if (onPhone(n)) bits.push(`on the phone ${Math.round(game.world.callProgress * 100)}%`);
     if (n.id === 'lin' && n.anim === 'fishIn' && !n.override) bits.push(n.moving ? 'carrying her lunch box to the microwave' : 'heating her fish in the microwave 🐟');
     if (n.id === 'lin' && n.anim === 'fish' && !n.override) bits.push('with a plate of microwaved fish 🐟');
     return bits;
@@ -53,8 +55,8 @@ export default {
     const w = game.world;
     const roster = `${w.roster === 'player' ? 'your' : w.roster === 'boss' ? "the boss's" : "Kev's"} face in Saturday's slot`;
     const left = w.noodles === 'cooking' && w.dingAt !== null ? Math.max(0, w.dingAt - game.clock.minute) : null;
-    const micro = w.noodles === 'cold' ? 'empty' : left > 0 ? `your noodles, ${Math.round(left * 10) / 10} min to go ⏲️` : 'your noodles, boiled over in it 🍜';
-    return `WORLD: the Saturday board has ${roster}${w.rosterLocked ? ' (the boss sits by it, its marker in his hand)' : ''}; copier ${COPIER[w.copier] ?? w.copier}; the boss's phone: ${PHONE[w.phone] ?? w.phone}; microwave: ${micro}`;
+    const micro = w.noodles !== 'cooking' ? 'empty' : left > 0 ? `your noodles, ${Math.round(left * 10) / 10} min to go ⏲️` : 'your noodles, boiled over in it 🍜';
+    return `WORLD: the Saturday board has ${roster}${w.rosterLocked ? ' (the boss sits by it, its marker in his hand)' : ''}; copier ${COPIER[w.copier] ?? w.copier}; the boss's phone: ${PHONE[w.phone] ?? w.phone}; microwave: ${micro}; your noodles: ${NOODLES[w.noodles] ?? w.noodles}`;
   },
 
   describe(e, memo) {
@@ -83,6 +85,8 @@ export default {
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'microwave:started': return 'you put your noodles in the microwave ⏲️';
+      case 'noodles:crunched': return 'you crunched the dry noodle block raw 😬 (no cup left to microwave)';
+      case 'noodles:slurped': return 'you slurped your noodles down 😋🍜';
       case 'copier:jammed': return 'you jammed a paper clip in the copier 📎 (it starts beeping)';
       case 'kev:alerted': return 'Kev heard the copier 🖨️❗';
       case 'copier:fixing': return 'Kev is fixing the copier';
@@ -91,6 +95,9 @@ export default {
       case 'boss:phone': return 'the boss jumps for his phone ☎️❗';
       case 'phone:answered': return 'the boss takes the call at his phone in the corner, his back to the office 📞';
       case 'phone:hungUp': return 'the boss hangs up 📞🤨';
+      case 'phone:slammed': return 'the boss slams the phone down 😠';
+      case 'phone:offhook': return 'the boss takes his phone off the hook 📞❌: it will not ring again';
+      case 'phone:engaged': return "engaged 📞🚫: the boss's phone is off the hook";
       case 'roster:changed': return `you wrote ${name(p.to) === 'you' ? 'yourself' : name(p.to)} into Saturday's slot on the board ✏️`;
       default: return undefined;
     }

@@ -38,6 +38,17 @@ export default [
   { name: 'written-phone', cmds: ['pretend until 4:29', ...RING, 'goto board pretend', 'interact', 'wait 0.6s'], intent: "With nobody looking (the boss on the phone in his corner, Lin by the microwave with her fish), Kev's face pops up big off the board's Saturday box." },
   { name: 'writing-seen', cmds: ['pretend until 4:32', ...RING, 'goto board pretend', 'wait 1s', 'interact'], intent: "The boss is still on the phone in his corner, and you're halfway through writing: your face wiped off the Saturday box and Kev's face half drawn on the clean board, line by line from the top, the black marker at it (gone from the tray). But Lin, on her way back to her desk with her fish, has just seen you: her cone, gone red, is on you." },
 
+  // Ring him again: each call buys less, and the third is the last.
+  { name: 'phone-again', cmds: [...RING, 'wait 9s', 'interact', 'wait 2.4s'], intent: "You rang a second time: the boss is already at the phone in his corner, handset at his ear, one sharp hello into it (📞❗❓), his back to the office." },
+  { name: 'phone-slam', cmds: [...RING, 'wait 9s', 'interact', 'wait 3.6s'], intent: "He slammed it down (😠) and is already turning back toward his desk: the second call was short." },
+  { name: 'phone-offhook', cmds: [...RING, 'wait 9s', 'interact', 'wait 6s', 'interact', 'wait 3.5s'], intent: "The third time, he took it off the hook (📞❌): his handset lies beside its base on the side table, on its cord, and he's heading back to his desk." },
+  { name: 'phone-engaged', cmds: [...RING, 'wait 9s', 'interact', 'wait 6s', 'interact', 'wait 5s', 'interact', 'wait 0.3s'], intent: "You rang a fourth time and got nothing (📞🚫 over you): his handset still lies off the hook in his corner, and the boss stays at his desk." },
+
+  // Your noodles: your snack, and you can eat them.
+  { name: 'noodles-held', cmds: ['goto microwave pretend', 'move N 0.3s', 'interact', 'move W 1s'], intent: "You picked your noodle cup up off the counter: it's in your hand, lid on; the counter by the microwave is bare." },
+  { name: 'noodles-crunch', cmds: ['goto microwave pretend', 'move N 0.3s', 'interact', 'move W 1s', 'eat'], intent: "You ate the noodles dry, out of the cup: crumbs fly and you wince (😬). The cup is gone, so the microwave has nothing to heat." },
+  { name: 'noodles-slurp', cmds: [...DING, 'wait 10s', 'goto microwave pretend', 'move N 0.3s', 'interact', 'move W 1s', 'eat'], intent: "After the ding, you took your hot noodles off the counter and slurped them down: 😋🍜, content. Nobody turns round for it." },
+
   // The copier: a trap.
   { name: 'copier-jam', cmds: ['goto copier pretend', 'interact', 'wait 2s'], intent: 'The copier is jammed: a crumpled sheet sticking out of its top, a red light flashing, red arcs spreading off it; Kev, at his desk, turns to it with a ❗, a dashed line from him to the copier.' },
   { name: 'kev-fixing', cmds: ['goto copier pretend', 'interact', 'goto kev_desk pretend', 'pretend until 4:07'], intent: 'Kev kneels at the copier, its front open, a spanner in it and in his hand, its light amber; the crumpled sheet is gone, but it still beeps until he is done.' },

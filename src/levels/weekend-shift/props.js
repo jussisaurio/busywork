@@ -1035,7 +1035,8 @@ export function paintCopier(ctx, info, at, shown, t) {
 
 // { noodles, left, fish }: the microwave on the counter, your cup of noodles beside it (above it, up the counter),
 // and on down the wall. Cold: the cup's lid on. Cooking: the cup's in the microwave. Done (the DING has gone):
-// the cup is back on the counter, open and steaming, and the microwave is free (for Lin's fish).
+// the cup is back on the counter, open and steaming, and the microwave is free (for Lin's fish). In your hand or
+// eaten: the counter's bare.
 export function paintMicrowave(ctx, info, at, shown, t) {
   drawCounter(ctx, at.x, at.y - 1, at.y + 2);
   const cooking = shown.noodles === 'cooking' && shown.left !== null && shown.left > 0;
@@ -1046,8 +1047,10 @@ export function paintMicrowave(ctx, info, at, shown, t) {
   drawMicrowave(ctx, at.x * T + 1, at.y * T + 8, inside ? 'cooking' : 'cold', cooking ? shown.left : null, t, shown.fish && !inside, true, false, boil);
   const cx = at.x * T + 17;
   const cy = (at.y - 1) * T + 26;
-  if (!inside) drawNoodleCup(ctx, cx, cy, 1.5, shown.noodles === 'cooking');
-  if (shown.noodles === 'cooking' && !inside) cupSteam(ctx, cx, cy - 18, t, 1);
+  // on the counter unless it's in the microwave, in your hand, or eaten
+  const open = shown.noodles === 'ready' || shown.noodles === 'cooking';
+  if (!inside && (open || shown.noodles === 'cold')) drawNoodleCup(ctx, cx, cy, 1.5, open);
+  if (!inside && open) cupSteam(ctx, cx, cy - 18, t, 1);
 }
 
 // { phone, to: the boss's phone's tile }: the supply room's phone on its little table (at), off the hook from the
@@ -1083,7 +1086,8 @@ export function paintBossPhone(ctx, info, at, shown, t) {
   drawSideTable(ctx, at.x * T, at.y * T);
   const b = cornerPhone(at);
   if (shown.phone === 'talking' && shown.hand) drawCord(ctx, b.x - 7 * PHONE_S, b.y + 2 * PHONE_S, shown.hand.x, shown.hand.y + 3);
-  bigPhone(ctx, b.x, b.y, { ring: shown.phone === 'ringing', gone: shown.phone === 'talking' }, t);
+  // off the hook (3rd call): the handset lies beside the base on its cord, for good
+  bigPhone(ctx, b.x, b.y, { ring: shown.phone === 'ringing', gone: shown.phone === 'talking', lifted: shown.phone === 'offhook' }, t);
 }
 
 // { lunch: 'cold' | 'away' | 'hot' }: Lin's lunch box at the end of her desk (at): shut, until she takes it to the
@@ -1153,6 +1157,16 @@ export const THINGS = {
     box(ctx, x, y, size);
     ctx.scale(0.42, 0.42);
     drawMicrowave(ctx, -MW_W / 2, -MW_H / 2 + 1.5, 'cooking', 0, 0.4, false, false, true);
+  },
+  // your cup of noodles, in your hand: lid on (dry), and open and steaming (after the ding)
+  noodles(ctx, x, y, size) {
+    box(ctx, x, y, size);
+    drawNoodleCup(ctx, 0, 6, 1.1, false);
+  },
+  hotnoodles(ctx, x, y, size, t) {
+    box(ctx, x, y, size);
+    drawNoodleCup(ctx, 0, 6, 1.1, true);
+    cupSteam(ctx, 0, -7, t ?? 0, 0.6);
   },
   // the board's black marker, pointing along +x (held, it points where the arm points)
   marker(ctx, x, y, size) {

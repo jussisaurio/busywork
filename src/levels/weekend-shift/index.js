@@ -17,11 +17,12 @@
 //   - the trap: a paper clip jams the copier, and it beeps until Kev fixes it. Every head turns toward it, and
 //     the copier sits on the line from the boss's desk through the board: his look at it crosses the board.
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
-import { at, GAME_MIN_PER_SEC } from '../../config.js';
+import { at, GAME_MIN_PER_SEC, EAT_TIME, PICK_UP_TIME } from '../../config.js';
 import { burst, say } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
-import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S } from './cast.js';
+import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { THINGS as PROP_THINGS } from './props.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -30,6 +31,12 @@ const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes
 const DING_TURN = 6; // s every head in earshot stays turned to the ding: as long as the noodles boil over (props.js BOIL_S)
 const WRITE_S = 3; // s a write takes (wipe, then draw): longer than any glance away, and too long for two in one window
 const CALL_MIN = 3; // game minutes (5 s) the boss says hello into the dead line before he hangs up
+// Ring him again and he's onto it: each call buys less. The 2nd: he's up at once (😤), one sharp hello, and slams it
+// down (😠). The 3rd: up at once, he snatches it up and lays the handset down beside the base, off the hook (📞❌):
+// after that every ring you make gets the engaged tone (your 📞🚫), and his phone lies off the hook all day.
+const SLURP_S = 3.5; // s the hot noodles take to slurp down (the dry block: the engine's EAT_TIME)
+const CALL2_MIN = 1.2; // game minutes (2 s)
+const CALL3_MIN = 0.5; // game minutes (under 1 s)
 
 // 30 x 17, no camera. North: a supply room, the boss's glass office, the break room. The open office below.
 //   X copier (on the line from the boss's desk through the board)   R the Saturday board (a whiteboard on a stand)
@@ -60,7 +67,8 @@ const LEGEND = {
   X: { kind: 'copier', solid: true, opaque: false, interactable: 'copier' },
   R: { kind: 'roster', solid: true, opaque: false, interactable: 'roster' },
   M: { kind: 'microwave', solid: true, opaque: true, draw: 'desk', interactable: 'microwave' },
-  C: { kind: 'counter', solid: true, opaque: false, draw: 'desk' }, // bare counter (props.js): no second appliance by the microwave
+  // the counter above the microwave, where your noodle cup stands (props.js draws it): pick it up, put it back
+  C: { kind: 'counter', solid: true, opaque: false, draw: 'desk', interactable: 'noodles' },
   // the counter on down the wall, bare (props.js draws it): the microwave is the kitchen's one thing to use
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' },
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
@@ -98,16 +106,64 @@ const ZONES = {
 const INTERACTIONS = {
   start_microwave: {
     on: 'microwave', text: 'microwave your noodles', duration: 1.0, sneaky: false,
-    can: (p, w) => w.noodles === 'cold',
+    can: (p, w) => w.noodles === 'cold' || p.held === 'noodles', // off the counter, or out of your hand
     noise: { at: 'microwave', radius: 20, delay: DING_S, turn: DING_TURN, ripple: true, sfx: 'elevatorDing' }, // DING
     done(game) {
       const w = game.world;
+      if (game.player.held === 'noodles') game.player.held = null;
       w.noodles = 'cooking';
       w.dingAt = game.clock.minute + DING_S * GAME_MIN_PER_SEC;
       // at the DING the noodles boil over, steam pouring out of the microwave (props.js), and every head turns to
       // it at once (the ripple is the noise's) and stays there watching it, as people do
       for (const n of game.npcs) npcSayLater(n, DING_S, ['😮', '🍜'], 'thought', 2.4);
       game.events.emit('microwave:started', {});
+    },
+  },
+  // Your noodle cup (C): it's your snack, so you can pick it up and eat it (hold E). Dry, before the microwave: a
+  // crunch, a wince, and no cup left to heat (no ding this loop). Hot, after the ding: a long happy slurp. Neither is
+  // a noise (nobody turns: the ding is the level's one distraction); both are eating, not working, so the boss's
+  // usual slacking rule applies if he sees you. Put it back on the counter and it's as it was.
+  take_noodles: {
+    on: 'noodles', text: 'pick up your noodles', duration: PICK_UP_TIME, sneaky: false,
+    can: (p, w) => !p.held && (w.noodles === 'cold' || w.noodles === 'ready'),
+    done(game) {
+      const w = game.world;
+      game.player.held = w.noodles === 'cold' ? 'noodles' : 'hot_noodles';
+      w.noodles = w.noodles === 'cold' ? 'held' : 'heldHot';
+      game.events.emit('item:pickup', { type: game.player.held });
+    },
+  },
+  put_noodles: {
+    on: 'noodles', text: 'put your noodles back on the counter', duration: PICK_UP_TIME, sneaky: false,
+    can: (p) => p.held === 'noodles' || p.held === 'hot_noodles',
+    done(game) {
+      const w = game.world;
+      w.noodles = game.player.held === 'noodles' ? 'cold' : 'ready';
+      game.player.held = null;
+      game.events.emit('item:drop', { type: 'noodles' });
+    },
+  },
+  eat_noodles: { // raw: you crunch the dry block out of the cup (😬). The cup's gone: nothing to heat
+    on: 'self', text: 'eat your noodles dry', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '🍜',
+    can: (p) => p.held === 'noodles',
+    done(game) {
+      const p = game.player;
+      p.held = null;
+      game.world.noodles = 'crunched';
+      burst(game, 'crumbs', p.x, p.y, 14, { speed: 1.1, ttl: 0.7 });
+      say(game, 'player', ['😬'], { kind: 'thought', ttl: 1.6 });
+      game.events.emit('noodles:crunched', {});
+    },
+  },
+  eat_hot_noodles: { // cooked: a long, happy slurp (😋🍜), content
+    on: 'self', text: 'eat your noodles', duration: SLURP_S, hold: true, preview: 'lift', idle: true, saw: '🍜',
+    can: (p) => p.held === 'hot_noodles',
+    done(game) {
+      const p = game.player;
+      p.held = null;
+      game.world.noodles = 'slurped';
+      say(game, 'player', ['😋', '🍜'], { kind: 'thought', ttl: 2 });
+      game.events.emit('noodles:slurped', {});
     },
   },
   jam_copier: {
@@ -126,10 +182,17 @@ const INTERACTIONS = {
   },
   call_boss: {
     on: 'desk_phone', text: "ring the boss's phone", duration: 1.0, sneaky: false,
-    can: (p, w) => w.phone === 'idle',
+    can: (p, w) => w.phone === 'idle' || w.phone === 'offhook',
     done(game) {
+      const w = game.world;
+      if (w.phone === 'offhook') { // engaged: he took it off the hook
+        say(game, 'player', ['📞', '🚫'], { ttl: 1.6 });
+        game.events.emit('phone:engaged', {});
+        return;
+      }
       say(game, 'player', ['📞'], { ttl: 1.4 }); // you, ringing his number
-      game.world.phone = 'ringing';
+      w.calls += 1;
+      w.phone = 'ringing';
       game.events.emit('phone:ringing', {});
     },
   },
@@ -213,11 +276,14 @@ function tick(game) {
   // gets up (his phone), he puts the marker back and the board is open again.
   const b = game.npcs.find((n) => n.id === 'boss');
   const spot = SPOTS.board_boss;
-  game.world.rosterLocked = !!b && b.active !== false && !b.moving && b.override !== 'onPhone'
+  game.world.rosterLocked = !!b && b.active !== false && !b.moving && !onPhone(b)
     && Math.abs(b.x - spot.x) < 0.6 && Math.abs(b.y - spot.y) < 0.6;
   // Walked a few steps off from the copier you jammed: whistling, innocent (not at the copier, where ♪ would read
   // as its beeping).
   const p = game.player;
+  const w = game.world;
+  // the boil-over done, your cup is back on the counter, open and steaming (props.js draws it from 'cooking' till then)
+  if (w.noodles === 'cooking' && w.dingAt !== null && game.clock.minute >= w.dingAt + DING_TURN * GAME_MIN_PER_SEC) w.noodles = 'ready';
   const jf = game.world.jamFrom;
   if (jf && p && Math.hypot(p.x - jf.x, p.y - jf.y) > JAM_WHISTLE_D) {
     game.world.jamFrom = null;
@@ -300,7 +366,7 @@ const LURES = [
   { // The phone: the boss takes the call standing at it, in the corner by his window, his back to the office. Anyone
     // answers his own ringing phone; nobody's there, so "Hello? ... Hello?" for a few seconds, and he hangs up (🙄).
     npc: 'boss',
-    when: (w) => w.phone === 'ringing',
+    when: (w) => w.phone === 'ringing' && w.calls === 1,
     override: 'phone',
     plan: 'phone',
     label: 'answer phone',
@@ -315,16 +381,56 @@ const LURES = [
         event: 'phone:answered',
         says: [{ say: ['📞', '❓'], ttl: 1.6 }, { say: ['📞', '❓', '❓'], ttl: 1.8, after: 2.2 }], // (into the phone) hello? ... hello??
       },
-      done: { set: { phone: 'done' }, event: 'phone:hungUp', says: [{ say: ['🙄'] }] }, // a wrong number
+      done: { set: { phone: 'idle' }, event: 'phone:hungUp', says: [{ say: ['🙄'] }] }, // a wrong number
+    },
+  },
+  { // Again?! Up at once, one sharp hello, and he slams it down.
+    npc: 'boss',
+    when: (w) => w.phone === 'ringing' && w.calls === 2,
+    override: 'phone2',
+    plan: 'phone2',
+    label: 'answer phone again',
+    spot: 'boss_window',
+    react: { wait: 0.3, says: [{ say: ['☎️', '😤'], kind: 'alert' }], event: 'boss:phone' },
+    work: {
+      override: 'onPhone2',
+      minutes: CALL2_MIN,
+      progress: 'callProgress',
+      start: { set: { phone: 'talking' }, event: 'phone:answered', says: [{ say: ['📞', '❗', '❓'], ttl: 1.6 }] },
+      done: { set: { phone: 'idle' }, event: 'phone:slammed', says: [{ say: ['😠'], ttl: 1.6 }] },
+    },
+  },
+  { // A third time: he snatches it up and lays the handset down beside it, off the hook, for good.
+    npc: 'boss',
+    when: (w) => w.phone === 'ringing' && w.calls >= 3,
+    override: 'phone3',
+    plan: 'phone3',
+    label: 'take phone off the hook',
+    spot: 'boss_window',
+    react: { wait: 0.3, says: [{ say: ['☎️', '😠'], kind: 'alert' }], event: 'boss:phone' },
+    work: {
+      override: 'onPhone3',
+      minutes: CALL3_MIN,
+      progress: 'callProgress',
+      start: { set: { phone: 'talking' }, event: 'phone:answered' },
+      done: { set: { phone: 'offhook' }, event: 'phone:offhook', says: [{ say: ['📞', '❌'], ttl: 2 }] },
     },
   },
 ];
+
+// Your noodle cup in your hand (take_noodles): never on the floor (keep), only back on its counter (put_noodles).
+// Eating it leaves nothing on you; index.js's own eat rows say how it goes down.
+const ITEMS = {
+  noodles: { icon: '🍜', draw: PROP_THINGS.noodles, keep: true, edible: { leaves: null, icon: '😬' } },
+  hot_noodles: { icon: '🍜', draw: PROP_THINGS.hotnoodles, keep: true, edible: { leaves: null } },
+};
 
 export default {
   id: 'weekend-shift',
   map: { rows: MAP, legend: LEGEND },
   spots: SPOTS,
   zones: ZONES,
+  items: ITEMS,
   patrols: {},
   cast: CAST,
   day: {
@@ -384,9 +490,12 @@ export default {
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     jamAt: null, // game minute of the last jam
     fixProgress: 0,
-    phone: 'idle', // the boss's phone (B): 'idle' | 'ringing' | 'talking' (in his hand) | 'done'
+    phone: 'idle', // the boss's phone (B): 'idle' | 'ringing' | 'talking' (in his hand) | 'offhook' (3rd call: for good)
+    calls: 0, // how many times you've rung him (each call buys less: LURES)
     callProgress: 0,
-    noodles: 'cold', // 'cold' | 'cooking' (dings at dingAt, a game minute)
+    // your cup: 'cold' (on the counter, lid on) | 'held' (in your hand, dry) | 'cooking' (dings at dingAt, a game
+    // minute, then boils over) | 'ready' (back on the counter, open, steaming) | 'heldHot' | 'crunched' | 'slurped'
+    noodles: 'cold',
     dingAt: null,
     told: false, // someone told the boss they saw you at the board: he goes and checks it (LURES 'check')
     checkProgress: 0,
