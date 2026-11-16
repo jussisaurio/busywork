@@ -8,7 +8,7 @@ export default {
   ],
   interactable: ['boss_clock', 'open_clock'],
   renderEvents: ['clock:pushed', 'clock:jump', 'clock:reset', 'boss:desk', 'boss:hunt', 'boss:suspect', 'boss:herd', 'boss:shrug',
-    'boss:coat', 'coat:seen', 'boss:left', 'kev:left', 'boss:workAssigned'],
+    'boss:coat', 'coat:seen', 'coat:shrug', 'boss:left', 'lin:left', 'kev:left', 'boss:workAssigned'],
   milestones: {
     'clock:pushed': (p) => `${p.clock}${p.off}`,
     'clock:jump': (p) => `jump:${p.id}`,
@@ -18,6 +18,7 @@ export default {
     'boss:shrug': () => 'shrug',
     'boss:coat': () => 'coat',
     'boss:herd': () => 'herd',
+    'coat:follow': () => 'follow',
     'boss:left': () => 'bossLeft',
     'lin:left': () => 'linLeft',
     'kev:left': () => 'kevLeft',

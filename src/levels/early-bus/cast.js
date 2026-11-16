@@ -7,7 +7,8 @@
 // laptop to go, sees the boss's coat on the rack, and puts it down again: the rule, on screen. The boss is out at a
 // long lunch with a flat phone until about 3:45; back, he pours a coffee, walks back under the open-plan clock (the
 // first clock he sees: he believes it), sits down, checks his own clock against it, and at 4:50 sharp takes his coat
-// off the rack and goes home. Your bus is at 4:30.
+// off the rack and goes home. Lin and Kev, who doubt a jumped clock, obey the coat: when it goes, they shrug and follow
+// him out (clocks.js follow). Your bus is at 4:30.
 import { at, deg } from '../../config.js';
 
 export const START = 15 * 60; // 3:00 PM
