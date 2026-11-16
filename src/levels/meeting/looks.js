@@ -56,7 +56,7 @@ export const POSES = {
   ],
   marks: [
     { when: (n) => n.override === 'hunting' || (n.id === 'boss' && n.override === 'alerted'), angry: true },
-    { when: (n, w) => n.id === 'boss' && w.keycard === 'boss', badge: true },
+    { when: (n, w) => n.id === 'boss' && w.keycard === 'boss' && !n.pocketing, badge: true }, // (not while it's in his hands)
     { when: (n, w) => n.id === 'boss' && w.jacket !== 'boss', jacket: false }, // in shirt and suspenders until he fetches it
   ],
 };

@@ -306,6 +306,8 @@ export function levelProblems(level, key) {
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
     if (it.contraband !== undefined) npc(`items.${type}.contraband`, it.contraband);
     if (it.contrabandIn !== undefined) zone(`items.${type}.contrabandIn`, it.contrabandIn);
+    if (it.pockets !== undefined && !(Array.isArray(it.pockets) && it.pockets.every((l) => isObj(l) && Array.isArray(l.say)))) bad(`items.${type}.pockets`, 'not a list of lines ({ say: icons, after?, kind?, ttl? })');
+    if (it.pockets !== undefined && it.contraband === undefined) bad(`items.${type}.pockets`, 'only contraband is pocketed off the floor: give it a contraband too, or drop this');
     if (it.disguise !== undefined) {
       if (!isObj(it.disguise)) bad(`items.${type}.disguise`, 'not an object');
       else {

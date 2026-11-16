@@ -1086,6 +1086,15 @@ function drawNpc(ctx, game, n, t) {
   } else if (s.pose === 'walk') {
     s.arms = 'walk';
   }
+  // Picking his thing up off the floor (npc.pocketing, sim/mechanics/fetch.js): bent over it a moment, then holding it
+  // up in both hands to look at, until it goes in his pocket.
+  let stoop = 0;
+  if (n.pocketing) {
+    const k = fin(game.loopTime) - fin(n.pocketing.at);
+    stoop = k < POCKET_STOOP ? Math.sin((k / POCKET_STOOP) * Math.PI) * 4 : 0;
+    s.arms = 'reach';
+    s.item = itemGlyph(game.level.items, n.pocketing.type);
+  }
   if (strictGlyphs()) pointAt(game, n, s);
   orderTurn(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
@@ -1106,7 +1115,7 @@ function drawNpc(ctx, game, n, t) {
   if (game.caught && n.id && n.id === auth) s.angry = true; // the authority, catching you
   if (game.rules?.grudge?.by === n.id && n.id) s.angry = true; // she saw you, and she'll tell him when he's back
   const px = fin(n.x) * T;
-  let py = fin(n.y) * T;
+  let py = fin(n.y) * T + stoop;
   // A witness who just saw you at it (game.watch, play/rules.js) starts: a little hop (render/effects.js drawWitnesses
   // opens the eye beside her head).
   if (n.id !== auth && game.watch && Object.hasOwn(game.watch, n.id)) {
@@ -1118,6 +1127,8 @@ function drawNpc(ctx, game, n, t) {
   drawPerson(ctx, look, s, px, py);
   if (mug && !mugBehind) drawSetDownMug(ctx, px, py, s.dir, itemGlyph(game.level.items, n.carry));
 }
+
+const POCKET_STOOP = 0.4; // s of the bend down to pick his thing up (drawNpc)
 
 // Sat at his desk in his own routine, he types: no scripted moment (override), no look of the schedule's own
 // (anim), nothing holding his eyes (npc.heeding: a noise, a stare) and his head straight. A glance or a turn to a

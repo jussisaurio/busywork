@@ -7,7 +7,7 @@
 //               (coffee has none: world.coffee is the pot, and the poured cup is just held)
 //   edible      { leaves }: the engine offers eat_<type> while you hold it (hold E; play/interactions.js), sneaky
 //               to its owner; leaves: what it leaves on you, a config.js MARKS name (player.smeared) or null
-//   contraband  the NPC (id) who catches you holding it, and pockets it if he sees it on the floor
+//   contraband  the NPC (id) who catches you holding it, and walks over and pockets it if he sees it on the floor
 //   owner       { id, when?(npc), says?, reclaim?(game, npc) }: who takes it back on sight (play/rules.js).
 //               when: only while this holds does the owner know it's theirs. says: what they say on catching
 //               you just carrying it ({ say: icons, after?: seconds }). reclaim: what taking it back does

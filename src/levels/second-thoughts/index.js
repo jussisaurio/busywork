@@ -214,7 +214,8 @@ const ITEMS = {
     icon: '✉️',
     draw: letter, // the envelope (things.js), wherever it is held or lies
     place: 'letter',
-    contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: back in his pocket
+    contraband: 'boss', // in your hand where he can see it: caught. Dropped where he can see it: he goes and gets it
+    pockets: [{ say: ['😏', '✉️'], after: 0.45, ttl: 1.2 }], // well, well: someone's resignation, on his floor
     contrabandIn: 'office', // away from his desk, a white envelope in your hand is anyone's envelope
     edible: { leaves: null }, // eat your words
   },

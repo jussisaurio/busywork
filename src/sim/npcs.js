@@ -114,6 +114,10 @@ export function createNpc(game, def, now = 0) {
     _insp: undefined, // the inspection he is on (mechanics/inspection.js)...
     _inspected: undefined, // ...and the ones he has started today
     _fetch: undefined, // a found item he holds: { t: loopTime he picked it up } (mechanics/fetch.js)
+    _fetchPath: undefined, // ...whether he can walk to where it lies: { tile, ok }
+    _fetchAt: undefined, // ...the tile he is heading for: { x, y }
+    _fetchMissed: null, // ...the item type gone before he got there: he stands and looks round
+    pocketing: null, // render: { type, at: loopTime } while he holds a reclaimed item up before pocketing it (fetch.js)
   };
   // The fields the level's hooks keep (a behaviour's `state`). Every field an NPC will ever get is on it from the
   // start: NPCs that differ in shape make every NPC field read in the sim slow.
