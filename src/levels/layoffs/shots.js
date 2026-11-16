@@ -205,6 +205,16 @@ export default [
     intent: "3:45: the boss clicks send. The attached sheet pops out big beside his screen, three faces on it and none of them yours, and starts to fly off. You sit at your desk, celebrating.",
   },
   {
+    name: 'trespass-eyebrow',
+    cmds: ['pretend until 3:25', 'goto boss_office_door pretend', 'move N 2s pretend', 'move W 0.6s pretend'], // his 🤨, a beat before he shows you out
+    intent: "You walk into the boss's glass office while he sits at his desk, pretending with your folder. He has looked up at you: a thought with your face and a raised eyebrow. Whose office do you think this is?",
+  },
+  {
+    name: 'trespass-shown-out',
+    cmds: ['pretend until 3:25', 'goto behind_his_desk pretend'], // a walk stops as he shows you out
+    intent: "The boss points you out of his office: a speech bubble, a pointing hand, your face and a door. He stares after you; you turn for the door, empty-handed.",
+  },
+  {
     name: 'end-win-ring',
     cmds: [...RING_EDIT, ...END],
     intent: "Win. The boss sends the list without your face on it; a ringing phone and an email in the card. You sit at your desk, smug.",

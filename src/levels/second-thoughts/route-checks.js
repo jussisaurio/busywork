@@ -268,13 +268,13 @@ export default [
     },
   },
   {
-    name: 'in the light: take it from beside his desk → he sees you → caught',
-    expect: { result: 'caught' },
-    play({ run, waitFor, g }) {
+    // His office is his (roles private): he sees you come in, 🤨, and shows you out before you reach the tray.
+    name: 'in the light: walk in for it while he sits there → 🤨, 👉 you 🚪, back at your desk, the letter still in his tray',
+    expect: { result: 'fail' },
+    play({ run, waitFor, g, log }) {
       run('goto desk_side pretend');
-      try { run('interact'); } catch { /* caught mid-take */ }
-      waitFor((gg) => gg.caught, { maxSec: 10 });
-      caughtFor(g, 'action');
+      waitFor(() => log.some((e) => e.name === 'trespass:out'), { maxSec: 20 });
+      if (g.player.held) throw new Error('you left his office holding ' + g.player.held);
     },
   },
 ];

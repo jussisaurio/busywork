@@ -19,12 +19,14 @@ import { SCREEN_ICON } from '../sim/mechanics/camera.js';
 import { npcTakes, npcSayLater } from '../sim/npcs.js';
 import { judge } from '../sim/mechanics/index.js';
 import { cancelAction, dropHeld } from './interactions.js';
-import { setBusy, sendToDesk } from './player.js';
+import { setBusy, sendToDesk, showOut } from './player.js';
 import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
 
 // Module tunables.
 export { NOTICE }; // config.js: seconds of continuous sight before a witness reacts
 const NOTICE_BUBBLE_GAP = 1.0; // min seconds between ❓ bubbles from the same NPC
+const SHOW_OUT_STARE = 1.6; // seconds he keeps facing you as he points you out
+const TRESPASS_NOTICE = 0.6; // seconds an owner looks at you in his private place (🤨) before he shows you out
 const TELL_DELAY = 1.2; // seconds after the authority is back on the floor before a witness tells on you
 // The scene's investigator blames whoever he sees in its zone, or within this many tiles of its door (unless
 // you're pretending: just someone on a call). A level's scene may set its own `radius`.
@@ -92,10 +94,29 @@ function offenceFor(game, s, npc) {
   // The evidence role's witness, on her hunt, spots the mark on you (player.smeared). Pretending doesn't hide a stain.
   const ev = r.evidence;
   if (ev && npc.id === ev.by && [].concat(ev.while).includes(npc.override) && p[ev.mark] && !game.world[ev.knows]) return 'evidence';
-  if (p.busy) return null; // phone call / folder stride hides contraband
-  const held = itemFlags(game, p.held);
-  if (npc.id === held?.contraband && enforcing(game, npc) && (!held.contrabandIn || inZone(game, held.contrabandIn, p.x, p.y))) return 'contraband';
-  if (claims(game, npc, p.held)) return 'contraband';
+  if (!p.busy) { // phone call / folder stride hides contraband
+    const held = itemFlags(game, p.held);
+    if (npc.id === held?.contraband && enforcing(game, npc) && (!held.contrabandIn || inZone(game, held.contrabandIn, p.x, p.y))) return 'contraband';
+    if (claims(game, npc, p.held)) return 'contraband';
+  }
+  if (trespassing(game, npc)) return 'trespass'; // a phone call in his office is still "why are you in my office"
+  return null;
+}
+
+// Private places (level.roles.private: [{ zone, owner, offDuty? }]): the player is in a zone this NPC owns, and he
+// minds right now (on the floor, not in one of the entry's offDuty overrides; the authority also enforcing and not
+// helpless). Returns the entry, or null.
+function trespassing(game, npc) {
+  const list = roles(game).private;
+  if (!list || !npc.active) return null;
+  const p = game.player;
+  const auth = roles(game).authority;
+  for (const e of list) {
+    if (e.owner !== npc.id || !inZone(game, e.zone, p.x, p.y)) continue;
+    if ((e.offDuty ?? []).includes(npc.override)) continue;
+    if (npc.id === auth?.id && (!enforcing(game, npc) || (auth.helpless ?? []).includes(npc.override))) continue;
+    return e;
+  }
   return null;
 }
 
@@ -105,7 +126,7 @@ export function updateRules(game, dt) {
 }
 
 // What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'disguise' | 'action' |
-// 'scene' | 'evidence' | 'contraband', absent if nothing (and empty while you're caught, the day is decided, or you're
+// 'scene' | 'evidence' | 'contraband' | 'trespass', absent if nothing (and empty while you're caught, the day is decided, or you're
 // serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
 // a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
 function publishWatch(game) {
@@ -129,6 +150,13 @@ function rulesStep(game, dt) {
   // Mechanics with a say (what lies on your desk: putdown.js; a failed inspection: inspection.js) judge first,
   // even while you serve assigned work: evidence doesn't wait.
   if (judge(game, JUDGE)) return;
+
+  // Being shown out of someone's office: nothing else applies until you're back at your desk (player.js).
+  if (s.out) {
+    s.seen = {};
+    decaySuspicion(game, dt);
+    return;
+  }
 
   // Serving assigned work: nothing else applies until it's done.
   if (s.working) {
@@ -166,10 +194,10 @@ function rulesStep(game, dt) {
     if (offence && npcSees(game, npc, p.x, p.y)) {
       if (!s.seen[npc.id]) notice(game, s, npc, offence);
       s.seen[npc.id] = (s.seen[npc.id] || 0) + dt;
-      if (s.seen[npc.id] >= (offence === 'disguise' ? DOUBLE_TAKE : NOTICE) - 1e-9) {
+      if (s.seen[npc.id] >= (offence === 'disguise' ? DOUBLE_TAKE : offence === 'trespass' ? TRESPASS_NOTICE : NOTICE) - 1e-9) {
         s.seen[npc.id] = 0;
         react(game, s, npc, offence);
-        if (game.caught || s.working) return;
+        if (game.caught || s.working || s.out) return;
       }
     } else {
       s.seen[npc.id] = 0;
@@ -184,7 +212,8 @@ function rulesStep(game, dt) {
   const id = auth.id;
   const slacking = !p.action || p.action.idle; // eating at work is not working
   const idleInView = enforcing(game, boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y)
-    && disguiseView(game, boss) !== 'fooled'; // he sees whoever you're dressed as standing around
+    && disguiseView(game, boss) !== 'fooled' // he sees whoever you're dressed as standing around
+    && !trespassing(game, boss); // in his own office the question is a different one (🤨 👉🚪)
   if (idleInView) {
     if (game.suspicion[id] === 0) game.events.emit(`${id}:suspicious`, {});
     game.suspicion[id] = Math.min(1, game.suspicion[id] + dt / SUSPICION_FILL_SEC);
@@ -219,16 +248,17 @@ function notice(game, s, npc, offence) {
   if (last !== undefined && game.loopTime - last < NOTICE_BUBBLE_GAP) return;
   s.lastNotice[npc.id] = game.loopTime;
   const cam = camVia(game, npc);
-  const icons = offence === 'disguise' ? doubleTakeIcons(game) : [seenIcon(game, offence) ?? '@player', '❓'];
+  const icons = offence === 'disguise' ? doubleTakeIcons(game) : offence === 'trespass' ? ['@player', '🤨'] : [seenIcon(game, offence) ?? '@player', '❓'];
   say(game, npc.id, pointing(cam, icons), { kind: 'thought', ttl: 1.0 });
   sightline(game, npc.id, 'notice', 0.6, screenChain(cam));
-  game.events.emit('witness:notice', { by: npc.id });
+  game.events.emit(offence === 'trespass' ? 'trespass:notice' : 'witness:notice', { by: npc.id });
 }
 
 function react(game, s, npc, offence) {
   const r = roles(game);
   const cam = camVia(game, npc);
   if (offence === 'disguise') unmasked(npc); // he objects once; then she is just herself to him
+  if (offence === 'trespass') return showOutOf(game, s, npc, trespassing(game, npc), cam);
   if (npc.id === r.authority?.id) {
     sightline(game, npc.id, 'caught', 1.6, screenChain(cam));
     caught(game, offence, r.authority.id, cam);
@@ -269,6 +299,50 @@ function react(game, s, npc, offence) {
   game.events.emit('witness:tattle', withVia({ by: npc.id, reason: offence, heard }, cam));
   if (heard) tattleHeard(game, npc.id, offence);
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
+}
+
+// For a level hook: the owner knows you're in his private place without seeing you (he's in there with you, about to
+// go out) and shows you out now. True if he did (you're in a zone he owns and he minds right now).
+export function showOutNow(game, npcId) {
+  const s = game.rules;
+  const npc = findNpc(game, npcId);
+  const entry = npc && game.phase === 'day' && !game.caught && !game.outcome && !s.out && !s.working && trespassing(game, npc);
+  if (!entry) return false;
+  showOutOf(game, s, npc, entry, null);
+  return true;
+}
+
+// He finds you in his private place: 👉 you 🚪, and you walk back to your desk (player.js showOut). Not a catch and
+// not assigned work: it costs you the walk and where you were. Whatever you were doing there stops. Holding his own
+// thing (his contraband, or an item he owns), he takes it back first, pretend phone call or not; anything else
+// you keep. Nobody but the owner minds: a witness doesn't tell on you for being in the boss's office.
+function showOutOf(game, s, npc, entry, cam) {
+  const p = game.player;
+  cancelAction(game, 'trespass');
+  const held = p.held;
+  const flags = itemFlags(game, held);
+  const his = held && claims(game, npc, held); // his, and he knows it right now (an owner's when)
+  if (held && (flags.contraband === npc.id || his)) {
+    p.held = null;
+    if (his && flags.owner.reclaim) flags.owner.reclaim(game, npc);
+    else {
+      npcTakes(npc, held);
+      if (flags.place) game.world[flags.place] = npc.id;
+      game.events.emit(`${held}:confiscated`, { by: npc.id });
+    }
+  }
+  if (!cam) { // he turns to you while he says it (a stare, as the sim's lookAt, without stopping him), then back
+    const dir = Math.atan2(p.y - npc.y, p.x - npc.x);
+    npc._stare = { t: SHOW_OUT_STARE, dir, back: npc._stare ? npc._stare.back : npc._faceTarget };
+    npc._faceTarget = dir;
+  }
+  sightline(game, npc.id, 'order', 1.6, screenChain(cam));
+  say(game, npc.id, pointing(cam, ['👉', '@player', '🚪']), { kind: 'speech', ttl: 1.8 });
+  const id = roles(game).authority?.id;
+  if (id) game.suspicion[id] = 0;
+  s.seen = {};
+  showOut(game, npc.id);
+  game.events.emit('trespass', withVia({ by: npc.id, zone: entry.zone }, cam));
 }
 
 // The authority is back: the witness points you out, with what she saw.

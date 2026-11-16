@@ -48,11 +48,13 @@ export default [
     },
   },
   {
-    name: 'his plug while he sits at his desk → nothing to do there (he sends you back to work)',
+    // His office is his (roles private): pretending doesn't help. He looks up (🤨) and shows you out (👉 you 🚪).
+    name: 'his plug while he sits at his desk, pretending → 🤨, 👉 you 🚪, back at your desk',
     expect: { result: 'fail' },
     play({ run, g, log }) {
-      for (const c of ['pretend until 3:25', 'goto behind_his_desk', 'interact']) run(c);
+      for (const c of ['pretend until 3:25', 'goto behind_his_desk pretend', 'interact', 'wait 5s']) run(c);
       if (g.world.glitch || log.some((e) => e.name === 'pc:pulled')) throw new Error('pulled his plug under his nose');
+      mustFire(log, 'trespass');
       run('goto my_seat pretend');
       run('pretend until 3:45');
     },

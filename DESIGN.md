@@ -148,6 +148,9 @@ Pretending never hides a mark on you (see Evidence), and it never covers a sneak
 - **Owners.** An action on someone's thing is sneaky only to that owner. To everyone else it is harmless (but still
   slacking if it is idle). Owners take their things back on sight unless you pretend. Just carrying it is no tattle. An owner who sees his thing on the floor walks over and picks it up.
 - **Contraband.** The authority seeing you hold his thing (and not pretending) means caught.
+- **Private places.** A level can make a room someone's own (the boss's office). If he finds you in it, pretending or
+  not, he looks up (🤨 at you) and shows you out (👉 you 🚪): you walk back to your desk, and he takes back his own
+  thing if you hold it. It costs time, not the day. While he is away the room is open, so a break-in is about when.
 - **Evidence.** Some acts leave a mark on you for the rest of the loop. One witness, at one moment, reads it as guilt,
   and pretending doesn't hide it.
 - **The scene.** After some events, one witness blames whoever he sees at the scene (a room, or near its door unless

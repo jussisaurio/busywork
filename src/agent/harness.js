@@ -24,6 +24,10 @@ import { getLevel, defaultLevel } from '../levels/index.js';
 // Events that end a waiting/walking command early so the agent can react (the level adds its own: harness.stops).
 const HARD_STOP = ['caught', 'day:end'];
 const SOFT_STOP = ['witness:notice', 'witness:tattle', 'action:cancel'];
+// A walk also stops when the owner of a private place shows you out (rules.js): he walks you to your desk, so going
+// on toward the target would only walk you back in; the next command starts once you are back (waitWhileLocked).
+// A wait just goes on through it. His 🤨 first (trespass:notice) stops nothing: you can only be walked out.
+const WALK_STOPS = ['trespass'];
 const MAX_CMD_FRAMES = 60 * 200; // safety: one command never runs longer than 200 real seconds
 
 // Press-frame stops: interact and eat watch for stop events from the key press's own frame, so one fired that frame
@@ -92,28 +96,28 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
   }
 
   // The first stop event logged since `start`, or null.
-  function stopSince(start, soft = true) {
+  function stopSince(start, soft = true, stops = null) {
     for (let i = start; i < log.length; i++) {
       const n = log[i].name;
-      if (hardStop.has(n) || (soft && softStop.has(n))) return n;
+      if (hardStop.has(n) || (soft && softStop.has(n)) || stops?.includes(n)) return n;
     }
     return null;
   }
 
   // Run frames until done() or a stop event. Returns { frames, stoppedBy }. `since`: watch the log from there (an
-  // earlier frame of the same command, e.g. the key press's), not just from now.
-  function runUntil(done, { soft = true, maxFrames = MAX_CMD_FRAMES, onFrame, since } = {}) {
+  // earlier frame of the same command, e.g. the key press's), not just from now. `stops`: more stop events.
+  function runUntil(done, { soft = true, maxFrames = MAX_CMD_FRAMES, onFrame, since, stops = null } = {}) {
     const start = since ?? log.length;
     let frames = 0;
     if (since !== undefined) {
-      const n = stopSince(start, soft);
+      const n = stopSince(start, soft, stops);
       if (n) return { frames, stoppedBy: n };
     }
     while (frames < maxFrames && game.phase === 'day') {
       if (onFrame && onFrame() === false) break;
       frame();
       frames++;
-      const n = stopSince(start, soft);
+      const n = stopSince(start, soft, stops);
       if (n) return { frames, stoppedBy: n };
       if (done()) return { frames, stoppedBy: null };
     }
@@ -126,12 +130,15 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
     if (!(game.clock.forced > 0 || game.player.locked)) return null;
     const from = game.clock.minute;
     const working = game.clock.forced > 0;
+    const shownOut = !!game.rules.out;
     input.releaseAll();
     runUntil(() => !(game.clock.forced > 0 || game.player.locked), { soft: false });
     if (game.phase !== 'day') return null; // the meeting/caught beat ran to the end of the day
     return working
       ? `(you were stuck at your desk doing assigned work from ${clock(from)} to ${clock(game.clock.minute)})`
-      : `(you couldn't move from ${clock(from)} to ${clock(game.clock.minute)})`;
+      : shownOut
+        ? `(shown out: you walked back to your desk from ${clock(from)} to ${clock(game.clock.minute)})`
+        : `(you couldn't move from ${clock(from)} to ${clock(game.clock.minute)})`;
   }
 
   function parseDuration(tokens) {
@@ -225,6 +232,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
     const res = runUntil(
       () => i >= path.length,
       {
+        stops: WALK_STOPS,
         onFrame() {
           // Advance waypoint when close; steer toward current waypoint centre.
           while (i < path.length) {
@@ -303,7 +311,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
         const d = parseDuration(tokens.slice(1, busy ? -1 : undefined));
         input.hold('busy', busy);
         input.setAxis(v[0], v[1]);
-        const r = runUntil(d.done);
+        const r = runUntil(d.done, { stops: WALK_STOPS });
         input.releaseAll();
         frame();
         result = { text: `walked ${tokens[0].toUpperCase()} ${d.label}${r.stoppedBy ? ` (stopped: ${r.stoppedBy})` : ''}` };
@@ -470,7 +478,9 @@ export function observe(game, { map = true, debug = false } = {}) {
   const state = [];
   state.push(`at (${f1(p.x)},${f1(p.y)}) facing ${compass(p.dir)}`);
   const sent = game.rules.sent;
+  const shownOut = game.rules.out;
   state.push(p.seated ? 'seated at your desk' : sent ? (p.moving ? 'walking back to your desk (sent)' : 'standing, being sent to your desk')
+    : shownOut ? (p.moving ? 'walking back to your desk (shown out)' : 'standing, being shown out')
     : p.moving ? 'walking' : 'standing');
   state.push(`hands: ${p.held ?? 'empty'}`);
   if (p.smeared) state.push(MARKS[p.smeared]?.words ?? `${p.smeared} on you`); // what eating left on you: what the screen paints
@@ -569,8 +579,11 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
         break;
       }
       case 'witness:notice': s = `${NAME[p.by] ?? p.by} noticed you ❓`; break;
+      case 'trespass:notice': s = `${NAME[p.by] ?? p.by} looks up at you in his room 🤨`; break;
       case 'witness:tattle': s = `${NAME[p.by] ?? p.by} points at you ❗👉`; break;
       case 'work:done': s = 'forced work finished'; break;
+      case 'trespass': s = `${NAME[p.by] ?? p.by} finds you in his ${String(p.zone).replace(/^boss_/, "").replace(/_/g, " ")}: 👉 you 🚪, you walk back to your desk`; break;
+      case 'trespass:out': s = 'you are back at your desk'; break;
       case 'caught': s = `CAUGHT by ${NAME[p.by] ?? p.by} (${p.reason})`; break;
       case 'action:cancel': s = `your action was interrupted (${p.reason})`; break;
       case 'npc:vanish': s = `${NAME[p.id] ?? p.id} left the floor`; break;

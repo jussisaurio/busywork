@@ -313,7 +313,12 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
 - `scene`: `{ by, while, zone, door, radius?, fresh(world), icon }`. While `by` is in one of the `while`
   overrides (a list), he blames whoever he sees in `zone`, or within `radius` (default 3.5) of the point `door`
   (`{ x, y }`) unless pretending. Once per scene; `fresh(world)` holding makes the next one fresh. Reason `'scene'`.
-- Example: fixture `ROLES` (authority only); meeting `roles.js` (all three).
+- `private`: `[{ zone, owner, offDuty? }]`. `zone` is the owner's own place. If the owner (active; the authority only
+  while enforcing and not helpless; not in an `offDuty` override) sees you in it for 0.6 s, pretending or not, he
+  shows you out: 🤨 `@player`, then 👉 `@player` 🚪, and you walk to `player_desk` (`rules.out`, locked). He takes
+  back a held item that is his (contraband, or owned while his `when` holds). Ranked below the other offences; not caught, no tattle.
+  Reason `'trespass'`. A level hook can trigger it without sight: `showOutNow(game, npcId)` (play/rules.js).
+- Example: fixture `ROLES` (authority only); meeting `roles.js` (all three, plus `private`).
 
 ### Mechanics
 A mechanic is data that gives one NPC a scripted moment. Each acts **only on the NPCs its data names**
@@ -513,7 +518,7 @@ game = {
     items: [],                // floor items: { type, x, y, spot? } (spot: lying on a put-down spot)
   },
   suspicion: { [authorityId]: 0 },   // 0..1; {} without an authority
-  watch: {},                  // { [npcId]: 'action'|'scene'|'evidence'|'contraband' }: what each NPC sees that the
+  watch: {},                  // { [npcId]: 'action'|'scene'|'evidence'|'contraband'|'trespass' }: what each NPC sees that the
                               // rules react to, after each step (rules.js; render/cones.js reads it). Empty while
                               // caught, after the outcome and during assigned work.
   caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection'|
@@ -522,7 +527,8 @@ game = {
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute, stopped? }
                               //   stopped: { by, reason, working } on a lost day you were sent to your desk (by: who
                               //   told, else the authority; working: still at it). End card: screens.js STOPPED_SCENE.
-  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, workFrom, stackAt, stoppedBy, stoppedFor },
+  rules: { seen, lastNotice, working, sceneTold, grudge, worn, sent, out, workFrom, stackAt, stoppedBy, stoppedFor },
+      // out: null | { t, by, walk }: shown out of a private zone, walking back to your desk (player.js).
       // sent: null | { t, by, auth, look, said, walk }: sent to your desk and not there yet (look: whom the
       //   authority faces, null | witness id | 'player').
       // workFrom: clock.forced when you sat down (the stack's full height); stackAt: loopTime it landed (you sat).
@@ -649,6 +655,9 @@ These are the engine's events. A level adds its own through data (`react.event`,
 | `<authority>:workAssigned` | `{reason: 'idle'\|'tattle'}` | rules |
 | `work:done` | `{}` | rules |
 | `caught` | `{by, reason}` | rules / put down / inspection |
+| `trespass:notice` | `{by}` | rules (🤨, first sight of you in his private zone; not a harness stop) |
+| `trespass` | `{by, zone, via?}` | rules (shown out of a private zone; stops a harness goto/move; the next command waits out the walk) |
+| `trespass:out` | `{by}` | player (back at your desk after being shown out) |
 | `npc:vanish` / `npc:appear` | `{id}` | sim |
 | `meeting:gather` | `{}` | sim |
 | `noise` | `{x, y, radius}` | attention |

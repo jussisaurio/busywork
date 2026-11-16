@@ -31,7 +31,7 @@ const SIT_TILL_3_41 = ['sit pretend', 'sit pretend', 'sit pretend', 'wait until 
 
 export default [
   { name: 'start', cmds: [], intent: 'You at your desk on the open floor; the boss behind glass, sitting facing his desk, your white envelope lying in the wire tray right in front of him; the clock says 3:00.' },
-  { name: 'tray', cmds: ['goto desk_side pretend'], intent: 'Up close: your letter in his tray within his reach, and he is looking straight at it and at you, so you cannot just take it in the light.' },
+  { name: 'tray', cmds: ['goto desk_side pretend'], intent: 'Up close: your letter in his tray within his reach, but he is right there in the light: he looks up and points you out of his office (👉 you 🚪), so you cannot just take it.' },
   { name: 'boss-sighs', cmds: ['wait until 3:01', 'wait 0.6s'], intent: 'The boss does no work: he looks at the tray in front of him and sighs (😩), shrugging, dreading it.' },
   { name: 'boss-drums', cmds: ['wait until 3:03'], intent: 'The boss drums his fingers on his desk, eyes on his tray: still not working.' },
   { name: 'boss-clock', cmds: ['wait until 3:05'], intent: 'The boss reaches for the little brass alarm clock on the end of his desk and checks it: a glint off its face, its hands just past 3:00.' },
@@ -72,7 +72,7 @@ export default [
   { name: 'end-deskwork', cmds: [...RIG_SEEN, 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Loss at 3:40: the boss went through his tray and holds your letter up, furious; you sit at your desk behind a pile of paperwork, because Lin caught you pouring water into her coffee machine and told on you.' },
   { name: 'end-eaten', cmds: [...TAKE_BREAKER, 'goto my_seat pretend', 'goto my_seat pretend', 'wait until 3:32', 'wait until 3:32', 'wait until 3:32', 'move S 0.4s', 'eat', 'wait until 3:41', 'wait until 3:41', 'wait until 3:41', 'wait 10s', 'wait 10s'], intent: 'Win, the letter eaten and still inside you at 3:40: he holds up his empty tray, baffled; you sit at your desk outside his glass office, green in the face.' },
   { name: 'end-soggy', cmds: [...LOOKED, 'wait 5s', 'wait 5s'], intent: 'Loss: you ate it too early and it came back up; he came over to see what the retching was and stands over the green puddle on the floor, pointing at his own soggy envelope lying in it, furious; you stand beside it, green.' },
-  { name: 'end-caught', cmds: ['goto desk_side pretend', 'interact', 'wait 5s', 'wait 5s'], intent: 'Loss: you took the letter while he could see you; the lights on, he points at you holding it beside his desk.' },
+  { name: 'end-caught', cmds: [...TAKE_BREAKER, 'wait 30s', 'wait 30s', 'wait 30s', 'wait 5s', 'wait 5s'], intent: 'Loss: you took the letter in the dark and were still beside his desk when the lights came back on; he points at you holding it.' },
   { name: 'end-panel', cmds: [...FLIP, 'wait 30s', 'wait 5s', 'wait 5s'], intent: 'Loss: out in the lit hallway he found you at the lighting panel, its switch still off: he points at you, sweating.' },
   { name: 'coffee-poured', cmds: ['wait until 3:20', 'wait until 3:20', 'wait until 3:20', 'goto coffee_machine', 'interact', 'move S 1.2s'], intent: 'Nobody soaked it, so the coffee machine brewed after its flicker: its lamp glows green, the pot is full and steaming, and you hold a cup you just poured.' },
 ];

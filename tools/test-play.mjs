@@ -68,6 +68,10 @@ const MEETING_AT = game.level.day.meetingAt;
 const VISION = Object.fromEntries(game.level.cast.map((d) => [d.id, d.vision])); // each cast member's own
 const log = [];
 game.events.on('*', (name, payload) => log.push({ name, payload, t: game.loopTime }));
+// The boss's office is private in level 1 (roles.private): most sections stage the engine inside it, so it is off
+// until the trespass section below puts it back.
+const PRIVATE = game.level.roles.private;
+delete game.level.roles.private;
 const evs = (name) => log.filter((e) => e.name === name);
 const p = () => game.player;
 
@@ -969,6 +973,38 @@ section('4:00 meeting outcomes + persist.routesFound');
 }
 
 // =====================================================================================
+section('trespass: the owner shows you out of his private place');
+game.level.roles.private = PRIVATE;
+{
+  newDay([fakeNpc('boss', 'boss_desk')]);
+  place(4.5, 5.5); // in his office, right in front of his desk
+  game.world.keycard = 'player';
+  p().held = 'keycard';
+  input.hold('busy');
+  step();
+  ok(evs('trespass:notice').some((e) => e.payload.by === 'boss') && !evs('witness:notice').length, 'boss notices you at once (trespass:notice, not a witness:notice: nothing for a harness to stop on)');
+  ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.kind === 'thought' && e.payload.icons.join('') === '@player🤨'), 'boss thinks your face 🤨');
+  run(0.4);
+  ok(evs('trespass').length === 0, 'not yet: a beat to take you in');
+  run(0.4);
+  const t = evs('trespass');
+  ok(t.length === 1 && t[0].payload.by === 'boss' && t[0].payload.zone === 'boss_office', "trespass {by:'boss', zone:'boss_office'}, pretending or not");
+  ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.icons.join('') === '👉@player🚪'), 'boss says 👉 your face 🚪');
+  ok(!game.caught && !game.outcome && p().locked && game.rules.out, 'shown out: locked, not caught');
+  ok(!p().held && game.world.keycard !== 'player', `he takes his keycard back (keycard: ${game.world.keycard})`);
+  input.release('busy');
+  run(12);
+  ok(evs('trespass:out').length === 1 && !game.rules.out && !p().locked, 'back at your desk, free again');
+  ok(Math.hypot(p().x - 13.5, p().y - 9.5) < 1.5, `walked to your desk (${p().x.toFixed(1)}, ${p().y.toFixed(1)})`);
+  ok(evs('boss:workAssigned').length === 0 && !game.caught, 'no work, no catch: only time and position lost');
+
+  // Away, his office is open.
+  newDay([fakeNpc('boss', 'boss_desk', { active: false })]);
+  place(4.5, 5.5);
+  run(2);
+  ok(evs('trespass').length === 0, 'boss away: nobody shows you out');
+}
+
 section('input module (createInput on a fake EventTarget)');
 {
   const target = new EventTarget();
@@ -1031,7 +1067,7 @@ section('input module (createInput on a fake EventTarget)');
 // the command pauses on it.
 {
   const PLAN = ['pretend until 3:14', 'goto behind_his_desk', 'interact', 'goto my_seat pretend', 'pretend until 3:30.3',
-    'goto behind_his_desk', 'interact', 'goto his_screen', 'wait until 3:41.3']; // pull, plug back in, wait for him
+    'goto behind_his_desk', 'interact', 'goto his_screen', 'wait until 3:41.12']; // pull, plug back in, wait for him
   const press = (pressStops) => {
     const h = createHarness({ level: 'layoffs', pressStops });
     h.begin();
