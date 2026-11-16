@@ -33,10 +33,9 @@ export default {
   ],
 
   outcomeText: (o) => (o.result === 'win'
-    ? `WIN 🎉 (Kev's face is on the board for Saturday: the boss read it out${o.routes.includes('ding') ? '; you wrote it during the DING' : o.routes.includes('phone') ? "; you wrote it during the boss's phone call" : ''})`
+    ? `WIN 🎉 (${o.why === 'boss' ? "the boss's own face is on the board for Saturday: he read it out to the room, went red, and Lin and Kev clapped 👏" : "Kev's face is on the board for Saturday: the boss read it out"}${o.routes.includes('ding') ? '; you wrote it during the DING' : o.routes.includes('phone') ? "; you wrote it during the boss's phone call" : ''})`
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (you work every Saturday now)'
     : o.result === 'blamed' ? "BLAMED 👉 (you weren't round the board when it was read out: the boss pointed at your empty place, and the Saturday went to you)"
-    : o.why === 'boss' ? "FAIL: the boss found his own face on the board. He never put himself down: he wiped it, drew yours back and glared at you 😠👉"
     : 'FAIL: the boss read out your face on the board. See you Saturday 👉😩'),
 
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),

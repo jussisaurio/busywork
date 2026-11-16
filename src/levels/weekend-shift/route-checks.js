@@ -23,7 +23,7 @@ export default [
     cmds: ['goto roster pretend', 'interact', 'wait until 5:00'],
   },
   {
-    name: "microwave, walk back past the board as it dings, write Kev's name, back to your desk, the chair at 4:55 → win (the boss reads Kev's face; Kev groans)",
+    name: "microwave, walk back past the board as it dings, write Kev's name, back to your desk, the chair at 4:55 → win (the boss reads Kev's face; Kev protests, the boss taps the board)",
     expect: { result: 'win', routes: ['ding'] },
     play: play([...DING, 'interact', 'goto player_desk pretend', 'pretend until 4:55', 'goto meeting_player pretend', 'pretend until 5:00'], (log, w) => {
       must(saw(log, 'npc:heard', (p) => p.id === 'boss'), 'the boss never turned to the ding');
@@ -33,8 +33,8 @@ export default [
     }),
   },
   {
-    name: "Kev at the ding, then the boss's own face during his call → fail (he never put himself down: he wipes it, draws yours, glares)",
-    expect: { result: 'fail' },
+    name: "Kev at the ding, then the boss's own face during his call → win (he reads it out to the room, goes red, Lin and Kev clap)",
+    expect: { result: 'win', routes: ['phone'] },
     play: play([...DING, 'interact', 'goto player_desk pretend', 'pretend until 4:31', 'goto desk_phone pretend', 'interact', 'goto board pretend', 'interact', 'goto meeting_player pretend', 'pretend until 5:00'], (log, w) => {
       must(w.roster === 'boss', "the board doesn't show the boss");
       must(!saw(log, 'witness:tattle'), 'somebody pointed');

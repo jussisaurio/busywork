@@ -1,7 +1,7 @@
 // "Saturday" (id weekend-shift): level 1's office, an hour later. At 5:00 the boss reads the Saturday board: a
 // whiteboard with one face in Saturday's slot (yours, at 4:00), and that person works this weekend. He filled it in
 // on Monday and doesn't remember whom he put down: write Kev's name in it, and he reads out Kev's. (Write again and it's
-// his own, which he knows is wrong: he puts yours back.) Both watchers face the board, so
+// his own: he's announced it to the room before he looks, so he's stuck with it.) Both watchers face the board, so
 // you have to make them look away: level 1 taught "wait for a glance"; this one teaches "make one". The routes are
 // the two ways to make one (sim/mechanics/attention.js), and a third that backfires:
 //   - the microwave DINGs 6 s after you start it, about the walk back past the board to your desk, and your noodles
@@ -20,7 +20,6 @@
 import { at, GAME_MIN_PER_SEC } from '../../config.js';
 import { burst, say } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
-import { npcSees } from '../../game/perception.js';
 import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -117,6 +116,7 @@ const INTERACTIONS = {
     done(game, a) {
       game.world.copier = 'jammed';
       game.world.jamAt = game.clock.minute; // its beacon flashes in time with the beeps (presentation.js)
+      game.world.jamFrom = { x: game.player.x, y: game.player.y }; // you whistle once you've walked off (tick)
       burst(game, 'puff', a.x, a.y, 6, { speed: 0.4, lift: 0.6, ttl: 1.0 });
       // at the first beep both watchers think of the copier (the boss's look at it: a dashed line through the board,
       // props.js paintCopier)
@@ -158,41 +158,55 @@ function write(game, who) {
   w.roster = who;
   w.wrote = w.phone === 'ringing' || w.phone === 'talking' ? 'phone' : dinged ? 'ding' : null;
   w.wroteAt = m; // the face settles into the slot (presentation.js)
+  say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.5 }); // whistling, innocent
   game.events.emit('roster:changed', { to: who });
 }
 
 // 5:00, the end beat (2 s): who the board says it is. The boss filled it in on Monday and doesn't remember whom he
-// put down: he reads out whatever face is in the slot (cast.js readRoster). Now: Kev's (he points at Kev; Kev
-// groans), his own (he never put himself down: he wipes it, draws yours, since Lin saw you at the board and points
-// at you, Kev with her, and glares at you: a fail), yours with you here (fail: he waves you up front), or anyone's with
-// your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js has the room
-// stare at it).
+// put down: he announced it to the room before he looked, and now he reads out whatever face is in the slot
+// (cast.js readRoster). Now: his own (he went red reading it out; he can't take it back in front of everyone: Lin and
+// Kev clap him into his own Saturday, he sags and keeps it: a win), Kev's (he points at Kev; Kev protests, not knowing
+// who did it, and the boss taps the board: it says Kev), yours with you here (fail: he waves you up front), or
+// anyone's with your chair empty (blamed: he redraws the slot with your face, then points at your chair; scenario.js
+// has the room stare at it).
 function punchline(game, result) {
   const get = (id) => game.npcs.find((n) => n.id === id && n.active);
   const boss = get('boss');
   if (!boss) return;
-  const own = game.world.roster === 'boss';
-  if (result === 'blamed' || (result === 'fail' && own)) {
-    const at = result === 'blamed' ? game.level.meeting.chair : game.level.meeting.presenter;
+  const kev = get('kev');
+  if (result === 'blamed') {
     npcSayLater(boss, REDRAW_AT, ['✏️', '@player'], 'speech', REDRAW_S, 'board_look'); // writing you in
-    npcSayLater(boss, REDRAW_AT + REDRAW_S, result === 'blamed' ? ['👉', '@player'] : ['😠', '👉', '@player'], 'speech',
-      2 - REDRAW_AT - REDRAW_S, at);
+    npcSayLater(boss, REDRAW_AT + REDRAW_S, ['👉', '@player'], 'speech', 2 - REDRAW_AT - REDRAW_S, game.level.meeting.chair);
   } else if (result === 'fail') {
     speak(game, boss, [{ say: ['👈', '@player'], ttl: 2, face: game.level.meeting.presenter }]);
+  } else if (game.world.roster === 'boss') {
+    // he read out his own name, to the whole room: the room claps, and he's stuck with it
+    for (const n of [get('lin'), kev]) if (n) speak(game, n, [{ say: ['👏'], ttl: 2, face: 'board_boss' }]);
+    speak(game, boss, [
+      { say: ['😳'], ttl: SAG_S, face: 'meeting_player' }, // to the room, who heard him
+      { say: ['😩'], ttl: 2 - SAG_S, after: SAG_S, face: 'board_look' }, // he sags, and keeps it
+    ]);
   } else {
-    // he points at Kev to the end of the beat; Kev groans (😩: again?!). Nobody disputes the board: nobody in this
-    // office reads it, they wait for it to be read out
-    speak(game, boss, [{ say: ['👉', '@kev'], ttl: 2, face: 'meeting_kev' }]);
-    const kev = get('kev');
-    if (kev) speak(game, kev, [{ say: ['😩'], ttl: 2 - KEV_PROTEST_S, after: KEV_PROTEST_S, face: 'board_look' }]);
+    // Kev's: he points at Kev; Kev protests (🙅❓: I wasn't on it! who did this?); the boss taps the board: it says Kev
+    speak(game, boss, [
+      { say: ['👉', '@kev'], ttl: TAP_S, face: 'meeting_kev' },
+      { say: ['👈', '🗓️'], ttl: 2 - TAP_S, after: TAP_S, face: 'board_look' },
+    ]);
+    if (kev) speak(game, kev, [
+      { say: ['🙅', '❓'], ttl: 0.9, after: KEV_PROTEST_S, face: 'board_boss' },
+      { say: ['😩'], ttl: 2 - KEV_PROTEST_S - 1.0, after: KEV_PROTEST_S + 1.0, face: 'board_look' },
+    ]);
   }
 }
-const KEV_PROTEST_S = 0.4; // s into the beat Kev groans
+const KEV_PROTEST_S = 0.3; // s into the beat Kev protests
+const TAP_S = 0.9; // s into the beat the boss taps the board at him
+const SAG_S = 0.8; // s into the beat the boss, clapped, sags
 
 // After a tell (Lin or Kev saw you at the board, pointed at you, and the boss heard), the boss walks over to the board,
 // looks at it and puts your face in Saturday's slot: he doesn't remember whose it was, but you were messing with it,
 // so it's your Saturday now (the lure 'check', below). The engine has
 // already sent you to your desk. Subscribed once per game.events, from the boss's clock (clockFor).
+const JAM_WHISTLE_D = 2; // tiles off from the copier you whistle at (a few steps)
 const watched = new WeakSet();
 function tick(game) {
   // The board is shut only while the boss sits right by it, holding its only marker (the tray shows it empty). If he
@@ -201,13 +215,14 @@ function tick(game) {
   const spot = SPOTS.board_boss;
   game.world.rosterLocked = !!b && b.active !== false && !b.moving && b.override !== 'onPhone'
     && Math.abs(b.x - spot.x) < 0.6 && Math.abs(b.y - spot.y) < 0.6;
-  // Lin, whose desk faces the board, notices you at it (not writing: just there) any time before the gather. On his
-  // own face that's why she points at you (cast.js readRoster). Not while every head is turned to the steam.
-  const lin = game.npcs.find((n) => n.id === 'lin');
+  // Walked a few steps off from the copier you jammed: whistling, innocent (not at the copier, where ♪ would read
+  // as its beeping).
   const p = game.player;
-  const r = game.map?.find?.('R')?.[0];
-  if (!game.world.linSawYou && lin && p && r && game.clock.minute < game.level.day.gatherAt
-    && Math.hypot(p.x - (r.x + 0.5), p.y - (r.y + 0.5)) < 5.5 && npcSees(game, lin, p.x, p.y)) game.world.linSawYou = true;
+  const jf = game.world.jamFrom;
+  if (jf && p && Math.hypot(p.x - jf.x, p.y - jf.y) > JAM_WHISTLE_D) {
+    game.world.jamFrom = null;
+    say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.5 });
+  }
   if (watched.has(game.events)) return;
   watched.add(game.events);
   game.events.on('boss:workAssigned', (p) => {
@@ -332,9 +347,9 @@ export default {
     if (npc === game.npcs[0]) tick(game);
     return game.clock.minute;
   },
-  // verdict: the board decides: Kev's face there is a win if you're in your place (blamed if you aren't), however you
-  // got it there (a write with no route still counts; the engine's rule would call it a fail). The boss's own face is
-  // no use: he knows he didn't put himself down, so he puts yours back (a fail; blamed if you aren't there either). It records
+  // verdict: the board decides: someone else's face there (Kev's, or the boss's own: he read it out to the room before
+  // he looked) is a win if you're in your place (blamed if you aren't), however you got it there (a write with no
+  // route still counts; the engine's rule would call it a fail). It records
   // whose face the board showed (the end scenes draw them), and plays the reading's punchline (punchline()).
   // Blamed: every head turns to your empty place (outlined on the floor: presentation.js) and wonders where you are;
   // the boss wipes Saturday's slot and draws your face in it, and points it out: the board still decides.
@@ -345,7 +360,7 @@ export default {
     presenter: 'meeting_presenter',
     verdict: (game, { present }) => {
       const r = game.world.roster;
-      const result = r === 'kev' ? (present ? 'win' : 'blamed') : r === 'boss' && !present ? 'blamed' : 'fail';
+      const result = r === 'player' ? 'fail' : present ? 'win' : 'blamed';
       punchline(game, result);
       return {
         result,
@@ -356,15 +371,15 @@ export default {
   },
   // How you got a name onto the board unseen (the end card shows whose: world.roster).
   routes: [
-    { id: 'ding', icon: '#microwave', achieved: (w) => w.roster === 'kev' && w.wrote === 'ding' },
-    { id: 'phone', icon: '#deskphone', achieved: (w) => w.roster === 'kev' && w.wrote === 'phone' },
+    { id: 'ding', icon: '#microwave', achieved: (w) => w.roster !== 'player' && w.wrote === 'ding' },
+    { id: 'phone', icon: '#deskphone', achieved: (w) => w.roster !== 'player' && w.wrote === 'phone' },
   ],
   outcomeOrder: ['ding', 'phone'],
   initialWorld: () => ({
     roster: 'player', // whose face is in Saturday's slot: 'player' | 'boss' | 'kev'
     wrote: null, // what kept the watchers off you at the last write: 'ding' | 'phone' | null (see write())
     wroteAt: null, // game minute of the last write
-    linSawYou: false, // Lin has seen you at the board this afternoon (tick): on his own face, she says so
+    jamFrom: null, // where you stood to jam the copier, till you've walked off from it and whistled (tick)
     rosterLocked: false, // the boss sits by the board holding its marker (tick): no writing on it while he does
     copier: 'ok', // 'ok' | 'jammed' (beeping) | 'fixing' (Kev, still beeping) | 'fixed'
     jamAt: null, // game minute of the last jam

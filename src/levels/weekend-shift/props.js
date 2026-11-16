@@ -1159,7 +1159,7 @@ export const THINGS = {
     box(ctx, x, y, size);
     drawMarker(ctx, 6.5, 0, 0, 13);
   },
-  // Saturday's slot, close up, in the end cards' rows: the boss's own face in it (he never put himself down), and
+  // Saturday's slot, close up, in the end cards' rows: the boss's own face in it (he read it out, and keeps it), and
   // a write caught halfway (your face wiped, Kev's half drawn, the marker at it): what got you in trouble
   rotaboss(ctx, x, y, size, t) {
     box(ctx, x, y, size);
