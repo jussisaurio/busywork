@@ -3,7 +3,8 @@
 //   ring, phone  the boss, his coffee beside his keyboard, sends it without you; you sit smug at your desk (the
 //                icons name how Lin was looking away: Kev's ringing desk, or her mobile)
 //   fail         the boss clicks send with you on it; you carry your plant out in a box, past your empty desk
-//   caught       the boss points you out; you carry your box out
+//   caught       the boss saw you at his screen himself and points you out; you carry your box out
+//   told         Lin told him: she stands at his desk pointing you out while he sends it with you on it; you go
 import { clamp, easeOutCubic, rrect, fillEllipse } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
@@ -234,15 +235,32 @@ function tableauCaught(ctx, game, t, e) {
   walkOut(ctx, game, t, e, yourLook(game), 560, 716);
 }
 
+// Lin told him: she stands at his desk, pointing you out, while he sends it with your face back on it. You go.
+function tableauTold(ctx, game, t, e) {
+  office(ctx);
+  bossDesk(ctx, game, { you: 1, t });
+  bossTyping(ctx, game, t, false);
+  const l = person(t);
+  l.dir = 0.1;
+  l.head = 0.1 + Math.sin(t * 2) * 0.06;
+  l.arms = 'point';
+  l.scale = 2.4;
+  drawPerson(ctx, game.level.looks.lin, l, 560, 300);
+  walkOut(ctx, game, t, e, yourLook(game), 650, 716);
+  sendList(ctx, game, e, 1);
+}
+
 export const END_SCENES = {
   kindOf: (o) => {
     if (o?.result === 'win') return Array.isArray(o.routes) && o.routes.includes('ring') ? 'ring' : 'phone';
-    return o?.result === 'caught' ? 'caught' : 'fail';
+    if (o?.result === 'caught') return o.why === 'told' ? 'told' : 'caught';
+    return 'fail';
   },
   scenes: {
     ring: { win: true, icons: ['☎️', '📧', '😏'], draw: tableauWin }, // Lin turned to Kev's ringing desk
     phone: { win: true, icons: ['📱', '📧', '😏'], draw: tableauWin }, // Lin turned away to her mobile
     fail: { win: false, icons: ['📧', '📦', '😢'], draw: tableauFail },
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught },
+    told: { win: false, icons: ['@lin', '👉', '📦'], draw: tableauTold }, // Lin saw your edit and told him
   },
 };

@@ -48,11 +48,24 @@ const POP_SECS = 2.8;
 const POP_OFF_SECS = 2.2; // after the edit: your face drops out (OUT_DELAY + OUT_SECS), then you close the sheet
 const POP_IN = 0.25;
 const POP_BACK = 0.35;
+const COUNT_SECS = 3.4; // the head count: the sheet out while he counts, ticks or shrugs
+const SEND_IN = 0.15; // of the send beat (0..1): the sheet pops out, then flies (SEND_FLY on)
+const SEND_FLY = 0.4;
 function popOf(w, game, into) {
   into.pop = null;
   into.popK = 0;
   into.popAge = 0;
-  if (w.glitch || w.locked || game.outcome) return;
+  if (w.glitch || w.locked) return;
+  // 3:45, sent: the attachment pops out big and flies off with the email (drawPop), three faces or four.
+  if (game.outcome) {
+    const out = sending(game);
+    if (out > 0) {
+      into.pop = 'send';
+      into.popAge = out;
+      into.popK = out < SEND_IN ? easeOutBack(out / SEND_IN) : 1;
+    }
+    return;
+  }
   const a = game.player?.action;
   if (a?.type === 'strike_name') {
     into.pop = 'edit';
@@ -61,6 +74,16 @@ function popOf(w, game, into) {
     return;
   }
   const now = game.clock?.minute ?? 0;
+  // 3:42, the head count (cast.js sendList): he opens the attachment and counts the faces on it.
+  if (w.countAt != null) {
+    const age = (now - w.countAt) / GAME_MIN_PER_SEC;
+    if (age >= 0 && age < COUNT_SECS) {
+      into.pop = 'count';
+      into.popAge = age;
+      into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > COUNT_SECS - POP_BACK ? 1 - easeOutCubic((age - COUNT_SECS + POP_BACK) / POP_BACK) : 1;
+      return;
+    }
+  }
   const from = w.list === 'off' ? ['off', w.listOffAt] : w.listUpAt != null ? ['up', w.listUpAt] : null;
   if (!from) return;
   const age = (now - from[1]) / GAME_MIN_PER_SEC + (from[0] === 'off' ? POP_IN : 0);
@@ -70,17 +93,21 @@ function popOf(w, game, into) {
   into.popAge = age;
   into.popK = age < POP_IN ? easeOutBack(age / POP_IN) : age > dur - POP_BACK ? 1 - easeOutCubic((age - dur + POP_BACK) / POP_BACK) : 1;
 }
+const easeInCubic = (x) => x * x * x;
 const easeOutBack = (x) => 1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2;
 
-const SHOWN = { glitch: false, locked: false, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
+const SHOWN = { glitch: false, locked: false, jolt: 0, closed: false, you: 1, strike: 0, out: 0, looks: null, pop: null, popK: 0, popAge: 0 };
 export function listShown(w, game) {
   SHOWN.glitch = !!w.glitch;
   SHOWN.locked = !!w.locked && !w.glitch;
+  // You tried his locked screen (index.js try_locked): the padlock jolts and flashes red for a moment. 1 → 0.
+  const since = w.lockJolt == null ? Infinity : game.clock.minute - w.lockJolt;
+  SHOWN.jolt = since < 0.45 ? 1 - since / 0.45 : 0;
   popOf(w, game, SHOWN);
   SHOWN.you = youOnList(w, game);
   // Your edit saved, you close the sheet as the pop goes back in: his screen is back on his email to HR, the sheet
   // attached. Nothing left on it to read across the floor.
-  SHOWN.closed = w.list === 'off' && SHOWN.pop !== 'off' && SHOWN.pop !== 'edit';
+  SHOWN.closed = w.list === 'off' && !['off', 'edit', 'count', 'send'].includes(SHOWN.pop);
   const a = game.player?.action;
   SHOWN.strike = a?.type === 'strike_name' ? clamp(a.t / Math.max(a.duration, 0.001), 0, 1) : w.list === 'off' ? 1 : w.struck || 0; // struck: Lin stopped you mid-edit
   SHOWN.out = sending(game);
@@ -123,7 +150,8 @@ export function drawListScreen(ctx, info, at, shown, t) {
   } else {
     ctx.fillStyle = '#2d5a78'; // the desktop behind the sheet
     ctx.fillRect(sx, sy, sw, sh);
-    const out = easeOutCubic(shown.out);
+    const small = shown.pop === 'send' ? 0 : shown.out; // the big one flies instead (drawPop)
+    const out = easeOutCubic(small);
     if (out < 1) {
       ctx.save();
       // Sent: the sheet shrinks and flies off to the top right.
@@ -133,7 +161,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
       else drawSheet(ctx, -sw / 2 + 1, -sh / 2 + 1, sw - 2, sh - 2, shown, t);
       ctx.restore();
     }
-    if (shown.out > 0 && shown.out < 0.8) { // speed lines behind it
+    if (small > 0 && small < 0.8) { // speed lines behind it
       ctx.strokeStyle = 'rgba(255,255,255,0.6)';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -146,7 +174,7 @@ export function drawListScreen(ctx, info, at, shown, t) {
       ctx.stroke();
     }
   }
-  if (shown.locked) drawLock(ctx, sx, sy, sw, sh);
+  if (shown.locked) drawLock(ctx, sx, sy, sw, sh, shown.jolt);
   ctx.fillStyle = 'rgba(255,255,255,0.10)'; // glare
   ctx.beginPath();
   ctx.moveTo(sx, sy);
@@ -192,12 +220,14 @@ function drawEmail(ctx, x, y, w, h) {
 }
 
 // Locked: the sheet hidden behind a dark lock screen with a padlock in the middle.
-function drawLock(ctx, sx, sy, sw, sh) {
-  ctx.fillStyle = '#1d2a36';
+function drawLock(ctx, sx, sy, sw, sh, jolt = 0) {
+  ctx.fillStyle = '#1d2a36'; // stays dark when you try it: a lit screen would read as unlocked
   ctx.fillRect(sx, sy, sw, sh);
-  const cx = sx + sw / 2;
+  const cx = sx + sw / 2 + (jolt > 0 ? Math.sin(jolt * 40) * 2.5 * jolt : 0); // tried: the padlock shakes
+
   const cy = sy + sh / 2 + 2;
-  ctx.strokeStyle = '#d8d2c4';
+  const red = jolt > 0.15; // and flashes red
+  ctx.strokeStyle = red ? '#ff5a4a' : '#d8d2c4';
   ctx.lineWidth = 2;
   ctx.beginPath(); // the shackle
   ctx.arc(cx, cy - 3, 4, Math.PI, 0);
@@ -205,7 +235,7 @@ function drawLock(ctx, sx, sy, sw, sh) {
   ctx.moveTo(cx - 4, cy - 3);
   ctx.lineTo(cx - 4, cy);
   ctx.stroke();
-  ctx.fillStyle = '#e3c25a'; // the body
+  ctx.fillStyle = red ? '#e8392b' : '#e3c25a'; // the body
   rrect(ctx, cx - 6, cy - 1, 12, 9, 1.5);
   ctx.fill();
   fillCircle(ctx, cx, cy + 3, 1.3, '#5a4a1c');
@@ -218,21 +248,34 @@ const POP_DX = 163; // the pop's centre, from the screen's centre
 const POP_DY = -8;
 function drawPop(ctx, sx, sy, sw, sh, shown, t) {
   const k = shown.popK;
-  const z = 1 + (POP_ZOOM - 1) * k;
-  const cx = sx + sw / 2 + POP_DX * Math.min(k, 1);
-  const cy = sy + sh / 2 + POP_DY * Math.min(k, 1);
+  // Sent: it flies off to the top right, shrinking, after it has popped out.
+  const fly = shown.pop === 'send' ? easeInCubic(clamp((shown.popAge - SEND_FLY) / (1 - SEND_FLY), 0, 1)) : 0;
+  const z = (1 + (POP_ZOOM - 1) * k) * (1 - 0.6 * fly);
+  const cx = sx + sw / 2 + POP_DX * Math.min(k, 1) + 300 * fly;
+  const cy = sy + sh / 2 + POP_DY * Math.min(k, 1) - 170 * fly;
   const hw = (sw / 2) * z;
   const hh = (sh / 2) * z;
   ctx.save();
-  ctx.globalAlpha = clamp(k * 1.5, 0, 1);
-  ctx.fillStyle = 'rgba(244,242,236,0.22)'; // the zoom wedge, from the screen's right edge to the pop's left
-  ctx.beginPath();
-  ctx.moveTo(sx + sw, sy);
-  ctx.lineTo(cx - hw, cy - hh);
-  ctx.lineTo(cx - hw, cy + hh);
-  ctx.lineTo(sx + sw, sy + sh);
-  ctx.closePath();
-  ctx.fill();
+  ctx.globalAlpha = clamp(k * 1.5, 0, 1) * (1 - fly * fly);
+  if (fly > 0) { // speed lines behind it
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let i = -1; i <= 1; i++) {
+      ctx.moveTo(cx - hw - 4 + i * 6, cy + hh + 4 - i * 6);
+      ctx.lineTo(cx - hw - 4 - 30 * fly + i * 6, cy + hh + 4 + 17 * fly - i * 6);
+    }
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = 'rgba(244,242,236,0.22)'; // the zoom wedge, from the screen's right edge to the pop's left
+    ctx.beginPath();
+    ctx.moveTo(sx + sw, sy);
+    ctx.lineTo(cx - hw, cy - hh);
+    ctx.lineTo(cx - hw, cy + hh);
+    ctx.lineTo(sx + sw, sy + sh);
+    ctx.closePath();
+    ctx.fill();
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.3)'; // shadow, bezel
   ctx.fillRect(cx - hw - 3, cy - hh - 1, hw * 2 + 8, hh * 2 + 8);
   ctx.fillStyle = '#34312f';
@@ -288,11 +331,23 @@ function drawSheet(ctx, x, y, w, h, shown, t, throb = 0) {
     ctx.fillStyle = mine ? C.tomato : '#a7a39a';
     ctx.fillRect(mid - slot * 0.32, y + h - 3, slot * 0.64, 1.2); // the name
     if (mine && shown.strike > 0) {
+      // A thick red X drawn across your face: the first stroke, then the second.
       ctx.strokeStyle = C.tomatoDark;
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 2.6;
+      ctx.lineCap = 'round';
+      const l = mid - slot / 2 + 1.5;
+      const r = mid + slot / 2 - 1.5;
+      const top = fy - face * 0.4;
+      const bot = fy + face * 0.4;
+      const a = clamp(shown.strike * 2, 0, 1);
+      const b = clamp(shown.strike * 2 - 1, 0, 1);
       ctx.beginPath();
-      ctx.moveTo(mid - slot / 2 + 1, fy + face * 0.35);
-      ctx.lineTo(mid - slot / 2 + 1 + (slot - 2) * shown.strike, fy + face * 0.35 - (face * 0.7) * shown.strike);
+      ctx.moveTo(l, top);
+      ctx.lineTo(l + (r - l) * a, top + (bot - top) * a);
+      if (b > 0) {
+        ctx.moveTo(r, top);
+        ctx.lineTo(r - (r - l) * b, top + (bot - top) * b);
+      }
       ctx.stroke();
     }
     ctx.restore();

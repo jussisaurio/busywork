@@ -73,10 +73,27 @@ export const DECOR = {
   legendAt: { x: 20, y: 15.5 },
 };
 
-// The boss's cable, from the back of his desk down to the socket on the floor behind it (row 2).
-function drawCable(ctx, info, at, out) {
-  const cx = at.x * T + T / 2;
-  socket(ctx, cx + 3, at.y * T + 3, cx - 3, at.y * T - 5, out);
+// The boss's cable, from the back of his desk down to the floor socket behind it (W, row 2), drawn big enough to read
+// across the floor: the plug half out and sparking while his screen is static, pushed home once it's fixed.
+const SOCKET_ZOOM = 1.7;
+function drawCable(ctx, info, at, out, t) {
+  const sx = at.x * T + T / 2;
+  const sy = at.y * T + T / 2 + 2;
+  ctx.save();
+  ctx.translate(sx, sy);
+  ctx.scale(SOCKET_ZOOM, SOCKET_ZOOM);
+  socket(ctx, (T * 0.9) / SOCKET_ZOOM, (T * 0.55) / SOCKET_ZOOM, -3, 0, out);
+  if (out && Math.floor(t * 6) % 3 !== 0) { // sparks off the bare prongs
+    ctx.strokeStyle = '#ffd84a';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    const k = Math.floor(t * 6) % 2;
+    ctx.moveTo(3, -1); ctx.lineTo(1.5, -4 - k);
+    ctx.moveTo(3.5, 0); ctx.lineTo(0.5, 1.5 + k);
+    ctx.moveTo(3, 1); ctx.lineTo(2, 4);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 // The boss's desk phone: its handset off while he calls Kev's desk.
@@ -170,7 +187,7 @@ export const SOUNDS = {
     'pc:actsUp': { sfx: 'bang', who: 'boss' },
     'pc:fixed': { sfx: 'fixed', who: 'kev' },
     'pc:fixedByYou': { sfx: 'fixed', who: 'player' },
-    'pc:selfFixed': { sfx: 'fixed', who: 'boss' },
+    'pc:pulled': { sfx: 'bang', who: 'player' },
     'lin:buzz': { sfx: 'rattle', spot: 'lin_desk', opts: { gain: 0.25 } },
     'kev:up': { sfx: 'swish', who: 'kev' },
     'list:edited': { sfx: 'swish', who: 'player' },

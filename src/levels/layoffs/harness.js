@@ -20,14 +20,14 @@ export default {
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'boss:coffee', 'lin:sees', 'lin:tells'],
+    soft: ['boss:suspicious', 'lin:sees', 'lin:tells'],
   },
 
   names: NAME,
 
   mapKey: [
     "MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance,",
-    "     Q the boss's screen (it faces the floor), W the end of his desk his cable runs down from, F his desk phone,",
+    "     Q the boss's screen (it faces the floor), W the floor socket behind his desk his cable plugs into, F his desk phone,",
     "     M Lin's desk with her mobile, V Kev's desk with his desk phone, C coffee machine, P your desk, R restroom,",
     '     E elevator, @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
@@ -69,7 +69,7 @@ export default {
   describe(e) {
     const p = e.payload ?? {};
     switch (e.name) {
-      case 'lin:sees': return 'Lin sees you crossing your face out; she thinks of the list with her own face on it 😨';
+      case 'lin:sees': return 'Lin sees you crossing your face out and shouts ❗👉; she thinks of the list with her own face on it 😨';
       case 'lin:tells': return 'Lin points you out to the boss 👉🖥️';
       case 'meeting:gather': return 'the boss goes back to his desk to pack up for the weekend 📧';
       case 'boss:packsUp': return 'the boss puts his coat on at his desk, the email to HR open 🧥📧';
@@ -77,15 +77,16 @@ export default {
       case 'boss:checked': return 'the boss locks his screen and turns round on you 🔒';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
-      case 'boss:wavesOff': return "the boss waves you off his cable: that's Kev's job 🙅";
-      case 'boss:coffee': return "the boss leaves you to it and goes for a coffee ☕👉";
+      case 'boss:coffee': return 'the boss gives up waiting for Kev and goes for a coffee, his screen still static ☕';
+      case 'pc:triedLocked': return "the boss's screen is locked: the padlock jolts 🔒";
       case 'boss:hasCoffee': return 'the boss has his coffee and heads back';
       case 'phone:ring': return "Kev's desk phone rings ☎️";
       case 'phone:called': return "you call Kev's desk from the boss's phone";
       case 'pc:fixed': return "Kev pushes the plug home: the boss's screen comes back with the list on it";
       case 'pc:fixedByYou': return "you push the plug home: the boss's screen comes back with the list on it";
-      case 'pc:selfFixed': return 'the boss kneels and pushes the plug home himself 🔌';
-      case 'pc:actsUp': return "the boss's screen goes to static again 😠";
+      case 'pc:pulled': return "you pull the boss's plug half out: his screen goes to static";
+      case 'pc:actsUp': return "back at his desk, the boss types his password into the static ⌨️, and bangs on it 😠";
+      case 'boss:headCount': return p.on ? "the boss counts the list's faces and ticks yours ✔️" : "the boss counts the list's faces: one short? he shrugs 📋🤨🤷";
       case 'pc:locked': return 'the boss locks his screen and leaves for the restroom';
       case 'kev:fixing': return "Kev kneels behind the boss's desk at the plug, the boss standing over him";
       case 'kev:up': return 'Kev picks up his bag';
