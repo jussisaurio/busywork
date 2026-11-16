@@ -215,6 +215,8 @@ These came from playtests of level 1 (details in its `LEVEL.md`).
 - **A thing that looks usable is usable, in every level.** What a thing looks like is a promise the player carries
   from level to level: level 1's full coffee pot pours a cup, so every full pot pours one. Usable is not useful: the
   cup may lead nowhere. A thing kept only as set dressing is drawn spent: an empty coat rack, an empty pot.
+  And it stays usable, every loop and every time you try: if it stops working, the screen shows why (the pot is
+  empty, the handset is off the hook). A phone that rings once and then silently refuses reads as the game saying no.
 - **Every verb the engine gives an item makes sense for that item, and looks like it.** A generic verb (eat, drop,
   put, carry) brings nothing from the level it was made for: what eating leaves behind belongs to the item, never to
   level 1's sandwich. Before the player presses E, the held item shows what E will do to it. And the words a check
