@@ -62,14 +62,14 @@ export const CAST = [
 // The reading, READ_S s before 5:00. The boss sits (from the 4:55 gather) with his back to the board, facing the room,
 // the board's marker in his hand. 📢: hear this. At ANNOUNCE_S he turns to the board: he filled it in on Monday and
 // doesn't remember whom he put down, so he looks (🧐, LOOK_S), then points the marker at the face in Saturday's slot
-// (it lights up: presentation.js), says whose, and holds it to 5:00. His own face: he goes red, hands out (he never
-// put himself down). What happens then is the verdict's (index.js punchline).
+// (it lights up: presentation.js), says whose, and holds it to 5:00. His own face: he's announced it to the room
+// already, and goes red (REDDEN_S). What happens then is the verdict's (index.js punchline).
 export const READ_S = 3.4;
 export const ANNOUNCE_S = 0.9;
 export const LOOK_S = 0.7;
-// At 5:00 with your chair empty (blamed), or his own face on the board (fail), the boss redraws the slot: your face,
-// from REDRAW_AT s into the end beat, for REDRAW_S s (presentation.js draws it), then points at your chair (or glares
-// at you).
+export const REDDEN_S = 0.9;
+// At 5:00 with your chair empty (blamed), the boss redraws the slot: your face, from REDRAW_AT s into the end beat,
+// for REDRAW_S s (presentation.js draws it), then points at your chair.
 export const REDRAW_AT = 0.6;
 export const REDRAW_S = 0.7;
 // s from now to the reading (the gather sits him down at about 4:56)
@@ -116,22 +116,16 @@ export const BEHAVIOURS = {
         ...(t > 2 ? [{ say: ['😏'], ttl: 1.6 }] : []), // pleased with himself: the weekend's sorted
         { say: ['📢'], ttl: ANNOUNCE_S, after: t, face: 'meeting_player' }, // to the room
         { say: ['🧐'], kind: 'thought', ttl: LOOK_S, after: r, face: 'board_look' }, // whom did he put down?
-        // that face, there, to 5:00 (index.js punchline: then whose it is). His own: he never put himself down.
-        { say: w.roster === 'boss' ? [face, '😳'] : ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S + 0.2, after: r + LOOK_S, face: 'board_look' },
+        // that face, there, to 5:00 (index.js punchline: then whose it is). His own: he's read it out before he saw
+        // whose it was, and he goes red (REDDEN_S before the end).
+        ...(w.roster === 'boss'
+          ? [
+            { say: ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S - REDDEN_S, after: r + LOOK_S, face: 'board_look' },
+            { say: [face, '😳'], ttl: REDDEN_S + 0.2, after: READ_S - REDDEN_S + t, face: 'board_look' },
+          ]
+          : [{ say: ['👈', face], ttl: READ_S - ANNOUNCE_S - LOOK_S + 0.2, after: r + LOOK_S, face: 'board_look' }]),
       ];
       sim.speak(game, n, lines);
-      // His own face: he doesn't remember whose it was, but somebody did this, and he turns to the room. Lin, whose
-      // desk faces the board, saw you at it this afternoon (index.js tick: linSawYou; not while every head was on the
-      // steam, and a write takes too long for two in one window, so the own-face day always has you in her view):
-      // 👀👉 you. Kev, who saw nothing, goes along with it to get it settled. (That's whose face he draws in at 5:00:
-      // index.js punchline.)
-      if (w.roster === 'boss' && w.linSawYou) {
-        const span = READ_S - ANNOUNCE_S - LOOK_S;
-        const lin = game.npcs.find((c) => c.id === 'lin');
-        const kev = game.npcs.find((c) => c.id === 'kev');
-        if (lin) sim.speak(game, lin, [{ say: ['👀', '👉', '@player'], ttl: span - 0.2, after: r + LOOK_S + 0.3, face: game.level.meeting.chair }]);
-        if (kev) sim.speak(game, kev, [{ say: ['👉', '@player'], ttl: span - 0.8, after: r + LOOK_S + 0.9, face: game.level.meeting.chair }]);
-      }
     },
   },
   // Lin and Kev sit down round the board: if your chair is empty, a look at it. (The reading hasn't started.)
