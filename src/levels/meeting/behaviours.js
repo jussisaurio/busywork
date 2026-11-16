@@ -83,20 +83,6 @@ export const BEHAVIOURS = {
     },
   },
 
-  // Back from his smoke (only with his card: clocks.js bossClock), the boss badges in at the glass door: a beep, the
-  // card held to the reader. The player learns what the card is for.
-  badgeIn: {
-    spot: 'door_out',
-    state: { _badged: false },
-    pending: (npc) => !npc._badged,
-    arrive(game, npc, sim) {
-      npc._badged = true;
-      sim.speak(game, npc, [{ say: ['🪪'], kind: 'thought', ttl: 0.9 }]);
-      sim.holdFor(npc, 0.7);
-      game.events.emit('boss:badge', {});
-    },
-  },
-
   // The boss takes his seat at the head of the table (once). A dead projector: no slides, no meeting. He points at
   // it, calls it off and waves everyone out (the end card: the room emptying). Otherwise he looks to the presenter.
   presenter: {

@@ -3,7 +3,16 @@
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
-import { emptyBag } from './painters.js';
+import { emptyBag, fireDoor, balcony } from './painters.js';
+import { findNpc } from '../../game/perception.js';
+
+// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it.
+const since = (game, at) => (at != null ? game.loopTime - at : null);
+const fireDoorState = (w, game) => {
+  const b = findNpc(game, 'boss');
+  const out = !!b && b.override === 'lockedOut';
+  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null };
+};
 
 const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
 const MUSTARD = ['#d6a23a', '#a97b22'];
@@ -71,6 +80,10 @@ export const DECOR = {
     },
     { tile: 'C', draw: 'carafe', state: (w) => ({ full: w.coffee !== 'taken' }) }, // full until the last cup is taken
     { tile: 'C', draw: emptyBag, state: () => ({}) }, // why it's the last: the coffee bag beside the machine is empty
+    // The fire door and the smokers' balcony: the reader blinks red and the door shudders under his fists while
+    // he's locked out; butts pile up round the ashtray, one per go at the door.
+    { tile: 'X', draw: fireDoor, state: fireDoorState },
+    { tile: '=', draw: balcony, state: (w, game) => ({ butts: Math.max(0, (findNpc(game, 'boss')?._bangI ?? 0) - 1) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
@@ -95,7 +108,7 @@ export const DECOR = {
     { zone: 'kitchen', x: 20, y: 2 },
     { zone: 'lobby', x: 4, y: 14 },
   ],
-  // Centre of the key legend (HUD), on the blank wall block under the open office, east of the lobby
-  // (map rows 14-16).
-  legendAt: { x: 20, y: 15.5 },
+  // Centre of the key legend (HUD, pause screen), on the bottom wall row (16), clear of the lobby (x1-9) and the
+  // balcony (x26-28): the row is about 17 tiles wide.
+  legendAt: { x: 17, y: 16.5 },
 };

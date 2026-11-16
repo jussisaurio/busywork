@@ -1,10 +1,5 @@
 // The meeting's per-NPC schedule clock (level.clockFor; src/sim/npcs.js): called once per NPC per step, before
-// anything else of his. Two NPCs use it; everyone else reads the game clock.
-//
-// The boss: at 3:35 he takes the lift down for a smoke (cast.js), his jacket on and, if it was still in it, the
-// keycard. With the card he comes back up at 3:48 and badges in. Without it the street gate won't let him back in:
-// once he has his jacket and no card, his clock jumps to his 'leave' entry (cast.js LOCKOUT_AT), the same walk to
-// the lift, but out for the day. It all happens downstairs: nobody upstairs sees or hears him stuck.
+// anything else of his. Everyone reads the game clock; it's the hook where Kev keeps an eye on the cup.
 //
 // Kev: once he has found the pot empty (behaviours.js pourCoffee: he wants coffee), the day's last cup is on his
 // mind. In your hand it's yours: he asks for it (☕🥺❓) and leaves it with you. Set down on your own desk (my_desk)
@@ -13,11 +8,7 @@
 //
 // It also listens for the catch: caught over his keycard (holding it, or with your hand on it at the jacket), the boss
 // takes it back (world.cardBack).
-import { at } from '../../config.js';
 import { npcSees } from '../../game/perception.js';
-import { LOCKOUT_AT } from './cast.js';
-
-const BACK_AT = at('3:48'); // the boss's return (cast.js)
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -26,17 +17,8 @@ const FREE_SPOTS = ['coffee', 'kev_desk']; // where a set-down cup is anyone's
 export function clockFor(game, npc, sim) {
   listen(game);
   const now = game.clock.minute;
-  if (npc.id === 'boss') return bossClock(game, npc, now);
   if (npc.id === 'kev') kevAndTheCup(game, npc, sim);
   return now;
-}
-
-function bossClock(game, npc, now) {
-  if (now < at('3:35')) return now;
-  const noCard = game.world.keycard !== 'boss';
-  // Out for good once his jacket is on and the card isn't in it (or if 3:48 comes and he still has none).
-  if (noCard && (npc._jacket || now >= BACK_AT)) return LOCKOUT_AT;
-  return now >= BACK_AT ? now : at('3:35');
 }
 
 function kevAndTheCup(game, kev, sim) {

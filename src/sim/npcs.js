@@ -102,7 +102,9 @@ export function createNpc(game, def, now = 0) {
     _gathered: false, // the gather has been processed for this NPC: then the meeting's override name (endOverride)
     _ovSeq: 0, // bumped whenever an override starts, so a repeated override gets a fresh plan
     _bangT: 0, // a door's knocking: s to the next bang...
-    _bangI: 0, // ...and which line
+    _bangI: 0, // ...and how many lines so far
+    _bangLine: null, // ...the line he's on (door.js)
+    _bangAt: null, // ...and when it started (loop time)
     _navFail: 0, // unreachable destinations (should stay 0; the test checks)
     _glanceEvery: glanceEvery, // real s between glances (random range)
     _gl: { timer: rng.range(...glanceEvery), target: 0, hold: 0, speed: 0 },

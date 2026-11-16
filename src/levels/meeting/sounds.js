@@ -42,8 +42,14 @@ export const SOUNDS = {
     'coffee:taken': { sfx: 'machineBeep', spot: 'coffee', when: (p) => !!(p?.by && p.by !== 'player') }, // someone else got the last cup
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },
     'boss:jacket': { sfx: 'rustle', who: 'boss' },
-    'boss:badge': { sfx: 'machineBeep', spot: 'door_out' }, // back from his smoke, card to the reader
-    // boss:lockedOut is silent on purpose: it happens at the street gate, out of earshot (clocks.js).
+    // The fire door (mechanics.js DOORS): his card on the reader, or the escalation without it.
+    'boss:badge': { sfx: 'machineBeep', spot: 'fire_door' }, // back from his smoke, card to the reader
+    'boss:lockedOut': { sfx: 'rattle', spot: 'fire_door' }, // the handle won't give
+    'boss:pockets': { sfx: 'rustle', spot: 'fire_door' }, // 🪪❓ patting every pocket
+    'boss:knock': { sfx: 'bang', spot: 'fire_door', opts: { hits: 2 } }, // ✊🚪 polite
+    'boss:bang': { sfx: 'bang', spot: 'fire_door' }, // 😠🚪🪪
+    'boss:pound': { sfx: 'bang', spot: 'fire_door', opts: { hits: 4 } }, // 👊👊🚪
+    'boss:fume': { sfx: 'grumble', spot: 'fire_door' }, // 🚬😤
     'kev:left': { sfx: 'elevator' },
   },
   // The failed meeting's 🦗 sign gets real crickets.

@@ -14,8 +14,9 @@
 //   roles    who plays which part in the office rules: authority, evidence, scene (roles.js; play/rules.js)
 //   lures    NPC mechanics (mechanics.js; src/sim/mechanics/*): a world condition pulls an NPC over to deal with it
 //   hunts    ... an NPC searches for something until she finds it or gives up
+//   doors    ... listed NPCs coming in from a zone must open it, or they're shut out for the day
 //   behaviours  level-only hooks the cast names: schedule preludes and arrivals, meeting arrival (behaviours.js)
-//   clockFor    the minute each NPC's schedule reads (src/sim/npcs.js): the boss's lockout, Kev and the cup (below)
+//   clockFor    the minute each NPC's schedule reads (src/sim/npcs.js): Kev and the cup, the card taken back (below)
 //   meeting  the day's frame: { override, room, chair, presenter }. At day.gatherAt every NPC on the floor gets
 //            override `override` and walks to its cast `meetingSpot` (sim; plan key `<override>#<n>`); at
 //            day.meetingAt you win only standing in zone `room`; blamed, the table stares at spot `chair`;
@@ -52,7 +53,7 @@ import { VOICES } from './voices.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
-import { LURES, HUNTS } from './mechanics.js';
+import { LURES, HUNTS, DOORS } from './mechanics.js';
 import { BEHAVIOURS } from './behaviours.js';
 import { verdict } from './verdict.js';
 import { clockFor } from './clocks.js';
@@ -82,6 +83,7 @@ export default {
   roles: ROLES,
   lures: LURES,
   hunts: HUNTS,
+  doors: DOORS,
   behaviours: BEHAVIOURS,
   clockFor,
   meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
@@ -96,7 +98,7 @@ export default {
     fixProgress: 0,
     keycard: 'rack',
     jacket: 'rack',
-    bossLockedOut: false, // down for a smoke without his card: the street gate keeps him out (clocks.js)
+    bossLockedOut: false, // out on the balcony without his card: the fire door keeps him out (mechanics.js DOORS)
     sandwich: 'fridge',
     coffee: 'pot', // 'pot' (the last cup, from the last of the beans) | 'taken' (none left today)
     items: [],

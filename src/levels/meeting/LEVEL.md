@@ -15,9 +15,9 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `map.js` | `MAP`, `LEGEND`, `SPOTS`, `ZONES`, `ROUTES` (the level's `patrols`) |
 | `cast.js` | `NPC_DEFS`: the boss, Kev, Lin, in that order (the order is behaviour) |
 | `interactions.js`, `items.js`, `roles.js` | the player's actions, the four items, the office rules' cast |
-| `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt and the boss's mug hunt (hunts) |
-| `clocks.js` | `level.clockFor`: the boss's smoke and lockout (downstairs, out of sight), Kev and the cup, the card taken back |
-| `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `badgeIn`, `presenter` |
+| `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt and the boss's mug hunt (hunts), the fire door (doors) |
+| `clocks.js` | `level.clockFor`: Kev and the cup, the card taken back |
+| `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
 | `verdict.js` | the 4:00 room's judgement of the mug (`meeting.verdict`) |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
@@ -47,9 +47,9 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | 3:22 | desk (sits ~3:29), looking in again on the way back (`peekBack`) | | |
 | 3:30 | | restroom (gone 3:35–3:37) | |
 | 3:33 | 🚬❓ (a mug hunt, if one runs, ends 3:34) | | |
-| 3:35 | jacket (and keycard) from the rack (`fetchJacket`), then down the lift for a smoke in the street | | |
+| 3:35 | jacket (and keycard) from the rack (`fetchJacket`), then out through the fire door to smoke on the balcony (arrives ~3:44) | | |
 | 3:37 | | desk | |
-| 3:48 | with the card: comes back in, badging in at the glass entrance (`badgeIn`). Without it: never comes back | | |
+| 3:48 | with the card: 🪪 at the fire door's reader, back in. Without it: locked out on the balcony, banging, until 4:00 | | |
 | 3:54 | everyone walks to the meeting room (`day.gatherAt`) | | |
 | 4:00 | **MEETING** (`day.meetingAt`) | | |
 
@@ -57,7 +57,7 @@ Schedule times are *departure* times. Walks take 2–6 game minutes, so the wind
 run, not read off this table.
 
 ## The office rules, cast
-- **Authority:** the boss. Off duty at the `meeting`; gone for the day once locked out (his `leave` entry).
+- **Authority:** the boss. Off duty at the `meeting` and while locked out (`lockedOut`: helpless, deaf on the balcony).
 - **Tattling:** Lin or Kev catching you at something sneaky shout ❗👉. The boss on the floor hears it, and a heard
   tattle is a catch (`roles.js` `tattle: 'caught'`). While he is away, they wait and tell him when he is back (👉🪪).
   Caught over the keycard (holding it, or with your hand on it at the jacket), he takes it back (`world.cardBack`,
@@ -101,9 +101,11 @@ run, not read off this table.
      at 4:00 the table stares at Kev's empty olive chair: he went home at 3:00). On your own desk: if he sees it there once he knows,
      caught; unseen until 4:00, BLAMED. Lesson: evidence outlives the act.
 2. **Keycard** 🪪 (`world.bossLockedOut`). Steal the keycard from the boss's jacket on the coat rack, behind the boss,
-   in view of Lin through the glass. The boss takes the jacket at 3:35 and goes down for a smoke, but the card isn't in
-   it: the street gate won't let him back up. You see him leave; you never see him stuck. The end card shows him at the
-   gate (🚬🪪❓). With the card, at 3:48 you see him badge in at the glass entrance (🪪, a beep): that teaches the card.
+   in view of Lin through the glass. The boss takes the jacket at 3:35 and steps out onto the smokers' balcony, but the
+   card isn't in it: at 3:48 the fire door won't let him back in. You see and hear him stuck: reader blinking red,
+   🪪❓, ✊🚪, 😠🚪🪪, 👊👊🚪, 🚬😤, 🙏🚪, round again from the bang, with bangs, screen shake and a shuddering door. The
+   end card shows him pounding on the fire door (🔒🪪👊). With the card, at 3:48 you see him badge in at the fire door
+   (🪪, a beep, green light): that teaches the card.
    - Windows: Lin is away ~2:58–3:11 and ~3:30–3:36 (but the boss is at his desk and glances every 3–5.5 s, about
      half of them west at the rack). The boss is out of his office ~3:14–3:28 (but Lin is watching, so wait for her
      to glance away; her glance is about 1.5 s and the action is 1.0 s). A failed try there costs the loop: her shout
@@ -132,10 +134,11 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   at each point, until 3:24, or until she has it back or saw the mustard. Then 😤 and her schedule.
 - **The jacket** (`fetchJacket`, the boss's 3:35 prelude). He walks to the rack, takes the jacket
   (`world.jacket = 'boss'`, `boss:jacket`), and the keycard with it if it is still there. Then he goes to smoke.
-- **Lockout** (`clocks.js` `bossClock`). Once he has his jacket and the card isn't in it, his clock jumps to his
-  `leave` entry (`cast.js` `LOCKOUT_AT`): the same walk to the lift, out for the day. At the lift:
-  `world.bossLockedOut = true`, `boss:lockedOut` (silent on purpose: it happens downstairs).
-- **Badge in** (`badgeIn`, his 3:48 prelude, only with the card). At `door_out`: 🪪, `boss:badge` (a reader beep).
+- **The fire door** (`mechanics.js` `DOORS`, the engine's door mechanic). Heading back in from the balcony (the
+  `outside` zone), he walks to `fire_door` first. His card in his jacket: 🪪, `boss:badge` (a beep, the reader goes
+  green), through. No card: override `lockedOut`, `world.bossLockedOut = true`, `boss:lockedOut` (a rattle), and the
+  escalation lines every ~2.5 s with their events (`boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`,
+  `boss:fume`), bang sounds and screen shakes, until the day ends. Only you are near enough to hear.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.
@@ -168,7 +171,7 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 
 Level events (all `{}` unless shown): `projector:broken`, `kev:alerted`, `projector:fixing`, `projector:fixed`,
 `keycard:taken`, `sandwich:taken`, `sandwich:returned`, `sandwich:missing`, `coffee:taken {by}`,
-`coffee:missing {by}`, `coffee:kevTook {spot}`, `coffee:asked`, `boss:jacket`, `boss:lockedOut`, `boss:badge`,
+`coffee:missing {by}`, `coffee:kevTook {spot}`, `coffee:asked`, `boss:jacket`, `boss:lockedOut`, `boss:badge`, `boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`, `boss:fume`,
 `keycard:takenBack`, `kev:left`, `boss:mugHunt`, `mug:found {spot}`, `meeting:calledOff`.
 The engine's `item:put {type, spot}` fires for the mug. `outcome.why` carries the verdict's reason. With the boss as authority and these
 items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered`,

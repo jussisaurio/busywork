@@ -3,7 +3,8 @@
 //  Boss office (glass S/E walls)  | Meeting room (projector J)      | Kitchen (fridge F, coffee C)
 //  ------------------------------ hallway (row 7) --------------------------------------------
 //  Open plan: Lin's desk (x3-5), player's desk P (x12-14), Kev's desk (x21-23)
-//  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R
+//  Glass wall + entrance L (row 13) | lobby (outside) + elevator E   | restroom door R, fire door X
+//                                                                     onto the smokers' balcony (outside, rows 14-15)
 export const MAP = [
   '##############################', // 0
   '#K......G..........#FTCT.....#', // 1
@@ -18,9 +19,9 @@ export const MAP = [
   '#............................#', // 10
   '#..TTT......TTT......TTT.....#', // 11
   '#...........................H#', // 12
-  '#GGGLGGGGG###############R####', // 13
-  '#:::::::::####################', // 14
-  '#:::::::::####################', // 15
+  '#GGGLGGGGG###############R#X##', // 13
+  '#:::::::::################===#', // 14
+  '#:::::::::################===#', // 15
   '##EE##########################', // 16
 ];
 
@@ -36,6 +37,12 @@ export const LEGEND = {
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
   R: { kind: 'restroom', solid: true, opaque: true },
   E: { kind: 'elevator', solid: true, opaque: true },
+  // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
+  // boss smokes. It locks behind you; from outside only a keycard opens it (mechanics.js DOORS). You don't go out
+  // there: it is the boss's (solid to you, open to NPCs). Drawn as wall, the door painted on (painters.js fireDoor).
+  X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall' },
+  // The balcony: a concrete slab four floors up with a railing (painters.js balcony). Outside, like the lobby.
+  '=': { kind: 'balcony', solid: false, opaque: false, draw: 'outside' },
 };
 
 // Named spots: tile coords + facing ('N'|'E'|'S'|'W'). Entities stand at (x+0.5, y+0.5).
@@ -59,7 +66,11 @@ export const SPOTS = {
   boss_door: { x: 6, y: 7, face: 'S' }, // hallway outside the boss's office door
   meeting_door: { x: 14, y: 7, face: 'N' }, // hallway outside the meeting room: the boss looks in (behaviours.js peek)
   door_in: { x: 4, y: 12, face: 'S' }, // inside the entrance
-  door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance: the boss badges in here (behaviours.js badgeIn)
+  door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance (the lobby)
+  // The smokers' balcony, beyond the fire door X (27,13). He smokes at the railing; coming back in, he stands at the
+  // door and badges in, or, without his card, bangs on it for the rest of the day (mechanics.js DOORS).
+  fire_door: { x: 27, y: 14, face: 'N' },
+  smoke: { x: 26, y: 15, face: 'S' }, // at the railing, looking out over the street; the ashtray in the corner by the door
   elevator: { x: 2, y: 15, face: 'S' }, // NPCs vanish here when leaving
   restroom: { x: 25, y: 12, face: 'S' }, // NPCs vanish here for restroom breaks
 
@@ -73,7 +84,7 @@ export const SPOTS = {
 // Areas in tile units, half-open: x0 <= x < x1, y0 <= y < y1 (perception.js inZone(game, name, x, y)).
 export const ZONES = {
   meeting_room: { x0: 9, y0: 1, x1: 19, y1: 6 }, // where you must be at 4:00 (attendance rule)
-  outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby, beyond the glass entrance
+  outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby, beyond the glass entrance; the balcony, beyond the fire door
 };
 
 // Patrol routes: lists of tile coords walked in order.

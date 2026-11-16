@@ -106,21 +106,29 @@ export default [
   },
   {
     name: 'boss-goes-down',
-    cmds: ['busy until 3:38'],
-    intent: 'The boss, in his jacket, walks out to the lift with a cigarette: he is going down to the street for a ' +
-      'smoke. You watch from your desk.',
+    cmds: ['busy until 3:44', 'busy 0.3s'],
+    intent: 'The boss, in his jacket, has stepped out through the red fire door (EXIT sign over it) onto the little ' +
+      'smokers\' balcony at the far right, past the restroom, and stands there smoking. You watch from your desk.',
   },
   {
     name: 'boss-badges-in',
-    cmds: ['busy until 3:48', 'busy 0.2s'],
-    intent: 'Back from his smoke, the boss holds his keycard to the reader at the glass entrance (🪪) to get back in. ' +
-      'Without that card, he could not get back into the building.',
+    cmds: ['busy until 3:48', 'busy 0.15s'],
+    intent: 'Back from his smoke, the boss holds his keycard to the reader by the fire door (🪪) and the light goes ' +
+      'green: the door only opens from outside with that card.',
+  },
+  {
+    name: 'boss-locked-out',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto my_seat busy', 'sit busy', 'busy until 3:52'],
+    intent: 'You took his keycard. Now the boss is stuck out on the balcony: the reader by the fire door blinks red, ' +
+      'and he pounds the door with his fists, furious (😠🚪🪪 or 👊👊🚪), the door shuddering. Nobody but you is near ' +
+      'enough to hear. It is the card in your pocket that did it.',
   },
   {
     name: 'end-keycard',
     cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 4:00'],
-    intent: 'End card, a win. Upstairs you cheer. Downstairs, at the street gate, the boss in his jacket stands at a ' +
-      'card reader that blinks red, wondering where his card is (🪪❓): he cannot get back in for the meeting.',
+    intent: 'End card, a win. On the left you cheer, confetti flying. On the right, through the wall, the boss is ' +
+      'locked out on the balcony, pounding on the fire door whose card reader blinks red (😠🚪🪪): his card is ' +
+      'gone, and the meeting cannot start without him.',
   },
   {
     name: 'end-projector',

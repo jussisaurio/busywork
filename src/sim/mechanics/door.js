@@ -9,8 +9,11 @@
 //   opens(game, npc)  he can open it now (keyed: he holds the key item; timed: the clock)
 //   override  his override once shut out. plan, label: its plan key (no sequence: it lasts the day) and debug label
 //   locked    { set?, event? } applied when it doesn't open
-//   bang      { first, lines: [{ say, next }], event?, shake?: [amount, t] }: `first` s after, then each `next` s,
-//             he says the next line (cycled), emits the event and shakes the screen
+//   bang      { first, lines: [{ say, next, event?, shake? }], event?, shake?: [amount, t], loopFrom? }: `first` s
+//             after, then each `next` s, he says the next line, emits the event and shakes the screen (a line's own
+//             event or shake wins; shake: null, none). After the last line it cycles from line `loopFrom` (default
+//             0): an escalation that doesn't go back to its polite start. npc._bangLine is the line he's on and
+//             npc._bangAt the loop time it started (for poses and painters; a line may carry fields of the level's own)
 // The gather leaves him where he is.
 import { shake } from '../../core/fx.js';
 import { inZone } from '../../game/perception.js';
@@ -49,9 +52,17 @@ export function tick(game, npc, dt, door) {
   if (!b) return;
   npc._bangT -= dt;
   if (npc._bangT > 0) return;
-  const line = b.lines[npc._bangI++ % b.lines.length];
+  const n = b.lines.length;
+  const from = Math.min(b.loopFrom ?? 0, n - 1);
+  const i = npc._bangI < n ? npc._bangI : from + ((npc._bangI - n) % (n - from));
+  npc._bangI++;
+  const line = b.lines[i];
+  npc._bangLine = line;
+  npc._bangAt = game.loopTime;
   speak(game, npc, [line]);
-  if (b.event) game.events.emit(b.event, {});
-  if (b.shake) shake(game, ...b.shake);
+  const event = line.event ?? b.event;
+  if (event) game.events.emit(event, {});
+  const sh = 'shake' in line ? line.shake : b.shake;
+  if (sh) shake(game, ...sh);
   npc._bangT += line.next;
 }

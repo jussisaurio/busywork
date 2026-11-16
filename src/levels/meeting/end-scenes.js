@@ -42,11 +42,12 @@ function bossJacket(game) {
   return boss ? game.world.jacket === boss.id : true;
 }
 
-// The keycard win, in two floors. Upstairs (left) you cheer in the empty meeting room. Downstairs (right), at the
-// street gate, the boss in his jacket pats his pockets at a card reader that keeps blinking red.
+// The keycard win, either side of the fire door. Inside (left) you cheer in the empty office. Outside (right), on
+// the smokers' balcony, the boss pounds on the fire door, its card reader blinking red, butts ground out at his feet.
+const B_LOCKED = [['😠', '🚪', '🪪'], ['👊', '👊', '🚪']];
 function tableauKeycard(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, 286, TAB.h);
-  floorTiles(ctx, 484, TAB.y, 286, TAB.h);
+  balconySlab(ctx, 484, TAB.y, 286, TAB.h);
   confetti(ctx, TAB.x, 280, TAB.y, TAB.h, e, 36);
   const p = person(t);
   p.dir = Math.PI / 2;
@@ -55,30 +56,28 @@ function tableauKeycard(ctx, game, t, e) {
   p.smug = true;
   p.scale = 2.3;
   drawPerson(ctx, game.level.looks.player, p, 340, 280 - Math.abs(Math.sin(t * 6)) * 8);
-  // the floor between them: a concrete slab, and a lift shaft's down arrow
-  ctx.fillStyle = C.steelDark;
-  ctx.fillRect(476, TAB.y, 8, TAB.h);
-  ctx.fillStyle = '#1f1814';
-  rrect(ctx, 468, TAB.y + 12, 24, 14, 3);
-  ctx.fill();
-  ctx.fillStyle = '#f0b24a';
-  ctx.beginPath();
-  ctx.moveTo(474, TAB.y + 16);
-  ctx.lineTo(486, TAB.y + 16);
-  ctx.lineTo(480, TAB.y + 23);
-  ctx.closePath();
-  ctx.fill();
-  // downstairs: the turnstile, its reader blinking red, its glass flaps shut
-  streetGate(ctx, 600, 262, t);
+  // his fists land about twice a second; the door jumps on each
+  const beat = (t * 2.2) % 1;
+  const hit = beat < 0.18;
+  fireDoorSide(ctx, 470, t, hit ? Math.sin(beat * 90) * 2 : 0);
   const b = person(t);
-  b.dir = Math.PI; // facing the gate
-  b.head = Math.PI + Math.sin(t * 1.6) * 0.35; // pockets, reader, pockets
-  b.arms = Math.sin(t * 1.6) > 0 ? 'puff' : 'shrug';
-  b.item = b.arms === 'puff' ? '#cigarette' : null;
-  b.jacket = true;
+  b.dir = Math.PI; // facing the door
+  b.head = Math.PI + Math.sin(t * 2) * 0.1;
+  b.arms = 'bang';
+  b.angry = true;
+  b.jacket = bossJacket(game);
   b.scale = 2.2;
-  drawPerson(ctx, game.level.looks.boss, b, 690, 272);
-  bubble(ctx, ['🪪', '❓'], 690, 196, e, 'thought');
+  drawPerson(ctx, game.level.looks.boss, b, 548, 272);
+  if (hit) { // impact rings off the steel
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 2;
+    for (let r = 0; r < 2; r++) {
+      ctx.beginPath();
+      ctx.arc(494, 222, 8 + r * 7 + beat * 20, -Math.PI * 0.4, Math.PI * 0.4);
+      ctx.stroke();
+    }
+  }
+  bubble(ctx, B_LOCKED[Math.floor(e / 1.6) % 2], 560, 196, e % 1.6, 'alert');
   const pe = clamp((e - 0.3) / 0.3, 0, 1);
   if (pe > 0) {
     ctx.save();
@@ -90,27 +89,64 @@ function tableauKeycard(ctx, game, t, e) {
   }
 }
 
-// A ground-floor security turnstile: two steel posts, glass flaps closed between them, a card reader on top.
-function streetGate(ctx, x, y, t) {
-  fillEllipse(ctx, x, y + 6, 54, 9, 'rgba(0,0,0,0.18)');
-  ctx.fillStyle = 'rgba(170,215,234,0.55)'; // the flaps
-  ctx.fillRect(x - 30, y - 50, 26, 40);
-  ctx.fillRect(x + 4, y - 50, 26, 40);
-  ctx.fillStyle = C.glassEdge;
-  ctx.fillRect(x - 4, y - 50, 8, 40);
-  for (const px of [x - 46, x + 30]) { // the posts
-    ctx.fillStyle = C.steelDark;
-    rrect(ctx, px, y - 70, 16, 76, 3);
-    ctx.fill();
-    ctx.fillStyle = C.steel;
-    rrect(ctx, px + 2, y - 68, 12, 70, 2);
-    ctx.fill();
-  }
-  ctx.fillStyle = '#1f1814'; // the reader, on the post nearest him
-  rrect(ctx, x + 32, y - 82, 12, 14, 2);
+// The balcony: the sky and the rooftops over the railing at the back, concrete pavers, a sand-bucket ashtray in
+// the far corner and his butts all round it.
+function balconySlab(ctx, x, y, w, h) {
+  ctx.fillStyle = '#a7c9de';
+  ctx.fillRect(x, y, w, 70);
+  for (const [cx, cy] of [[560, y + 22], [700, y + 34]]) fillEllipse(ctx, cx, cy, 30, 8, '#c9dde8');
+  ctx.fillStyle = '#7d8a96';
+  for (let i = 0; i < 6; i++) ctx.fillRect(x + 10 + i * 48, y + 44 - (i % 3) * 10, 36, 30 + (i % 3) * 10);
+  ctx.fillStyle = '#a3a8ab';
+  ctx.fillRect(x, y + 70, w, h - 70);
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  for (let gx = 0; gx <= w; gx += 48) ctx.fillRect(x + gx, y + 70, 1.5, h - 70);
+  for (let gy = 70; gy <= h; gy += 40) ctx.fillRect(x, y + gy, w, 1.5);
+  ctx.fillStyle = '#5c6670';
+  ctx.fillRect(x, y + 62, w, 5);
+  for (let rx = x + 10; rx < x + w; rx += 22) ctx.fillRect(rx, y + 62, 3, 14);
+  ctx.fillStyle = '#c0392b';
+  rrect(ctx, 720, 250, 24, 24, 4);
   ctx.fill();
-  ctx.fillStyle = Math.sin(t * 6) > 0 ? '#e5432f' : '#5a1f18';
-  fillEllipse(ctx, x + 38, y - 75, 3, 3, ctx.fillStyle);
+  fillEllipse(ctx, 732, 251, 12, 4, '#d8c690');
+  for (let i = 0; i < 14; i++) {
+    const a = i * 2.39996;
+    const r = 18 + (i % 5) * 7;
+    ctx.save();
+    ctx.translate(722 + Math.cos(a) * r, 282 + Math.sin(a) * r * 0.35);
+    ctx.rotate(a);
+    ctx.fillStyle = '#f2ede2';
+    ctx.fillRect(-4, -1.2, 5, 2.4);
+    ctx.fillStyle = '#d58a3a';
+    ctx.fillRect(1, -1.2, 3, 2.4);
+    ctx.restore();
+  }
+}
+
+// The wall between them, end on, with the red fire door in it (shoved dx px by his fists), the EXIT sign over it
+// and the card reader on his side, blinking red.
+function fireDoorSide(ctx, x, t, dx) {
+  ctx.fillStyle = C.wallFront;
+  ctx.fillRect(x, TAB.y, 18, TAB.h);
+  ctx.fillStyle = '#4a4f55';
+  ctx.fillRect(x - 2, 150, 22, 140);
+  ctx.fillStyle = '#b8402f';
+  ctx.fillRect(x + 2 + dx, 154, 14, 134);
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.fillRect(x + 2 + dx, 154, 3, 134);
+  ctx.fillStyle = '#b9bfc3'; // push bar, on the inside
+  ctx.fillRect(x - 6 + dx, 222, 8, 4);
+  ctx.fillStyle = '#1f7a3e'; // EXIT
+  rrect(ctx, x - 12, 132, 42, 14, 2);
+  ctx.fill();
+  ctx.fillStyle = '#d9ffe4';
+  ctx.fillRect(x - 6, 137, 30, 4);
+  ctx.fillStyle = '#2b2e33'; // the reader, outside
+  rrect(ctx, x + 22, 200, 10, 16, 2);
+  ctx.fill();
+  const on = Math.sin(t * 7) > 0;
+  if (on) fillEllipse(ctx, x + 27, 206, 7, 7, 'rgba(255,59,48,0.3)');
+  fillEllipse(ctx, x + 27, 206, 3, 3, on ? '#ff3b30' : '#5a1f18');
 }
 
 // The projector win: no projector, no slides. The boss points at the smoking projector, then waves everyone out;
@@ -283,7 +319,7 @@ function drawLift(ctx, t) {
 
 // Blamed: the meeting fell apart, but you weren't there. Everyone glares at your empty tomato chair.
 // routes add their scars: 'projector' leaves it smoking on the table; 'keycard' leaves the boss's place empty
-// (he is down at the street gate: nobody upstairs saw him go).
+// (he is locked out on the smokers' balcony).
 function tableauBlamed(ctx, game, t, e, o) {
   const routes = Array.isArray(o.routes) ? o.routes : [];
   const smoke = routes.includes('projector');
@@ -475,7 +511,7 @@ function meetingScreen(ctx, t, dead, dx) {
 export const END_SCENES = {
   kindOf: endKind,
   scenes: {
-    keycard: { win: true, icons: ['🚬', '🪪', '❓'], draw: tableauKeycard }, // the boss is out, and his card isn't on him
+    keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator

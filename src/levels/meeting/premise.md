@@ -13,7 +13,7 @@ You are an office worker in a red sweater. At 4:00 PM there is a meeting where y
 and you haven't made any. If the meeting happens, you stand in front of the boss and your colleagues with nothing on
 the screen (the fail end card: a blank screen, crickets). You can't make the slides in 90 minutes, so the only way
 out is that the meeting doesn't happen: either there is nothing to show it on (the projector is dead, and the boss
-calls the meeting off), or the boss can't get to it (he goes down for a smoke and can't get back into the building).
+calls the meeting off), or the boss can't get to it (he steps out onto the balcony for a smoke and can't get back in).
 Whatever you do must not be traced to you: get caught at it, or be the obvious culprit, and you are fired or blamed
 instead.
 
@@ -31,10 +31,13 @@ by 2:56. Anyone he sees idle gets sent to their desk to work. At 3:12 he goes to
 way out and on the way back he looks in at the meeting-room door, so his office is empty from about 3:14 to 3:28. If
 the projector is dead when he looks in, he stares at it (📽️💥), wonders where the coffee came from (☕❓), and walks
 the hallway, the coffee machine, Kev's desk and your desk looking for a cup until 3:34. At 3:33 he wants a cigarette
-(🚬❓). At 3:35 he takes his jacket off the rack and goes down in the lift to smoke in the street. At 3:48 he comes
-back in through the glass entrance, holding his keycard to the reader (🪪, a beep). The ground-floor gate needs the
-same card: without it he never gets back up, and nobody upstairs sees him stuck. At 3:54 everyone walks to the
-meeting room. At 4:00 he stands at the head of the table. If the projector is dead he points at it (📽️💥), says no
+(🚬❓). At 3:35 he takes his jacket off the rack and walks out through the fire door (bottom right, past the
+restroom) onto the little smokers' balcony. The fire door swings shut behind him; from outside it opens only with a
+keycard. At 3:48 he holds his card to its reader (🪪, a beep, a green light) and comes back in. Without the card he is
+stuck out there: the reader blinks red, and he pats his pockets (🪪❓), knocks (✊🚪), bangs (😠🚪🪪), pounds with
+both fists (👊👊🚪), lights another cigarette in a fury (🚬😤), begs (🙏🚪), and goes round again, the door shaking,
+until 4:00. Lin is in the far corner and the meeting room is round the other side: only you are near enough to hear
+him. At 3:54 everyone walks to the meeting room. At 4:00 he stands at the head of the table. If the projector is dead he points at it (📽️💥), says no
 (🙅📊) and waves everyone out (👋🚪): the meeting is off.
 
 **Kev** sits at his desk. At 2:38 he goes to the kitchen for his afternoon coffee. The machine has one cup left in
@@ -61,14 +64,16 @@ away, she tells him when he is back.
 - **The empty mug.** The cup, after the spill. It is evidence: you can't let it fall, only set it down, and that takes
   a moment.
 - **The coat rack and the boss's jacket** (his office, behind his desk). His keycard is clipped to the jacket.
-- **The keycard.** It opens the glass entrance and the ground-floor gate. The boss is the only one who cares about
+- **The keycard.** It opens the glass entrance and the fire door. The boss is the only one who cares about
   it: he catches you with it, and pockets it if he sees it on the floor.
 - **The fridge** (kitchen). Lin's sandwich is in it.
 - **The sandwich.** Lin's lunch. To anyone else it is just a sandwich. Eat it and the mustard stays on your sweater.
 - **The glass walls** of the boss's office. He sees out; Lin sees in.
 - **The desks and chairs.** Each desk chair has its owner's colour: red yours, teal Lin's, olive Kev's. The meeting
   table has a red chair for you and an olive one for Kev.
-- **The lift and the glass entrance** (bottom left). Kev leaves this way; the boss goes down to smoke this way.
+- **The lift and the glass entrance** (bottom left). Kev leaves this way.
+- **The fire door and the smokers' balcony** (bottom right, past the restroom). A red steel door with an EXIT sign
+  and a card reader on the balcony side. The boss smokes out there. You can't go through it.
 - **The restroom** (bottom right). The boss goes at 3:12, Lin at 3:30.
 - **The wall clock.** The day runs 2:30 to 4:00.
 
@@ -101,11 +106,11 @@ Facts the player must know, and where they SEE them:
 
 ### 2. Lock the boss out
 Steps: take the keycard from the boss's jacket while the boss is out (3:14–3:28, his restroom trip) and Lin is not
-looking. Keep it. At 3:35 the boss takes his jacket without the card and goes down to smoke. He can't get back in, and
-the meeting never happens.
+looking. Keep it. At 3:35 the boss takes his jacket without the card and steps out onto the balcony to smoke. At 3:48
+the fire door won't let him back in, and he bangs on it, fuming, while the meeting never happens.
 
-In a real office: a boss who smokes leaves his jacket on the rack until he goes out; the building's gate needs a
-card; nobody upstairs knows he is stuck in the street.
+In a real office: a boss who smokes leaves his jacket on the rack until he goes out; a fire door opens freely from
+inside and needs a card from outside, and slams shut behind you; nobody but the desk nearest it hears the banging.
 
 Facts the player must know, and where they SEE them:
 - **The jacket on the coat rack has a keycard.** The jacket hangs behind the boss in his glass office, visible from
@@ -115,10 +120,12 @@ Facts the player must know, and where they SEE them:
   the rack. When her cone swings away, the rack is clear. If she sees you at the jacket, she shouts (❗👉), and the
   boss takes his card back.
 - **The boss goes out for a smoke with his jacket.** At 3:33 he thinks of a cigarette (🚬❓), at 3:35 he takes the
-  jacket off the rack and walks to the lift (bottom left).
-- **The entrance needs the card.** Let him keep it, and at 3:48 you see him badge in at the glass entrance (🪪, a
-  beep). Take it, and he never comes back. The end card shows him in the street at the gate, cigarette in hand,
-  with no card (🚬🪪❓).
+  jacket off the rack and walks out through the fire door (EXIT sign) onto the balcony, smoking.
+- **The fire door needs the card.** Let him keep it, and at 3:48 you see him hold it to the reader by the fire door
+  (🪪, a beep, the light goes green) and come back in. Take it, and you see and hear him stuck: the red light, the
+  pocket pat (🪪❓), then the knocking, banging and pounding, the door shuddering under his fists, the screen shaking,
+  his bubbles naming the door and the card (😠🚪🪪). The end card shows him on the balcony pounding on the fire door
+  while you cheer on the other side of it (🔒🪪👊).
 
 Combo: take Lin's sandwich from the fridge before 2:58. At lunch she finds it gone (🥪❓, then 😠) and walks around the
 open plan looking for it until 3:24, away from her desk while the boss is out. You need empty hands for the keycard,
