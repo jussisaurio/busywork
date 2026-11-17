@@ -566,7 +566,7 @@ try {
   ok(lines.join('\n') === ['meeting', ...STAGES.map((st) => `  ok    ${st.padEnd(9)}works (2026-11-15, abc1234), fresh`)].join('\n'), 'status: a line per pass');
   const ids = coldReadLevels();
   ok(ids.includes('meeting') && ids.includes('weekend-shift') && !ids.some(isFixture) && ids.length >= 8, 'status covers every level but the fixtures');
-  const cli = execFileSync('node', [join(ROOT, 'tools/cold-read.mjs'), '--status'], { encoding: 'utf8', env: { ...process.env, BUSYWORK_CANVAS_DIR: join(TMP, 'no-canvas') } });
+  const cli = execFileSync('node', [join(ROOT, 'tools/cold-read.mjs'), '--status'], { encoding: 'utf8', env: { ...process.env, BUSYWORK_CANVAS_DIR: 'none' } });
   ok(ids.every((id) => cli.includes(`${id}\n`)) && !cli.includes('fixture') && cli.trim().split('\n').length === ids.length * (1 + STAGES.length), '--status prints every non-fixture level and all its passes');
   ok((cli.match(/^ {2}\S+ +sense +/gm) || []).length === ids.length, '--status lists sense for every level');
   ok(STAGES.slice(0, STAGES.indexOf('premise')).every((st) => PASSES.find((x) => x.id === st).kind === 'text'), 'the narrow text passes run and list first');

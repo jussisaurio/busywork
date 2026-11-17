@@ -85,7 +85,7 @@ The picture passes (verbs, faces, tells, outcomes, pictures, replay) draw with `
 ```
 npm install --prefix tools/.deps @napi-rs/canvas
 ```
-`BUSYWORK_CANVAS_DIR` points the tools at another copy, if you have one. The text passes need no canvas.
+`BUSYWORK_CANVAS_DIR` points the tools at another copy, if you have one; `BUSYWORK_CANVAS_DIR=none` says there is no canvas (no fallback to `tools/.deps`). The text passes need no canvas.
 
 ## Running it
 ```
@@ -94,7 +94,7 @@ node tools/cold-read.mjs --level <id> --pass text          # the five narrow tex
 node tools/cold-read.mjs --level <id> --pass faces,tells   # a list, at the same time
 node tools/cold-read.mjs --level <ref> --pass sense --calibrate   # a reference level, read cold: should come out works
 node tools/cold-read.mjs --level <id> --pass all           # every pass, at the same time
-node tools/cold-read.mjs --status                          # every non-fixture level: each pass's verdict, fresh or stale
+node tools/cold-read.mjs --status                          # every non-fixture level: each pass's verdict, fresh or stale (one child process per level; BUSYWORK_JOBS caps them)
 node tools/shots.mjs --level <id>                          # look at the shots yourself: tools/.shots/<id>/ (and each one's clock)
 node tools/shots.mjs --level <id> --replay                 # and the replay strips: tools/.shots/<id>/replay/
 node tools/shots.mjs --level <id> --verbs                  # and the verb sheets: tools/.shots/<id>/verbs/
