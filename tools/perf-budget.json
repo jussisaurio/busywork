@@ -6,7 +6,7 @@
  "fixture-attention": {"sim":0.836,"render":0.077,"golden":0.125},
  "fixture-inspection": {"sim":1.343,"render":0.068,"golden":0.156},
  "fixture-putdown": {"sim":1.31,"render":0.068,"golden":0.186},
- "interview": {"sim":7.166,"render":0.312,"golden":7},
+ "interview": {"sim":3.745,"render":0.231,"golden":4.827},
  "layoffs": {"sim":3.109,"render":0.156,"golden":0.506},
  "meeting": {"sim":2.495,"render":0.14,"golden":3.369},
  "second-thoughts": {"sim":2.397,"render":0.196,"golden":0.77},
