@@ -29,6 +29,7 @@ node tools/gate.mjs --level <id>          # fuzz a level and print the mechanica
 node tools/golden.mjs --write --level <id>         # re-record after an intended behaviour change
 node tools/golden-render.mjs --write --level <id>  # re-record after an intended visual change
 node tools/shots.mjs --level <id>         # screenshots, to look at what a player sees
+node tools/perf.mjs --all                 # sim, render and replay cost per level against tools/perf-budget.json
 ```
 
 A tool run without `--level` checks one default level only. Use `--all` or `check.mjs`.
@@ -40,6 +41,8 @@ The canvas build lives in `tools/.deps`; `check.mjs` finds it, a single tool nee
   which in the commit. If the same problem shows in two levels, the cause is in the engine: fix it there.
 - **The engine:** it is shared by every level. Run the full check. A golden that moves in a level you did not mean
   to touch is a finding, not a file to re-record.
+- **Goldens are derived files.** Never merge them by hand: `merge.mjs` re-records them on a conflict and flags any
+  plan whose outcome neither side had. Look at each flagged plan.
 - **A helper two levels need** goes in the shared kit (`src/render/tableau*.js`, `palette.js`), never copied.
 
 ## When a level is done
@@ -53,6 +56,9 @@ Winnable is not done. A level is done when all of these hold:
    Before cutting a beat to fix a problem, name the joke it carries. If the fix removes the joke, find another fix.
 4. Cold reads are advice. Read the blockers and use judgment; never chase twelve clean passes.
 
+`test-smoke.mjs` (part of the check) boots the real page and plays each level with real keys. It catches a level
+that will not start or a frozen frame loop; it does not look at pixels, audio or the mouse.
+
 A person playing it is the real test. Say what you could not judge, not "ready".
 
 ## Working with subagents
@@ -63,3 +69,4 @@ A person playing it is the real test. Say what you could not judge, not "ready".
 - Builders work in worktrees and commit there. Merging is one command, `tools/merge.mjs`; do not hand-merge.
 - Record a design decision and who made it in the commit or in `docs/KAIZEN.md`, so later blame lands correctly.
 - Run few heavy jobs at once. Fuzzers and read passes starve each other, and a timeout then looks like a failure.
+  `BUSYWORK_JOBS=<n>` caps every tool's parallelism.

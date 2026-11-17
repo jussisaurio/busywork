@@ -76,19 +76,22 @@ context compactions, about 16M output tokens.
   after that first "done", as rework. Changed: `CLAUDE.md` says what done is.
 - **Checks read reports, not the screen.** Several checks took a builder's description of a scene as the scene. The
   player then found things in seconds that every check had passed. Changed: looking at the pictures is part of
-  done. Still open: a check that runs the real page (`index.html`), not the harness.
+  done, and `tools/test-smoke.mjs` boots the real page and plays every level with real keys (no pixels, audio or mouse).
 - **Direction went out before it was settled.** A change of mind was sent to every builder at once, then changed
   again. Each time was a round of rework in every level.
 - **The orchestrator did the merging by hand,** over a thousand shell commands, and filled its own context doing
   it. `tools/merge.mjs` existed for part of this; goldens conflicted on nearly every merge anyway.
-  Changed: `tools/check.mjs` is one command for every test, route and golden, and `merge.mjs` runs it. Still open:
-  goldens are derived files and should be re-recorded on a conflict, not merged by hand.
+  Changed: `tools/check.mjs` is one command for every test, route and golden, and `merge.mjs` runs it. Goldens are
+  one plan per line (60,738 lines down to 2,167), and `merge.mjs` re-records them on a conflict and flags a plan
+  whose outcome neither side had. That flag has only been tried on made-up data so far: watch the first real one.
 - **Long-lived builders got expensive.** Each builder turn carried about 34k tokens of skills and tools it never
   used, plus its whole history. A fresh agent per round with a short brief is cheaper and reads the current docs.
 - **The docs described a team that was gone.** `CONTRACTS.md` had an ownership table for agents that no longer
   existed and told level authors never to touch the engine, while the fixes that mattered were engine fixes.
   Changed: the table is gone, old plans moved to `docs/history/`, the legacy-level list is deleted.
 - **Nothing watched time.** One level's gate grew to many minutes unnoticed, and agents running fuzzers and read
-  passes at once starved each other into timeouts that read as failures. Still open: a budget.
+  passes at once starved each other into timeouts that read as failures. Changed: `tools/perf.mjs` with a recorded
+  budget, a perf line in the gate report, `BUSYWORK_JOBS` as one cap on parallelism. The first measurement found
+  Interview's phones building key strings every frame (sim cost halved by building them once).
 
 **Next pass:** did a level get to "a person enjoyed it" in fewer rounds? Did anyone cut a joke to satisfy a reader?
