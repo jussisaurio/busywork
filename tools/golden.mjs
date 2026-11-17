@@ -6,6 +6,7 @@
 // src/levels/<id>/golden.json.
 //
 //   node tools/golden.mjs [--level meeting]    check; exit 1 and show the first divergence on a mismatch
+//   node tools/golden.mjs --all                 check every level (also: --write --all)
 //   node tools/golden.mjs --write              re-record digests for the current corpus (after an intended change)
 //   node tools/golden.mjs --write --from f.json  rebuild the corpus from a `tools/fuzz.mjs --json` dump, plus the
 //                                              level's hand-written plans (level.gate.goldenPlans)
@@ -15,8 +16,9 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { relative } from 'node:path';
 import { createHarness, describeEvents } from '../src/agent/harness.js';
-import { levelArg, levelFile } from './lib/level-arg.mjs';
+import { allArg, levelArg, levelFile } from './lib/level-arg.mjs';
 
+await allArg('golden');
 const LEVEL = levelArg('golden');
 const FILE = levelFile(LEVEL, 'golden.json');
 const MAX_DRAIN_FRAMES = 60 * 60 * 5;

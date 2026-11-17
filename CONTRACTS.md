@@ -28,7 +28,8 @@ change in order changes the digest. These are the usual ways to break it:
 
 ## Conventions
 - Vanilla JS ES modules, no dependencies, no build step. Serve with `node tools/serve.mjs` (port 8642, caching off, so a plain reload runs the files on disk).
-  Node 22 runs the headless tests (`node tools/test-*.mjs`).
+  Node 22 runs the headless tests (`node tools/test-*.mjs`). Before handing work back run `node tools/check.mjs --fast`:
+  every test, the routes and both goldens for every level, in parallel.
 - **No DOM access at module import time.** Only `createInput(window)`, `createRenderer(canvas)`, `createAudio()` and
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
 - Units: positions are floats in **tile units**. Tile (x,y) covers [x,x+1)×[y,y+1); its centre is (x+0.5, y+0.5).
@@ -685,8 +686,14 @@ tick(game, dt):  updatePlayer → updateInteractions → updateNpcs → updateRu
 ```
 
 ## Tools
-The level tools take `--level <id>` (default `meeting`; `routes.mjs` without it checks every level); an unknown id
-exits 2 and lists the registry.
+**One command: `node tools/check.mjs --fast`** runs every `tools/test-*.mjs` except `test-cold-read.mjs`, `routes.mjs`,
+and `golden.mjs` and `golden-render.mjs` for every level, in parallel (about 10 s). It exits 1 on any failure and
+prints the tail of each failing piece. Without `--fast` it runs `test-cold-read.mjs` too; `tools/merge.mjs` runs the
+full check after merging. The tools below also run singly.
+
+The level tools take `--level <id>` (default `meeting`; `routes.mjs` without it checks every level; `golden.mjs` and
+`golden-render.mjs` take `--all` for every level, and without `--level` or `--all` check only `meeting` and say so);
+an unknown id exits 2 and lists the registry.
 - **Levels** (`tools/test-levels.mjs`): runs the validator on every registered level, and checks that a set of
   broken levels fail with the right line. It takes no `--level`.
 - **Harness** (`src/agent/harness.js`, `tools/play.mjs`): an LLM agent or a script plays the real game headlessly.
@@ -704,7 +711,7 @@ exits 2 and lists the registry.
   [--batch 288] [--workers N] [--verbose] [--json out.json]`. The output depends only on level, seed, budget and
   batch. A report for a designer, not a test.
 - **Gate** (`tools/gate.mjs`): the pass/fail filter a level must pass before a human plays it. It fuzzes
-  (`--budget 30000`, about 30 s; without `--budget`, the level's `gate.budget` when it has one, so a level whose
+  (`--budget 30000`; 7 s on fixture, 36 s on weekend-shift, 103 s on meeting; without `--budget`, the level's `gate.budget` when it has one, so a level whose
   rarest win needs more days needs no flag) and exits 1 on any failed check:
   - `routes`: a route no plan wins.
   - `easy`: a win in 3 plan steps or fewer (the final stance held until the meeting is not a step).
@@ -743,8 +750,8 @@ exits 2 and lists the registry.
   repo except `tools/.shots/`. `tools/test-stray.mjs` tests it and the gate's `stray` check.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
-  corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`.
-- **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--write`
+  corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`. `--all` checks (or, with `--write`, re-records) every level.
+- **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--all` as above; `--write`
   re-records (plans from the file, or picked from the golden corpus). It also fails when a level that is not on the
   legacy list draws an emoji as an object in the world.
 - **Routes** (`tools/routes.mjs`): scripted speedruns that must end with the expected outcome, from each level's
