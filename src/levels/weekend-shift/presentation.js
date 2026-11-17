@@ -1,7 +1,7 @@
 // How Saturday (id weekend-shift) looks and sounds: title card, set dressing, poses, the end card, voices and sounds (level 1's
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
@@ -15,10 +15,6 @@ export const TITLE = {
   badge: ['🗓️', '@player'], // the board's week, and you down for it
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
 
 const look = (game, id) => game?.level?.looks?.[id] ?? null;
 // s to the DING while the noodles cook, else null

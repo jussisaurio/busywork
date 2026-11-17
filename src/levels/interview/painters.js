@@ -6,7 +6,7 @@
 import { T, rrect, circle, fillCircle, fillEllipse, emoji, clamp, starPath } from '../../render/util.js';
 import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD } from '../../render/palette.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { PHONES, PHONE_IDS, OUTSIDE, SLAM } from './phones.js';
 
@@ -703,7 +703,6 @@ function kevSocket(ctx, info, at, shown, t) {
 }
 
 // --- The boss's chair: a high-backed one, turned to the window when he has gone to it -------------------
-const OXBLOOD = ['#6b2f24', '#4e2019'];
 function bossChair(ctx, info, at, { game }) {
   const boss = npcById(game, 'boss');
   const cx = 3 * T + T / 2;

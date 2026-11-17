@@ -1,7 +1,7 @@
 // How The Interview looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
 import { at } from '../../config.js';
-import { C } from '../../render/palette.js';
+import { C, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
 import { PHONE_PROPS, THINGS } from './painters.js';
 import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
@@ -11,9 +11,6 @@ export const TITLE = {
   badge: ['#interview', '#call'], // the threat: Lin's interview (her face and its briefcase) and the call (painters.js THINGS)
 };
 
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
 
 export const DECOR = {
   zoneSeeds: [{ x: 3, y: 2, zone: 'office' }, { x: 20, y: 3, zone: 'kitchen' }],

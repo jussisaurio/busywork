@@ -3,7 +3,7 @@
 // they have on the floor (presentation.js DECOR: the chair, the mug, the prop on the desk), so a desk reads as
 // that person's.
 import { clamp, easeOutCubic, rrect, fillCircle, fillEllipse, clockHands } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
 import { tintOf } from '../../render/things.js';
@@ -13,10 +13,10 @@ const WALL = 78; // back wall height in the pictures
 
 // Each desk's owner colours, as on the floor: chair [seat, back], mug, the prop on the desk.
 const DESKS = {
-  player: { chair: ['#d6a23a', '#a97b22'], mug: C.tomato, prop: null },
-  boss: { chair: ['#6b2f24', '#4e2019'], mug: C.navyLight, prop: 'lamp' },
-  lin: { chair: ['#2f8f83', '#22675f'], mug: C.teal, prop: 'plant' },
-  kev: { chair: ['#5f6b3a', '#47512a'], mug: C.olive, prop: 'earbuds' },
+  player: { chair: MUSTARD, mug: C.tomato, prop: null },
+  boss: { chair: OXBLOOD, mug: C.navyLight, prop: 'lamp' },
+  lin: { chair: TEAL, mug: C.teal, prop: 'plant' },
+  kev: { chair: OLIVE, mug: C.olive, prop: 'earbuds' },
 };
 
 // His four checks in order (index.js INSPECTIONS): the world field each records. A desk he crossed is in

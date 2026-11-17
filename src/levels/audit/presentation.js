@@ -1,7 +1,7 @@
 // How the audit looks and sounds: title card, set dressing, people, voices, sounds and the end card (level 1's
 // decor.js, looks.js, voices.js and sounds.js document the fields). Level 1's people are imported
 // read-only; the auditor is new.
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { DESK_MARKS, penShake, penScribble, wallet } from './things.js';
@@ -13,10 +13,6 @@ export const TITLE = {
   badge: ['📋', '💻'], // his clipboard, a laptop
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
 
 export const DECOR = {
   chairs: [

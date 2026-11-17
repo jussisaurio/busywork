@@ -1,6 +1,6 @@
 // How The Last Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { CLOCKS } from './clocks.js';
 import { officeTimeClock, officeTimeStreet } from './painters.js';
@@ -11,10 +11,6 @@ export const TITLE = {
   badge: ['🚌'],
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
 
 // A wall clock shows the true minute plus however fast it is, red over the minutes it gained, and each push hangs it
 // more crooked (one push is plain to see). The stepladder under it is part of the same drawing (painters.js).

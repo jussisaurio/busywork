@@ -1,7 +1,7 @@
 // How Discreet Packaging looks: title card, set dressing, people and their
 // poses, sounds and voices (level 1's decor.js, looks.js and sounds.js document the fields). Every object on the
 // map is drawn by painters.js; the end scenes are in end-scenes.js.
-import { C } from '../../render/palette.js';
+import { C, NAVY, TEAL, MUSTARD } from '../../render/palette.js';
 import { LOOKS as L1 } from '../meeting/looks.js';
 import {
   pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,
@@ -14,9 +14,6 @@ export const TITLE = {
   badge: ['@player', '😳'],
 };
 
-const NAVY = [C.navy, C.navyDark];
-const TEAL = [C.teal, C.tealDark];
-const MUSTARD = ['#d6a23a', '#a97b22'];
 
 export const DECOR = {
   chairs: [

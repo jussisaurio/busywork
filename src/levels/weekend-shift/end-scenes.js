@@ -6,7 +6,7 @@
 // and Lin and Kev have turned to look at it. Whoever isn't here gets Saturday.
 // The row under it is the punchline: cause, effect, you.
 import { fillCircle, fillEllipse, rrect } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { drawClock } from '../../render/things.js';
@@ -164,7 +164,7 @@ function room(ctx, t) {
 const DESK_X = 520;
 const DESK_Y = TAB.y + 196;
 const BUBBLE_Y = DESK_Y - 82; // over the worker's head
-const SEAT = { boss: ['#6b2f24', '#4e2019'], kev: ['#5f6b3a', '#47512a'], player: ['#d6a23a', '#a97b22'], lin: ['#2f8f83', '#22675f'] };
+const SEAT = { boss: OXBLOOD, kev: OLIVE, player: MUSTARD, lin: TEAL };
 
 // Win: Kev, or the boss, works Saturday. Their face on the board, them at the desk, the sun outside. Kev, who did
 // nothing, is sad (the cost of framing him); the boss, who read his own name out to the room, is still red and sagging.

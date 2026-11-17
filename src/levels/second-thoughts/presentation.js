@@ -1,7 +1,7 @@
 // How Second Thoughts looks and sounds: title card, set dressing, poses and sounds (level 1's decor.js, looks.js and
 // sounds.js document the fields). The end cards are in end-scenes.js. People look as in level 1 (its looks.js,
 // read-only).
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
 import { trayProp, deskClockProp, drawerProp, puddleProp, jugProp, machineProp, surgeProp, trayThing, phoneThing, jugThing } from './things.js';
 
@@ -13,10 +13,6 @@ export const TITLE = {
   badge: ['✉️', '@boss', '📦'],
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
-const OLIVE = ['#5f6b3a', '#47512a'];
 
 export const DECOR = {
   chairs: [

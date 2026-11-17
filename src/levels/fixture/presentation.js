@@ -1,6 +1,6 @@
 // How the fixture looks: title card, set dressing, people and the end card (level 1's decor.js, looks.js and
 // end-scenes.js document the fields).
-import { C } from '../../render/palette.js';
+import { C, MUSTARD } from '../../render/palette.js';
 import { fillEllipse } from '../../render/util.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
@@ -14,7 +14,6 @@ export const TITLE = {
 
 const PLUM = ['#8a3f6b', '#64284c'];
 const ORANGE = ['#c27b2c', '#935a1c'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
 
 export const DECOR = {
   chairs: [

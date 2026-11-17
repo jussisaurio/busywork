@@ -88,5 +88,12 @@ export const C = {
   hudRed: '#ff5a43',
 };
 
+// Seat colours as [fill, dark] pairs, the way chairs (render/world.js drawChair) and level casts take them.
+export const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
+export const MUSTARD = [C.ochre, C.ochreDark];
+export const TEAL = [C.teal, C.tealDark];
+export const OLIVE = [C.olive, C.oliveDark];
+export const NAVY = [C.navy, C.navyDark];
+
 // Vision cone tint (r,g,b) for an NPC without its own (the cast sets each NPC's coneTint).
 export const CONE_TINT_DEFAULT = [255, 245, 210];

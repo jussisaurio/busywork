@@ -6,15 +6,13 @@
 //   caught       the boss saw you at his screen himself and points you out; you carry your box out
 //   told         Lin told him: she stands at his desk pointing you out while he sends it with you on it; you go
 import { clamp, easeOutCubic, rrect, fillEllipse } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { drawList } from './list.js';
 
 const B_ANGRY = ['😠'];
-const MUSTARD = [C.ochre, C.ochreDark];
-const OXBLOOD = ['#6b2f24', '#4e2019'];
 
 const yourLook = (game) => game.level.looks.player;
 
