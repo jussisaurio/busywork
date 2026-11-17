@@ -9,6 +9,7 @@
 // Math.random (only fx particles use it) is seeded per plan here, and each plan gets a fresh game and renderer.
 //
 //   node tools/golden-render.mjs [--level meeting]  check; exit 1 and name the first render that differs
+//   node tools/golden-render.mjs --all     check every level (also: --write --all)
 //   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else pick() below)
 //
 // Re-record only when a visual change is intended, and say so in the commit. Either way it fails a level not on the
@@ -20,8 +21,9 @@ import { createHarness } from '../src/agent/harness.js';
 import { updateFx } from '../src/core/fx.js';
 import { worldEmoji } from '../src/render/util.js';
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
-import { levelArg, levelFile } from './lib/level-arg.mjs';
+import { allArg, levelArg, levelFile } from './lib/level-arg.mjs';
 
+await allArg('golden-render');
 const LEVEL = levelArg('golden-render');
 const FILE = levelFile(LEVEL, 'golden-render.json');
 const GOLDEN = levelFile(LEVEL, 'golden.json');

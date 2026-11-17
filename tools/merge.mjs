@@ -1,7 +1,6 @@
 // Merge a branch into main and run every test: node tools/merge.mjs <branch>.
-// Stops before merging if the trial merge conflicts (except in cold-read records), and says so if a test fails after.
+// Stops before merging if the trial merge conflicts (except in cold-read records), and runs the full tools/check.mjs after (tests, routes, goldens for every level).
 import { execFileSync, spawnSync } from 'node:child_process';
-import { readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -21,13 +20,7 @@ if (records) {
   console.log(`merge: took ${branch}'s cold-read records: ${conflicted.join(', ')}`);
 } else git('merge', '-q', '--no-edit', branch);
 console.log(`merge: ${git('log', '--oneline', '-1')}`);
-process.env.BUSYWORK_CANVAS_DIR ??= join(root, 'tools', '.deps');
-const failed = [];
-for (const t of readdirSync(join(root, 'tools')).filter((f) => /^test-.*\.mjs$/.test(f)).sort()) {
-  const r = spawnSync('node', [join('tools', t)], { cwd: root, encoding: 'utf8' });
-  if (r.status !== 0) failed.push(t);
-}
-const routes = spawnSync('node', ['tools/routes.mjs'], { cwd: root, encoding: 'utf8' });
-if (routes.status !== 0) failed.push('routes.mjs');
-console.log(failed.length ? `merge: FAILED after merge: ${failed.join(', ')}` : 'merge: every test and route passes');
-process.exit(failed.length ? 1 : 0);
+const { runChecks } = await import('./lib/run-checks.mjs'); // after the merge: the checks must see the merged files
+const ok = await runChecks();
+console.log(ok ? 'merge: every check passes' : 'merge: FAILED after merge (see above)');
+process.exit(ok ? 0 : 1);

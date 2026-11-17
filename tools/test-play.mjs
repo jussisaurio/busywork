@@ -913,7 +913,7 @@ section('4:00 meeting outcomes + persist.routesFound');
   }
 
   let r = meeting(() => {});
-  ok(r.o?.result === 'fail' && r.o.routes.length === 0, 'nothing done: FAIL');
+  ok(r.o?.result === 'fail' && r.o.routes.length === 0, 'nothing done: a plain fail');
   ok(r.locked && r.phaseAtDecision === 'day' && r.phaseMid === 'day', '2 s in-world beat, player locked');
   ok(near(p().x, 17.5) && near(p().y, 3.5), 'fail: player stands at the presenter spot');
   ok(evs('say').some((e) => e.payload.owner === 'player' && e.payload.icons.includes('😩')), 'fail: player says 😩 up front');
@@ -960,7 +960,7 @@ section('4:00 meeting outcomes + persist.routesFound');
   r = meeting(() => { game.world.projector = 'broken'; place(10.5, 2.5); }, 'desk');
   ok(r.o?.result === 'win', 'anywhere inside the meeting room counts');
   r = meeting(() => {}, 'desk');
-  ok(r.o?.result === 'fail', 'nothing done, absent: plain FAIL (not blamed)');
+  ok(r.o?.result === 'fail', 'nothing done, absent: plain fail (not blamed)');
 
   // Forced work running into 4:00: outcome still decided, no work:done afterwards.
   const boss = fakeNpc('boss', 'boss_desk');
