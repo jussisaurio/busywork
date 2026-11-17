@@ -2,7 +2,7 @@
 // canvas, plus dynamic props drawn every frame (jacket on the rack, projector state,
 // wall clock, coffee carafe, dropped items, elevator doors).
 import {
-  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, strictGlyphs, clamp, fin, clockHands, drawScreen,
+  T, hash, rrect, circle, ellipse, fillCircle, fillEllipse, emoji, clamp, fin, clockHands, drawScreen,
 } from './util.js';
 import { C } from './palette.js';
 import { itemGlyph } from './characters.js';
@@ -572,8 +572,7 @@ function drawRestroom(ctx, x, y) {
   ctx.fillStyle = C.white;
   rrect(ctx, px + 8, py + 4, 16, 12, 2);
   ctx.fill();
-  if (strictGlyphs()) restroomFigures(ctx, px + 16, py + 10.5);
-  else emoji(ctx, '🚻', px + 16, py + 10.5, 10); // legacy: drop with the legacy list
+  restroomFigures(ctx, px + 16, py + 10.5);
 }
 
 // The pictogram on the restroom door: a man in blue and a woman in red, side by side, centred on (x, y).
@@ -1168,11 +1167,6 @@ export const PROP_PAINTERS = {
   coatRack(ctx, info, at, shown, t) {
     drawRackItems(ctx, at.x * T + T / 2, at.y * T + T / 2, shown.coat, shown.tag, t);
   },
-  // { icon, size? }: one emoji on the tile (nothing when icon is empty). Legacy levels only (src/levels/legacy.js):
-  // the validator refuses it in a migrated level, where the world is drawn (DESIGN.md "Visual language").
-  icon(ctx, info, at, shown) {
-    if (shown.icon) emoji(ctx, shown.icon, at.x * T + T / 2, at.y * T + T / 2, shown.size || 18);
-  },
   // { minute, start?, tilt? }: an analog clock on the wall tile's front face, showing `minute` (game minutes since
   // `start`, a minute-of-day; default DAY_START), hung `tilt` radians askew (0: straight).
   wallClock(ctx, info, at, shown) {
@@ -1373,11 +1367,7 @@ export function drawProjector(ctx, cx, cy, state, fix, t) {
   ctx.fillStyle = C.white;
   rrect(ctx, cx - 9, cy, 9, 6, 1);
   ctx.fill();
-  if (strictGlyphs()) noCoffeeSticker(ctx, cx - 4.5, cy + 3);
-  else { // legacy: drop with the legacy list
-    emoji(ctx, '☕', cx - 4.5, cy + 3.2, 6);
-    emoji(ctx, '🚫', cx - 4.5, cy + 3.2, 7);
-  }
+  noCoffeeSticker(ctx, cx - 4.5, cy + 3);
   if (fixing) {
     // lid propped open
     ctx.save();

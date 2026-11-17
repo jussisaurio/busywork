@@ -74,7 +74,7 @@
 //               give 'stopped' without one (the engine's card: screens.js STOPPED_SCENE)
 //   voices      optional; an object of voice objects
 // (*) The visual language (DESIGN.md "Visual language": people speak emoji, the world is drawn). These rules hold
-// for every level not on the legacy list (src/levels/legacy.js); speech (bubbles, says, sightings' `saw`, end-card
+// for every level; speech (bubbles, says, sightings' `saw`, end-card
 // icon rows) is never checked.
 import { parseMap } from '../core/map.js';
 import { DAY_CUES, MARKS } from '../config.js';
@@ -84,7 +84,6 @@ import * as SFX from '../audio/sfx.js';
 import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 import { THINGS } from '../render/things.js';
 import { ARM_POSES } from '../render/characters.js';
-import { isLegacyLevel } from './legacy.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
 import { BURST_KINDS as BURSTS } from '../core/fx.js';
 
@@ -107,7 +106,6 @@ export function levelProblems(level, key) {
   const out = [];
   const bad = (path, msg) => out.push(`${path}: ${msg}`);
   if (!isObj(level)) return ['level: not an object'];
-  const drawn = !isLegacyLevel(level); // held to the visual language (*)
   const thingNames = Object.keys(THINGS).join(', ');
   const painter = (path, d, what) => { // an engine thing's name or a painter function
     if (!isFn(d) && !(isStr(d) && Object.hasOwn(THINGS, d))) bad(path, `${what} (an engine thing: ${thingNames}; or a painter function)`);
@@ -289,7 +287,7 @@ export function levelProblems(level, key) {
       if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
       if (row.noise?.at !== undefined) noiseAt(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
-      if (drawn && row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
+      if (row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
       if (row.pose !== undefined && !ARM_POSES.includes(row.pose)) bad(`${path}.pose`, `no arm pose ${q(row.pose)} (one of ${ARM_POSES.join(', ')})`);
       if (row.on === 'self') {
         if (!ARM_POSES.includes(row.preview)) bad(`${path}.preview`, `${row.preview === undefined ? 'missing' : `no arm pose ${q(row.preview)}`}: the pose that shows what E does to what you hold (one of ${ARM_POSES.join(', ')})`);
@@ -302,7 +300,7 @@ export function levelProblems(level, key) {
     if (!isObj(it)) { bad(`items.${type}`, 'not an object'); continue; }
     if (!isStr(it.icon)) bad(`items.${type}.icon`, 'missing (the emoji people say for it)');
     if (it.draw !== undefined) painter(`items.${type}.draw`, it.draw, `no thing ${q(it.draw)}`);
-    else if (drawn) bad(`items.${type}.draw`, 'missing: how it is drawn, not an emoji');
+    else bad(`items.${type}.draw`, 'missing: how it is drawn, not an emoji');
     if (it.tint !== undefined && !isStr(it.tint)) bad(`items.${type}.tint`, "not a colour or 'owner'");
     if (it.tint === 'owner' && !it.owner) bad(`items.${type}.tint`, "'owner' but the item has no owner");
     if (it.owner !== undefined) npc(`items.${type}.owner.id`, it.owner?.id);
@@ -534,7 +532,7 @@ export function levelProblems(level, key) {
       const path = `decor.props[${i}]`;
       if (!isFn(pr?.draw) && !Object.hasOwn(PROP_PAINTERS, pr?.draw)) {
         bad(`${path}.draw`, `no painter ${q(pr?.draw)} (a function, or one of ${Object.keys(PROP_PAINTERS).join(', ')})`);
-      } else if (drawn && pr.draw === 'icon') bad(`${path}.draw`, "'icon' puts an emoji on the tile: draw the object (a painter function)");
+      }
       if (map && !(level.map.rows.some((r) => r.includes(pr?.tile)) && typeof pr?.tile === 'string' && pr.tile.length === 1)) {
         bad(`${path}.tile`, `${q(pr?.tile)} is not on the map`);
       }
@@ -555,7 +553,7 @@ export function levelProblems(level, key) {
         for (const [i, r] of list(`poses.${field}`, poses[field]).entries()) {
           const path = `poses.${field}[${i}]`;
           if (!isFn(r?.when)) bad(`${path}.when`, 'not a function (npc, world, game)');
-          if (!drawn || field !== 'arms' || r?.item === undefined) continue;
+          if (field !== 'arms' || r?.item === undefined) continue;
           const name = isStr(r.item) && r.item.startsWith('#') ? r.item.slice(1) : null;
           const things = isObj(decor?.things) ? decor.things : {};
           const draws = name && ((has(items, name) && items[name]?.draw !== undefined) || has(things, name) || Object.hasOwn(THINGS, name));

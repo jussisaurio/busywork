@@ -85,8 +85,6 @@ How it is held:
 - A runtime check (`render/util.js` `worldEmoji`) records any emoji drawn on the map, in a hand or in an end card's
   scene. `tools/golden-render.mjs` and the gate's `drawn` check fail on it.
 - Speech is not checked. (`'#<thing>'` draws the object in a bubble too, but people speak emoji: no level uses it.)
-- Levels not yet migrated are on the legacy list (`src/levels/legacy.js`, with the migration steps). They draw as
-  before, and the gate fails them.
 
 ## Camera and controls
 There is no camera: the whole office is on screen (30×17 tiles), with the HUD band above it.

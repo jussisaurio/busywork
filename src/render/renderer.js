@@ -10,13 +10,12 @@ import { useThings } from './things.js';
 import { drawCones } from './cones.js';
 import { drawDarkness } from './darkness.js';
 import {
-  drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawActionRing, drawSuspicion, drawLoopStamp, drawVignette,
+  drawBubbles, drawParticles, drawRipples, drawSightlines, drawFocusHint, drawSuspicion, drawLoopStamp, drawVignette,
   drawWitnesses, FULL_VIEW,
 } from './effects.js';
 import { drawHud } from './hud.js';
 import { drawTitle, drawEnd } from './screens.js';
 import { findNpc } from '../game/perception.js';
-import { isLegacyLevel } from '../levels/legacy.js';
 
 const VIEW = { x0: 0, y0: 0, x1: PLAY_W, y1: PLAY_H }; // the zoomed view (drawWorld)
 
@@ -166,7 +165,6 @@ export function createRenderer(canvas, opts = {}) {
       drawParticles(ctx, game, t);
       drawRipples(ctx, game); // a noise you can see (core/fx.js ripple)
       drawSightlines(ctx, game, t); // above people, below the bubbles
-      drawActionRing(ctx, game, t);
       drawSuspicion(ctx, game, t, view);
       drawWitnesses(ctx, game, t, view); // a coworker's eye on you
       drawFocusHint(ctx, game, t, view);
@@ -183,7 +181,7 @@ export function createRenderer(canvas, opts = {}) {
     track(game, t);
     useFaces(game);
     useThings(game);
-    useGlyphs(!isLegacyLevel(game.level), game.level?.id ?? null);
+    useGlyphs(game.level?.id ?? null);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';

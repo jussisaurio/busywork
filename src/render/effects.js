@@ -1,7 +1,7 @@
 // game.fx drawing (bubbles, particles, ripples, sightlines) plus small in-world overlays: interaction hint,
-// legacy focus icon (hold-E progress is drawn by characters.js), boss suspicion meter, the "loop N" stamp and the end-beat vignette.
+// boss suspicion meter, the "loop N" stamp and the end-beat vignette.
 import {
-  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, strictGlyphs, glyphScope, rrect, circle, ellipse, fillCircle,
+  T, PLAY_W, PLAY_H, clamp, fin, hash, easeOutBack, emoji, glyphScope, rrect, circle, ellipse, fillCircle,
   starPath, loopIcon, drawDrop, drawPaper, keycap, text, font, MONO_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
@@ -43,18 +43,16 @@ function anchorOf(game, owner) {
 export function drawBubbles(ctx, game, view = FULL_VIEW) {
   const list = game.fx && game.fx.bubbles;
   if (!list || !list.length) return;
-  const strict = strictGlyphs();
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     if (!b || !anchorOf(game, b.owner)) continue;
-    const place = strict && b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y, view) : null;
+    const place = b.kind === 'sign' && typeof b.owner === 'object' ? signPlace(game, b, ANCHOR.x, ANCHOR.y, view) : null;
     drawBubble(ctx, b, ANCHOR.x, ANCHOR.y, place, view);
   }
 }
 
 // Where a sign over a point (an inspection's tick or cross, sim/mechanics/inspection.js) stands so it covers
-// nobody: above the point, else below it, else to its right or left; its post leans to the point. (A migrated
-// level only; the legacy ones keep it above.) Returns the board's centre, or null for the default.
+// nobody: above the point, else below it, else to its right or left; its post leans to the point. Returns the board's centre, or null for the default.
 const SIGN_AT = { x: 0, y: 0 };
 function signPlace(game, b, ax, ay, view = FULL_VIEW) {
   const icons = Array.isArray(b.icons) ? b.icons : [];
@@ -625,50 +623,13 @@ function drawLineMark(ctx, x, y, age, a, color) {
 }
 
 // --- overlays --------------------------------------------------------------------
-// What E would do now (player.focus, play/interactions.js). A migrated level lights the target up (drawLitTarget);
-// a legacy one (src/levels/legacy.js) floats the row's icon over it.
+// What E would do now (player.focus, play/interactions.js). It lights the target up (drawLitTarget).
 export function drawFocusHint(ctx, game, t, view = FULL_VIEW) {
   const p = game.player;
   if (!p || !p.focus || p.action || p.locked || game.phase !== 'day') return;
   const f = p.focus;
   if (!Number.isFinite(f.x) || !Number.isFinite(f.y)) return;
-  if (strictGlyphs()) {
-    drawLitTarget(ctx, f, p, t, view);
-    return;
-  }
-  const self = f.kind === 'self';
-  const bob = Math.sin(t * 5) * 2.5;
-  let x = f.x * T;
-  let y = f.y * T - (self ? 44 : 24) + bob;
-  let side = 0; // no room above (the top wall): beside the target, its tail pointing back at it
-  if (y - 13 < view.y0 + 2) {
-    side = x > (view.x0 + view.x1) / 2 ? -1 : 1;
-    x += side * (self ? 26 : T / 2 + 14);
-    y = Math.max(view.y0 + 15, f.y * T - (self ? 20 : 0) + bob);
-  }
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  circle(ctx, x + 1, y + 2, 11);
-  ctx.fill();
-  ctx.fillStyle = C.white;
-  ctx.strokeStyle = C.ink;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  if (side) {
-    ctx.moveTo(x - side * 9, y - 4);
-    ctx.lineTo(x - side * 14, y);
-    ctx.lineTo(x - side * 9, y + 4);
-  } else {
-    ctx.moveTo(x - 4, y + 9);
-    ctx.lineTo(x, y + 14);
-    ctx.lineTo(x + 4, y + 9);
-  }
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  circle(ctx, x, y, 11);
-  ctx.fill();
-  ctx.stroke();
-  emoji(ctx, f.icon || '✋', x, y + 1, 14);
+  drawLitTarget(ctx, f, p, t, view);
 }
 
 // DESIGN.md "Visual language" rule 4: the object itself lights up, with the E key cap over it, and no icon (an icon
@@ -721,17 +682,6 @@ function drawLitTarget(ctx, f, p, t, view = FULL_VIEW) {
   const kx = dx > 0 || (dx === 0 && x - r - 19 < view.x0 + 2) ? x + r + 1 : x - r - 19;
   if (Math.abs(dy) >= Math.abs(dx) && ky >= view.y0 + 2 && ky + 15 <= view.y1 - 2) keycap(ctx, x - 9, ky + bob, 18, 15, 'E', 11);
   else keycap(ctx, clamp(kx, view.x0 + 2, view.x1 - 20) + bob, clamp(y - 7.5, view.y0 + 2, view.y1 - 17), 18, 15, 'E', 11);
-}
-
-// A hold-E action's progress is drawn on the floor under the player (characters.js drawActionProgress), so it
-// never covers her or what she holds. Here only the legacy focus icon beside her.
-export function drawActionRing(ctx, game, t) {
-  const p = game.player;
-  if (!p || !p.action || !p.focus || !p.focus.icon || strictGlyphs()) return; // legacy: drop with the legacy list
-  const x = fin(p.x) * T + 13;
-  const y = fin(p.y) * T - 19;
-  fillCircle(ctx, x, y, 7.5, C.white);
-  emoji(ctx, p.focus.icon, x, y + 0.5, 10);
 }
 
 // The authority's ❓ meter over his head (game.suspicion, keyed by level.roles.authority.id): an outlined gauge that

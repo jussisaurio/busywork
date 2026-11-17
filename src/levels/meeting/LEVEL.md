@@ -22,6 +22,10 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
 | `decor.js`, `looks.js`, `end-scenes.js`, `sounds.js`, `voices.js` | presentation |
+| `painters.js` | the level's drawn things: the sandwich, party popper, cricket, empty coffee bag, fire door and balcony |
+| `coffee.js` | the office coffee pot as a part other levels borrow: a cup item and a `pour_coffee` row (level 1 keeps its own pot) |
+| `shots.js` | the screenshots (with their intents) for the pictures cold read (`docs/COLD-READ.md`) |
+| `premise.md`, `cold-read.md` | the card and cast prose the cold readers see; their recorded verdicts |
 | `golden.json`, `golden-render.json` | recorded by the tools |
 
 ## The cast

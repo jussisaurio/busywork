@@ -12,8 +12,8 @@
 //   node tools/golden-render.mjs --all     check every level (also: --write --all)
 //   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else pick() below)
 //
-// Re-record only when a visual change is intended, and say so in the commit. Either way it fails a level not on the
-// legacy list (src/levels/legacy.js) that draws an emoji as an object in the world (render/util.js worldEmoji).
+// Re-record only when a visual change is intended, and say so in the commit. Either way it fails a level that
+// draws an emoji as an object in the world (render/util.js worldEmoji).
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRenderer } from '../src/render/renderer.js';

@@ -1,6 +1,6 @@
 # CONTRACTS: how the modules fit together
 
-DESIGN.md says what the game is. This file says who owns what, and the shapes everyone relies on. Most of it is
+DESIGN.md says what the game is. This file says the shapes everyone relies on. Most of it is
 the level object, field by field. To build a level, start with `src/levels/README.md`; come back here for a field.
 Level 1's own story (cast, routes, jokes) is in `src/levels/meeting/LEVEL.md`.
 
@@ -40,22 +40,12 @@ change in order changes the digest. These are the usual ways to break it:
   `at('13:15', START)`.
 - **Engine code names no level.** Every `src/` file outside `src/levels/` reads level things from `game.level`.
   `node tools/test-engine-clean.mjs` fails on a level-1 name in engine code.
-- **Only edit files you own.** If you need a contract change, implement against the contract as written, work
-  around it locally, and say so in your report. You may add private fields to entities with a leading underscore
-  (`npc._path`). Put module-local tunables at the top of your own file.
+- **Engine code is shared by every level.** An engine change must keep every level's tests and goldens green, or
+  re-record them deliberately and say why. Private fields on entities start with an underscore (`npc._path`).
+  Put module-local tunables at the top of the file.
 - Keep code readable, commented where non-obvious, and prototype-quality (no over-engineering).
 
-## File ownership
-| Owner | Files |
-|---|---|
-| coordinator | `index.html`, `src/main.js`, `src/state.js`, `src/game/*`, `src/config.js`, `src/core/*`, `src/levels/index.js`, `src/levels/validate.js`, `src/agent/*`, `tools/test-core.mjs`, `tools/test-levels.mjs`, `tools/play.mjs`, `tools/routes.mjs`, `tools/fuzz.mjs`, `tools/gate.mjs`, `tools/test-gate.mjs`, `tools/golden.mjs`, `tools/golden-render.mjs`, `tools/test-engine-clean.mjs`, `tools/lib/*`, `*.md` |
-| sim agent | `src/sim/nav.js`, `src/sim/npcs.js`, `src/sim/override.js`, `src/sim/mechanics/*`, `tools/test-sim.mjs`, `tools/test-attention.mjs` |
-| gameplay agent | `src/play/*`, `tools/test-play.mjs` |
-| render agent | `src/render/*`, `tools/test-render.mjs` |
-| audio agent | `src/audio/*`, `tools/test-audio.mjs` |
-| level author | one folder `src/levels/<id>/` (its goldens are written by the tools), plus one line in `src/levels/index.js` |
-
-## Engine modules (read these, don't edit)
+## Engine modules
 - `src/config.js`: shared tunables (clock, speeds, reach, action times, vision, glances, suspicion, the witness's
   `NOTICE` and `DOUBLE_TAKE`), `SEED`,
   `DAY_START`, `at()`, `formatClock()`, `clockArg()`, `dayCue()`, `DAY_CUES`, `deg()`.
@@ -249,7 +239,6 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`), drinking lifts it and tips it at the lips (`'sip'`). `'facepalm'` puts the free hand flat over the face (dismay; usable by NPC `poses` too). The validator refuses a `'self'` row without one |
 | `hold` | `'self'` rows: `true` = holding E does it, a tap does the others |
 | `text` | the harness's words for it. A player sees the target light up with the E key cap |
-| `icon` | legacy levels only (`src/levels/legacy.js`): the hint over the target. The validator refuses it elsewhere |
 | `duration` | real seconds; `instant: true` instead does it at once (never seen in progress) |
 | `sneaky` | witnesses matter while it runs |
 | `owner` | only this cast id minds (to anyone else it's harmless) |
@@ -260,8 +249,8 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
 - `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, contrabandIn?, pockets?, owner?, keep?, bulky? } }`.
-  - `icon` (required): the emoji people say for it, in bubbles (😠🥪). A legacy level also draws it.
-  - `draw` (required, except on the legacy list): how it is drawn on the floor, in a hand, in the HUD's held slot
+  - `icon` (required): the emoji people say for it, in bubbles (😠🥪).
+  - `draw` (required): how it is drawn on the floor, in a hand, in the HUD's held slot
     and in a pose: an engine thing's name (`render/things.js` `THINGS`) or the level's painter. See Things below.
   - `tint`: a colour, or `'owner'` (the owner's `look.body`; needs an `owner`). The painter gets it as `opts.tint`.
   - `place`: the `world` field that says where it is: `'player'` held, `'dropped'`, `'eaten'`, a spot name, or a
@@ -405,13 +394,13 @@ Render and audio read these; the sim never does. All optional except `title`.
   state(world, game) }]` draws on the first tile whose map letter is `tile` (the letter, not a draw or kind name);
   `draw` is a `render/world.js` `PROP_PAINTERS` name or the level's painter `(ctx, info, at, shown, t)` in map
   pixels (`at`: the tile; `shown`: what `state` returned). Draw the state that decides the outcome on the object.
-  `draw: 'icon'` with state `{ icon, size? }` is for legacy levels only. `things: { [name]: painter | thing name }`
+  `things: { [name]: painter | thing name }`
   names things that are no item (Things, above). Example: fixture `DECOR` and `fixture/painters.js`.
 - `looks`: `{ [id]: look }` per person and `player` (fields in `meeting/looks.js`); anyone without one gets a
   generic look in his `color`.
 - `poses`: `{ arms: [{ when(npc, world, game), arms, item?, angry?, crank? }], marks: [{ when, angry?, badge?,
   jacket? }] }`. The first `arms` rule that holds wins; every `marks` rule that holds applies. `item` is the
-  `'#<thing>'` in the hand (legacy levels: an emoji); `arms: 'point'` with no item points with the bare hand, as does
+  `'#<thing>'` in the hand; `arms: 'point'` with no item points with the bare hand, as does
   anyone telling on you or catching you.
 - `cones`: `{ alert: [override] }`: overrides during which a cone glows red. A cone also glows while its NPC sees
   something the rules react to (`game.watch`) and when he catches you; the authority's also while his suspicion
@@ -721,7 +710,7 @@ an unknown id exits 2 and lists the registry.
   - `random`: random plans win more than 1% of the time.
   - `crash`: a command threw, or a day never ended.
   - `<lesson id>`: a win that skips a `mustUse` lesson.
-  - `drawn`: the level is on the legacy list (`src/levels/legacy.js`), or its winning plans draw an emoji as an
+  - `drawn`: its winning plans draw an emoji as an
     object in the world (`tools/lib/drawn.mjs`; DESIGN.md "Visual language").
   - `contraband`: on the do-nothing day or a winning plan, a coworker carries an item marked `contraband` for the
     authority where the authority, enforcing, sees him (`tools/lib/contraband.mjs`): the rule would be one-sided.
@@ -744,7 +733,7 @@ an unknown id exits 2 and lists the registry.
   level in many narrow passes (`PASSES`: the cheap text passes first, then the picture passes) and three broad ones
   (premise, pictures, replay), and record a verdict and input hash per pass in `cold-read.md`. `--pass` takes one
   pass, a list, `text` or `all`; several run at the same time. `--status` lists every level's passes. Every report
-  lists all its problems graded blocker, should or nit (`prompts/grades.md`, no quota); the verdict counts blockers
+  lists all its problems graded blocker, should or nit (`tools/cold-read/prompts/grades.md`, no quota); the verdict counts blockers
   only. A rerun's reader first marks the earlier record's open problems (the ledger), and one still there becomes a
   blocker. `--calibrate` runs a pass on a reference level without touching its record. `tools/test-cold-read.mjs`
   tests it with a fake reader; `tools/test-verb-sheet.mjs` tests that the sheets cover
@@ -755,8 +744,8 @@ an unknown id exits 2 and lists the registry.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`. `--all` checks (or, with `--write`, re-records) every level.
 - **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--all` as above; `--write`
-  re-records (plans from the file, or picked from the golden corpus). It also fails when a level that is not on the
-  legacy list draws an emoji as an object in the world.
+  re-records (plans from the file, or picked from the golden corpus). It also fails when a level draws an emoji
+  as an object in the world.
 - **Routes** (`tools/routes.mjs`): scripted speedruns that must end with the expected outcome, from each level's
   `route-checks.js` (the format is in `meeting/route-checks.js`). A check is `{ name, expect: { result, routes? },
   cmds: [...] }` (harness commands) or the same with `play(ctx)` in place of `cmds`. `expect.routes` lists routes the

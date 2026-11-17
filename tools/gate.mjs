@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gate: the automated filter a level must pass before a human plays it (REFACTOR.md P5.2). It runs the
+// Gate: the automated filter a level must pass before a human plays it (tools/lib/*.mjs holds its checks). It runs the
 // fuzzer (tools/fuzz.mjs) and fails (exit 1) on any of:
 //   routes    a route of the level that no plan wins
 //   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until day.meetingAt is not a step)
@@ -7,7 +7,7 @@
 //   crash     any crash or harness error (a command threw, or a day never ended)
 //   <lesson>  a win that skips one of the level's mustUse lessons (level 1: pretend; a lesson with `routes`
 //             binds only the wins that include one of them)
-//   drawn     a level on the legacy list, or an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
+//   drawn     an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
 //   contraband  a coworker carrying an item marked contraband for the authority in his view while he enforces,
 //             on the do-nothing day or a winning plan (tools/lib/contraband.mjs)
 //   stray     a picture file at the repo root, where no tool writes one (tools/lib/stray.mjs)
@@ -31,7 +31,7 @@ import { contrabandSeen, contrabandCheck } from './lib/contraband.mjs';
 import { coldReadChecks, isFixture } from './cold-read.mjs';
 import { strayPictures, strayText } from './lib/stray.mjs';
 
-// Days to fuzz. 30000 = the run design-jam/FUZZ.md records: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
+// Days to fuzz. 30000 days: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
 
 // The days to fuzz level `id`: the --budget given on the command line (a string, or undefined), else the level's

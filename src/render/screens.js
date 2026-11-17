@@ -2,7 +2,7 @@
 // The end card's picture and icon row come from the level (level.endScenes, e.g.
 // src/levels/meeting/end-scenes.js), else DEFAULT_END_SCENES below; the route slots take any number of routes.
 import {
-  VIEW_W, VIEW_H, clamp, fin, easeOutBack, easeOutCubic, emoji, strictGlyphs, glyphScope, text, font, textWidth,
+  VIEW_W, VIEW_H, clamp, fin, easeOutBack, easeOutCubic, emoji, glyphScope, text, font, textWidth,
   rrect, circle, loopIcon, keycap,
   MONO_FAMILY, TYPE_FAMILY, TITLE_FAMILY, UI_FAMILY,
 } from './util.js';
@@ -131,7 +131,7 @@ export function drawTitle(ctx, game, t, mem) {
   ctx.save();
   ctx.translate(842, 330);
   ctx.rotate(Math.sin(t * 3) * 0.07);
-  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 0, 0, 72); // legacy: drop with the legacy list
+  emoji(ctx, '#clock', 0, 0, 72);
   ctx.restore();
   if (badge[0]) emoji(ctx, badge[0], 826, 394, 30);
   if (badge[1]) emoji(ctx, badge[1], 842, 404, 18);
@@ -377,11 +377,10 @@ export function drawEnd(ctx, game, t, mem) {
   const by = 492;
   loopIcon(ctx, 226, by, 9, C.ink, 3);
   text(ctx, String(Math.max(0, fin(o.loop) | 0)), 242, by + 1, font(24, MONO_FAMILY, 'bold'), C.ink, 'left');
-  if (strictGlyphs()) { // its face at the minute beside it, as the HUD's clock reads behind the card
-    ctx.save();
-    clockFace(ctx, 404, by, 22, fin(o.minute), game.level.day.start);
-    ctx.restore();
-  } else emoji(ctx, '🕓', 404, by, 22); // legacy: drop with the legacy list
+  // its face at the minute beside it, as the HUD's clock reads behind the card
+  ctx.save();
+  clockFace(ctx, 404, by, 22, fin(o.minute), game.level.day.start);
+  ctx.restore();
   text(ctx, clockDigits(fin(o.minute), game.level.day.start), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
   if (e > 0.6) playKey(ctx, 700, by, 110, 38, t);
   ctx.restore();
