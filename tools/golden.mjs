@@ -11,11 +11,13 @@
 //   node tools/golden.mjs --write --from f.json  rebuild the corpus from a `tools/fuzz.mjs --json` dump, plus the
 //                                              level's hand-written plans (level.gate.goldenPlans)
 //
-// Re-record only when a behaviour change is intended, and say so in the commit.
+// The file is one plan per line (lib/golden-file.mjs). Re-record only when a behaviour change is intended, and say so in the commit.
+// tools/merge.mjs re-records on a merge conflict in it, and reports plans whose outcome neither side had.
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { relative } from 'node:path';
 import { createHarness, describeEvents } from '../src/agent/harness.js';
+import { serializeGolden } from './lib/golden-file.mjs';
 import { allArg, levelArg, levelFile } from './lib/level-arg.mjs';
 
 await allArg('golden');
@@ -101,7 +103,7 @@ if (write) {
     const t = trace(cmds);
     return { cmds, summary: t.summary, digests: t.digests };
   });
-  writeFileSync(FILE, JSON.stringify({ note: 'written by tools/golden.mjs --write; do not edit by hand', plans: out }, null, 1) + '\n');
+  writeFileSync(FILE, serializeGolden({ note: 'written by tools/golden.mjs --write; do not edit by hand', plans: out }));
   const by = {};
   for (const p of out) by[p.summary.split(' ')[0]] = (by[p.summary.split(' ')[0]] ?? 0) + 1;
   console.log(`golden: ${LEVEL.id}: recorded ${out.length} plans (${Object.entries(by).map(([k, v]) => `${k} ${v}`).join(', ')})`);
