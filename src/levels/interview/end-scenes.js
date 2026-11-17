@@ -4,51 +4,18 @@
 // the callers drawn (HR's hold tune as notes, Gary as talk). A desk says whose it is the way it does in the office: Lin's has her teal chair, her
 // plant, her teal mug and her nameplate; yours has the mustard chair, your red mug and your nameplate.
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, MUSTARD, TEAL } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
-import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE } from './painters.js';
+import { chair, woodDesk as desk } from '../../render/tableau-furniture.js';
+import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE, IVORY, IVORY_DARK, IVORY_SHADE, WOOD, WOOD_DARK, WOOD_TOP, BRASS, dim } from './painters.js';
 import { PHONES, OUTSIDE } from './phones.js';
 
-const IVORY = '#e8dfc8';
-const IVORY_DARK = '#b5a888';
-const IVORY_SHADE = '#d2c6a8';
-const WOOD = '#7a4a2a';
-const WOOD_DARK = '#4e2e1a';
-const WOOD_TOP = '#93603a';
 const CARD = '#c9a26b';
 const CARD_DARK = '#9c7745';
-const BRASS = '#c9a24a';
 const WALL_Y = 196; // the back wall's foot
-const TEAL_CHAIR = [C.teal, C.tealDark];
-const MUSTARD_CHAIR = ['#d6a23a', '#a97b22'];
-const OXBLOOD_CHAIR = ['#6b2f24', '#4e2019'];
-const OLIVE_CHAIR = [C.olive, C.oliveDark];
 
 // --- Props ----------------------------------------------------------------------------------------
-
-// A desk seen from the front: top slab at y, front panel below it.
-function desk(ctx, cx, y, w, h = 46) {
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
-  ctx.fillRect(cx - w / 2 + 6, y + h - 2, w, 8);
-  ctx.fillStyle = WOOD;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, h - 8);
-  ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, 3);
-  ctx.fillStyle = WOOD_TOP;
-  rrect(ctx, cx - w / 2, y, w, 10, 3);
-  ctx.fill();
-}
-
-// An office chair seen from the front (its seat toward us), scale s, centred at (x, y).
-function chair(ctx, x, y, colours, s = 2.6, dir = Math.PI / 2) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(s, s);
-  drawChair(ctx, 0, 0, dir, colours[0], colours[1]);
-  ctx.restore();
-}
 
 // A potted plant standing at (x, y), scale s.
 function plant(ctx, x, y, s, t) {
@@ -320,7 +287,7 @@ function answered(ctx, game, t, e, you = false) {
   kitchenSide(ctx, 590);
   clock(ctx, 470, 128, 15, 32);
   // the boss behind Lin's desk, her chair pushed aside, her receiver at his ear
-  chair(ctx, 246, 250, TEAL_CHAIR, 2.4);
+  chair(ctx, 246, 250, TEAL, 2.4);
   const b = person(t);
   b.arms = 'phone';
   b.head = Math.PI / 2 + Math.sin(t * 1.8) * 0.2;
@@ -354,7 +321,7 @@ function busy(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
   backWall(ctx, WALL_Y - TAB.y);
   clock(ctx, 640, 130, 15, 31);
-  chair(ctx, 436, 244, TEAL_CHAIR, 2.4);
+  chair(ctx, 436, 244, TEAL, 2.4);
   const b = person(t);
   b.arms = 'phone';
   b.smug = true;
@@ -386,7 +353,7 @@ function unplugged(ctx, game, t, e) {
   backWall(ctx, WALL_Y - TAB.y);
   clock(ctx, 340, 130, 17, 31);
   socket(ctx, 248, 176, 1.7);
-  chair(ctx, 420, 250, TEAL_CHAIR, 2.6);
+  chair(ctx, 420, 250, TEAL, 2.6);
   const l = person(t);
   l.pose = 'sit';
   l.arms = 'desk';
@@ -450,7 +417,7 @@ function ringout(ctx, game, t, e) {
   ctx.globalAlpha = 0.22;
   fillEllipse(ctx, 450, 300, 150, 30, '#fff7d0');
   ctx.restore();
-  chair(ctx, 450, 272, TEAL_CHAIR, 3.1);
+  chair(ctx, 450, 272, TEAL, 3.1);
   desk(ctx, 450, 286, 240, 50);
   linsThings(ctx, 286, t, 2.2, { px: 352, mx: 548, nx: 394 });
   phone(ctx, 466, 282, 3, PHONES.lin.lamp, t, { ring: OUTSIDE });
@@ -464,11 +431,11 @@ function fail(ctx, game, t, e) {
   backWall(ctx, WALL_Y - TAB.y);
   clock(ctx, 660, 128, 15, 34);
   // her old desk at the back, empty
-  chair(ctx, 248, 204, TEAL_CHAIR, 1.3);
+  chair(ctx, 248, 204, TEAL, 1.3);
   desk(ctx, 252, 206, 80, 24);
   linsThings(ctx, 206, t, 1, { px: 222, mx: 282, nx: 252 });
   // your desk, with her in your chair
-  chair(ctx, 400, 252, MUSTARD_CHAIR, 2.6);
+  chair(ctx, 400, 252, MUSTARD, 2.6);
   const l = person(t);
   l.pose = 'sit';
   l.arms = 'phone';
@@ -500,11 +467,6 @@ function fail(ctx, game, t, e) {
 // below. `pulled` is the column whose plug is out on its cord (to plugTo), or -1.
 const COLS = [OUTSIDE, PHONES.lin.lamp, PHONES.boss.lamp, PHONES.kev.lamp, OUTSIDE];
 const CARDS = [null, '@lin', '@boss', '@kev', null];
-function dim(hex, k) {
-  const v = parseInt(hex.slice(1), 16);
-  const ch = (s) => Math.round(((v >> s) & 255) * k + 20 * (1 - k));
-  return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
-}
 function board(ctx, x0, y0, t, pulled = -1, plugTo = null) {
   const W = 190;
   ctx.fillStyle = 'rgba(0,0,0,0.2)';
@@ -605,7 +567,7 @@ function caughtAtSocket(ctx, game, t, e) {
   backWall(ctx, WALL_Y - TAB.y);
   // Lin's desk and phone on the right; her socket on the wall, empty: the plug is in your hand, its cable to her
   // phone
-  chair(ctx, 640, 262, TEAL_CHAIR, 2.4);
+  chair(ctx, 640, 262, TEAL, 2.4);
   desk(ctx, 650, 262, 190);
   linsThings(ctx, 262, t, 2, { px: 728, nx: 610 });
   phone(ctx, 676, 258, 2.1, PHONES.lin.lamp, t);
@@ -648,7 +610,7 @@ function blamed(ctx, game, t, e) {
   ctx.globalAlpha = 0.25;
   fillEllipse(ctx, 560, 274, 90, 26, '#fff7d0');
   ctx.restore();
-  chair(ctx, 560, 262, MUSTARD_CHAIR, 2.6);
+  chair(ctx, 560, 262, MUSTARD, 2.6);
   desk(ctx, 560, 262, 180);
   nameplate(ctx, 530, 278, '@player', 2);
   bigMug(ctx, 606, 254, C.tomato, 2.2, t);

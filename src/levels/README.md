@@ -28,6 +28,16 @@ rm src/levels/stapler/golden.json src/levels/stapler/golden-render.json
 
 `src/levels/fixture-inspection/index.js` is the smallest level, all in one file.
 
+The end scenes (`end-scenes.js`) paint on the shared kit; draw only what is yours. Do not copy a helper from another
+level: if two levels need it, it belongs in the kit.
+- `src/render/palette.js`: `C` (the named colours) and the seat pairs `[fill, dark]` `OXBLOOD`, `MUSTARD`, `TOMATO`,
+  `TEAL`, `OLIVE`, `NAVY`, as chairs and casts take them. Never write these hex values in a level.
+- `src/render/tableau.js`: `TAB` (the picture window), `person(t)` (a figure state facing you), `bubble`,
+  `floorCarpet`, `floorTiles`, `backWall`, `confetti`.
+- `src/render/tableau-furniture.js`: `officeRoom(ctx, wallH)` (carpet plus back wall), `chair(ctx, x, y, colours,
+  scale, dir)` (a seat pair at a scale, facing `dir`), `woodDesk(ctx, cx, y, w, h)` (a plain wooden desk, front on),
+  `walnutDesk(ctx, x, y, w, { depth, skirt, r, shadow, hi })` (a rounded walnut desk top).
+
 A level needs all of these. The validator rejects a level without them at load:
 - `id`, and `title` (two mission lines and a badge).
 - `map` of at most 30×17 tiles. There is no camera: a smaller map draws at the top left, a larger one is cut off.

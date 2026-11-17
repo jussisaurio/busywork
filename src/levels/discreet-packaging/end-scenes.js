@@ -3,17 +3,17 @@
 // who has the pink box and whose face is on its label, and what you hold. The icon row retells the picture.
 // Every object is drawn (painters.js: the two parcels, the broom, Bob's monitor picture); only bubbles speak.
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, MUSTARD } from '../../render/palette.js';
 import { drawPerson, itemGlyph } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
+import { chair, woodDesk } from '../../render/tableau-furniture.js';
 import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
 import { drawParcel, drawBrownBox, brownFace, drawPicture, caughtPicture } from './painters.js';
 
 const WALL_Y = 196; // the back wall's foot
-const WOOD = '#7a4a2a';
-const WOOD_DARK = '#4e2e1a';
-const WOOD_TOP = '#93603a';
+const WOOD = C.deskWood;
+const WOOD_DARK = C.deskWoodDark;
+const WOOD_TOP = C.deskWoodTop;
 const LAMINATE = '#c9c2b4';
 const LAMINATE_DARK = '#9d9586';
 
@@ -95,16 +95,7 @@ function window_(ctx, x, y, w, h) {
 
 // Your desk from the front: top slab at y, front panel below, its drawers shut (whatever is in them).
 function desk(ctx, cx, y, w) {
-  const h = 46;
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
-  ctx.fillRect(cx - w / 2 + 6, y + h - 2, w, 8);
-  ctx.fillStyle = WOOD;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, h - 8);
-  ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, 3);
-  ctx.fillStyle = WOOD_TOP;
-  rrect(ctx, cx - w / 2, y, w, 10, 3);
-  ctx.fill();
+  woodDesk(ctx, cx, y, w);
   // your red mug and your screen
   ctx.fillStyle = C.tomato;
   rrect(ctx, cx - w / 2 + 16, y - 13, 11, 13, 2);
@@ -285,11 +276,7 @@ function bob(ctx, game, t, x, y, { dir = Math.PI / 2, head = dir, angry = false,
 // you?); the away win leaves it unlit, since nobody is looking for you.
 function emptyChair(ctx, x, y, spot = true) {
   if (spot) spotlight(ctx, x, y);
-  ctx.save();
-  ctx.translate(x, y - 20);
-  ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, Math.PI / 2 + 0.5, '#d6a23a', '#a97b22');
-  ctx.restore();
+  chair(ctx, x, y - 20, MUSTARD, 2.6, Math.PI / 2 + 0.5);
 }
 
 function spotlight(ctx, x, y) {

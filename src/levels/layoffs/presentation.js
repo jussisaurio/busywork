@@ -1,6 +1,6 @@
 // How The Layoff List looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
 // end-scenes.js, sounds.js and voices.js document the fields).
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
 import { listShown, drawListScreen } from './list.js';
@@ -15,9 +15,6 @@ export const TITLE = {
   badge: ['📧', '📦'], // the trouble: the email at 3:45, and the box you carry out
 };
 
-const OXBLOOD = ['#6b2f24', '#4e2019'];
-const MUSTARD = ['#d6a23a', '#a97b22'];
-const TEAL = ['#2f8f83', '#22675f'];
 const CHARCOAL = ['#4b5056', '#34383d'];
 
 export const DECOR = {

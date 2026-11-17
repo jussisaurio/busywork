@@ -3,9 +3,10 @@
 // they have on the floor (presentation.js DECOR: the chair, the mug, the prop on the desk), so a desk reads as
 // that person's.
 import { clamp, easeOutCubic, rrect, fillCircle, fillEllipse, clockHands } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
+import { TAB, person, bubble, floorTiles } from '../../render/tableau.js';
+import { officeRoom, walnutDesk } from '../../render/tableau-furniture.js';
 import { tintOf } from '../../render/things.js';
 import { drawLaptop, tick, crossMark } from './things.js';
 
@@ -13,10 +14,10 @@ const WALL = 78; // back wall height in the pictures
 
 // Each desk's owner colours, as on the floor: chair [seat, back], mug, the prop on the desk.
 const DESKS = {
-  player: { chair: ['#d6a23a', '#a97b22'], mug: C.tomato, prop: null },
-  boss: { chair: ['#6b2f24', '#4e2019'], mug: C.navyLight, prop: 'lamp' },
-  lin: { chair: ['#2f8f83', '#22675f'], mug: C.teal, prop: 'plant' },
-  kev: { chair: ['#5f6b3a', '#47512a'], mug: C.olive, prop: 'earbuds' },
+  player: { chair: MUSTARD, mug: C.tomato, prop: null },
+  boss: { chair: OXBLOOD, mug: C.navyLight, prop: 'lamp' },
+  lin: { chair: TEAL, mug: C.teal, prop: 'plant' },
+  kev: { chair: OLIVE, mug: C.olive, prop: 'earbuds' },
 };
 
 // His four checks in order (index.js INSPECTIONS): the world field each records. A desk he crossed is in
@@ -27,10 +28,7 @@ const marksOf = (w) => RECORDS.map((r, i) => (w?.crossed?.includes(i) ? 'cross' 
 // The colour a laptop's lid is drawn in: its owner's (index.js ITEMS tint 'owner').
 const lidOf = (game, owner) => tintOf(game, `laptop_${owner}`) ?? '#2a2e35';
 
-function office(ctx) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, WALL);
-}
+const office = (ctx) => officeRoom(ctx, WALL);
 
 // A desk seen from the front, its owner sitting (or not) behind it: (x, y) the top-left of the desk top, w wide.
 // The owner's chair back shows behind it; on it, the owner's mug and prop, the back of the monitor, and a laptop
@@ -38,17 +36,7 @@ function office(ctx) {
 function desk(ctx, x, y, w, owner, lid, t) {
   const st = DESKS[owner];
   const d = 50; // depth of the top
-  ctx.fillStyle = 'rgba(40,25,15,0.25)';
-  rrect(ctx, x + 4, y + 8, w, d + 14, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, x, y, w, d + 14, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, x, y, w, d, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutHi;
-  ctx.fillRect(x + 8, y + 2, w - 16, 2);
+  walnutDesk(ctx, x, y, w, { depth: d, skirt: d + 14, r: 8, shadow: { color: 'rgba(40,25,15,0.25)', dx: 4, h: d + 14 }, hi: 2 });
   // the monitor, its back to us, on a stand
   const mx = x + w * 0.62;
   ctx.fillStyle = C.monitorDark;

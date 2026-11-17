@@ -19,12 +19,12 @@
 // decor.things, so render/characters.js draws them and the hand over them), the panel and the fuse box are the ones
 // drawn on the floor (render/darkness.js), only bigger. Speech is free: the bubbles and rows.
 import { rrect, fillCircle, fillEllipse } from '../../render/util.js';
-import { C } from '../../render/palette.js';
+import { C, OXBLOOD } from '../../render/palette.js';
 import { drawPerson, itemGlyph } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
 import { paintSwitch, paintBreaker, paintLamp } from '../../render/darkness.js';
 import { isDark } from '../../game/darkness.js';
-import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
+import { TAB, person, bubble } from '../../render/tableau.js';
+import { officeRoom, chair } from '../../render/tableau-furniture.js';
 import { paintTray, paintLetter, paintPhone, soggyLetter } from './things.js';
 
 const WALL_H = 92;
@@ -33,10 +33,7 @@ const GLASS_X = 600; // the win cards: his glass office left of it, the open flo
 
 // ---- Props -------------------------------------------------------------------------------------------------
 
-function office(ctx) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, WALL_H);
-}
+const office = (ctx) => officeRoom(ctx, WALL_H);
 
 // The glass wall of his office, running from the back wall towards you at x.
 function glassWall(ctx, x) {
@@ -94,13 +91,7 @@ function lamp(ctx, x, on, t) {
 }
 
 // His oxblood chair, for a desk centred at x with its top at y (drawn before him, the desk after him).
-function chair(ctx, x, y) {
-  ctx.save();
-  ctx.translate(x - 20, y - 8);
-  ctx.scale(2.4, 2.4);
-  drawChair(ctx, 0, 0, Math.PI / 2, '#6b2f24', '#4e2019');
-  ctx.restore();
-}
+const bossChair = (ctx, x, y) => chair(ctx, x - 20, y - 8, OXBLOOD);
 
 // The boss's desk, centred at x, its top at y.
 function desk(ctx, x, y) {
@@ -341,7 +332,7 @@ function sceneWin(route) {
     }
     glassWall(ctx, GLASS_X);
     lamp(ctx, 420, true, t);
-    chair(ctx, 420, 252);
+    bossChair(ctx, 420, 252);
     const glance = route === 'switch' && Math.sin(t * 0.9) > 0.35; // a squint out through the glass at the panel
     const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + (glance ? -1.2 : 0.45) + Math.sin(t * 3) * 0.05 });
     drawPerson(ctx, game.level.looks.boss, b, 420, 228);
@@ -372,7 +363,7 @@ function sceneEaten(ctx, game, t, e) {
   office(ctx);
   glassWall(ctx, GLASS_X);
   lamp(ctx, 420, true, t);
-  chair(ctx, 420, 252);
+  bossChair(ctx, 420, 252);
   const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#tray', head: Math.PI / 2 + 0.45 + Math.sin(t * 3) * 0.05 });
   drawPerson(ctx, game.level.looks.boss, b, 420, 228);
   desk(ctx, 420, 252);
@@ -409,7 +400,7 @@ function sceneDeskwork(ctx, game, t, e, o) {
   office(ctx);
   glassWall(ctx, GLASS_X);
   lamp(ctx, 420, true, t);
-  chair(ctx, 420, 252);
+  bossChair(ctx, 420, 252);
   const b = boss(t, { pose: 'sit', arms: 'shrug', item: '#letter', angry: true, head: Math.PI / 2 + Math.sin(t * 6) * 0.06 });
   drawPerson(ctx, game.level.looks.boss, b, 420, 228);
   desk(ctx, 420, 252);
@@ -484,7 +475,7 @@ function sceneCaught(ctx, game, t, e) {
   if (dark) { b.arms = 'carry'; b.item = '#phone'; } else b.arms = 'point';
   const drawHim = () => drawPerson(ctx, look, b, B.x, B.y);
   if (atHisDesk) {
-    chair(ctx, DESK.x, DESK.y);
+    bossChair(ctx, DESK.x, DESK.y);
     drawHim();
   }
   desk(ctx, DESK.x, DESK.y);

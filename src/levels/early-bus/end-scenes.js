@@ -4,6 +4,7 @@ import { easeOutCubic, rrect } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet, confetti } from '../../render/tableau.js';
+import { walnutDesk } from '../../render/tableau-furniture.js';
 import { drawBigClock, drawStepladder, drawBus, drawExhaust, drawStopSign, drawCoatStand } from './painters.js';
 import { faceFor, HOME_AT } from './clocks.js';
 
@@ -125,15 +126,7 @@ function windowWithBus(ctx, t, e, wx, ww, wh, bus = { len: 150, h: 64 }, riders 
 
 // Your desk seen from the side, its top at y, x..x+w: walnut, a monitor, a paper or two.
 function desk(ctx, x, y, w) {
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  rrect(ctx, x + 4, y + 8, w, 46, 10);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, x, y, w, 48, 10);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, x, y, w, 38, 10);
-  ctx.fill();
+  walnutDesk(ctx, x, y, w, { depth: 38, skirt: 48, r: 10, shadow: { color: 'rgba(0,0,0,0.25)', dx: 4, h: 46 } });
   ctx.fillStyle = '#37494c';
   rrect(ctx, x + w * 0.55, y - 34, 44, 32, 3);
   ctx.fill();

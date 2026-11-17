@@ -9,10 +9,11 @@
 //                       emoji; only bubbles speak emoji (DESIGN.md "Visual language" rule 5)
 import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, drawScreen } from '../../render/util.js';
 import { drawThing } from '../../render/things.js';
-import { C } from '../../render/palette.js';
+import { C, TOMATO, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawProjector, drawChair } from '../../render/world.js';
+import { drawProjector } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
+import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
 import { popper, cricket } from './painters.js';
 
@@ -184,11 +185,7 @@ function tableauProjector(ctx, game, t, e) {
   drawProjector(ctx, 0, 0, 'broken', 0, t);
   ctx.restore();
   // you, in your tomato chair in front of the table, hands folded
-  ctx.save();
-  ctx.translate(560, 330);
-  ctx.scale(2.4, 2.4);
-  drawChair(ctx, 0, 0, -Math.PI / 2, C.tomato, C.tomatoDark);
-  ctx.restore();
+  chair(ctx, 560, 330, TOMATO, 2.4, -Math.PI / 2);
   const p = person(t);
   p.dir = -Math.PI / 2;
   p.head = -Math.PI / 2 + Math.sin(t * 0.8) * 0.2;
@@ -357,11 +354,7 @@ function tableauBlamed(ctx, game, t, e, o) {
     drawPerson(ctx, game.level.looks.kev, k, 680, 262);
   }
   poolOfLight(ctx, 476, 316); // your chair: empty, in a pool of light
-  ctx.save();
-  ctx.translate(476, 302);
-  ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, -Math.PI / 2, C.tomato, C.tomatoDark); // yours (decor.js)
-  ctx.restore();
+  chair(ctx, 476, 302, TOMATO, 2.6, -Math.PI / 2); // yours (decor.js)
   // what they're saying
   bubble(ctx, lockedOut && !kev ? B_BLAME_YOU : B_POINT_YOU, 272, 206, e, 'speech', 1.4);
   if (!lockedOut) bubble(ctx, B_ANGRY, 476, 168, e, 'alert');
@@ -469,11 +462,7 @@ function tableauKev(ctx, game, t, e) {
   smokingProjector(ctx, t, 400);
   // Kev's place: the empty chair in a pool of light, the evidence in front of it
   poolOfLight(ctx, 682, 290);
-  ctx.save();
-  ctx.translate(682, 276);
-  ctx.scale(2.6, 2.6);
-  drawChair(ctx, 0, 0, Math.PI, C.olive, C.oliveDark); // Kev's (decor.js)
-  ctx.restore();
+  chair(ctx, 682, 276, OLIVE, 2.6, Math.PI); // Kev's (decor.js)
   const pe = clamp((e - 0.4) / 0.3, 0, 1);
   if (pe > 0) {
     ctx.save();
