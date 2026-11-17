@@ -12,6 +12,7 @@
 //   node tools/golden-render.mjs --all     check every level (also: --write --all)
 //   node tools/golden-render.mjs --write   re-record (plans come from golden-render.json, else pick() below)
 //
+// The file is one plan per line (lib/golden-file.mjs); tools/merge.mjs re-records it on a merge conflict.
 // Re-record only when a visual change is intended, and say so in the commit. Either way it fails a level that
 // draws an emoji as an object in the world (render/util.js worldEmoji).
 import { createHash } from 'node:crypto';
@@ -21,6 +22,7 @@ import { createHarness } from '../src/agent/harness.js';
 import { updateFx } from '../src/core/fx.js';
 import { worldEmoji } from '../src/render/util.js';
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
+import { serializeGolden } from './lib/golden-file.mjs';
 import { allArg, levelArg, levelFile } from './lib/level-arg.mjs';
 
 await allArg('golden-render');
@@ -179,7 +181,7 @@ if (write) {
     return { cmds, summary: t.summary, renders: t.renders.map((r) => r.d) };
   });
   finish();
-  writeFileSync(FILE, JSON.stringify({ note: 'written by tools/golden-render.mjs --write; do not edit by hand', plans: out }, null, 1) + '\n');
+  writeFileSync(FILE, serializeGolden({ note: 'written by tools/golden-render.mjs --write; do not edit by hand', plans: out }));
   const n = out.reduce((s, p) => s + p.renders.length, 0);
   console.log(`golden-render: ${LEVEL.id}: recorded ${n} renders over ${out.length} plans (${[...new Set(out.map((p) => p.summary))].join(', ')})`);
 } else {

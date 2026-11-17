@@ -743,6 +743,9 @@ an unknown id exits 2 and lists the registry.
 - **Golden** (`tools/golden.mjs`): replays `golden.json` and compares every event and the state after each command.
   `--write` re-records the existing corpus (it throws if there is no file); `--write --from f.json` builds the
   corpus from a `fuzz.mjs --json` dump plus `gate.goldenPlans`. `--all` checks (or, with `--write`, re-records) every level.
+  Both golden files are one JSON plan per line (`tools/lib/golden-file.mjs`), so a change touches only its plan's line.
+  `tools/merge.mjs` resolves a conflict in them by re-recording the union of both sides' plans, and exits 1 if a
+  plan's outcome after that is one neither side had.
 - **Golden render** (`tools/golden-render.mjs`): the same for drawing, into a recording fake canvas. `--all` as above; `--write`
   re-records (plans from the file, or picked from the golden corpus). It also fails when a level draws an emoji
   as an object in the world.
