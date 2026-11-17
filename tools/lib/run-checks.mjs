@@ -12,7 +12,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const COLD = 'test-cold-read.mjs';
 const TAIL = 30;
 
-// Resolves true when every piece passed. { fast } skips test-cold-read.mjs (about 90 s alone).
+// Resolves true when every piece passed. { fast } skips test-cold-read.mjs (the slowest piece).
 export async function runChecks({ fast = false, workers = jobs(Math.min(cpus().length, 6)) } = {}) {
   process.env.BUSYWORK_CANVAS_DIR ??= join(root, 'tools', '.deps');
   const tests = readdirSync(join(root, 'tools')).filter((f) => /^test-.*\.mjs$/.test(f)).sort();
@@ -22,7 +22,7 @@ export async function runChecks({ fast = false, workers = jobs(Math.min(cpus().l
     ...Object.keys(levels).flatMap((id) => ['golden', 'golden-render'].map((g) => ({ name: `${g}.mjs --level ${id}`, args: [`tools/${g}.mjs`, '--level', id] }))),
   ];
   pieces.sort((a, b) => (b.name === COLD) - (a.name === COLD)); // the slowest first, so it overlaps the rest
-  if (fast) console.log(`check: --fast skips ${COLD} (about 90 s)`);
+  if (fast) console.log(`check: --fast skips ${COLD}`);
   const t0 = performance.now();
   const failures = [];
   const times = [];

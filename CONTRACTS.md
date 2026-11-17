@@ -28,7 +28,7 @@ change in order changes the digest. These are the usual ways to break it:
 
 ## Conventions
 - Vanilla JS ES modules, no dependencies, no build step. Serve with `node tools/serve.mjs` (port 8642, caching off, so a plain reload runs the files on disk).
-  Node 22 runs the headless tests (`node tools/test-*.mjs`). Before handing work back run `node tools/check.mjs --fast`:
+  Node 22 runs the headless tests (`node tools/test-*.mjs`). Before handing work back run `node tools/check.mjs`:
   every test, the routes and both goldens for every level, in parallel.
 - **No DOM access at module import time.** Only `createInput(window)`, `createRenderer(canvas)`, `createAudio()` and
   `src/main.js` may touch browser APIs, and only inside functions. Everything else must import cleanly in node.
@@ -678,9 +678,9 @@ tick(game, dt):  updatePlayer → updateInteractions → updateNpcs → updateRu
 ```
 
 ## Tools
-**One command: `node tools/check.mjs --fast`** runs every `tools/test-*.mjs` except `test-cold-read.mjs`, `routes.mjs`,
+**One command: `node tools/check.mjs`** (about 10 s) runs every `tools/test-*.mjs`, `routes.mjs`,
 and `golden.mjs` and `golden-render.mjs` for every level, in parallel (about 10 s). It exits 1 on any failure and
-prints the tail of each failing piece. Without `--fast` it runs `test-cold-read.mjs` too; `tools/merge.mjs` runs the
+prints the tail of each failing piece. `--fast` skips `test-cold-read.mjs`, the slowest piece; `tools/merge.mjs` runs the
 full check after merging. The tools below also run singly.
 
 The level tools take `--level <id>` (default `meeting`; `routes.mjs` without it checks every level; `golden.mjs` and

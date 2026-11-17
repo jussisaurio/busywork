@@ -100,7 +100,7 @@ node tools/test-smoke.mjs stapler                              # the real index.
 rm fuzz.json
 ```
 
-Before you hand work back, run `node tools/check.mjs --fast`: every test, the routes, and both goldens for every level,
+Before you hand work back, run `node tools/check.mjs`: every test, the routes, and both goldens for every level,
 in parallel, in about 10 s. It exits 1 on any failure and prints the tail of each. `node tools/check.mjs` adds
 `test-cold-read.mjs`. The goldens alone: `node tools/golden.mjs --all`, `node tools/golden-render.mjs --all`
 (without `--level` or `--all` they check only `meeting`).
