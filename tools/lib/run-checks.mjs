@@ -6,13 +6,14 @@ import { cpus } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { levels } from '../../src/levels/index.js';
+import { jobs } from './jobs.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const COLD = 'test-cold-read.mjs';
 const TAIL = 30;
 
 // Resolves true when every piece passed. { fast } skips test-cold-read.mjs (about 90 s alone).
-export async function runChecks({ fast = false, workers = Math.min(cpus().length, 6) } = {}) {
+export async function runChecks({ fast = false, workers = jobs(Math.min(cpus().length, 6)) } = {}) {
   process.env.BUSYWORK_CANVAS_DIR ??= join(root, 'tools', '.deps');
   const tests = readdirSync(join(root, 'tools')).filter((f) => /^test-.*\.mjs$/.test(f)).sort();
   const pieces = [
@@ -24,6 +25,7 @@ export async function runChecks({ fast = false, workers = Math.min(cpus().length
   if (fast) console.log(`check: --fast skips ${COLD} (about 90 s)`);
   const t0 = performance.now();
   const failures = [];
+  const times = [];
   let next = 0;
   const worker = async () => {
     while (next < pieces.length) {
@@ -37,7 +39,9 @@ export async function runChecks({ fast = false, workers = Math.min(cpus().length
         c.on('error', () => res(1));
         c.on('close', (k) => res(k ?? 1));
       });
-      console.log(`${code === 0 ? 'ok  ' : 'FAIL'} ${p.name} ${((performance.now() - t) / 1000).toFixed(1)}s`);
+      const took = (performance.now() - t) / 1000;
+      times.push({ name: p.name, took });
+      console.log(`${code === 0 ? 'ok  ' : 'FAIL'} ${p.name} ${took.toFixed(1)}s`);
       if (code !== 0) failures.push({ name: p.name, text: Buffer.concat(out).toString().trimEnd() });
     }
   };
@@ -45,5 +49,6 @@ export async function runChecks({ fast = false, workers = Math.min(cpus().length
   for (const f of failures) console.log(`\n--- ${f.name} (last ${TAIL} lines) ---\n${f.text.split('\n').slice(-TAIL).join('\n')}`);
   const secs = ((performance.now() - t0) / 1000).toFixed(1);
   console.log(`\ncheck: ${failures.length ? `FAILED ${failures.length}/${pieces.length}: ${failures.slice(0, 4).map((f) => f.name).join(', ')}${failures.length > 4 ? ', ...' : ''}` : `all ${pieces.length} pieces passed`} (${secs} s${fast ? ', --fast' : ''})`);
+  console.log(`slowest: ${times.sort((a, b) => b.took - a.took).slice(0, 3).map((x) => `${x.name} ${x.took.toFixed(1)}s`).join(', ')}`);
   return !failures.length;
 }

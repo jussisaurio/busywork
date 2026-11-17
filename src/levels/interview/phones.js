@@ -61,6 +61,9 @@ export const PHONES = {
   kitchen: { owner: null, tile: 'W', at: 'kitchen_phone', bell: { x: 20.5, y: 0.7 }, lamp: OUTSIDE },
 };
 export const PHONE_IDS = Object.keys(PHONES);
+// The world keys of one phone, built once: phoneTick and the lures' `when` read them every step, and a template string per read costs.
+const keysOf = (prefix) => Object.fromEntries(PHONE_IDS.map((p) => [p, `${prefix}_${p}`]));
+const [RING, RING_AT, CALL, LINE, LINE_AT, TUNE] = ['ring', 'ringAt', 'call', 'line', 'lineAt', 'tune'].map(keysOf);
 
 // On his way to a phone, or on it (the lures' overrides, below).
 export const holdOf = (npc) => /^(to|on)_(\w+)_phone$/.exec(npc.override ?? '');
@@ -99,12 +102,12 @@ export function initialPhones() {
     jolt: 0, // Lin, checking her line, got a ring in her ear: startled until this minute
   };
   for (const p of PHONE_IDS) {
-    w[`ring_${p}`] = null; // null | 'you' (your ring) | 'job' (the interview)
-    w[`ringAt_${p}`] = 0;
-    w[`call_${p}`] = null; // who is going to answer your ring
-    w[`line_${p}`] = null; // who is on it
-    w[`lineAt_${p}`] = 0; // when he picked up
-    w[`tune_${p}`] = false; // the hold tune plays on it
+    w[RING[p]] = null; // null | 'you' (your ring) | 'job' (the interview)
+    w[RING_AT[p]] = 0;
+    w[CALL[p]] = null; // who is going to answer your ring
+    w[LINE[p]] = null; // who is on it
+    w[LINE_AT[p]] = 0; // when he picked up
+    w[TUNE[p]] = false; // the hold tune plays on it
   }
   return w;
 }
@@ -117,7 +120,7 @@ export function phoneTick(game, sim) {
   const day = game.level.day;
   const npcs = game.npcs;
   const byId = (id) => npcs.find((n) => n.id === id);
-  const picked = new Set(PHONE_IDS.map((p) => w[`call_${p}`]).filter(Boolean));
+  const picked = new Set(PHONE_IDS.map((p) => w[CALL[p]]).filter(Boolean));
   if (w.jobBy) picked.add(w.jobBy);
   const free = (n) => n.active && !n._gone && !onPhone(n) && !picked.has(n.id);
   const pick = (p, ownerId) => {
@@ -134,7 +137,7 @@ export function phoneTick(game, sim) {
   const act = game.player?.action;
   const answering = act && /^answer_/.test(act.type) ? act.type.slice(7) : null;
   if (w.youOn && answering !== w.youOn) hangUp(game, w.youOn);
-  if (answering && w.youOn !== answering && w[`ring_${answering}`]) pickUp(game, sim, answering, byId);
+  if (answering && w.youOn !== answering && w[RING[answering]]) pickUp(game, sim, answering, byId);
   if (w.youOn && !w.youMid && m - w.youAt >= MID) {
     w.youMid = true;
     if (w.youOn === 'lin' && w.tookJob === 'player') say(game, 'player', ['@lin', '🪑'], { ttl: 1.3 }); // she's not at her desk
@@ -153,27 +156,27 @@ export function phoneTick(game, sim) {
 
   // Your rings.
   for (const p of PHONE_IDS) {
-    if (w[`ring_${p}`] !== 'you' || w[`call_${p}`]) continue;
+    if (w[RING[p]] !== 'you' || w[CALL[p]]) continue;
     if (p === 'lin' && m < w.jolt) continue; // she gets over the fright first
     const n = pick(p, PHONES[p].owner);
     if (n) {
-      w[`call_${p}`] = n.id;
+      w[CALL[p]] = n.id;
       picked.add(n.id);
       game.events.emit('phone:answering', { phone: p, by: n.id });
-    } else if (m - w[`ringAt_${p}`] > RING_FOR) {
-      w[`ring_${p}`] = null;
+    } else if (m - w[RING_AT[p]] > RING_FOR) {
+      w[RING[p]] = null;
       game.events.emit('phone:unanswered', { phone: p });
     }
   }
   // When each line was picked up, and the hold tune: from a moment after, until it ends (TUNE_ENDS) a moment
   // before he hangs up. (Drawn as notes out of his handset: painters.js; and heard: presentation.js SOUNDS.)
   for (const p of PHONE_IDS) {
-    const who = w[`line_${p}`];
-    if (who && !w[`lineAt_${p}`]) w[`lineAt_${p}`] = m;
-    else if (!who) w[`lineAt_${p}`] = 0;
+    const who = w[LINE[p]];
+    if (who && !w[LINE_AT[p]]) w[LINE_AT[p]] = m;
+    else if (!who) w[LINE_AT[p]] = 0;
     const holder = who && byId(who);
     const until = who === 'lin' && p === 'lin' ? SLAM : TUNE_ENDS;
-    w[`tune_${p}`] = !!holder && holder.override === `on_${p}_phone` && m - w[`lineAt_${p}`] >= NOTES_AFTER
+    w[TUNE[p]] = !!holder && holder.override === `on_${p}_phone` && m - w[LINE_AT[p]] >= NOTES_AFTER
       && w[`hold_${who}`] < until;
   }
 
@@ -239,7 +242,7 @@ export function phoneTick(game, sim) {
 
   // On with Gary the boss laughs now and then (⛳😄): one long golf chat.
   for (const p of PHONE_IDS) {
-    if (CALLER[p] !== 'gary' || w[`line_${p}`] !== 'boss' || !w[`tune_${p}`] || m < (w.laughAt ?? 0)) continue;
+    if (CALLER[p] !== 'gary' || w[LINE[p]] !== 'boss' || !w[TUNE[p]] || m < (w.laughAt ?? 0)) continue;
     const b = byId('boss');
     if (b && b.override === `on_${p}_phone`) {
       w.laughAt = m + LAUGH_EVERY;
@@ -250,7 +253,7 @@ export function phoneTick(game, sim) {
   // On hold he stares into space: his eyes stay ahead (no glances over his shoulder), though a ring still turns
   // his head. This is what makes ringing someone a way past him. (The tune is drawn: painters.js.)
   for (const p of PHONE_IDS) {
-    const who = w[`line_${p}`];
+    const who = w[LINE[p]];
     if (!who || (p === 'lin' && (w.interview === 'lin' || w.interview === 'other'))) continue;
     const holder = byId(who);
     const gaze = GAZE[who]?.[p];
@@ -332,7 +335,7 @@ export function phoneTick(game, sim) {
 
 // --- The switchboard and the cord ------------------------------------------------------------------
 const WHOSE = { lin: "Lin's phone", boss: "the boss's phone", kev: "Kev's phone", kitchen: 'the kitchen phone' };
-export const ringable = (w, p) => !w[`ring_${p}`] && !w[`call_${p}`] && !w[`line_${p}`] && w.youOn !== p
+export const ringable = (w, p) => !w[RING[p]] && !w[CALL[p]] && !w[LINE[p]] && w.youOn !== p
   && (p !== 'lin' || w.cord === 'in');
 // Working the old switchboard is nothing to see; only Lin minds you putting a call through to her own line (and
 // only she knows to: she is keeping it free).
@@ -342,8 +345,8 @@ const ring = (p) => ({
   can: (pl, w) => ringable(w, p),
   done(game) {
     const w = game.world;
-    w[`ring_${p}`] = 'you';
-    w[`ringAt_${p}`] = game.clock.minute;
+    w[RING[p]] = 'you';
+    w[RING_AT[p]] = game.clock.minute;
     game.events.emit('switchboard:ring', { phone: p });
     game.events.emit(`ring:${p}`, {});
   },
@@ -353,14 +356,14 @@ const ring = (p) => ({
 // tick, which sees the action start and end).
 const answer = (p) => ({
   on: `phone_${p}`, text: `answer ${WHOSE[p]}`, duration: LISTEN, pose: 'phone', held: `#handset_${p}`,
-  can: (pl, w) => w.youOn === p || (!w.youOn && !!w[`ring_${p}`]),
+  can: (pl, w) => w.youOn === p || (!w.youOn && !!w[RING[p]]),
   done() {},
 });
 
 // You pick up phone p (ringing). Whoever was on his way to it stops.
 function pickUp(game, sim, p, byId) {
   const w = game.world;
-  if (w[`ring_${p}`] === 'job') {
+  if (w[RING[p]] === 'job') {
     const by = w.jobBy && byId(w.jobBy);
     if (w.jobBy === 'lin') { // she was already reaching for it: she snatches it out of your hand
       cancelAction(game, 'snatched');
@@ -377,13 +380,13 @@ function pickUp(game, sim, p, byId) {
     game.events.emit('interview:other', { by: 'player' });
     say(game, 'player', ['💼', '@lin', '❓'], { ttl: 1.3 }); // they ask you for Lin
   } else {
-    const by = w[`call_${p}`] && byId(w[`call_${p}`]);
+    const by = w[CALL[p]] && byId(w[CALL[p]]);
     if (by && by.override === `to_${p}_phone`) {
       endOverride(by);
       sim.speak(game, by, [{ say: ['@player', `#handset_${p}`], ttl: 1.2 }, { say: ['🤷'], after: 1.3, ttl: 1 }]);
     }
-    w[`call_${p}`] = null;
-    w[`ring_${p}`] = null;
+    w[CALL[p]] = null;
+    w[RING[p]] = null;
     say(game, 'player', CALLER[p] === 'hr' ? ['💼', '⏳'] : ['⛳', '@boss'], { ttl: 1.3 });
   }
   w.youOn = p;
@@ -421,7 +424,7 @@ export const INTERACTIONS = {
 // red). The phone shakes and its handset hops while it rings (painters.js).
 export const NOISES = {
   ...Object.fromEntries(PHONE_IDS.map((p) => [`ring:${p}`, {
-    at: PHONES[p].bell, radius: RING_RADIUS, every: RING_EVERY, turn: 1.1, while: (w) => w[`ring_${p}`] === 'you',
+    at: PHONES[p].bell, radius: RING_RADIUS, every: RING_EVERY, turn: 1.1, while: (w) => w[RING[p]] === 'you',
     ripple: { color: PHONES[p].lamp }, sfx: 'phoneRing',
   }])),
   'ring:job': {
@@ -538,7 +541,7 @@ for (const npc of CAST_IDS) {
   for (const p of PHONE_IDS) {
     LURES.push({
       npc,
-      when: (w) => w[`call_${p}`] === npc,
+      when: (w) => w[CALL[p]] === npc,
       override: `to_${p}_phone`,
       plan: `phone_${p}`,
       label: `answer ${WHOSE[p]}`,

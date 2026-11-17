@@ -759,6 +759,11 @@ an unknown id exits 2 and lists the registry.
   a manual `requestAnimationFrame` queue and a recording fake canvas, and plays it with real key events: title card, day,
   fast-forward to the end screen, retry. Fails on any exception, `console.error`, bad canvas call, or undrawn frame.
   Known failures go in `KNOWN_FAILURES` at its top; one that starts passing fails the test.
+- **Perf** (`tools/perf.mjs [--level <id> | --all] [--json] [--write]`): per level, the median of a few runs of sim cost (ms per 1000
+  harness frames over the golden plans), render cost (ms per frame through the fake canvas) and the golden replay's wall time, against
+  `tools/perf-budget.json` (`--write` records it); exit 1 when a number is over 2.5x its budget. The gate prints the same as one advisory line.
+  Not a `test-*.mjs`: timing under the parallel runner would be flaky.
+- **`BUSYWORK_JOBS=<n>`** (`tools/lib/jobs.mjs`): one cap on parallelism for check/merge, `--all`, the fuzzer's workers and cold-read's readers; unset, each keeps its own default.
 
 A refactor must leave both golden tools passing. Re-record only for an intended behaviour change, and say so in
 the commit.

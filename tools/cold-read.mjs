@@ -53,6 +53,7 @@
 // bundle holds step 1's reply). Then --record <the last step's reply> writes the section.
 // The picture passes draw with @napi-rs/canvas: npm install --prefix tools/.deps @napi-rs/canvas
 import { spawn, execFileSync } from 'node:child_process';
+import { jobs, limiter } from './lib/jobs.mjs';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -612,6 +613,9 @@ export function gitCommit() {
   }
 }
 
+// At most BUSYWORK_JOBS readers at a time across every pass (unset: all at once, as before).
+const readerSlot = limiter(jobs(Infinity));
+
 // Runs a stage's readers through `runner` and records the result. Returns the record. Steps whose needs are met run
 // together (the replay readers' batches). keep: leave the bundle folders behind (their paths are logged).
 export async function runStage(id, stage, opts = {}) {
@@ -652,7 +656,7 @@ export async function runStage(id, stage, opts = {}) {
         writeFiles(cwd, stepFiles(s, replies, earlier));
         log(`cold-read: ${id} ${stage} step ${s.id}: reading ${cwd}`);
         const t0 = Date.now();
-        const out = await runner({ prompt: stepPrompt(s, inp.prompts), cwd, model, step: s.id });
+        const out = await readerSlot(() => runner({ prompt: stepPrompt(s, inp.prompts), cwd, model, step: s.id }));
         const ms = Date.now() - t0;
         replies[s.id] = out.text;
         results[s.id] = { id: s.id, reply: s.reply, text: out.text, ms, costUsd: out.costUsd ?? null };

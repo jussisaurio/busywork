@@ -2,6 +2,7 @@
 // the folder name is the level id.
 import { fileURLToPath } from 'node:url';
 import { levels, getLevel, defaultLevel } from '../../src/levels/index.js';
+import { jobs } from './jobs.mjs';
 
 // The level named by --level <id> (default: the registry's default level). An unknown id prints the
 // registry's ids and exits 2.
@@ -46,7 +47,7 @@ export async function allArg(tool, argv = process.argv) {
       if (code !== 0) failed.push(id);
     }
   };
-  await Promise.all(Array.from({ length: Math.min(cpus().length, 6) }, worker));
+  await Promise.all(Array.from({ length: jobs(Math.min(cpus().length, 6)) }, worker));
   if (failed.length) console.log(`${tool}: FAILED on ${failed.join(', ')}`);
   process.exit(failed.length ? 1 : 0);
 }

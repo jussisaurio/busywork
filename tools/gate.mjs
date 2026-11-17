@@ -30,6 +30,7 @@ import { drawnCheck, worldGlyphs } from './lib/drawn.mjs';
 import { contrabandSeen, contrabandCheck } from './lib/contraband.mjs';
 import { coldReadChecks, isFixture } from './cold-read.mjs';
 import { strayPictures, strayText } from './lib/stray.mjs';
+import { measureLevel, readBudget, perfLine, overBudget } from './lib/perf.mjs';
 
 // Days to fuzz. 30000 days: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
@@ -110,7 +111,18 @@ export function coldReadReport(coldRead, note) {
   return lines;
 }
 
-export function gateReport(r, checks, coldRead, note) {
+// The advisory timing line (tools/perf.mjs, tools/perf-budget.json): this level's numbers against its budget, and how long the gate's own
+// fuzz run took. m: measureLevel(id) (undefined: not measured), fuzzSecs: wall seconds of fuzz().
+export function perfReport(id, m, fuzzSecs, repeats = 1) {
+  const head = 'perf (advisory, never part of the verdict)';
+  const fuzz = fuzzSecs === undefined ? '' : `fuzz run ${fuzzSecs.toFixed(1)} s; `;
+  if (!m) return [`${head}: ${fuzz}not measured`];
+  const budget = readBudget()[id];
+  const over = overBudget(m, budget);
+  return [`${head}: ${fuzz}${perfLine(id, m, budget, repeats)}${over.length ? `\n  OVER 2.5x BUDGET: ${over.map((o) => o.key).join(', ')} (node tools/perf.mjs --level ${id})` : ''}`];
+}
+
+export function gateReport(r, checks, coldRead, note, perf) {
   const lines = [];
   const say = (s = '') => lines.push(s);
   say(`gate: level ${r.level}, seed ${r.seed}, budget ${r.budget}, batch ${r.batch}: ${r.evaluated} days in ${r.secs.toFixed(1)} s (${r.workers} workers), ${r.bins.size} outcome bins`);
@@ -130,6 +142,7 @@ export function gateReport(r, checks, coldRead, note) {
   say(failed.length ? `verdict: FAIL (${failed.map((c) => c.name).join(', ')})` : `verdict: PASS: level ${r.level} is ready for a human playtest`);
   say();
   for (const l of coldReadReport(isFixture(r.level) ? undefined : coldRead, note)) say(l);
+  for (const l of perf ?? []) say(l);
   return lines.join('\n');
 }
 
@@ -156,7 +169,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const from = { flag: '--budget', level: "the level's gate.budget", default: 'the default' }[days.from];
   console.error(`gate: fuzzing level ${opts.level} (budget ${opts.budget}: ${from}, ${opts.workers} workers)...`);
   try {
+    const tFuzz = performance.now();
     const r = await fuzz(opts);
+    const fuzzSecs = (performance.now() - tFuzz) / 1000;
     const plans = combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level)));
     r.glyphs = worldGlyphs(opts.level, plans);
     r.contraband = contrabandSeen(opts.level, [[], ...plans]);
@@ -165,7 +180,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       try { coldRead = await coldReadChecks(level); } catch (e) { note = `could not be read: ${e.message}`; }
     }
     const checks = checkGate(r, levelData(opts.level), { stray: strayPictures() });
-    console.log(gateReport(r, checks, coldRead, note));
+    let perf;
+    try { perf = perfReport(level, await measureLevel(level, { repeats: 1 }), fuzzSecs); } catch (e) { perf = [`perf (advisory, never part of the verdict): could not be measured: ${e.message}`]; }
+    console.log(gateReport(r, checks, coldRead, note, perf));
     process.exitCode = checks.every((c) => c.ok) ? 0 : 1;
   } catch (e) {
     console.log(`gate: level ${opts.level}\nverdict: FAIL (crash: the fuzzer itself failed)\n${e?.stack ?? e}`);
