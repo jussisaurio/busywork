@@ -10,14 +10,14 @@
 //   drawn     a level on the legacy list, or an emoji drawn as an object in a winning plan (tools/lib/drawn.mjs)
 //   contraband  a coworker carrying an item marked contraband for the authority in his view while he enforces,
 //             on the do-nothing day or a winning plan (tools/lib/contraband.mjs)
-//   cold-read:<pass>  for every level but the fixtures: a cold-read pass (every one in tools/cold-read.mjs PASSES:
-//             title, sense, motives, props, joke, premise, verbs, faces, tells, outcomes, pictures, replay) that has
-//             not been recorded `works` in src/levels/<id>/cold-read.md for the level as it is now
-//             (docs/COLD-READ.md). The gate reads the record; it never runs the readers. Checking freshness draws
-//             what the picture passes show, so it needs @napi-rs/canvas (npm install --prefix tools/.deps @napi-rs/canvas).
 //   stray     a picture file at the repo root, where no tool writes one (tools/lib/stray.mjs)
+// The verdict (PASS or FAIL, and the exit status) comes from these checks alone.
+// After the verdict it prints an advisory cold-read report (docs/COLD-READ.md): per pass, the recorded status
+// and the open blockers. Cold reads are a reader's opinion for the designer to weigh; they never change the verdict.
+// Reading their freshness draws what the picture passes show, so that needs @napi-rs/canvas
+// (npm install --prefix tools/.deps @napi-rs/canvas); without it the report says so and the verdict is unchanged.
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
-// and the verdict. The result depends only on --seed, --budget and --batch, not on the machine.
+// the verdict, and the cold-read report. The result depends only on --seed, --budget and --batch, not on the machine.
 //
 //   node tools/gate.mjs [--level meeting] [--budget 30000] [--seed 1] [--batch 288] [--workers N]
 // --budget defaults to the level's gate.budget (a level whose rarest win needs more days says so), else 30000.
@@ -45,11 +45,10 @@ export function gateBudget(id, flag, L = levelData(id)) {
 const pct = (x) => `${(100 * x).toFixed(2)}%`;
 
 // The verdict, from fuzz() results (or synthetic ones of the same shape: level, wins, randomWins, randomEvaluated,
-// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). coldRead: the level's cold read
-// checks (tools/cold-read.mjs coldReadChecks); a level that is not a fixture fails without them. stray: pictures at
-// the repo root (tools/lib/stray.mjs strayPictures); given, any fails the gate. Returns one
+// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). Cold reads are not checks here: see
+// coldReadReport. stray: pictures at the repo root (tools/lib/stray.mjs strayPictures); given, any fails the gate. Returns one
 // { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
-export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE, coldRead, stray } = {}) {
+export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE, stray } = {}) {
   const oneLine = (plan) => planToCmds(plan, levelData(r.level)).join(' ; ');
   const combos = combosOf(r);
   const checks = [];
@@ -88,10 +87,6 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
     check(c.name, c.ok, c.text, c.detail);
   }
 
-  if (!isFixture(r.level)) {
-    if (coldRead) checks.push(...coldRead);
-    else check('cold-read', false, 'the cold reads were not checked', [`see: node tools/cold-read.mjs --status`]);
-  }
   if (stray) {
     check('stray', !stray.length, stray.length ? `${stray.length} stray picture${stray.length === 1 ? '' : 's'} at the repo root` : 'no stray pictures at the repo root',
       stray.map(strayText));
@@ -99,7 +94,23 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
   return checks;
 }
 
-export function gateReport(r, checks) {
+// The advisory cold-read report, lines of text: one line per pass that is not `works`, after a summary line.
+// coldRead: coldReadChecks(id) entries; undefined (a fixture, or not read) says there is nothing to report.
+export function coldReadReport(coldRead, note) {
+  if (!coldRead) return [`cold reads (advisory, never part of the verdict): ${note ?? 'none for this level'}`];
+  const works = coldRead.filter((c) => c.status === 'works');
+  const blockers = coldRead.reduce((n, c) => n + (c.blockers ?? 0), 0);
+  const lines = [`cold reads (advisory, never part of the verdict): ${works.length}/${coldRead.length} passes work, ${blockers} open blocker${blockers === 1 ? '' : 's'}`];
+  for (const c of coldRead) {
+    if (c.status === 'works') continue;
+    const n = c.blockers ?? 0;
+    lines.push(`  ${c.status.padEnd(10)}${c.name.replace('cold-read:', '').padEnd(10)}${n} blocker${n === 1 ? '' : 's'}`);
+  }
+  lines.push('  details: node tools/cold-read.mjs --status');
+  return lines;
+}
+
+export function gateReport(r, checks, coldRead, note) {
   const lines = [];
   const say = (s = '') => lines.push(s);
   say(`gate: level ${r.level}, seed ${r.seed}, budget ${r.budget}, batch ${r.batch}: ${r.evaluated} days in ${r.secs.toFixed(1)} s (${r.workers} workers), ${r.bins.size} outcome bins`);
@@ -117,6 +128,8 @@ export function gateReport(r, checks) {
   }
   const failed = checks.filter((c) => !c.ok);
   say(failed.length ? `verdict: FAIL (${failed.map((c) => c.name).join(', ')})` : `verdict: PASS: level ${r.level} is ready for a human playtest`);
+  say();
+  for (const l of coldReadReport(isFixture(r.level) ? undefined : coldRead, note)) say(l);
   return lines.join('\n');
 }
 
@@ -147,9 +160,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const plans = combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level)));
     r.glyphs = worldGlyphs(opts.level, plans);
     r.contraband = contrabandSeen(opts.level, [[], ...plans]);
-    const coldRead = isFixture(level) ? undefined : await coldReadChecks(level);
-    const checks = checkGate(r, levelData(opts.level), { coldRead, stray: strayPictures() });
-    console.log(gateReport(r, checks));
+    let coldRead, note;
+    if (!isFixture(level)) {
+      try { coldRead = await coldReadChecks(level); } catch (e) { note = `could not be read: ${e.message}`; }
+    }
+    const checks = checkGate(r, levelData(opts.level), { stray: strayPictures() });
+    console.log(gateReport(r, checks, coldRead, note));
     process.exitCode = checks.every((c) => c.ok) ? 0 : 1;
   } catch (e) {
     console.log(`gate: level ${opts.level}\nverdict: FAIL (crash: the fuzzer itself failed)\n${e?.stack ?? e}`);

@@ -715,12 +715,9 @@ exits 2 and lists the registry.
     object in the world (`tools/lib/drawn.mjs`; DESIGN.md "Visual language").
   - `contraband`: on the do-nothing day or a winning plan, a coworker carries an item marked `contraband` for the
     authority where the authority, enforcing, sees him (`tools/lib/contraband.mjs`): the rule would be one-sided.
-  - `cold-read:<pass>` (every level but the fixtures): a cold-read pass (`title`, `sense`, `motives`, `props`,
-    `joke`, `premise`, `verbs`, `faces`, `tells`, `outcomes`, `pictures`, `replay`) not recorded `works` in
-    `src/levels/<id>/cold-read.md` for the level as it is now. The gate reads the record and never runs the readers.
-    It prints what is missing or stale (or the `premise.md` section a pass needs) and the command to run
-    (`docs/COLD-READ.md`).
   - `stray`: a picture file at the repo root, where no tool writes one (`tools/lib/stray.mjs`).
+  These checks alone decide the verdict and the exit status. After the verdict the gate prints an advisory cold-read
+  report (per pass: its recorded status and open blockers; `docs/COLD-READ.md`) that never changes either.
   `tools/test-gate.mjs` tests the verdict logic.
 - **Shots** (`tools/shots.mjs`): `--level <id>` draws the level's `shots.js` to `tools/.shots/<id>/NN-name.png`
   and prints the game clock each shot landed on next to its intent (the pictures cold read's `intents.md` has it

@@ -107,6 +107,17 @@ The gate fuzzes 30000 days and fails (exit 1) on any of these:
 A pass ends with `verdict: PASS: level stapler is ready for a human playtest`. Each route should teach one lesson:
 name it in `mustUse` (the fixture's list is empty).
 
+## Cold reads (advice, not a gate)
+
+Fresh LLM readers can review a level as a player would see it (`docs/COLD-READ.md`). A level needs two files for it:
+- `premise.md`: the card, the situation, the cast, the ways to win and lose, `## Who does what` and `## Things in the
+  office`.
+- `shots.js`: the screenshots the picture passes read.
+
+`node tools/cold-read.mjs --status` shows each pass: works, fixable, broken, unreadable, stale or not read. The gate
+prints the same state after its verdict. It is advisory and never fails the gate. A blocker is a reader's opinion:
+weigh it, and do not cut a joke to clear one.
+
 ## 4. Play it
 
 - In the browser, add `?level=stapler` to the game URL.

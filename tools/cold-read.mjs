@@ -766,7 +766,7 @@ export function writeSection(file, id, rec) {
 export async function stageStatus(id, stage, opts = {}) {
   const root = opts.root ?? levelDir(id);
   const meta = readRecord(root)[stage]?.meta ?? null;
-  const s = { stage, verdict: meta?.verdict ?? null, date: meta?.date ?? null, commit: meta?.commit ?? null, fresh: null, changed: [], error: null };
+  const s = { stage, verdict: meta?.verdict ?? null, date: meta?.date ?? null, commit: meta?.commit ?? null, blockers: meta?.problems?.blocker ?? null, fresh: null, changed: [], error: null };
   try {
     const inp = await stageInputs(id, stage, { ...opts, root });
     if (meta) {
@@ -780,18 +780,23 @@ export async function stageStatus(id, stage, opts = {}) {
   return s;
 }
 
-// The gate's checks for a level's cold reads: one { name, ok, text, detail } per pass.
+// A pass's status word for the gate's advisory report: its recorded verdict (works, fixable, broken, unreadable),
+// 'stale' when it works but its inputs changed, 'not read' when there is no record.
+export const statusWord = (s) => (!s.verdict ? 'not read' : s.verdict === 'works' && s.fresh !== true ? 'stale' : s.verdict);
+
+// The cold reads of a level, for the gate's advisory report: one { name, ok, text, detail, status, blockers } per pass.
+// `ok` is true when the pass works and is fresh. The gate prints these and never fails on them.
 export async function coldReadChecks(id, opts = {}) {
   const out = [];
   const cache = opts.cache ?? new Map();
   for (const stage of STAGES) {
     const s = await stageStatus(id, stage, { ...opts, cache });
-    out.push({ name: `cold-read:${stage}`, ok: s.ok, text: statusText(id, s), detail: s.ok ? [] : [`run: ${runCommand(id, stage)}`] });
+    out.push({ name: `cold-read:${stage}`, ok: s.ok, text: statusText(id, s), detail: s.ok ? [] : [`run: ${runCommand(id, stage)}`], status: statusWord(s), blockers: s.blockers ?? 0 });
   }
   return out;
 }
 
-// Every level the gate requires cold reads of.
+// Every level that has cold reads (the fixtures have none).
 export const coldReadLevels = () => Object.keys(levels).filter((l) => !isFixture(l));
 
 // The --status report: for each level, one line per pass.

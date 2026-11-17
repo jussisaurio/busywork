@@ -8,9 +8,10 @@ with problems any outsider would have caught:
   - The name only made sense after solving the level.
 - **Every level.** Emoji stood in for people, which nobody could read.
 
-A cold read is a review by a fresh reader who sees only what a player would see. A level is not ready for a human
-playtest until it passes every pass below. `tools/gate.mjs` enforces this for every level except the fixtures (ids
-that start with `fixture`).
+A cold read is a review by a fresh reader who sees only what a player would see. Cold reads find problems for the
+designer to weigh. They are advice. A blocker is a reader's opinion: the designer may keep what a blocker names, and
+fixing one must never cost a joke. `tools/gate.mjs` prints the state of every pass after its verdict and never fails
+on it. The fixtures (ids that start with `fixture`) have no cold reads.
 
 ## The passes
 Each pass is one reader (or two, in steps) with one narrow question. Its reader is told to ignore everything outside
@@ -52,7 +53,7 @@ rules that hold in every level, true to DESIGN.md and the engine, and never a le
 review reports an engine behaviour as missing or wrong.
 
 Verdicts are `works`, `fixable` or `broken` (see the grades above). A reply without its verdict line or its
-`## Problems` is recorded as `unreadable`, which the gate treats as a failure. The gate needs `works` from every pass, for the current inputs.
+`## Problems` is recorded as `unreadable`, which `--status` and the gate's report show as `unreadable`.
 
 ## Grades and the ledger
 Every pass's last step ends its prompt with `prompts/grades.md`, so every pass uses the same scale. (It is a file of
@@ -292,9 +293,9 @@ Both `shots.mjs` and the replay strips draw each effect as a player at normal sp
 The game itself is not changed: the harness's own effects age as they always do. The harness gives
 `createHarness({ level, onFrame })` a hook that runs after every frame, for this.
 ## The gate
-`node tools/gate.mjs --level <id>` adds one check per pass: `cold-read:title`, `cold-read:sense`, ... ,
-`cold-read:replay`. Each passes only when the record says `works` and the pass is still fresh. A failing check says
-why (no cold read yet, the verdict, what changed since, or the missing `premise.md` section) and gives the command to
-run. The gate reads only the record and the current inputs. It never runs a reader. Checking the picture passes'
-freshness draws what they show, so it needs the canvas. The gate also fails on a picture file at the repo root
-(`stray`, `tools/lib/stray.mjs`).
+`node tools/gate.mjs --level <id>` decides on its mechanical checks alone. After the verdict it prints an advisory
+cold-read report: a summary line (how many passes work, how many blockers are open), then one line per pass that is
+not `works`: its recorded status (`fixable`, `broken`, `unreadable`, `stale` when it works but its inputs changed,
+or `not read`) and its blocker count. The report never changes the verdict or the exit status. The gate reads only the
+record and the current inputs. It never runs a reader. Reading the picture passes' freshness draws what they show, so
+it needs the canvas. The gate also fails on a picture file at the repo root (`stray`, `tools/lib/stray.mjs`).
