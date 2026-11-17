@@ -444,7 +444,7 @@ function compass(rad) {
   const i = Math.round(((rad % (2 * Math.PI)) + 2 * Math.PI) / (Math.PI / 4)) % 8;
   return COMPASS8[i];
 }
-// The focus hint in words (a human sees the target lit up with the E key cap; a legacy level adds an action icon).
+// The focus hint in words (a human sees the target lit up with the E key cap).
 function focusText(game, withHold = true) {
   const f = game.player.focus;
   if (!f) return 'none in reach';

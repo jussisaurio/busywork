@@ -4,7 +4,7 @@
 // the world (world.js / characters.js); the HUD keeps clock, mission icons, held item, loop count,
 // found-route slots and a few status icons.
 import {
-  T, VIEW_W, VIEW_H, HUD_H, fin, emoji, strictGlyphs, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
+  T, VIEW_W, VIEW_H, HUD_H, fin, emoji, text, font, textWidth, rrect, fillCircle, loopIcon, keycap, clockHands,
   MONO_FAMILY, UI_FAMILY,
 } from './util.js';
 import { C } from './palette.js';
@@ -190,7 +190,7 @@ function drawClock(ctx, minute, t, day) {
 const NO_BADGE = [];
 function drawGoal(ctx, badge) {
   panel(ctx, 190, 6, 84, 44);
-  emoji(ctx, strictGlyphs() ? '#clock' : '🕓', 214, 28, 20); // legacy: drop with the legacy list
+  emoji(ctx, '#clock', 214, 28, 20);
   if (badge[0]) emoji(ctx, badge[0], 248, 28, 20);
   if (badge[1]) emoji(ctx, badge[1], 258, 36, 12);
 }
@@ -246,7 +246,7 @@ function drawStatus(ctx, game, clock, t) {
   let x = game.phase === 'day' ? PAUSE_BTN.x - 6 : 950;
   const cy = 28;
   if (game.settings && game.settings.muted) {
-    emoji(ctx, strictGlyphs() ? '#muted' : '🔇', x - 12, cy, 18); // legacy: drop with the legacy list
+    emoji(ctx, '#muted', x - 12, cy, 18);
     x -= 30;
   }
   // Assigned work shows at your desk (world.js drawWorkStack), not up here.

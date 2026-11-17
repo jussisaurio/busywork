@@ -87,7 +87,7 @@ const SELF = fileURLToPath(import.meta.url);
 export const EASY_STEPS = 3; // a win in this few steps is suspicious
 export const EASY_RATE = 0.01; // so is a random plan winning more than 1% of the time
 // Plans per MAP-Elites generation. A constant, not derived from the core count: the archive must not depend
-// on the machine. 288 = the 12 workers x 24 that design-jam/FUZZ.md was recorded with.
+// on the machine. 288 = 12 workers x 24.
 export const BATCH = 288;
 export const defaultWorkers = () => Math.max(1, availableParallelism() - 2);
 const DRAIN_FRAMES = 20000; // frames run after the plan's last command; a day still going after that is a bug

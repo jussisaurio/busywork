@@ -2,7 +2,7 @@
 // (hair cap, eyes, nose nub). The head turns independently of the body: that is the
 // glance telegraph, so it gets extra "sight dashes" when the turn is large.
 import {
-  T, clamp, fin, hash, emoji, setFacePainter, strictGlyphs, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
+  T, clamp, fin, hash, emoji, setFacePainter, fillCircle, fillEllipse, circle, ellipse, rrect, drawDrop, drawPaper,
 } from './util.js';
 import { C } from './palette.js';
 import { NOTICE, MARKS, HOLD_TIME, WORK_PENALTY_MIN } from '../config.js';
@@ -245,7 +245,7 @@ function drawArms(ctx, look, s, g, sleeve) {
   fillCircle(ctx, H.lx, H.ly, 2.3, look.skin);
   if (!late && !(s.item && liftOverHead(s))) {
     if (s.item && s.arms !== 'folder' && !mugOverTorso(s, g)) drawHeldItem(ctx, s, H.rx, H.ry);
-    else if (!s.item && s.arms === 'point' && strictGlyphs()) drawFinger(ctx, H.rx, H.ry, look.skin);
+    else if (!s.item && s.arms === 'point') drawFinger(ctx, H.rx, H.ry, look.skin);
     fillCircle(ctx, H.rx, H.ry, 2.3, look.skin);
     if (s.item && s.arms === 'folder') drawHeldItem(ctx, s, H.rx + 2, H.ry - 5);
   }
@@ -325,8 +325,7 @@ function heldItemAt(s, out) {
   return out;
 }
 
-// A bare pointing hand (arms 'point' with nothing in it): the index finger continues the arm. In a migrated level
-// only (render/util.js strictGlyphs); the legacy ones point with a 👉 item.
+// A bare pointing hand (arms 'point' with nothing in it): the index finger continues the arm.
 function drawFinger(ctx, x, y, skin) {
   const a = Math.atan2(G.fy, Math.abs(G.fx));
   ctx.save();
@@ -375,7 +374,7 @@ function drawBox(ctx, g) {
   ctx.fillStyle = '#6e4a26'; // dark open top
   rrect(ctx, cx - w / 2, top - 3, w, 5, 1.5);
   ctx.fill();
-  emoji(ctx, strictGlyphs() ? '#plant' : '🪴', cx + 1.5, top - 6, 12); // legacy: drop with the legacy list
+  emoji(ctx, '#plant', cx + 1.5, top - 6, 12);
   ctx.fillStyle = '#c38f55'; // flaps, splayed out
   ctx.beginPath();
   ctx.moveTo(cx - w / 2, top - 2); ctx.lineTo(cx - w / 2 - 3, top - 5); ctx.lineTo(cx - w / 2 + 3, top - 4.5); ctx.closePath();
@@ -987,7 +986,7 @@ export function itemIcon(items, held) {
 }
 
 // The glyph an item is drawn with, on the floor, in a hand and in the HUD: '#<type>' (its `draw`, render/things.js)
-// when it has one, else its emoji (a level on the legacy list, src/levels/legacy.js). null for empty hands.
+// when it has one, else its emoji. null for empty hands.
 export function itemGlyph(items, type) {
   if (!type) return null;
   return items && items[type]?.draw !== undefined ? `#${type}` : itemIcon(items, type);
@@ -1104,7 +1103,7 @@ function drawNpc(ctx, game, n, t) {
     s.arms = 'reach';
     s.item = itemGlyph(game.level.items, n.pocketing.type);
   }
-  if (strictGlyphs()) pointAt(game, n, s);
+  pointAt(game, n, s);
   orderTurn(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
   let mug = false;
@@ -1180,7 +1179,7 @@ function orderTurn(game, n, s) {
   if (Math.abs(dx) + Math.abs(dy) > 0.01) s.dir = Math.atan2(dy, dx);
   s.head = s.dir;
   s.glance = 0;
-  if (sent.said && sent.look === 'player' && strictGlyphs()) {
+  if (sent.said && sent.look === 'player') {
     s.arms = 'point';
     s.item = null;
     s.crank = false;

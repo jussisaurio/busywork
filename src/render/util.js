@@ -55,8 +55,8 @@ export function textWidth(ctx, fontStr, text) {
 //
 // The visual language (DESIGN.md "Visual language"): people speak emoji, the world is drawn. The renderer marks
 // what it is drawing with glyphScope(): 'world' for the map, the people on it and an end card's scene, 'speech'
-// for bubbles and reactions, null for the HUD and screens. In a level that is not on the legacy list
-// (src/levels/legacy.js), an emoji drawn in the 'world' scope is a mistake: it is recorded in worldEmoji (the
+// for bubbles and reactions, null for the HUD and screens. An emoji drawn in the 'world' scope is a mistake: it
+// is recorded in worldEmoji (the
 // runtime check tools/golden-render.mjs and tools/gate.mjs read) and still drawn.
 let facePainter = null;
 export function setFacePainter(fn) {
@@ -67,14 +67,12 @@ export function setThingPainter(fn) {
   thingPainter = fn;
 }
 
-const glyphs = { strict: false, scope: null, level: null };
+const glyphs = { scope: null, level: null };
 export const worldEmoji = []; // { glyph, level }, once per glyph and level
-// Per frame (renderer.js): strict = the level draws its world (not on the legacy list); level = its id.
-export function useGlyphs(strict, level = null) {
-  glyphs.strict = !!strict;
+// Per frame (renderer.js): level = the id of the level being drawn.
+export function useGlyphs(level = null) {
   glyphs.level = level;
 }
-export const strictGlyphs = () => glyphs.strict;
 // Sets the scope ('world' | 'speech' | null); returns the one it replaces, to put back.
 export function glyphScope(scope) {
   const was = glyphs.scope;
@@ -101,7 +99,7 @@ export function emoji(ctx, ch, x, y, size, how = null) {
     if (c0 === 64 && facePainter && facePainter(ctx, ch.slice(1), x, y, size)) return;
     if (c0 === 35 && thingPainter && thingPainter(ctx, ch.slice(1), x, y, size, how)) return;
   }
-  if (glyphs.strict && glyphs.scope === 'world') noteWorldEmoji(ch);
+  if (glyphs.scope === 'world') noteWorldEmoji(ch);
   ctx.fillText(ch, x, y);
 }
 

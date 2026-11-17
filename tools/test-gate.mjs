@@ -134,7 +134,7 @@ ok(checkGate(rr, RL, { coldRead: coldOk() }).find((c) => c.name === 'put')?.text
   ok(gateBudget('meeting', undefined, { ...own, budget: undefined }).budget === DEFAULT_BUDGET, 'budget: the default when the level names none');
 }
 
-// Two real days (level 1, design-jam/FUZZ.md's minimal keycard win, with and without pretend).
+// Two real days (level 1, the minimal keycard win, with and without pretend).
 const keycard = (busy) => ({ steps: [{ k: 'until', m: 16, busy }, { k: 'goto', t: 'coat_rack', busy }, { k: 'do' }, { k: 'goto', t: 'meeting_seat', busy }], endBusy: busy });
 let d = evaluate(keycard(true), levelData('meeting'));
 ok(d.result === 'win' && d.routes.join() === 'keycard' && d.used.join() === 'pretend' && !d.error, 'level 1: the minimal keycard plan wins and uses pretend');

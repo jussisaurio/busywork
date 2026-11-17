@@ -1,7 +1,7 @@
 # How to make a level
 
-A level is one folder in `src/levels/` plus one line in `src/levels/index.js`. You never touch the engine
-(`src/sim`, `src/play`, `src/render`, `src/core`, `src/agent`). The worked example is `src/levels/fixture/`,
+A level is one folder in `src/levels/` plus one line in `src/levels/index.js`. A level normally needs no engine change
+(`src/sim`, `src/play`, `src/render`, `src/core`, `src/agent`). If it does, make that a separate, deliberate change. The worked example is `src/levels/fixture/`,
 "Happy Birthday to Nobody": one room, two people, an owned cake and one lure. Read it end to end first. Every field
 is in `CONTRACTS.md`. The game-wide rules are in `DESIGN.md`.
 
@@ -37,7 +37,7 @@ A level needs all of these. The validator rejects a level without them at load:
 - `routes`, and `outcomeOrder` with every route id in it once.
 - `initialWorld()` that returns `items: []` and every world field the level reads.
 - an `icon` for each item type (what people say for it), and a `draw` (how it is drawn: DESIGN.md "Visual
-  language"; the legacy list in `src/levels/legacy.js` excuses the levels not yet migrated).
+  language").
 
 The tools also need `gate` and `route-checks.js`. `roles.authority` is optional: without one, nobody assigns work
 and only an inspection can catch you.

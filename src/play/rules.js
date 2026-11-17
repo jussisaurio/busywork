@@ -7,9 +7,9 @@
 // shout lands on nobody, but the witness remembers: the moment he's back on the floor she points you out
 // (👉 + what she saw) and you go to your desk then. Only an authority off duty for good (locked out), or the
 // 4:00 meeting, ends the grudge.
-// Owners take their things back on sight, but only while they know it's theirs (the owner's `when`): level 1's
-// Lin her sandwich (to anyone else, taking or eating it is just lunch), and Kev the day's only cup of coffee,
-// once he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
+// Owners take their things back on sight, but only while they know it's theirs (the owner's `when`): a
+// coworker her sandwich (to anyone else, taking or eating it is just lunch), or the day's only cup of coffee once
+// he's been to the pot and found it empty (☕❓😩). Before that, a colleague with a coffee is nothing.
 // A disguise (disguise.js) changes who you are to them: fooled, they object to nothing; knowing better, they object
 // to the disguise itself.
 import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN, NOTICE } from '../config.js';

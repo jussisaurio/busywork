@@ -83,8 +83,8 @@ export function createNpc(game, def, now = 0) {
     pose: first.do === 'sit' ? 'sit' : 'stand',
     moving: false,
     override: null,
-    carry: null, // null | item type he carries (Kev's coffee, once he has the day's cup)
-    wants: null, // null | item type he now knows is his and misses (Kev found the pot empty: someone has his cup)
+    carry: null, // null | item type he carries (his coffee, once he has the day's cup)
+    wants: null, // null | item type he now knows is his and misses (he found the pot empty: someone has his cup)
     label: `${first.do} ${first.spot}`,
     anim: first.anim ?? null, // render: the schedule entry's `anim` while he follows it (no override)
     rng,
@@ -201,7 +201,7 @@ function fireScheduleSays(game, npc, now) {
 }
 
 // Wanting an item (npc.wants): a yawn and a daydream of it every few seconds until he has it, except while
-// working a lure's job. Level 1: Kev without his afternoon coffee 🥱☕, the setup for the grab: a desperate man
+// working a lure's job. E.g. a man without his afternoon coffee 🥱☕, the setup for the grab: a desperate man
 // sees your cup.
 const CRAVE_FIRST = 4; // s after he learns it's gone (want())
 const CRAVE_EVERY = 6;
@@ -469,7 +469,7 @@ export function leaving(npc) {
   return npc.active && !npc._gone && npc._plan?.vanish === 'leave' && !npc._plan.done;
 }
 
-// A witness takes their thing back (rules.js: Kev and the coffee).
+// A witness takes their thing back (rules.js: an owner who knows an item is theirs).
 export function npcTakes(npc, item) {
   npc.carry = item;
   if (npc.wants === item) npc.wants = null;
