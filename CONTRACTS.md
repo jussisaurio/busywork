@@ -728,7 +728,7 @@ an unknown id exits 2 and lists the registry.
   item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,
   sightlines and ripples are drawn as a player at normal speed sees them at that clock time, even after pretending
   (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
-  `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`).
+  `npm install --prefix tools/.deps @napi-rs/canvas` (or `BUSYWORK_CANVAS_DIR`; `none` means no canvas, no fallback).
 - **Cold read** (`tools/cold-read.mjs`): fresh `claude -p` readers who see only what a player sees judge the
   level in many narrow passes (`PASSES`: the cheap text passes first, then the picture passes) and three broad ones
   (premise, pictures, replay), and record a verdict and input hash per pass in `cold-read.md`. `--pass` takes one

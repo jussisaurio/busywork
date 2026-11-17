@@ -46,6 +46,7 @@
 //   node tools/cold-read.mjs --level <id> --pass <pass> --calibrate             a run on a reference level, read cold,
 //                                                                               recorded in tools/.shots/<id>/calibrate.md
 //   node tools/cold-read.mjs --status                                            every non-fixture level's passes
+//                                                                               (a child process per level, BUSYWORK_JOBS caps them)
 // --stage is the same as --pass. Several passes run at the same time; the drawings they share are made once.
 //
 // Without `claude -p`: --bundle-only prints each step's folder, prompt file and where its reply goes. Run a fresh
@@ -56,7 +57,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { jobs, limiter } from './lib/jobs.mjs';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { availableParallelism, tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getLevel, levels } from '../src/levels/index.js';
@@ -817,6 +818,19 @@ export async function statusLines(ids = coldReadLevels(), opts = {}) {
   return lines;
 }
 
+// The --status report with every level in its own `--status --level <id>` child process, at most jobs() at once.
+// The text is the same as statusLines() gives, level after level.
+export async function statusByChild(ids = coldReadLevels()) {
+  const slot = limiter(jobs(availableParallelism()));
+  return Promise.all(ids.map((id) => slot(() => new Promise((done, fail) => {
+    const kid = spawn('node', [fileURLToPath(import.meta.url), '--status', '--level', id], { stdio: ['ignore', 'pipe', 'inherit'] });
+    let text = '';
+    kid.stdout.on('data', (d) => (text += d));
+    kid.on('error', fail);
+    kid.on('close', (code) => (code === 0 ? done(text) : fail(new Error(`--status --level ${id} exited ${code}`))));
+  }))));
+}
+
 export function statusText(id, s) {
   const when = s.date ? ` (${s.date}, ${s.commit})` : '';
   const file = `src/levels/${id}/cold-read.md`;
@@ -902,7 +916,9 @@ passes: ${STAGES.join(', ')}`;
     if (has('status')) {
       // One write, and exit once it is flushed: process.exit right after console.log cuts a piped stdout short
       // (the gate and the tests read --status through a pipe, and 13 passes x 8 levels is past the pipe's buffer).
-      const out = (await statusLines()).join('\n') + '\n';
+      // Each level draws its own pictures (the slow part), so --status without --level runs one child per level.
+      const only = arg('level');
+      const out = only ? (await statusLines([only])).join('\n') + '\n' : (await statusByChild()).join('');
       await new Promise((done) => process.stdout.write(out, done));
       process.exit(0);
     }

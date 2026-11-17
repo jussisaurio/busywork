@@ -2,7 +2,8 @@
 // @napi-rs/canvas canvas, with the browser globals it reads stubbed and Math.random (fx particles only) seeded.
 //
 // @napi-rs/canvas is a native module the game itself doesn't use. It is loaded from the folder named by
-// BUSYWORK_CANVAS_DIR (from its node_modules), else from tools/.deps. One-time setup:
+// BUSYWORK_CANVAS_DIR (from its node_modules), else from tools/.deps; BUSYWORK_CANVAS_DIR=none says there is no canvas
+// (no fallback), so a test sees the same thing on every checkout. One-time setup:
 //   npm install --prefix tools/.deps @napi-rs/canvas
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
@@ -25,7 +26,8 @@ let canvasLib = null;
 // @napi-rs/canvas, from BUSYWORK_CANVAS_DIR, then tools/.deps. Throws, with the setup line, when neither has it.
 export function loadCanvas() {
   if (canvasLib) return canvasLib;
-  const dirs = [process.env.BUSYWORK_CANVAS_DIR, DEPS].filter(Boolean);
+  const set = process.env.BUSYWORK_CANVAS_DIR;
+  const dirs = set === 'none' ? [] : [set, DEPS].filter(Boolean);
   for (const d of dirs) {
     try {
       canvasLib = createRequire(join(resolve(d), 'noop.js'))('@napi-rs/canvas');
@@ -35,7 +37,7 @@ export function loadCanvas() {
     if (existsSync(EMOJI_FONT)) canvasLib.GlobalFonts.registerFromPath(EMOJI_FONT, 'Apple Color Emoji');
     return canvasLib;
   }
-  throw new Error(`@napi-rs/canvas not found in ${dirs.join(' or ')}. One-time setup: ${SETUP} (or set BUSYWORK_CANVAS_DIR to a folder whose node_modules has it)`);
+  throw new Error(`@napi-rs/canvas not found in ${dirs.join(' or ') || 'BUSYWORK_CANVAS_DIR=none'}. One-time setup: ${SETUP} (or set BUSYWORK_CANVAS_DIR to a folder whose node_modules has it)`);
 }
 
 // A seeded stand-in for Math.random (mulberry32), so particles land the same way every time.
