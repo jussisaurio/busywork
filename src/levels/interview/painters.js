@@ -11,13 +11,13 @@ import { GAME_MIN_PER_SEC } from '../../config.js';
 import { PHONES, PHONE_IDS, OUTSIDE, SLAM } from './phones.js';
 
 
-const IVORY = '#e8dfc8';
-const IVORY_DARK = '#b5a888';
-const IVORY_SHADE = '#d2c6a8';
-const WOOD = '#7a4a2a';
-const WOOD_DARK = '#4e2e1a';
-const WOOD_TOP = '#93603a';
-const BRASS = '#c9a24a';
+export const IVORY = '#e8dfc8';
+export const IVORY_DARK = '#b5a888';
+export const IVORY_SHADE = '#d2c6a8';
+export const WOOD = C.deskWood;
+export const WOOD_DARK = C.deskWoodDark;
+export const WOOD_TOP = C.deskWoodTop;
+export const BRASS = '#c9a24a';
 const CABLE = '#2a2522';
 const CABLE_HI = '#57504a';
 export const NOTE = '#f6f2e8'; // the hold tune's notes: one neutral white on every line (red is the outside call's)
@@ -392,7 +392,7 @@ function briefcase(ctx, x, y, s = 1) {
 }
 
 // A lamp: lit, it glows in its colour; dark, its glass still shows the colour, dim.
-function dim(hex, k) {
+export function dim(hex, k) {
   const v = parseInt(hex.slice(1), 16);
   const ch = (s) => Math.round(((v >> s) & 255) * k + 20 * (1 - k));
   return `rgb(${ch(16)},${ch(8)},${ch(0)})`;

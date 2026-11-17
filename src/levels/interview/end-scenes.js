@@ -6,45 +6,16 @@
 import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji } from '../../render/util.js';
 import { C, MUSTARD, TEAL } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
-import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE } from './painters.js';
+import { chair, woodDesk as desk } from '../../render/tableau-furniture.js';
+import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE, IVORY, IVORY_DARK, IVORY_SHADE, WOOD, WOOD_DARK, WOOD_TOP, BRASS, dim } from './painters.js';
 import { PHONES, OUTSIDE } from './phones.js';
 
-const IVORY = '#e8dfc8';
-const IVORY_DARK = '#b5a888';
-const IVORY_SHADE = '#d2c6a8';
-const WOOD = '#7a4a2a';
-const WOOD_DARK = '#4e2e1a';
-const WOOD_TOP = '#93603a';
 const CARD = '#c9a26b';
 const CARD_DARK = '#9c7745';
-const BRASS = '#c9a24a';
 const WALL_Y = 196; // the back wall's foot
 
 // --- Props ----------------------------------------------------------------------------------------
-
-// A desk seen from the front: top slab at y, front panel below it.
-function desk(ctx, cx, y, w, h = 46) {
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
-  ctx.fillRect(cx - w / 2 + 6, y + h - 2, w, 8);
-  ctx.fillStyle = WOOD;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, h - 8);
-  ctx.fillStyle = WOOD_DARK;
-  ctx.fillRect(cx - w / 2 + 4, y + 8, w - 8, 3);
-  ctx.fillStyle = WOOD_TOP;
-  rrect(ctx, cx - w / 2, y, w, 10, 3);
-  ctx.fill();
-}
-
-// An office chair seen from the front (its seat toward us), scale s, centred at (x, y).
-function chair(ctx, x, y, colours, s = 2.6, dir = Math.PI / 2) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(s, s);
-  drawChair(ctx, 0, 0, dir, colours[0], colours[1]);
-  ctx.restore();
-}
 
 // A potted plant standing at (x, y), scale s.
 function plant(ctx, x, y, s, t) {
@@ -496,11 +467,6 @@ function fail(ctx, game, t, e) {
 // below. `pulled` is the column whose plug is out on its cord (to plugTo), or -1.
 const COLS = [OUTSIDE, PHONES.lin.lamp, PHONES.boss.lamp, PHONES.kev.lamp, OUTSIDE];
 const CARDS = [null, '@lin', '@boss', '@kev', null];
-function dim(hex, k) {
-  const v = parseInt(hex.slice(1), 16);
-  const ch = (s) => Math.round(((v >> s) & 255) * k + 20 * (1 - k));
-  return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
-}
 function board(ctx, x0, y0, t, pulled = -1, plugTo = null) {
   const W = 190;
   ctx.fillStyle = 'rgba(0,0,0,0.2)';
