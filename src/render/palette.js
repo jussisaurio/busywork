@@ -50,6 +50,9 @@ export const C = {
   walnutEdge: '#5b3823',
   walnutHi: 'rgba(255,220,180,0.22)',
   walnutGrain: 'rgba(60,35,20,0.22)',
+  deskWood: '#7a4a2a', // the plain wooden desk of the end tableaux (tableau-furniture.js woodDesk)
+  deskWoodDark: '#4e2e1a',
+  deskWoodTop: '#93603a',
   oak: '#c49b6c',
   oakEdge: '#94704a',
   laminate: '#e6dbc1',

@@ -6,10 +6,10 @@
 //   caught       the boss saw you at his screen himself and points you out; you carry your box out
 //   told         Lin told him: she stands at his desk pointing you out while he sends it with you on it; you go
 import { clamp, easeOutCubic, rrect, fillEllipse } from '../../render/util.js';
-import { C, OXBLOOD, MUSTARD } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
-import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
+import { person, bubble } from '../../render/tableau.js';
+import { officeRoom, chair, walnutDesk } from '../../render/tableau-furniture.js';
 import { drawList } from './list.js';
 
 const B_ANGRY = ['😠'];
@@ -18,25 +18,13 @@ const yourLook = (game) => game.level.looks.player;
 
 // --- set pieces ----------------------------------------------------------------------------------------------
 
-function office(ctx) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, 78);
-}
+const office = (ctx) => officeRoom(ctx, 78);
 
 // A walnut desk top, front edge showing: (x, y) its top-left, w x h the top.
-function desk(ctx, x, y, w, h) {
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
-  rrect(ctx, x + 6, y + 8, w, h + 10, 6);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, x, y, w, h + 10, 6);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, x, y, w, h, 6);
-  ctx.fill();
-  ctx.fillStyle = C.walnutHi;
-  ctx.fillRect(x + 8, y + 3, w - 16, 2);
-}
+const desk = (ctx, x, y, w, h) =>
+  walnutDesk(ctx, x, y, w, { depth: h, skirt: h + 10, r: 6, shadow: { color: 'rgba(0,0,0,0.22)', dx: 6, h: h + 10 }, hi: 3 });
+
+const SEATED = -Math.PI / 2; // your chair faces up the room, towards the boss
 
 function keyboard(ctx, x, y, w) {
   ctx.fillStyle = '#d8d4cb';
@@ -116,18 +104,10 @@ function yourDesk(ctx, x, y) {
   ctx.fill();
 }
 
-function chair(ctx, x, y, color, dir = -Math.PI / 2, scale = 2.4) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  drawChair(ctx, 0, 0, dir, color[0], color[1]);
-  ctx.restore();
-}
-
 // The boss at his keyboard, seated at the right end of his desk, turned to the screen (or, glaring, his head
 // turned to your chair).
 function bossTyping(ctx, game, t, angry, glare = false) {
-  chair(ctx, 478, 262, OXBLOOD, Math.PI);
+  chair(ctx, 478, 262, OXBLOOD, 2.4, Math.PI);
   const b = person(t);
   b.dir = Math.PI - 0.45;
   b.head = glare ? 0.35 : Math.PI - 0.35;
@@ -188,7 +168,7 @@ function tableauWin(ctx, game, t, e) {
   mug(ctx, 372, 238, t);
   bossTyping(ctx, game, t, false);
   yourDesk(ctx, 680, 296);
-  chair(ctx, 680, 296, MUSTARD);
+  chair(ctx, 680, 296, MUSTARD, 2.4, SEATED);
   smugAtDesk(ctx, game, t, 680, 296);
   sendList(ctx, game, e, 0);
 }
@@ -211,7 +191,7 @@ function tableauFail(ctx, game, t, e) {
   bossDesk(ctx, game, { you: 1, t });
   bossTyping(ctx, game, t, false);
   yourDesk(ctx, 650, 262);
-  chair(ctx, 650, 262, MUSTARD);
+  chair(ctx, 650, 262, MUSTARD, 2.4, SEATED);
   walkOut(ctx, game, t, e, yourLook(game), 540, 716);
   sendList(ctx, game, e, 1);
 }
@@ -220,7 +200,7 @@ function tableauFail(ctx, game, t, e) {
 function tableauCaught(ctx, game, t, e) {
   office(ctx);
   bossDesk(ctx, game, { you: 1, t });
-  chair(ctx, 478, 262, OXBLOOD, Math.PI);
+  chair(ctx, 478, 262, OXBLOOD, 2.4, Math.PI);
   const b = person(t);
   b.dir = 0.1;
   b.head = 0.1 + Math.sin(t * 2.4) * 0.08;
