@@ -96,7 +96,8 @@ export const OXBLOOD = ['#6b2f24', '#4e2019']; // leather
 export const MUSTARD = [C.ochre, C.ochreDark];
 export const TEAL = [C.teal, C.tealDark];
 export const OLIVE = [C.olive, C.oliveDark];
-export const NAVY = [C.navy, C.navyDark];
+export const TOMATO = [C.tomato, C.tomatoDark]; // yours: your sweater's red
+export const NAVY =[C.navy, C.navyDark];
 
 // Vision cone tint (r,g,b) for an NPC without its own (the cast sets each NPC's coneTint).
 export const CONE_TINT_DEFAULT = [255, 245, 210];

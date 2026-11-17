@@ -1,7 +1,7 @@
 // Set dressing for level 1, "The 4 PM Meeting" (level.decor): where the renderer puts chairs, wall decor, desk
 // clutter and the key legend. Data only (palette colours, no logic); render/world.js and render/hud.js read it.
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
 import { emptyBag, fireDoor, balcony } from './painters.js';
 import { findNpc } from '../../game/perception.js';
@@ -14,7 +14,6 @@ const fireDoorState = (w, game) => {
   return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null };
 };
 
-const TOMATO = [C.tomato, C.tomatoDark]; // yours: your sweater's red (desk and meeting seat)
 
 export const DECOR = {
   // Static chairs in draw order, at a spot or a tile.
