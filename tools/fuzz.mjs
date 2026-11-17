@@ -32,6 +32,7 @@ import { Worker, isMainThread, parentPort, workerData } from 'node:worker_thread
 import { availableParallelism } from 'node:os';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { jobs } from './lib/jobs.mjs';
 import { createHarness } from '../src/agent/harness.js';
 import { createRng } from '../src/core/rng.js';
 import { at, clockArg } from '../src/config.js';
@@ -89,7 +90,7 @@ export const EASY_RATE = 0.01; // so is a random plan winning more than 1% of th
 // Plans per MAP-Elites generation. A constant, not derived from the core count: the archive must not depend
 // on the machine. 288 = 12 workers x 24.
 export const BATCH = 288;
-export const defaultWorkers = () => Math.max(1, availableParallelism() - 2);
+export const defaultWorkers = () => jobs(Math.max(1, availableParallelism() - 2));
 const DRAIN_FRAMES = 20000; // frames run after the plan's last command; a day still going after that is a bug
 
 // Game minute -> "3:12", the clock form `wait/pretend until` takes, in the level's day (L.start).

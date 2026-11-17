@@ -1,0 +1,14 @@
+{
+ "audit": {"sim":3.792,"render":0.158,"golden":1.908},
+ "discreet-packaging": {"sim":2.226,"render":0.22,"golden":0.346},
+ "early-bus": {"sim":2.72,"render":0.137,"golden":2.446},
+ "fixture": {"sim":1.662,"render":0.104,"golden":0.296},
+ "fixture-attention": {"sim":0.836,"render":0.077,"golden":0.125},
+ "fixture-inspection": {"sim":1.343,"render":0.068,"golden":0.156},
+ "fixture-putdown": {"sim":1.31,"render":0.068,"golden":0.186},
+ "interview": {"sim":7.166,"render":0.312,"golden":7},
+ "layoffs": {"sim":3.109,"render":0.156,"golden":0.506},
+ "meeting": {"sim":2.495,"render":0.14,"golden":3.369},
+ "second-thoughts": {"sim":2.397,"render":0.196,"golden":0.77},
+ "weekend-shift": {"sim":2.732,"render":0.188,"golden":0.765}
+}
