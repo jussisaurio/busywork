@@ -609,7 +609,10 @@ game = {
 - `createRenderer(canvas)` returns `{ render(game) }`. It owns canvas sizing (fit the window, crisp on HiDPI) and
   draws title / day / end screens from `game.phase` and `game.outcome`. It never mutates gameplay state.
 - Level painters may import `render/things.js` (`box`, `THINGS`, `drawThing`) and the drawing helpers of
-  `render/util.js`, `render/characters.js` and `render/tableau.js`.
+  `render/util.js`, `render/characters.js`, `render/palette.js` (`C` and the seat pairs `OXBLOOD`, `MUSTARD`, `TOMATO`,
+  `TEAL`, `OLIVE`, `NAVY`), `render/tableau.js` (the end-card picture kit: `TAB`, `person`, `bubble`, `floorCarpet`,
+  `floorTiles`, `backWall`, `confetti`) and `render/tableau-furniture.js` (`officeRoom`, `chair`, `woodDesk`,
+  `walnutDesk`).
 - The view: `effects.js` `FULL_VIEW` `{ x0, y0, x1, y1 }` (map px). While the end beat zooms in, the renderer passes
   the smaller rect to `drawBubbles`, `drawSuspicion`, `drawWitnesses` and `drawFocusHint` (last param), and they
   keep inside it; with no room above a head, a bubble goes beside it with its tail on the speaker.
