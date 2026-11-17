@@ -8,7 +8,7 @@
 import { fillCircle, fillEllipse, rrect } from '../../render/util.js';
 import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawChair } from '../../render/world.js';
+import { chair } from '../../render/tableau-furniture.js';
 import { drawClock } from '../../render/things.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { drawBoard, drawEmptyPlace, scribbleOf } from './props.js';
@@ -80,11 +80,7 @@ function sunnyWindow(ctx, t) {
 
 // An empty desk at (x, y) (its top's centre): a dark monitor, the chair pushed in. Nobody else came in.
 function emptyDesk(ctx, x, y, seat) {
-  ctx.save();
-  ctx.translate(x, y - 24);
-  ctx.scale(2, 2);
-  drawChair(ctx, 0, 0, Math.PI / 2, seat[0], seat[1]);
-  ctx.restore();
+  chair(ctx, x, y - 24, seat, 2);
   ctx.fillStyle = 'rgba(0,0,0,0.2)';
   rrect(ctx, x - 52, y + 2, 108, 34, 6);
   ctx.fill();
@@ -105,11 +101,7 @@ function emptyDesk(ctx, x, y, seat) {
 // The one desk in use, someone at it working Saturday (the person drawn behind it, facing you): a laptop, and the
 // rest of the week's work in a pile beside them. x, y: the desk top's centre.
 function workDesk(ctx, look, x, y, t, opts = {}) {
-  ctx.save();
-  ctx.translate(x, y - 22);
-  ctx.scale(2.4, 2.4);
-  drawChair(ctx, 0, 0, -Math.PI / 2, opts.seat?.[0] ?? '#555', opts.seat?.[1] ?? '#333');
-  ctx.restore();
+  chair(ctx, x, y - 22, opts.seat ?? ['#555', '#333'], 2.4, -Math.PI / 2);
   const p = person(t);
   p.dir = SOUTH;
   p.head = SOUTH + Math.sin(t * 0.9) * 0.12;
@@ -237,11 +229,7 @@ function fridayWindow(ctx, t) {
 // A chair of the half-circle round the board at (x, y) (its seat, px), facing `dir`, and whoever sits in it (look;
 // null: nobody), facing the board, their head turned to face `at`.
 function meetingSeat(ctx, look, seat, x, y, dir, at, t, phase) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(2.4, 2.4);
-  drawChair(ctx, 0, 0, dir, seat[0], seat[1]);
-  ctx.restore();
+  chair(ctx, x, y, seat, 2.4, dir);
   if (!look) return;
   const p = person(t);
   p.dir = dir;
@@ -278,11 +266,7 @@ function sceneBlamed(ctx, game, t, e, o) {
   const bx = 400;
   const by = TAB.y + 206;
   const toMine = Math.atan2(mine.y - 14 - by, mine.x - bx);
-  ctx.save();
-  ctx.translate(bx, by);
-  ctx.scale(2.4, 2.4);
-  drawChair(ctx, 0, 0, toMine, SEAT.boss[0], SEAT.boss[1]);
-  ctx.restore();
+  chair(ctx, bx, by, SEAT.boss, 2.4, toMine);
   const b = person(t);
   b.dir = toMine;
   b.head = toMine;
