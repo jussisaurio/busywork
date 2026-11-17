@@ -752,6 +752,10 @@ an unknown id exits 2 and lists the registry.
   outcome must include. `[--level <id>] [--verbose]`; without `--level` it checks every registered level, and a
   level with no `route-checks.js` fails.
 - **Engine clean** (`tools/test-engine-clean.mjs`): engine code names no level-1 thing.
+- **Smoke** (`tools/test-smoke.mjs`): boots the unmodified `src/main.js` per registered level (`?level=<id>`) against a stub DOM,
+  a manual `requestAnimationFrame` queue and a recording fake canvas, and plays it with real key events: title card, day,
+  fast-forward to the end screen, retry. Fails on any exception, `console.error`, bad canvas call, or undrawn frame.
+  Known failures go in `KNOWN_FAILURES` at its top; one that starts passing fails the test.
 
 A refactor must leave both golden tools passing. Re-record only for an intended behaviour change, and say so in
 the commit.

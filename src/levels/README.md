@@ -96,6 +96,7 @@ node tools/golden-render.mjs --level stapler --write            # writes golden-
 node tools/golden.mjs --level stapler                           # check
 node tools/golden-render.mjs --level stapler                    # check
 node tools/gate.mjs --level stapler                             # 7 s (fixture) to 103 s (meeting)
+node tools/test-smoke.mjs stapler                              # the real index.html entry: title, day, end screen, retry
 rm fuzz.json
 ```
 
