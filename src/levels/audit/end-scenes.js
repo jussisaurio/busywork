@@ -5,7 +5,8 @@
 import { clamp, easeOutCubic, rrect, fillCircle, fillEllipse, clockHands } from '../../render/util.js';
 import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
+import { TAB, person, bubble, floorTiles } from '../../render/tableau.js';
+import { officeRoom, walnutDesk } from '../../render/tableau-furniture.js';
 import { tintOf } from '../../render/things.js';
 import { drawLaptop, tick, crossMark } from './things.js';
 
@@ -27,10 +28,7 @@ const marksOf = (w) => RECORDS.map((r, i) => (w?.crossed?.includes(i) ? 'cross' 
 // The colour a laptop's lid is drawn in: its owner's (index.js ITEMS tint 'owner').
 const lidOf = (game, owner) => tintOf(game, `laptop_${owner}`) ?? '#2a2e35';
 
-function office(ctx) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, WALL);
-}
+const office = (ctx) => officeRoom(ctx, WALL);
 
 // A desk seen from the front, its owner sitting (or not) behind it: (x, y) the top-left of the desk top, w wide.
 // The owner's chair back shows behind it; on it, the owner's mug and prop, the back of the monitor, and a laptop
@@ -38,17 +36,7 @@ function office(ctx) {
 function desk(ctx, x, y, w, owner, lid, t) {
   const st = DESKS[owner];
   const d = 50; // depth of the top
-  ctx.fillStyle = 'rgba(40,25,15,0.25)';
-  rrect(ctx, x + 4, y + 8, w, d + 14, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, x, y, w, d + 14, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, x, y, w, d, 8);
-  ctx.fill();
-  ctx.fillStyle = C.walnutHi;
-  ctx.fillRect(x + 8, y + 2, w - 16, 2);
+  walnutDesk(ctx, x, y, w, { depth: d, skirt: d + 14, r: 8, shadow: { color: 'rgba(40,25,15,0.25)', dx: 4, h: d + 14 }, hi: 2 });
   // the monitor, its back to us, on a stand
   const mx = x + w * 0.62;
   ctx.fillStyle = C.monitorDark;
