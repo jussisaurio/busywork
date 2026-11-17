@@ -92,6 +92,8 @@ context compactions, about 16M output tokens.
 - **Nothing watched time.** One level's gate grew to many minutes unnoticed, and agents running fuzzers and read
   passes at once starved each other into timeouts that read as failures. Changed: `tools/perf.mjs` with a recorded
   budget, a perf line in the gate report, `BUSYWORK_JOBS` as one cap on parallelism. The first measurement found
-  Interview's phones building key strings every frame (sim cost halved by building them once).
+  Interview's phones building key strings every frame (built once now: its golden replay went from about 7 s to
+  about 5 s), and a status command that drew every level's pictures one after another (the full check went from
+  93 s to 9 s).
 
 **Next pass:** did a level get to "a person enjoyed it" in fewer rounds? Did anyone cut a joke to satisfy a reader?

@@ -22,8 +22,7 @@ Code: `src/levels/<id>/` is one level. Everything else in `src/` is the engine (
 
 ```sh
 node tools/serve.mjs                      # play it in a browser
-node tools/check.mjs --fast               # every test, route and golden, about 15 s. Run before every commit
-node tools/check.mjs                      # the same plus the cold-read tool's own test, about 95 s
+node tools/check.mjs                      # every test, route and golden for every level, about 10 s. Run before every commit
 node tools/merge.mjs <branch>             # trial-merge into main, merge, run the full check
 node tools/gate.mjs --level <id>          # fuzz a level and print the mechanical verdict (minutes)
 node tools/golden.mjs --write --level <id>         # re-record after an intended behaviour change
