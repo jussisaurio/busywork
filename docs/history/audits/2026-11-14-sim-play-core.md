@@ -2,7 +2,7 @@
 
 Line numbers refer to commit ab07216.
 
-BUSYWORK audit (core, game, data, sim, play, agent, tools). Read-only: no project files were changed. Paths are relative to /Users/jussi/projects/busywork.
+BUSYWORK audit (core, game, data, sim, play, agent, tools). Read-only: no project files were changed. Paths are relative to the repo root.
 
 ## Findings, ranked by payoff
 

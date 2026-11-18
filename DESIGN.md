@@ -58,8 +58,28 @@ Decided by Jussi on 2026-11-18. `docs/PLAN.md` says how far the work on these ha
   left: no blank slots. (Open: one small tick when a level's set is complete, or nothing at all.)
 - **Payoffs are outrageous.** The method stays believable; the result should be as big as the office can stand. The
   boss locked out on the balcony, pounding the door, is the right size. "The meeting is called off" is too small.
+- **More endings is more.** A level has a set of plain fails, so the same loss is not the same picture every time.
+  An audacious try that could never work (coffee into a typewriter) earns its own silly loss. Doing both routes in
+  one loop earns a combo ending. Every ending shows, in the picture, what you did to get it.
 - **A punishment is about what you did.** Being sent to type is the plain default and stays as a cost in time. A
   level that can show a punishment specific to the mistake should: those are funnier.
+
+### Jussi's taste, from his notes on the first pitch sheet (2026-11-18)
+Use these to judge a pitch before it reaches him.
+- **An agent of chaos, not a prankster.** The protagonist hates work and being at work. Mischief is what happens
+  when they poke at things (pouring the coffee wherever). A planned prank on a person (a note on Lin's back) or
+  gloating at the boss (waving his card at the glass) is the wrong character.
+- **If an NPC can do it, so can you.** They type, use the restroom, ride the elevator, go out the fire door. The
+  player can try each of those, and something happens, even if it is only a way to lose.
+- **A red herring here is a mechanic there.** A thing that leads nowhere in one level is the route in another (the
+  wall clock, the phone). The player can never reason "it lights up, so it is the answer" or "it was useless before,
+  so it is useless now".
+- **Nobody is stupid, and nothing happens without a cause you can see.** The boss does not badge in with a mug or
+  blame himself. A chair does not swivel by itself. If Lin tears the kitchen apart, the picture says it is about her
+  sandwich. A reaction the viewer cannot explain is not a joke.
+- **Things belong in an office.** A party popper in a desk drawer does not.
+- **Losing for trying to help is funny.** "Never help" is the kind of lesson this game teaches.
+- **Write the pitch so it can be pictured in one read.** An unclear pitch is rejected for that alone.
 
 ## Tone / feel
 - Goose energy, office edition. Think Mr. Bean in a tomato-red sweater: one strong silhouette in a muted mid-century
