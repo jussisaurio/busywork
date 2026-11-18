@@ -18,11 +18,12 @@ const NEAR_CUP = 2.5; // tiles
 // On his own desk he never looks (his hunt doesn't go there; verdict.js verdictDesks); on Lin's: Lin did it.
 function cupFound(game, npc) {
   const it = game.world.items.find((i) => i.type === 'mug');
-  if (!it || it.spot === 'my_desk' || it.spot === 'boss_desk') return false;
+  const desk = game.level.spots[it?.spot] ?? {};
+  if (!it || desk.owner === 'player' || desk.desk === npc.id) return false;
   const p = game.player;
   if (Math.hypot(it.x - p.x, it.y - p.y) < NEAR_CUP) return false;
   if (Math.hypot(it.x - npc.x, it.y - npc.y) > SEES_CUP || !npcSees(game, npc, it.x, it.y)) return false;
-  const who = { kev_desk: '@kev', lin_desk: '@lin' }[it.spot];
+  const who = desk.desk ? `@${desk.desk}` : null;
   speak(game, npc, who ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', who], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
   game.events.emit('mug:found', { spot: it.spot });
   return true;

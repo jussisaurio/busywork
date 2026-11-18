@@ -1098,15 +1098,12 @@ export function drawWorldDynamic(ctx, game, t) {
 
   if (info.playerDesk) drawWorkStack(ctx, game, info.playerDesk, t);
 
-  // Items in the world: dropped on the floor, or set down on a spot (putdown.js). One on a spot is drawn `shown` tiles
-  // off where it lies when the spot says so (a cup on the counter beside the machine, not over the pot: a playtester
-  // saw it float on top of the machine).
+  // Items in the world: dropped on the floor, or set down on a spot (putdown.js), drawn where they lie.
   const items = world.items || [];
   for (let i = 0; i < items.length; i++) {
     const it = items[i];
-    const shown = it.spot ? game.level.spots?.[it.spot]?.shown : null;
-    const x = (it.x + (shown?.dx ?? 0)) * T;
-    const y = (it.y + (shown?.dy ?? 0)) * T;
+    const x = it.x * T;
+    const y = it.y * T;
     if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     fillEllipse(ctx, x, y + 6, 7, 2.5, 'rgba(0,0,0,0.22)');
     emoji(ctx, itemGlyph(game.level.items, it.type), x, y + Math.sin(t * 3 + i) * 1, 14);

@@ -26,7 +26,6 @@ import { levelListeners } from '../../core/events.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
-const FREE_SPOTS = ['coffee', 'kev_desk']; // where a set-down cup is anyone's
 const SQUINT = 1.5; // real seconds Kev squints at a cup held to your ear before he makes up his mind
 const HUG_REACH = 1.15; // tiles: how close he comes before he throws his arms round you
 const HUG = 2.6; // real seconds of hug before he lets go (or sees the card)
@@ -81,8 +80,9 @@ function kevAndTheCup(game, kev, sim) {
   const w = game.world;
   const p = game.player;
   const it = w.items.find((i) => i.type === 'coffee');
-  // Unattended where a cup is free to anyone: he takes it.
-  if (it && FREE_SPOTS.includes(it.spot) && Math.hypot(it.x - kev.x, it.y - kev.y) <= TAKE_RADIUS && npcSees(game, kev, it.x, it.y)) {
+  // Set down unattended, anywhere but your desk (map.js SPOTS: a spot with owner 'player'), a cup is anyone's: he
+  // takes it.
+  if (it?.spot && game.level.spots[it.spot]?.owner !== 'player' && Math.hypot(it.x - kev.x, it.y - kev.y) <= TAKE_RADIUS && npcSees(game, kev, it.x, it.y)) {
     npcTakes(game, kev, 'coffee', it);
     kev._faceTarget = Math.atan2(it.y - kev.y, it.x - kev.x);
     sim.speak(game, kev, [{ say: ['🤤', '☕'] }, { say: ['😌'], after: 1.3 }]);

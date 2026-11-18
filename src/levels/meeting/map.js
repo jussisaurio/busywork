@@ -76,22 +76,24 @@ export const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // player's seat; player spawns here
   // Put down (sim/mechanics/putdown.js): the empty mug lies on the tile the spot faces. Kev's desk is where it
   // frames Kev (verdict.js); your own is where it frames you (owner 'player': the boss who knows sees it there).
-  // The full cup goes on them too: on yours it is yours, and Kev leaves it be; on Kev's desk or the machine it looks
-  // free to him, and he takes it (clocks.js).
-  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug', 'coffee'], lies: { dx: 1 }, shown: { dx: 0, dy: 0.12 } },
+  // `desk`: whose desk it is, to the story (not putdown's `owner`, who would come and take what lies there): the
+  // hunting boss glares at him over the mug found on it, and never looks on his own (mechanics.js cupFound).
+  // The full cup goes on yours and Kev's too: on yours it is yours, and Kev leaves it be; anywhere else (his desk, the
+  // machine) it looks free to him, and he takes it (clocks.js).
+  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug', 'coffee'], desk: 'kev', lies: { dx: 1, dy: 0.12 } },
   my_desk: { x: 12, y: 9, face: 'N', accepts: ['mug', 'coffee'], owner: 'player' }, // the desk left of P: sit wins at P
   // Their desks take the empty mug too (verdict.js verdictDesks): Lin takes the fall; the boss's own desk is plain to
   // Lin through his glass. Only the mug: a full cup left there is a different story, not told yet.
-  // Every desk's cup lies at its free end, one tile right of the computer (lies), drawn on the near half of the desk
-  // top (shown), not over the keyboard (Jussi's playtest: it floated on Kev's keys).
-  boss_desk: { x: 4, y: 2, face: 'S', accepts: ['mug'], lies: { dx: 1 }, shown: { dx: 0, dy: -0.12 } },
-  lin_desk: { x: 4, y: 9, face: 'N', accepts: ['mug'], lies: { dx: 1 }, shown: { dx: 0, dy: 0.12 } },
+  // Every desk's cup lies at its free end, one tile right of the computer, on the near half of the desk top (lies),
+  // not over the keyboard (Jussi's playtest: it floated on Kev's keys).
+  boss_desk: { x: 4, y: 2, face: 'S', accepts: ['mug'], desk: 'boss', lies: { dx: 1, dy: -0.12 } },
+  lin_desk: { x: 4, y: 9, face: 'N', accepts: ['mug'], desk: 'lin', lies: { dx: 1, dy: 0.12 } },
 
   coat_rack: { x: 2, y: 1, face: 'W' }, // stand here to reach K
   projector: { x: 13, y: 2, face: 'S' }, // stand here to reach J (Kev repairs from here)
-  // A cup back by the machine: it lies on the machine's tile (Kev's finding and every sightline use that), drawn on
-  // the counter beside it, on the saucer (shown), not standing over the pot.
-  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug', 'coffee'], shown: { dx: -0.9, dy: 0 } },
+  // A cup back by the machine: on the counter beside it, on the saucer (lies), not standing over the pot (a
+  // playtester saw it float on top of the machine). Kev's finding and every sightline use where it lies.
+  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug', 'coffee'], lies: { dx: -0.9 } },
   fridge: { x: 20, y: 2, face: 'N' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
 
