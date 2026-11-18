@@ -16,6 +16,10 @@ import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
 import { popper, cricket } from './painters.js';
+import { tableauTypewriter } from './end-scenes-more.js';
+
+// Catches with a scene of their own (outcome.why from rules.js catchPlayer; the scene key is the why).
+const MORE_CAUGHT = new Set(['typewriter']);
 
 const B_ANGRY = ['😠'];
 const B_POINT_YOU = ['👉', '@player'];
@@ -31,7 +35,7 @@ const B_KEV = ['☕', '@kev'];
 function endKind(o) {
   if (!o) return 'fail';
   const routes = Array.isArray(o.routes) ? o.routes : [];
-  if (o.result === 'caught') return 'caught';
+  if (o.result === 'caught') return MORE_CAUGHT.has(o.why) ? o.why : 'caught'; // end-scenes-more.js
   // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
   if (o.result === 'blamed') return o.why === 'mug' || o.why === 'desk' ? 'mug' : 'blamed';
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
@@ -507,5 +511,7 @@ export const END_SCENES = {
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
     mug: { win: false, icons: ['☕', '👉', '😠'], draw: tableauMug }, // the empty mug was yours: in your hand, on your desk
     kev: { win: true, icons: ['☕', '👉', '🪑'], draw: tableauKev }, // the empty mug was on Kev's desk; Kev went home
+    // ---- More scenes (end-scenes-more.js)
+    typewriter: { win: false, icons: ['☕', '⌨️', '💥'], draw: tableauTypewriter }, // the coffee went into a typewriter
   },
 };

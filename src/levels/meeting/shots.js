@@ -190,4 +190,19 @@ export default [
       'his potted plant. A glossy new leaf has shot out of it, the soil is dark and wet, and the boss at his desk ' +
       'looks at the plant, delighted (🌿😍).',
   },
+  {
+    name: 'typewriter-bang',
+    cmds: [...POUR, 'goto typewriter busy', 'interact'],
+    beat: 0.5,
+    intent: 'You stand at the empty desk behind yours: you just poured the coffee into its typewriter. The screen is ' +
+      'dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss, in his ' +
+      'office, heard the bang: he points at you (⌨️💥👉 and your face).',
+  },
+  {
+    name: 'end-typewriter',
+    cmds: [...POUR, 'goto typewriter busy', 'interact'],
+    intent: 'End card, a loss: the typewriter you poured the coffee into sparks, smokes and drips on its desk. You ' +
+      'stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your ' +
+      'things: fired.',
+  },
 ];

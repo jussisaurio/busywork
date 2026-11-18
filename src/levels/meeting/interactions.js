@@ -17,6 +17,8 @@
 //   done(game, a)    the result, applied right after 'action:done'
 // For one target the first possible row wins.
 import { say, burst, shake } from '../../core/fx.js';
+import { catchPlayer } from '../../play/rules.js';
+import { findNpc, inZone } from '../../game/perception.js';
 
 export const INTERACTIONS = {
   brew_coffee: {
@@ -74,6 +76,26 @@ export const INTERACTIONS = {
       burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.5, lift: 0.9, ttl: 1.0 });
       say(game, 'player', ['🌱'], { kind: 'thought', ttl: 1.4 });
       game.events.emit('coffee:ficus', {});
+    },
+  },
+  // The typewriter on the empty desk behind yours (map.js W): the cup goes into its keys. It shorts with a bang and
+  // a shower of sparks that the whole floor hears: the boss, anywhere on it, knows exactly who (caught, why
+  // 'typewriter'). He has to be on the floor to hear it: locked out on the balcony or off the floor, it just dies.
+  drown_typewriter: {
+    on: 'typewriter', text: 'pour the coffee into the typewriter', duration: 1.0, sneaky: true, saw: '☕', pose: 'reach',
+    can: (p) => p.held === 'coffee',
+    done(game, a) {
+      game.player.held = null;
+      game.world.cup = 'typewriter';
+      game.world._typewriterAt = game.loopTime;
+      burst(game, 'sparks', a.x, a.y - 0.2, 14, { speed: 2.2, ttl: 0.7 });
+      burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.4, lift: 1.0, ttl: 1.6 });
+      shake(game, 0.35, 0.4);
+      game.events.emit('coffee:typewriter', {});
+      const boss = findNpc(game, 'boss');
+      const onFloor = boss && boss.active && boss.override !== 'lockedOut' && !inZone(game, 'outside', boss.x, boss.y);
+      if (onFloor) catchPlayer(game, 'action', boss.id, ['⌨️', '💥', '👉', '@player'], 'typewriter');
+      else say(game, 'player', ['⌨️', '💀'], { kind: 'thought', ttl: 1.6 });
     },
   },
 };

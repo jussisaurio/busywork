@@ -3,6 +3,9 @@
 //   ficus      the boss's potted ficus (map.js Y), after you pour the day's only cup into it (interactions.js
 //              water_ficus): a dark wet ring in the soil and a new leaf that shoots out and stays. state:
 //              { watered, since } (since: seconds since the pour, null before)
+//   deadTypewriter  the workstation on the empty desk (map.js W) after the cup went into its keys
+//              (interactions.js drown_typewriter): screen dead and cracked, coffee pooled on the keys and dripping
+//              off the desk's edge into a puddle, smoke curling up, a spark now and then. state: { dead, since }
 import { fillEllipse, fillCircle, clamp, easeOutBack, T } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 
@@ -36,5 +39,55 @@ export function ficus(ctx, info, at, state, t) {
       const ang = -1.75 + (i - 2) * 0.5;
       fillCircle(ctx, cx + Math.cos(ang) * 22 * (1 - a * 0.5), cy - 4 + Math.sin(ang) * 22 * (1 - a * 0.5), 1.4 * a + 0.3, `rgba(220,255,200,${a.toFixed(3)})`);
     }
+  }
+}
+
+// The geometry is render/world.js drawWorkstation's for a three-tile desk sat at from the south, `at` its middle tile.
+export function deadTypewriter(ctx, info, at, state, t) {
+  if (!state.dead) return;
+  const midX = at.x * T + T / 2;
+  const py = at.y * T + 3;
+  const h = T - 5;
+  const monTopY = py + 3;
+  const kbY = py + h - 13;
+  const s = Number.isFinite(state.since) ? state.since : 99;
+  // the screen: dead, a crack across it
+  ctx.fillStyle = '#141414';
+  ctx.fillRect(midX - 10, monTopY + 8, 20, 7);
+  ctx.strokeStyle = 'rgba(220,220,220,0.7)';
+  ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  ctx.moveTo(midX - 8, monTopY + 9);
+  ctx.lineTo(midX - 2, monTopY + 12);
+  ctx.lineTo(midX + 1, monTopY + 10);
+  ctx.lineTo(midX + 8, monTopY + 14);
+  ctx.stroke();
+  // coffee over the keys and down the front of the desk
+  fillEllipse(ctx, midX, kbY + 3, 12, 4.5, '#4a2a14');
+  fillEllipse(ctx, midX - 3, kbY + 2, 4, 1.2, 'rgba(255,255,255,0.22)');
+  ctx.fillStyle = '#4a2a14';
+  ctx.fillRect(midX + 4, kbY + 5, 2, py + h - kbY - 4);
+  const fall = (t * 1.4) % 1; // one drop at a time, off the edge
+  fillCircle(ctx, midX + 5, py + h + 1 + fall * 9, 1.3, '#4a2a14');
+  fillEllipse(ctx, midX + 5, py + h + 11, 6 + clamp(s / 4, 0, 1) * 4, 2.2, '#3b2212'); // the puddle grows a while
+  // smoke from the back of the box
+  for (let i = 0; i < 3; i++) {
+    const k = (t * 0.45 + i / 3) % 1;
+    fillCircle(ctx, midX + Math.sin(t * 1.3 + i * 2) * 3 * k, monTopY - k * 18, 2 + k * 4, `rgba(90,90,90,${(0.45 * (1 - k)).toFixed(3)})`);
+  }
+  // a spark, every so often
+  const sp = (t * 0.8) % 1;
+  if (sp < 0.12) {
+    ctx.strokeStyle = '#ffe36b';
+    ctx.lineWidth = 1.2;
+    for (let i = 0; i < 4; i++) {
+      const a = -Math.PI / 2 + (i - 1.5) * 0.6;
+      const r0 = 2 + sp * 30;
+      ctx.beginPath();
+      ctx.moveTo(midX + Math.cos(a) * r0, kbY + 2 + Math.sin(a) * r0);
+      ctx.lineTo(midX + Math.cos(a) * (r0 + 4), kbY + 2 + Math.sin(a) * (r0 + 4));
+      ctx.stroke();
+    }
+    fillCircle(ctx, midX, kbY + 2, 2.5, 'rgba(255,240,150,0.8)');
   }
 }

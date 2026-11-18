@@ -399,6 +399,16 @@ function assignWork(game, reason, by = null) {
 // What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
 const JUDGE = { claims, enforcing, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
 
+// A level's own catch (an act so loud it needs no witness, e.g. the meeting's drowned typewriter): caught now, by
+// `by`, saying `icons`. why: a string the outcome carries (outcome.why, for the level's end scenes). False if the
+// day already had its catch.
+export function catchPlayer(game, reason, by, icons = CAUGHT_ICONS, why = null) {
+  if (game.caught) return false;
+  caught(game, reason, by, null, icons);
+  if (why) game.caught.why = why;
+  return true;
+}
+
 // The catch: a spiky alert (CONTRACTS "Bubbles": the star means someone has spotted YOU), ❗👉 and your face by
 // default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what
 // he says instead (a mechanic's own words, e.g. a fetch's `alert`).

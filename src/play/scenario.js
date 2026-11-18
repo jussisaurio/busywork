@@ -43,6 +43,7 @@ export function updateScenario(game, dt) {
     game.caught.t += dt;
     if (game.caught.t >= CAUGHT_DELAY) {
       game.outcome = makeOutcome(game, 'caught', [], []);
+      if (game.caught.why) game.outcome.why = game.caught.why; // a level's own catch says why (rules.js catchPlayer)
       endDay(game);
     }
     return;
