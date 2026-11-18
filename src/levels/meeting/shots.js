@@ -289,6 +289,19 @@ export default [
       'his face).',
   },
   {
+    name: 'restroom-eject',
+    cmds: ['goto fridge', 'interact', 'eat', 'goto restroom_door busy', 'interact', 'busy until 3:18', 'busy until 3:19', 'wait 0.9s', 'interact', 'wait 0.5s'],
+    intent: 'You were in the restroom washing mustard off your sweater when the boss wanted it: he pounded on the ' +
+      'door and now you stand outside it, put out mid-wash, startled (🧼😳), the mustard still down your front, ' +
+      'while he points you off (👉) on his way in.',
+  },
+  {
+    name: 'restroom-lin-waits',
+    cmds: ['goto restroom_door busy', 'busy until 3:31', 'interact', 'busy until 3:34', 'busy until 3:35', 'wait 2.2s'],
+    intent: 'You are inside the restroom (not drawn). Lin wants it: she stands at its door, waiting, checking the ' +
+      'time (⌚❓) after her knock.',
+  },
+  {
     name: 'kev-mustard',
     cmds: ['goto fridge pretend', 'interact', 'eat', 'goto kev_desk', 'wait 0.8s'],
     intent: 'You ate Lin\'s sandwich and the mustard is down your front. Kev, near you, points at his own chest and at ' +

@@ -548,6 +548,84 @@ export default [
       'goto boss_desk pretend', 'pretend 4.5s', 'goto meeting_room pretend', 'wait until 4:00'],
   },
 
+  // ---- The restroom holds one (restroom.js atTheDoor): you in it, they knock.
+  {
+    name: 'in the restroom when the boss comes for it at 3:18 → ✊🚪, 👊🚪😤, and you are out at the door, not caught; he goes in himself and is back on time',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('goto restroom_door busy');
+      run('busy until 3:12');
+      run('interact');
+      if (g.player.inside !== 'restroom') throw new Error('not inside');
+      waitFor(() => log.some((e) => e.name === 'restroom:ejected'), { busy: true, maxSec: 60 });
+      if (g.player.inside || g.player.hidden) throw new Error('still in there');
+      if (!log.some((e) => e.name === 'restroom:knock' && e.payload.by === 'boss') || !log.some((e) => e.name === 'restroom:pound')) throw new Error('no knock, or no pounding');
+      const from = log.length;
+      run('goto my_seat busy');
+      if (g.caught) throw new Error('caught: ' + g.caught.reason);
+      run('busy until 3:30');
+      if (!log.slice(from).some((e) => e.name === 'npc:vanish' && e.payload.id === 'boss')) throw new Error('the boss never went in');
+      if (!npc('boss').active || !npc('boss').label?.endsWith('boss_desk')) throw new Error('the boss is not back at his desk at 3:30: ' + npc('boss').label);
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'mustard on you, in the restroom, the boss pounding: start washing → out mid-wash 🧼😳, the mustard still on you, into Lin\'s hunt: 🥪❗👉 (caught, by the usual rules)',
+    expect: { result: 'caught' },
+    play({ run, waitFor, g, log }) {
+      run('goto fridge');
+      run('interact');
+      run('eat');
+      run('goto restroom_door busy');
+      run('interact'); // in, well before Lin misses it: her hunt never finds you in here
+      waitFor(() => log.some((e) => e.name === 'restroom:pound'), { busy: true, maxSec: 60 });
+      run('interact'); // the tap runs... not for long
+      const out = log.find((e) => e.name === 'restroom:ejected');
+      if (!out?.payload.washing) throw new Error('not put out mid-wash');
+      if (!g.player.smeared) throw new Error('the mustard came off');
+      if (log.some((e) => e.name === 'restroom:washed')) throw new Error('the wash went through');
+      run('goto my_seat busy');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'in the restroom when Lin comes for it at 3:35 → she knocks and waits, ⌚❓; you stay in: she gives up on time and is at her desk as ever',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('goto restroom_door busy');
+      run('busy until 3:31');
+      run('interact');
+      waitFor(() => log.some((e) => e.name === 'restroom:knock' && e.payload.by === 'lin'), { busy: true, maxSec: 60 });
+      const from = log.length;
+      run('busy until 3:45');
+      if (log.filter((e) => e.name === 'restroom:knock' && e.payload.by === 'lin').length < 2) throw new Error('Lin knocked only once');
+      if (log.slice(from).some((e) => e.name === 'npc:vanish' && e.payload.id === 'lin')) throw new Error('Lin went in with you');
+      if (g.player.inside !== 'restroom') throw new Error('put out by someone');
+      if (!npc('lin').active || !npc('lin').label?.endsWith('lin_desk')) throw new Error('Lin is not back at her desk at 3:45: ' + npc('lin').label);
+      run('interact'); // out
+      run('goto my_seat busy');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'same, but you come out while Lin waits → she goes in for what is left of her time',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('goto restroom_door busy');
+      run('busy until 3:31');
+      run('interact');
+      waitFor(() => log.some((e) => e.name === 'restroom:knock' && e.payload.by === 'lin'), { busy: true, maxSec: 60 });
+      run('interact'); // out
+      if (g.player.inside) throw new Error('still inside');
+      const from = log.length;
+      run('goto my_seat busy');
+      run('busy until 3:45');
+      if (!log.slice(from).some((e) => e.name === 'npc:vanish' && e.payload.id === 'lin')) throw new Error('Lin never went in');
+      if (!npc('lin').active || !npc('lin').label?.endsWith('lin_desk')) throw new Error('Lin is not back by 3:45: ' + npc('lin').label);
+      run('busy until 4:00');
+    },
+  },
+
   // ---- The fire door, both ways (balcony.js). The card is taken in the gap while the boss is away (3:11).
   {
     name: 'out onto the balcony with his keycard, and back in on it → beep, inside; at 4:00 he is the one locked out (keycard win)',

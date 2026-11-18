@@ -19,7 +19,7 @@ import { npcSees } from '../../game/perception.js';
 import { startClaim } from '../../sim/mechanics/claim.js';
 import { endOverride } from '../../sim/override.js';
 import { catchNow } from '../../play/rules.js';
-import { whoInside } from './restroom.js';
+import { whoInside, atTheDoor } from './restroom.js';
 import { doorClock, bossOnBalcony, playerAtDoor } from './balcony.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
@@ -33,6 +33,7 @@ const HUG_WAIT = 12; // real seconds after the door: if he never reaches you, he
 export function clockFor(game, npc, sim) {
   listen(game);
   game.player._stall = whoInside(game); // the restroom's rows read it (restroom.js)
+  atTheDoor(game, npc); // the restroom holds one: with you in it, he knocks and waits, or (the boss) has you out
   doorClock(game, npc); // the fire door's swing (balcony.js)
   if (npc.id === 'boss') playerAtDoor(game); // the open door is a doorway for you too
   if (npc.id === 'boss') bossOnBalcony(game, npc); // his card in your hand out there: he snatches it

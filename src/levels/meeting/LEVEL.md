@@ -154,6 +154,12 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   on the balcony, walking north at it takes you in (no E needed; E `follow_in` does the same). It stays open 2 s
   behind the boss on both of his passes (`SLACK`); badging back in he holds it 5 s (`HOLD`) and follows you in.
   While it stands open for you there is no fast-forward, so holding PRETEND does not eat the window.
+- **The restroom holds one** (`restroom.js` `atTheDoor`). With you inside, an NPC who comes for it stops at the door
+  and knocks ✊🚪 (`restroom:knock`). Lin and Kev wait (⌚❓, ✊✊🚪, 😤) until you come out (they go in for the rest of
+  their time) or their time is up (they leave; the schedule never moves). The boss (Jussi: "might be funny") gives
+  you 2.6 s, pounds 👊🚪😤 and has you out (`restroom:ejected`): stood at the door, not hidden, a wash cut short
+  (🧼😳, the mustard stays). Not a catch; what he or anyone then sees on you is the usual rules. 4:00 in the restroom
+  is still reachable: nobody comes for it after Lin (3:37).
 - **The balcony, your way** (`balcony.js`; decided by Jussi: if an NPC can do it, so can you). From inside, E pushes
   the bar any time: the door swings open, you step out (`fireDoor:out`; no card on you: 🪪❓), and it shuts behind
   you. From outside the reader takes only a keycard: with his card, a beep and back in (`fireDoor:badge`); without
