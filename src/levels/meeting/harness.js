@@ -36,7 +36,6 @@ export default {
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
     restroom_door: 'restroom',
-    fire_door: 'fire_door', // the balcony side: NPCs only (goto walks you as close as you get)
     meeting_room: 'meeting_presenter',
     meeting_seat: 'meeting_player',
   },

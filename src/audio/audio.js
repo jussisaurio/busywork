@@ -505,6 +505,11 @@ export function createAudio(opts = {}) {
       // The level's own events (level.sounds.events): one spec each.
       const evs = g.level?.sounds?.events;
       if (evs) for (const [name, spec] of Object.entries(evs)) g.events.on(name, guard((p) => play(spec, p)));
+      // A toy's sound (level.toys react.sfx, sim/mechanics/toy.js): at the prop.
+      for (const toy of g.level?.toys ?? []) {
+        const fn = typeof toy.react?.sfx === 'string' ? sfx[toy.react.sfx] : null;
+        if (typeof fn === 'function') g.events.on(`toy:${toy.id}`, guard((p) => { if (E) fn(E, atPos(p, {})); }));
+      }
     },
 
     unlock() {

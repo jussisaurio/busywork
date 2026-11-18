@@ -80,6 +80,10 @@ const LURES = [{
 | put down | `accepts`, `owner`, `found` on a spot | `src/levels/fixture-putdown/index.js` |
 | inspection | `inspections` | `src/levels/fixture-inspection/index.js` |
 | attention | `noise` on an interaction, `noises` | `src/levels/fixture-attention/index.js` |
+| toy (cosmetic only) | `toys` | `src/levels/meeting/toys.js` (the fire door's bar) |
+
+A toy is the cheap kind: a prop that reacts (a bubble, a sound, a pose, its own drawn state) and changes
+nothing. Give a dead-end object a toy instead of nothing; the gate checks it shows and stays harmless.
 
 The header of each file in `src/sim/mechanics/` lists its fields. When a mechanic's event matters, add it to
 `gate.milestones` (so the fuzzer can tell runs apart), to `gate.renderEvents` if it changes the picture, and give

@@ -6,6 +6,7 @@ import { updatePlayer } from '../play/player.js';
 import { updateInteractions } from '../play/interactions.js';
 import { updateRules } from '../play/rules.js';
 import { updateScenario } from '../play/scenario.js';
+import { updateToys } from '../sim/mechanics/toy.js';
 
 export function startLoop(game) {
   resetLoop(game);
@@ -22,6 +23,7 @@ export function tick(game, dt) {
   updateNpcs(game, dt);
   updateRules(game, dt);
   updateScenario(game, dt);
+  updateToys(game); // cosmetic only: reads the step, writes game.toys and game.fx
   advanceClock(game, dt);
 }
 

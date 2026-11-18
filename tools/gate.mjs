@@ -11,6 +11,8 @@
 //   contraband  a coworker carrying an item marked contraband for the authority in his view while he enforces,
 //             on the do-nothing day or a winning plan (tools/lib/contraband.mjs)
 //   stray     a picture file at the repo root, where no tool writes one (tools/lib/stray.mjs)
+//   toys      a toy (level.toys) whose try plan does not fire it, or whose firing shows nothing (tools/lib/toys.mjs)
+//   toy-neutral  a winning golden plan whose trace changes when every toy fires over and over (tools/lib/toys.mjs)
 // The verdict (PASS or FAIL, and the exit status) comes from these checks alone.
 // After the verdict it prints an advisory cold-read report (docs/COLD-READ.md): per pass, the recorded status
 // and the open blockers. Cold reads are a reader's opinion for the designer to weigh; they never change the verdict.
@@ -31,6 +33,7 @@ import { contrabandSeen, contrabandCheck } from './lib/contraband.mjs';
 import { coldReadChecks, isFixture } from './cold-read.mjs';
 import { strayPictures, strayText } from './lib/stray.mjs';
 import { measureLevel, readBudget, perfLine, overBudget } from './lib/perf.mjs';
+import { toysCheck, toyNeutralCheck } from './lib/toys.mjs';
 
 // Days to fuzz. 30000 days: ~25 s with 12 workers, ~35 s with 6 (14-core laptop).
 export const DEFAULT_BUDGET = 30000;
@@ -87,6 +90,8 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
     const c = contrabandCheck(r.contraband);
     check(c.name, c.ok, c.text, c.detail);
   }
+
+  for (const c of r.toys ?? []) check(c.name, c.ok, c.text, c.detail);
 
   if (stray) {
     check('stray', !stray.length, stray.length ? `${stray.length} stray picture${stray.length === 1 ? '' : 's'} at the repo root` : 'no stray pictures at the repo root',
@@ -175,6 +180,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const plans = combosOf(r).map((wk) => planToCmds(r.wins[wk].minimal, levelData(opts.level)));
     r.glyphs = worldGlyphs(opts.level, plans);
     r.contraband = contrabandSeen(opts.level, [[], ...plans]);
+    r.toys = [toysCheck(opts.level), toyNeutralCheck(opts.level)];
     let coldRead, note;
     if (!isFixture(level)) {
       try { coldRead = await coldReadChecks(level); } catch (e) { note = `could not be read: ${e.message}`; }

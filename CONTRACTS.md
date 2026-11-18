@@ -371,6 +371,21 @@ The authority hears nothing in his `deafIn` zone. With no override he turns his 
 override only his head turns and his plan goes on. Glances due meanwhile still draw from the rng. Events
 `noise {x, y, radius}`, then `npc:heard {id}` per listener in cast order. Example: fixture-attention (the printer).
 
+**Toy** (`level.toys`, `toy.js`): a prop with a cosmetic reaction, for a laugh that changes nothing. `{ id, at,
+on, npcs?, radius?, sees?, when?, every?, state?, text?, line?, react, try }`. `at`: a spot or a tile `{x, y}`.
+`on`: `'press'` (E next to it; it takes E focus only when no route target or held item has it), `'pass'` (an NPC
+in `npcs` walks within `radius`, default 2) or `'near'` (an NPC in `npcs` within `radius` of you, `sees` to need
+sight). `when(world, state, game, npc)` reads only. `every`: seconds between firings per person (default 1 for
+press, 3 otherwise). `react: { say, sfx, pose: { arms, angry, face, for }, set, burst }`: a bubble (`say: [icons]`
+or `{ icons, kind, ttl, who: 'by' | 'prop' | id }`), an `SFX` sound at the prop, a pose for `for` s (default 1.5),
+`set` merged into the toy's own state, a burst at the prop. Toy state lives in `game.toys`, never in `world`;
+painters read `toyState(game, id)` (`{ ...state, n, by, since }`, `since` null until it fires). Event
+`toy:<id> {id, by, x, y}`. `text`/`line`: the harness's focus text and event line (`<by>` = who). `try`: harness
+commands after which it has fired. The behaviour golden skips toy events and toy bubbles, so adding a toy moves
+no behaviour golden; the gate's `toys` check plays `try` and needs the firing frame to draw differently, and
+`toy-neutral` replays every winning golden plan with every toy fired over and over and needs the same trace.
+Example: meeting `toys.js` (the fire door's bar).
+
 ### Behaviours (hooks) and the sim API
 `behaviours`: `{ [name]: { spot?, pending?(npc), arrive(game, npc, sim, extra?) } }`, small level-only scripts
 the cast and the mechanics name.

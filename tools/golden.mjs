@@ -13,75 +13,22 @@
 //
 // The file is one plan per line (lib/golden-file.mjs). Re-record only when a behaviour change is intended, and say so in the commit.
 // tools/merge.mjs re-records on a merge conflict in it, and reports plans whose outcome neither side had.
-import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { relative } from 'node:path';
-import { createHarness, describeEvents } from '../src/agent/harness.js';
+import { describeEvents } from '../src/agent/harness.js';
+import { trace as traceIn } from './lib/trace.mjs';
 import { serializeGolden } from './lib/golden-file.mjs';
 import { allArg, levelArg, levelFile } from './lib/level-arg.mjs';
 
 await allArg('golden');
 const LEVEL = levelArg('golden');
 const FILE = levelFile(LEVEL, 'golden.json');
-const MAX_DRAIN_FRAMES = 60 * 60 * 5;
 
 // Hand-written plans: things the fuzzer's plan language never does (the level's own, in its gate data).
 const HAND = LEVEL.gate?.goldenPlans ?? [];
 
-const r6 = (v) => (typeof v === 'number' ? v : v);
-function snapshot(g) {
-  const p = g.player;
-  const prim = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v === null || typeof v !== 'object'));
-  return {
-    phase: g.phase,
-    loop: g.persist.loop,
-    routesFound: g.persist.routesFound,
-    clock: { minute: g.clock.minute, forced: g.clock.forced, ff: g.clock.ff },
-    player: { x: p.x, y: p.y, held: p.held, busy: p.busy, busyPose: p.busyPose, seated: p.seated, smeared: p.smeared, locked: p.locked },
-    npcs: g.npcs.map((n) => ({ id: n.id, x: n.x, y: n.y, dir: r6(n.dir), active: n.active, pose: n.pose, override: n.override, carry: n.carry, wants: n.wants })),
-    world: { ...prim(g.world), items: g.world.items.map((i) => ({ type: i.type, x: i.x, y: i.y })) },
-    suspicion: g.level.roles?.authority ? g.suspicion[g.level.roles.authority.id] : null, // level 1: boss; none without an authority
-    outcome: g.outcome ? { result: g.outcome.result, routes: g.outcome.routes } : null,
-    caught: g.caught ? g.caught.reason : null,
-  };
-}
-
-function safeJson(v) {
-  const seen = new WeakSet();
-  return JSON.stringify(v, (k, x) => {
-    if (typeof x === 'function') return undefined;
-    if (x && typeof x === 'object') {
-      if (seen.has(x)) return '[cycle]';
-      seen.add(x);
-    }
-    return x;
-  });
-}
-
-const digest = (s) => createHash('sha1').update(s).digest('hex').slice(0, 16);
-
-// Replays one plan; returns one digest per command plus a final one after the day ends.
-export function trace(cmds, level = LEVEL) {
-  const h = createHarness({ level });
-  h.begin();
-  const g = h.game;
-  let from = 0;
-  const step = () => {
-    const evs = h.log.slice(from);
-    from = h.log.length;
-    const s = evs.map((e) => `${e.loop} ${e.minute} ${e.name} ${safeJson(e.payload)}`).join('\n') + '\n' + safeJson(snapshot(g));
-    return { d: digest(s), evs };
-  };
-  const steps = [];
-  for (const cmd of cmds) {
-    const r = h.run(cmd);
-    steps.push({ cmd, ...step(), text: r.text });
-  }
-  for (let i = 0; i < MAX_DRAIN_FRAMES && g.phase === 'day'; i++) h.frame();
-  steps.push({ cmd: '(to end of day)', ...step(), text: '' });
-  const o = g.outcome;
-  return { digests: steps.map((s) => s.d), steps, summary: o ? `${o.result}${o.routes?.length ? ' ' + [...o.routes].sort().join('+') : ''}` : g.phase };
-}
+// Replays one plan on this level (lib/trace.mjs trace).
+export const trace = (cmds, level = LEVEL) => traceIn(cmds, level);
 
 function corpusFromFuzz(path) {
   const j = JSON.parse(readFileSync(path, 'utf8'));

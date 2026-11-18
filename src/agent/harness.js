@@ -18,6 +18,7 @@ import { npcSees } from '../game/perception.js';
 import { actionRow } from '../play/interactions.js';
 import { putSpots, canPut } from '../sim/mechanics/putdown.js';
 import { parseMap } from '../core/map.js';
+import { toyPos } from '../sim/mechanics/toy.js';
 import { createScriptedInput } from './scripted-input.js';
 import { getLevel, defaultLevel } from '../levels/index.js';
 
@@ -49,7 +50,7 @@ function wrap(words, width) {
 
 // The command reference for a level (its goto targets: interactables, then landmarks).
 export function helpText(level = defaultLevel) {
-  const ids = parseMap(level.map.rows, level.map.legend).interactables.map((i) => i.id);
+  const ids = [...parseMap(level.map.rows, level.map.legend).interactables.map((i) => i.id), ...(level.toys ?? []).map((t) => t.id)];
   const targets = [...wrap(ids, 62), ...wrap(Object.keys({ ...ENGINE_LANDMARKS, ...level.harness?.landmarks }), 62)];
   targets[targets.length - 1] += ' | x,y (tile)';
   return `Commands (one per call or several in a row):
@@ -199,7 +200,9 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
       const ty = Number(xy[2]);
       return { label: `${tx},${ty}`, isGoal: (x, y) => x === tx && y === ty };
     }
-    const it = game.map.interactables.find((i) => i.id === name);
+    const toy = (game.level.toys ?? []).find((t) => t.id === name); // a toy's prop (level.toys): walk up to it
+    const at = toy && toyPos(game.level, toy);
+    const it = game.map.interactables.find((i) => i.id === name) ?? (at && { cx: at.x, cy: at.y }) ?? null;
     if (it) {
       // Any walkable tile from which the interactable is within reach. Prefer standing close.
       const r = INTERACT_RADIUS - 0.1;
@@ -364,7 +367,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
 
   function interact() {
     const p = game.player;
-    const focus = p.focus;
+    const focus = p.focus ?? game.toys.focus; // a toy only when nothing else is in reach (play/interactions.js)
     if (!focus) {
       frame();
       return { text: 'nothing to interact with here' };
@@ -446,8 +449,9 @@ function compass(rad) {
 }
 // The focus hint in words (a human sees the target lit up with the E key cap).
 function focusText(game, withHold = true) {
-  const f = game.player.focus;
+  const f = game.player.focus ?? game.toys?.focus;
   if (!f) return 'none in reach';
+  if (f.toy) return `${f.id}: ${game.level.toys.find((t) => t.id === f.id).text ?? 'poke it'}`; // (level.toys)
   const say = (v) => (v === 'drop' ? `drop the ${game.player.held}` : actionRow(game, v)?.text ?? v ?? 'interact');
   const icon = f.icon ? `${f.icon} ` : '';
   const hold = f.hold && withHold ? ` (hold E: ${say(f.hold)})` : ''; // the harness's 'eat'
@@ -602,7 +606,10 @@ export function describeEvents(events, { verbose = false, level = defaultLevel }
       case 'inspect:fail': s = `${NAME[p.by] ?? p.by} marks check ${p.index + 1} ❌`; break;
       case 'inspect:done': s = `${NAME[p.by] ?? p.by} finishes the inspection ${p.failed === null ? '✔️' : '❌'}`; break;
       default:
-        if (verbose) s = `${e.name} ${JSON.stringify(p)}`;
+        if (e.name.startsWith('toy:')) { // a toy fired (level.toys): its line, `<by>` the one who did it
+          const line = (level.toys ?? []).find((x) => `toy:${x.id}` === e.name)?.line;
+          s = line ? line.replace('<by>', NAME[p.by] ?? p.by) : `${NAME[p.by] ?? p.by} set off ${p.id}`;
+        } else if (verbose) s = `${e.name} ${JSON.stringify(p)}`;
     }
     if (s && s === lastText) { repeats++; continue; }
     if (repeats) { lines[lines.length - 1] += ` (×${repeats + 1})`; repeats = 0; }
