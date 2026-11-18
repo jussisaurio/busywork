@@ -52,5 +52,14 @@ Typing on any typewriter; a red stapler; the wall clock (reuse the other level's
 and crowding them; locked out together; the flip chart; Lin takes the fall; soot face, the foam and the noticed
 projector; Lin's hunt escalating; panic spill. Desk phones only if they come as a general prop.
 
+## Queued, not started
+- **Blind play with pictures, not words** (Jussi agreed, 2026-11-18). Today the harness tells the blind player what
+  things are, in words that come from the level's own data, so it cannot find a drawing nobody can read. The harness
+  keeps driving; at each stop the agent gets the rendered frame with no caption and says what it thinks it sees.
+  `shots.mjs` already renders frames from harness plans. Build it before the next blind play.
+- `tools/round.mjs`: the "quiet last third" flag should apply to builders only; dates in the table.
+
+Open: whether a complete set of endings gets a tick.
+
 How it is run: one overseer, one Opus lead, fresh Opus agents per task. The lead reports branches; merging is
 `tools/merge.mjs`.
