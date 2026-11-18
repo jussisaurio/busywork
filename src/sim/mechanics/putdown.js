@@ -85,6 +85,8 @@ export function putFocus(game, than, row) {
   if (!p.held || !row) return null;
   let best = null;
   for (const e of putSpots(game.level)) {
+    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
+    if (Math.abs(e.x - p.x) > INTERACT_RADIUS || Math.abs(e.y - p.y) > INTERACT_RADIUS) continue;
     const d = Math.hypot(e.x - p.x, e.y - p.y);
     if (!(d <= INTERACT_RADIUS && d < than) || !row.can(p, game.world, e)) continue;
     than = d;

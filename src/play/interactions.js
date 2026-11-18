@@ -85,21 +85,40 @@ export function handRank(hand, held) {
   return (Array.isArray(hand) ? hand.includes(held) : hand === held) ? ITEM : null;
 }
 
-// The action for one target: of its entries ({ verb, hand, over, test }), the one the hand rule picks, or null.
-// thing: what test() is asked about (the interactable, floor item or spot; null for 'self').
+// A target's entries the hand allows with `held` in hand, best rank first (in table order within a rank):
+// { es, ks } (ks[i]: es[i]'s rank). What an action needs in hand is data, so findFocus ranks each target's
+// entries once per level and held type (targetsOf), not every tick.
+function ranked(entries, held) {
+  const es = [];
+  const ks = [];
+  for (let k = ITEM; k <= FREE; k++) for (const e of entries) if (handRank(e.hand, held) === k) { es.push(e); ks.push(k); }
+  return { es, ks };
+}
+
+// The action for one target: of its ranked entries ({ es, ks }: ranked), the one the hand rule picks, or null.
+// thing: what test() is asked about (the interactable, floor item or spot; null for 'self'). test() is pure, so
+// it is asked only of the entries in the best rank that has one passing.
+// The entries still left are left[0..nLeft). (Counted, not emptied with length = 0, which frees the array's store
+// and makes the next push allocate a new one: pick runs for every target in reach, every tick.)
 const left = [];
-function pick(game, entries, thing) {
-  const held = game.player.held;
-  let rank = 3;
-  left.length = 0;
-  for (const e of entries) {
-    const r = handRank(e.hand, held);
-    if (r === null || r > rank || !e.test(game, thing)) continue;
-    if (r < rank) { rank = r; left.length = 0; }
-    left.push(e);
+let nLeft = 0;
+function pick(game, { es, ks }, thing) {
+  let rank = -1;
+  nLeft = 0;
+  for (let i = 0; i < es.length; i++) {
+    if (rank !== -1 && ks[i] !== rank) break;
+    if (!es[i].test(game, thing)) continue;
+    rank = ks[i];
+    left[nLeft++] = es[i];
   }
-  if (left.length < 2) return left[0] ?? null;
-  return left.find((e) => !left.some((o) => o !== e && o.over?.includes(e.verb))) ?? left[0];
+  if (nLeft < 2) return nLeft ? left[0] : null;
+  for (let i = 0; i < nLeft; i++) if (!overruled(left[i])) return left[i];
+  return left[0];
+}
+// Whether another entry left on the target names e in its `over`.
+function overruled(e) {
+  for (let i = 0; i < nLeft; i++) if (left[i] !== e && left[i].over?.includes(e.verb)) return true;
+  return false;
 }
 
 // An entry for a row, or for a press toy (verb: its id; toy: the toy).
@@ -196,55 +215,87 @@ export function handConflicts(level, interactables) {
   }
   return [...pairs].map(([k, hands]) => `${k} (holding ${hands.join(', ')})`);
 }
-const built = new WeakMap();
+// The level's targets with each entry list ranked for what is in hand now (ranked): built once per level and held
+// type, so a tick does one lookup. { on: id -> ranked, props: [{ x, y, entries: ranked }], item, tap, hold, put }
+const built = new WeakMap(); // level -> Map(held -> targets)
+const last = { level: null, held: null, targets: null }; // the one asked for last: the hand changes seldom
 function targetsOf(game) {
-  let t = built.get(game.level);
-  if (!t) built.set(game.level, (t = actionTargets(game.level, game.map.interactables)));
-  return t;
+  const held = game.player.held;
+  if (last.level === game.level && last.held === held) return last.targets;
+  let byHeld = built.get(game.level);
+  if (!byHeld) built.set(game.level, (byHeld = new Map()));
+  let r = byHeld.get(held);
+  if (!r) {
+    const t = actionTargets(game.level, game.map.interactables);
+    r = {
+      on: new Map([...t.on].map(([id, es]) => [id, ranked(es, held)])),
+      props: t.props.map((pr) => ({ x: pr.x, y: pr.y, entries: ranked(pr.entries, held) })),
+      item: ranked(t.item, held), tap: ranked(t.tap, held), hold: ranked(t.hold, held), put: t.put,
+    };
+    byHeld.set(held, r);
+  }
+  last.level = game.level;
+  last.held = held;
+  last.targets = r;
+  return r;
 }
 
+// findFocus's scratch, kept out of closures and boxed numbers because it runs every tick: D[BEST] the best
+// target's distance so far, D[AT] the distance of the target in hand; bestToy whether the best is a toy.
+const D = new Float64Array(2);
+const BEST = 0;
+const AT = 1;
+let bestToy = false;
+
+// Nearer wins (the target at D[AT]). Two about as near (within TIE: a tile either side of you), a row before a toy:
+// a toy decides nothing, so it never shadows a row it all but touches (the spare desk's keyboard by the exit).
+function take(toy) {
+  const d = D[AT];
+  const tie = Math.abs(d - D[BEST]) <= TIE;
+  if (tie ? (toy === bestToy ? d >= D[BEST] : toy) : d > D[BEST]) return false;
+  D[BEST] = d;
+  bestToy = toy;
+  return true;
+}
+
+// Each loop tests reach in its own body, not in a helper: a helper that is not inlined boxes every coordinate it is
+// passed, for every target, every tick. Out of reach along either axis is out of reach (the distance is never
+// less), and far cheaper to test. test() is pure, so reach is tested first; a target farther than the best by
+// more than TIE can't win.
 function findFocus(game) {
   const p = game.player;
   const t = targetsOf(game);
   let best = null;
-  let bestD = Infinity;
-  const inReach = (x, y, r) => {
-    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
-    if (Math.abs(x - p.x) > r || Math.abs(y - p.y) > r) return false;
-    const d = Math.hypot(x - p.x, y - p.y);
-    if (!(d <= r && d < bestD + TIE)) return false; // test() is pure, so test reach first
-    return d;
-  };
-  // Nearer wins. Two about as near (within TIE: a tile either side of you), a row before a toy: a toy decides
-  // nothing, so it never shadows a row it all but touches (the spare desk's keyboard by the exit).
-  let bestToy = false;
-  const take = (d, toy) => {
-    const tie = Math.abs(d - bestD) <= TIE;
-    if (tie ? (toy === bestToy ? d >= bestD : toy) : d > bestD) return false;
-    bestD = d;
-    bestToy = toy;
-    return true;
-  };
+  D[BEST] = Infinity;
+  bestToy = false;
+  const R = INTERACT_RADIUS;
   for (const it of game.map.interactables) {
-    const d = inReach(it.cx, it.cy, INTERACT_RADIUS);
-    const e = d !== false && pick(game, t.on.get(it.id), it);
-    if (!e || !take(d, !!e.toy)) continue;
+    if (Math.abs(it.cx - p.x) > R || Math.abs(it.cy - p.y) > R) continue;
+    const d = (D[AT] = Math.hypot(it.cx - p.x, it.cy - p.y));
+    if (!(d <= R && d < D[BEST] + TIE)) continue;
+    const e = pick(game, t.on.get(it.id), it);
+    if (!e || !take(!!e.toy)) continue;
     best = e.toy ? toyFocusOf(e.toy, it.cx, it.cy)
       : { kind: 'interactable', id: it.id, x: it.cx, y: it.cy, icon: e.row.icon, action: e.verb, item: it };
   }
   for (const prop of t.props) {
-    const d = inReach(prop.x, prop.y, INTERACT_RADIUS);
-    const e = d !== false && pick(game, prop.entries, null);
-    if (!e || !take(d, true)) continue;
+    if (Math.abs(prop.x - p.x) > R || Math.abs(prop.y - p.y) > R) continue;
+    const d = (D[AT] = Math.hypot(prop.x - p.x, prop.y - p.y));
+    if (!(d <= R && d < D[BEST] + TIE)) continue;
+    const e = pick(game, prop.entries, null);
+    if (!e || !take(true)) continue;
     best = toyFocusOf(e.toy, prop.x, prop.y);
   }
   for (const item of game.world.items) {
-    const d = inReach(item.x, item.y, item.spot ? INTERACT_RADIUS : ITEM_RADIUS); // (a spot's: on a desk)
-    const e = d !== false && pick(game, t.item, item);
-    if (!e || !take(d, false)) continue;
+    const r = item.spot ? R : ITEM_RADIUS; // (a spot's: on a desk)
+    if (Math.abs(item.x - p.x) > r || Math.abs(item.y - p.y) > r) continue;
+    const d = (D[AT] = Math.hypot(item.x - p.x, item.y - p.y));
+    if (!(d <= r && d < D[BEST] + TIE)) continue;
+    const e = pick(game, t.item, item);
+    if (!e || !take(false)) continue;
     best = { kind: 'item', id: item.type, x: item.x, y: item.y, icon: e.row.icon, action: e.verb, item };
   }
-  if (t.put && handRank(t.put.hand, p.held) !== null) best = putFocus(game, bestD, t.put) ?? best;
+  if (t.put && handRank(t.put.hand, p.held) !== null) best = putFocus(game, D[BEST], t.put) ?? best;
   return best ?? selfFocus(game, t);
 }
 
@@ -257,7 +308,10 @@ function selfFocus(game, t) {
   const p = game.player;
   let tap = pick(game, t.tap, null);
   let hold = pick(game, t.hold, null);
-  if (!tap) [tap, hold] = [hold, null];
+  if (!tap) {
+    tap = hold;
+    hold = null;
+  }
   if (!tap) return null;
   return {
     kind: 'self', id: 'self', x: p.x, y: p.y, icon: tap.row.icon, action: tap.verb, preview: tap.row.preview ?? null,
