@@ -28,14 +28,15 @@ export default {
   targets: [
     'coffee_machine', 'projector', 'coat_rack', 'fridge',
     'boss_desk', 'lin_desk', 'kev_desk', 'my_desk_spot', 'boss_office_door', 'kitchen_table', 'entrance',
-    'restroom_door', 'meeting_room', 'meeting_seat', 'fire_door',
+    'restroom_door', 'meeting_room', 'meeting_seat', 'fire_door', 'exit',
   ],
-  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'fire_door'],
+  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'fire_door', 'exit'],
   renderEvents: [
     'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:lockedOut', 'boss:bang', 'boss:pound',
     'boss:workAssigned',
     'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'keycard:takenBack', 'coffee:kevTook',
     'coffee:asked', 'kev:alerted', 'item:put', 'boss:mugHunt', 'mug:found', 'meeting:calledOff', 'boss:letIn', 'boss:hug',
+    'player:leave',
   ],
   milestones: {
     'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
@@ -56,6 +57,7 @@ export default {
     'boss:mugHunt': () => 'mugHunt',
     'mug:found': (p) => `found@${p.spot}`,
     'boss:letIn': () => 'letIn',
+    'player:leave': () => 'home',
     caught: () => 'caught',
   },
   binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught',

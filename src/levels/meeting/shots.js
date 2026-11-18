@@ -189,6 +189,25 @@ export default [
       'the blank screen with his arm round your shoulder, beaming (🤗, then 👏 at you). No slides; the cricket hops.',
   },
   {
+    name: 'go-home',
+    cmds: ['goto exit pretend', 'pretend until 3:03', 'interact'],
+    beat: 0.9, // walking out
+    intent: 'You give up and go home: through the glass entrance into the lobby, towards the elevator. Kev, who leaves ' +
+      'at 3:00 every day, is right behind you: you both wave (👋, 👋😄).',
+  },
+  {
+    name: 'end-home',
+    cmds: ['goto exit', 'interact', 'wait 8s'],
+    intent: 'End card, a loss: you just went home. You sit on the bus by the window, the town sliding past, relieved ' +
+      '(😌); then the phone in your lap buzzes and buzzes, the boss\'s angry face on its screen (😬).',
+  },
+  {
+    name: 'end-home-kev',
+    cmds: ['goto exit pretend', 'pretend until 3:03', 'interact', 'wait 8s'],
+    intent: 'End card, a loss: you went home with Kev at 3:00. You sit side by side on the bus; Kev is untroubled (😌), ' +
+      'while the phone in your lap buzzes with the boss\'s angry face on it (😬).',
+  },
+  {
     name: 'end-caught',
     cmds: ['pretend until 3:18', 'goto coat_rack pretend', 'wait until 3:26.6', 'interact'], // he walks back in from the restroom (🤨) as you reach
     intent: 'End card, a loss: the boss caught you at his jacket, reaching for his keycard (😠🪪). The card is on his ' +

@@ -133,7 +133,7 @@ export function updateRules(game, dt) {
 function publishWatch(game) {
   const watch = {};
   const s = game.rules;
-  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working) {
+  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working && !game.scenario?.leave && !game.player.hidden) {
     const p = game.player;
     for (const npc of game.npcs) {
       const offence = offenceFor(game, s, npc);
@@ -147,6 +147,8 @@ function rulesStep(game, dt) {
   if (game.phase !== 'day' || game.outcome) return;
   claimsDue(game); // even in a catch's beat: he walks over for his thing (sim/mechanics/claim.js)
   if (game.caught) return;
+  // Gone (scenario.js leaveDay) or out of sight (player.hidden: in a cubicle): nobody sees you, nothing applies.
+  if (game.scenario?.leave || game.player.hidden) return;
   const s = game.rules;
   const p = game.player;
   updateDisguise(game); // who knows better, who is fooled for the first time
@@ -350,7 +352,7 @@ export function showOutNow(game, npcId) {
 // For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand). why: a string
 // the outcome carries (outcome.why: its end scene). False if the day is already over or someone already caught you.
 export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
-  if (game.phase !== 'day' || game.caught || game.outcome) return false;
+  if (game.phase !== 'day' || game.caught || game.outcome || game.scenario?.leave) return false;
   caught(game, reason, by, null, icons);
   if (why) game.caught.why = why;
   return true;

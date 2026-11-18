@@ -357,6 +357,28 @@ export default [
     },
   },
   {
+    name: 'just go home at 2:31 → out to the elevator, gone, the day lost (home: the bus, the phone buzzing)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto exit');
+      run('interact');
+      run('wait 5s');
+      if (g.outcome?.why !== 'home') throw new Error('why: ' + g.outcome?.why);
+      if (!g.player.hidden) throw new Error('you are still on the floor');
+    },
+  },
+  {
+    name: 'go home with Kev at 3:03 → both wave 👋👋 (homeKev)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto exit pretend');
+      run('pretend until 3:03');
+      run('interact');
+      run('wait 5s');
+      if (g.outcome?.why !== 'homeKev') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
+  {
     // His office is his (roles private): he sees you come in at his door, 🤨, and shows you out before the rack.
     name: 'walk in for the keycard while he sits there → 🤨, 👉 you 🚪, back at your desk without it',
     expect: { result: 'fail' },

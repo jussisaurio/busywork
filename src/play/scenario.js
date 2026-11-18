@@ -18,6 +18,28 @@ const HURRY = PLAYER_SPEED * 1.5;
 const WALK_MAX = 2.5;
 const CLAIM_WAIT = 8; // s at most that a catch's beat waits for a claim (he walks over to take his thing)
 const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
+const LEAVE_BEAT = 1.6; // s after you are gone (leaveDay) before the card
+
+// A level's way out of the day (meeting: home by the elevator). You walk `path` (straight legs, tile centres in tile
+// units: through a door that is solid to you is fine), you are gone (player.hidden: not drawn, nobody sees you) and,
+// after a beat, the day ends: 'fail', outcome.why = why. Nothing catches you on the way: you have already lost.
+// Returns false when the day is already decided.
+export function leaveDay(game, why, path = []) {
+  const s = game.scenario;
+  if (game.phase !== 'day' || game.caught || game.outcome || s.leave) return false;
+  const p = game.player;
+  cancelAction(game, 'leave');
+  setBusy(game, false, null);
+  standUp(game);
+  game.clock.forced = 0;
+  game.clock.ff = false;
+  game.rules.sent = null;
+  game.rules.out = null;
+  p.locked = true;
+  s.leave = { why, t: 0, gone: null, walk: path.length ? { path: path.map((q) => ({ x: q.x, y: q.y })), wp: 0 } : null };
+  game.events.emit('player:leave', { why });
+  return true;
+}
 
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
@@ -37,6 +59,25 @@ export function updateScenario(game, dt) {
       }
     }
     if (!s.walk && s.beatT >= s.endAt) endDay(game);
+    return;
+  }
+
+  // Walking out (leaveDay): the walk, gone, a beat, the card.
+  const lv = s.leave;
+  if (lv) {
+    lv.t += dt;
+    if (lv.walk && stepWalk(game, lv.walk, PLAYER_SPEED, dt)) lv.walk = null;
+    if (!lv.walk && lv.gone == null) {
+      lv.gone = lv.t;
+      game.player.hidden = true;
+      game.player.moving = false;
+      game.events.emit('player:gone', { why: lv.why });
+    }
+    if (lv.gone != null && lv.t - lv.gone >= LEAVE_BEAT) {
+      game.outcome = makeOutcome(game, 'fail', [], []);
+      game.outcome.why = lv.why;
+      endDay(game);
+    }
     return;
   }
 

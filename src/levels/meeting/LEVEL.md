@@ -157,6 +157,12 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   out on the balcony, he dangles the card inside: 🤗🪪🔒). Not holding it: `world.samaritan`, and at 4:00 a fail with
   `why: 'samaritan'` (end card: his arm round your shoulder at the blank screen: 🚪🤗🦗). The joke: the one kind
   thing you do all day is the thing that sinks you.
+- **Just go home** (`interactions.js` `go_home` on the entrance L, interactable `exit`; engine `scenario.js`
+  `leaveDay`). Any time, E at the entrance: you walk out through the lobby to the elevator, you are gone
+  (`player.hidden`; the rules see nothing), and after a beat the day ends: a fail with `why: 'home'` (end card: on
+  the bus, relieved 😌, then the phone in your lap buzzes with the boss's face on it 😬: 🚌📱😠). With Kev on his way
+  out (3:00, within 6 tiles) you both wave 👋, `why: 'homeKev'`, and he sits beside you on the bus. The joke: the
+  most obvious way out of the meeting works perfectly, and follows you home.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.

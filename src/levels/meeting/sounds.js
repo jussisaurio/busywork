@@ -54,6 +54,7 @@ export const SOUNDS = {
     'boss:pound': { sfx: 'bang', spot: 'fire_door', opts: { hits: 4 } }, // 👊👊🚪
     'boss:fume': { sfx: 'grumble', spot: 'fire_door' }, // 🚬😤
     'kev:left': { sfx: 'elevator' },
+    'player:gone': { sfx: 'elevator', spot: 'elevator' }, // you just went home (interactions.js go_home)
   },
   // The failed meeting's 🦗 sign gets real crickets.
   signs: { '🦗': { sfx: 'crickets' } },

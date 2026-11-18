@@ -903,7 +903,7 @@ export function drawCharacters(ctx, game, t, mem) {
   order.length = 0;
   const npcs = game.npcs || [];
   for (let i = 0; i < npcs.length; i++) if (npcs[i] && npcs[i].active) order.push(npcs[i]);
-  if (game.player) order.push(game.player);
+  if (game.player && !game.player.hidden) order.push(game.player); // hidden: gone (scenario.js leaveDay), or in a cubicle
   order.sort((a, b) => fin(a.y) - fin(b.y));
   for (let i = 0; i < order.length; i++) {
     const e = order[i];
@@ -916,7 +916,7 @@ export function drawCharacters(ctx, game, t, mem) {
 // At the loop's start a chevron bobs over your head: no rings at all, so nothing about you reads as a sound.
 function drawPlayerRing(ctx, game, t, mem) {
   const p = game.player;
-  if (!p || game.phase !== 'day') return;
+  if (!p || p.hidden || game.phase !== 'day') return;
   const x = fin(p.x) * T;
   const y = fin(p.y) * T + 7;
   const since = t - fin(mem && mem.dayStart, -10);

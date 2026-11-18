@@ -34,7 +34,9 @@ export const LEGEND = {
   C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
   J: { kind: 'projector', solid: true, opaque: false, interactable: 'projector', draw: 'meeting_table' }, // the slideProjector prop on top
   P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
+  // The glass entrance onto the lobby and the elevator. Solid to you all day, but you can always just go home
+  // (interactions.js go_home: you walk out to the elevator, and the day is lost).
+  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true, interactable: 'exit' },
   R: { kind: 'restroom', solid: true, opaque: true },
   E: { kind: 'elevator', solid: true, opaque: true },
   // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
