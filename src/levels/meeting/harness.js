@@ -156,6 +156,7 @@ export default {
       case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';
       case 'coffee:ficus': return 'you pour the coffee into the boss\'s plant: the soil drinks it, and a new leaf shoots out 🌱';
+      case 'coffee:plant': return 'you pour the coffee into the hallway plant: the soil drinks it, and a new leaf shoots out 🌱';
       case 'coffee:typewriter': return 'you pour the coffee into the typewriter\'s keys: BANG, sparks, smoke ⌨️💥';
       default: return undefined;
     }

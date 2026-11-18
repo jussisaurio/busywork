@@ -348,7 +348,8 @@ a time. It lies on the tile the spot faces, as `{ type, x, y, spot }` in `world.
 type)` builds one for `initialWorld`), and `world[place]` becomes the spot's name. `owner: 'player'`: the rules
 judge it as if you held it, even while you pretend. `owner: <cast id>`: he reacts once to each item he sees
 there within 2 tiles: `found: 'take'` (default) or a hook name, run as `arrive(game, npc, sim, { type, spot,
-item })`. No owner: nobody minds. Events `item:put {type, spot}`, `item:found {type, spot, by}`. Example:
+item })`. No owner: nobody minds. `shown: { dx, dy }` (tiles): draw what lies there that far off where it lies,
+render only (meeting: the cup beside the coffee machine, on the counter). Events `item:put {type, spot}`, `item:found {type, spot, by}`. Example:
 fixture-putdown (`player_desk` is yours, `box` is the boss's with `found: 'readNote'`).
 
 **Inspection** (`level.inspections`, `inspection.js`): from minute `at` one NPC walks an ordered list of checks.

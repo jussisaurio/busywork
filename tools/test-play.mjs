@@ -633,7 +633,7 @@ section('contraband');
   game.world.sandwich = 'player';
   run(0.5);
   ok(p().held === 'sandwich' && lin._claim?.item === 'sandwich' && evs('witness:tattle').length === 0, 'Lin sees her sandwich two tiles off: she gets up to come for it (walk), not a snatch');
-  ok(walksOver(lin) && game.world.sandwich === 'fridge' && !p().held && evs('sandwich:returned').length === 1, 'Lin at your elbow: takes it back (fridge)');
+  ok(walksOver(lin) && game.world.sandwich === 'lin' && !p().held && evs('sandwich:returned').length === 1, 'Lin at your elbow: takes it back (keeps it)');
   ok(evs('witness:tattle')[0]?.payload.reason === 'contraband' && evs('witness:tattle')[0].payload.heard === false, "Lin {reason:'contraband'}: takes it, no tattle");
   ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '😠🥪'), 'Lin says 😠🥪');
 
@@ -657,7 +657,7 @@ section('contraband');
   lin.active = true;
   run(1.1);
   walksOver(lin);
-  ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'action' && game.world.sandwich === 'fridge' && !p().held, 'Lin witnesses eating: one tattle + takes it back');
+  ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'action' && game.world.sandwich === 'lin' && !p().held, 'Lin witnesses eating: one tattle + takes it back');
 
   // Lifting it to your mouth in front of her is just carrying her sandwich: she has it back before the first bite.
   newDay([lin]);
@@ -667,7 +667,7 @@ section('contraband');
   holdE();
   run(0.5);
   walksOver(lin);
-  ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'contraband' && game.world.sandwich === 'fridge' && evs('sandwich:eaten').length === 0, 'hold E in her sight: she takes it back before you eat (contraband)');
+  ok(evs('witness:tattle').length === 1 && evs('witness:tattle')[0].payload.reason === 'contraband' && game.world.sandwich === 'lin' && evs('sandwich:eaten').length === 0, 'hold E in her sight: she takes it back before you eat (contraband)');
 
   // Mid-hunt, catching you with it ends her hunt: she has found it.
   const hunter = fakeNpc('lin', 'lin_desk', { override: 'hunting' });

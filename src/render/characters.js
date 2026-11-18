@@ -391,7 +391,11 @@ function drawBox(ctx, g) {
   ctx.fill();
 }
 
-const SLUMP = 11; // px the head drops forward when asleep at a desk (s.slump: a toy's pose)
+// Asleep at a desk (s.slump: a toy's pose): the whole upper body leans LEAN px forward over the desk, and the head
+// drops SLUMP px further, onto it. The torso goes with it, so the head never parts from the body (a playtester saw a
+// head floating over an empty chair when only the head moved).
+const LEAN = 6;
+const SLUMP = 6;
 const G = { d: 0, cd: 0, sd: 0, fx: 0, fy: 0, rx: 0, ry: 0, bodyY: 0, brx: 0, bry: 0, headY: 0, hr: 0 };
 
 // Draw a person whose feet/centre are at (x, y) in the current transform.
@@ -442,6 +446,7 @@ export function drawPerson(ctx, look, s, x, y) {
     }
   }
 
+  if (s.slump) ctx.translate(cd * LEAN, sd * LEAN); // the rest of him leans in (the legs stay under the desk)
   computeHands(s, G);
   if (s.arms === 'holdout' && s.item) fillEllipse(ctx, HAND.fx, HAND.fy, 4.5, 1.8, 'rgba(25,15,8,0.4)'); // the floor under it
   if (north) drawArms(ctx, look, s, G, bodyDark);
@@ -918,9 +923,16 @@ export function drawCharacters(ctx, game, t, mem) {
 // At the loop's start a chevron bobs over your head: no rings at all, so nothing about you reads as a sound.
 function drawPlayerRing(ctx, game, t, mem) {
   const p = game.player;
-  if (!p || p.hidden || game.phase !== 'day') return;
+  if (!p || game.phase !== 'day') return;
   const x = fin(p.x) * T;
   const y = fin(p.y) * T + 7;
+  // Inside a place the map doesn't show (a cubicle: player.inside), you aren't drawn, but what you do in there is:
+  // its progress fills on the floor where you went in, as every action's does (a playtester pressed E in the
+  // restroom, saw nothing happen for the 1.6 s wash, and thought he was stuck in there).
+  if (p.hidden) {
+    if (p.inside) drawActionProgress(ctx, p, x, y);
+    return;
+  }
   const since = t - fin(mem && mem.dayStart, -10);
   if (since >= 0 && since < 2.4) {
     const a = clamp((2.4 - since) / 0.4, 0, 1);

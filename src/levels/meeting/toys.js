@@ -116,7 +116,7 @@ export const TOYS = [
     // No 💤 bubble: his 🥱☕ craving (a real line) was up whenever it fired, and a toy's bubble never covers one, so
     // it never showed. The 💤 is drawn instead, rising off his head without a break while the pose lasts
     // (painters-more.js kevPage); fired every 3 s, the pose (3.4 s) never lapses while he sleeps.
-    react: { pose: { arms: 'folder', slump: true, for: 3.4 } },
+    react: { pose: { arms: 'desk', slump: true, for: 3.4 } }, // forearms on the desk, his head down on them
     try: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'sit busy', 'busy until 2:50'],
   },
   {
