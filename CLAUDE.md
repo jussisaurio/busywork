@@ -63,6 +63,13 @@ A person playing it is the real test. Say what you could not judge, not "ready".
 
 ## Working with subagents
 
+- Three layers, on trial since 2026-11-18 (`docs/KAIZEN.md` will say whether it worked). An **overseer** talks to
+  Jussi, settles direction, writes it down, merges, and keeps its own context small. One **lead** (Opus) per round
+  of work briefs the agents, checks their reports against the files and pictures, and reports to the overseer.
+  **Agents** (Opus where taste matters, cheaper for mechanical work) each do one task and stop.
+- Jussi is the only judge of funny. Agents pitch; only what he ticks gets built.
+- Stop when most of the value is in hand and report what is left. One pass, not rounds of polish: an agent heading
+  past about 150k tokens with little new to show wraps up. Usage is limited.
 - Give a builder the goal, the files and what done means (the list above). Tell it what you already know is true.
 - Start a fresh agent for each round. A long-lived builder carries stale context and costs more every turn.
 - Settle a direction before you send it to anyone. A change of mind sent to six builders is six lots of rework.
