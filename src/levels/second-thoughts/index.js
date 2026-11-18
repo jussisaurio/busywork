@@ -32,7 +32,7 @@ import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { letter } from './things.js';
-import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { COFFEE_CUP, pourCoffee } from '../office/coffee.js';
 import { OWN_DESK, FRIDGE, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
 import { oncePerGame } from '../../core/events.js';
 

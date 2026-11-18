@@ -5,6 +5,7 @@
 // corridor, before he arrives. Seen carrying company property on inventory day, you're caught; so you are if
 // anything on his list is missing, you included.
 import { at, deg } from '../../config.js';
+import { scheduler } from '../office/cast.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 
 const MAP = [
@@ -34,7 +35,7 @@ const SPOTS = {
   meeting_presenter: { x: 13, y: 2, face: 'W' },
 };
 
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler();
 
 export default {
   id: 'fixture-inspection',

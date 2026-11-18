@@ -2,7 +2,7 @@
 // poses, sounds and voices (level 1's decor.js, looks.js and sounds.js document the fields). Every object on the
 // map is drawn by painters.js; the end scenes are in end-scenes.js.
 import { C, NAVY, TEAL, MUSTARD } from '../../render/palette.js';
-import { LOOKS as L1 } from '../meeting/looks.js';
+import { LOOKS as L1 } from '../office/looks.js';
 import { OFFICE_VOICES } from '../office/voices.js';
 import {
   pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,

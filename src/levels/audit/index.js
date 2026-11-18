@@ -13,7 +13,7 @@ import { itemOn } from '../../sim/mechanics/putdown.js';
 import { npcSees } from '../../game/perception.js';
 import { npcTakes, playerHolds } from '../../sim/take.js';
 import { speak, holdFor, spotLeg } from '../../sim/override.js';
-import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { COFFEE_CUP, pourCoffee } from '../office/coffee.js';
 import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
 import { SPOTS, LAPTOPS } from './spots.js';
 import { laptop } from './things.js';
@@ -23,7 +23,7 @@ import gate from './gate.js';
 import { OWN_DESK, FRIDGE, COAT_RACK, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
 
 // Level 1's floor (meeting/map.js), with the projector a plain meeting table and the coat rack and fridge set
-// dressing only. Both coffee machines have a full pot and pour (meeting/coffee.js): the auditor, Lin and Kev drink
+// dressing only. Both coffee machines have a full pot and pour (office/coffee.js): the auditor, Lin and Kev drink
 // from them all afternoon. Your desk keeps its P (you can still sit at it), but your laptop is gone: what you put
 // on it lies on its east end (spot your_desk).
 const MAP = [

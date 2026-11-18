@@ -15,7 +15,7 @@ function shade(hex, f) {
   const ch = (v) => clamp(Math.round(v * f), 0, 255).toString(16).padStart(2, '0');
   return `#${ch((n >> 16) & 255)}${ch((n >> 8) & 255)}${ch(n & 255)}`;
 }
-// How to draw person `id`: the level's look for them (level.looks, e.g. src/levels/meeting/looks.js; fields
+// How to draw person `id`: the level's look for them (level.looks, e.g. src/levels/office/looks.js; fields
 // listed there), else a generic look in their colour.
 export function lookFor(looks, id, color) {
   if (looks && looks[id]) return looks[id];
@@ -1107,7 +1107,7 @@ function drawNpc(ctx, game, n, t) {
   s.moving = !!n.moving;
   s.phase = t * 10 + (n.id ? n.id.length * 1.3 : 0);
   s.seed = n.id ? hash(n.id.length, n.id.charCodeAt(0), n.id.charCodeAt(n.id.length - 1)) : 0;
-  // The level's poses (level.poses, e.g. src/levels/meeting/looks.js): the first arms rule that holds, else
+  // The level's poses (level.poses, e.g. src/levels/office/looks.js): the first arms rule that holds, else
   // sitting at a desk (typing, atWork) or walking; then every marks rule that holds.
   const poses = game.level.poses || NO_POSES;
   let rule = null;

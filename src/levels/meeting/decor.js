@@ -1,7 +1,7 @@
 // Set dressing for level 1, "The 4 PM Meeting" (level.decor): where the renderer puts chairs, wall decor, desk
 // clutter and the key legend. Data only (palette colours, no logic); render/world.js and render/hud.js read it.
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
-import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue, TILE } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
 import { PICTURE, pictureTilt, KEYBOARDS, CLOCK } from './toys.js';
@@ -9,6 +9,7 @@ import { ficus, deadComputer, kevPage, typedScreen, pushedClock } from './painte
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside, doorSwing } from './balcony.js';
+import { OFFICE_WINDOWS, OFFICE_CABINETS, OFFICE_CLOCK, OFFICE_DESK_OWNERS, OFFICE_ELEVATOR, OFFICE_ZONE_SEEDS, officeDesk } from '../office/decor.js';
 
 // The fire door (mechanics.js DOORS, balcony.js): locked, someone is shut out there without a card (the boss, or
 // you: the reader blinks red); hit, seconds since his last go at it or your last pound; beep, since a card opened
@@ -53,18 +54,14 @@ export const DECOR = {
     { x: 25, y: 2, face: 'S', color: MUSTARD },
   ],
   // Wall decor on the front face of wall row y.
-  windows: [
-    { x0: 2, x1: 6, y: 0 }, // office
-    { x0: 10, x1: 12, y: 0 }, // meeting room
-    { x0: 25, x1: 27, y: 0 }, // kitchen
-  ],
+  windows: OFFICE_WINDOWS,
   paintings: [
     { x: 10, y: 6, variant: 0 },
     { x: 2, y: 0, variant: 1 },
   ],
-  cabinets: { x0: 21, x1: 23, y: 0 }, // kitchen upper cabinets over the counter
+  cabinets: OFFICE_CABINETS,
   screen: { x: 15, y: 0, w: 3 }, // projection screen on the meeting room's north wall
-  clock: { x: 17, y: 6 }, // hallway wall clock showing the game time
+  clock: OFFICE_CLOCK,
   // Furniture with moving parts, drawn every frame in this order on the first map tile with char `tile`, by the
   // renderer's painter `draw`, showing what state(world, game) returns:
   //   slideProjector  { state: 'ok' | 'broken' | 'fixing', fix: 0..1, beam }  (the beam lights `screen`)
@@ -121,24 +118,19 @@ export const DECOR = {
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
   // Workstations whose sitter's spot is <owner>_desk (personal screen, mug and prop). The spot's face points at
   // the desk and turns the workstation to it; here both sit south of their desks, facing N.
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   // Per-owner workstation clutter ('player' is the desk with the P tile); other workstations get the
   // renderer's default (dark screen, mustard mug, a sheet of paper). screenArt: 'code' | 'grid' | 'blankSlide';
   // prop: 'plant' | 'earbuds' | 'paper' | null.
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'blankSlide', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    player: officeDesk('player', { screenArt: 'blankSlide' }),
+    kev: officeDesk('kev'),
+    lin: officeDesk('lin'),
   },
   // The lift doors (the map's elevator tiles) open as an active NPC comes within 1.6 tiles of this spot.
-  elevator: { spot: 'elevator' },
+  elevator: OFFICE_ELEVATOR,
   // Floor zones flooded from one tile in each room (walls, glass and doors stop the flood).
-  zoneSeeds: [
-    { zone: 'office', x: 4, y: 2 },
-    { zone: 'meeting', x: 13, y: 2 },
-    { zone: 'kitchen', x: 20, y: 2 },
-    { zone: 'lobby', x: 4, y: 14 },
-  ],
+  zoneSeeds: OFFICE_ZONE_SEEDS,
   // Centre of the key legend (HUD, pause screen), on the bottom wall row (16), clear of the lobby (x1-9) and the
   // balcony (x26-28): the row is about 17 tiles wide.
   legendAt: { x: 17, y: 16.5 },

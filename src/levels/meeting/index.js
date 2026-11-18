@@ -34,12 +34,12 @@
 //   title    the title card: { mission: [line, line], badge: [icon, overlay] }, the two typed mission lines and the
 //            emoji under the 🕓 (render screens.js)
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
-//   looks    how each person is drawn, by id (looks.js; render characters.js lookFor)
-//   poses    what the cast is drawn doing: arms rules and marks (looks.js; render characters.js)
-//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (looks.js; render cones.js)
+//   looks    how each person is drawn, by id (office/looks.js; render characters.js lookFor)
+//   poses    what the cast is drawn doing: arms rules and marks (office/looks.js; render characters.js)
+//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (office/looks.js; render cones.js)
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
-//   voices   how the cast talks, by cast `voice` name (voices.js; audio/babble.js)
+//   voices   how the cast talks, by cast `voice` name (office/voices.js; audio/babble.js)
 //   toys     props that answer back and decide nothing: the fire door's bar (toys.js; src/sim/mechanics/toy.js)
 import { at } from '../../config.js';
 import { TOYS } from './toys.js';
@@ -48,10 +48,10 @@ import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { DECOR } from './decor.js';
-import { LOOKS, POSES, CONES } from './looks.js';
+import { LOOKS, POSES, CONES } from '../office/looks.js';
 import { END_SCENES } from './end-scenes.js';
 import { SOUNDS } from './sounds.js';
-import { VOICES } from './voices.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { INTERACTIONS } from './interactions.js';
 import { ITEMS } from './items.js';
 import { ROLES } from './roles.js';
@@ -124,5 +124,5 @@ export default {
   cones: CONES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };

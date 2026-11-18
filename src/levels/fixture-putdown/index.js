@@ -3,6 +3,7 @@
 // at your desk while the boss is out, and put the note in his suggestion box before he empties it at 2:48.
 // Dropped on the floor it's just contraband (he pockets it); left on your own desk it's evidence (caught).
 import { at, deg } from '../../config.js';
+import { scheduler } from '../office/cast.js';
 import { OWN_DESK, RESTROOM } from '../office/legend.js';
 import { playerHolds } from '../../sim/take.js';
 
@@ -34,7 +35,7 @@ const SPOTS = {
   meeting_presenter: { x: 14, y: 2, face: 'W' },
 };
 
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler();
 
 export default {
   id: 'fixture-putdown',

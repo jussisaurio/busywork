@@ -1,7 +1,7 @@
 // How The Last Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
 import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
-import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
+import { LOOKS as OFFICE_LOOKS } from '../office/looks.js';
 import { OFFICE_VOICES } from '../office/voices.js';
 import { CLOCKS } from './clocks.js';
 import { officeTimeClock, officeTimeStreet } from './painters.js';

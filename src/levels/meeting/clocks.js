@@ -22,6 +22,7 @@ import { npcTakes } from '../../sim/take.js';
 import { catchNow } from '../../play/rules.js';
 import { whoInside, atTheDoor } from './restroom.js';
 import { doorClock, bossOnBalcony, playerAtDoor } from './balcony.js';
+import { oncePerGame } from '../../core/events.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -125,10 +126,7 @@ function kevAndTheCup(game, kev, sim) {
 
 // Caught over his keycard: with it in your hand, or with your hand on it (Lin's shout stops the take at the jacket).
 // Either way he takes it back, onto his pocket, and the end card shows it there.
-const listening = new WeakSet();
-function listen(game) {
-  if (listening.has(game.events)) return;
-  listening.add(game.events);
+const listen = oncePerGame((game) => {
   game.events.on('action:cancel', (e) => {
     if (game.level?.id === 'meeting' && e?.type === 'take_keycard') game.world._cardTry = game.loopTime;
   });
@@ -155,4 +153,4 @@ function listen(game) {
   game.events.on('caught', (e) => {
     if (game.level?.id === 'meeting' && e?.reason === 'evidence' && game.caught && !game.caught.why) game.caught.why = 'bib';
   });
-}
+});

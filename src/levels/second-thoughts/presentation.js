@@ -2,7 +2,7 @@
 // sounds.js document the fields). The end cards are in end-scenes.js. People look as in level 1 (its looks.js,
 // read-only).
 import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
-import { LOOKS } from '../meeting/looks.js';
+import { LOOKS } from '../office/looks.js';
 import { trayProp, deskClockProp, drawerProp, puddleProp, jugProp, machineProp, surgeProp, trayThing, phoneThing, jugThing } from './things.js';
 import { OFFICE_WINDOWS, OFFICE_CLOCK, officeDesk } from '../office/decor.js';
 

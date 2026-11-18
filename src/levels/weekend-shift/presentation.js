@@ -5,7 +5,7 @@ import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
-import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
+import { LOOKS as LEVEL1_LOOKS } from '../office/looks.js';
 import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
 import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
 import { OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';

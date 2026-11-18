@@ -2,7 +2,7 @@
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
 import { at } from '../../config.js';
 import { MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
-import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
+import { LOOKS as MEETING_LOOKS } from '../office/looks.js';
 import { PHONE_PROPS, THINGS } from './painters.js';
 import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
 import { OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';

@@ -11,7 +11,7 @@
 import { at } from '../../config.js';
 import { CAST, START } from './cast.js';
 import { clockFor, pushRow, huntOver, CLOCK_BEHAVIOURS } from './clocks.js';
-import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { COFFEE_CUP, pourCoffee } from '../office/coffee.js';
 import { DECOR, LOOKS, POSES, CONES, TITLE, END_SCENES, SOUNDS, VOICES } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
