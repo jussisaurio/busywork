@@ -116,6 +116,16 @@ async function playLevel(id) {
       pump(60); // wait
       must(game.phase === 'day', `phase ${game.phase} after the inputs (caught: ${game.caught ? 'yes' : 'no'})`);
     });
+    run('hold R to restart', () => {
+      const loop = game.persist.loop;
+      tap('KeyR', 3);
+      must(game.persist.loop === loop, 'a tap on R restarted the day');
+      hold('KeyR', 20); pump(1);
+      must(game.persist.loop === loop, 'R released early restarted the day');
+      hold('KeyR', 90); pump(1);
+      must(game.persist.loop === loop + 1, `R held did not restart (loop ${game.persist.loop})`);
+      pump(5);
+    });
     run('fast-forward to end', () => {
       for (let i = 0; i < 3; i++) tap('BracketRight', 1);
       must(game.debug.speed === 8, `] x3 gave speed ${game.debug.speed}`);
@@ -127,7 +137,7 @@ async function playLevel(id) {
     run('retry', () => {
       tap('Enter', 2);
       must(game.phase === 'day', `Enter on the end card left phase ${game.phase}`);
-      must(game.persist.loop === 2, `loop counter ${game.persist.loop} after retry`);
+      must(game.persist.loop === 3, `loop counter ${game.persist.loop} after retry`);
       must(game.loopTime < 1 && game.clock.minute < 1, 'retry did not reset the day');
       pump(60);
       must(game.phase === 'day', `phase ${game.phase} after retry`);

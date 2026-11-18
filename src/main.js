@@ -15,6 +15,8 @@ import { getLevel, levels, defaultLevel } from './levels/index.js';
 import { mountLevelPicker } from './play/level-picker.js';
 
 const SPEEDS = [1, 2, 4, 8];
+const RESTART_HOLD = 1; // seconds R is held to restart the day
+let restartSpent = false;
 
 const canvas = document.getElementById('game');
 
@@ -112,6 +114,8 @@ function frame(now) {
 
   if (game.phase === 'title' || game.phase === 'end') {
     acc = 0;
+    game.restartHold = 0;
+    restartSpent = input.isDown('restart'); // R held through the card must be let go before it counts
     // E is both 'start' and 'interact': the key that starts the day must not also use whatever is in front of you on
     // its first frame (Saturday: you start seated, so it rang the boss's phone).
     input.pressed('interact');
@@ -122,9 +126,20 @@ function frame(now) {
       if (game.paused) game.paused = false;
       else pauseIfPlaying();
     }
-    if (input.pressed('restart')) {
-      startLoop(game); // also unpauses (resetLoop)
-    } else if (game.paused) {
+    // Restart is a hold (RESTART_HOLD s of real time, a ring fills on screen); a tap or an early release does nothing.
+    input.pressed('restart');
+    if (input.isDown('restart') && !restartSpent) {
+      game.restartHold = Math.min(1, (game.restartHold ?? 0) + realDt / RESTART_HOLD);
+      if (game.restartHold >= 1) {
+        restartSpent = true; // one restart per hold: release R before the next
+        game.restartHold = 0;
+        startLoop(game); // also unpauses (resetLoop)
+      }
+    } else {
+      game.restartHold = 0;
+      if (!input.isDown('restart')) restartSpent = false;
+    }
+    if (game.paused) {
       acc = 0;
       input.pressed('interact'); // a press made while paused doesn't fire on resume
     } else {
