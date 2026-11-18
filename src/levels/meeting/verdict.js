@@ -4,10 +4,13 @@
 //   the cup on Kev's desk (you're in the room) -> the win stands, and the table stares at Kev's empty chair
 //   anywhere else (back on the machine) -> the rule as before
 // Locked out, the boss isn't there to ask: the rule as before.
+// Nothing cancelled it, but you let him in off the balcony (clocks.js bossLetIn: world.samaritan): the fail, and he's
+// beaming at you (why 'samaritan': the end card has his arm round your shoulder and a blank screen).
 import { findNpc } from '../../game/perception.js';
 
 export function verdict(game, { routes, present }) {
   const w = game.world;
+  if (!routes.length && w.samaritan) return { why: 'samaritan', stare: { at: 'player', think: ['🤗'], say: ['👏', '@player'] } };
   if (!routes.includes('projector')) return null;
   const boss = findNpc(game, 'boss');
   if (!boss?.active || boss.override !== game.level.meeting.override) return null;

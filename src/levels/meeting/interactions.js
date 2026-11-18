@@ -17,6 +17,8 @@
 //   done(game, a)    the result, applied right after 'action:done'
 // For one target the first possible row wins.
 import { say, burst, shake } from '../../core/fx.js';
+import { findNpc } from '../../game/perception.js';
+import { setOverride } from '../../sim/override.js';
 
 export const INTERACTIONS = {
   brew_coffee: {
@@ -50,6 +52,23 @@ export const INTERACTIONS = {
       game.player.held = 'keycard';
       game.world.keycard = 'player';
       game.events.emit('keycard:taken', {});
+    },
+  },
+  // The Good Samaritan: he's been pounding on the fire door, so you push the bar and let him in. It undoes the
+  // lock-out (no keycard win today), and he is so glad he hugs you (clocks.js bossLetIn), and sees what's in your hand.
+  let_boss_in: {
+    on: 'fire_door', text: 'let the boss in', duration: 0.6, sneaky: false,
+    can: (p, w) => w.bossLockedOut,
+    done(game) {
+      const w = game.world;
+      const boss = findNpc(game, 'boss');
+      w.bossLockedOut = false;
+      w.letIn = game.loopTime;
+      if (boss) {
+        boss._bangLine = null;
+        setOverride(boss, 'grateful'); // off duty (roles.js); no mechanic owns it, so he walks his day: in through the door
+      }
+      game.events.emit('boss:letIn', {});
     },
   },
   take_sandwich: {

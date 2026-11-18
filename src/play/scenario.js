@@ -52,6 +52,7 @@ export function updateScenario(game, dt) {
         game.events.emit('claim:done', { by: n.id, item: n._claim.item });
       }
       game.outcome = makeOutcome(game, 'caught', [], []);
+      if (game.caught.why) game.outcome.why = game.caught.why; // a level's catch (rules.js catchNow): its end scene
       endDay(game);
     }
     return;

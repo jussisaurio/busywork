@@ -31,7 +31,10 @@ const B_KEV = ['☕', '@kev'];
 function endKind(o) {
   if (!o) return 'fail';
   const routes = Array.isArray(o.routes) ? o.routes : [];
-  if (o.result === 'caught') return 'caught';
+  // why 'samaritan': you let the boss in off the balcony (clocks.js bossLetIn). Holding his card: caught, and locked
+  // out yourself. Without it: no route, and his arm round you at the blank screen.
+  if (o.result === 'caught') return o.why === 'samaritan' ? 'samaritanCaught' : 'caught';
+  if (o.result === 'fail' && o.why === 'samaritan') return 'samaritan';
   // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
   if (o.result === 'blamed') return o.why === 'mug' || o.why === 'desk' ? 'mug' : 'blamed';
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
@@ -237,6 +240,87 @@ function tableauFail(ctx, game, t, e) {
   // the lone cricket
   const hop = Math.abs(Math.sin(e * 5));
   cricket(ctx, 480 + Math.sin(e * 0.9) * 80, 322 - hop * 14, 22);
+}
+
+// The Good Samaritan, caught: you let him in, he hugged you, and over your shoulder saw his card in your hand. The
+// keycard win the other way round: you on the balcony, fists on the fire door; he, inside, dangles his card at you.
+const B_LET_ME_IN = [['🙏', '🚪'], ['👊', '👊', '🚪']];
+function tableauSamaritanCaught(ctx, game, t, e) {
+  floorCarpet(ctx, TAB.x, TAB.y, 286, TAB.h);
+  balconySlab(ctx, 484, TAB.y, 286, TAB.h);
+  const b = person(t);
+  b.dir = 0; // facing the door, and you behind it
+  b.head = Math.sin(t * 1.6) * 0.12;
+  b.arms = 'holdout';
+  b.item = '#keycard';
+  b.smug = true;
+  b.jacket = bossJacket(game);
+  b.scale = 2.3;
+  drawPerson(ctx, game.level.looks.boss, b, 380, 276);
+  bubble(ctx, e < 2.4 ? ['🪪', '😏'] : ['👋'], 380, 186, e < 2.4 ? e : e - 2.4);
+  const beat = (t * 2.2) % 1;
+  const hit = beat < 0.18;
+  fireDoorSide(ctx, 470, t, hit ? Math.sin(beat * 90) * 2 : 0);
+  const p = person(t);
+  p.dir = Math.PI;
+  p.head = Math.PI + Math.sin(t * 2) * 0.1;
+  p.arms = 'bang';
+  p.sweat = true;
+  p.scale = 2.2;
+  drawPerson(ctx, game.level.looks.player, p, 548, 272);
+  bubble(ctx, B_LET_ME_IN[Math.floor(e / 1.6) % 2], 560, 196, e % 1.6, 'alert');
+}
+
+// The Good Samaritan, not caught: you let him in and he's so grateful he presents with you, his arm round your
+// shoulder, beaming at the room, in front of the blank screen. The cricket hops.
+function tableauSamaritan(ctx, game, t, e) {
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
+  drawScreen(ctx, 382, 104, 196, 84, {
+    glow: ['rgba(255,255,235,0.35)', 10, 6, 6], bar: [6, 6, 6], face: '#ffffff', edge: 'rgba(0,0,0,0.12)',
+  });
+  const p = person(t);
+  p.dir = Math.PI / 2;
+  p.head = p.dir + Math.sin(t * 2.6) * 0.5;
+  p.sweat = true;
+  p.scale = 2.3;
+  drawPerson(ctx, game.level.looks.player, p, 456, 266);
+  const b = person(t);
+  b.dir = Math.PI / 2;
+  b.head = Math.PI / 2 - 0.5 + Math.sin(t * 1.2) * 0.15; // beaming at you, then the room
+  b.smug = true;
+  b.jacket = bossJacket(game);
+  b.scale = 2.3;
+  const squeeze = Math.max(0, Math.sin(t * 3)) * 2;
+  drawPerson(ctx, game.level.looks.boss, b, 516 - squeeze, 262);
+  // his arm, round your shoulder: a sleeve from his shoulder across your back to a hand on your far shoulder
+  const sleeve = bossJacket(game) ? game.level.looks.boss.body : game.level.looks.boss.shirt;
+  ctx.strokeStyle = sleeve;
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(502 - squeeze, 257);
+  ctx.quadraticCurveTo(474, 246, 444 + squeeze, 256);
+  ctx.stroke();
+  fillEllipse(ctx, 442 + squeeze, 257, 5.5, 5, game.level.looks.boss.skin);
+  const k = person(t);
+  k.dir = 0.25;
+  k.head = 0.05;
+  k.pose = 'sit';
+  k.arms = 'desk';
+  k.glance = 1;
+  k.scale = 2;
+  if (!game.world || !game.world.kevGone) drawPerson(ctx, game.level.looks.kev, k, 262, 206);
+  const l = person(t);
+  l.dir = -0.15;
+  l.head = -0.25;
+  l.pose = 'sit';
+  l.arms = 'desk';
+  l.glance = 1;
+  l.scale = 2;
+  drawPerson(ctx, game.level.looks.lin, l, 300, 300);
+  bubble(ctx, e < 2.6 ? ['🤗'] : ['👏', '@player'], 530, 180, e < 2.6 ? e : e - 2.6);
+  const hop = Math.abs(Math.sin(e * 5));
+  cricket(ctx, 600 + Math.sin(e * 0.9) * 60, 322 - hop * 14, 22);
 }
 
 // Fired: you shuffle off to the elevator with your desk in a box; the boss points the way.
@@ -507,5 +591,7 @@ export const END_SCENES = {
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
     mug: { win: false, icons: ['☕', '👉', '😠'], draw: tableauMug }, // the empty mug was yours: in your hand, on your desk
     kev: { win: true, icons: ['☕', '👉', '🪑'], draw: tableauKev }, // the empty mug was on Kev's desk; Kev went home
+    samaritan: { win: false, icons: ['🚪', '🤗', '🦗'], draw: tableauSamaritan }, // let him in: grateful, and no slides
+    samaritanCaught: { win: false, icons: ['🤗', '🪪', '🔒'], draw: tableauSamaritanCaught }, // let him in, holding his card
   },
 };

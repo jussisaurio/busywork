@@ -149,6 +149,14 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   green), through. No card: override `lockedOut`, `world.bossLockedOut = true`, `boss:lockedOut` (a rattle), and the
   escalation lines every ~2.5 s with their events (`boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`,
   `boss:fume`), bang sounds and screen shakes, until the day ends. Only you are near enough to hear.
+- **The Good Samaritan** (`interactions.js` `let_boss_in`, `clocks.js` `bossLetIn`). Any other time, pushing the fire
+  door's bar is a toy: it opens a crack, the held-door alarm buzzes, the reader blinks red, it swings shut. While he is
+  locked out, the same push lets him in: `world.bossLockedOut = false` (the keycard route is gone), `boss:letIn`, the
+  door stands open, override `grateful` (off duty, `roles.js`). He comes through and hugs you (`boss:hug`: 🤗, 🙏😊,
+  arms round you). Holding his card when he lets go: 🪪❗👉, caught, `outcome.why = 'samaritan'` (end card: you locked
+  out on the balcony, he dangles the card inside: 🤗🪪🔒). Not holding it: `world.samaritan`, and at 4:00 a fail with
+  `why: 'samaritan'` (end card: his arm round your shoulder at the blank screen: 🚪🤗🦗). The joke: the one kind
+  thing you do all day is the thing that sinks you.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.

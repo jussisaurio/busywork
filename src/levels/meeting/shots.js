@@ -10,6 +10,8 @@ const HIDE = ['goto my_desk_spot busy', 'put my_desk']; // the cup on your own d
 const SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:06', 'goto my_desk_spot busy', 'interact', 'goto projector busy',
   'interact']; // after Kev has gone home (3:05)
 const KEYCARD = ['busy until 3:11', 'busy 1.35s', 'goto boss_office_door busy', 'goto coat_rack busy']; // the boss is out
+const LET_IN = [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'goto fire_door busy',
+  'interact']; // the keycard taken, the boss locked out, and you push the door open for him
 
 export default [
   {
@@ -160,9 +162,31 @@ export default [
   },
   {
     name: 'fire-door-push',
-    cmds: ['goto fire_door', 'interact', 'wait 0.05s'],
-    intent: 'You stand at the fire door in the lobby corner, arms out, pushing its bar. It will not open: the card ' +
-      'reader by the handle blinks red (with a buzz you cannot see). The balcony is outside, behind it.',
+    cmds: ['goto fire_door', 'interact', 'wait 0.3s'],
+    intent: 'You stand at the fire door in the lobby corner, arms out, pushing its bar. It opens a crack (daylight in ' +
+      'the gap) and the card reader by the handle blinks red: the held-door alarm, with a buzz you cannot see. You ' +
+      'let it swing shut. The balcony is outside, behind it.',
+  },
+  {
+    name: 'boss-let-in',
+    cmds: [...LET_IN, 'busy until 4:00', 'busy 0.2s'],
+    intent: 'The boss was locked out on the balcony. You pushed the fire door open for him (it stands open, daylight ' +
+      'in the doorway), and he has come through and thrown his arms round you, overjoyed (🤗). The keycard in your ' +
+      'hand is his.',
+  },
+  {
+    name: 'end-samaritan-caught',
+    cmds: [...LET_IN, 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: you let him in, he hugged you and saw his keycard in your hand. Now it is the other way ' +
+      'round: you are locked out on the balcony pounding the fire door, and inside the boss dangles his card at you, ' +
+      'smug, then waves bye.',
+  },
+  {
+    name: 'end-samaritan',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'interact', 'goto fire_door busy',
+      'interact', 'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a loss: you let the locked-out boss in without his card on you. He is so grateful he stands at ' +
+      'the blank screen with his arm round your shoulder, beaming (🤗, then 👏 at you). No slides; the cricket hops.',
   },
   {
     name: 'end-caught',

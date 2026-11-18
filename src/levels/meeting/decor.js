@@ -14,7 +14,7 @@ const fireDoorState = (w, game) => {
   const b = findNpc(game, 'boss');
   const out = !!b && b.override === 'lockedOut';
   return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null,
-    denied: toyState(game, 'fire_door').since };
+    denied: toyState(game, 'fire_door').since, open: w.letIn != null ? since(game, w.letIn) : null };
 };
 
 

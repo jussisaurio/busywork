@@ -48,6 +48,8 @@ export const POSES = {
     // (patting his pockets, a fuming cigarette).
     { when: (n) => n.override === 'lockedOut' && n._bangLine?.arms === 'puff', arms: 'puff', item: '#cigarette', angry: true },
     { when: (n) => n.override === 'lockedOut', arms: (n) => n._bangLine?.arms ?? 'bang', angry: true },
+    // Let back in (clocks.js bossLetIn): both arms round you.
+    { when: (n, w) => n.id === 'boss' && w.hugAt != null && !w.hugDone, arms: 'box' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
     // No projector, no slides: the boss points at the dead projector and calls it off (behaviours.js presenter).
     { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'point' },

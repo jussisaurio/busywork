@@ -95,7 +95,10 @@ export const DOORS = [
     zone: 'outside',
     npcs: ['boss'],
     // His card from his jacket on the reader: a beep, and he's back in. (The player sees what the card is for.)
+    // Or you held it open for him from inside (interactions.js let_boss_in): it stays open until he's through and
+    // has hugged you (clocks.js bossLetIn), even if the gather replans him on the way.
     opens(game, npc) {
+      if (game.world.letIn != null && !game.world.hugDone) return true;
       if (game.world.keycard !== npc.id) return false;
       speak(game, npc, [{ say: ['🪪'], kind: 'thought', ttl: 0.9 }]);
       npc._badgeAt = game.loopTime; // the reader's green blink (decor.js)

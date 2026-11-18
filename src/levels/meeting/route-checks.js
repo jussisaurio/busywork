@@ -316,6 +316,47 @@ export default [
     },
   },
   {
+    name: 'keycard in the gap, then let the locked-out boss in → he hugs you 🤗, sees his card 🪪❗ → caught (samaritan)',
+    expect: { result: 'caught' },
+    play({ run, waitFor, npc, g, log }) {
+      run('busy until 3:11');
+      waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+      run('goto boss_office_door busy');
+      run('goto coat_rack busy');
+      waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+      run('interact');
+      run('goto meeting_seat busy');
+      waitFor(() => g.world.bossLockedOut, { busy: true, maxSec: 400 });
+      run('goto fire_door busy');
+      run('interact');
+      waitFor(() => !!g.outcome, { maxSec: 30 });
+      if (!log.some((e) => e.name === 'boss:hug')) throw new Error('no hug');
+      if (g.outcome.why !== 'samaritan') throw new Error('why: ' + g.outcome.why);
+    },
+  },
+  {
+    name: 'keycard in the gap, leave it on the floor, let the boss in → he hugs you 🤗 → at 4:00 a blank slide (samaritan fail)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('busy until 3:11');
+      waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+      run('goto boss_office_door busy');
+      run('goto coat_rack busy');
+      waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+      run('interact');
+      run('goto meeting_seat busy');
+      waitFor(() => g.world.bossLockedOut, { busy: true, maxSec: 400 });
+      run('interact'); // nothing else in reach: a tap drops it
+      if (g.player.held) throw new Error('still holding ' + g.player.held);
+      run('goto fire_door busy');
+      run('interact');
+      run('busy until 4:00'); // the hug stops it
+      run('busy until 4:00');
+      if (!log.some((e) => e.name === 'boss:hug')) throw new Error('no hug');
+      if (g.outcome?.why !== 'samaritan') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
+  {
     // His office is his (roles private): he sees you come in at his door, 🤨, and shows you out before the rack.
     name: 'walk in for the keycard while he sits there → 🤨, 👉 you 🚪, back at your desk without it',
     expect: { result: 'fail' },

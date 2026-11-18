@@ -347,6 +347,15 @@ export function showOutNow(game, npcId) {
   return true;
 }
 
+// For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand). why: a string
+// the outcome carries (outcome.why: its end scene). False if the day is already over or someone already caught you.
+export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
+  if (game.phase !== 'day' || game.caught || game.outcome) return false;
+  caught(game, reason, by, null, icons);
+  if (why) game.caught.why = why;
+  return true;
+}
+
 // He finds you in his private place: 👉 you 🚪, and you walk back to your desk (player.js showOut). Not a catch and
 // not assigned work: it costs you the walk and where you were. Whatever you were doing there stops. Holding his own
 // thing (his contraband, or an item he owns), he takes it back first, pretend phone call or not; anything else

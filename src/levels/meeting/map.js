@@ -40,7 +40,9 @@ export const LEGEND = {
   // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
   // boss smokes. It locks behind you; from outside only a keycard opens it (mechanics.js DOORS). You don't go out
   // there: it is the boss's (solid to you, open to NPCs). Drawn as wall, the door painted on (painters.js fireDoor).
-  X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall' },
+  // Pushed from inside it opens a crack and the alarm buzzes (toys.js); with him locked out, the same push lets him
+  // in (interactions.js let_boss_in).
+  X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall', interactable: 'fire_door' },
   // The balcony: a concrete slab four floors up with a railing (painters.js balcony). Outside, like the lobby.
   '=': { kind: 'balcony', solid: false, opaque: false, draw: 'outside' },
 };

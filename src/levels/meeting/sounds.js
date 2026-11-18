@@ -46,6 +46,8 @@ export const SOUNDS = {
     // The fire door (mechanics.js DOORS): his card on the reader, or the escalation without it.
     'boss:badge': { sfx: 'machineBeep', spot: 'fire_door' }, // back from his smoke, card to the reader
     'boss:lockedOut': { sfx: 'rattle', spot: 'fire_door' }, // the handle won't give
+    'boss:letIn': { sfx: 'denied', spot: 'fire_door' }, // you hold the door for him: the held-door alarm buzzes
+    'boss:hug': { sfx: 'rustle', who: 'boss' }, // 🤗
     'boss:pockets': { sfx: 'rustle', spot: 'fire_door' }, // 🪪❓ patting every pocket
     'boss:knock': { sfx: 'bang', spot: 'fire_door', opts: { hits: 2 } }, // ✊🚪 polite
     'boss:bang': { sfx: 'bang', spot: 'fire_door' }, // 😠🚪🪪

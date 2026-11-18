@@ -109,6 +109,10 @@ export default {
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
     mug: null, // the cup after the spill: 'player' | a spot it was put on (coffee, kev_desk, my_desk)
     _cardTry: null, // when Lin's shout stopped your hand at the jacket (clocks.js)
+    letIn: null, // the loop time you let the locked-out boss back in through the fire door (interactions.js let_boss_in)
+    hugAt: null, // when he hugged you for it (clocks.js bossLetIn)
+    hugDone: false, // he has let go
+    samaritan: false, // he hugged you and saw no keycard: he's grateful, and you still have no slides (verdict.js)
     cardBack: false, // caught with the keycard: the boss took it back off you (clocks.js listen; the end card)
   }),
   harness,
