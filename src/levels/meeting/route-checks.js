@@ -228,6 +228,46 @@ export default [
     },
   },
   {
+    name: 'same, mug back on the machine, but in the restroom at 4:00 → blamed, and you walk in drying your hands (where restroom)',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector busy');
+      run('interact');
+      run('put coffee busy');
+      run('goto restroom_door busy');
+      run('busy until 3:40');
+      run('interact');
+      if (g.player.inside !== 'restroom') throw new Error('not inside the restroom');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.where !== 'restroom') throw new Error(`where ${g.outcome?.where}, not the restroom`);
+    },
+  },
+  {
+    name: 'eat the sandwich, go into the restroom, wash off the mustard, come out clean; then knock while the boss is in there → 🚽😠 through the door',
+    expect: { result: 'fail' },
+    play({ run, g, log }) {
+      run('goto fridge');
+      run('interact');
+      run('eat');
+      run('goto restroom_door');
+      run('interact');
+      if (g.player.inside !== 'restroom' || !g.player.hidden) throw new Error('did not go in');
+      run('interact');
+      if (g.player.smeared) throw new Error('still smeared');
+      if (!log.some((e) => e.name === 'restroom:washed')) throw new Error('no wash');
+      run('interact');
+      if (g.player.inside || g.player.hidden) throw new Error('did not come out');
+      run('pretend until 3:19');
+      run('interact');
+      if (g.player.inside) throw new Error('walked into an occupied restroom');
+    },
+  },
+  {
     name: 'keycard during boss restroom, timing Lin\'s glance → win',
     expect: { result: 'win', routes: ['keycard'] },
     play({ run, waitFor, npc }) {

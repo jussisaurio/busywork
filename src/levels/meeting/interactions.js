@@ -21,6 +21,7 @@ import { findNpc } from '../../game/perception.js';
 import { setOverride } from '../../sim/override.js';
 import { leaving } from '../../sim/npcs.js';
 import { leaveDay } from '../../play/scenario.js';
+import { RESTROOM_ROWS } from './restroom.js';
 
 // Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
 const HOME_PATH = [{ x: 4.5, y: 12.5 }, { x: 4.5, y: 14.5 }, { x: 2.5, y: 15.5 }];
@@ -92,6 +93,7 @@ export const INTERACTIONS = {
       if (withKev) say(game, 'kev', ['👋', '😄'], { kind: 'speech', ttl: 1.8 });
     },
   },
+  ...RESTROOM_ROWS, // the cubicle: go in, wash off the mustard, come out (restroom.js)
   take_sandwich: {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
     can: (p, w) => !p.held && w.sandwich === 'fridge',

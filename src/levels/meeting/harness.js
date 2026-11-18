@@ -59,6 +59,7 @@ export default {
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
     : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
     : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
+    : o.result === 'blamed' && o.where === 'restroom' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}; the table stared at your empty chair, then a flush 🚽, and you walked in drying your hands)`
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
     : o.why === 'home' ? 'FAIL: you just went home 🚌; at 4:00 your phone buzzes on the bus, the boss\'s face on it 📱😠'
     : o.why === 'homeKev' ? 'FAIL: you went home with Kev at 3:00 👋👋🚌; at 4:00 your phone buzzes, the boss\'s face on it 📱😠'
@@ -130,6 +131,9 @@ export default {
           'boss:pound': 'the boss pounds on the fire door with both fists 👊👊🚪', 'boss:fume': 'the boss lights another cigarette, fuming 🚬😤' }[e.name];
       }
       case 'player:leave': return p.why === 'homeKev' ? 'you go home with Kev: out through the entrance to the elevator, both waving 👋👋' : 'you go home: out through the entrance to the elevator 😌';
+      case 'player:in': return p.inside === 'restroom' ? 'you go into the restroom and shut the door 🚽 (nobody can see you in here)' : null;
+      case 'player:out': return p.inside === 'restroom' ? 'flush 🚽: you come out of the restroom' : null;
+      case 'restroom:washed': return 'you scrub the mustard off your sweater at the sink 🧼 (the tap runs)';
       case 'player:gone': return 'ding: the elevator doors close behind you';
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
       case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';

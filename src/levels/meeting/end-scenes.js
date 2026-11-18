@@ -38,7 +38,9 @@ function endKind(o) {
   // why 'home' / 'homeKev': you just went home (interactions.js go_home); with Kev, if he was on his way out too.
   if (o.result === 'fail' && (o.why === 'home' || o.why === 'homeKev')) return o.why;
   // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
-  if (o.result === 'blamed') return o.why === 'mug' || o.why === 'desk' ? 'mug' : 'blamed';
+  if (o.result === 'blamed' && (o.why === 'mug' || o.why === 'desk')) return 'mug';
+  // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
+  if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
 }
@@ -567,6 +569,26 @@ function tableauBlamed(ctx, game, t, e, o) {
   if (kev) bubble(ctx, B_WHAT, 680, 206, e, 'thought', 1.4);
 }
 
+// Blamed, from the restroom (o.where): the same table staring at your empty chair, and then, after the flush, you
+// walk in from the right, wiping your wet hands on your trousers. Everyone turns.
+const B_LOO = ['🚽', '🙂'];
+function tableauRestroom(ctx, game, t, e, o) {
+  tableauBlamed(ctx, game, t, e, o);
+  const k = clamp((e - 0.9) / 1.1, 0, 1);
+  if (k <= 0) return;
+  const p = person(t);
+  const walking = k < 1;
+  p.dir = Math.PI;
+  p.head = Math.PI;
+  p.pose = walking ? 'walk' : 'stand';
+  p.moving = walking;
+  p.phase = t * 7;
+  p.arms = walking ? 'walk' : 'pat';
+  p.scale = 2.4;
+  drawPerson(ctx, game.level.looks.player, p, 800 - easeOutCubic(k) * 60, 282);
+  if (!walking) bubble(ctx, B_LOO, 740, 222, e - 2, 'speech', 1.2);
+}
+
 // The meeting table (the blamed scene's): shadow, walnut top, a slide printout at each end place.
 function meetingTable(ctx) {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -711,6 +733,7 @@ export const END_SCENES = {
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
+    restroom: { win: false, icons: ['🪑', '🚽', '🙂'], draw: tableauRestroom }, // blamed, and in walks you, hands wet
     mug: { win: false, icons: ['☕', '👉', '😠'], draw: tableauMug }, // the empty mug was yours: in your hand, on your desk
     kev: { win: true, icons: ['☕', '👉', '🪑'], draw: tableauKev }, // the empty mug was on Kev's desk; Kev went home
     samaritan: { win: false, icons: ['🚪', '🤗', '🦗'], draw: tableauSamaritan }, // let him in: grateful, and no slides

@@ -33,6 +33,19 @@ export function pour(E, o = {}) {
   }
 }
 
+// 🚽 A flush: the lever clunk, a roaring swirl that drains away, the cistern hissing as it fills.
+export function flush(E, o = {}) {
+  const t = T(E, o), g = G(o), pan = o.pan;
+  tone(E, { t, f: 180, f2: 120, dur: 0.05, gain: 0.08 * g, pan });
+  hiss(E, { t: t + 0.05, dur: 1.3, attack: 0.08, gain: 0.16 * g, type: 'bandpass', f: 700, f2: 260, q: 0.8, pan });
+  hiss(E, { t: t + 0.1, dur: 1.1, attack: 0.15, gain: 0.08 * g, type: 'lowpass', f: 300, f2: 120, q: 0.7, pan });
+  for (let i = 0; i < 6; i++) {
+    const f = rand(160, 320);
+    tone(E, { t: t + 0.6 + Math.random() * 0.7, f, f2: f * 0.6, dur: 0.06, gain: 0.05 * g, pan });
+  }
+  hiss(E, { t: t + 1.3, dur: 0.9, attack: 0.2, gain: 0.04 * g, type: 'bandpass', f: 3200, q: 2, pan });
+}
+
 // 💥 Liquid meets electronics: splash, then an electric zap and a power-down whine.
 export function splashZap(E, o = {}) {
   const t = T(E, o), g = G(o), pan = o.pan;

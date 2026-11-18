@@ -208,6 +208,31 @@ export default [
       'while the phone in your lap buzzes with the boss\'s angry face on it (😬).',
   },
   {
+    name: 'knock-boss',
+    cmds: ['goto restroom_door', 'pretend until 3:19', 'interact', 'wait 0.6s'],
+    intent: 'The restroom is taken (the boss, 3:18): you knock on its door, and he answers through it, cross (🚽😠 and ' +
+      'his face).',
+  },
+  {
+    name: 'kev-mustard',
+    cmds: ['goto fridge pretend', 'interact', 'eat', 'goto kev_desk', 'wait 0.8s'],
+    intent: 'You ate Lin\'s sandwich and the mustard is down your front. Kev, near you, points at his own chest and at ' +
+      'the restroom (👕🟡👉🚽).',
+  },
+  {
+    name: 'restroom-wash',
+    cmds: ['goto fridge', 'interact', 'eat', 'goto restroom_door', 'interact', 'interact', 'wait 0.5s'],
+    intent: 'You went into the restroom (you vanish: nobody can see you in there) and washed the mustard off at the ' +
+      'sink (🧼😌 over the door).',
+  },
+  {
+    name: 'end-restroom',
+    cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
+      'put coffee busy', 'goto restroom_door busy', 'busy until 3:40', 'interact', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, blamed: the projector died, but at 4:00 you were in the restroom. The table stares at your ' +
+      'empty chair in its pool of light; then you walk in from the right, wiping your wet hands on your trousers (🚽🙂).',
+  },
+  {
     name: 'end-caught',
     cmds: ['pretend until 3:18', 'goto coat_rack pretend', 'wait until 3:26.6', 'interact'], // he walks back in from the restroom (🤨) as you reach
     intent: 'End card, a loss: the boss caught you at his jacket, reaching for his keycard (😠🪪). The card is on his ' +

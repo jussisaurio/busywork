@@ -19,6 +19,7 @@ import { npcSees } from '../../game/perception.js';
 import { startClaim } from '../../sim/mechanics/claim.js';
 import { endOverride } from '../../sim/override.js';
 import { catchNow } from '../../play/rules.js';
+import { whoInside } from './restroom.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -30,6 +31,7 @@ const HUG_WAIT = 12; // real seconds after the door: if he never reaches you, he
 
 export function clockFor(game, npc, sim) {
   listen(game);
+  game.player._stall = whoInside(game); // the restroom's rows read it (restroom.js)
   const now = game.clock.minute;
   if (npc.id === 'kev') kevAndTheCup(game, npc, sim);
   if (npc.id === 'boss' && (npc.override === 'grateful' || inHug(game.world))) bossLetIn(game, npc, sim); // (the gather may come mid-hug)
@@ -100,7 +102,7 @@ function kevAndTheCup(game, kev, sim) {
     kev._askedAt = null; // ask now, if he still sees it
   }
   if (kev._askedAt != null && game.loopTime - kev._askedAt < ASK_GAP) return;
-  if (kev._sayQ?.length || game.fx.bubbles.some((b) => b.owner === kev.id && b.age < 0.9)) return; // let his last line (😩 at the empty pot) land first
+  if (kev._sayQ?.length || game.fx.bubbles.some((b) => b.owner === kev.id && !b.toy && b.age < 0.9)) return; // let his last line (😩 at the empty pot) land first
   if (Math.hypot(cup.x - kev.x, cup.y - kev.y) > ASK_RADIUS || !npcSees(game, kev, cup.x, cup.y)) return;
   kev._faceTarget = Math.atan2(cup.y - kev.y, cup.x - kev.x);
   if (p.busyPose === 'phone') { // the cup at your ear (pretending, standing): is that... a phone?

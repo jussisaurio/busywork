@@ -89,7 +89,7 @@ export default {
   behaviours: BEHAVIOURS,
   toys: TOYS,
   clockFor,
-  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
+  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict, where: ['restroom'] }, // where: 4:00 in the restroom (restroom.js)
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },

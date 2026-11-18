@@ -55,6 +55,9 @@ export const SOUNDS = {
     'boss:fume': { sfx: 'grumble', spot: 'fire_door' }, // 🚬😤
     'kev:left': { sfx: 'elevator' },
     'player:gone': { sfx: 'elevator', spot: 'elevator' }, // you just went home (interactions.js go_home)
+    'player:out': { sfx: 'flush', spot: 'restroom', when: (p) => p?.inside === 'restroom' }, // out of the cubicle (restroom.js)
+    'player:in': { sfx: 'door', spot: 'restroom', when: (p) => p?.inside === 'restroom' },
+    'restroom:washed': { sfx: 'pour', spot: 'restroom', opts: { gain: 0.6 } }, // the tap runs
   },
   // The failed meeting's 🦗 sign gets real crickets.
   signs: { '🦗': { sfx: 'crickets' } },

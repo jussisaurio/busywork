@@ -37,7 +37,7 @@ export const LEGEND = {
   // The glass entrance onto the lobby and the elevator. Solid to you all day, but you can always just go home
   // (interactions.js go_home: you walk out to the elevator, and the day is lost).
   L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true, interactable: 'exit' },
-  R: { kind: 'restroom', solid: true, opaque: true },
+  R: { kind: 'restroom', solid: true, opaque: true, interactable: 'restroom' }, // one cubicle: knock, or go in (restroom.js)
   E: { kind: 'elevator', solid: true, opaque: true },
   // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
   // boss smokes. It locks behind you; from outside only a keycard opens it (mechanics.js DOORS). You don't go out

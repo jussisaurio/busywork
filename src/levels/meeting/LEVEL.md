@@ -163,6 +163,15 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   the bus, relieved 😌, then the phone in your lap buzzes with the boss's face on it 😬: 🚌📱😠). With Kev on his way
   out (3:00, within 6 tiles) you both wave 👋, `why: 'homeKev'`, and he sits beside you on the bus. The joke: the
   most obvious way out of the meeting works perfectly, and follows you home.
+- **The restroom** (`restroom.js`, door R, interactable `restroom`; engine `player.js` `goInside`/`comeOut`,
+  meeting `where`). Taken (the boss 3:18–3:22, Lin 3:35–3:37): E knocks (`toys.js` `knock_*`), and they answer
+  through the door, cross (🚽😠 / 🚽😤 with their face). Free, hands empty: E goes in; you are hidden (the rules see
+  nothing) and pretending still runs the clock. Inside with mustard down you, E washes it off (🧼😌, the tap);
+  else E comes out (the flush). Kev, near you while you are smeared, points at his chest and the restroom
+  (`mustard`, 👕🟡👉🚽). Inside at 4:00: `outcome.where === 'restroom'`; blamed, the end card is the empty-chair
+  table and then you walk in from the right, wiping your hands on your trousers (🪑🚽🙂). The jokes: the boss's
+  voice through a toilet door; Kev's helpful mime; and the one place nobody can see you is the one place you can't
+  claim you were working.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.

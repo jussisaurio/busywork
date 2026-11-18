@@ -29,7 +29,8 @@
 //   line     the harness's line when it fires (`<by>` is replaced by who did it)
 //   react    what happens, all optional:
 //     say    [icons] or { icons, kind, ttl, who }: a bubble. who: 'by' (default: whoever fired it), 'prop' (from
-//            the prop: a voice behind a door), a cast id or 'player'
+//            the prop: a voice behind a door), a cast id or 'player'. Skipped while that speaker has a real
+//            (non-toy) bubble up: a toy never talks over the sim's line
 //     sfx    a recipe in audio/sfx.js, played at the prop (audio/audio.js)
 //     pose   { arms?, angry?, face?, for? }: drawn on whoever fired it for `for` seconds (default 1.5); face: his
 //            head turns to the prop (arms: a render/characters.js pose, e.g. 'point', 'reach', 'shrug')
@@ -137,7 +138,9 @@ export function fire(game, toy, who) {
   if (r.say) {
     const s = Array.isArray(r.say) ? { icons: r.say } : r.say;
     const speaker = s.who === undefined || s.who === 'by' ? who : s.who === 'prop' ? { x: at.x, y: at.y } : s.who;
-    say(game, speaker, s.icons, { kind: s.kind, ttl: s.ttl, toy: toy.id });
+    // A toy never talks over a real line: the sim may wait on that bubble (and it is the one that matters).
+    const busy = typeof speaker === 'string' && game.fx.bubbles.some((b) => b.ownerKey === speaker && !b.toy);
+    if (!busy) say(game, speaker, s.icons, { kind: s.kind, ttl: s.ttl, toy: toy.id });
   }
   game.events.emit(`toy:${toy.id}`, { id: toy.id, by: who, x: at.x, y: at.y });
 }

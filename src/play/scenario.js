@@ -9,7 +9,7 @@ import { spotPos, inZone } from '../game/perception.js';
 import { stareAt } from '../sim/npcs.js';
 import { claimPending } from '../sim/mechanics/claim.js';
 import { cancelAction } from './interactions.js';
-import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './player.js';
+import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength, comeOut } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
 const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
@@ -127,16 +127,21 @@ function startMeeting(game, s) {
   const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
   const present = inZone(game, level.meeting.room, at.x, at.y);
   const base = !routes.length ? 'fail' : present ? 'win' : 'blamed';
+  // Where you were (level.meeting.where: names, in order, of zones or of places you go inside, player.inside): the
+  // verdict and the end scene read it (outcome.where; absent when you were in none of them). Inside, you come out.
+  const where = (level.meeting.where ?? []).find((z) => z === p.inside || (!p.inside && inZone(game, z, at.x, at.y))) ?? null;
+  comeOut(game);
   // The level can judge the room itself (level.meeting.verdict(game, { result, routes, present })): null keeps
   // the rule above; else { result?, why?, stare? }. why: a string the outcome carries (for end scenes, the
   // harness); stare: where the table looks (npcs.js stareAt; blamed without one: your empty chair).
-  const v = level.meeting.verdict?.(game, { result: base, routes, present }) ?? null;
+  const v = level.meeting.verdict?.(game, { result: base, routes, present, where }) ?? null;
   const result = v?.result ?? base;
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
   found.push(...newRoutes);
   game.outcome = makeOutcome(game, result, routes, newRoutes);
   if (v?.why) game.outcome.why = v.why;
+  if (where) game.outcome.where = where;
 
   // Freeze the player for the beat.
   cancelAction(game, 'meeting');
