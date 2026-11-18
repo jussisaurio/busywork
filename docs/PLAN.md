@@ -14,8 +14,8 @@ Jussi is the only playtester and the only judge of funny. Agents pitch wide; onl
 | 3a | Engine: the endings shelf. Every distinct ending seen is kept per level and shown as pictures; no blank slots, no count | merged 2026-11-18. Not tried in a real browser. The three meeting-table endings look alike at shelf size |
 | 3b | Engine: a toy (a prop plus a reaction, no route effect) costs a few lines and does not upset the gate. First measure what one costs today | measured 2026-11-18: a reaction-only prop is about 20 lines; a hunted item is about 100 and cannot be kept off the routes. Proposal: a `level.toys` field run by its own mechanic, cosmetic only, with a gate check that toys change no outcome. Not built |
 | 4 | Jussi ticks pitches | done 2026-11-18. His reasons are in `PITCHES.md`; the patterns are in DESIGN, "Jussi's taste" |
-| 5a | Build slice 1 in Meeting (below) | engine and half the Meeting items merged 2026-11-18; the rest in progress (see "Slice 1 status") |
-| 6 | Jussi plays Meeting for ten minutes | waiting on 5a |
+| 5a | Build slice 1 in Meeting (below) | done 2026-11-18 (see "Slice 1 status"). Gate passes. Not seen in a browser |
+| 6 | Jussi plays Meeting for ten minutes | ready |
 | 5b | Build slice 2, adjusted by what he says after playing | waiting on 6 |
 
 Decided by Jussi:
@@ -55,8 +55,9 @@ Meeting:
   wash, Kev's nudge, blamed from the restroom); the picture war.
 - Merged later the same day: the ficus, coffee into a typewriter, Kev dozing; the fix for the cup in the boss's
   office (above). `gate.mjs --level meeting` passes.
-- In progress, two builders: the plain fails (shadow puppets) and "where were you" at your desk; the bib, the
-  campfire and Kev's doze, which does not read yet (no 💤 shows, the slump is a dark dot).
+- Merged last: the plain fails by what you are doing at 4:00 (cup in hand, on the phone, in the room: shadow
+  puppets), "where were you" typing at your desk, the bib, the campfire, Kev's doze drawn with rising z's.
+- Slice 1 is built. Skipped: "where were you" in the boss's chair (his office is private; needs new player state).
 
 ### Known rough edges (prune as they are fixed)
 - The fire door's red blink and the Samaritan hug are small at map scale.
@@ -69,6 +70,11 @@ Meeting:
 - The ficus: your own 🌱 thought covers the plant, and nothing shows the coffee going in.
 - The typewriter is drawn as a terminal; the catch is instant and remote (nobody walks over); your face is not
   sooty on the end card; the plant in the fired box could be taken for the ficus.
+- The campfire's timing is tight (take the card at about 3:21.6); its shot uses fixed clock times and will break
+  first if Lin's glance or the boss's hunt moves. A player may never find it.
+- The bib: the sandwich covers Lin's face mid-bite; the ending assumes an 'evidence' catch in Meeting is the mustard.
+- The last-cup and phone-call fails are close in spirit. Kev is usually gone by 4:00, so his reactions rarely show.
+- Kev's doze is small at map scale (blue z's over his head).
 - `play.mjs` help lists some targets twice. Meeting's sim cost is 1.64x its perf budget (advisory).
 - `check.mjs` in a worktree needs `BUSYWORK_CANVAS_DIR` pointed at main's `tools/.deps`.
 
