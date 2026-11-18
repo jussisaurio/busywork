@@ -20,7 +20,7 @@ const VOWELS = {
 };
 
 // Voice characters. The engine has the player's and a generic one; a level adds its cast's (level.voices, e.g.
-// src/levels/meeting/voices.js; a level's voice of the same name wins).
+// src/levels/office/voices.js; a level's voice of the same name wins).
 //   wave: source waveform. f0: base pitch (Hz). spread: random pitch per syllable (+-fraction).
 //   decl: pitch drop across the utterance. syl/gap: syllable/gap length ranges (s). atk: attack (s).
 //   fmt: formant scale. q: [Q1, Q2] formant sharpness. mk: formant make-up gain. f2amp: F2 level.

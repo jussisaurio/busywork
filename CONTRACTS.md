@@ -124,7 +124,7 @@ Examples used below:
 | `behaviours` | if the cast names a hook | sim | `fixture/cast.js` `BEHAVIOURS` |
 | `failSign` | no | scenario | meeting `index.js` |
 | `decor`, `looks`, `poses`, `cones`, `endScenes` | no | render | `fixture/presentation.js` |
-| `sounds`, `voices` | no | audio | `meeting/sounds.js`, `meeting/voices.js` |
+| `sounds`, `voices` | no | audio | `meeting/sounds.js`, `office/voices.js` |
 | `harness` | no | `src/agent/harness.js` | `fixture/harness.js` |
 | `gate` | for fuzz, gate and golden | `tools/fuzz.mjs`, `tools/golden-render.mjs` | `fixture/gate.js` |
 
@@ -427,7 +427,7 @@ Render and audio read these; the sim never does. All optional except `title`.
   pixels (`at`: the tile; `shown`: what `state` returned). Draw the state that decides the outcome on the object.
   `things: { [name]: painter | thing name }`
   names things that are no item (Things, above). Example: fixture `DECOR` and `fixture/painters.js`.
-- `looks`: `{ [id]: look }` per person and `player` (fields in `meeting/looks.js`); anyone without one gets a
+- `looks`: `{ [id]: look }` per person and `player` (fields in `office/looks.js`); anyone without one gets a
   generic look in his `color`.
 - `poses`: `{ arms: [{ when(npc, world, game), arms, item?, angry?, crank? }], marks: [{ when, angry?, badge?,
   jacket? }] }`. The first `arms` rule that holds wins; every `marks` rule that holds applies. `item` is the

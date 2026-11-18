@@ -2,7 +2,7 @@
 // end-scenes.js, sounds.js and voices.js document the fields).
 import { OXBLOOD, MUSTARD, TEAL } from '../../render/palette.js';
 import { T } from '../../render/util.js';
-import { LOOKS as OFFICE } from '../meeting/looks.js';
+import { LOOKS as OFFICE } from '../office/looks.js';
 import { listShown, drawListScreen } from './list.js';
 import { END_SCENES } from './end-scenes.js';
 import { kevbag, handset, pwstar, enterkey, deskPhone, mobile, socket } from './painters.js';

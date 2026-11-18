@@ -2,7 +2,7 @@
 // decor.js, looks.js, voices.js and sounds.js document the fields). Level 1's people are imported
 // read-only; the auditor is new.
 import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
-import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
+import { LOOKS as OFFICE_LOOKS } from '../office/looks.js';
 import { OFFICE_VOICES } from '../office/voices.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { DESK_MARKS, penShake, penScribble, wallet } from './things.js';
@@ -35,7 +35,7 @@ export const DECOR = {
   cabinets: OFFICE_CABINETS,
   clock: OFFICE_CLOCK,
   props: [
-    // Both pots full all afternoon, and both pour (index.js LEGEND, meeting/coffee.js).
+    // Both pots full all afternoon, and both pour (index.js LEGEND, office/coffee.js).
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
     { tile: 'M', draw: 'carafe', state: () => ({ full: true }) },
     { tile: 'K', draw: 'coatRack', state: () => ({ coat: false, tag: false }) },

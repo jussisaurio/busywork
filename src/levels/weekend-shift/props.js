@@ -21,7 +21,7 @@ import { drawPerson } from '../../render/characters.js';
 import { person } from '../../render/tableau.js';
 import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
-import { LOOKS } from '../meeting/looks.js'; // (the board in the end cards' rows: whose face)
+import { LOOKS } from '../office/looks.js'; // (the board in the end cards' rows: whose face)
 
 const INK = '#2a2f3a';
 const MARKER = '#c8372d';
