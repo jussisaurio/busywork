@@ -32,6 +32,7 @@ import harness from './harness.js';
 import gate from './gate.js';
 import { letter } from './things.js';
 import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { OWN_DESK, FRIDGE, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
 
 const t = (hhmm) => at(hhmm, START);
 
@@ -66,12 +67,12 @@ const LEGEND = {
   Y: { kind: 'tray', solid: true, opaque: false, interactable: 'tray', draw: 'desk' },
   S: { kind: 'light_panel', solid: true, opaque: true, interactable: 'office_switch', draw: 'wall' },
   X: { kind: 'fuse_box', solid: true, opaque: true, interactable: 'fuse_box', draw: 'wall' },
-  M: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' }, // the counter's machine
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
-  R: { kind: 'restroom', solid: true, opaque: true },
-  E: { kind: 'elevator', solid: true, opaque: true },
+  M: COFFEE_POT, // the counter's machine
+  F: FRIDGE,
+  P: OWN_DESK,
+  L: ENTRANCE,
+  R: RESTROOM,
+  E: ELEVATOR,
 };
 
 const SPOTS = {

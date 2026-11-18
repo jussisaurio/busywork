@@ -34,6 +34,7 @@ import { TITLE, DECOR, LOOKS, POSES, END_SCENES, SOUNDS } from './presentation.j
 import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK, COFFEE_MACHINE, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
 
 // Level 1's floor (src/levels/meeting/map.js), with the boss's desk turned round and no projector.
 //  Boss office (glass S/E walls)  | Meeting room                    | Kitchen
@@ -68,12 +69,12 @@ const LEGEND = {
   Q: { kind: 'boss_pc', solid: true, opaque: false, interactable: 'boss_pc', draw: 'desk' }, // his screen
   M: { kind: 'lin_mobile', solid: true, opaque: false, draw: 'desk' }, // Lin's desk, her mobile on it
   V: { kind: 'kev_phone', solid: true, opaque: false, draw: 'desk' }, // Kev's desk, his desk phone on it
-  C: { kind: 'coffee_machine', solid: true, opaque: false },
+  C: COFFEE_MACHINE,
   J: { kind: 'meeting_table', solid: true, opaque: false },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
-  R: { kind: 'restroom', solid: true, opaque: true },
-  E: { kind: 'elevator', solid: true, opaque: true },
+  P: OWN_DESK,
+  L: ENTRANCE,
+  R: RESTROOM,
+  E: ELEVATOR,
 };
 
 const SPOTS = {

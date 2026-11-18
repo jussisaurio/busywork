@@ -3,6 +3,7 @@
 // at your desk while the boss is out, and put the note in his suggestion box before he empties it at 2:48.
 // Dropped on the floor it's just contraband (he pockets it); left on your own desk it's evidence (caught).
 import { at, deg } from '../../config.js';
+import { OWN_DESK, RESTROOM } from '../office/legend.js';
 
 const MAP = [
   '################', // 0
@@ -18,8 +19,8 @@ const MAP = [
 ];
 
 const LEGEND = {
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  R: { kind: 'restroom', solid: true, opaque: true },
+  P: OWN_DESK,
+  R: RESTROOM,
 };
 
 const SPOTS = {

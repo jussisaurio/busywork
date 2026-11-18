@@ -24,6 +24,7 @@ import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, CONES } from '.
 import { parcelThing, broomThing, brownBoxThing } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK } from '../office/legend.js';
 
 // 30 x 17. Your office (west), the corridor (north), the back office behind the counter (middle), the store room
 // (east), the lobby (south). Bob sits behind the counter facing the lobby, his monitor on the counter.
@@ -51,7 +52,7 @@ const MAP = [
 ];
 
 const LEGEND = {
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
   R: { kind: 'drawer', solid: true, opaque: false, interactable: 'drawer', draw: 'desk' }, // your desk's drawer end
   Q: { kind: 'pigeonholes', solid: true, opaque: false, draw: 'floor' }, // the cabinet's top half (painters.js)
   S: { kind: 'pigeonholes', solid: true, opaque: false, interactable: 'pigeonholes', draw: 'floor' }, // its parcel shelf

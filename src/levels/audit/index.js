@@ -19,6 +19,7 @@ import { laptop } from './things.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, PEN_LOOK, PEN_LOOK_YOU, penBeat, headDown } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK, FRIDGE, COAT_RACK, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
 
 // Level 1's floor (meeting/map.js), with the projector a plain meeting table and the coat rack and fridge set
 // dressing only. Both coffee machines have a full pot and pour (meeting/coffee.js): the auditor, Lin and Kev drink
@@ -45,15 +46,15 @@ const MAP = [
 ];
 
 const LEGEND = {
-  K: { kind: 'coat_rack', solid: true, opaque: false },
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
+  K: COAT_RACK,
+  F: FRIDGE,
+  C: COFFEE_POT,
   // The hallway's machine: a letter of its own, so DECOR draws its pot too (a prop draws on its letter's first tile).
-  M: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
-  R: { kind: 'restroom', solid: true, opaque: true },
-  E: { kind: 'elevator', solid: true, opaque: true },
+  M: COFFEE_POT,
+  P: OWN_DESK,
+  L: ENTRANCE,
+  R: RESTROOM,
+  E: ELEVATOR,
 };
 
 const ZONES = {

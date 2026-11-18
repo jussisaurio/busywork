@@ -26,6 +26,7 @@ import { OFFICE_VOICES } from '../office/voices.js';
 import { THINGS as PROP_THINGS } from './props.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK } from '../office/legend.js';
 
 const START = 16 * 60; // 4:00 PM
 const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes of noodles): about the walk back past the board
@@ -72,7 +73,7 @@ const LEGEND = {
   C: { kind: 'counter', solid: true, opaque: false, draw: 'desk', interactable: 'noodles' },
   // the counter on down the wall, bare (props.js draws it): the microwave is the kitchen's one thing to use
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
   // the supply room's phone, on a little table (props.js draws both), out of the boss's sight behind the wall
   Q: { kind: 'desk_phone', solid: true, opaque: false, interactable: 'desk_phone' },
   // the end of Lin's desk, where her lunch box sits until 4:30 (props.js draws it)
