@@ -304,8 +304,8 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
 
   const grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, R);
   grad.addColorStop(0, `rgba(${r},${g},${b},${a.toFixed(3)})`);
-  grad.addColorStop(0.65, `rgba(${r},${g},${b},${(a * 0.65).toFixed(3)})`);
-  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  grad.addColorStop(0.65, `rgba(${r},${g},${b},${(a * 0.95).toFixed(3)})`);
+  grad.addColorStop(1, `rgba(${r},${g},${b},${(a * 0.8).toFixed(3)})`); // true reach: still plainly there at the edge
 
   if (dark.length) {
     ctx.save();
@@ -314,7 +314,7 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   fan(ctx, map, ox, oy, dir, fov, radius);
   ctx.fillStyle = grad;
   ctx.fill();
-  const edge = (sees ? 0.42 : 0.26) + notice * 0.3 * pulse;
+  const edge = (sees ? 0.5 : 0.36) + notice * 0.3 * pulse;
   ctx.strokeStyle = `rgba(${Math.round(r * 0.45)},${Math.round(g * 0.45)},${Math.round(b * 0.45)},${(edge * 0.8).toFixed(3)})`;
   ctx.lineWidth = sees || notice > 0 ? 2.5 : 2;
   ctx.stroke();
