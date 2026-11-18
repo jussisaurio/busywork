@@ -146,4 +146,9 @@ function listen(game) {
   game.events.on('claim:done', (e) => {
     if (game.level?.id === 'meeting' && e.item === 'keycard') takeBack();
   });
+  // Caught over the mustard (hunting Lin saw it on you and told: roles.js evidence): outcome.why 'bib', its own end
+  // scene (end-scenes-combo.js tableauBib: you type in a giant paper bib while Lin eats a fresh sandwich at your elbow).
+  game.events.on('caught', (e) => {
+    if (game.level?.id === 'meeting' && e?.reason === 'evidence' && game.caught && !game.caught.why) game.caught.why = 'bib';
+  });
 }

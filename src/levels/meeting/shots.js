@@ -290,6 +290,13 @@ export default [
       'things: fired.',
   },
   {
+    name: 'end-bib',
+    cmds: ['busy until 2:47', 'goto fridge busy', 'interact', 'eat', 'goto my_seat busy', 'sit', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a loss: you ate Lin\'s sandwich and she saw the mustard on you. You sit typing at your desk in a ' +
+      'giant white paper bib tied round your neck, a blob of mustard already on it. Lin stands at your elbow eating a ' +
+      'fresh sandwich, slowly, staring at you (👀 and your face, then 😋). Now and then you glance at it (🥪🥺).',
+  },
+  {
     name: 'kev-dozing',
     cmds: [...POUR, ...HIDE, 'sit busy', 'busy until 2:53.4'],
     intent: 'Kev (olive hoodie, right) never got his afternoon coffee: you poured the last cup, and it sits on your ' +

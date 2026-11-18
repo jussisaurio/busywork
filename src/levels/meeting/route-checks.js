@@ -283,7 +283,7 @@ export default [
     },
   },
   {
-    name: 'combo, but eat it at the fridge and sit at your desk → hunting Lin sees the mustard 🥪❗👉, the boss hears → caught',
+    name: 'combo, but eat it at the fridge and sit at your desk → hunting Lin sees the mustard 🥪❗👉, the boss hears → caught (the bib)',
     expect: { result: 'caught' },
     play({ run, waitFor, npc, g, log }) {
       waitFor(() => g.clock.minute >= 16);
@@ -298,6 +298,7 @@ export default [
       if (!t) throw new Error('Lin never spotted the mustard');
       if (npc('lin').override === 'hunting') throw new Error('Lin kept hunting after she knew');
       run('busy until 4:00');
+      if (g.outcome?.why !== 'bib') throw new Error(`caught over the mustard, but why ${g.outcome?.why}, not the bib`);
     },
   },
   {

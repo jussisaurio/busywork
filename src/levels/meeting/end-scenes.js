@@ -15,11 +15,13 @@ import { drawProjector } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
+import { tableauBib } from './end-scenes-combo.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
 
 // Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
 const MORE_CAUGHT = new Set(['typewriter']);
+MORE_CAUGHT.add('bib'); // caught over the mustard (clocks.js): end-scenes-combo.js
 
 const B_ANGRY = ['😠'];
 const B_POINT_YOU = ['👉', '@player'];
@@ -735,6 +737,7 @@ function meetingScreen(ctx, t, dead, dx) {
 export const END_SCENES = {
   kindOf: endKind,
   scenes: {
+    bib: { win: false, icons: ['🥪', '🟡', '⌨️'], draw: tableauBib }, // Lin saw the mustard: you type in a bib (end-scenes-combo.js)
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
