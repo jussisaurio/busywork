@@ -12,6 +12,7 @@ import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.j
 import { sparkle } from './world.js';
 import { TAB, person, bubble, floorCarpet, confetti, backWall } from './tableau.js';
 import { clockFace } from './things.js';
+import { drawShelf } from './shelf.js';
 
 // Width of a row of n route slots.
 const rowSpan = (n, size, gap) => (n > 0 ? n * size + (n - 1) * gap : 0);
@@ -157,6 +158,7 @@ export function drawTitle(ctx, game, t, mem) {
     text(ctx, String(loops), rx + span + 40, 446, font(20, MONO_FAMILY, 'bold'), C.cream, 'left');
   }
   if (e > 0.4) playKey(ctx, VIEW_W / 2, 528, 132, 40, t);
+  drawShelf(ctx, game, mem, { alpha: clamp((e - 0.6) / 0.4, 0, 1) }); // the endings found here
 }
 
 const TITLE_KEYS = LEGEND_PLAY.filter((k) => k.key === 'E' || k.key === '⇧' || k.key === 'R');
@@ -257,16 +259,28 @@ export const DEFAULT_END_SCENES = {
   },
 };
 
+// The scene an outcome's end card draws: { kind, scene, key }. kind names the scene (the level's kindOf, or
+// 'stopped'); key names the ending on the shelf (game/endings.js): the scene, plus outcome.why when it has one, since
+// a scene may draw a why its own way (Meeting's 'mug' scene: the mug in your hand, or on the table).
+export function endScene(level, o) {
+  const ends = level.endScenes || DEFAULT_END_SCENES;
+  let kind = ends.kindOf(o);
+  let scene = ends.scenes[kind] || NO_SCENE;
+  // Only while you were still at the work you were sent to: then the order is what lost you the day. Sent back
+  // earlier and lost some other way later, the card shows that other way (the step that broke).
+  if (o?.stopped?.working && !scene.win && kind !== 'stopped') {
+    scene = ends.scenes.stopped || STOPPED_SCENE;
+    kind = 'stopped';
+  }
+  const key = o?.why !== undefined && o?.why !== null ? `${kind}:${o.why}` : kind;
+  return { kind, scene, key, known: scene !== NO_SCENE };
+}
+
 export function drawEnd(ctx, game, t, mem) {
   playButton.rect = null; // set again below once the ▶ shows
   const o = game.outcome || { result: 'fail', routes: [], newRoutes: [], loop: 0, minute: 0 };
   const e = Math.max(0, t - fin(mem.endStart, t));
-  const ends = game.level.endScenes || DEFAULT_END_SCENES;
-  const kind = ends.kindOf(o);
-  let scene = ends.scenes[kind] || NO_SCENE;
-  // Only while you were still at the work you were sent to: then the order is what lost you the day. Sent back
-  // earlier and lost some other way later, the card shows that other way (the step that broke).
-  if (o.stopped?.working && !scene.win && kind !== 'stopped') scene = ends.scenes.stopped || STOPPED_SCENE;
+  const { scene } = endScene(game.level, o);
   const newRoutes = Array.isArray(o.newRoutes) ? o.newRoutes : [];
   const stampAt = (j) => 0.7 + j * 0.35;
 
@@ -384,4 +398,7 @@ export function drawEnd(ctx, game, t, mem) {
   text(ctx, clockDigits(fin(o.minute), game.level.day.start), 422, by + 1, font(22, MONO_FAMILY, 'bold'), C.ink, 'left');
   if (e > 0.6) playKey(ctx, 700, by, 110, 38, t);
   ctx.restore();
+
+  // the endings found here, under the card; this one stamps in after the routes if it is new
+  drawShelf(ctx, game, mem, { e, stampAt: stampAt(j), alpha: clamp(e / 0.25, 0, 1) });
 }

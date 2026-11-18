@@ -22,6 +22,10 @@
 //                                                 render pixel-identical (the PNGs are written first, to look at)
 //   node tools/shots.mjs --level <id> --replay    writes the replay strips (tools/lib/replay.mjs), one per route check,
 //                                                 to tools/.shots/<id>/replay/run-NN/ (NN.png, captions.md), runs.md
+//   node tools/shots.mjs --level <id> --shelf     writes the endings shelf (src/render/shelf.js) to tools/.shots/<id>/shelf/:
+//                                                 the title with no ending found, the level's first end shot found fresh, the
+//                                                 title with that one, its last end shot found after all the others, the
+//                                                 title with all of them (the endings are those its end shots reach)
 //   node tools/shots.mjs --level <id> --verbs     writes the verb sheets (tools/lib/verbs.mjs), one per item, to
 //                                                 tools/.shots/<id>/verbs/: NN-item.png labelled, NN.png as the step 1
 //                                                 reader sees it (numbers only), verbs.md (what each panel is)
@@ -36,6 +40,8 @@ import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 import { createRenderer } from '../src/render/renderer.js';
+import { endScene } from '../src/render/screens.js';
+import { createGame } from '../src/state.js';
 import { createHarness } from '../src/agent/harness.js';
 import { getLevel } from '../src/levels/index.js';
 import { formatClock } from '../src/config.js';
@@ -94,11 +100,13 @@ export const BEAT_WAIT = 2;
 // game minute of the drawn moment (for an end card, the minute the commands ended on, before it plays on), at the same
 // as a wall clock reads it ('3:12 PM').
 // harness: extra createHarness options (tools/press-stops.mjs draws a shot with and without pressStops).
-export function renderShot(level, shot, lib = loadCanvas(), harness = {}) {
+// endings: the endings shelf to start from, [{ key, o }] (--shelf).
+export function renderShot(level, shot, lib = loadCanvas(), harness = {}, endings = null) {
   return withDom(lib, shot.name, () => {
     let view = null;
     const h = createHarness({ level, onFrame: () => view.note(), ...harness });
     const g = h.game;
+    if (endings) g.persist.endingsBy = { [level.id]: endings.map((e) => ({ ...e })) };
     view = playerView(g); // bubbles as at normal speed, not as long as pretending stretches them
     const canvas = lib.createCanvas(W, H);
     const r = createRenderer(canvas, { strict: true });
@@ -179,6 +187,41 @@ export function writeShots(id, rendered, dir = shotsDir(id)) {
   return dir;
 }
 
+// The endings shelf, five pictures (see the usage above). Returns [{ file, png, what }].
+export async function renderShelf(id, { lib = loadCanvas() } = {}) {
+  const level = getLevel(id);
+  const ends = (await loadShots(id)).filter((s) => s.beat === undefined || s.beat === false);
+  const done = ends.map((s) => ({ s, ...renderShot(level, s, lib) })).filter((r) => r.phase === 'end');
+  if (!done.length) throw new Error(`src/levels/${id}/shots.js: no shot ends the day, so there is no ending to shelve`);
+  const all = [];
+  for (const r of done) {
+    const key = endScene(level, r.outcome).key;
+    if (!all.some((e) => e.key === key)) all.push({ key, o: r.outcome });
+  }
+  const title = (name, endings) => withDom(lib, name, () => {
+    const g = createGame({ level });
+    g.persist.endingsBy = { [level.id]: endings };
+    const canvas = lib.createCanvas(W, H);
+    const r = createRenderer(canvas, { strict: true });
+    g.time = 0;
+    r.render(g);
+    g.time = 3;
+    r.render(g);
+    return canvas.toBuffer('image/png');
+  });
+  const first = done[0];
+  const last = done[done.length - 1];
+  const lastKey = endScene(level, last.outcome).key;
+  const others = all.filter((e) => e.key !== lastKey);
+  return [
+    { file: '01-title-empty.png', png: title('shelf-0', []), what: 'title, no ending found' },
+    { file: '02-end-first.png', png: first.png, what: `end card '${first.s.name}', the first ending found` },
+    { file: '03-title-one.png', png: title('shelf-1', all.slice(0, 1)), what: 'title, one ending found' },
+    { file: '04-end-many.png', png: renderShot(level, last.s, lib, {}, others).png, what: `end card '${last.s.name}', found after the other ${others.length}` },
+    { file: '05-title-many.png', png: title('shelf-n', all), what: `title, all ${all.length} endings the shots reach` },
+  ];
+}
+
 // Captures the replay strips of every route check of level `id` (tools/lib/replay.mjs).
 export async function renderReplay(id, { lib = loadCanvas() } = {}) {
   const level = getLevel(id);
@@ -205,7 +248,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const i = process.argv.indexOf('--level');
   const id = i > 0 ? process.argv[i + 1] : null;
   if (!id) {
-    console.error('usage: node tools/shots.mjs --level <id> [--replay | --verbs]');
+    console.error('usage: node tools/shots.mjs --level <id> [--replay | --verbs | --shelf]');
     process.exit(2);
   }
   try {
@@ -216,6 +259,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       const dir = writeRuns(runs, join(shotsDir(id), 'replay'));
       for (const r of runs) console.log(`  ${r.dir}: ${r.frames.length} frames (${r.total} moments)  ${r.outcome?.result ?? 'no outcome'}  ${r.name}${r.err ? `  (check failed: ${r.err})` : ''}`);
       console.log(`shots: ${id}: ${runs.length} replay strips in ${dir} (${((performance.now() - t0) / 1000).toFixed(1)} s)`);
+      process.exit(0);
+    }
+    if (process.argv.includes('--shelf')) {
+      const dir = join(shotsDir(id), 'shelf');
+      mkdirSync(dir, { recursive: true });
+      for (const p of await renderShelf(id)) {
+        writeFileSync(join(dir, p.file), p.png);
+        console.log(`  ${p.file}  ${p.what}`);
+      }
+      console.log(`shots: ${id}: the endings shelf in ${dir} (${((performance.now() - t0) / 1000).toFixed(1)} s)`);
       process.exit(0);
     }
     if (process.argv.includes('--verbs')) {

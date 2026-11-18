@@ -475,6 +475,11 @@ game = {
   map,                        // parsed map
   persist: { loop: 0, routesFoundBy: { [level.id]: [] } },   // found route ids per level
   // persist.routesFound: accessor for routesFoundBy[game.level.id] (read, push or assign; created empty on first read)
+  // persist.endingsBy: { [level.id]: [{ key, o }] }, the endings shelf (game/endings.js, render/shelf.js): each distinct
+  //   ending seen, in the order found; key = the end scene's kind, plus ':' + outcome.why when there is one
+  //   (screens.js endScene). Noted by main.js when a day ends (not by the renderer), kept in localStorage
+  //   ('busywork.endings.v1', try/catch: without it, this session only). persist.endingNew: the key the current end
+  //   card found (it stamps in), else null. The sim never reads either.
   phase: 'title',             // 'title' | 'day' | 'end'
   settings: { showCones: true, muted: false },
   debug: { speed: 1 },        // integer sim multiplier ([ and ] keys)
@@ -724,7 +729,7 @@ an unknown id exits 2 and lists the registry.
   draws its end card; `beat: <seconds>` in `shots.js` draws that beat instead, that many seconds in (`beat: true`: a
   catch's beat 0.8 s in). `Ns` in harness commands is real seconds, so
   `pretend 5s` lands about 18 game minutes on: time a shot with `pretend until 3:20` or `pretend 2m`, then
-  `wait Ns` (`docs/COLD-READ.md`). `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--verbs` draws a verb sheet per
+  `wait Ns` (`docs/COLD-READ.md`). `--replay` draws a frame strip per route check to `tools/.shots/<id>/replay/`; `--shelf` draws the endings shelf (title empty, one, many; end card first and many) to `tools/.shots/<id>/shelf/`; `--verbs` draws a verb sheet per
   item (`tools/lib/verbs.mjs`: the item in hand, every generic verb on it) to `tools/.shots/<id>/verbs/`. Bubbles,
   sightlines and ripples are drawn as a player at normal speed sees them at that clock time, even after pretending
   (`playerView`, `tools/lib/draw.mjs`); the game's own fx are untouched. Needs `@napi-rs/canvas`:
