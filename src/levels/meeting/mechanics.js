@@ -6,6 +6,7 @@
 import { at } from '../../config.js';
 import { npcSees } from '../../game/perception.js';
 import { speak } from '../../sim/override.js';
+import { bossBadgedIn } from './balcony.js';
 
 const SEES_CUP = 3.5; // tiles: how close the hunting boss must be to spot the cup on a desk or the machine
 
@@ -102,6 +103,7 @@ export const DOORS = [
       if (game.world.keycard !== npc.id) return false;
       speak(game, npc, [{ say: ['🪪'], kind: 'thought', ttl: 0.9 }]);
       npc._badgeAt = game.loopTime; // the reader's green blink (decor.js)
+      bossBadgedIn(game, npc); // the door swings; with you out there he holds it for you (balcony.js)
       game.events.emit('boss:badge', {});
       return true;
     },

@@ -180,11 +180,11 @@ export function emptyBag(ctx, info, at) {
 
 // The fire door onto the smokers' balcony (decor prop on the X tile; mechanics.js DOORS): a red steel door set in
 // the wall, a wired window, a push bar, a green EXIT sign over it and a card reader by the handle. state:
-//   locked  the boss is out there without his card: the reader blinks red
+//   locked  someone is out there without a card (the boss, or you): the reader blinks red
 //   beep    seconds since his card opened it (green for a moment), or null
 //   hit     seconds since his last go at it, or null: the door shudders and dust puffs off it
-//   denied  seconds since you pushed the bar from inside (toys.js), or null: the bar gives a little and the reader
-//           blinks red three times
+//   open    seconds into its swing (balcony.js doorSwing), or null: it opens wide (the bar pushed in as it goes),
+//           daylight in the gap, and swings shut
 export function fireDoor(ctx, info, at, state, t) {
   const px = at.x * T;
   const py = at.y * T;
@@ -192,13 +192,11 @@ export function fireDoor(ctx, info, at, state, t) {
   const dx = hit === null ? 0 : Math.sin(hit * 70) * 2.2 * (1 - hit / 0.45);
   ctx.fillStyle = '#4a4f55'; // steel frame
   ctx.fillRect(px + 2, py, T - 4, T - 1);
-  // Ajar: your push opens it a crack, then it swings shut (state.denied); letting him in, it opens wide (state.open).
-  // The daylight off the balcony shows in the gap on the handle side; the door swings on its hinge, left.
-  const den = Number.isFinite(state.denied) && state.denied >= 0 ? state.denied : null;
-  const crack = den === null ? 0 : den < 0.2 ? den / 0.2 : den < 0.9 ? 1 : Math.max(0, 1 - (den - 0.9) / 0.3);
+  // Open (state.open): it swings wide, and shut again. The daylight off the balcony shows in the gap on the handle
+  // side; the door swings on its hinge, left.
   const op = Number.isFinite(state.open) && state.open >= 0 ? state.open : null;
   const wide = op === null ? 0 : op < 0.4 ? op / 0.4 : op < 2.4 ? 1 : Math.max(0, 1 - (op - 2.4) / 0.5);
-  const gap = Math.max(crack * 5, wide * (T - 8) * 0.75);
+  const gap = wide * (T - 8) * 0.75;
   if (gap > 0) {
     ctx.fillStyle = '#d6e8f0';
     ctx.fillRect(px + T - 4 - gap, py + 2, gap, T - 4);
@@ -226,8 +224,7 @@ export function fireDoor(ctx, info, at, state, t) {
   for (let k = 0; k <= 12; k += 4) { ctx.moveTo(px + 10 + k, py + 5); ctx.lineTo(px + 10 + k, py + 13); }
   for (let k = 0; k <= 8; k += 4) { ctx.moveTo(px + 10, py + 5 + k); ctx.lineTo(px + 22, py + 5 + k); }
   ctx.stroke();
-  const denied = den !== null && den < 1.2 ? den : null;
-  const push = denied !== null && denied < 0.3 ? 1.5 : 0; // the bar, pushed in
+  const push = op !== null && op < 0.3 ? 1.5 : 0; // the bar, pushed in
   ctx.fillStyle = '#b9bfc3'; // push bar
   ctx.fillRect(px + 6, py + 18 + push, T - 12, 3);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -244,10 +241,8 @@ export function fireDoor(ctx, info, at, state, t) {
   rrect(ctx, px + T - 4, py + 12, 4, 8, 1);
   ctx.fill();
   const green = Number.isFinite(state.beep) && state.beep >= 0 && state.beep < 1.2;
-  const no = denied !== null && Math.floor(denied * 6) % 2 === 0; // your push: red blinks while it's held open
-  const red = (state.locked && Math.floor(t * 2.5) % 2 === 0) || no;
-  if (no) fillCircle(ctx, px + T - 2, py + 14.5, 5, 'rgba(255,59,48,0.35)');
-  else if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
+  const red = !green && state.locked && Math.floor(t * 2.5) % 2 === 0;
+  if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
   fillCircle(ctx, px + T - 2, py + 14.5, 1.3, green ? '#5dff8a' : red ? '#ff3b30' : '#5a2a28');
   if (hit !== null) { // dust off the door, and thud lines in the air
     const k = hit / 0.45;

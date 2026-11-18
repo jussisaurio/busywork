@@ -219,7 +219,9 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 - Leaving the day (`play/scenario.js leaveDay(game, why, path)`): a level's way out, at any time. You walk `path`,
   you are gone (`player.hidden`), and after a beat the day ends: `fail`, `outcome.why = why`. Events `player:leave`,
   `player:gone`. Going inside (`goInside(game, name, at)`, `comeOut(game)`): hidden, not moving, the rules see
-  nothing; pretending still fast-forwards. Events `player:in`, `player:out`.
+  nothing; pretending still fast-forwards. Events `player:in`, `player:out`. Through a door the map calls solid
+  (`play/player.js walkThrough(game, path)`): you walk `path` straight, at a walk, no collision, and can't act
+  until you're through (`player.through`).
 - `failSign`: `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (offset in tiles from the
   spot's corner). Absent: no sign.
 - `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (HUD, title, end card). `achieved` is checked at
@@ -296,7 +298,8 @@ An emoji a painter or a scene draws in the world is recorded by the runtime chec
 ### Roles
 `roles` says who plays which part in the office rules (`play/rules.js`). Every cast member who is not the
 authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
-- `authority`: `{ id, offDuty?, helpless?, deafIn?, earshot? }`. His sighting of a sneaky action, or of his contraband in
+- `authority`: `{ id, offDuty?, helpless?, deafIn?, earshot?, idleOkIn? }`. `idleOkIn`: a zone where he doesn't
+  count you standing about (a break spot: meeting's balcony). His sighting of a sneaky action, or of his contraband in
   your hands, means caught. He owns the suspicion meter (`game.suspicion[id]`) and assigns work. `offDuty`: his
   overrides during which he enforces nothing. `helpless`: overrides during which he can't act even on what he
   sees. `deafIn`: a zone where he can't hear a shout (or a noise). `earshot`: tiles; he hears a shout only from that close (default: the whole floor). Out of earshot the witness keeps a grudge and tells him when he comes near. `tattle`: what a tattle he hears costs:

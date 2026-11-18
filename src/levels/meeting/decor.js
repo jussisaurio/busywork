@@ -8,15 +8,22 @@ import { PICTURE, pictureTilt, KEYBOARDS, CLOCK } from './toys.js';
 import { ficus, deadTypewriter, kevPage, typedScreen, pushedClock } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
+import { outside, doorSwing } from './balcony.js';
 
-// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it;
-// denied: seconds since you last pushed its bar from inside (toys.js).
+// The fire door (mechanics.js DOORS, balcony.js): locked, someone is shut out there without a card (the boss, or
+// you: the reader blinks red); hit, seconds since his last go at it or your last pound; beep, since a card opened
+// it (his, or his in your hand); open, how far into its swing it is (balcony.js doorSwing).
 const since = (game, at) => (at != null ? game.loopTime - at : null);
+const recent = (...ts) => ts.filter((t) => t != null).reduce((a, b) => Math.min(a, b), Infinity);
 const fireDoorState = (w, game) => {
   const b = findNpc(game, 'boss');
   const out = !!b && b.override === 'lockedOut';
-  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null,
-    denied: toyState(game, 'fire_door').since, open: w.letIn != null ? since(game, w.letIn) : null };
+  const p = game.player;
+  const youOut = outside(p) && !p.through && p.held !== 'keycard';
+  const hit = recent(out ? since(game, b._bangAt) : null, toyState(game, 'pound').since);
+  const beep = recent(b ? since(game, b._badgeAt) : null, since(game, w.fireDoor?.beep));
+  return { locked: out || youOut, hit: Number.isFinite(hit) ? hit : null, beep: Number.isFinite(beep) ? beep : null,
+    open: doorSwing(game) };
 };
 
 

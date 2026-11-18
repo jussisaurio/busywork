@@ -40,6 +40,7 @@ export default {
     restroom_door: 'restroom',
     meeting_room: 'meeting_presenter',
     meeting_seat: 'meeting_player',
+    balcony: 'smoke', // out past the fire door (once you're out there: the door is solid to your feet)
   },
 
   stops: {
@@ -56,7 +57,10 @@ export default {
   ],
 
   // o.why: the verdict's reason (verdict.js): 'mug' you held the cup, 'desk' it sat on your desk, 'kev' it sat on his.
-  outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
+  outcomeText: (o) => (o.result === 'win' && o.why === 'together' ? `WIN 🔒🚬 (meeting cancelled via: ${o.routes.join(' + ')}; you and the boss are both locked out on the balcony, and there's nobody left to hold it)`
+    : o.result === 'blamed' && o.why === 'balcony' ? 'BLAMED 🔒👀 (you were locked out on the balcony at 4:00; the whole table came to stare at you through the fire door\'s window)'
+    : o.result === 'blamed' && o.why === 'snatched' ? 'BLAMED 🪪😏 (the boss snatched his keycard off you on the balcony and let the door shut in your face; at 4:00 you\'re still out there pounding)'
+    : o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
     : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
     : o.result === 'caught' && o.why === 'typewriter' ? 'CAUGHT ⌨️💥 (the coffee shorted the typewriter with a bang the whole floor heard; fired: you leave with a box 📦)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
@@ -75,6 +79,7 @@ export default {
   npcText(game, n) {
     const bits = [];
     if (n.override === 'lockedOut') bits.push('locked out on the balcony, behind the fire door');
+    if (!n.override && n.anim === 'smoking' && !n.moving) bits.push('smoking on the balcony');
     if (n.override === 'grateful') bits.push(game.world.hugAt != null ? 'hugging you 🤗' : 'just let in off the balcony, beaming');
     if (n.override === 'fixing') bits.push(`fixing the projector ${Math.round(game.world.fixProgress * 100)}%`);
     if (n.override === 'hunting' && n.id === 'boss') bits.push('searching the office, peering at every desk');
@@ -127,6 +132,12 @@ export default {
       case 'boss:jacket': return 'the boss put on his jacket and walks off';
       case 'boss:lockedOut': return 'the boss tries the fire door: the reader blinks red, the handle rattles. No keycard on him: he\'s locked out on the balcony!';
       case 'boss:pockets': return null; // his 🪪❓ says it
+      case 'fireDoor:out': return 'you push the fire door\'s bar and step out onto the balcony; the door swings shut behind you';
+      case 'fireDoor:badge': return 'beep: you hold the boss\'s keycard to the reader, the light goes green, and you\'re back in 🪪';
+      case 'fireDoor:in': return 'you slip back in through the open fire door';
+      case 'fireDoor:held': return 'the boss holds the fire door open for you, and points in 👉🚪';
+      case 'fireDoor:shut': return 'the fire door swings shut with a clunk';
+      case 'keycard:snatched': return 'the boss sees his keycard in your hand 🪪😤 and snatches it back';
       case 'boss:knock': case 'boss:bang': case 'boss:pound': case 'boss:fume': { // one line per 3 game minutes
         if (e.minute - (memo.lastBang ?? -Infinity) <= 3) return null;
         memo.lastBang = e.minute;

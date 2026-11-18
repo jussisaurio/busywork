@@ -1,5 +1,5 @@
 // A small corner menu of every registered level, each a link to ?level=<id>. DOM only: the sim never sees it.
-export function mountLevelPicker(levels, currentId) {
+export function mountLevelPicker(levels, currentId, dev = false) {
   const box = document.createElement('details');
   box.id = 'level-picker';
   const summary = document.createElement('summary');
@@ -7,7 +7,7 @@ export function mountLevelPicker(levels, currentId) {
   box.append(summary);
   for (const [id, level] of Object.entries(levels)) {
     const a = document.createElement('a');
-    a.href = `?level=${encodeURIComponent(id)}`;
+    a.href = `?${dev ? 'dev&' : ''}level=${encodeURIComponent(id)}`;
     a.textContent = `${level.title?.badge?.[0] ?? '·'} ${id}`;
     const line = document.createElement('small');
     line.textContent = level.title?.mission?.[0] ?? '';

@@ -219,7 +219,8 @@ function rulesStep(game, dt) {
   const slacking = !p.action || p.action.idle; // eating at work is not working
   const idleInView = enforcing(game, boss) && !p.locked && !p.busy && slacking && npcSees(game, boss, p.x, p.y)
     && disguiseView(game, boss) !== 'fooled' // he sees whoever you're dressed as standing around
-    && !trespassing(game, boss); // in his own office the question is a different one (🤨 👉🚪)
+    && !trespassing(game, boss) // in his own office the question is a different one (🤨 👉🚪)
+    && !(auth.idleOkIn && inZone(game, auth.idleOkIn, p.x, p.y)); // a break spot (roles.authority.idleOkIn): standing about is what it's for
   if (idleInView) {
     if (game.suspicion[id] === 0) game.events.emit(`${id}:suspicious`, {});
     game.suspicion[id] = Math.min(1, game.suspicion[id] + dt / SUSPICION_FILL_SEC);
