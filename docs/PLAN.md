@@ -26,6 +26,8 @@ Decided by Jussi:
 - The fire door is a real fire door: anyone pushes out from inside; getting back in needs the card or someone coming
   through. If an NPC can do a thing, so can you.
 - Every computer can take the coffee. To set the cup down you target the desk, not the computer.
+- The wall clock stays a toy: nobody acts on the wrong time.
+- Vision cones are drawn to their true reach.
 - The boss may force you out of the restroom ("might be funny": on trial).
 - Confirmed funny by him in play: the go-home card with the boss ringing, the crickets, coffee into a computer, the
   Samaritan revenge lockout, the stack of work that shows the back-to-your-desk penalty.
@@ -81,7 +83,7 @@ The game is published at https://jussisaurio.github.io/busywork/ (GitHub Pages f
   fades over its last third and may read short. Waiting on Jussi: draw the cone to its true reach, or not.
 - Overseer and builder calls he may overrule: "together" counts as the keycard route; seated at your desk with the
   full cup, E pours into your own computer; Lin's and the boss's desks take the empty mug only; the boss never
-  notices the mug on his own desk before 4:00; the clock does nothing real; Kev tilts the picture the other way and
+  notices the mug on his own desk before 4:00; Kev tilts the picture the other way and
   only Lin straightens it; typing at another desk gives no busy credit.
 
 ### Known rough edges (prune as they are fixed)
@@ -110,7 +112,7 @@ The game is published at https://jussisaurio.github.io/busywork/ (GitHub Pages f
 
 ## Slice 2 (after Jussi has played)
 Built in the playtest round: typing on any keyboard, the wall clock (cosmetic), locked out together, Lin takes the fall.
-Left: a red stapler; the clock as a real mechanic (needs his decision); giving things to people and crowding them;
+Left: a red stapler; giving things to people and crowding them;
 the flip chart; soot face, the foam and the noticed projector; Lin's hunt escalating; panic spill. Desk phones only
 if they come as a general prop.
 
