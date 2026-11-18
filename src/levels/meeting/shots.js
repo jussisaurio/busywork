@@ -182,12 +182,59 @@ export default [
       'back to us, hands up, and your shadow on the white screen is a duck, its beak opening and shutting. The boss ' +
       'stares (😐); Lin covers her mouth, trying not to laugh (🤭).',
   },
+  // ---- The fire door, your way (balcony.js)
   {
-    name: 'fire-door-push',
-    cmds: ['goto fire_door', 'interact', 'wait 0.3s'],
-    intent: 'You stand at the fire door in the lobby corner, arms out, pushing its bar. It opens a crack (daylight in ' +
-      'the gap) and the card reader by the handle blinks red: the held-door alarm, with a buzz you cannot see. You ' +
-      'let it swing shut. The balcony is outside, behind it.',
+    name: 'step-out',
+    cmds: ['goto fire_door', 'interact', 'wait 0.5s'],
+    intent: 'You pushed the bar of the red fire door in the lobby corner: it swings open, daylight in the doorway, and ' +
+      'you step through onto the little smokers\' balcony. You think 🪪❓: no keycard on you. How do you get back in?',
+  },
+  {
+    name: 'locked-out',
+    cmds: ['goto fire_door', 'interact', 'wait 2.5s', 'interact', 'wait 0.4s'],
+    intent: 'You are out on the balcony and the fire door has shut behind you. The card reader by it blinks red at ' +
+      'you, and you pound on the door (👊🚪). From out here it opens only with a keycard, and you do not have one.',
+  },
+  {
+    name: 'smoke-offer',
+    cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 3:46', 'wait 0.3s'],
+    intent: 'Locked out on the balcony, you have company: the boss, out for his smoke. Off the clock, he does not ' +
+      'mind you standing about: he holds out a cigarette to you (🚬❓).',
+  },
+  {
+    name: 'boss-holds-door',
+    cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 3:48', 'wait 1.6s'],
+    intent: 'Back from his smoke, the boss has badged the fire door open with his card and holds it for you, pointing ' +
+      'you in (👉🚪): back to work. You can slip in while it is open.',
+  },
+  {
+    name: 'end-balcony',
+    cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 4:00', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: you stepped out onto the balcony without a card, and stayed there. Inside, the meeting ' +
+      'has started; the boss points at your empty chair (🪑❓), then through the door at you (👉🚪). Lin stares. You, ' +
+      'outside, shrug, sweating.',
+  },
+  {
+    name: 'snatched',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto fire_door busy', 'interact', 'busy until 3:43', 'wait 1.5s', 'wait 1s'],
+    intent: 'You took the boss\'s keycard and went out onto the balcony with it. Coming out for his smoke, in the open fire ' +
+      'door, he saw it in your hand: he snatches it back (🪪😤) and you flinch (😨).',
+  },
+  {
+    name: 'end-snatched',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto fire_door busy', 'interact', 'busy until 4:00', 'busy until 4:00',
+      'wait 8s'],
+    intent: 'End card, a loss: the keycard win the wrong way round. He took his card back on the balcony and went in; ' +
+      'the door shut in your face. Now he sits at the meeting table, card in hand, smug (🪪😏), pointing at your ' +
+      'empty chair (🪑❓), while you pound on the fire door from the balcony.',
+  },
+  {
+    name: 'end-together',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto kitchen_table busy', 'interact', 'goto fire_door busy', 'interact',
+      'busy until 4:00', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a win: you hid his keycard inside and went out on the balcony, and he came out for his smoke. ' +
+      'Now you are both locked out, and the meeting cannot happen. He pounds on the fire door (👊🚪), gives up, lights ' +
+      'one and offers you one (🚬❓). You are quite content (🙂, 👍). Inside, the meeting room is empty.',
   },
   {
     name: 'boss-let-in',

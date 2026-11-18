@@ -547,4 +547,91 @@ export default [
     cmds: ['goto coffee_machine', 'interact', 'wait until 3:10', 'goto projector pretend', 'interact',
       'goto boss_desk pretend', 'pretend 4.5s', 'goto meeting_room pretend', 'wait until 4:00'],
   },
+
+  // ---- The fire door, both ways (balcony.js). The card is taken in the gap while the boss is away (3:11).
+  {
+    name: 'out onto the balcony with his keycard, and back in on it → beep, inside; at 4:00 he is the one locked out (keycard win)',
+    expect: { result: 'win', routes: ['keycard'] },
+    play({ run, waitFor, npc, g }) {
+      stealCard({ run, waitFor, npc });
+      run('goto fire_door busy');
+      run('interact'); // push the bar
+      run('wait 1s');
+      if (!(g.player.y > 14)) throw new Error('not out on the balcony: y ' + g.player.y);
+      run('interact'); // the card to the reader
+      run('wait 1s');
+      if (!(g.player.y < 13)) throw new Error('not back in: y ' + g.player.y);
+      if (g.player.held !== 'keycard') throw new Error('holding ' + g.player.held);
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'out onto the balcony without the card at 2:31 → locked out; you stay out when he holds the door → 4:00 the table stares through the glass (balcony)',
+    expect: { result: 'blamed' },
+    play({ run, g, log }) {
+      run('goto fire_door');
+      run('interact');
+      run('wait 1s');
+      run('interact'); // pound: nobody comes
+      if (!log.some((e) => e.name === 'toy:pound')) throw new Error('no pounding');
+      run('busy until 4:00');
+      run('busy until 4:00');
+      if (!log.some((e) => e.name === 'fireDoor:held')) throw new Error('the boss never held the door');
+      if (g.outcome?.why !== 'balcony') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
+  {
+    name: 'out without the card, slip back in when the boss holds the door at 3:48 → inside again (plain fail)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, g, log }) {
+      run('goto fire_door');
+      run('interact');
+      run('busy until 3:47');
+      waitFor(() => log.some((e) => e.name === 'fireDoor:held'), { busy: true, maxSec: 60 });
+      run('interact'); // slip in
+      run('wait 1s');
+      if (!(g.player.y < 13)) throw new Error('not back in: y ' + g.player.y);
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'card dropped in the kitchen, out on the balcony before his smoke → he is locked out with you → 4:00 nobody to hold it (together)',
+    expect: { result: 'win', routes: ['keycard'] },
+    play({ run, waitFor, npc, g }) {
+      stealCard({ run, waitFor, npc });
+      run('goto kitchen_table busy');
+      run('interact'); // drop it, where he won't pass
+      if (g.player.held) throw new Error('still holding ' + g.player.held);
+      run('goto fire_door busy');
+      run('interact');
+      run('busy until 4:00');
+      run('busy until 4:00');
+      if (g.outcome?.why !== 'together') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
+  {
+    name: 'out on the balcony holding his card when he comes for his smoke → he snatches it 🪪😤, badges in 😏 → 4:00 locked out (snatched)',
+    expect: { result: 'blamed' },
+    play({ run, waitFor, npc, g, log }) {
+      stealCard({ run, waitFor, npc });
+      run('goto fire_door busy');
+      run('interact');
+      run('busy until 4:00');
+      run('busy until 4:00');
+      if (!log.some((e) => e.name === 'keycard:snatched')) throw new Error('no snatch');
+      if (g.outcome?.why !== 'snatched') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
 ];
+
+// The keycard in the gap: the boss away to the restroom (3:11), Lin looking the other way.
+function stealCard({ run, waitFor, npc }) {
+  run('busy until 3:11');
+  waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+  run('goto boss_office_door busy');
+  run('goto coat_rack busy');
+  waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+  run('interact');
+}

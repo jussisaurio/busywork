@@ -29,7 +29,7 @@ export default {
     'coffee_machine', 'projector', 'coat_rack', 'fridge',
     'boss_desk', 'lin_desk', 'kev_desk', 'my_desk_spot', 'boss_office_door', 'kitchen_table', 'entrance',
     'restroom_door', 'meeting_room', 'meeting_seat', 'fire_door', 'exit',
-    'ficus', 'boss_doorway', 'typewriter',
+    'ficus', 'boss_doorway', 'typewriter', 'balcony',
   ],
   interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'fire_door', 'exit', 'restroom_door', 'ficus', 'typewriter'],
   renderEvents: [
@@ -37,7 +37,8 @@ export default {
     'boss:workAssigned',
     'sandwich:eaten', 'sandwich:returned', 'keycard:taken', 'keycard:recovered', 'keycard:takenBack', 'coffee:kevTook',
     'coffee:asked', 'kev:alerted', 'item:put', 'boss:mugHunt', 'mug:found', 'meeting:calledOff', 'boss:letIn', 'boss:hug',
-    'player:leave', 'player:in', 'restroom:washed',
+    'player:leave', 'player:in', 'restroom:washed', 'fireDoor:out', 'fireDoor:badge', 'fireDoor:held', 'fireDoor:in',
+    'keycard:snatched',
   ],
   milestones: {
     'coffee:taken': (p) => (p.by === 'player' ? 'poured' : 'kevPoured'),
@@ -64,9 +65,12 @@ export default {
     caught: () => 'caught',
     'coffee:ficus': () => 'ficus',
     'coffee:typewriter': () => 'typewriter',
+    'fireDoor:out': () => 'balcony',
+    'fireDoor:badge': () => 'badgeIn',
+    'keycard:snatched': () => 'snatched',
   },
   binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught',
-    'put@coffee', 'put@kev_desk', 'put@my_desk', 'mugHunt'],
+    'put@coffee', 'put@kev_desk', 'put@my_desk', 'mugHunt', 'balcony', 'snatched'],
   keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate', 'put@coffee', 'put@kev_desk'],
   goldenPlans: [
     // Raw movement, with and without pretend, around the kitchen and Kev.

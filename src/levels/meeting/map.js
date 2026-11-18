@@ -40,10 +40,10 @@ export const LEGEND = {
   R: { kind: 'restroom', solid: true, opaque: true, interactable: 'restroom' }, // one cubicle: knock, or go in (restroom.js)
   E: { kind: 'elevator', solid: true, opaque: true },
   // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
-  // boss smokes. It locks behind you; from outside only a keycard opens it (mechanics.js DOORS). You don't go out
-  // there: it is the boss's (solid to you, open to NPCs). Drawn as wall, the door painted on (painters.js fireDoor).
-  // Pushed from inside it opens a crack and the alarm buzzes (toys.js); with him locked out, the same push lets him
-  // in (interactions.js let_boss_in).
+  // boss smokes. It locks behind whoever goes through; from outside only a keycard opens it (mechanics.js DOORS for
+  // NPCs). Solid to you: you go through it by its rows (balcony.js: push the bar out; badge or slip back in), open to
+  // NPCs. Drawn as wall, the door painted on (painters.js fireDoor). With him locked out, the push lets him in
+  // instead (interactions.js let_boss_in).
   X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall', interactable: 'fire_door' },
   // The balcony: a concrete slab four floors up with a railing (painters.js balcony). Outside, like the lobby.
   '=': { kind: 'balcony', solid: false, opaque: false, draw: 'outside' },
@@ -98,6 +98,7 @@ export const ZONES = {
   meeting_room: { x0: 9, y0: 1, x1: 19, y1: 6 }, // where you must be at 4:00 (attendance rule)
   boss_office: { x0: 1, y0: 1, x1: 8, y1: 6 }, // his glass office: he shows you out if he finds you in it (roles.js private)
   outside: { x0: 0, y0: 14, x1: 30, y1: 17 }, // the lobby, beyond the glass entrance; the balcony, beyond the fire door
+  balcony: { x0: 26, y0: 14, x1: 29, y1: 16 }, // the smokers' balcony: you can go out there too (balcony.js)
 };
 
 // Patrol routes: lists of tile coords walked in order.

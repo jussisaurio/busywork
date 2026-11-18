@@ -56,6 +56,12 @@ export const SOUNDS = {
     'boss:bang': { sfx: 'bang', spot: 'fire_door' }, // 😠🚪🪪
     'boss:pound': { sfx: 'bang', spot: 'fire_door', opts: { hits: 4 } }, // 👊👊🚪
     'boss:fume': { sfx: 'grumble', spot: 'fire_door' }, // 🚬😤
+    // You and the fire door (balcony.js): the bar, a card on the reader, the door slamming shut behind whoever.
+    'fireDoor:out': { sfx: 'door', spot: 'fire_door', opts: { open: true } },
+    'fireDoor:in': { sfx: 'door', spot: 'fire_door', opts: { open: true } },
+    'fireDoor:badge': { sfx: 'machineBeep', spot: 'fire_door' },
+    'fireDoor:shut': { sfx: 'door', spot: 'fire_door', opts: { gain: 1.6 } },
+    'keycard:snatched': { sfx: 'swish', who: 'boss' }, // 🪪😤 out of your hand
     'kev:left': { sfx: 'elevator' },
     'player:gone': { sfx: 'elevator', spot: 'elevator' }, // you just went home (interactions.js go_home)
     'player:out': { sfx: 'flush', spot: 'restroom', when: (p) => p?.inside === 'restroom' }, // out of the cubicle (restroom.js)

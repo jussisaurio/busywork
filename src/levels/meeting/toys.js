@@ -1,9 +1,8 @@
 // Level 1's toys (level.toys; the fields are in src/sim/mechanics/toy.js): things you poke that answer back and
 // decide nothing.
-//   fire_door  push the bar from inside: the door opens a crack onto the balcony, the reader blinks red and the
-//              held-door alarm buzzes, and you let it swing shut. You don't go out there. It shows the card reader
-//              long before the boss needs his card at it, and that the push opens it: with him locked out, the
-//              same push lets him in (interactions.js let_boss_in; the interactable wins while it can).
+//   pound      out on the balcony without his card (balcony.js), the door shut: you pound on it 👊🚪, the way he does.
+//              Nobody comes. (With the card, or the door open, E is the way in instead: the rows win.)
+//   smoke_offer  the boss out there with you, smoking or locked out: he holds out his packet 🚬❓. Off the clock.
 //   knock_*    the restroom door while someone is in there (restroom.js): you knock, and he answers through the door,
 //              cross, with his face (🚽😠: you just knocked on the boss). Free, the door is yours to go in by.
 //   mustard    Kev, near you while the mustard is down your sweater, helpfully points at his own chest and at the
@@ -21,6 +20,8 @@
 //              past a sleeping Kev: the sight he keeps never surprises anyone.
 import { at as clockAt } from '../../config.js';
 import { toyState } from '../../sim/mechanics/toy.js';
+import { inZone } from '../../game/perception.js';
+import { outside } from './balcony.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
 const hallSide = (npc) => npc.y > PICTURE.y + 0.6; // in the hallway, not the kitchen behind the wall
@@ -36,7 +37,7 @@ export function pictureTilt(game) {
 }
 const FIX = { sfx: 'creak', pose: { arms: 'reach', face: true, for: 1.4 } };
 const KNOCK = { sfx: 'bang', pose: { arms: 'bang', face: true, for: 0.6 } };
-const inside = (id) => (w, s, game) => game.player._stall === id;
+const inside = (id) => (w, s, game) => game.player._stall === id && game.player.y < 13.5; // (not from the balcony)
 
 const DOZE_FROM = clockAt('2:48');
 const DOZE_TO = clockAt('2:58'); // his 🎒👋
@@ -44,11 +45,21 @@ const dozing = (game, n) => n.wants === 'coffee' && n.pose === 'sit' && !n.movin
   && game.clock.minute >= DOZE_FROM && game.clock.minute < DOZE_TO && !toyState(game, 'kev_wake').woke;
 
 export const TOYS = [
+  // ---- The balcony (balcony.js)
   {
-    id: 'fire_door', at: { x: 27, y: 13 }, on: 'press', text: 'push the bar',
-    line: 'you push the fire door\'s bar: it opens a crack, the alarm buzzes and the reader blinks red, and you let it swing shut',
-    react: { sfx: 'denied', pose: { arms: 'reach', face: true, for: 0.6 } },
-    try: ['goto fire_door', 'interact'],
+    id: 'pound', at: { x: 27, y: 13 }, on: 'press', text: 'pound on the door', every: 0.8,
+    when: (w, s, game) => outside(game.player),
+    line: 'you pound on the fire door 👊🚪: the reader blinks red, and nobody comes',
+    react: { sfx: 'bang', say: { icons: ['👊', '🚪'], ttl: 1.2 }, pose: { arms: 'bang', face: true, for: 0.7 } },
+    try: ['goto fire_door', 'interact', 'wait 1s', 'interact'],
+  },
+  {
+    id: 'smoke_offer', on: 'near', npcs: ['boss'], radius: 2.2, sees: true, every: 20, at: 'smoke',
+    when: (w, s, game, n) => outside(game.player) && inZone(game, 'balcony', n.x, n.y) && !n.moving && !w.snatched
+      && (n.override === 'lockedOut' || (!n.override && n.anim === 'smoking')), // his smoke, or stuck out there with you
+    line: '<by> holds out his cigarettes to you 🚬❓',
+    react: { say: { icons: ['🚬', '❓'], ttl: 1.8 }, pose: { arms: 'holdout', for: 1.8 } },
+    try: ['goto fire_door', 'interact', 'pretend until 3:47'],
   },
   {
     id: 'knock_boss', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('boss'), every: 2,
