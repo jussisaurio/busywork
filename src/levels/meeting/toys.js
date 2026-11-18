@@ -102,7 +102,10 @@ export const TOYS = [
     id: 'kev_doze', at: { x: 22, y: 8 }, on: 'pass', npcs: ['kev'], radius: 1.3, every: 3,
     when: (w, s, game, n) => dozing(game, n),
     line: 'Kev nods off at his desk, his face on the keyboard 💤',
-    react: { say: { icons: ['💤'], kind: 'thought', ttl: 2.6 }, pose: { arms: 'desk', slump: true, for: 3.4 } },
+    // No 💤 bubble: his 🥱☕ craving (a real line) was up whenever it fired, and a toy's bubble never covers one, so
+    // it never showed. The 💤 is drawn instead, rising off his head without a break while the pose lasts
+    // (painters-more.js kevPage); fired every 3 s, the pose (3.4 s) never lapses while he sleeps.
+    react: { pose: { arms: 'folder', slump: true, for: 3.4 } },
     try: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'sit busy', 'busy until 2:50'],
   },
   {

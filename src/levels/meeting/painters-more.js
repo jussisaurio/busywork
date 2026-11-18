@@ -8,7 +8,7 @@
 //              off the desk's edge into a puddle, smoke curling up, a spark now and then. state: { dead, since }
 //   kevPage    Kev's screen while he dozes on his keyboard (toys.js kev_doze): a growing line of one letter.
 //              state: { secs }
-import { fillEllipse, fillCircle, clamp, easeOutBack, T } from '../../render/util.js';
+import { fillEllipse, fillCircle, clamp, easeOutBack, T, emoji, glyphScope } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 
 export function ficus(ctx, info, at, state, t) {
@@ -99,7 +99,7 @@ export function deadTypewriter(ctx, info, at, state, t) {
 // `at` is ignored: the prop hangs on another tile (decor.js), Kev's monitor is on his desk's middle tile.
 const KEV_DESK = { x: 22, y: 8 };
 const PER_SEC = 0.6; // letters a second
-export function kevPage(ctx, info, at, state) {
+export function kevPage(ctx, info, at, state, t) {
   if (!(state.secs > 0)) return;
   const midX = KEV_DESK.x * T + T / 2;
   const top = KEV_DESK.y * T + 3 + 3; // render/world.js drawWorkstation monTopY
@@ -114,4 +114,21 @@ export function kevPage(ctx, info, at, state) {
     ctx.fillRect(x, y, 0.7, 1.6); // the same letter, over and over: a stem
     ctx.fillRect(x + 0.7, y + 0.6, 0.7, 0.5); // and its arm
   }
+  if (state.head) snore(ctx, state.head, t);
+}
+
+// While he sleeps, 💤 after 💤 drifts up off his head over the monitor, without a break: the sleeper's Zs, a sound
+// (drawn in speech scope, as render/effects.js does its 'zzz' burst), not a bubble, so his 🥱☕ craving (a real
+// line, which a toy's bubble never covers) can't hide it. head: { x, y } in px, where his head lies on the desk.
+const SNORE_EVERY = 1.1; // s between two 💤
+const SNORE_N = 3;
+function snore(ctx, head, t) {
+  const was = glyphScope('speech');
+  for (let i = 0; i < SNORE_N; i++) {
+    const k = (((t / SNORE_EVERY + i) / SNORE_N) % 1 + 1) % 1; // 0 → 1 over its rise
+    ctx.globalAlpha = k < 0.15 ? k / 0.15 : 1 - Math.max(0, k - 0.6) / 0.4;
+    emoji(ctx, '💤', head.x + 9 + k * 9 + Math.sin(k * 7 + i) * 1.5, head.y - 2 - k * 24, 7 + k * 8);
+  }
+  ctx.globalAlpha = 1;
+  glyphScope(was);
 }

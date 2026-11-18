@@ -2,7 +2,7 @@
 // clutter and the key legend. Data only (palette colours, no logic); render/world.js and render/hud.js read it.
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
-import { dayCue } from '../../config.js';
+import { dayCue, TILE } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
 import { PICTURE, pictureTilt } from './toys.js';
 import { ficus, deadTypewriter, kevPage } from './painters-more.js';
@@ -94,7 +94,11 @@ export const DECOR = {
     // Kev's screen while he dozes on his keyboard (toys.js kev_doze, every 3 s while asleep): seconds asleep so far.
     { tile: 'C', draw: kevPage, state: (w, game) => {
       const d = toyState(game, 'kev_doze');
-      return { secs: d.n > 0 ? (d.n - 1) * 3 + Math.min(d.since, 3) : 0 };
+      // Asleep while the toy's slump pose lasts (it fires every 3 s and lasts 3.4): his head lies on the desk, 💤.
+      const pose = game.toys?.poses.kev;
+      const kev = findNpc(game, 'kev');
+      const head = pose?.slump && game.loopTime < pose.until && kev ? { x: kev.x * TILE, y: kev.y * TILE - 20 } : null;
+      return { secs: d.n > 0 ? (d.n - 1) * 3 + Math.min(d.since, 3) : 0, head };
     } },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
