@@ -24,21 +24,19 @@
 // Per NPC: vision { fov, radius } (config VISION_DEFAULT if absent), glanceEvery (real s between seated
 // glances, random range; config GLANCE_EVERY if absent), coneTint (r,g,b of the drawn vision cone).
 
-import { at, deg } from '../../config.js';
+import { deg, DAY_START } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler(DAY_START);
 
 export const NPC_DEFS = [
   {
-    id: 'boss',
-    icon: '👔',
-    color: '#2b3a55', // navy suit
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
+    icon: '👔', // this level's people are emoji, the others' are '@boss' faces
     meetingSpot: 'meeting_head',
     meetingArrive: 'presenter',
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [3, 5.5], // twitchy, so the 'Lin is away' windows still carry risk
-    coneTint: [255, 160, 82],
     schedule: [
       s('2:30', { do: 'sit', spot: 'boss_desk' }),
       s('2:44', { do: 'patrol', route: 'boss_patrol' }),
@@ -53,13 +51,10 @@ export const NPC_DEFS = [
     ],
   },
   {
-    id: 'kev',
-    icon: '🔧',
-    color: '#5f6b3a', // olive hoodie
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
+    icon: '🔧', // this level's people are emoji, the others' are '@kev' faces
     meetingSpot: 'meeting_kev',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('2:30', { do: 'sit', spot: 'kev_desk' }),
       s('2:38', { do: 'visit', spot: 'coffee', arrive: 'pourCoffee' }),
@@ -69,13 +64,10 @@ export const NPC_DEFS = [
     ],
   },
   {
-    id: 'lin',
-    icon: '👓',
-    color: '#2f8f83', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
+    icon: '👓', // this level's people are emoji, the others' are '@lin' faces
     meetingSpot: 'meeting_lin',
     vision: { fov: deg(100), radius: 8.5 },
-    coneTint: [150, 230, 214],
     schedule: [
       s('2:30', { do: 'sit', spot: 'lin_desk' }),
       s('2:58', { do: 'visit', spot: 'fridge', prelude: 'checkFridge' }), // away ~2:58–3:12, but the boss is at his desk
