@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 // Gate: the automated filter a level must pass before a human plays it (tools/lib/*.mjs holds its checks). It runs the
 // fuzzer (tools/fuzz.mjs) and fails (exit 1) on any of:
-//   routes    a route of the level that no plan wins
+//   routes    a route of the level that no plan wins. The fuzzer plays the level's known plans first (fuzz.mjs
+//             knownPlans: golden.json and gate.goldenPlans), so a route with a recorded winning plan passes by
+//             replaying it, whatever the random search finds. A route only the search won passes too, and the
+//             check prints its plan to record in gate.goldenPlans: until then that route's answer rests on the dice.
 //   easy      a win in EASY_STEPS (3) plan steps or fewer (the final stance held until day.meetingAt is not a step)
 //   random    random plans winning more than EASY_RATE (1%) of the time
 //   crash     any crash or harness error (a command threw, or a day never ended)
@@ -19,7 +22,8 @@
 // Reading their freshness draws what the picture passes show, so that needs @napi-rs/canvas
 // (npm install --prefix tools/.deps @napi-rs/canvas); without it the report says so and the verdict is unchanged.
 // It prints a one-screen report: each way to win with its minimal plan and timing windows, the checks,
-// the verdict, and the cold-read report. The result depends only on --seed, --budget and --batch, not on the machine.
+// the verdict, and the cold-read report. The result depends only on --seed, --budget, --batch and the level's
+// known plans, not on the machine.
 //
 //   node tools/gate.mjs [--level meeting] [--budget 30000] [--seed 1] [--batch 288] [--workers N]
 // --budget defaults to the level's gate.budget (a level whose rarest win needs more days says so), else 30000.
@@ -27,7 +31,7 @@
 // Level data (route ids, mustUse lessons, goto targets) comes from the level's folder: fuzz.mjs levelData(id)
 // reads level.routes and level.gate (src/levels/meeting/gate.js).
 import { fileURLToPath } from 'node:url';
-import { fuzz, winLines, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
+import { fuzz, winLines, knownLine, combosOf, planToCmds, levelData, DEFAULT_LEVEL, BATCH, EASY_STEPS, EASY_RATE, defaultWorkers } from './fuzz.mjs';
 import { drawnCheck, worldGlyphs } from './lib/drawn.mjs';
 import { contrabandSeen, contrabandCheck } from './lib/contraband.mjs';
 import { coldReadChecks, isFixture } from './cold-read.mjs';
@@ -49,7 +53,7 @@ export function gateBudget(id, flag, L = levelData(id)) {
 const pct = (x) => `${(100 * x).toFixed(2)}%`;
 
 // The verdict, from fuzz() results (or synthetic ones of the same shape: level, wins, randomWins, randomEvaluated,
-// crashes, crashCount). L: { routes, mustUse } (levelData(r.level) by default). Cold reads are not checks here: see
+// crashes, crashCount; known.routes, the routes a known plan wins, is optional). L: { routes, mustUse } (levelData(r.level) by default). Cold reads are not checks here: see
 // coldReadReport. stray: pictures at the repo root (tools/lib/stray.mjs strayPictures); given, any fails the gate. Returns one
 // { name, ok, text, detail: [lines] } per check; the level passes when all are ok.
 export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, easyRate = EASY_RATE, stray } = {}) {
@@ -57,13 +61,20 @@ export function checkGate(r, L = levelData(r.level), { easySteps = EASY_STEPS, e
   const combos = combosOf(r);
   const checks = [];
   const check = (name, ok, text, detail = []) => checks.push({ name, ok, text, detail });
+  const steps = (wk) => r.wins[wk].minimal.steps.length;
 
-  const missing = L.routes.filter((id) => !combos.some((wk) => wk.split('+').includes(id)));
+  // A route is won by a known plan (replayed: no luck in it) or, failing that, by a plan the search found.
+  const knownRoutes = r.known?.routes ?? {};
+  const missing = L.routes.filter((id) => !knownRoutes[id] && !combos.some((wk) => wk.split('+').includes(id)));
+  const lucky = r.known ? L.routes.filter((id) => !knownRoutes[id] && !missing.includes(id)) : [];
+  const simplest = (id) => combos.filter((wk) => wk.split('+').includes(id)).reduce((a, b) => (steps(b) < steps(a) ? b : a));
   check('routes', !missing.length, missing.length
     ? `no plan wins route ${missing.join(', ')}`
-    : `every route has a winning plan: ${L.routes.join(', ')}`);
+    : !r.known ? `every route has a winning plan: ${L.routes.join(', ')}`
+      : !lucky.length ? `every route has a known winning plan, replayed: ${L.routes.join(', ')}`
+        : `every route has a winning plan, but only the search found one for ${lucky.join(', ')} (no known plan wins it)`,
+  lucky.flatMap((id) => [`${id}: record this in the level's gate.goldenPlans so the route stops depending on the search:`, `  ${oneLine(r.wins[simplest(id)].minimal)}`]));
 
-  const steps = (wk) => r.wins[wk].minimal.steps.length;
   const easy = combos.filter((wk) => steps(wk) <= easySteps);
   const fewest = combos.length ? combos.reduce((a, b) => (steps(b) < steps(a) ? b : a)) : null;
   check('easy', !easy.length, easy.length
@@ -131,6 +142,7 @@ export function gateReport(r, checks, coldRead, note, perf) {
   const lines = [];
   const say = (s = '') => lines.push(s);
   say(`gate: level ${r.level}, seed ${r.seed}, budget ${r.budget}, batch ${r.batch}: ${r.evaluated} days in ${r.secs.toFixed(1)} s (${r.workers} workers), ${r.bins.size} outcome bins`);
+  if (r.known) say(knownLine(r));
   const combos = combosOf(r);
   if (!combos.length) say('\nno wins found');
   for (const wk of combos) {

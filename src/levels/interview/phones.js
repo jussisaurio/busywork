@@ -64,6 +64,16 @@ export const PHONE_IDS = Object.keys(PHONES);
 // The world keys of one phone, built once: phoneTick and the lures' `when` read them every step, and a template string per read costs.
 const keysOf = (prefix) => Object.fromEntries(PHONE_IDS.map((p) => [p, `${prefix}_${p}`]));
 const [RING, RING_AT, CALL, LINE, LINE_AT, TUNE] = ['ring', 'ringAt', 'call', 'line', 'lineAt', 'tune'].map(keysOf);
+const ON = Object.fromEntries(PHONE_IDS.map((p) => [p, `on_${p}_phone`])); // the override of someone on phone p
+// `hold_<who>`, the world field of who's hold progress: one string per person, built the first time it is asked
+// for (a pure function of the id: nothing to invalidate).
+const HOLD_KEYS = new Map();
+const holdKey = (who) => HOLD_KEYS.get(who) ?? (HOLD_KEYS.set(who, `hold_${who}`), HOLD_KEYS.get(who));
+// The cast member with this id (a plain loop: phoneTick asks a dozen times a step).
+function castById(npcs, id) {
+  for (let i = 0; i < npcs.length; i++) if (npcs[i].id === id) return npcs[i];
+  return undefined;
+}
 
 // On his way to a phone, or on it (the lures' overrides, below).
 export const holdOf = (npc) => /^(to|on)_(\w+)_phone$/.exec(npc.override ?? '');
@@ -120,7 +130,8 @@ export function phoneTick(game, sim) {
   const m = game.clock.minute;
   const day = game.level.day;
   const npcs = game.npcs;
-  const byId = (id) => npcs.find((n) => n.id === id);
+  const byId = (id) => castById(npcs, id);
+  const lin = byId('lin');
   const picked = PICKED; // one set, emptied and refilled every step (this runs every step: no new set and lists each time)
   picked.clear();
   for (const p of PHONE_IDS) if (w[CALL[p]]) picked.add(w[CALL[p]]);
@@ -148,8 +159,8 @@ export function phoneTick(game, sim) {
   }
 
   // Lin checking her line gets your ring in her ear: she jumps, the receiver flies off her ear, then she answers.
-  if (byId('lin') && w.linCheck && w.ring_lin === 'you') {
-    const l = byId('lin');
+  if (lin && w.linCheck && w.ring_lin === 'you') {
+    const l = lin;
     w.linCheck = 0;
     w.jolt = m + JOLT;
     sim.holdFor(l, JOLT / GAME_MIN_PER_SEC);
@@ -179,12 +190,11 @@ export function phoneTick(game, sim) {
     else if (!who) w[LINE_AT[p]] = 0;
     const holder = who && byId(who);
     const until = who === 'lin' && p === 'lin' ? SLAM : TUNE_ENDS;
-    w[TUNE[p]] = !!holder && holder.override === `on_${p}_phone` && m - w[LINE_AT[p]] >= NOTES_AFTER
-      && w[`hold_${who}`] < until;
+    w[TUNE[p]] = !!holder && holder.override === ON[p] && m - w[LINE_AT[p]] >= NOTES_AFTER
+      && w[holdKey(who)] < until;
   }
 
   // The interview.
-  const lin = byId('lin');
   if (w.interview === 'due' && m >= day.gatherAt) {
     if (w.cord === 'out') {
       w.interview = 'dead';
@@ -247,7 +257,7 @@ export function phoneTick(game, sim) {
   for (const p of PHONE_IDS) {
     if (CALLER[p] !== 'gary' || w[LINE[p]] !== 'boss' || !w[TUNE[p]] || m < (w.laughAt ?? 0)) continue;
     const b = byId('boss');
-    if (b && b.override === `on_${p}_phone`) {
+    if (b && b.override === ON[p]) {
       w.laughAt = m + LAUGH_EVERY;
       sim.speak(game, b, [{ say: [m % 4 < 2 ? '⛳' : '😆'], ttl: 1.0 }]);
     }
@@ -260,7 +270,7 @@ export function phoneTick(game, sim) {
     if (!who || (p === 'lin' && (w.interview === 'lin' || w.interview === 'other'))) continue;
     const holder = byId(who);
     const gaze = GAZE[who]?.[p];
-    if (holder && gaze && holder.override === `on_${p}_phone` && !holder._stare) sim.lookAt(game, holder, gaze, 0.3);
+    if (holder && gaze && holder.override === ON[p] && !holder._stare) sim.lookAt(game, holder, gaze, 0.3);
   }
 
   // Lin waits for her call. Before her tea she checks her line now and then: lifts the receiver, listens, puts it
