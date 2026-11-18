@@ -1,31 +1,24 @@
 // The Interview's three people and their hooks (cast.js and behaviours.js in level 1 document the fields).
-import { at, deg } from '../../config.js';
+import { deg } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { START } from './phones.js';
 
-const s = (time, entry) => ({ at: at(time, START), ...entry });
+const s = scheduler(START);
 
 export const CAST = [
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55',
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'boss_desk', // 3:30 is not his call: he stays at his desk
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [3, 5.5],
-    coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // watching the office through his glass all afternoon
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83',
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'lin_desk', // the call
     vision: { fov: deg(100), radius: 8.5 },
-    coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // waiting by her phone (phones.js: she checks it)
       s('3:03', { do: 'sit', spot: 'kitchen_lin' }), // nerves: tea
@@ -33,13 +26,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a',
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'kev_desk',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'visit', spot: 'kitchen_kev' }), // coffee
       s('3:04', { do: 'visit', spot: 'socket_lin', arrive: 'plugIn' }), // his charging spot: the socket by Lin's desk

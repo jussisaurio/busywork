@@ -3,9 +3,9 @@
 //   ficus      the boss's potted ficus (map.js Y), after you pour the day's only cup into it (interactions.js
 //              water_ficus): a dark wet ring in the soil and a new leaf that shoots out and stays. state:
 //              { watered, since } (since: seconds since the pour, null before)
-//   deadTypewriter  the workstation on the empty desk (map.js W) after the cup went into its keys
-//              (interactions.js drown_typewriter): screen dead and cracked, coffee pooled on the keys and dripping
-//              off the desk's edge into a puddle, smoke curling up, a spark now and then. state: { dead, since }
+//   deadComputer  the computer the cup went into (interactions.js drownComputer), any of the seven: screen dead
+//              and cracked, coffee pooled on the keys and dripping off the desk's edge into a puddle, smoke
+//              curling up, a spark now and then. state: { at, since } (at: world.drowned, the machine's tile)
 //   kevPage    Kev's screen while he dozes on his keyboard (toys.js kev_doze): a growing line of one letter.
 //              state: { secs }
 //   typedScreen  a workstation's screen after you mashed its keyboard (toys.js type_*): a white document window
@@ -49,15 +49,26 @@ export function ficus(ctx, info, at, state, t) {
   }
 }
 
-// The geometry is render/world.js drawWorkstation's for a three-tile desk sat at from the south, `at` its middle tile.
-export function deadTypewriter(ctx, info, at, state, t) {
-  if (!state.dead) return;
+// The computer the cup went into (interactions.js drownComputer), on whichever desk: state.at is world.drowned
+// ({ x, y, owner }: the machine's tile), null before. The prop's own tile (`anchor`) is ignored. The geometry is
+// render/world.js drawWorkstation's for a three-tile desk sat at from the south; the boss sits north of his, his
+// monitor at the south edge, so his is the same picture turned half round (the smoke still rises up the screen).
+export function deadComputer(ctx, info, anchor, state, t) {
+  const at = state.at;
+  if (!at) return;
+  const turned = at.owner === 'boss';
   const midX = at.x * T + T / 2;
   const py = at.y * T + 3;
   const h = T - 5;
   const monTopY = py + 3;
   const kbY = py + h - 13;
   const s = Number.isFinite(state.since) ? state.since : 99;
+  ctx.save();
+  if (turned) {
+    ctx.translate(midX, at.y * T + T / 2);
+    ctx.rotate(Math.PI);
+    ctx.translate(-midX, -(at.y * T + T / 2));
+  }
   // the screen: dead, a crack across it
   ctx.fillStyle = '#141414';
   ctx.fillRect(midX - 10, monTopY + 8, 20, 7);
@@ -77,11 +88,6 @@ export function deadTypewriter(ctx, info, at, state, t) {
   const fall = (t * 1.4) % 1; // one drop at a time, off the edge
   fillCircle(ctx, midX + 5, py + h + 1 + fall * 9, 1.3, '#4a2a14');
   fillEllipse(ctx, midX + 5, py + h + 11, 6 + clamp(s / 4, 0, 1) * 4, 2.2, '#3b2212'); // the puddle grows a while
-  // smoke from the back of the box
-  for (let i = 0; i < 3; i++) {
-    const k = (t * 0.45 + i / 3) % 1;
-    fillCircle(ctx, midX + Math.sin(t * 1.3 + i * 2) * 3 * k, monTopY - k * 18, 2 + k * 4, `rgba(90,90,90,${(0.45 * (1 - k)).toFixed(3)})`);
-  }
   // a spark, every so often
   const sp = (t * 0.8) % 1;
   if (sp < 0.12) {
@@ -96,6 +102,13 @@ export function deadTypewriter(ctx, info, at, state, t) {
       ctx.stroke();
     }
     fillCircle(ctx, midX, kbY + 2, 2.5, 'rgba(255,240,150,0.8)');
+  }
+  ctx.restore();
+  // smoke from the back of the box, up the screen whichever way the desk faces
+  const boxY = turned ? 2 * (at.y * T + T / 2) - monTopY - 6 : monTopY;
+  for (let i = 0; i < 3; i++) {
+    const k = (t * 0.45 + i / 3) % 1;
+    fillCircle(ctx, midX + Math.sin(t * 1.3 + i * 2) * 3 * k, boxY - k * 18, 2 + k * 4, `rgba(90,90,90,${(0.45 * (1 - k)).toFixed(3)})`);
   }
 }
 

@@ -1,7 +1,7 @@
 // Second Thoughts' words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
 import { isDark } from '../../game/darkness.js';
 
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 
 const MACHINE = { brewing: ' is brewing (its green lamp blinking)', brewed: ' has brewed (green lamp, the pot full and steaming)', shorted: ' is scorched (it shorted)', cold: ' is off' };

@@ -3,6 +3,7 @@
 // map is drawn by painters.js; the end scenes are in end-scenes.js.
 import { C, NAVY, TEAL, MUSTARD } from '../../render/palette.js';
 import { LOOKS as L1 } from '../meeting/looks.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import {
   pigeonholes, pigeonholesState, monitor, monitorState, wallCamera, wallCameraState, socket, socketState,
   broomStand, broomState, drawer, drawerState, brownBoxThing, postThing, staticThing, leafScreenThing, droppedThing,
@@ -121,18 +122,12 @@ export const SOUNDS = {
 
 // How the cast talks (level.voices; fields: src/audio/babble.js VOICES), by cast `voice` name.
 export const VOICES = {
+  lin: OFFICE_VOICES.lin,
   // Bob: low, slow, a grunt more than a word.
   bob: {
     wave: 'triangle', f0: 98, spread: 0.06, decl: 0.1, syl: [0.13, 0.19], gap: [0.03, 0.06], atk: 0.02,
     fmt: 0.85, q: [5, 7], mk: 3.2, f2amp: 0.5, body: 0.24, bodyF: 420,
     vowels: ['o', 'u', 'uh', 'a'], cons: 0.3, consF: 2200, consAmp: 0.16, gain: 1.15,
     pitch: { notice: 180, tattle: 1.08, grumble: 80 },
-  },
-  // Lin: level 1's voice (src/levels/meeting/voices.js).
-  lin: {
-    wave: 'sawtooth', f0: 245, spread: 0.13, decl: 0.08, syl: [0.075, 0.105], gap: [0.02, 0.04], atk: 0.006,
-    fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
-    vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22, gain: 0.8,
-    pitch: { notice: 620, tattle: 1.12, grumble: 260 },
   },
 };

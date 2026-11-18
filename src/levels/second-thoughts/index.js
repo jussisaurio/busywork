@@ -27,11 +27,14 @@ import { isDark } from '../../game/darkness.js';
 import { sitAtDesk } from '../../play/player.js';
 import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
-import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
+import { DECOR, TITLE, END_SCENES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { letter } from './things.js';
 import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
+import { OWN_DESK, FRIDGE, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
+import { oncePerGame } from '../../core/events.js';
 
 const t = (hhmm) => at(hhmm, START);
 
@@ -66,12 +69,12 @@ const LEGEND = {
   Y: { kind: 'tray', solid: true, opaque: false, interactable: 'tray', draw: 'desk' },
   S: { kind: 'light_panel', solid: true, opaque: true, interactable: 'office_switch', draw: 'wall' },
   X: { kind: 'fuse_box', solid: true, opaque: true, interactable: 'fuse_box', draw: 'wall' },
-  M: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' }, // the counter's machine
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true },
-  R: { kind: 'restroom', solid: true, opaque: true },
-  E: { kind: 'elevator', solid: true, opaque: true },
+  M: COFFEE_POT, // the counter's machine
+  F: FRIDGE,
+  P: OWN_DESK,
+  L: ENTRANCE,
+  R: RESTROOM,
+  E: ELEVATOR,
 };
 
 const SPOTS = {
@@ -417,16 +420,13 @@ const gone = (w) => w.letter === 'eaten' || w.letter === 'binned' || w.letter ==
 
 // Caught by his look at the puddle (INSPECT) gets the soggy end card. Once per game object (events persist across
 // loops).
-const listening = new WeakSet();
-function listen(game) {
-  if (listening.has(game.events)) return;
-  listening.add(game.events);
+const listen = oncePerGame((game) => {
   game.events.on('day:end', (e) => {
     if (game.level?.id !== 'second-thoughts') return;
     const o = e?.outcome;
     if (o?.result === 'caught' && game.caught?.reason === 'inspection') o.why = 'soggy';
   });
-}
+});
 
 // The level's own clock work, once a step (from clockFor, on the boss's turn: he is first in the cast).
 const SURGE = 1.2; // s: the short runs down the wiring from the coffee machine to the fuse box
@@ -656,5 +656,5 @@ export default {
   cones: CONES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };

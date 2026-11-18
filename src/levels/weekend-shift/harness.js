@@ -1,7 +1,7 @@
 // Weekend Shift's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields). Text and
 // command stops only: nothing here changes what happens in a day.
 import { onPhone } from './cast.js';
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 
 const COPIER = { ok: 'working', jammed: 'jammed, beeping ⚠️', fixing: 'Kev is fixing it, still beeping 🔧', fixed: 'working again' };

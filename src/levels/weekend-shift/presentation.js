@@ -1,13 +1,14 @@
 // How Saturday (id weekend-shift) looks and sounds: title card, set dressing, poses, the end card, voices and sounds (level 1's
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
 import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
 import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
+import { OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
@@ -221,11 +222,11 @@ export const DECOR = {
     { tile: 'L', draw: paintLinChair, state: (w, game) => ({ away: linAway(game), color: TEAL, at: game?.level?.spots?.lin_desk ?? null }) },
   ],
   things: THINGS, // '#handset', '#lunchbox', '#lunchhot', '#spot', '#microwave', '#deskphone', '#marker', '#spanner' (props.js)
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: null }, // her lunch box goes there (props.js)
+    player: officeDesk('player'),
+    kev: officeDesk('kev', { prop: null }),
+    lin: officeDesk('lin', { prop: null }), // her lunch box goes there (props.js)
   },
   zoneSeeds: [
     { zone: 'office', x: 10, y: 2 }, // the boss's office (his desk draws as an exec desk)
@@ -256,31 +257,6 @@ export const POSES = {
   marks: [
     { when: (n, w, game) => n.id === 'boss' && fumes(game), angry: true }, // red to the ears
   ],
-};
-
-// level.voices: as in level 1 (src/levels/meeting/voices.js, copied: the same three people).
-export const VOICES = {
-  boss: {
-    wave: 'sawtooth', f0: 92, spread: 0.06, decl: 0.24, syl: [0.15, 0.21], gap: [0.04, 0.07], atk: 0.02,
-    fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
-    vowels: ['a', 'o', 'u', 'uh', 'ae'], cons: 0.3, consF: 1700, consAmp: 0.18,
-    growl: 31, post: [['lowpass', 2600, 0.7]], gain: 1.15,
-    pitch: { notice: 300, tattle: 1, grumble: 220 },
-  },
-  lin: {
-    wave: 'sawtooth', f0: 245, spread: 0.13, decl: 0.08, syl: [0.075, 0.105], gap: [0.02, 0.04], atk: 0.006,
-    fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
-    vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22,
-    gain: 0.8,
-    pitch: { notice: 620, tattle: 1.12, grumble: 260 },
-  },
-  kev: {
-    wave: 'square', f0: 148, spread: 0.04, decl: 0.06, syl: [0.12, 0.16], gap: [0.008, 0.02], atk: 0.025,
-    fmt: 0.95, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.06, bodyF: 450,
-    vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
-    post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
-    pitch: { notice: 440, tattle: 0.84, grumble: 190 },
-  },
 };
 
 // level.sounds (level 1's sounds.js documents the fields). The ding, the beeping and the ringing are the noises'

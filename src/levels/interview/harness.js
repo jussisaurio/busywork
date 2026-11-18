@@ -1,5 +1,5 @@
 // The Interview's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 const PHONE = { lin: "Lin's phone", boss: "the boss's phone", kev: "Kev's phone", kitchen: 'the kitchen phone' };
 const ANSWER = { // the interview's state, for the WORLD line

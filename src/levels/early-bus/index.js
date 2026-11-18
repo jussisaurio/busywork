@@ -15,6 +15,7 @@ import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 import { DECOR, LOOKS, POSES, CONES, TITLE, END_SCENES, SOUNDS, VOICES } from './presentation.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK, FRIDGE, COAT_RACK, COFFEE_POT, RESTROOM } from '../office/legend.js';
 
 // Level 1's floor, rearranged around two clocks. Q the boss's clock (office, north wall), O the open-plan clock
 // (hallway wall, on the boss's way to and from the kitchen, over Kev's desk), each with a stepladder under it. K the
@@ -45,12 +46,12 @@ const MAP = [
 const LEGEND = {
   Q: { kind: 'wall_clock', solid: true, opaque: true, interactable: 'boss_clock', draw: 'wall' }, // the wallClock prop on it
   O: { kind: 'wall_clock', solid: true, opaque: true, interactable: 'open_clock', draw: 'wall' },
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' }, // a full pot: it pours
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  F: FRIDGE,
+  C: COFFEE_POT, // a full pot: it pours
+  P: OWN_DESK,
   L: { kind: 'entrance', solid: false, opaque: false },
-  R: { kind: 'restroom', solid: true, opaque: true },
-  K: { kind: 'coat_rack', solid: true, opaque: false }, // the coatRack prop hangs his coat on it (presentation.js)
+  R: RESTROOM,
+  K: COAT_RACK, // the coatRack prop hangs his coat on it (presentation.js)
   ',': { kind: 'pavement', solid: false, opaque: false, draw: 'outside' }, // the street prop paints it
   B: { kind: 'bus_stop_sign', solid: false, opaque: false, draw: 'outside' }, // the street prop: sign, road, bus
   '=': { kind: 'crossing', solid: false, opaque: false, draw: 'outside' }, // the zebra crossing: the way home

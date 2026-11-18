@@ -1,11 +1,13 @@
 // How the audit looks and sounds: title card, set dressing, people, voices, sounds and the end card (level 1's
 // decor.js, looks.js, voices.js and sounds.js document the fields). Level 1's people are imported
 // read-only; the auditor is new.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { DESK_MARKS, penShake, penScribble, wallet } from './things.js';
 import { KEV_PAT, KEV_FOUND } from './cast.js';
+import { OFFICE_WINDOWS, OFFICE_CABINETS, OFFICE_CLOCK, OFFICE_DESK_OWNERS, OFFICE_ELEVATOR, OFFICE_ZONE_SEEDS, officeDesk } from '../office/decor.js';
 
 // The card names the trouble, the time first, and never the way out.
 export const TITLE = {
@@ -28,10 +30,10 @@ export const DECOR = {
     { x: 12, y: 2, face: 'S', color: TEAL },
     { x: 14, y: 2, face: 'S', color: TEAL },
   ],
-  windows: [{ x0: 2, x1: 6, y: 0 }, { x0: 10, x1: 12, y: 0 }, { x0: 25, x1: 27, y: 0 }],
+  windows: OFFICE_WINDOWS,
   paintings: [{ x: 10, y: 6, variant: 0 }, { x: 25, y: 6, variant: 1 }, { x: 2, y: 0, variant: 1 }],
-  cabinets: { x0: 21, x1: 23, y: 0 },
-  clock: { x: 17, y: 6 },
+  cabinets: OFFICE_CABINETS,
+  clock: OFFICE_CLOCK,
   props: [
     // Both pots full all afternoon, and both pour (index.js LEGEND, meeting/coffee.js).
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
@@ -39,20 +41,15 @@ export const DECOR = {
     { tile: 'K', draw: 'coatRack', state: () => ({ coat: false, tag: false }) },
     DESK_MARKS, // the cable on an empty desk, his sticker on a counted one, Lin's paper pile (things.js)
   ],
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#2a2a2a', screenArt: 'blankSlide', mug: C.tomato, prop: null }, // no laptop, just a dock
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    player: officeDesk('player', { screen: '#2a2a2a', screenArt: 'blankSlide' }), // no laptop, just a dock
+    kev: officeDesk('kev'),
+    lin: officeDesk('lin'),
   },
   ashtray: { spot: 'smoke' },
-  elevator: { spot: 'elevator' },
-  zoneSeeds: [
-    { zone: 'office', x: 4, y: 2 },
-    { zone: 'meeting', x: 13, y: 2 },
-    { zone: 'kitchen', x: 20, y: 2 },
-    { zone: 'lobby', x: 4, y: 14 },
-  ],
+  elevator: OFFICE_ELEVATOR,
+  zoneSeeds: OFFICE_ZONE_SEEDS,
   legendAt: { x: 20, y: 15.5 },
   things: { penShake, penScribble, wallet }, // his dry pen at Lin's desk and yours, Kev's wallet (POSES)
 };
@@ -125,8 +122,9 @@ export const POSES = {
   ],
 };
 
-// level.voices (fields: src/audio/babble.js VOICES). Level 1's three, copied from meeting/voices.js, and the auditor.
+// level.voices (fields: src/audio/babble.js VOICES). The office three, and the auditor.
 export const VOICES = {
+  ...OFFICE_VOICES,
   // The auditor: flat, nasal, precise, no rise or fall.
   auditor: {
     wave: 'square', f0: 165, spread: 0.02, decl: 0.02, syl: [0.06, 0.08], gap: [0.05, 0.07], atk: 0.004,
@@ -134,27 +132,6 @@ export const VOICES = {
     vowels: ['i', 'e', 'i', 'a'], cons: 0.7, consF: 4200, consAmp: 0.22,
     post: [['peaking', 1400, 3, 7], ['lowpass', 3200, 0.7]], gain: 0.6,
     pitch: { notice: 400, tattle: 1, grumble: 200 },
-  },
-  boss: {
-    wave: 'sawtooth', f0: 92, spread: 0.06, decl: 0.24, syl: [0.15, 0.21], gap: [0.04, 0.07], atk: 0.02,
-    fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
-    vowels: ['a', 'o', 'u', 'uh', 'ae'], cons: 0.3, consF: 1700, consAmp: 0.18,
-    growl: 31, post: [['lowpass', 2600, 0.7]], gain: 1.15,
-    pitch: { notice: 300, tattle: 1, grumble: 220 },
-  },
-  lin: {
-    wave: 'sawtooth', f0: 245, spread: 0.13, decl: 0.08, syl: [0.075, 0.105], gap: [0.02, 0.04], atk: 0.006,
-    fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
-    vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22,
-    gain: 0.8,
-    pitch: { notice: 620, tattle: 1.12, grumble: 260 },
-  },
-  kev: {
-    wave: 'square', f0: 148, spread: 0.04, decl: 0.06, syl: [0.12, 0.16], gap: [0.008, 0.02], atk: 0.025,
-    fmt: 0.95, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.06, bodyF: 450,
-    vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
-    post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
-    pitch: { notice: 440, tattle: 0.84, grumble: 190 },
   },
 };
 

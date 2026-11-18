@@ -18,6 +18,7 @@
 //   #W..........#  8   W the workstation
 //   #############  9
 import { at, deg } from '../../config.js';
+import { OWN_DESK } from '../office/legend.js';
 
 const MAP = [
   '#############',
@@ -37,7 +38,7 @@ const LEGEND = {
   W: { kind: 'workstation', solid: true, opaque: false, interactable: 'workstation' },
   X: { kind: 'printer', solid: true, opaque: false },
   Q: { kind: 'water_cooler', solid: true, opaque: false, interactable: 'water_cooler' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
 };
 
 const SPOTS = {

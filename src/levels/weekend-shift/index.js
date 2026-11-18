@@ -21,10 +21,13 @@ import { at, GAME_MIN_PER_SEC, EAT_TIME, PICK_UP_TIME } from '../../config.js';
 import { burst, say } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
 import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
-import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, END_SCENES, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { THINGS as PROP_THINGS } from './props.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK } from '../office/legend.js';
+import { oncePerGame } from '../../core/events.js';
 
 const START = 16 * 60; // 4:00 PM
 const DING_S = 6; // s from starting the microwave to the ding (3.6 game minutes of noodles): about the walk back past the board
@@ -71,7 +74,7 @@ const LEGEND = {
   C: { kind: 'counter', solid: true, opaque: false, draw: 'desk', interactable: 'noodles' },
   // the counter on down the wall, bare (props.js draws it): the microwave is the kitchen's one thing to use
   S: { kind: 'counter', solid: true, opaque: false, draw: 'desk' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
   // the supply room's phone, on a little table (props.js draws both), out of the boss's sight behind the wall
   Q: { kind: 'desk_phone', solid: true, opaque: false, interactable: 'desk_phone' },
   // the end of Lin's desk, where her lunch box sits until 4:30 (props.js draws it)
@@ -270,7 +273,6 @@ const SAG_S = 0.8; // s into the beat the boss, clapped, sags
 // so it's your Saturday now (the lure 'check', below). The engine has
 // already sent you to your desk. Subscribed once per game.events, from the boss's clock (clockFor).
 const JAM_WHISTLE_D = 2; // tiles off from the copier you whistle at (a few steps)
-const watched = new WeakSet();
 function tick(game) {
   // The board is shut only while the boss sits right by it, holding its only marker (the tray shows it empty). If he
   // gets up (his phone), he puts the marker back and the board is open again.
@@ -289,8 +291,9 @@ function tick(game) {
     game.world.jamFrom = null;
     say(game, 'player', ['🎵'], { kind: 'thought', ttl: 1.5 });
   }
-  if (watched.has(game.events)) return;
-  watched.add(game.events);
+  watch(game);
+}
+const watch = oncePerGame((game) => {
   game.events.on('boss:workAssigned', (p) => {
     if (p?.reason === 'tattle') game.world.told = true;
   });
@@ -305,7 +308,7 @@ function tick(game) {
     w.wroteAt = game.clock.minute;
     game.events.emit('roster:changed', { to: 'player' });
   });
-}
+});
 
 // level.noises: an event sets off a noise at a spot (sim/mechanics/attention.js).
 const NOISES = {
@@ -509,5 +512,5 @@ export default {
   poses: POSES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };

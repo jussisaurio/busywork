@@ -3,7 +3,7 @@
 // object: a ringing phone shakes and rings spread from it in its line's colour; its handset is off the cradle on a
 // curly cord to whoever holds it, and notes (HR) or talk (Gary) come from it while the caller is on; the patch cords,
 // lamps and jacks; Lin's power cord coiled on the floor, its adapter in the wall socket or lying loose.
-import { T, rrect, circle, fillCircle, fillEllipse, emoji, clamp, starPath } from '../../render/util.js';
+import { T, rrect, circle, fillCircle, fillEllipse, emoji, clamp, starPath, glow, ringArcs } from '../../render/util.js';
 import { box } from '../../render/things.js';
 import { drawChair } from '../../render/world.js';
 import { C, OXBLOOD } from '../../render/palette.js';
@@ -46,36 +46,6 @@ function holderOf(w, game, p) {
   return null;
 }
 const ringColour = (w, p) => (w[`ring_${p}`] === 'job' ? OUTSIDE : PHONES[p].lamp);
-
-function glow(ctx, x, y, r, colour, a) {
-  const g = ctx.createRadialGradient(x, y, 1, x, y, r);
-  g.addColorStop(0, colour);
-  g.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.globalAlpha = a;
-  ctx.fillStyle = g;
-  circle(ctx, x, y, r);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-}
-
-// Short ring arcs either side of (x, y): the bell itself.
-function arcs(ctx, x, y, colour, t, r0 = 9) {
-  const k = (t * 2.2) % 1;
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 2; i++) {
-    const r = r0 + (i + k) * 5;
-    ctx.globalAlpha = clamp(1 - (i + k) / 2, 0, 1);
-    ctx.strokeStyle = colour;
-    ctx.lineWidth = 2.2;
-    for (const s of [-1, 1]) {
-      ctx.beginPath();
-      ctx.arc(x, y, r, s > 0 ? -0.55 : Math.PI - 0.55, s > 0 ? 0.55 : Math.PI + 0.55);
-      ctx.stroke();
-    }
-  }
-  ctx.globalAlpha = 1;
-  ctx.lineCap = 'butt';
-}
 
 // A curly cord from (x0, y0) to (x1, y1).
 function curlyCord(ctx, x0, y0, x1, y1, colour) {
@@ -190,7 +160,7 @@ function deskPhone(ctx, game, w, p, x, y, t) {
   } else {
     handset(ctx, x, y - 6 - (ringing ? Math.abs(Math.sin(t * 26)) * 2.4 : 0), PHONES[p].lamp);
   }
-  if (ringing) arcs(ctx, x, y - 3, colour, t);
+  if (ringing) ringArcs(ctx, x, y - 3, colour, t);
 }
 
 // A wavy tone line beside the head of someone at (px, py) listening to a receiver.
@@ -254,7 +224,7 @@ function kitchenPhone(ctx, info, at, { w, game }, t) {
   const holder = holderOf(w, game, 'kitchen');
   wallPhone(ctx, x, y, colour, holder);
   if (holder) curlyCord(ctx, x + 6, y + 6, holder.x * T + 2, holder.y * T - 12, colour);
-  if (ringing) arcs(ctx, x + 2, y, colour, t, 12);
+  if (ringing) ringArcs(ctx, x + 2, y, colour, t, 12);
 }
 
 // --- Notes --------------------------------------------------------------------------------------------
@@ -914,4 +884,4 @@ export const THINGS = {
 };
 
 // The end cards draw these too.
-export { deskPhone, handset, uprightHandset, curlyCord, briefcase, wallPhone, glow, mainsPlug, cable };
+export { deskPhone, handset, uprightHandset, curlyCord, briefcase, wallPhone, mainsPlug, cable };

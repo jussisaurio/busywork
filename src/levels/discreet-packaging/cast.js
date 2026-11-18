@@ -1,11 +1,12 @@
 // Discreet Packaging's two people and their hooks (cast.js and behaviours.js in
 // level 1 document the fields).
 import { at, deg } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { say } from '../../core/fx.js';
 
 export const START = 15 * 60 + 20; // 3:20 PM: the day's start (level.day.start), what at() counts from
 export const t = (time) => at(time, START);
-const s = (time, entry) => ({ at: t(time), ...entry });
+const s = scheduler(START);
 
 export const CAST = [
   {
@@ -25,14 +26,12 @@ export const CAST = [
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f8a', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
+    color: '#2f8f8a', // a hair off the shared teal (kept: no picture change)
     meetingSpot: 'mail_call', // 4:00: she hands out the mail in your office
     meetingArrive: 'linAtMailCall',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [120, 220, 200],
+    coneTint: [120, 220, 200], // her own, greener than the shared one
     schedule: [
       s('3:20', { do: 'sit', spot: 'lin_desk' }),
       s('3:50', { do: 'visit', spot: 'pigeonholes', arrive: 'collectMail' }), // she fetches the mail

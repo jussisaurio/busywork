@@ -15,10 +15,12 @@
 import { at } from '../../config.js';
 import { CAST, BEHAVIOURS } from './cast.js';
 import { START, INTERACTIONS, LURES, NOISES, initialPhones, phoneTick } from './phones.js';
-import { DECOR, LOOKS, POSES, TITLE, VOICES, SOUNDS } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { END_SCENES } from './end-scenes.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK, FRIDGE, COFFEE_MACHINE } from '../office/legend.js';
 
 //   W the kitchen wall phone   B the boss's desk phone   L Lin's desk phone   V Kev's desk phone
 //   5 1 2 3 4 the switchboard: the outside line, Lin, the boss, Kev, the kitchen   O the socket of Lin's phone cord
@@ -55,9 +57,9 @@ const LEGEND = {
   2: jack('boss'),
   3: jack('kev'),
   4: jack('kitchen'),
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' },
-  C: { kind: 'coffee_machine', solid: true, opaque: false },
+  P: OWN_DESK,
+  F: FRIDGE,
+  C: COFFEE_MACHINE,
 };
 
 const SPOTS = {
@@ -143,6 +145,6 @@ export default {
   looks: LOOKS,
   poses: POSES,
   endScenes: END_SCENES,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
   sounds: SOUNDS,
 };

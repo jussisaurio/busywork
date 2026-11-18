@@ -3,12 +3,12 @@
 // The phones are the level's own (painters.js): ivory rotary bodies, handsets in the line's colour, curly cords,
 // the callers drawn (HR's hold tune as notes, Gary as talk). A desk says whose it is the way it does in the office: Lin's has her teal chair, her
 // plant, her teal mug and her nameplate; yours has the mustard chair, your red mug and your nameplate.
-import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji } from '../../render/util.js';
+import { clamp, easeOutBack, rrect, fillCircle, fillEllipse, emoji, glow } from '../../render/util.js';
 import { C, MUSTARD, TEAL } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, backWall } from '../../render/tableau.js';
 import { chair, woodDesk as desk } from '../../render/tableau-furniture.js';
-import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, glow, NOTE, IVORY, IVORY_DARK, IVORY_SHADE, WOOD, WOOD_DARK, WOOD_TOP, BRASS, dim } from './painters.js';
+import { handset, curlyCord, briefcase, wallPhone, mainsPlug, cable, notesFrom, talkFrom, bigMug, NOTE, IVORY, IVORY_DARK, IVORY_SHADE, WOOD, WOOD_DARK, WOOD_TOP, BRASS, dim } from './painters.js';
 import { PHONES, OUTSIDE } from './phones.js';
 
 const CARD = '#c9a26b';

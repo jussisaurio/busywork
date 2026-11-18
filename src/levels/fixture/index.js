@@ -13,6 +13,7 @@ import { DECOR, LOOKS, TITLE, END_SCENES, VOICES } from './presentation.js';
 import { cake } from './painters.js';
 import harness from './harness.js';
 import gate from './gate.js';
+import { OWN_DESK, FRIDGE } from '../office/legend.js';
 
 // 30 x 17 so it fills the view like level 1; the room is the top-left 22 x 12, the rest is wall.
 //   W Doreen's birthday calendar (on an easel, in front of her desk)   M microwave   F fridge (decor)
@@ -40,9 +41,9 @@ const MAP = [
 const LEGEND = {
   W: { kind: 'calendar', solid: true, opaque: false, interactable: 'calendar' },
   M: { kind: 'microwave', solid: true, opaque: true, interactable: 'microwave' },
-  F: { kind: 'fridge', solid: true, opaque: true, draw: 'refrigerator' }, // render/world.js TILE_DRAWS
+  F: FRIDGE, // render/world.js TILE_DRAWS
   B: { kind: 'cake_stand', solid: true, opaque: false, interactable: 'cake_stand' },
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
 };
 
 const SPOTS = {

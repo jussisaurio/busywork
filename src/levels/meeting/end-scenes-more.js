@@ -1,26 +1,31 @@
 // More of the meeting's end scenes (end-scenes.js reads them into END_SCENES; same draw signature:
 // draw(ctx, game, t, e, outcome), inside TAB, screen space). Kept apart so builders working in parallel touch
 // different files. Objects are drawn, never emoji; only bubbles speak emoji.
-//   typewriter  caught, why 'typewriter' (interactions.js drown_typewriter): the drowned workstation sparks and
-//               drips on the empty desk; you stand by it sooty, hair on end; the boss points at it and holds out
-//               an empty box for your things.
+//   computer  caught, why 'computer' (interactions.js drownComputer: the cup into any computer on the floor): the
+//             drowned machine sparks and drips on its desk; you stand by it sooty, hair on end; the boss points at
+//             it and holds out an empty box for your things. Its owner, if it has one and they are in (Lin; Kev
+//             until he goes home), stands at the right edge, horrified 😱💻. Yours, an empty desk's and the boss's
+//             own (he is already there, pointing) add nobody.
 import { rrect, fillEllipse, fillCircle } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { findNpc } from '../../game/perception.js';
 
-const B_TYPEWRITER = [['⌨️', '💥', '👉', '@player'], ['📦', '👉', '@player']];
+const B_COMPUTER = [['⌨️', '💥', '👉', '@player'], ['📦', '👉', '@player']];
 
 function bossJacket(game) {
   const boss = game.npcs && findNpc(game, 'boss');
   return boss ? game.world.jacket === boss.id : true;
 }
 
-export function tableauTypewriter(ctx, game, t, e) {
+const OWNER_SAYS = ['😱', '💻'];
+const OWNER_IN = { lin: () => true, kev: (w) => !w.kevGone }; // whose machine brings them onto the card, and when
+
+export function tableauComputer(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
   backWall(ctx, 92);
-  // the empty desk, the dead machine on it
+  // the desk, the dead machine on it
   deadDesk(ctx, 470, 214, t, e);
   // you, beside it: blackened, hair on end, frozen
   const p = person(t);
@@ -42,10 +47,21 @@ export function tableauTypewriter(ctx, game, t, e) {
   b.jacket = bossJacket(game);
   b.scale = 2.6;
   drawPerson(ctx, game.level.looks.boss, b, 262, 290);
-  bubble(ctx, B_TYPEWRITER[Math.floor(e / 1.6) % 2], 276, 206, e % 1.6, 'alert');
+  bubble(ctx, B_COMPUTER[Math.floor(e / 1.6) % 2], 276, 206, e % 1.6, 'alert');
+  // its owner, at the right edge, past you, turned to the dead machine
+  const who = game.world?.drowned?.owner;
+  if (!OWNER_IN[who]?.(game.world)) return;
+  const o = person(t);
+  o.dir = Math.PI - 0.3;
+  o.head = Math.PI - 0.3;
+  o.arms = 'facepalm';
+  o.sweat = true;
+  o.scale = 2.2;
+  drawPerson(ctx, game.level.looks[who], o, 728, 300);
+  bubble(ctx, OWNER_SAYS, 722, 214, e, 'speech', 1.2);
 }
 
-// The empty desk end on, its workstation drowned: a dead, cracked screen, coffee over the keys, dripping off the
+// The desk end on, its workstation drowned: a dead, cracked screen, coffee over the keys, dripping off the
 // front into a puddle, smoke rising, sparks jumping. (x, y): the desk top's centre.
 function deadDesk(ctx, x, y, t, e) {
   ctx.fillStyle = 'rgba(0,0,0,0.22)';

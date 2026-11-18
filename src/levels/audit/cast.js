@@ -20,6 +20,7 @@
 //              room), Kev's. A ❌ makes him angry; he finishes his list all the same and fires you at the sign-off.
 //   3:33-      the boss, ticked off, goes for his smoke. He and Lin stay out through the sign-off (index.js clockFor).
 import { at as atClock, deg } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 import { setOverride } from '../../sim/override.js';
 import { npcTakes } from '../../sim/take.js';
@@ -27,7 +28,7 @@ import { SPOTS } from './spots.js';
 
 export const START = 15 * 60; // 3:00 PM
 const at = (time) => atClock(time, START);
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler(START);
 export const KEV_GO = at('3:42.4'); // coffee done: back to his desk (index.js clockFor keeps him in step with the pen)
 // His wallet stop at the end of your desk, in seconds (kevWallet, kevLeavesIt, kevFindsIt; presentation.js POSES): a
 // thought, both hands patting his pockets, the wallet held up. He walks off at about 3:11.7, the laptop left behind.
@@ -52,14 +53,10 @@ export const CAST = [
     ],
   },
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55', // navy suit
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'boss_desk',
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [24, 30], // a smoker staring at the lift, a boss at his window: he seldom looks round
-    coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // back to the glass, facing his window
       s('3:06', { do: 'visit', spot: 'smoke', anim: 'smoking' }),
@@ -68,13 +65,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'lin_desk',
     vision: { fov: deg(100), radius: 8.5 },
-    coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // she sees into the boss's office through the glass
       s('3:11', { do: 'away', spot: 'restroom' }),
@@ -83,13 +76,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a', // olive hoodie
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'kev_desk',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
       // Lunch: off with his laptop, a stop at your desk for his wallet, and off without the laptop (KEV_WONDER...).

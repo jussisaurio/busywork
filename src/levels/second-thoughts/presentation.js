@@ -1,9 +1,10 @@
 // How Second Thoughts looks and sounds: title card, set dressing, poses and sounds (level 1's decor.js, looks.js and
 // sounds.js document the fields). The end cards are in end-scenes.js. People look as in level 1 (its looks.js,
 // read-only).
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS } from '../meeting/looks.js';
 import { trayProp, deskClockProp, drawerProp, puddleProp, jugProp, machineProp, surgeProp, trayThing, phoneThing, jugThing } from './things.js';
+import { OFFICE_WINDOWS, OFFICE_CLOCK, officeDesk } from '../office/decor.js';
 
 export { LOOKS };
 export { END_SCENES } from './end-scenes.js';
@@ -33,16 +34,12 @@ export const DECOR = {
     { x: 26, y: 4, face: 'N', color: MUSTARD },
     { x: 25, y: 2, face: 'S', color: MUSTARD },
   ],
-  windows: [
-    { x0: 2, x1: 6, y: 0 },
-    { x0: 10, x1: 12, y: 0 },
-    { x0: 25, x1: 27, y: 0 },
-  ],
+  windows: OFFICE_WINDOWS,
   paintings: [
     { x: 10, y: 6, variant: 0 },
     { x: 25, y: 6, variant: 1 },
   ],
-  clock: { x: 17, y: 6 },
+  clock: OFFICE_CLOCK,
   // The in-tray on his desk, your letter lying in it while it's there (dragged over to him from 3:39), and his
   // desk clock at the other end, which he keeps checking. The coffee machine: the water jug beside it (full, or
   // tipping into its back vent while you pour, empty after, a puddle dripping under the counter till it shorts), its lamp
@@ -93,7 +90,7 @@ export const DECOR = {
   // Things that are no item, for the end cards (end-scenes.js), where they are drawn in a hand.
   things: { tray: trayThing, phone: phoneThing, jug: jugThing },
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
+    player: officeDesk('player'),
   },
   legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
@@ -161,29 +158,4 @@ export const SOUNDS = {
   },
   murmur: { spot: 'boss_desk' },
   elevator: { spot: 'elevator', radius: 2.5 },
-};
-
-// How the cast talks (level.voices; fields: src/audio/babble.js VOICES), copied from level 1.
-export const VOICES = {
-  boss: {
-    wave: 'sawtooth', f0: 92, spread: 0.06, decl: 0.24, syl: [0.15, 0.21], gap: [0.04, 0.07], atk: 0.02,
-    fmt: 0.82, q: [7, 9], mk: 3.2, f2amp: 0.6, body: 0.22, bodyF: 520,
-    vowels: ['a', 'o', 'u', 'uh', 'ae'], cons: 0.3, consF: 1700, consAmp: 0.18,
-    growl: 31, post: [['lowpass', 2600, 0.7]], gain: 1.15,
-    pitch: { notice: 300, tattle: 1, grumble: 220 },
-  },
-  lin: {
-    wave: 'sawtooth', f0: 245, spread: 0.13, decl: 0.08, syl: [0.075, 0.105], gap: [0.02, 0.04], atk: 0.006,
-    fmt: 1.15, q: [5, 7], mk: 2.4, f2amp: 0.75, body: 0.05, bodyF: 600,
-    vowels: ['i', 'e', 'a', 'ae', 'o'], cons: 0.6, consF: 5200, consAmp: 0.22,
-    gain: 0.8,
-    pitch: { notice: 620, tattle: 1.12, grumble: 260 },
-  },
-  kev: {
-    wave: 'square', f0: 148, spread: 0.04, decl: 0.06, syl: [0.12, 0.16], gap: [0.008, 0.02], atk: 0.025,
-    fmt: 0.95, q: [5, 6], mk: 2.0, f2amp: 0.5, body: 0.06, bodyF: 450,
-    vowels: ['uh', 'u', 'o', 'oe', 'e'], cons: 0.15, consF: 2600, consAmp: 0.12,
-    post: [['peaking', 1150, 3, 9], ['lowpass', 1700, 0.8]], gain: 0.55,
-    pitch: { notice: 440, tattle: 0.84, grumble: 190 },
-  },
 };
