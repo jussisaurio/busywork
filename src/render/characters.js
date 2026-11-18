@@ -41,7 +41,7 @@ export function personState() {
   return {
     dir: 0, head: 0, pose: 'stand', moving: false, phase: 0, arms: 'idle', item: null,
     scale: 1, jacket: true, smug: false, sweat: false, glance: 0, t: 0, typing: false, angry: false,
-    badge: false, crank: false, stain: null, lift: 0, seed: 0,
+    badge: false, crank: false, stain: null, lift: 0, seed: 0, slump: false,
   };
 }
 
@@ -391,6 +391,7 @@ function drawBox(ctx, g) {
   ctx.fill();
 }
 
+const SLUMP = 11; // px the head drops forward when asleep at a desk (s.slump: a toy's pose)
 const G = { d: 0, cd: 0, sd: 0, fx: 0, fy: 0, rx: 0, ry: 0, bodyY: 0, brx: 0, bry: 0, headY: 0, hr: 0 };
 
 // Draw a person whose feet/centre are at (x, y) in the current transform.
@@ -458,7 +459,8 @@ export function drawPerson(ctx, look, s, x, y) {
   if (look.hood && !noJacket) fillEllipse(ctx, -G.fx * hr * 0.55, headY + hr * 0.95 - G.fy * hr * 0.4, hr * 1.05, hr * 0.62, look.hoodColor ?? look.bodyDark);
   if (!north) drawArms(ctx, look, s, G, bodyDark);
 
-  drawHead(ctx, look, s, h, 0, headY, hr);
+  if (s.slump) drawHead(ctx, look, s, h, cd * SLUMP, headY + sd * SLUMP + 3, hr); // asleep: head forward, on the desk
+  else drawHead(ctx, look, s, h, 0, headY, hr);
   if (s.arms === 'type' && !s.typing) drawKeys(ctx, s, G);
   if (s.item && liftOverHead(s)) {
     drawHeldItem(ctx, s, HAND.rx, HAND.ry);
@@ -975,7 +977,7 @@ const NO_POSES = {};
 export function resetState(s, t) {
   s.dir = 0; s.head = 0; s.pose = 'stand'; s.moving = false; s.phase = 0; s.arms = 'idle'; s.item = null;
   s.scale = 1; s.jacket = true; s.smug = false; s.sweat = false; s.glance = 0; s.t = t; s.typing = false; s.angry = false;
-  s.badge = false; s.crank = false; s.stain = null; s.lift = 0; s.seed = 0;
+  s.badge = false; s.crank = false; s.stain = null; s.lift = 0; s.seed = 0; s.slump = false;
 }
 
 // The emoji for a held item type: its level.items[type].icon (the validator requires one), '❔' for something
@@ -1008,6 +1010,7 @@ function wearToyPose(game, e, s) {
   if (pose.arms) s.arms = pose.arms;
   if (pose.angry) s.angry = true;
   if (pose.face) s.head = Math.atan2(pose.y - fin(e.y), pose.x - fin(e.x));
+  if (pose.slump) { s.slump = true; s.head = s.dir; } // asleep: no glances shown (what he sees is unchanged)
 }
 
 function drawPlayer(ctx, game, t) {

@@ -431,4 +431,36 @@ export default [
       if (g.player.held) throw new Error('you left his office holding ' + g.player.held);
     },
   },
+  // ---- More places for the coffee, more endings (one block: a parallel builder appends too).
+  {
+    name: 'coffee into the boss\'s ficus → 🌿😍, no cup for the projector → fail',
+    expect: { result: 'fail' },
+    play({ run, log }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto boss_doorway busy');
+      run('interact');
+      run('busy until 4:00');
+      if (!log.some((e) => e.name === 'coffee:ficus')) throw new Error('the coffee never went into the plant');
+    },
+  },
+  {
+    name: 'coffee into the typewriter → bang, the boss hears it → caught (typewriter)',
+    expect: { result: 'caught' },
+    play({ g, run, waitFor }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto typewriter busy');
+      run('interact');
+      waitFor((gg) => gg.outcome, { maxSec: 10 });
+      if (g.outcome?.why !== 'typewriter') throw new Error(`caught for ${g.outcome?.why}, not the typewriter`);
+    },
+  },
+  {
+    // The boss is hunting for the cup: finding it in your hand in his office is proof, not a show-out (rules.js react).
+    name: 'projector killed, then into the boss\'s office holding the mug, pretending → caught, not shown out',
+    expect: { result: 'caught' },
+    cmds: ['goto coffee_machine', 'interact', 'wait until 3:10', 'goto projector pretend', 'interact',
+      'goto boss_desk pretend', 'pretend 4.5s', 'goto meeting_room pretend', 'wait until 4:00'],
+  },
 ];

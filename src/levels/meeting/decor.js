@@ -5,6 +5,7 @@ import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.j
 import { dayCue } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
 import { PICTURE, pictureTilt } from './toys.js';
+import { ficus, deadTypewriter, kevPage } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
@@ -86,6 +87,15 @@ export const DECOR = {
     // is drawn every frame, so it is a prop, not a painting; R (the restroom door) only anchors it, once on the map.
     { tile: 'R', draw: hallPicture, state: (w, game) => ({ x: PICTURE.x - 0.5, y: PICTURE.y, ...pictureTilt(game) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
+    // The boss's ficus after the coffee (interactions.js water_ficus): wet soil, a new leaf shooting out.
+    { tile: 'Y', draw: ficus, state: (w, game) => ({ watered: w.cup === 'ficus', since: since(game, w._ficusAt) }) },
+    // The typewriter on the empty desk, after the cup went into its keys (interactions.js drown_typewriter).
+    { tile: 'W', draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'typewriter', since: since(game, w._typewriterAt) }) },
+    // Kev's screen while he dozes on his keyboard (toys.js kev_doze, every 3 s while asleep): seconds asleep so far.
+    { tile: 'C', draw: kevPage, state: (w, game) => {
+      const d = toyState(game, 'kev_doze');
+      return { secs: d.n > 0 ? (d.n - 1) * 3 + Math.min(d.since, 3) : 0 };
+    } },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },

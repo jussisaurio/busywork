@@ -33,6 +33,8 @@ export default {
     kev_desk: 'kev_desk',
     my_desk_spot: 'my_desk', // beside your seat: where you set things down on your desk
     boss_office_door: 'boss_door',
+    boss_doorway: 'boss_doorway', // standing in his doorway: his plant is in reach, his office is not entered
+    typewriter: 'typewriter', // at the empty desk behind yours, its typewriter in front of you
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
     restroom_door: 'restroom',
@@ -48,7 +50,7 @@ export default {
   names: NAME,
 
   mapKey: [
-    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance (glass door, staff keycard),',
+    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, Y the boss\'s plant, W the typewriter on the empty desk behind yours, : outside lobby, L entrance (glass door, staff keycard),',
     '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
@@ -56,6 +58,7 @@ export default {
   // o.why: the verdict's reason (verdict.js): 'mug' you held the cup, 'desk' it sat on your desk, 'kev' it sat on his.
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
     : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
+    : o.result === 'caught' && o.why === 'typewriter' ? 'CAUGHT ⌨️💥 (the coffee shorted the typewriter with a bang the whole floor heard; fired: you leave with a box 📦)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
     : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
     : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
@@ -141,6 +144,8 @@ export default {
         : `the boss spots the empty mug on ${SPOT[p.spot] ?? p.spot} ☕🤷`;
       case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';
+      case 'coffee:ficus': return 'you pour the coffee into the boss\'s plant: the soil drinks it, and a new leaf shoots out 🌱';
+      case 'coffee:typewriter': return 'you pour the coffee into the typewriter\'s keys: BANG, sparks, smoke ⌨️💥';
       default: return undefined;
     }
   },

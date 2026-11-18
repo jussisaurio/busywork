@@ -231,6 +231,26 @@ and `sandwich:eaten`.
 - `L` (the glass entrance) is solid for you but `npcPassable`, so NPCs walk through it. `K` coat rack, `F` fridge,
   `C` coffee machine, `J` projector, `P` your desk.
 
+## More beats (BATCH2)
+- **The ficus** (`Y`, 7,5, in the corner of the boss's office). From his doorway (`boss_doorway`, 6,6, outside his
+  office zone) the coffee goes into his plant (`water_ficus`, `world.cup = 'ficus'`, `coffee:ficus`). A leaf shoots
+  out (`painters-more.js ficus`); the boss, if he sees it, is delighted 🌿😍 (toy `ficus`). The cup is gone: no
+  projector route this loop. The joke: the one act of care in the whole office goes to a plant, with stolen coffee.
+- **The typewriter** (`W`, 13,11: the workstation on the empty mustard-chair desk behind yours; nobody's today, so
+  it's no prank on Lin or Kev, and it isn't your own, whose E is the sit). The coffee goes into its keys
+  (`drown_typewriter`, `world.cup = 'typewriter'`, `coffee:typewriter`): a bang, sparks, smoke. The boss, anywhere on
+  the floor, hears it: caught at once (engine seam `rules.js catchNow`, why `'typewriter'`). Locked out or off the
+  floor, it just dies smoking (`painters-more.js deadTypewriter`). End scene `typewriter`: you sooty, hair on end, by
+  the dripping, sparking machine; the boss holds out the box. The joke: an audacious, pointless act of sabotage,
+  rewarded with exactly the ending it deserves.
+- **Kev dozes** (toys `kev_doze`, `kev_wake`). Robbed of his coffee (`wants: 'coffee'`), sat at his desk between 2:48
+  and 2:58, Kev slumps face-first onto his keyboard (pose `slump`, engine seam in `render/characters.js`) and thinks
+  💤; a line of one letter grows across his screen (`painters-more.js kevPage`). Come within 2.5 tiles and he jolts
+  awake 😳 and types busily; he stays awake the rest of the day. Cosmetic only: asleep, he sees exactly as awake
+  (toys cannot change sight), and you cannot get close without waking him, so his sight never surprises you; his
+  3:00 exit is untouched. The joke: the man you robbed of his coffee falls asleep on his keyboard, typing one letter
+  forever.
+
 ## HUD
 - The clock turns red at 3:50 (`clockRedAt`). The wall clock starts ticking at 3:50, tick-tock from 3:55, a tick
   every half minute from 3:57. The projector beam lights the screen from 3:55 (`beamAt`, read by `decor.js`).

@@ -264,7 +264,14 @@ function react(game, s, npc, offence) {
   const r = roles(game);
   const cam = camVia(game, npc);
   if (offence === 'disguise') unmasked(npc); // he objects once; then she is just herself to him
-  if (offence === 'trespass') return showOutOf(game, s, npc, trespassing(game, npc), cam);
+  // The authority finds you in his office holding a thing of his he knows is his (an owner's `when`: the mug he is
+  // hunting for): that is proof, not a stray visitor. A catch, as it is anywhere else. His contraband (the keycard)
+  // he only takes back, and other owners only show you out.
+  const his = game.player.held;
+  const proof = offence === 'trespass' && npc.id === r.authority?.id && his
+    && itemFlags(game, his).contraband !== npc.id && claims(game, npc, his);
+  if (proof) offence = 'contraband';
+  else if (offence === 'trespass') return showOutOf(game, s, npc, trespassing(game, npc), cam);
   if (npc.id === r.authority?.id) {
     sightline(game, npc.id, 'caught', 1.6, screenChain(cam));
     caught(game, offence, r.authority.id, cam);
@@ -349,7 +356,8 @@ export function showOutNow(game, npcId) {
   return true;
 }
 
-// For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand). why: a string
+// For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand; a drowned
+// typewriter, so loud it needs no witness). why: a string
 // the outcome carries (outcome.why: its end scene). False if the day is already over or someone already caught you.
 export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
   if (game.phase !== 'day' || game.caught || game.outcome || game.scenario?.leave) return false;

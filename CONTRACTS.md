@@ -538,7 +538,8 @@ game = {
                               // rules react to, after each step (rules.js; render/cones.js reads it). Empty while
                               // caught, after the outcome and during assigned work.
   caught: null,               // null | { by, reason: 'action'|'scene'|'evidence'|'contraband'|'inspection'|
-                              //   a fetch's reason, t, via, minute } (via: the camera id he saw you on, or null;
+                              //   a fetch's reason, t, via, minute, why? } (via: the camera id he saw you on, or null;
+                              //   why: a level catch's reason (rules.js catchNow), copied to outcome.why;
                               //   minute: the clock when caught. The outcome's minute, so card and HUD agree)
   outcome: null,              // null | { result: 'win'|'fail'|'caught'|'blamed', routes, newRoutes, loop, minute, stopped? }
                               //   stopped: { by, reason, working } on a lost day you were sent to your desk (by: who
