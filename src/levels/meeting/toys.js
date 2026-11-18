@@ -1,6 +1,6 @@
 // Level 1's toys (level.toys; the fields are in src/sim/mechanics/toy.js): things you poke that answer back and
 // decide nothing.
-//   pound      out on the balcony without his card (balcony.js), the door shut: you pound on it 👊🚪, the way he does.
+//   pound      out on the balcony without his card (balcony.js), the door shut: you pound on it 👊👊🚪, the way he does (knocks.js).
 //              Nobody comes. (With the card, or the door open, E is the way in instead: the rows win.)
 //   smoke_offer  the boss out there with you, smoking or locked out: he holds out his packet 🚬❓. Off the clock.
 //   knock_*    the restroom door while someone is in there (restroom.js): you knock, and he answers through the door,
@@ -32,6 +32,7 @@ import { findNpc, inZone } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside } from './balcony.js';
 import { deadAt } from './map.js';
+import { POUND, fistsOnTheDoor } from './knocks.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
 const UNDER_PICTURE = { x: 25, y: 7.4 }; // where Kev and Lin stand to fix it: right under it, at arm's length
@@ -47,7 +48,6 @@ export function pictureTilt(game) {
   return { tilt: v, since: f === null ? null : game.loopTime - f };
 }
 const FIX = { sfx: 'creak', pose: { arms: 'reach', face: true, angry: true, for: 1.4 } };
-const KNOCK = { sfx: 'bang', pose: { arms: 'bang', face: true, for: 0.6 } };
 const inside = (id) => (w, s, game) => game.player._stall === id && game.player.y < 13.5; // (not from the balcony)
 
 const DOZE_FROM = clockAt('2:48');
@@ -176,8 +176,8 @@ export const TOYS = [
   {
     id: 'pound', at: { x: 27, y: 13 }, on: 'press', text: 'pound on the door', every: 0.8,
     when: (w, s, game) => outside(game.player),
-    line: 'you pound on the fire door 👊🚪: the reader blinks red, and nobody comes',
-    react: { sfx: 'bang', say: { icons: ['👊', '🚪'], ttl: 1.2 }, pose: { arms: 'bang', face: true, for: 0.7 } },
+    line: 'you pound on the fire door 👊👊🚪: the reader blinks red, and nobody comes',
+    react: fistsOnTheDoor(0.7, { icons: POUND.say, ttl: 1.2 }),
     try: ['goto fire_door', 'interact', 'wait 1s', 'interact'],
   },
   {
@@ -192,13 +192,13 @@ export const TOYS = [
     id: 'knock_boss', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('boss'), every: 2,
     over: ['knock_lin'], // (never both: one stall)
     line: 'you knock on the restroom door: the boss answers from inside 🚽😠',
-    react: { ...KNOCK, say: { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 } },
+    react: fistsOnTheDoor(0.6, { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 }),
     try: ['goto restroom_door', 'pretend until 3:19', 'interact'],
   },
   {
     id: 'knock_lin', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('lin'), every: 2,
     line: 'you knock on the restroom door: Lin answers from inside 🚽😤',
-    react: { ...KNOCK, say: { icons: ['🚽', '😤', '@lin'], who: 'prop', ttl: 1.8 } },
+    react: fistsOnTheDoor(0.6, { icons: ['🚽', '😤', '@lin'], who: 'prop', ttl: 1.8 }),
     try: ['goto restroom_door', 'pretend until 3:35.5', 'interact'],
   },
   {

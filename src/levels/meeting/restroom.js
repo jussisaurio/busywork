@@ -10,7 +10,7 @@
 // step, clocks.js) and knocks ✊🚪.
 //   Lin, Kev  wait, and it shows (⌚❓, ✊✊🚪, 😤, round again), until you come out (they go in for what's left of their
 //             time) or their time is up (they give up and get on with their day: the schedule never moves).
-//   the boss  doesn't wait: a knock, EJECT_AT seconds, then both fists (👊🚪😤) and you're out, stood at the door in
+//   the boss  doesn't wait: a knock, EJECT_AT seconds, then both fists (👊👊🚪😤) and you're out, stood at the door in
 //             plain view, whatever you were doing cut short (mid-wash: the mustard is still on you, 🧼😳). 👉 and he
 //             goes in himself. Not a catch: it costs the hiding place, and what he sees on you is the usual rules.
 // Who is in there is kept on the player (player._stall, an NPC id or null), set every step by clocks.js: the
@@ -19,6 +19,7 @@ import { goInside, comeOut } from '../../play/player.js';
 import { say } from '../../core/fx.js';
 import { cancelAction } from '../../play/interactions.js';
 import { holdFor, speak } from '../../sim/override.js';
+import { KNOCK, POUND } from './knocks.js';
 
 export const DOOR = { x: 25.5, y: 12.5 }; // where you stand at the door (map.js SPOTS.restroom), and wait inside
 
@@ -33,9 +34,9 @@ const EJECT_AT = 2.6; // seconds the boss gives you after his knock
 const POUND_AT = 1.8;
 // The wait, by seconds since the knock; from the last line it goes round again from the second.
 const WAITING = [
-  { t: 0, say: ['✊', '🚪'], event: 'restroom:knock' },
+  { t: 0, say: KNOCK.say, event: 'restroom:knock' },
   { t: 1.8, say: ['⌚', '❓'], kind: 'thought' },
-  { t: 3.4, say: ['✊', '✊', '🚪'], event: 'restroom:knock' },
+  { t: 3.4, say: ['✊', ...KNOCK.say], event: 'restroom:knock' }, // knocks twice
   { t: 5.2, say: ['😤'] },
 ];
 const ROUND = 5.2; // (Lin's whole visit is about 5 s: she gets as far as the second knock)
@@ -68,7 +69,7 @@ function bossAtTheDoor(game, boss, q, t) {
   if (q.i === 0) { knockLine(game, boss, WAITING[0]); q.i = 1; }
   if (!q.pounded && t >= POUND_AT) {
     q.pounded = true;
-    speak(game, boss, [{ say: ['👊', '🚪', '😤'], kind: 'alert', ttl: 1.4 }]);
+    speak(game, boss, [{ say: [...POUND.say, '😤'], kind: 'alert', ttl: 1.4 }]);
     game.events.emit('restroom:pound', { by: boss.id });
   }
   if (t < EJECT_AT) return;

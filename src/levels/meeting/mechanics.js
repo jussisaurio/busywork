@@ -7,6 +7,7 @@ import { at } from '../../config.js';
 import { npcSees } from '../../game/perception.js';
 import { speak } from '../../sim/override.js';
 import { bossBadgedIn } from './balcony.js';
+import { KNOCK, BANG, POUND } from './knocks.js';
 
 const SEES_CUP = 3.5; // tiles: how close the hunting boss must be to spot the cup on a desk or the machine
 
@@ -88,9 +89,6 @@ export const HUNTS = [
 // The fire door onto the smokers' balcony, at the far end past the toilets: it swings shut and locks behind you, and
 // from outside only a keycard opens it. Nobody sits down that end since Kev went home, and Lin's at the other end:
 // only you hear him.
-const KNOCK = [0.05, 0.15];
-const BANG = [0.12, 0.25];
-const POUND = [0.2, 0.32];
 export const DOORS = [
   {
     spot: 'fire_door',
@@ -118,11 +116,11 @@ export const DOORS = [
       first: 0.7,
       lines: [
         { say: ['🪪', '❓'], kind: 'thought', ttl: 1.6, next: 2.0, arms: 'shrug', event: 'boss:pockets', shake: null }, // pats his pockets
-        { say: ['✊', '🚪'], ttl: 1.6, next: 2.2, event: 'boss:knock', shake: KNOCK }, // knock knock
-        { say: ['😠', '🚪', '🪪'], kind: 'alert', ttl: 1.6, next: 2.4, shake: BANG },
-        { say: ['👊', '👊', '🚪'], kind: 'alert', ttl: 1.6, next: 2.6, event: 'boss:pound', shake: POUND },
+        { say: KNOCK.say, ttl: 1.6, next: 2.2, event: 'boss:knock', shake: KNOCK.shake }, // knock knock
+        { say: BANG.say, kind: 'alert', ttl: 1.6, next: 2.4, shake: BANG.shake },
+        { say: POUND.say, kind: 'alert', ttl: 1.6, next: 2.6, event: 'boss:pound', shake: POUND.shake },
         { say: ['🚬', '😤'], ttl: 1.6, next: 2.8, arms: 'puff', event: 'boss:fume', shake: null }, // lights another, fuming
-        { say: ['🙏', '🚪'], ttl: 1.6, next: 2.4, event: 'boss:knock', shake: KNOCK }, // please?
+        { say: ['🙏', '🚪'], ttl: 1.6, next: 2.4, event: 'boss:knock', shake: KNOCK.shake }, // please? (a knock, begging)
       ],
       loopFrom: 2,
       event: 'boss:bang',

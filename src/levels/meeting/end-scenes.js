@@ -15,8 +15,9 @@ import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, confetti } from '../../render/tableau.js';
 import { chair, walnutDesk, officeRoom, drawLift, walkWithBox } from '../../render/tableau-furniture.js';
 import { endKind, WHYS } from './endings.js';
-import { bossJacket, kevHere, meetingRoom, presenting, AUDIENCE, atTheTable, brokenProjector, balconySet, knock,
-  bangingOnTheDoor, fireDoor, youNodding } from './end-set.js';
+import { bossJacket, kevHere, meetingRoom, presenting, AUDIENCE, atTheTable, brokenProjector, balconySet,
+  bangingOnTheDoor, youNodding } from './end-set.js';
+import { BANG, POUND } from './knocks.js';
 import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
 import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
@@ -35,7 +36,7 @@ const B_DOTS = ['📊', '❓'];
 
 // The keycard win, either side of the fire door. Inside (left) you cheer in the empty office. Outside (right), on
 // the smokers' balcony, the boss pounds on the fire door, its card reader blinking red, butts ground out at his feet.
-const B_LOCKED = [['😠', '🚪', '🪪'], ['👊', '👊', '🚪']];
+const B_LOCKED = [BANG.say, POUND.say];
 function tableauKeycard(ctx, game, t, e) {
   balconySet(ctx);
   confetti(ctx, TAB.x, 280, TAB.y, TAB.h, e, 36);
@@ -46,9 +47,7 @@ function tableauKeycard(ctx, game, t, e) {
   p.smug = true;
   p.scale = 2.3;
   drawPerson(ctx, game.level.looks.player, p, 340, 280 - Math.abs(Math.sin(t * 6)) * 8);
-  const { beat, hit, dx } = knock(t);
-  fireDoor(ctx, t, dx);
-  bangingOnTheDoor(ctx, game, 'boss', t, { angry: true });
+  const { beat, hit } = bangingOnTheDoor(ctx, game, 'boss', t, { angry: true });
   if (hit) { // impact rings off the steel
     ctx.strokeStyle = 'rgba(255,255,255,0.85)';
     ctx.lineWidth = 2;
@@ -123,7 +122,7 @@ function tableauFail(ctx, game, t, e) {
 
 // The Good Samaritan, caught: you let him in, he hugged you, and over your shoulder saw his card in your hand. The
 // keycard win the other way round: you on the balcony, fists on the fire door; he, inside, dangles his card at you.
-const B_LET_ME_IN = [['🙏', '🚪'], ['👊', '👊', '🚪']];
+const B_LET_ME_IN = [['🙏', '🚪'], POUND.say];
 function tableauSamaritanCaught(ctx, game, t, e) {
   balconySet(ctx);
   const b = person(t);
@@ -136,7 +135,6 @@ function tableauSamaritanCaught(ctx, game, t, e) {
   b.scale = 2.3;
   drawPerson(ctx, game.level.looks.boss, b, 380, 276);
   bubble(ctx, e < 2.4 ? ['🪪', '😏'] : ['👋'], 380, 186, e < 2.4 ? e : e - 2.4);
-  fireDoor(ctx, t, knock(t).dx);
   bangingOnTheDoor(ctx, game, 'player', t, { sweat: true });
   bubble(ctx, B_LET_ME_IN[Math.floor(e / 1.6) % 2], 560, 196, e % 1.6, 'alert');
 }

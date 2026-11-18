@@ -12,7 +12,8 @@ import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, confetti } from '../../render/tableau.js';
 import { chair, walnutDesk } from '../../render/tableau-furniture.js';
 import { WHYS } from './endings.js';
-import { bossJacket, balconySet, knock, bangingOnTheDoor, fireDoor } from './end-set.js';
+import { bossJacket, balconySet, bangingOnTheDoor, fireDoor } from './end-set.js';
+import { POUND } from './knocks.js';
 
 // The end of the meeting table, inside, with your chair at it: empty.
 function tableEnd(ctx) {
@@ -60,9 +61,8 @@ export function tableauTogether(ctx, game, t, e) {
   tableEnd(ctx);
   confetti(ctx, TAB.x, 280, TAB.y, TAB.h, e, 24);
   const gaveUp = e > 2.6; // he pounds, then gives up and lights one
-  fireDoor(ctx, t, gaveUp ? 0 : knock(t).dx);
   bangingOnTheDoor(ctx, game, 'boss', t, gaveUp ? { dir: 0, head: 0.2, arms: 'puff' } : { angry: true });
-  bubble(ctx, gaveUp ? ['🚬', '❓'] : ['👊', '🚪'], 556, 192, gaveUp ? e - 2.6 : e % 1.3, gaveUp ? 'speech' : 'alert');
+  bubble(ctx, gaveUp ? ['🚬', '❓'] : POUND.say, 556, 192, gaveUp ? e - 2.6 : e % 1.3, gaveUp ? 'speech' : 'alert');
   const p = person(t);
   p.dir = Math.PI;
   p.head = Math.PI + Math.sin(t * 0.9) * 0.2;
@@ -88,9 +88,8 @@ export function tableauSnatched(ctx, game, t, e) {
   drawPerson(ctx, game.level.looks.boss, b, 352, 200); // behind the table
   tableEnd(ctx);
   bubble(ctx, e < 2.2 ? ['🪪', '😏'] : ['🪑', '❓', '@player'], 344, 124, e < 2.2 ? e : e - 2.2);
-  fireDoor(ctx, t, knock(t).dx);
   bangingOnTheDoor(ctx, game, 'player', t, { sweat: true });
-  bubble(ctx, ['👊', '🚪'], 560, 196, e % 1.6, 'alert');
+  bubble(ctx, POUND.say, 560, 196, e % 1.6, 'alert');
 }
 
 export const BALCONY_SCENES = {

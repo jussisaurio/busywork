@@ -16,6 +16,7 @@ import { drawProjector } from '../../render/world.js';
 import { TAB, person, floorCarpet } from '../../render/tableau.js';
 import { chair, walnutDesk } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
+import { FISTS } from './knocks.js';
 
 // Is the boss in his jacket (behaviours.js: he fetches it off the rack)? Not in a game: yes.
 export function bossJacket(game) {
@@ -169,16 +170,17 @@ export function balconySet(ctx) {
   }
 }
 
-// Fists on the fire door, about twice a second: beat (0..1 through one), hit (a fist is landing), dx (the door jumps).
-export function knock(t) {
-  const beat = (t * 2.2) % 1;
-  const hit = beat < 0.18;
-  return { beat, hit, dx: hit ? Math.sin(beat * 90) * 2 : 0 };
-}
-
-// Whoever is locked out (`who`), on the balcony side, fists on the door; `fields` on top.
+// Whoever is locked out (`who`), on the balcony side, and the fire door between: fists on it (knocks.js FISTS) about
+// twice a second, and the door jumps at each. `fields` on top of the figure; arms other than fists (he gives up and
+// lights one) leave the door still. Returns the beat (0..1 through one) and hit (a fist is landing), for whatever
+// else a blow shakes (end-scenes.js: rings off the steel).
 export function bangingOnTheDoor(ctx, game, who, t, fields) {
-  figure(ctx, game, who, t, 548, 272, { dir: Math.PI, head: Math.PI + Math.sin(t * 2) * 0.1, arms: 'bang', scale: 2.2, ...fields });
+  const f = { dir: Math.PI, head: Math.PI + Math.sin(t * 2) * 0.1, arms: FISTS, scale: 2.2, ...fields };
+  const beat = (t * 2.2) % 1;
+  const hit = f.arms === FISTS && beat < 0.18;
+  fireDoor(ctx, t, hit ? Math.sin(beat * 90) * 2 : 0);
+  figure(ctx, game, who, t, 548, 272, f);
+  return { beat, hit };
 }
 
 // The wall between them, end on, with the red fire door in it (shoved dx px by the fists), the EXIT sign over it
