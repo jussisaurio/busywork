@@ -550,4 +550,11 @@ export default [
     intent: 'End card, a loss: you poured the coffee into Lin\'s computer. It sparks, smokes and drips; you stand ' +
       'blackened with soot, the boss holds out a box for your things, and Lin stares in horror (😱💻).',
   },
+  {
+    name: 'end-computer-boss',
+    cmds: [...POUR, 'busy until 2:46', 'goto 4,4 busy', 'interact'],
+    intent: 'End card, a loss: the boss\'s own computer, which you poured the coffee into, sparks, smokes and drips on ' +
+      'its desk. You stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty ' +
+      'box for your things: fired. Nobody else is on the card.',
+  },
 ];
