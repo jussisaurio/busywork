@@ -126,23 +126,45 @@ export function pressToy(game, f) {
 }
 
 // Every step (game/loop.js): pass and near toys.
+// The non-press toys of a level with what never changes per step worked out once (position, radius squared, interval).
+const ACTIVE = new WeakMap();
+function activeToys(level) {
+  let list = ACTIVE.get(level);
+  if (!list) {
+    list = [];
+    for (const toy of level.toys) {
+      if (toy.on === 'press') continue;
+      const r = toy.radius ?? DEFAULT_RADIUS;
+      list.push({ toy, at: toyPos(level, toy), r, r2: r * r, pass: toy.on === 'pass', every: toy.every ?? DEFAULT_EVERY });
+    }
+    ACTIVE.set(level, list);
+  }
+  return list;
+}
+
 export function updateToys(game) {
   const toys = game.level.toys;
   if (!toys || !game.toys) return;
   const p = game.player;
+  const walks = game.toys.walks;
   updateWalks(game);
-  for (const toy of toys) {
-    if (toy.on === 'press') continue;
-    const t = game.toys.byId[toy.id];
-    const at = toyPos(game.level, toy);
-    const r = toy.radius ?? DEFAULT_RADIUS;
-    for (const n of game.npcs) {
-      if (game.toys.walks?.[n.id]) continue; // already off to one: he deals with one thing at a time
-      if (!n.active || !toy.npcs.includes(n.id) || !ready(game, toy, t, n.id)) continue;
-      const to = toy.on === 'pass' ? at : p;
-      if (Math.hypot(to.x - n.x, to.y - n.y) > r) continue;
+  const npcs = game.npcs;
+  for (const { toy, at, r, r2, pass, every } of activeToys(game.level)) {
+    const to = pass ? at : p;
+    let t = null;
+    for (let i = 0; i < npcs.length; i++) {
+      const n = npcs[i];
+      const dx = to.x - n.x;
+      const dy = to.y - n.y;
+      const d2 = dx * dx + dy * dy; // Math.hypot is slow: only the razor's edge (within 1e-9 of the radius) needs it
+      if (d2 > r2 * (1 + 1e-9) || (d2 >= r2 * (1 - 1e-9) && Math.hypot(dx, dy) > r)) continue;
+      if (walks[n.id]) continue; // already off to one: he deals with one thing at a time
+      if (!n.active || !toy.npcs.includes(n.id)) continue;
+      t = t ?? game.toys.byId[toy.id];
+      const last = t.last[n.id];
+      if (!(last === undefined || game.loopTime - last >= every)) continue;
+      if (toy.when && !toy.when(game.world, t.state, game, n)) continue; // before the sight check: it is the cheap one
       if (toy.sees && !npcSees(game, n, to.x, to.y)) continue;
-      if (toy.when && !toy.when(game.world, t.state, game, n)) continue;
       fire(game, toy, n.id);
     }
   }
