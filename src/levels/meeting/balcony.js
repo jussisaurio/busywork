@@ -4,8 +4,11 @@
 //            let_boss_in: that row comes first).
 //   outside  the reader takes only a keycard. With his card in your hand: a beep, the green light, and you're back in
 //            (badge_in). Without it you're locked out, and you know it at once: the reader blinks red at you, 🪪❓,
-//            and E pounds on the door (toys.js pound). The door is open only while someone comes through it: slip
-//            in then (follow_in). Coming back from his smoke, the boss holds it for you, and points: in, now 👉🚪.
+//            and E pounds on the door (toys.js pound). The door is open only while someone comes through it, and
+//            a moment after (SLACK): then it is an open doorway. Walk in through it (playerAtDoor), or E at it
+//            (follow_in). Coming back from his smoke, the boss holds it for you, and points: in, now 👉🚪; he
+//            waits HOLD seconds, and goes in on your heels. While it stands open for you, time runs at ×1 (no
+//            fast-forward: a held door that lasts half a second is no offer).
 //   with the boss out there
 //            not locked out (his smoke): off the clock. Standing about is what the balcony is for (roles.js
 //            idleOkIn): he offers you a cigarette (toys.js smoke_offer).
@@ -16,17 +19,21 @@
 // the snatch, why 'snatched'). End scenes: end-scenes-balcony.js.
 //
 // The door's swing (world.fireDoor, an object: the behaviour goldens skip it, it is the door's animation):
-//   { at, to, open, shut, beep? }  beep: loop time your card (his) went to the reader. at: loop time it last swung open; to: when it starts to close; open: it is open now
+//   { at, to, open, shut, beep?, heldTo? }  heldTo: until when the boss holds it for you. beep: loop time your card (his) went to the reader. at: loop time it last swung open; to: when it starts to close; open: it is open now
 //   (the rows read it: they get no clock). Anyone on the door tile keeps it open (clocks.js calls doorClock).
 import { say } from '../../core/fx.js';
 import { findNpc, inZone, npcSees } from '../../game/perception.js';
 import { endOverride, speak, holdFor } from '../../sim/override.js';
-import { walkThrough } from '../../play/player.js';
+import { walkThrough, inputOf, playerLocked } from '../../play/player.js';
 
 const DOOR_TILE = { x: 27, y: 13 };
 const OUT = [{ x: 27.5, y: 12.6 }, { x: 27.5, y: 14.1 }, { x: 28.1, y: 14.6 }]; // up to the door, through, aside
 const IN = [{ x: 27.5, y: 14.4 }, { x: 27.5, y: 12.5 }];
-const HOLD = 3.0; // seconds the boss holds the door for you, back from his smoke
+const HOLD = 5.0; // seconds the boss holds the door for you, back from his smoke
+const SLACK = 2.0; // seconds it stays open behind whoever came through, with you out there to use it
+const AFTER_YOU = 0.5; // seconds he still stands there once you're through his held door
+// The open doorway, from the balcony: this close to the door, in line with it, and walking at it.
+const SILL = { x0: 26.85, x1: 28.15, y: 14.75 };
 export const outside = (p) => p.y > 13.5; // past the fire door: the balcony is the only outside you can stand on
 
 // ---- The door's swing ----------------------------------------------------------------------------------------
@@ -50,7 +57,10 @@ export function doorSwing(game) {
 
 // Every NPC step (clocks.js): whoever is on the door tile holds it open; the clunk once it shuts.
 export function doorClock(game, npc) {
-  if (npc.active && Math.floor(npc.x) === DOOR_TILE.x && Math.floor(npc.y) === DOOR_TILE.y) openDoor(game, 0.5);
+  if (npc.active && Math.floor(npc.x) === DOOR_TILE.x && Math.floor(npc.y) === DOOR_TILE.y) {
+    // With you out there and no card, it swings shut slowly enough to follow him (not after the snatch: in your face).
+    openDoor(game, waitingOutside(game) && !game.world.snatched ? SLACK : 0.5);
+  }
   const d = game.world.fireDoor;
   if (!d) return;
   const open = d.to >= game.loopTime;
@@ -59,6 +69,36 @@ export function doorClock(game, npc) {
     d.shut = true;
     game.events.emit('fireDoor:shut', {});
   }
+}
+
+// Out on the balcony, on your own feet, free to walk.
+const waitingOutside = (game) => {
+  const p = game.player;
+  return outside(p) && !p.through && !playerLocked(game) && inZone(game, 'balcony', p.x, p.y);
+};
+
+// Once a tick (clocks.js, the boss's step): the open door is a doorway for you too. Walk at it from the balcony and
+// you're through, the same steps as follow_in. And while it stands open for you, no fast-forward.
+export function playerAtDoor(game) {
+  const d = game.world.fireDoor;
+  const p = game.player;
+  if (!d?.open || !waitingOutside(game)) return;
+  game.clock.ff = false;
+  if (p.action) return;
+  const ax = inputOf(game).axis();
+  if (ax.y < 0 && p.y <= SILL.y && p.x >= SILL.x0 && p.x <= SILL.x1) comeIn(game);
+}
+
+function comeIn(game) {
+  const d = game.world.fireDoor;
+  const boss = findNpc(game, 'boss');
+  openDoor(game, 0.9);
+  walkThrough(game, IN);
+  if (d.heldTo > game.loopTime && boss) { // he was holding it for you: he follows you in
+    boss._wait = Math.min(boss._wait, AFTER_YOU);
+    d.heldTo = game.loopTime;
+  }
+  game.events.emit('fireDoor:in', {});
 }
 
 // ---- The rows (interactions.js) ------------------------------------------------------------------------------
@@ -92,11 +132,7 @@ export const BALCONY_ROWS = {
   follow_in: {
     on: 'fire_door', text: 'slip in while it\'s open', duration: 0.2, sneaky: false,
     can: (p, w) => outside(p) && !!w.fireDoor?.open,
-    done(game) {
-      openDoor(game, 0.9);
-      walkThrough(game, IN);
-      game.events.emit('fireDoor:in', {});
-    },
+    done: comeIn,
   },
 };
 
@@ -144,6 +180,7 @@ export function bossBadgedIn(game, boss) {
     return;
   }
   openDoor(game, HOLD + 0.4);
+  game.world.fireDoor.heldTo = game.loopTime + HOLD;
   holdFor(boss, HOLD);
   speak(game, boss, [{ say: ['👉', '🚪'], after: 0.4, ttl: HOLD - 0.4 }]);
   game.events.emit('fireDoor:held', {});

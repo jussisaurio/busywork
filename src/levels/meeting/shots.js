@@ -208,6 +208,12 @@ export default [
       'you in (👉🚪): back to work. You can slip in while it is open.',
   },
   {
+    name: 'balcony-walk-in',
+    cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 3:48', 'wait 2s', 'goto 27,14', 'move N 0.3s'],
+    intent: 'The boss still holds the fire door open, and you walk in through the open doorway past him, off the ' +
+      'balcony and back into the hallway: no key pressed but the way you walk.',
+  },
+  {
     name: 'end-balcony',
     cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 4:00', 'busy until 4:00', 'wait 8s'],
     intent: 'End card, a loss: you stepped out onto the balcony without a card, and stayed there. Inside, the meeting ' +

@@ -150,6 +150,10 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   green), through. No card: override `lockedOut`, `world.bossLockedOut = true`, `boss:lockedOut` (a rattle), and the
   escalation lines every ~2.5 s with their events (`boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`,
   `boss:fume`), bang sounds and screen shakes, until the day ends. Only you are near enough to hear.
+- **The open fire door is a doorway** (`balcony.js` `playerAtDoor`; playtest 2026-11-18). While it is open and you are
+  on the balcony, walking north at it takes you in (no E needed; E `follow_in` does the same). It stays open 2 s
+  behind the boss on both of his passes (`SLACK`); badging back in he holds it 5 s (`HOLD`) and follows you in.
+  While it stands open for you there is no fast-forward, so holding PRETEND does not eat the window.
 - **The balcony, your way** (`balcony.js`; decided by Jussi: if an NPC can do it, so can you). From inside, E pushes
   the bar any time: the door swings open, you step out (`fireDoor:out`; no card on you: 🪪❓), and it shuts behind
   you. From outside the reader takes only a keycard: with his card, a beep and back in (`fireDoor:badge`); without

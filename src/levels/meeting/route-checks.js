@@ -596,6 +596,52 @@ export default [
       run('busy until 4:00');
     },
   },
+  // The same, the way a person does it (the 2026-11-18 playtest: "when he opens the door to leave, i cant leave with
+  // him"): no E, a person's reaction time, on foot through the open doorway. Both of his passes.
+  {
+    name: 'out without the card, waiting by the railing holding PRETEND; he comes out for his smoke → a beat later, walk in through the door still swinging (plain fail)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('goto fire_door');
+      run('interact');
+      run('wait 1s');
+      run('move S 0.3s'); // off to the railing
+      run('pretend until 3:42');
+      waitFor(() => g.world.fireDoor?.open, { busy: true, maxSec: 60 }); // still holding PRETEND as it opens
+      waitFor(() => npc('boss').y > 14.05, { maxSec: 5 }); // he steps out past you
+      run('wait 0.7s'); // a person notices
+      run('goto 27,14');
+      run('move N 0.5s'); // W, at the doorway
+      run('wait 1s');
+      if (!(g.player.y < 13)) throw new Error('not back in: y ' + g.player.y);
+      if (!log.some((e) => e.name === 'fireDoor:in')) throw new Error('no fireDoor:in');
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+    },
+  },
+  {
+    name: 'out without the card, holding PRETEND at the railing; he badges back in and holds the door → 2.5 s later, walk in past him; he follows (plain fail)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('goto fire_door');
+      run('interact');
+      run('wait 1s');
+      run('move SE 0.4s'); // the far corner of the balcony
+      run('pretend until 3:47');
+      waitFor(() => log.some((e) => e.name === 'fireDoor:held'), { busy: true, maxSec: 60 });
+      run('pretend 0.6s'); // still holding PRETEND: time must not run away with the door
+      run('wait 1.9s'); // reads the 👉🚪
+      if (!g.world.fireDoor?.open) throw new Error('the door shut on a person\'s reaction time');
+      run('goto 27,14');
+      run('move N 0.5s');
+      run('wait 1s');
+      if (!(g.player.y < 13)) throw new Error('not back in: y ' + g.player.y);
+      run('wait 2s');
+      if (!(npc('boss').y < 13.2)) throw new Error('the boss did not follow you in: y ' + npc('boss').y);
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+    },
+  },
   {
     name: 'card dropped in the kitchen, out on the balcony before his smoke → he is locked out with you → 4:00 nobody to hold it (together)',
     expect: { result: 'win', routes: ['keycard'] },
