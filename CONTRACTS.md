@@ -270,15 +270,22 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
     thought's face, e.g. `🤢` for a letter. `burst` (default `'crumbs'`): an `fx.burst` kind, e.g. `'paper'`.
   - `contraband`: the cast id who catches you holding it (if he is the authority: caught) and goes for it if he
     sees it on the floor while on duty (an implicit fetch, `fetch.js`): a double take (`[icon, '❗']`, realize),
-    he walks over, picks it up (`world[place]` = his id, `<type>:recovered {by, type}`), holds it up a beat
+    he walks over, picks it up (`world[place]` = his id, `<type>:recovered {by, type, from}`), holds it up a beat
     (`npc.pocketing`) and pockets it with a face (`pockets`: lines, default a huff `😤`), then back to his day.
     Taken from under his nose on the way: he stops, `[icon, '❓']`, looks round. Needs a `place`. `contrabandIn` (a zone): in your hand he knows it
     only while you are in that zone (an envelope is anyone's envelope away from his desk).
   - `owner`: `{ id, when?(npc), says?, reclaim?(game, npc) }`. He takes it back on sight while `when` holds.
-    `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does
-    (default: he carries it, `<type>:confiscated {by}`). On the floor: if he sees it (while `when` holds) he walks
-    over and picks it up, an implicit fetch (`reclaim`, else he carries it; `item:reclaimed {by, type}`). A level
-    fetch naming that item and npc replaces it.
+    `says`: his lines on catching you carrying it (lines as in Mechanics). `reclaim`: what taking it back does,
+    instead of the default (he carries it, `<type>:recovered {by, type, from}`); the hook emits its own events. On
+    the floor: if he sees it (while `when` holds) he walks over and picks it up, an implicit fetch. A level fetch
+    naming that item and npc replaces it.
+  - Taking back (`sim/take.js` `takesBack`, the one take for every owner and confiscator): he always walks over
+    first and takes it at arm's length, from your hand, your desk, the floor, or as he shows you out of his office
+    (`claim.js`; the floor is `fetch.js`). With no path to it he waits, turned to it; he never takes it from across
+    the room. An owner's `reclaim` replaces the take; a confiscator pockets it (`world[place]` = his id); anyone
+    else carries it. Event `<type>:recovered {by, type, from}`, `from`: `'player'`, `'floor'`, or the spot name.
+    Any other NPC take (a level's own beat) is `npcTakes(game, npc, type, item?)`, and the player's hand is
+    `playerHolds` / `playerLetsGo` (they keep `world[place]` in step).
   - `bulky`: it fills your arms: no pretending (the busy button does nothing) while you hold it, so you can't
     hide it behind a folder or a phone call.
 - Example: fixture `INTERACTIONS` and `ITEMS` (the cake is edible and Gus owns it); meeting `items.js`.
@@ -469,7 +476,7 @@ Render and audio read these; the sim never does. All optional except `title`.
   - `renderEvents`: events `tools/golden-render.mjs` also draws at (and 20 frames after), besides the engine's
     own (`caught`, `work:done`, `item:drop`, `item:pickup`, `witness:tattle`, `meeting:gather`, `day:end`,
     `loop:start`, `player:sit`). List the level's visible beats. Nothing adds the templated events
-    (`<authority>:workAssigned`, `<type>:eaten`, `<type>:recovered`, `<type>:confiscated`): list them by hand.
+    (`<authority>:workAssigned`, `<type>:eaten`, `<type>:recovered`): list them by hand.
   - A level with put-down spots also gets `put <spot>` fuzz steps.
   The engine adds milestones for its own events (`tools/fuzz.mjs` `ENGINE_MILESTONES`): `noise` → `'noise'`,
   `npc:heard` → `'heard:<id>'`, `item:put` → `'put@<spot>'`, `inspect:pass` / `inspect:fail` → `'tick<i>'` /
@@ -672,9 +679,7 @@ These are the engine's events. A level adds its own through data (`react.event`,
 | `item:put` | `{type, spot}` | put down |
 | `item:found` | `{type, spot, by}` | put down (a spot's cast owner found it) |
 | `<type>:eaten` | `{}` | interactions (an edible item) |
-| `<type>:recovered` | `{by, type}` | fetch (contraband picked up off the floor by its confiscator) |
-| `<type>:confiscated` | `{by}` | rules / put down (an owner took it back, no `reclaim`) |
-| `item:reclaimed` | `{by, type}` | fetch (an owner picked his thing up off the floor) |
+| `<type>:recovered` | `{by, type, from}` | take (`takesBack`: an owner with no `reclaim`, or the confiscator, took it back; `from` `'player'`, `'floor'` or a spot) |
 | `inspect:start` | `{by}` | inspection |
 | `inspect:pass` / `inspect:fail` | `{by, index}` | inspection (check `index` judged on arrival) |
 | `inspect:done` | `{by, failed}` | inspection (`failed`: the ❌ check's index, or null) |

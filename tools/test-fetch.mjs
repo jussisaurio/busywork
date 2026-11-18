@@ -83,9 +83,9 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
 {
   const { h, ev } = play(variant(null), DROP_IN_CORRIDOR);
   finish(h);
-  const r = ev('item:reclaimed');
-  ok(r?.payload.by === 'lin' && r.payload.type === 'parcel', `the owner picks it up (${r?.payload.by})`);
-  ok(ev('parcel:spotted_on_you')?.payload.by === 'lin', "through her own owner.reclaim (parcel:spotted_on_you)");
+  const r = ev('parcel:spotted_on_you');
+  ok(r?.payload.by === 'lin', `the owner picks it up, through her own owner.reclaim (parcel:spotted_on_you, ${r?.payload.by})`);
+  ok(!ev('parcel:recovered'), 'the hook replaces the plain take (no parcel:recovered)');
   ok(!ev('parcel:spotted') && !ev('parcel:found'), 'none of the level fetch events');
 }
 
@@ -94,7 +94,7 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
   const level = { ...variant(null), items: { ...MON.items, parcel: { ...MON.items.parcel, owner: undefined } } };
   const { h, g, ev } = play(level, DROP_IN_CORRIDOR);
   finish(h);
-  ok(!ev('parcel:spotted') && !ev('parcel:found') && !ev('item:reclaimed'), 'no fetch events');
+  ok(!ev('parcel:spotted') && !ev('parcel:found') && !ev('parcel:recovered'), 'no fetch events');
   ok(g.outcome?.result === 'win' && g.outcome.routes.includes('hidden'), `win, hidden (${g.outcome?.result} ${g.outcome?.routes})`);
 }
 

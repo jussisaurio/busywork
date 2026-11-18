@@ -134,7 +134,7 @@ export default {
       case 'inspect:fail': return 'the boss looks at the puddle and knows his envelope in it ✉️';
       case 'inspect:done': return null;
       case 'letter:stashed': return 'you put your letter in your desk drawer and sit down';
-      case 'letter:recovered': return 'the boss picks your letter up off the floor ✉️❗';
+      case 'letter:recovered': return p.from === 'player' ? 'the boss takes your letter out of your hand ✉️❗' : 'the boss picks your letter up off the floor ✉️❗';
       default: return undefined;
     }
   },

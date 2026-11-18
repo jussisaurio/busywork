@@ -3,6 +3,7 @@
 // at your desk while the boss is out, and put the note in his suggestion box before he empties it at 2:48.
 // Dropped on the floor it's just contraband (he pockets it); left on your own desk it's evidence (caught).
 import { at, deg } from '../../config.js';
+import { playerHolds } from '../../sim/take.js';
 
 const MAP = [
   '################', // 0
@@ -61,8 +62,7 @@ export default {
       on: 'own_desk', text: 'write "cancel the meeting" on a note', duration: 1.5, sneaky: true, saw: '📝',
       can: (p, w) => !p.held && w.note === 'pad',
       done(game) {
-        game.player.held = 'note';
-        game.world.note = 'player';
+        playerHolds(game, 'note');
         game.events.emit('note:written', {});
       },
     },

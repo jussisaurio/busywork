@@ -6,10 +6,11 @@
 //   owner     whose spot it is (optional):
 //             'player'   what lies on it is yours: the office rules judge it as if you held it. An enforcing
 //                        authority who sees contraband there catches you; an owner who knows it's his (items.js
-//                        `owner`) takes it back, with his `says`. Pretending doesn't hide a desk.
+//                        `owner`) walks over and takes it back (claim.js), with his `says`. Pretending doesn't
+//                        hide a desk.
 //             a cast id  he reacts once to each item he finds on it (sees it from within FIND_RADIUS tiles)
 //   found     what the cast owner does (default 'take'):
-//             'take'     he picks it up (npc.carry; world[place] = his id)
+//             'take'     he picks it up (sim/take.js npcTakes: he carries it)
 //             a name     a behaviour hook: level.behaviours[found].arrive(game, npc, sim, { type, spot, item, seen });
 //                        what the hook leaves on the spot stays there
 //   unseen    what the cast owner does instead when he didn't see who put it there (default: as `found`):
@@ -33,7 +34,7 @@ import { INTERACT_RADIUS } from '../../config.js';
 import { DIRS } from '../../core/vision.js';
 import { sightline } from '../../core/fx.js';
 import { npcSees } from '../../game/perception.js';
-import { speak } from '../override.js';
+import { npcTakes, playerLetsGo } from '../take.js';
 
 export const FIND_RADIUS = 2; // tiles: how close a cast owner must be to notice what's on his spot
 
@@ -102,9 +103,7 @@ export function putHeld(game, e) {
   // Who saw it land: anyone who sees her now (a spot's owner who didn't may react differently: `unseen`).
   const seenBy = game.npcs.filter((n) => npcSees(game, n, p.x, p.y)).map((n) => n.id);
   game.world.items.push({ type, x: e.x, y: e.y, spot: e.name, seenBy });
-  const place = game.level.items?.[type]?.place;
-  if (place) game.world[place] = e.name;
-  p.held = null;
+  playerLetsGo(game, e.name);
   game.events.emit('item:put', { type, spot: e.name });
 }
 
@@ -126,17 +125,8 @@ export function check(game, npc, { spot: e }, now, sim) {
   const does = e.unseen && !seen ? e.unseen : e.found;
   game.events.emit('item:found', { type: it.type, spot: e.name, by: npc.id, ...(e.unseen ? { seen } : {}) });
   if (does === 'leave') return;
-  if (does === 'take') take(game, npc, it);
+  if (does === 'take') npcTakes(game, npc, it.type, it);
   else game.level.behaviours[does].arrive(game, npc, sim, { type: it.type, spot: e.name, item: it, seen });
-}
-
-function take(game, npc, it) {
-  const w = game.world;
-  w.items = w.items.filter((i) => i !== it);
-  npc.carry = it.type;
-  if (npc.wants === it.type) npc.wants = null;
-  const place = game.level.items?.[it.type]?.place;
-  if (place) w[place] = npc.id;
 }
 
 // --- The office rules for the player's own spots (play/rules.js, via mechanics/index.js judge) -------
@@ -149,8 +139,9 @@ const playerSpots = (level) => {
 };
 
 // What lies on her spots, judged as if she held it, by whoever sees it there (at once, unlike a held item): the
-// authority catches her; an owner takes it back, with his `says`; anyone else who minds it tells (unheard).
-// rules: { claims, enforcing, caught } from play/rules.js. Returns true if she was caught.
+// authority catches her; an owner walks over and takes it back (claim.js; the rules take it when he is there, with
+// his `says`); anyone else who minds it tells (unheard). rules: { claims, enforcing, caught, comeFor } from
+// play/rules.js. Returns true if she was caught.
 export function judge(game, rules) {
   const mine = playerSpots(game.level);
   if (!mine.length) return false;
@@ -170,18 +161,11 @@ export function judge(game, rules) {
       }
       (it.toldBy ??= []).push(npc.id);
       sightline(game, npc.id, 'tattle', 1.2);
-      if (claims) {
-        w.items = w.items.filter((i) => i !== it);
-        if (flags.owner.reclaim) flags.owner.reclaim(game, npc);
-        else {
-          npc.carry = it.type;
-          if (npc.wants === it.type) npc.wants = null;
-          game.events.emit(`${it.type}:confiscated`, { by: npc.id });
-        }
-        speak(game, npc, flags.owner.says);
-      }
       game.events.emit('witness:tattle', { by: npc.id, reason: 'contraband', heard: false });
-      if (claims) break; // it's gone
+      if (claims) { // he comes for it
+        rules.comeFor(game, npc, it.type, it, true);
+        break;
+      }
     }
   }
   return false;

@@ -7,6 +7,7 @@
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { at } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
+import { playerHolds } from '../../sim/take.js';
 import { CAST, BEHAVIOURS } from './cast.js';
 import { DECOR, LOOKS, TITLE, END_SCENES, VOICES } from './presentation.js';
 import { cake } from './painters.js';
@@ -84,8 +85,7 @@ const INTERACTIONS = {
     on: 'cake_stand', text: 'take the cake', duration: 0.8, sneaky: true, owner: 'gus', saw: '🎂',
     can: (p, w) => !p.held && w.cake === 'stand',
     done(game) {
-      game.player.held = 'cake';
-      game.world.cake = 'player';
+      playerHolds(game, 'cake');
       game.events.emit('cake:taken', {});
     },
   },

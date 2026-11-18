@@ -25,6 +25,7 @@ import { at, deg, EAT_TIME } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
 import { isDark } from '../../game/darkness.js';
 import { sitAtDesk } from '../../play/player.js';
+import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
 import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
 import harness from './harness.js';
@@ -135,8 +136,7 @@ const INTERACTIONS = {
     can: (p, w) => !p.held && w.letter === 'tray',
     done(game, a) {
       const w = game.world;
-      game.player.held = 'letter';
-      w.letter = 'player';
+      playerHolds(game, 'letter');
       // A blink is still his dark; and in the light, with him not back at his desk yet, it was whatever dark got
       // him up.
       w.snatched = howDark(game, a.x, a.y)
@@ -151,8 +151,7 @@ const INTERACTIONS = {
     can: (p) => p.held === 'letter',
     done(game) {
       const w = game.world;
-      game.player.held = null;
-      w.letter = 'drawer';
+      playerLetsGo(game, 'drawer');
       w.stashAt = game.loopTime;
       sitAtDesk(game);
       game.events.emit('letter:stashed', {});
@@ -196,8 +195,7 @@ const INTERACTIONS = {
     done(game) {
       const w = game.world;
       const p = game.player;
-      p.held = null;
-      w.letter = 'eaten';
+      playerLetsGo(game, 'eaten');
       w.eatenAt = game.clock.minute;
       burst(game, 'paper', p.x, p.y, 5, { speed: 0.8, ttl: 0.6 });
       say(game, 'player', ['😖'], { kind: 'thought', ttl: 1.5 });

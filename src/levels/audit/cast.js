@@ -22,6 +22,7 @@
 import { at as atClock, deg } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 import { setOverride } from '../../sim/override.js';
+import { npcTakes } from '../../sim/take.js';
 import { SPOTS } from './spots.js';
 
 export const START = 15 * 60; // 3:00 PM
@@ -148,9 +149,7 @@ const stopBy = (flag, expects, onlyIfThere) => ({
     const w = game.world;
     const it = on(w, 'your_desk');
     if (it?.type === 'laptop_kev') {
-      w.items = w.items.filter((i) => i !== it);
-      npc.carry = 'laptop_kev';
-      w.laptop_kev = npc.id;
+      npcTakes(game, npc, 'laptop_kev', it);
       sim.speak(game, npc, [{ say: ['💻', '🤦'] }, { say: ['🎵'], ttl: 1.6, after: 0.9 }]); // and home, humming
       npc._palmAt = game.clock.minute; // presentation.js POSES: a facepalm as he picks it up
       sim.holdFor(npc, 0.6);
@@ -176,9 +175,7 @@ export const BEHAVIOURS = {
       const w = game.world;
       const it = w.items.find((i) => i.type === type && i.spot === 'your_desk');
       if (!it) return sim.speak(game, npc, [{ say: ['💻', '❓'], kind: 'thought', ttl: 1.2 }]);
-      w.items = w.items.filter((i) => i !== it);
-      npc.carry = type;
-      w[type] = npc.id;
+      npcTakes(game, npc, type, it);
       sim.speak(game, npc, [{ say: ['😠', '💻'] }]);
       sim.holdFor(npc, 0.5);
       game.events.emit('laptop:reclaimed', { type, by: npc.id });
@@ -196,9 +193,7 @@ export const BEHAVIOURS = {
       const w = game.world;
       const it = on(w, 'kev_desk');
       if (it?.type !== 'laptop_kev') return;
-      w.items = w.items.filter((i) => i !== it);
-      npc.carry = 'laptop_kev';
-      w.laptop_kev = npc.id;
+      npcTakes(game, npc, 'laptop_kev', it);
       game.events.emit('kev:packed', {});
     },
   },

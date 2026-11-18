@@ -18,7 +18,7 @@
 // The level object's fields are documented in src/levels/meeting/index.js and CONTRACTS.md.
 import { deg } from '../../config.js';
 import { say, burst, shake } from '../../core/fx.js';
-import { npcTakes } from '../../sim/npcs.js';
+import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { CAST, BEHAVIOURS, START, t as at } from './cast.js';
 import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS, CONES } from './presentation.js';
 import { parcelThing, broomThing, brownBoxThing } from './painters.js';
@@ -134,8 +134,7 @@ const INTERACTIONS = {
     on: 'broom_stand', text: 'take the broom', duration: 0.4, sneaky: false,
     can: (p, w) => !p.held && w.broom === 'stand',
     done(game) {
-      game.player.held = 'broom';
-      game.world.broom = 'player';
+      playerHolds(game, 'broom');
       game.events.emit('broom:taken', {});
     },
   },
@@ -143,8 +142,7 @@ const INTERACTIONS = {
     on: 'broom_stand', text: 'put the broom back', duration: 0.4, sneaky: false,
     can: (p, w) => p.held === 'broom',
     done(game) {
-      game.player.held = null;
-      game.world.broom = 'stand';
+      playerLetsGo(game, 'stand');
       game.events.emit('broom:returned', {});
     },
   },

@@ -1,16 +1,18 @@
-// Claim: whoever takes a thing back from you walks over first and takes it at arm's length, instead of taking it
-// out of your hand from across the room. Opt-in per item: `walk: true` in level.items (off by default: the owner
-// takes it on sight). One entry per such item, for its owner (items[type].owner.id) and its confiscator
-// (items[type].contraband).
+// Claim: whoever takes a thing back walks over first and takes it at arm's length, never out of your hand (or off
+// your desk) from across the room. One entry per item with an owner (items[type].owner.id) or a confiscator
+// (items[type].contraband), for each of them. The floor is fetch.js's (he walks over and picks it up there).
 //
-// Two ways in, both setting npc._claim = { item, word?, any?, onCatch?, was }:
-//   - the office rules (play/rules.js react): an owner who sees you with his thing (the rules take it in claimsDue
-//     once he is within CLAIM_REACH: his reclaim, his `says`);
+// Ways in, each setting npc._claim = { item, at?, word?, any?, onCatch?, was }:
+//   - the office rules (play/rules.js comeFor): an owner who sees you with his thing, or sees it on your desk (`at`:
+//     that world item; putdown.js judge), or the owner or confiscator who shows you out of his office holding it.
+//     The rules take it (sim/take.js takesBack, with his `says` if `word`) once he is there (claimDue);
 //   - a level, on a catch (startClaim, onCatch: true): the day's end waits for him (play/scenario.js), and the rules
 //     emit 'claim:done' { by, item } when he gets there, for the level to do the take.
-// This mechanic walks him to you, following if you move, and stops him at arm's length. He gives up when you no
-// longer hold it (unless `any`: a catch over a thing you had your hand on). Afterwards he goes back to the override
-// he was in (`was`: a hunt that the take ends, or not), else to his day. Override 'claiming' (plan `claim_<type>#<seq>`).
+// This mechanic walks him to it, following you if you move, and stops him at arm's length (CLAIM_REACH). He gives up
+// when it is no longer where he was going for it: you let go of it (unless `any`: a catch over a thing you had your
+// hand on), or it left your desk. With no way to it (no path) he waits where he is, turned to it, until there is one
+// or it moves: he never takes it from where he stands. Afterwards he goes back to the override he was in (`was`: a
+// hunt that the take ends, or not), else to his day. Override 'claiming' (plan `claim_<type>#<seq>`).
 import { findPath } from '../nav.js';
 import { setOverride, endOverride } from '../override.js';
 
@@ -21,28 +23,50 @@ export const keepsThroughMeeting = true; // he finishes taking it back, then goe
 export function entries(level) {
   const list = [];
   for (const [type, flags] of Object.entries(level.items ?? {})) {
-    if (!flags?.walk) continue;
-    const ids = [flags.owner?.id, flags.contraband].filter((id) => id && id !== 'player');
+    const ids = [flags?.owner?.id, flags?.contraband].filter((id) => id && id !== 'player');
     if (ids.length) list.push({ item: type, npcs: [...new Set(ids)], override: 'claiming', plan: `claim_${type}`, label: `coming for his ${type}` });
   }
   return list;
 }
 
 const tileOf = (p) => ({ x: Math.floor(p.x), y: Math.floor(p.y) });
+const NEAR = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
 
-export const withinReach = (npc, p) => Math.hypot(p.x - npc.x, p.y - npc.y) <= CLAIM_REACH;
+const withinReach = (npc, p) => Math.hypot(p.x - npc.x, p.y - npc.y) <= CLAIM_REACH;
 
-// Whether he has to walk for it (not within reach, and he can walk to you). The rules and startClaim take it on the
-// spot otherwise.
-export function mustWalk(game, npc) {
-  const p = game.player;
-  return !withinReach(npc, p) && !!findPath(game.map, npc, tileOf(p), 'npc');
+// What he is going for: you, or the world item `at` (on your desk).
+const target = (game, c) => c.at ?? game.player;
+
+// Still where he is going for it: in your hand (or, `any`, you had your hand on it), or the item still lies there.
+function stillThere(game, c) {
+  if (c.at) return game.world.items.includes(c.at);
+  return c.any || game.player.held === c.item;
 }
 
-// A level's way in (on a catch): true if he is now on his way; false: take it now.
+// The tile he walks to: yours; for an item, its own tile if he can stand there, else the nearest he can get to
+// beside it (a desk). Null: no way there.
+function approach(game, npc, c) {
+  const t = tileOf(target(game, c));
+  const near = c.at ? NEAR : [[0, 0]];
+  for (const [dx, dy] of near) {
+    const to = { x: t.x + dx, y: t.y + dy };
+    if (findPath(game.map, npc, to, 'npc')) return to;
+  }
+  return null;
+}
+
+// He is there: at arm's length, or (an item) at the tile he walked to beside it.
+const there = (game, npc, c) => withinReach(npc, target(game, c)) || !!(c.at && c.arrived);
+
+// For the rules (claimsDue): he is there, and it is still where he was going for it.
+export const claimDue = (game, npc) => stillThere(game, npc._claim) && there(game, npc, npc._claim);
+
+// The way in (the rules' comeFor; a level, on a catch). item: the type; opts.at: the world item, if not your hand.
+// True if he is now on his way; false: he is there already, take it now.
 export function startClaim(game, npc, item, opts = {}) {
-  if (!mustWalk(game, npc)) return false;
-  npc._claim = { item, ...opts };
+  const c = { item, ...opts };
+  if (there(game, npc, c)) return false;
+  npc._claim = c;
   return true;
 }
 
@@ -65,14 +89,16 @@ export const key = (f, npc) => `${f.plan}#${npc._ovSeq}`;
 
 export function build(game, npc, plan, f) {
   plan.label = f.label;
-  const to = tileOf(game.player);
-  npc._claimAt = to;
-  if (findPath(game.map, npc, to, 'npc')) plan.legs.push({ ...to, arrive: (g, n) => face(g, n) });
+  const c = npc._claim;
+  npc._claimAt = tileOf(target(game, c));
+  const to = approach(game, npc, c);
+  if (to) plan.legs.push({ ...to, arrive: (g, n) => { c.arrived = true; face(g, n); } });
+  else face(game, npc); // no way to it: he waits, turned to it
 }
 
 function face(game, npc) {
-  const p = game.player;
-  npc._faceTarget = Math.atan2(p.y - npc.y, p.x - npc.x);
+  const t = target(game, npc._claim);
+  npc._faceTarget = Math.atan2(t.y - npc.y, t.x - npc.x);
 }
 
 // Done, or given up: back to what he was doing.
@@ -86,9 +112,8 @@ function finish(npc) {
 
 export function tick(game, npc, dt, f) {
   const c = npc._claim;
-  const p = game.player;
-  if (!c || c.done || (!c.any && p.held !== f.item)) return finish(npc);
-  if (withinReach(npc, p)) { // there: he stops and holds out his hand (the rules take it)
+  if (!c || c.done || !stillThere(game, c)) return finish(npc);
+  if (there(game, npc, c)) { // there: he stops and holds out his hand (the rules take it)
     face(game, npc);
     const plan = npc._plan;
     plan.path = null;
@@ -96,7 +121,7 @@ export function tick(game, npc, dt, f) {
     plan.li = 0;
     return;
   }
-  const to = tileOf(p);
+  const to = tileOf(target(game, c));
   const at = npc._claimAt;
-  if (at && (at.x !== to.x || at.y !== to.y) && findPath(game.map, npc, to, 'npc')) npc._ovSeq++; // you moved: after you
+  if (at && (at.x !== to.x || at.y !== to.y)) npc._ovSeq++; // you moved: after you (build finds the way, or he waits)
 }
