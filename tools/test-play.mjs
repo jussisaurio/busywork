@@ -83,7 +83,7 @@ function fakeNpc(id, spot, extra = {}) {
   });
 }
 
-// An owner who walks over for his thing (an item with `walk`, sim/mechanics/claim.js): the sim is skipped here, so
+// An owner or confiscator who walks over for his thing (sim/mechanics/claim.js): the sim is skipped here, so
 // the test starts his walk and puts him at your elbow.
 function walksOver(npc) {
   const c = npc._claim;
@@ -632,7 +632,7 @@ section('contraband');
   p().held = 'sandwich';
   game.world.sandwich = 'player';
   run(0.5);
-  ok(p().held === 'sandwich' && lin._claim?.item === 'sandwich' && evs('witness:tattle').length === 0, 'Lin sees her sandwich two tiles off: she gets up to come for it (walk), not a snatch');
+  ok(p().held === 'sandwich' && lin._claim?.item === 'sandwich' && evs('witness:tattle').length === 1, 'Lin sees her sandwich two tiles off: the tattle at sight, and she gets up to come for it (walk), not a snatch');
   ok(walksOver(lin) && game.world.sandwich === 'lin' && !p().held && evs('sandwich:returned').length === 1, 'Lin at your elbow: takes it back (keeps it)');
   ok(evs('witness:tattle')[0]?.payload.reason === 'contraband' && evs('witness:tattle')[0].payload.heard === false, "Lin {reason:'contraband'}: takes it, no tattle");
   ok(evs('say').some((e) => e.payload.owner === 'lin' && e.payload.icons.join('') === '😠🥪'), 'Lin says 😠🥪');
@@ -1009,7 +1009,10 @@ game.level.roles.private = PRIVATE;
   ok(t.length === 1 && t[0].payload.by === 'boss' && t[0].payload.zone === 'boss_office', "trespass {by:'boss', zone:'boss_office'}, pretending or not");
   ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.icons.join('') === '👉@player🚪'), 'boss says 👉 your face 🚪');
   ok(!game.caught && !game.outcome && p().locked && game.rules.out, 'shown out: locked, not caught');
-  ok(!p().held && game.world.keycard !== 'player', `he takes his keycard back (keycard: ${game.world.keycard})`);
+  const boss = game.npcs.find((n) => n.id === 'boss');
+  ok(p().held === 'keycard' && boss._claim?.item === 'keycard', 'he comes for his keycard: walks over, no snatch from his desk');
+  walksOver(boss);
+  ok(!p().held && game.world.keycard !== 'player', `at your elbow he takes his keycard back (keycard: ${game.world.keycard})`);
   input.release('busy');
   run(12);
   ok(evs('trespass:out').length === 1 && !game.rules.out && !p().locked, 'back at your desk, free again');

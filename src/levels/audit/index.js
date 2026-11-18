@@ -11,6 +11,7 @@
 import { at } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 import { npcSees } from '../../game/perception.js';
+import { npcTakes } from '../../sim/take.js';
 import { speak, holdFor, spotLeg } from '../../sim/override.js';
 import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
@@ -182,9 +183,7 @@ const foundLaptop = (type, home) => (game, npc) => {
     return true;
   }
   if (d > ARM_REACH) return false;
-  w.items = w.items.filter((i) => i !== it);
-  npc.carry = type;
-  w[type] = npc.id;
+  npcTakes(game, npc, type, it);
   speak(game, npc, [{ say: ['😠', '💻'] }]);
   game.events.emit('laptop:reclaimed', { type, by: npc.id });
   return true;
