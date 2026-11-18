@@ -39,7 +39,8 @@ import { npcTakes, playerLetsGo } from '../take.js';
 export const FIND_RADIUS = 2; // tiles: how close a cast owner must be to notice what's on his spot
 
 // Where an item on spot s lies: the centre of the tile the spot faces (its own tile if it has no face), moved
-// `lies: { dx, dy }` whole tiles when the spot says so (a desk's free end, not the keyboard in front of the chair).
+// `lies: { dx, dy }` tiles when the spot says so (a desk's free end, not the keyboard in front of the chair; the
+// counter beside a machine). It is drawn there and judged there: reach, sight, whoever comes for it.
 export function restOf(s) {
   const d = DIRS[s.face];
   const ox = s.lies?.dx ?? 0;

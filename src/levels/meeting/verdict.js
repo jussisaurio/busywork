@@ -9,10 +9,7 @@
 // beaming at you (why 'samaritan': the end card has his arm round your shoulder and a blank screen).
 import { findNpc } from '../../game/perception.js';
 import { balconyVerdict } from './balcony.js';
-import { WHYS } from './endings.js';
-
-// A verdict for reason `why`: where the room looks and what it says are the why's (endings.js).
-const judged = (why, result) => ({ result, why, stare: WHYS[why].stare });
+import { judged } from './endings.js';
 
 export function verdict(game, { routes, present }) {
   const w = game.world;

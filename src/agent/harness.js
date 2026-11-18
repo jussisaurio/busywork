@@ -358,9 +358,10 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
     const isTarget = () => p.focus?.action === 'put' && free.some((e) => e.name === p.focus.id);
     if (!isTarget()) {
       const e = free.reduce((a, b) => (Math.hypot(b.x - p.x, b.y - p.y) < Math.hypot(a.x - p.x, a.y - p.y) ? b : a));
-      // A spot whose item lies off to one side (putdown.js `lies`): stand that far along too, in front of it.
+      // A spot whose item lies off to one side (putdown.js `lies`): stand that far along too (to the nearest tile), in
+      // front of it.
       const s = game.level.spots[e.name];
-      const g = goto(s.lies ? `${s.x + (s.lies.dx ?? 0)},${s.y + (s.lies.dy ?? 0)}` : e.name, busy);
+      const g = goto(s.lies ? `${s.x + Math.round(s.lies.dx ?? 0)},${s.y + Math.round(s.lies.dy ?? 0)}` : e.name, busy);
       if (!/^walked/.test(g.text)) return g;
       if (!isTarget()) return { text: `${g.text}, but the ✋ target is ${focusText(game)}` };
     }

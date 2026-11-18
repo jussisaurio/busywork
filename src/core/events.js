@@ -27,3 +27,11 @@ export function oncePerGame(setup) {
     setup(game);
   };
 }
+
+// A level's own listeners: subscribed once per game (oncePerGame), and live only while the game's level is the one
+// they belong to. The bus outlives a level (a test swaps game.level, a game moves on to the next), so the setup gets
+// `on(name, fn)`, which subscribes through the gate `mine(game.level)`, instead of an id check in every handler.
+//   const listen = levelListeners((level) => level?.clockFor === clockFor, (game, on) => { on('caught', ...) });
+export function levelListeners(mine, setup) {
+  return oncePerGame((game) => setup(game, (name, fn) => game.events.on(name, (p) => { if (mine(game.level)) fn(p); })));
+}

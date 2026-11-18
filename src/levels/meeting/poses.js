@@ -1,6 +1,7 @@
 // Meeting's cast in motion: what render/characters.js draws them doing, and what makes a cone flare. (How they look is
 // office/looks.js, shared with the levels that borrow the cast.)
 import { WHYS } from './endings.js';
+import { FISTS } from './knocks.js';
 
 // level.poses: what render/characters.js draws the cast doing, beyond sitting, walking and standing.
 //   arms   the first rule whose when(npc, world, game) holds sets the arms: { when, arms, item?, angry?, crank? }
@@ -19,7 +20,7 @@ export const POSES = {
     // Locked out on the balcony (mechanics.js DOORS): fists on the fire door, except where his line says otherwise
     // (patting his pockets, a fuming cigarette).
     { when: (n) => n.override === 'lockedOut' && n._bangLine?.arms === 'puff', arms: 'puff', item: '#cigarette', angry: true },
-    { when: (n) => n.override === 'lockedOut', arms: (n) => n._bangLine?.arms ?? 'bang', angry: true },
+    { when: (n) => n.override === 'lockedOut', arms: (n) => n._bangLine?.arms ?? FISTS, angry: true },
     // Let back in (clocks.js bossLetIn): both arms round you.
     { when: (n, w) => n.id === 'boss' && w.hugAt != null && !w.hugDone, arms: 'box' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },

@@ -205,8 +205,8 @@ export function levelProblems(level, key) {
       if (s.owner !== undefined && s.owner !== null && s.owner !== 'player') npc(`${path}.owner`, s.owner);
       if (s.found !== undefined && s.found !== 'take') behaviour(`${path}.found`, s.found);
       if (s.unseen !== undefined && s.unseen !== 'take' && s.unseen !== 'leave') behaviour(`${path}.unseen`, s.unseen);
-      if (s.lies !== undefined && !(isObj(s.lies) && Number.isInteger(s.lies.dx ?? 0) && Number.isInteger(s.lies.dy ?? 0))) bad(`${path}.lies`, 'not { dx, dy } in whole tiles');
-      if (s.shown !== undefined &&!(isObj(s.shown) && isNum(s.shown.dx ?? 0) && isNum(s.shown.dy ?? 0))) bad(`${path}.shown`, 'not { dx, dy } in tiles');
+      if (s.lies !== undefined && !(isObj(s.lies) && isNum(s.lies.dx ?? 0) && isNum(s.lies.dy ?? 0))) bad(`${path}.lies`, 'not { dx, dy } in tiles');
+      if (s.shown !== undefined) bad(`${path}.shown`, 'gone: an item is drawn where it lies (use `lies`)');
     }
   }
   if (!isObj(level.zones)) bad('zones', 'missing');

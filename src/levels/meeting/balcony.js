@@ -26,6 +26,7 @@ import { findNpc, inZone, npcSees } from '../../game/perception.js';
 import { endOverride, speak, holdFor } from '../../sim/override.js';
 import { npcPockets } from '../../sim/take.js';
 import { walkThrough, inputOf, playerLocked } from '../../play/player.js';
+import { judged } from './endings.js';
 
 const DOOR_TILE = { x: 27, y: 13 };
 const OUT = [{ x: 27.5, y: 12.6 }, { x: 27.5, y: 14.1 }, { x: 28.1, y: 14.6 }]; // up to the door, through, aside
@@ -194,6 +195,5 @@ export function balconyVerdict(game) {
   if (!inZone(game, 'balcony', p.x, p.y)) return null;
   const boss = findNpc(game, 'boss');
   if (game.world.bossLockedOut && boss?.override === 'lockedOut') return { result: 'win', why: 'together' };
-  const stare = { at: 'player', think: ['🪑', '❓'], say: ['👀', '🚪', '@player'] };
-  return { result: 'blamed', why: game.world.snatched ? 'snatched' : 'balcony', stare };
+  return judged(game.world.snatched ? 'snatched' : 'balcony', 'blamed');
 }

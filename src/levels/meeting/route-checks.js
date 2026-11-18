@@ -3,6 +3,7 @@
 //   { name, expect: { result, routes? }, play(ctx) }   ctx: { g, run, waitFor, npc, log, transcript } (tools/routes.mjs)
 //   { name, expect: { result, routes? }, cmds: [...] }  harness commands, run in order
 // expect.routes: routes the outcome must include.
+import { POUR, HIDE, TO_THE_RACK } from './plans.js';
 // ---- The cup into a computer: one event, the same on every machine on the floor (interactions.js drownComputer;
 // map.js COMPUTER_OWNERS). One check a machine: with the full cup in hand E at it pours (never the typing toy, toys.js
 // type_*, never a put), the same event, the same dead machine on that desk, the same catch and end scene.
@@ -20,8 +21,7 @@ const EVERY_COMPUTER = MACHINES.map((m) => ({
   name: `the full cup at ${m.id} (${m.owner ?? 'nobody'}'s) → E pours it in: BANG ⌨️💥, the boss hears it → caught (why computer)`,
   expect: { result: 'caught' },
   play({ run, g, log, waitFor }) {
-    run('goto coffee_machine busy');
-    run('interact');
+    for (const c of POUR) run(c);
     for (const cmd of m.to) run(cmd);
     const f = g.player.focus;
     if (f?.id !== m.id || f?.action !== 'drown_computer') throw new Error(`with the cup E is ${f?.toy ? 'a toy' : f?.action}@${f?.id}, not the pour`);
@@ -45,8 +45,7 @@ const DEAD_COMPUTER = {
     run('goto spare_desk busy');
     run('interact');
     if (!log.some((e) => e.name === 'toy:type_mustard')) throw new Error('never typed on it');
-    run('goto coffee_machine busy');
-    run('interact');
+    for (const c of POUR) run(c);
     run('goto spare_desk busy');
     run('interact');
     if (g.world.drowned?.id !== 'spare_computer_1') throw new Error(`drowned ${JSON.stringify(g.world.drowned)}`);
@@ -98,8 +97,7 @@ export default [
     name: 'the last cup still in your hand at 4:00 → you drink it up front (why sip)',
     expect: { result: 'fail' },
     play({ run, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       run('busy until 4:00');
       if (g.outcome?.why !== 'sip') throw new Error(`why ${g.outcome?.why}, not sip`);
@@ -129,8 +127,7 @@ export default [
     name: 'projector too early, slip out pretending → Kev fixes it → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto projector busy');
       run('interact');
       run('sit busy');
@@ -143,8 +140,7 @@ export default [
     name: 'projector too early, hang around the room → Kev makes the leap → the boss hears → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto projector busy');
       run('interact');
       try { run('goto meeting_seat busy'); } catch { /* Kev may stop us on the way */ }
@@ -157,8 +153,7 @@ export default [
     name: 'pour early, carry it openly past the empty pot → Kev asks ☕🥺❓, never takes it → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       if (g.player.held !== 'coffee') throw new Error('no coffee poured');
       run('goto kev_desk busy'); // walk right past him: he doesn't care yet
       if (log.some((e) => e.name === 'coffee:asked')) throw new Error('Kev asked before he knew the pot was empty');
@@ -175,8 +170,7 @@ export default [
     name: 'pour early, hold it to your ear like a phone at Kev\'s desk → he squints ☕❓, decides you\'re on a call 📱🤷 → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto kev_desk busy');
       waitFor(() => log.some((e) => e.name === 'coffee:shrug'), { busy: true, maxSec: 60 });
       const squint = log.find((e) => e.name === 'coffee:squint'), shrug = log.find((e) => e.name === 'coffee:shrug');
@@ -190,8 +184,7 @@ export default [
     name: 'same, but lower the cup while he squints → it\'s a cup after all: ☕🥺❓',
     expect: { result: 'fail' },
     play({ run, waitFor, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto kev_desk busy');
       waitFor(() => log.some((e) => e.name === 'coffee:squint'), { busy: true, maxSec: 60 });
       waitFor(() => log.some((e) => e.name === 'coffee:asked'), { busy: false, maxSec: 4 });
@@ -203,8 +196,7 @@ export default [
     name: 'pour early, leave the cup on the machine → Kev finds it there, takes it as free 🤤☕ → fail',
     expect: { result: 'fail' },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('put coffee');
       run('sit busy');
       waitFor(() => log.some((e) => e.name === 'coffee:kevTook'), { busy: true, maxSec: 120 });
@@ -216,10 +208,8 @@ export default [
     name: 'pour early, set it down on your own desk, type → Kev leaves it be, goes home → spill → blamed (mug in hand)',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('goto my_desk_spot busy');
-      run('put my_desk');
+      for (const c of POUR) run(c);
+      for (const c of HIDE) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone, { busy: true });
       if (log.some((e) => e.name === 'coffee:asked' || e.name === 'coffee:kevTook')) throw new Error('Kev went for the cup on your desk');
@@ -250,8 +240,7 @@ export default [
     name: 'pour before Kev\'s coffee run, set it on your desk, spill after he leaves, keep the empty mug → the boss sees the projector 📽️💥☕❓ → ☕😠👉 at you, blamed',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       if (!log.some((e) => e.name === 'coffee:missing' && e.payload.by === 'kev')) throw new Error('Kev never found the pot empty');
@@ -269,8 +258,7 @@ export default [
     name: 'same, but put the mug back on the coffee machine → the hunting boss shrugs ☕🤷 → win',
     expect: { result: 'win', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
@@ -287,8 +275,7 @@ export default [
     name: 'same, but plant the mug on Kev\'s desk → ☕❗, 😠 at Kev, and at 4:00 the table stares at Kev\'s empty chair → win',
     expect: { result: 'win', routes: ['projector'] },
     play({ run, waitFor, g, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
@@ -311,10 +298,8 @@ export default [
     name,
     expect: { result: 'win', routes: ['projector'] },
     play({ run, waitFor, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('goto my_desk_spot busy');
-      run('put my_desk');
+      for (const c of POUR) run(c);
+      for (const c of HIDE) run(c);
       if (eat) {
         run('goto fridge busy');
         run('interact');
@@ -345,10 +330,8 @@ export default [
     name: 'same, but plant it on the boss\'s own desk once he is off for his smoke (3:38) → Lin looks at him 🤨👉, he sputters 😳☕❓ → win',
     expect: { result: 'win', routes: ['projector'] },
     play({ run, waitFor, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('goto my_desk_spot busy');
-      run('put my_desk');
+      for (const c of POUR) run(c);
+      for (const c of HIDE) run(c);
       run('sit busy');
       run('busy until 3:25');
       run('goto my_desk_spot busy');
@@ -368,8 +351,7 @@ export default [
     name: 'at Kev\'s desk with the cup: his keyboard is one target, the desk\'s free end another (the put)',
     expect: { result: 'fail' },
     play({ run, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto 23,9 busy');
       if (g.player.focus?.action !== 'put' || g.player.focus?.id !== 'kev_desk') throw new Error(`at the free end the target is ${g.player.focus?.action}@${g.player.focus?.id}`);
       run('goto 22,7 busy');
@@ -381,10 +363,8 @@ export default [
     name: 'same, but leave the mug on your own desk while he hunts elsewhere → back from his smoke he sees it there → caught',
     expect: { result: 'caught' },
     play({ run, waitFor, npc, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('goto my_desk_spot busy');
-      run('put my_desk'); // on your desk while you type
+      for (const c of POUR) run(c);
+      for (const c of HIDE) run(c); // on your desk while you type
       run('sit busy');
       waitFor((g) => g.world.kevGone, { busy: true }); // done before the boss's 3:12 walk
       run('goto my_desk_spot busy');
@@ -404,8 +384,7 @@ export default [
     name: 'same, mug back on the machine, but still by the machine at 4:00 → blamed (your empty chair)',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
@@ -420,8 +399,7 @@ export default [
     name: 'same, mug back on the machine, but in the restroom at 4:00 → blamed, and you walk in drying your hands (where restroom)',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
@@ -441,8 +419,7 @@ export default [
     name: 'same, mug back on the machine, but typing at your own desk at 4:00 → blamed, the room stares at the one person working (why working)',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector busy');
@@ -480,8 +457,7 @@ export default [
     play({ run, waitFor, npc }) {
       run('busy until 3:11');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8)); // boss out of his office
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       // wait until Lin is not looking (head turned well away) or not at her desk
       waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
       run('interact');
@@ -493,8 +469,7 @@ export default [
     name: 'both routes in one loop: spill after Kev leaves, mug back on the machine, the card while the boss hunts the kitchen → locked out and no projector → win (the campfire)',
     expect: { result: 'win', routes: ['keycard', 'projector'] },
     play({ run, waitFor, npc, g }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('sit busy');
       waitFor((g) => g.world.kevGone);
       run('goto projector');
@@ -545,8 +520,7 @@ export default [
       run('sit busy'); // seated and typing, the sandwich is in your lap under the desk
       waitFor(() => npc('lin').override === 'hunting');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       run('eat'); // eat it in the corner, out of the hunt's reach
       if (!g.player.smeared || g.player.held) throw new Error('did not eat');
       run('interact'); // the keycard
@@ -562,8 +536,7 @@ export default [
     play({ run, waitFor, npc, g, log }) {
       run('busy until 3:11');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
       run('interact');
       if (g.world.keycard !== 'player') throw new Error('theft failed: ' + g.world.keycard);
@@ -580,8 +553,7 @@ export default [
     play({ g, run, waitFor, npc }) {
       run('busy until 3:11');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       waitFor(() => { const l = npc('lin'); return l.active && Math.abs(l.glance.offset) < 0.3; }, { busy: true, maxSec: 30 });
       run('interact');
       run('wait 10s');
@@ -595,8 +567,7 @@ export default [
     play({ run, waitFor, npc, g, log }) {
       run('busy until 3:11');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
       run('interact');
       run('goto meeting_seat busy');
@@ -614,8 +585,7 @@ export default [
     play({ run, waitFor, npc, g, log }) {
       run('busy until 3:11');
       waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
       run('interact');
       run('goto meeting_seat busy');
@@ -658,8 +628,7 @@ export default [
     expect: { result: 'fail' },
     play({ run, waitFor, npc, g, log }) {
       waitFor(() => npc('lin').label?.startsWith('visit') || npc('lin').override === 'hunting' || npc('lin').x > 15); // Lin off to the kitchen (3:00)
-      run('goto boss_office_door busy');
-      run('goto coat_rack busy');
+      for (const c of TO_THE_RACK) run(c);
       waitFor(() => log.some((e) => e.name === 'trespass:out'), { maxSec: 20 });
       if (!log.some((e) => e.name === 'trespass')) throw new Error('the boss never showed you out');
       if (g.player.held) throw new Error('you left his office holding ' + g.player.held);
@@ -670,8 +639,7 @@ export default [
     name: 'coffee into the boss\'s ficus → 🌿😍, no cup for the projector → fail',
     expect: { result: 'fail' },
     play({ run, log }) {
-      run('goto coffee_machine busy');
-      run('interact');
+      for (const c of POUR) run(c);
       run('goto boss_doorway busy');
       run('interact');
       run('busy until 4:00');
@@ -893,8 +861,7 @@ export default [
 function stealCard({ run, waitFor, npc }) {
   run('busy until 3:11');
   waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
-  run('goto boss_office_door busy');
-  run('goto coat_rack busy');
+  for (const c of TO_THE_RACK) run(c);
   waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
   run('interact');
 }

@@ -16,6 +16,8 @@
 //   murmur      { spot }: where the meeting murmurs from when everyone gathers (meeting:gather)
 //   elevator    { spot, radius }: NPCs leaving or arriving this near the spot ding instead of a door
 
+import { KNOCK, BANG, POUND } from './knocks.js';
+
 export const SOUNDS = {
   actions: {
     start: {
@@ -53,11 +55,16 @@ export const SOUNDS = {
     'boss:letIn': { sfx: 'denied', spot: 'fire_door' }, // you hold the door for him: the held-door alarm buzzes
     'boss:hug': { sfx: 'rustle', who: 'boss' }, // 🤗
     'boss:pockets': { sfx: 'rustle', spot: 'fire_door' }, // 🪪❓ patting every pocket
-    'restroom:knock': { sfx: 'bang', spot: 'restroom', opts: { hits: 2 } }, // ✊🚪 someone wants the cubicle you're in
-    'restroom:pound': { sfx: 'bang', spot: 'restroom', opts: { hits: 4 } }, // 👊🚪😤 the boss
-    'boss:knock': { sfx: 'bang', spot: 'fire_door', opts: { hits: 2 } }, // ✊🚪 polite
-    'boss:bang': { sfx: 'bang', spot: 'fire_door' }, // 😠🚪🪪
-    'boss:pound': { sfx: 'bang', spot: 'fire_door', opts: { hits: 4 } }, // 👊👊🚪
+    // A fist on a door sounds the same whoever's it is (knocks.js): someone wants the cubicle you're in; the boss at
+    // the fire door; you at either.
+    'restroom:knock': { ...KNOCK.sound, spot: 'restroom' },
+    'restroom:pound': { ...POUND.sound, spot: 'restroom' },
+    'toy:knock_boss': { ...KNOCK.sound, spot: 'restroom' },
+    'toy:knock_lin': { ...KNOCK.sound, spot: 'restroom' },
+    'boss:knock': { ...KNOCK.sound, spot: 'fire_door' },
+    'boss:bang': { ...BANG.sound, spot: 'fire_door' },
+    'boss:pound': { ...POUND.sound, spot: 'fire_door' },
+    'toy:pound': { ...POUND.sound, spot: 'fire_door' },
     'boss:fume': { sfx: 'grumble', spot: 'fire_door' }, // 🚬😤
     // You and the fire door (balcony.js): the bar, a card on the reader, the door slamming shut behind whoever.
     'fireDoor:out': { sfx: 'door', spot: 'fire_door', opts: { open: true } },

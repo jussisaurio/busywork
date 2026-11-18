@@ -1,6 +1,6 @@
 // Level 1's toys (level.toys; the fields are in src/sim/mechanics/toy.js): things you poke that answer back and
 // decide nothing.
-//   pound      out on the balcony without his card (balcony.js), the door shut: you pound on it 👊🚪, the way he does.
+//   pound      out on the balcony without his card (balcony.js), the door shut: you pound on it 👊👊🚪, the way he does (knocks.js).
 //              Nobody comes. (With the card, or the door open, E is the way in instead: the rows win.)
 //   smoke_offer  the boss out there with you, smoking or locked out: he holds out his packet 🚬❓. Off the clock.
 //   knock_*    the restroom door while someone is in there (restroom.js): you knock, and he answers through the door,
@@ -32,6 +32,8 @@ import { findNpc, inZone } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside } from './balcony.js';
 import { deadAt } from './map.js';
+import { POUND, fistsOnTheDoor } from './knocks.js';
+import { POUR, HIDE, AT_LIN_KEYS, AT_KEV_KEYS } from './plans.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
 const UNDER_PICTURE = { x: 25, y: 7.4 }; // where Kev and Lin stand to fix it: right under it, at arm's length
@@ -47,7 +49,6 @@ export function pictureTilt(game) {
   return { tilt: v, since: f === null ? null : game.loopTime - f };
 }
 const FIX = { sfx: 'creak', pose: { arms: 'reach', face: true, angry: true, for: 1.4 } };
-const KNOCK = { sfx: 'bang', pose: { arms: 'bang', face: true, for: 0.6 } };
 const inside = (id) => (w, s, game) => game.player._stall === id && game.player.y < 13.5; // (not from the balcony)
 
 const DOZE_FROM = clockAt('2:48');
@@ -56,10 +57,11 @@ const dozing = (game, n) => n.wants === 'coffee' && n.pose === 'sit' && !n.movin
   && game.clock.minute >= DOZE_FROM && game.clock.minute < DOZE_TO && !toyState(game, 'kev_wake').woke;
 
 // --- typing on any keyboard ---------------------------------------------------------------------------------------
-// The free workstations: the monitor's tile, and whose it is (they sit at the chair one tile south).
+// The free workstations: the monitor's tile, and whose it is (they sit at the chair one tile south). reach: the
+// harness commands that get you typing at it (plans.js; default: walk up and press).
 export const KEYBOARDS = [
-  { id: 'type_lin', x: 4, y: 8, owner: 'lin' },
-  { id: 'type_kev', x: 22, y: 8, owner: 'kev' },
+  { id: 'type_lin', x: 4, y: 8, owner: 'lin', reach: AT_LIN_KEYS },
+  { id: 'type_kev', x: 22, y: 8, owner: 'kev', reach: AT_KEV_KEYS },
   { id: 'type_west', x: 4, y: 11 },
   { id: 'type_mustard', x: 13, y: 11 }, // the mustard chair's, behind yours
   { id: 'type_east', x: 22, y: 11 },
@@ -91,29 +93,28 @@ const TYPE_TOYS = [
     line: k.owner ? `you mash ${k.owner === 'lin' ? 'Lin' : 'Kev'}'s keyboard: a line of gibberish on the screen`
       : 'you mash the keyboard: a line of gibberish on the screen',
     react: { sfx: 'clatter', pose: { arms: 'type', face: true, for: 0.6 }, add: { keys: 1 } },
-    try: k.owner === 'lin' ? ['pretend until 2:59', 'goto lin_desk busy', 'interact']
-      : k.owner === 'kev' ? ['pretend until 2:40', 'goto type_kev busy', 'interact'] : [`goto ${k.id} busy`, 'interact'],
+    try: k.reach ?? [`goto ${k.id} busy`, 'interact'],
   })),
   {
     id: 'lin_reads', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'pass', npcs: ['lin'], radius: 1.4, every: 2,
     when: (w, s, game, n) => seatedAt(game, 'lin', LIN_KB) && unread(game, LIN_KB, 'lin_reads'),
     line: 'Lin sits down to her screen and reads what you typed 😳⌨️',
     react: { say: { icons: ['😳', '⌨️'], ttl: 1.8 }, pose: { face: true, for: 1.8 } },
-    try: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:13'],
+    try: [...AT_LIN_KEYS, 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:13'],
   },
   {
     id: 'lin_wipes', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'pass', npcs: ['lin'], radius: 1.4, every: 2,
     when: (w, s, game) => seatedAt(game, 'lin', LIN_KB) && typed(game, LIN_KB) && toyState(game, 'lin_reads').since >= 1.8,
     line: 'Lin hammers delete, cross 😤, and your gibberish is gone',
     react: { say: { icons: ['😤'], ttl: 1.6 }, sfx: 'clatter', pose: { arms: 'type', angry: true, for: 1.6 }, reset: ['type_lin'] },
-    try: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:14'],
+    try: [...AT_LIN_KEYS, 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:14'],
   },
   {
     id: 'kev_reads', at: { x: KEV_KB.x, y: KEV_KB.y }, on: 'pass', npcs: ['kev'], radius: 1.4, every: 2,
     when: (w, s, game) => seatedAt(game, 'kev', KEV_KB) && unread(game, KEV_KB, 'kev_reads'),
     line: 'Kev sits down, reads what you typed on his screen, and nods 🤔👍',
     react: { say: { icons: ['🤔', '👍'], ttl: 2.2 }, pose: { face: true, for: 2 } },
-    try: ['pretend until 2:40', 'goto type_kev busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 2:50'],
+    try: [...AT_KEV_KEYS, 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 2:50'],
   },
   {
     id: 'lin_sees', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'near', npcs: ['lin'], radius: 10, sees: true, every: 6,
@@ -176,8 +177,8 @@ export const TOYS = [
   {
     id: 'pound', at: { x: 27, y: 13 }, on: 'press', text: 'pound on the door', every: 0.8,
     when: (w, s, game) => outside(game.player),
-    line: 'you pound on the fire door 👊🚪: the reader blinks red, and nobody comes',
-    react: { sfx: 'bang', say: { icons: ['👊', '🚪'], ttl: 1.2 }, pose: { arms: 'bang', face: true, for: 0.7 } },
+    line: 'you pound on the fire door 👊👊🚪: the reader blinks red, and nobody comes',
+    react: fistsOnTheDoor(0.7, { icons: POUND.say, ttl: 1.2 }),
     try: ['goto fire_door', 'interact', 'wait 1s', 'interact'],
   },
   {
@@ -192,13 +193,13 @@ export const TOYS = [
     id: 'knock_boss', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('boss'), every: 2,
     over: ['knock_lin'], // (never both: one stall)
     line: 'you knock on the restroom door: the boss answers from inside 🚽😠',
-    react: { ...KNOCK, say: { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 } },
+    react: fistsOnTheDoor(0.6, { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 }),
     try: ['goto restroom_door', 'pretend until 3:19', 'interact'],
   },
   {
     id: 'knock_lin', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('lin'), every: 2,
     line: 'you knock on the restroom door: Lin answers from inside 🚽😤',
-    react: { ...KNOCK, say: { icons: ['🚽', '😤', '@lin'], who: 'prop', ttl: 1.8 } },
+    react: fistsOnTheDoor(0.6, { icons: ['🚽', '😤', '@lin'], who: 'prop', ttl: 1.8 }),
     try: ['goto restroom_door', 'pretend until 3:35.5', 'interact'],
   },
   {
@@ -245,14 +246,14 @@ export const TOYS = [
     // it never showed. The 💤 is drawn instead, rising off his head without a break while the pose lasts
     // (painters-more.js kevPage); fired every 3 s, the pose (3.4 s) never lapses while he sleeps.
     react: { pose: { arms: 'desk', slump: true, for: 3.4 } }, // forearms on the desk, his head down on them
-    try: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'sit busy', 'busy until 2:50'],
+    try: [...POUR, ...HIDE, 'sit busy', 'busy until 2:50'],
   },
   {
     id: 'kev_wake', on: 'near', at: 'kev_desk', npcs: ['kev'], radius: 2.5, every: 999, state: { woke: false },
     when: (w, s, game, n) => dozing(game, n),
     line: 'Kev jolts awake 😳',
     react: { say: { icons: ['😳'], ttl: 1.6 }, sfx: 'swish', pose: { arms: 'type', for: 2 }, set: { woke: true } },
-    try: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'sit busy', 'busy until 2:50',
+    try: [...POUR, ...HIDE, 'sit busy', 'busy until 2:50',
       'goto kev_desk busy'],
   },
 ];

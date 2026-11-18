@@ -22,7 +22,7 @@ import { setOverride } from '../../sim/override.js';
 import { leaving } from '../../sim/npcs.js';
 import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { leaveDay } from '../../play/scenario.js';
-import { catchNow } from '../../play/rules.js';
+import { catchFor } from './endings.js';
 import { RESTROOM_ROWS } from './restroom.js';
 import { BALCONY_ROWS, openDoor, outside } from './balcony.js';
 import { COMPUTER_OWNERS } from './map.js';
@@ -143,7 +143,7 @@ function drownComputer() {
       game.events.emit('coffee:computer', { id, owner });
       const boss = findNpc(game, 'boss');
       const onFloor = boss && boss.active && boss.override !== 'lockedOut' && !inZone(game, 'outside', boss.x, boss.y);
-      if (onFloor) catchNow(game, 'action', boss.id, ['⌨️', '💥', '👉', '@player'], 'computer');
+      if (onFloor) catchFor(game, 'action', boss.id, 'computer');
       else say(game, 'player', ['⌨️', '💀'], { kind: 'thought', ttl: 1.6 });
     },
   };

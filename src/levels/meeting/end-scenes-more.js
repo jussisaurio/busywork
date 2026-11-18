@@ -4,19 +4,28 @@
 //   computer  caught, why 'computer' (interactions.js drownComputer: the cup into any computer on the floor): the
 //             drowned machine sparks and drips on its desk; you stand by it sooty, hair on end; the boss points at
 //             it and holds out an empty box for your things. Its owner, if it has one and they are in (Lin; Kev
-//             until he goes home), stands at the right edge, horrified 😱💻. Yours, an empty desk's and the boss's
-//             own (he is already there, pointing) add nobody.
+//             until he goes home), stands at the right edge, horrified 😱💻 (ownerIn). Yours, an empty desk's and
+//             the boss's own (he is already there, pointing) add nobody.
 import { rrect, fillEllipse, fillCircle } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { person, bubble } from '../../render/tableau.js';
 import { officeRoom } from '../../render/tableau-furniture.js';
 import { bossJacket } from './end-set.js';
+import { WHYS } from './endings.js';
+import { findNpc } from '../../game/perception.js';
 
-const B_COMPUTER = [['⌨️', '💥', '👉', '@player'], ['📦', '👉', '@player']];
+const B_COMPUTER = [WHYS.computer.catch, ['📦', '👉', '@player']]; // what he said in the day, then the box
 
 const OWNER_SAYS = ['😱', '💻'];
-const OWNER_IN = { lin: () => true, kev: (w) => !w.kevGone }; // whose machine brings them onto the card, and when
+// Whose machine it was (world.drowned.owner: map.js COMPUTER_OWNERS) comes onto the card if they are someone else
+// still on the floor: not you (you are there, sooty), not the one who caught you (the boss is there, pointing,
+// his own machine or not), not anyone gone home (Kev, after 3:00). An empty desk's machine has nobody.
+function ownerIn(game, who) {
+  if (!who || who === 'player' || who === game.caught?.by) return null;
+  const npc = findNpc(game, who);
+  return npc && !npc._gone ? who : null;
+}
 
 export function tableauComputer(ctx, game, t, e) {
   officeRoom(ctx, 92);
@@ -44,8 +53,8 @@ export function tableauComputer(ctx, game, t, e) {
   drawPerson(ctx, game.level.looks.boss, b, 262, 290);
   bubble(ctx, B_COMPUTER[Math.floor(e / 1.6) % 2], 276, 206, e % 1.6, 'alert');
   // its owner, at the right edge, past you, turned to the dead machine
-  const who = game.world?.drowned?.owner;
-  if (!OWNER_IN[who]?.(game.world)) return;
+  const who = ownerIn(game, game.world?.drowned?.owner);
+  if (!who) return;
   const o = person(t);
   o.dir = Math.PI - 0.3;
   o.head = Math.PI - 0.3;
