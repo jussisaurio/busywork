@@ -226,6 +226,22 @@ export default [
       'sink (🧼😌 over the door).',
   },
   {
+    name: 'picture-tilt',
+    cmds: ['goto picture', 'interact', 'wait 1s'],
+    intent: 'The picture war, 1: you knock the hallway picture by the kitchen door crooked; it hangs askew on its nail.',
+  },
+  {
+    name: 'picture-kev',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 2:38.5'],
+    intent: 'The picture war, 2: Kev, on his coffee run, reaches up to the crooked picture (😒) and tilts it the ' +
+      'other way.',
+  },
+  {
+    name: 'picture-lin',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 3:02.3'],
+    intent: 'The picture war, 3: Lin, on her way to the fridge, reaches up to it, cross (😤), and straightens it.',
+  },
+  {
     name: 'end-restroom',
     cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
       'put coffee busy', 'goto restroom_door busy', 'busy until 3:40', 'interact', 'busy until 4:00', 'wait 8s'],

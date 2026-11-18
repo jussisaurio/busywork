@@ -3,7 +3,8 @@
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
-import { emptyBag, fireDoor, balcony } from './painters.js';
+import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
+import { PICTURE, pictureTilt } from './toys.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
@@ -51,7 +52,6 @@ export const DECOR = {
   ],
   paintings: [
     { x: 10, y: 6, variant: 0 },
-    { x: 25, y: 6, variant: 1 },
     { x: 2, y: 0, variant: 1 },
   ],
   cabinets: { x0: 21, x1: 23, y: 0 }, // kitchen upper cabinets over the counter
@@ -82,6 +82,9 @@ export const DECOR = {
     // he's locked out; butts pile up round the ashtray, one per go at the door.
     { tile: 'X', draw: fireDoor, state: fireDoorState },
     { tile: '=', draw: balcony, state: (w, game) => ({ butts: Math.max(0, (findNpc(game, 'boss')?._bangI ?? 0) - 1) }) },
+    // The hallway picture by the kitchen door (toys.js picture_*): crooked or straight, whoever touched it last. It
+    // is drawn every frame, so it is a prop, not a painting; R (the restroom door) only anchors it, once on the map.
+    { tile: 'R', draw: hallPicture, state: (w, game) => ({ x: PICTURE.x - 0.5, y: PICTURE.y, ...pictureTilt(game) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.

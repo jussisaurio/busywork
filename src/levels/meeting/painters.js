@@ -10,6 +10,7 @@
 // Each is a things.js painter (ctx, x, y, size, t): centred on (x, y), about `size` px tall, in the 16 px box.
 import { box } from '../../render/things.js';
 import { fillEllipse, fillCircle, rrect, fin, T } from '../../render/util.js';
+import { C } from '../../render/palette.js';
 
 // A sandwich from the side: two slices of bread, ham, a frill of lettuce and a smear of mustard.
 export function sandwich(ctx, x, y, size) {
@@ -316,4 +317,30 @@ export function balcony(ctx, info, at, state) {
     ctx.fillRect(0.6, -0.5, 1.2, 1);
     ctx.restore();
   }
+}
+
+// The hallway picture by the kitchen door (toys.js picture_*), on its nail on the wall's front face: state
+// { x, y, tilt (-1, 0, 1), since (seconds since someone last touched it, or null) }. It swings a little and settles.
+const PIC_FRONT = 14; // render/world.js FRONT: the visible wall face
+export function hallPicture(ctx, info, at, state) {
+  const w = 2 * T - 20;
+  const nx = state.x * T + 10 + w / 2;
+  const ny = state.y * T + T - PIC_FRONT + 1;
+  const s = Number.isFinite(state.since) && state.since >= 0 && state.since < 0.8 ? state.since : null;
+  const a = (state.tilt || 0) * 0.16 + (s === null ? 0 : Math.sin(s * 28) * 0.1 * (1 - s / 0.8));
+  ctx.save();
+  ctx.translate(nx, ny);
+  ctx.rotate(a);
+  ctx.fillStyle = '#1f1814';
+  ctx.fillRect(-w / 2 - 1, 0, w + 2, PIC_FRONT - 4);
+  ctx.fillStyle = C.cream;
+  ctx.fillRect(-w / 2, 1, w, PIC_FRONT - 6);
+  const px = -w / 2;
+  ctx.fillStyle = C.olive;
+  ctx.fillRect(px + 4, 2, 14, 5);
+  fillCircle(ctx, px + 26, 5, 3, C.teal);
+  ctx.fillStyle = C.ochre;
+  ctx.fillRect(px + 32, 2, 4, 5);
+  ctx.restore();
+  fillCircle(ctx, nx, ny - 0.5, 1.1, '#2a2a2a'); // the nail
 }

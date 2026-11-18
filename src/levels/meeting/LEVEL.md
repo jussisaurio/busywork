@@ -172,6 +172,11 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   table and then you walk in from the right, wiping your hands on your trousers (🪑🚽🙂). The jokes: the boss's
   voice through a toilet door; Kev's helpful mime; and the one place nobody can see you is the one place you can't
   claim you were working.
+- **The picture war** (`toys.js` `picture`, `picture_kev`, `picture_lin`; painter `painters.js` `hallPicture`, a
+  decor prop now, not a static painting; it moved one tile west, to tiles 24-25 by the kitchen door). E tilts it.
+  Kev, on his coffee run (2:38), reaches up and tilts it the other way (😒); Lin, on her way to the fridge (3:02),
+  straightens it (😤). The frame creaks on its nail each time. Its tilt is whoever touched it last. Toys cannot
+  stop an NPC, so they reach up in passing. The joke: three people fight a silent war over one nail.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.
