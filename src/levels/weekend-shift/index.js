@@ -21,7 +21,8 @@ import { at, GAME_MIN_PER_SEC, EAT_TIME, PICK_UP_TIME } from '../../config.js';
 import { burst, say } from '../../core/fx.js';
 import { speak, npcSayLater } from '../../sim/override.js';
 import { CAST, BEHAVIOURS, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
-import { DECOR, LOOKS, POSES, TITLE, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, END_SCENES, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { THINGS as PROP_THINGS } from './props.js';
 import harness from './harness.js';
 import gate from './gate.js';
@@ -509,5 +510,5 @@ export default {
   poses: POSES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };

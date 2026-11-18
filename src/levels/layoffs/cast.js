@@ -1,24 +1,21 @@
 // The Layoff List: the boss, Kev and Lin, and their hooks (cast.js and behaviours.js in level 1 document the fields).
 // Their day in prose is premise.md "Who does what". The beats that are not schedule entries (the phones, Lin's
 // glances, the coffee) are index.js clockFor's.
-import { at, deg, GAME_MIN_PER_SEC } from '../../config.js';
+import { deg, GAME_MIN_PER_SEC } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { say } from '../../core/fx.js';
 
 export const START = 15 * 60; // 3:00 PM
-const s = (time, entry) => ({ at: at(time, START), ...entry });
+const s = scheduler(START);
 export const SECS = (n) => n * GAME_MIN_PER_SEC; // real seconds as game minutes
 
 export const CAST = [
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55',
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'boss_desk',
     meetingArrive: 'sendList',
     vision: { fov: deg(100), radius: 8 },
     glanceEvery: [3, 5.5],
-    coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk', arrive: 'atDesk' }), // his monitor black (index.js glitch): he bangs on it
       s('3:00.3', { do: 'say', icons: ['😠'] }),
@@ -34,13 +31,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a',
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'kev_desk',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
       s('3:01.6', { do: 'sit', spot: 'cable', prelude: 'pickUp', arrive: 'fixPc' }), // the boss called: he goes in
@@ -52,13 +45,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83',
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'lin_desk',
     vision: { fov: deg(100), radius: 9.5 }, // the whole boss's office, his chair and his screen
-    coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }), // all day: her phone and Kev's are index.js clockFor's
     ],

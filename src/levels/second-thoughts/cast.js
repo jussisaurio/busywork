@@ -3,33 +3,27 @@
 // afternoon coffee at 3:10: the old machine makes the lights flicker and the fuse holds, unless you poured the water
 // jug into the vent on its back first, and then it shorts and takes the fuse with it. Kev unplugs it and resets
 // fuses: lures in index.js.
-import { at, deg } from '../../config.js';
+import { deg } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { burst, shake } from '../../core/fx.js';
 
 export const START = 15 * 60; // 3:00 PM
-const s = (time, entry) => ({ at: at(time, START), ...entry });
+const s = scheduler(START);
 
 export const CAST = [
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55', // navy suit
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'boss_desk',
     vision: { fov: deg(150), radius: 8 }, // nothing on his desk escapes him in the light
-    coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'sit', spot: 'boss_desk' }), // facing his tray, all afternoon
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'lin_desk',
     vision: { fov: deg(90), radius: 6 },
-    coneTint: [120, 220, 205],
+    coneTint: [120, 220, 205], // her own, greener than the shared one
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
       s('3:05', { do: 'visit', spot: 'coffee_machine', arrive: 'brew' }), // her afternoon coffee: there about 3:10
@@ -39,13 +33,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a', // olive hoodie
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'kev_desk',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
     ],

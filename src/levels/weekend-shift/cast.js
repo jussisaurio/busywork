@@ -1,24 +1,21 @@
 // Saturday's people (id weekend-shift) and their hooks (cast.js and behaviours.js in level 1 document the fields). Cast order is
 // behaviour: the sim updates them in this order.
-import { at, deg, GAME_MIN_PER_SEC } from '../../config.js';
+import { deg, GAME_MIN_PER_SEC } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 import { inZone } from '../../game/perception.js';
 
 const START = 16 * 60;
-const s = (time, entry) => ({ at: at(time, START), ...entry });
+const s = scheduler(START);
 
 export const CAST = [
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55', // navy suit
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'board_boss',
     meetingArrive: 'readRoster',
     vision: { fov: deg(100), radius: 9 },
     // he keeps his eyes on the office (his cone stays on the board, so a head snapping away from it shows); a glance
     // away is never long enough to write on the board anyway
     glanceEvery: [30, 50],
-    coneTint: [255, 160, 82],
     schedule: [
       s('4:00', { do: 'sit', spot: 'boss_desk' }),
       s('4:20', { do: 'visit', spot: 'copier_boss', arrive: 'photocopy' }), // his back to the room
@@ -28,14 +25,10 @@ export const CAST = [
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'meeting_lin',
     meetingArrive: 'whereAreYou',
     vision: { fov: deg(100), radius: 8.5 },
-    coneTint: [150, 230, 214],
     schedule: [
       s('4:00', { do: 'sit', spot: 'lin_desk' }), // she watches the board all day
       s('4:30', { do: 'say', icons: ['🐟'], kind: 'thought' }), // lunch: she gets up with it (her chair stays pushed out)
@@ -44,15 +37,11 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a', // olive hoodie
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'meeting_kev',
     meetingArrive: 'whereAreYou',
     vision: { fov: deg(90), radius: 7 },
     glanceEvery: [20, 35], // heads down in his code: he hardly ever looks up
-    coneTint: [214, 230, 140],
     schedule: [
       s('4:00', { do: 'sit', spot: 'kev_desk' }), // he gets up when a machine needs fixing (index.js lures)
     ],

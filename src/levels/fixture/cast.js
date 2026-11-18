@@ -1,7 +1,8 @@
 // The fixture's two people and their hooks (cast.js and behaviours.js in level 1 document the fields).
-import { at, deg } from '../../config.js';
+import { deg } from '../../config.js';
+import { scheduler } from '../office/cast.js';
 
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler();
 
 export const CAST = [
   {

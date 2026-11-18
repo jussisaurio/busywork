@@ -30,7 +30,8 @@ import { spotPos, findNpc, npcSees } from '../../game/perception.js';
 import { endOverride, npcSayLater } from '../../sim/override.js';
 import { showOutNow } from '../../play/rules.js';
 import { CAST, BEHAVIOURS, START, SECS, ringKev } from './cast.js';
-import { TITLE, DECOR, LOOKS, POSES, END_SCENES, VOICES, SOUNDS } from './presentation.js';
+import { TITLE, DECOR, LOOKS, POSES, END_SCENES, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
 
@@ -532,5 +533,5 @@ export default {
   poses: POSES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };

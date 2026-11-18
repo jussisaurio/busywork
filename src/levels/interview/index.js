@@ -15,7 +15,8 @@
 import { at } from '../../config.js';
 import { CAST, BEHAVIOURS } from './cast.js';
 import { START, INTERACTIONS, LURES, NOISES, initialPhones, phoneTick } from './phones.js';
-import { DECOR, LOOKS, POSES, TITLE, VOICES, SOUNDS } from './presentation.js';
+import { DECOR, LOOKS, POSES, TITLE, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import { END_SCENES } from './end-scenes.js';
 import harness from './harness.js';
 import gate from './gate.js';
@@ -143,6 +144,6 @@ export default {
   looks: LOOKS,
   poses: POSES,
   endScenes: END_SCENES,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
   sounds: SOUNDS,
 };

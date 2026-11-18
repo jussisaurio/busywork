@@ -10,19 +10,16 @@
 // off the rack and goes home. Lin and Kev, who doubt a jumped clock, obey the coat: when it goes, they shrug and follow
 // him out (clocks.js follow). Your bus is at 4:30.
 import { at, deg } from '../../config.js';
+import { OFFICE_PEOPLE, scheduler } from '../office/cast.js';
 
 export const START = 15 * 60; // 3:00 PM
-const s = (time, entry) => ({ at: at(time, START), ...entry });
+const s = scheduler(START);
 
 export const CAST = [
   {
-    id: 'boss',
-    icon: '@boss',
-    color: '#2b3a55', // navy suit
-    voice: 'boss',
+    ...OFFICE_PEOPLE.boss,
     meetingSpot: 'boss_desk',
     vision: { fov: deg(100), radius: 8 },
-    coneTint: [255, 160, 82],
     schedule: [
       s('3:00', { do: 'away', spot: 'street_end' }), // a long lunch: his coat stays on the rack
       s('3:40', { do: 'visit', spot: 'coffee', prelude: ['fixQ', 'fixO'], arrive: 'pour' }), // back: a coffee first
@@ -32,13 +29,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'lin',
-    icon: '@lin',
-    color: '#2f8f83', // teal cardigan
-    voice: 'lin',
+    ...OFFICE_PEOPLE.lin,
     meetingSpot: 'lin_desk',
     vision: { fov: deg(100), radius: 9 }, // sharp eyes: through the glass to the boss's clock (and his coat)
-    coneTint: [150, 230, 214],
     schedule: [
       s('3:00', { do: 'sit', spot: 'lin_desk' }),
       s('3:20', { do: 'away', spot: 'restroom' }),
@@ -50,13 +43,9 @@ export const CAST = [
     ],
   },
   {
-    id: 'kev',
-    icon: '@kev',
-    color: '#5f6b3a', // olive hoodie
-    voice: 'kev',
+    ...OFFICE_PEOPLE.kev,
     meetingSpot: 'kev_desk',
     vision: { fov: deg(90), radius: 7 },
-    coneTint: [214, 230, 140],
     schedule: [
       s('3:00', { do: 'sit', spot: 'kev_desk' }),
       s('3:01', { do: 'visit', spot: 'coffee', arrive: 'pour' }),

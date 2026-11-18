@@ -26,7 +26,8 @@ import { say, burst, shake } from '../../core/fx.js';
 import { isDark } from '../../game/darkness.js';
 import { sitAtDesk } from '../../play/player.js';
 import { CAST, BEHAVIOURS, START } from './cast.js';
-import { DECOR, TITLE, END_SCENES, VOICES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
+import { DECOR, TITLE, END_SCENES, LOOKS, POSES, CONES, SOUNDS } from './presentation.js';
+import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { letter } from './things.js';
@@ -658,5 +659,5 @@ export default {
   cones: CONES,
   endScenes: END_SCENES,
   sounds: SOUNDS,
-  voices: VOICES,
+  voices: OFFICE_VOICES,
 };
