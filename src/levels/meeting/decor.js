@@ -89,6 +89,7 @@ export const DECOR = {
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
     // The boss's ficus after the coffee (interactions.js water_ficus): wet soil, a new leaf shooting out.
     { tile: 'Y', draw: ficus, state: (w, game) => ({ watered: w.cup === 'ficus', since: since(game, w._ficusAt) }) },
+    { tile: 'V', draw: ficus, state: (w, game) => ({ watered: w.cup === 'plant', since: since(game, w._plantAt) }) }, // the hallway one
     // The typewriter on the empty desk, after the cup went into its keys (interactions.js drown_typewriter).
     { tile: 'W', draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'typewriter', since: since(game, w._typewriterAt) }) },
     // Kev's screen while he dozes on his keyboard (toys.js kev_doze, every 3 s while asleep): seconds asleep so far.

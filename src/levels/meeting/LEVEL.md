@@ -236,6 +236,8 @@ and `sandwich:eaten`.
   office zone) the coffee goes into his plant (`water_ficus`, `world.cup = 'ficus'`, `coffee:ficus`). A leaf shoots
   out (`painters-more.js ficus`); the boss, if he sees it, is delighted 🌿😍 (toy `ficus`). The cup is gone: no
   projector route this loop. The joke: the one act of care in the whole office goes to a plant, with stolen coffee.
+  The hallway ficus (`V`, 28,12, by the fire door) takes the cup the same way (`water_plant`, `world.cup = 'plant'`,
+  `coffee:plant`) and grows the same leaf; nobody is delighted, it is nobody's plant (Jussi's playtest, 2026-11-18).
 - **The typewriter** (`W`, 13,11: the workstation on the empty mustard-chair desk behind yours; nobody's today, so
   it's no prank on Lin or Kev, and it isn't your own, whose E is the sit). The coffee goes into its keys
   (`drown_typewriter`, `world.cup = 'typewriter'`, `coffee:typewriter`): a bang, sparks, smoke. The boss, anywhere on

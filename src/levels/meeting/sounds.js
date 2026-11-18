@@ -23,6 +23,7 @@ export const SOUNDS = {
       take_sandwich: { sfx: 'fridgeOpen', spot: 'fridge' },
       take_keycard: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
       water_ficus: { sfx: 'pour', who: 'player' },
+      water_plant: { sfx: 'pour', who: 'player' },
       drown_typewriter: { sfx: 'pour', who: 'player' },
     },
     done: {

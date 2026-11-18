@@ -18,7 +18,7 @@ export const MAP = [
   '#............................#', // 9
   '#............................#', // 10
   '#..TTT......TWT......TTT.....#', // 11
-  '#...........................H#', // 12
+  '#...........................V#', // 12
   '#GGGLGGGGG###############R#X##', // 13
   '#:::::::::################===#', // 14
   '#:::::::::################===#', // 15
@@ -50,6 +50,9 @@ export const LEGEND = {
   // The boss's ficus, in the corner of his office by the glass: a potted plant like the other (core/map.js H), but
   // you can pour the day's only cup into it, from his doorway (interactions.js water_ficus; painters-more.js ficus).
   Y: { kind: 'plant', solid: true, opaque: false, interactable: 'ficus', draw: 'plant' },
+  // The other ficus, in the hallway corner by the fire door: it takes the coffee too (interactions.js water_plant), and
+  // just grows its leaf; only the boss's own plant delights him (toys.js ficus).
+  V: { kind: 'plant', solid: true, opaque: false, interactable: 'plant', draw: 'plant' },
   // The typewriter on the empty desk behind yours (the mustard chair: whoever sits there is out today). A desk tile like T, but
   // the day's cup can go into its keys (interactions.js drown_typewriter; painters-more.js deadTypewriter).
   W: { kind: 'desk', solid: true, opaque: false, interactable: 'typewriter', draw: 'desk' },
