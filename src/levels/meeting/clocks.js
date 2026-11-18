@@ -11,6 +11,7 @@
 // It also listens for the catch: caught over his keycard (holding it, or with your hand on it at the jacket), the boss
 // takes it back (world.cardBack).
 import { npcSees } from '../../game/perception.js';
+import { startClaim } from '../../sim/mechanics/claim.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -83,13 +84,22 @@ function listen(game) {
   game.events.on('action:cancel', (e) => {
     if (game.level?.id === 'meeting' && e?.type === 'take_keycard') game.world._cardTry = game.loopTime;
   });
-  game.events.on('caught', () => {
-    if (game.level?.id !== 'meeting') return;
-    const reaching = game.world._cardTry != null && game.loopTime - game.world._cardTry < 10;
-    if (game.player.held !== 'keycard' && !reaching) return;
+  const takeBack = () => {
     if (game.player.held === 'keycard') game.player.held = null;
     game.world.keycard = 'boss';
     game.world.cardBack = true;
     game.events.emit('keycard:takenBack', {});
+  };
+  // He walks over for it (sim/mechanics/claim.js; the catch's beat waits for him), unless he is at arm's length.
+  game.events.on('caught', (e) => {
+    if (game.level?.id !== 'meeting') return;
+    const reaching = game.world._cardTry != null && game.loopTime - game.world._cardTry < 10;
+    if (game.player.held !== 'keycard' && !reaching) return;
+    const boss = game.npcs.find((n) => n.id === 'boss');
+    if (boss && e?.by === 'boss' && !e?.via && startClaim(game, boss, 'keycard', { onCatch: true, any: true })) return;
+    takeBack();
+  });
+  game.events.on('claim:done', (e) => {
+    if (game.level?.id === 'meeting' && e.item === 'keycard') takeBack();
   });
 }

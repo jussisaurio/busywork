@@ -7,6 +7,7 @@ import { CAUGHT_DELAY, PLAYER_SPEED } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { stareAt } from '../sim/npcs.js';
+import { claimPending } from '../sim/mechanics/claim.js';
 import { cancelAction } from './interactions.js';
 import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './player.js';
 
@@ -15,6 +16,7 @@ const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (wher
 // A fail sends you to the front (meeting.presenter, if any): you hurry there, at least this fast, and in at most WALK_MAX s.
 const HURRY = PLAYER_SPEED * 1.5;
 const WALK_MAX = 2.5;
+const CLAIM_WAIT = 8; // s at most that a catch's beat waits for a claim (he walks over to take his thing)
 const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
 
 export function updateScenario(game, dt) {
@@ -41,7 +43,14 @@ export function updateScenario(game, dt) {
   // Busted beat, then the end screen.
   if (game.caught) {
     game.caught.t += dt;
-    if (game.caught.t >= CAUGHT_DELAY) {
+    // A catch's take on its way (sim/mechanics/claim.js: he walks over for his thing): the beat waits for him.
+    const waiting = claimPending(game) && game.caught.t < CLAIM_WAIT;
+    if (game.caught.t >= CAUGHT_DELAY && !waiting) {
+      for (const n of game.npcs) { // out of time on his way over: he takes it as the card comes up
+        if (!n._claim?.onCatch || n._claim.done) continue;
+        n._claim.done = true;
+        game.events.emit('claim:done', { by: n.id, item: n._claim.item });
+      }
       game.outcome = makeOutcome(game, 'caught', [], []);
       endDay(game);
     }

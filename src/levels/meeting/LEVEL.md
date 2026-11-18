@@ -64,11 +64,12 @@ run, not read off this table.
 - **Authority:** the boss. Off duty at the `meeting` and while locked out (`lockedOut`: helpless, deaf on the balcony).
 - **Tattling:** Lin or Kev catching you at something sneaky shout ❗👉. The boss on the floor hears it, and a heard
   tattle is a catch (`roles.js` `tattle: 'caught'`). While he is away, they wait and tell him when he is back (👉🪪).
-  Caught over the keycard (holding it, or with your hand on it at the jacket), he takes it back (`world.cardBack`,
-  `keycard:takenBack`); the caught end card shows it on his pocket (😠🪪).
+  Caught over the keycard (holding it, or with your hand on it at the jacket), he walks over and takes it back (`world.cardBack`,
+  `keycard:takenBack`; the caught beat waits up to 8 s for him); the caught end card shows it on his pocket (😠🪪).
 - **Owners.** Only Lin knows the sandwich is hers: taking or eating it is sneaky only to her. To Kev and the boss it
-  is just lunch (but eating where the boss sees you fills his ❓). She takes it back on sight (😠🥪): to the fridge,
-  or, if she is hunting, that ends her hunt. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
+  is just lunch (but eating where the boss sees you fills his ❓). She sees it and comes for it (😠🥪): she walks over and
+  takes it at arm's length (items.js `walk`, the engine's claim.js), to the fridge, or, if she is hunting, that ends her hunt.
+  Eat it or put it out of her sight before she gets there and she gives up. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
   bag beside the machine is empty). From then on (`clocks.js`): the cup in your hand is yours, and he asks for it
   (☕🥺❓, at most every 20 real seconds, within 4 tiles); set down on the machine or on his desk it looks free, and he
   takes it (🤤☕ … 😌, `coffee:kevTook`); on your desk it is yours and he leaves it alone. Before that, a colleague

@@ -311,6 +311,7 @@ export default [
       waitFor(() => { const l = npc('lin'); return l.active && Math.abs(l.glance.offset) < 0.3; }, { busy: true, maxSec: 30 });
       run('interact');
       run('wait 10s');
+      waitFor(() => g.world.cardBack || !!g.outcome, { maxSec: 10 }); // he walks over for it (items.js walk)
       if (!g.world.cardBack) throw new Error('caught at the jacket, but the boss did not take his card back');
     },
   },
