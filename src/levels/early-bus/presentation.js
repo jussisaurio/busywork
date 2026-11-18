@@ -1,11 +1,12 @@
 // How The Last Bus looks and sounds: title card, set dressing, poses, the end card, sounds and voices (level 1's
 // decor.js, looks.js, end-scenes.js, sounds.js and voices.js document the fields). The people are level 1's.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { OFFICE_VOICES } from '../office/voices.js';
 import { CLOCKS } from './clocks.js';
 import { officeTimeClock, officeTimeStreet } from './painters.js';
 import { END_SCENES } from './end-scenes.js';
+import { OFFICE_CABINETS, OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';
 
 export const TITLE = {
   mission: ['3:00 PM. Your last bus home is at 4:30. The boss never leaves before ten to five.', 'Nobody goes home before him. Catch the bus.'],
@@ -57,7 +58,7 @@ export const DECOR = {
     { x: 25, y: 6, variant: 1 },
     { x: 15, y: 0, variant: 1 },
   ],
-  cabinets: { x0: 21, x1: 23, y: 0 },
+  cabinets: OFFICE_CABINETS,
   props: [
     wallClock('boss', 1),
     wallClock('open', -1),
@@ -66,11 +67,11 @@ export const DECOR = {
     // the pavement, the road and the bus stop sign; the bus pulls in at 4:26
     { tile: 'B', draw: officeTimeStreet, state: (w, game) => ({ minute: game.clock ? game.clock.minute : 0, start: game.level.day.start, rows: game.level.map.rows }) },
   ],
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    player: officeDesk('player'),
+    kev: officeDesk('kev'),
+    lin: officeDesk('lin'),
   },
   zoneSeeds: [
     { zone: 'office', x: 4, y: 2 },

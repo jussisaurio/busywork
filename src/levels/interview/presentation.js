@@ -1,10 +1,11 @@
 // How The Interview looks and sounds: title card, set dressing, people, poses, voices and sounds (level 1's decor.js,
 // looks.js, voices.js and sounds.js document the fields). The phones and the switchboard are painters.js.
 import { at } from '../../config.js';
-import { C, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as MEETING_LOOKS } from '../meeting/looks.js';
 import { PHONE_PROPS, THINGS } from './painters.js';
 import { PHONE_IDS, PHONES, SLAM, BACK_AT, START } from './phones.js';
+import { OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';
 
 export const TITLE = {
   mission: ['3:00 PM. Lin wants your job. Her phone interview is at 3:30.', 'They only ring once. Make her miss it.'],
@@ -26,11 +27,11 @@ export const DECOR = {
   clock: { x: 7, y: 5 },
   props: PHONE_PROPS,
   things: THINGS,
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    lin: { screen: '#cfe2ee', screenArt: 'blankSlide', mug: C.teal, prop: 'plant' },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
+    player: officeDesk('player'),
+    lin: officeDesk('lin', { screenArt: 'blankSlide' }),
+    kev: officeDesk('kev', { prop: null }),
   },
   legendAt: { x: 15, y: 14.8 },
 };

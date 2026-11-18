@@ -1,12 +1,13 @@
 // How The Layoff List looks and sounds: title card, set dressing, people, the end card (level 1's decor.js, looks.js,
 // end-scenes.js, sounds.js and voices.js document the fields).
-import { C, OXBLOOD, MUSTARD, TEAL } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { LOOKS as OFFICE } from '../meeting/looks.js';
 import { listShown, drawListScreen } from './list.js';
 import { END_SCENES } from './end-scenes.js';
 import { kevbag, handset, pwstar, enterkey, deskPhone, mobile, socket } from './painters.js';
 import { SECS } from './cast.js';
+import { OFFICE_WINDOWS, OFFICE_CABINETS, OFFICE_CLOCK, OFFICE_DESK_OWNERS, OFFICE_ELEVATOR, OFFICE_ZONE_SEEDS, officeDesk } from '../office/decor.js';
 
 export { END_SCENES };
 
@@ -39,10 +40,10 @@ export const DECOR = {
     { x: 26, y: 4, face: 'N', color: MUSTARD },
     { x: 25, y: 2, face: 'S', color: MUSTARD },
   ],
-  windows: [{ x0: 2, x1: 6, y: 0 }, { x0: 10, x1: 12, y: 0 }, { x0: 25, x1: 27, y: 0 }],
+  windows: OFFICE_WINDOWS,
   paintings: [{ x: 10, y: 6, variant: 0 }, { x: 25, y: 6, variant: 1 }, { x: 2, y: 0, variant: 1 }],
-  cabinets: { x0: 21, x1: 23, y: 0 },
-  clock: { x: 17, y: 6 },
+  cabinets: OFFICE_CABINETS,
+  clock: OFFICE_CLOCK,
   props: [
     // His screen: the layoff list, a row of faces, yours framed in red; black while its cable is loose, a padlock
     // while he's in the restroom (list.js).
@@ -54,19 +55,14 @@ export const DECOR = {
   ],
   things: { kevbag, handset, pwstar, enterkey },
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null }, // his desk phone instead (V)
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: null }, // her mobile instead (M)
+    player: officeDesk('player'),
+    kev: officeDesk('kev', { prop: null }), // his desk phone instead (V)
+    lin: officeDesk('lin', { prop: null }), // her mobile instead (M)
   },
-  elevator: { spot: 'elevator' },
-  zoneSeeds: [
-    { zone: 'office', x: 4, y: 2 },
-    { zone: 'meeting', x: 13, y: 2 },
-    { zone: 'kitchen', x: 20, y: 2 },
-    { zone: 'lobby', x: 4, y: 14 },
-  ],
+  elevator: OFFICE_ELEVATOR,
+  zoneSeeds: OFFICE_ZONE_SEEDS,
   legendAt: { x: 20, y: 15.5 },
 };
 

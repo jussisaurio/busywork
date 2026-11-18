@@ -1,12 +1,13 @@
 // How the audit looks and sounds: title card, set dressing, people, voices, sounds and the end card (level 1's
 // decor.js, looks.js, voices.js and sounds.js document the fields). Level 1's people are imported
 // read-only; the auditor is new.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { LOOKS as OFFICE_LOOKS } from '../meeting/looks.js';
 import { OFFICE_VOICES } from '../office/voices.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { DESK_MARKS, penShake, penScribble, wallet } from './things.js';
 import { KEV_PAT, KEV_FOUND } from './cast.js';
+import { OFFICE_WINDOWS, OFFICE_CABINETS, OFFICE_CLOCK, OFFICE_DESK_OWNERS, OFFICE_ELEVATOR, OFFICE_ZONE_SEEDS, officeDesk } from '../office/decor.js';
 
 // The card names the trouble, the time first, and never the way out.
 export const TITLE = {
@@ -29,10 +30,10 @@ export const DECOR = {
     { x: 12, y: 2, face: 'S', color: TEAL },
     { x: 14, y: 2, face: 'S', color: TEAL },
   ],
-  windows: [{ x0: 2, x1: 6, y: 0 }, { x0: 10, x1: 12, y: 0 }, { x0: 25, x1: 27, y: 0 }],
+  windows: OFFICE_WINDOWS,
   paintings: [{ x: 10, y: 6, variant: 0 }, { x: 25, y: 6, variant: 1 }, { x: 2, y: 0, variant: 1 }],
-  cabinets: { x0: 21, x1: 23, y: 0 },
-  clock: { x: 17, y: 6 },
+  cabinets: OFFICE_CABINETS,
+  clock: OFFICE_CLOCK,
   props: [
     // Both pots full all afternoon, and both pour (index.js LEGEND, meeting/coffee.js).
     { tile: 'C', draw: 'carafe', state: () => ({ full: true }) },
@@ -40,20 +41,15 @@ export const DECOR = {
     { tile: 'K', draw: 'coatRack', state: () => ({ coat: false, tag: false }) },
     DESK_MARKS, // the cable on an empty desk, his sticker on a counted one, Lin's paper pile (things.js)
   ],
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#2a2a2a', screenArt: 'blankSlide', mug: C.tomato, prop: null }, // no laptop, just a dock
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: 'earbuds' },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: 'plant' },
+    player: officeDesk('player', { screen: '#2a2a2a', screenArt: 'blankSlide' }), // no laptop, just a dock
+    kev: officeDesk('kev'),
+    lin: officeDesk('lin'),
   },
   ashtray: { spot: 'smoke' },
-  elevator: { spot: 'elevator' },
-  zoneSeeds: [
-    { zone: 'office', x: 4, y: 2 },
-    { zone: 'meeting', x: 13, y: 2 },
-    { zone: 'kitchen', x: 20, y: 2 },
-    { zone: 'lobby', x: 4, y: 14 },
-  ],
+  elevator: OFFICE_ELEVATOR,
+  zoneSeeds: OFFICE_ZONE_SEEDS,
   legendAt: { x: 20, y: 15.5 },
   things: { penShake, penScribble, wallet }, // his dry pen at Lin's desk and yours, Kev's wallet (POSES)
 };

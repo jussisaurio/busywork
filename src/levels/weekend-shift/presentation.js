@@ -1,13 +1,14 @@
 // How Saturday (id weekend-shift) looks and sounds: title card, set dressing, poses, the end card, voices and sounds (level 1's
 // decor.js, looks.js, end-scenes.js, voices.js and sounds.js document the fields). The people look as they do in
 // level 1: same office, an hour later.
-import { C, OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
+import { OXBLOOD, MUSTARD, TEAL, OLIVE } from '../../render/palette.js';
 import { T } from '../../render/util.js';
 import { GAME_MIN_PER_SEC } from '../../config.js';
 import { inZone } from '../../game/perception.js';
 import { LOOKS as LEVEL1_LOOKS } from '../meeting/looks.js';
 import { READ_S, ANNOUNCE_S, LOOK_S, REDRAW_AT, REDRAW_S, onPhone } from './cast.js';
 import { paintRoster, paintCopier, paintMicrowave, paintMyPhone, paintBossPhone, paintLunch, paintLinChair, THINGS, POP_S, scribbleOf } from './props.js'; // decor.props' painters
+import { OFFICE_DESK_OWNERS, officeDesk } from '../office/decor.js';
 export { END_SCENES } from './end-scenes.js';
 
 export const TITLE = {
@@ -221,11 +222,11 @@ export const DECOR = {
     { tile: 'L', draw: paintLinChair, state: (w, game) => ({ away: linAway(game), color: TEAL, at: game?.level?.spots?.lin_desk ?? null }) },
   ],
   things: THINGS, // '#handset', '#lunchbox', '#lunchhot', '#spot', '#microwave', '#deskphone', '#marker', '#spanner' (props.js)
-  deskOwners: ['lin_desk', 'kev_desk'],
+  deskOwners: OFFICE_DESK_OWNERS,
   desks: {
-    player: { screen: '#f4f1e6', screenArt: 'grid', mug: C.tomato, prop: null },
-    kev: { screen: '#1f3d2a', screenArt: 'code', mug: C.olive, prop: null },
-    lin: { screen: '#cfe2ee', screenArt: 'grid', mug: C.teal, prop: null }, // her lunch box goes there (props.js)
+    player: officeDesk('player'),
+    kev: officeDesk('kev', { prop: null }),
+    lin: officeDesk('lin', { prop: null }), // her lunch box goes there (props.js)
   },
   zoneSeeds: [
     { zone: 'office', x: 10, y: 2 }, // the boss's office (his desk draws as an exec desk)
