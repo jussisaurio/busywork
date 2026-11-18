@@ -126,8 +126,47 @@ const TYPE_TOYS = [
   },
 ];
 
+// The hallway wall clock (decor.clock, 17,6): you push its minute hand on, ten minutes a press, as on The Last Bus
+// (render/things.js drawBigClock, shared: the red wedge is how fast it runs). Drawn only (painters-more.js
+// pushedClock): nobody's day reads it. Lin and Kev glance up passing it and check their watches; the boss steps over
+// and sets it right. Making someone act on it (Lin leaving early) would be a route, left for a decision.
+export const CLOCK = { x: 17, y: 6 };
+const UNDER_CLOCK = { x: 17.5, y: 7.4 };
+const PUSH_MAX = 60; // minutes fast at most: past 4:55 the joke is the same
+const clockAhead = (game) => toyState(game, 'clock').ahead;
+const fastClock = (min) => (w, s, game, npc) => npc.y > CLOCK.y + 0.6 && clockAhead(game) >= min;
+const CLOCK_TOYS = [
+  {
+    id: 'clock', at: CLOCK, on: 'press', text: 'push the clock on', every: 0.5, state: { ahead: 0 },
+    when: (w, s) => s.ahead < PUSH_MAX,
+    line: 'you push the hallway clock ten minutes on',
+    react: { sfx: 'clockTick', pose: { arms: 'reach', face: true, for: 0.5 }, add: { ahead: 10 } },
+    try: ['goto clock pretend', 'interact'],
+  },
+  {
+    id: 'clock_lin', at: CLOCK, on: 'pass', npcs: ['lin'], radius: 3, sees: true, every: 20, when: fastClock(20),
+    line: '<by> glances up at the hallway clock 😱🕔, checks her watch ⌚ and scowls 😒',
+    react: { say: { icons: ['😱', '🕔', '⌚', '😒'], ttl: 2.6 }, pose: { arms: 'shrug', face: true, for: 1.6 } },
+    try: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot', 'pretend until 3:02'],
+  },
+  {
+    id: 'clock_kev', at: CLOCK, on: 'pass', npcs: ['kev'], radius: 6, every: 90, when: fastClock(20),
+    line: '<by> looks up from his desk at the hallway clock 🤩🕔, checks his watch ⌚ and slumps 😞',
+    react: { say: { icons: ['🤩', '🕔', '⌚', '😞'], ttl: 2.6 }, pose: { arms: 'shrug', face: true, for: 1.6 } },
+    try: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 1s'],
+  },
+  {
+    id: 'clock_boss', at: CLOCK, on: 'pass', npcs: ['boss'], radius: 4, sees: true, every: 6, stand: UNDER_CLOCK,
+    when: fastClock(10),
+    line: '<by> stops, frowns at the hallway clock 🤨 and sets it right',
+    react: { sfx: 'clockTick', say: { icons: ['🤨'], ttl: 3 }, pose: { arms: 'reach', face: true, for: 1.4 }, reset: ['clock'] },
+    try: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot', 'pretend until 3:26'],
+  },
+];
+
 export const TOYS = [
   ...TYPE_TOYS,
+  ...CLOCK_TOYS,
   {
     id: 'fire_door', at: { x: 27, y: 13 }, on: 'press', text: 'push the bar',
     line: 'you push the fire door\'s bar: it opens a crack, the alarm buzzes and the reader blinks red, and you let it swing shut',

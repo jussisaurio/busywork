@@ -4,8 +4,8 @@
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue, TILE } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
-import { PICTURE, pictureTilt, KEYBOARDS } from './toys.js';
-import { ficus, deadTypewriter, kevPage, typedScreen } from './painters-more.js';
+import { PICTURE, pictureTilt, KEYBOARDS, CLOCK } from './toys.js';
+import { ficus, deadTypewriter, kevPage, typedScreen, pushedClock } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
@@ -103,6 +103,11 @@ export const DECOR = {
     } },
     // Gibberish on a screen whose keyboard you mashed (toys.js type_*): a line a press, until its owner deletes it.
     ...KEYBOARDS.map((k) => ({ tile: 'C', draw: typedScreen, state: (w, game) => ({ x: k.x, y: k.y, keys: toyState(game, k.id).keys }) })),
+    // The hallway clock pushed fast (toys.js clock), drawn over the plain one; R only anchors it, like the picture.
+    { tile: 'R', draw: pushedClock, state: (w, game) => {
+      const c = toyState(game, 'clock');
+      return { ...CLOCK, minute: game.clock ? game.clock.minute : 0, start: game.level.day.start, ahead: c.ahead, since: c.since };
+    } },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },

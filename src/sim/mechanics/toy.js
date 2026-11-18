@@ -37,7 +37,8 @@
 //            asleep, his head forward on the desk, glances not shown (drawn only: he sees exactly as before)
 //     set    { key: value }: the toy's new state
 //     add    { key: n }: added to the toy's state (a count: lines typed on a screen)
-//     reset  [toy ids]: those toys' state back to how it started (the owner deletes what you typed)
+//     reset  [toy ids]: those toys' state back to how it started (the owner deletes what you typed). With a walk
+//            (stand), toyState shows the old state until he arrives
 //     burst  { kind, n?, speed?, lift?, ttl? }: particles at the prop (core/fx.js BURST_KINDS)
 //   stand    pass / near, optional: { x, y } (tile units), where a person stands to do it, at arm's length from the
 //            prop. He is drawn walking over, doing it there (the pose waits for him to arrive) and hurrying back to
@@ -86,7 +87,8 @@ const NO_TOY = { since: null, by: null, n: 0 };
 export function toyState(game, id) {
   const t = game.toys?.byId[id];
   if (!t) return NO_TOY;
-  return { ...t.state, since: t.firedAt === null ? null : game.loopTime - t.firedAt, by: t.by, n: t.n };
+  const state = t.held && game.loopTime < t.held.until ? t.held.state : t.state; // a reset still on its way (fire)
+  return { ...state, since: t.firedAt === null ? null : game.loopTime - t.firedAt, by: t.by, n: t.n };
 }
 
 const ready = (game, toy, t, who) => {
@@ -171,10 +173,6 @@ export function fire(game, toy, who) {
   t.n += 1;
   if (r.set) Object.assign(t.state, r.set);
   if (r.add) for (const k in r.add) t.state[k] = (t.state[k] ?? 0) + r.add[k];
-  for (const id of r.reset ?? []) {
-    const o = game.level.toys.find((x) => x.id === id);
-    if (o) game.toys.byId[id].state = { ...o.state };
-  }
   // A walk over to it first (header): the pose waits until he is there.
   let from = game.loopTime;
   const n = toy.stand && who !== 'player' ? game.npcs.find((m) => m.id === who) : null;
@@ -182,6 +180,14 @@ export function fire(game, toy, who) {
     const fix = r.pose?.for ?? DEFAULT_POSE;
     game.toys.walks[who] = { t0: game.loopTime, from: { x: n.x, y: n.y }, stand: { ...toy.stand }, at, fix, override: n.override, trail: [] };
     from += dist(n, toy.stand) / NPC_SPEED;
+  }
+  // A reset lands when the pose starts: until he is there, the toy still shows what it showed (toyState).
+  for (const id of r.reset ?? []) {
+    const o = game.level.toys.find((x) => x.id === id);
+    const b = o && game.toys.byId[id];
+    if (!b) continue;
+    b.held = from > game.loopTime ? { state: b.state, until: from } : null;
+    b.state = { ...o.state };
   }
   if (r.pose) game.toys.poses[who] = { ...r.pose, from, until: from + (r.pose.for ?? DEFAULT_POSE), x: at.x, y: at.y };
   if (r.burst) burst(game, r.burst.kind, at.x, at.y, r.burst.n ?? 8, r.burst);

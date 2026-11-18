@@ -385,7 +385,7 @@ in `npcs` walks within `radius`, default 2) or `'near'` (an NPC in `npcs` within
 sight). `when(world, state, game, npc)` reads only. `every`: seconds between firings per person (default 1 for
 press, 3 otherwise). `react: { say, sfx, pose: { arms, angry, face, for }, set, burst }`: a bubble (`say: [icons]`
 or `{ icons, kind, ttl, who: 'by' | 'prop' | id }`), an `SFX` sound at the prop, a pose for `for` s (default 1.5),
-`set` merged into the toy's own state, `add` (`{ key: n }`) added to it, `reset` (toy ids) puts those toys' state back to the start, a burst at the prop. Toy state lives in `game.toys`, never in `world`;
+`set` merged into the toy's own state, `add` (`{ key: n }`) added to it, `reset` (toy ids) puts those toys' state back to the start (with a `stand` walk, `toyState` shows the old state until he arrives), a burst at the prop. Toy state lives in `game.toys`, never in `world`;
 painters read `toyState(game, id)` (`{ ...state, n, by, since }`, `since` null until it fires). Event
 `toy:<id> {id, by, x, y}`. `text`/`line`: the harness's focus text and event line (`<by>` = who). `try`: harness
 commands after which it has fired. The behaviour golden skips toy events and toy bubbles, so adding a toy moves

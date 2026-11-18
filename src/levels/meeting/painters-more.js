@@ -10,8 +10,11 @@
 //              state: { secs }
 //   typedScreen  a workstation's screen after you mashed its keyboard (toys.js type_*): a white document window
 //              filling up with gibberish, a line a press. state: { x, y, keys } (the monitor's tile)
+//   pushedClock  the hallway clock pushed fast (toys.js clock): drawn over the engine's clock, crooked from your
+//              fingers, the minutes it runs fast a red wedge. state: { x, y, minute, start, ahead, since }
 import { fillEllipse, fillCircle, clamp, easeOutBack, T, emoji, glyphScope } from '../../render/util.js';
 import { C } from '../../render/palette.js';
+import { drawBigClock } from '../../render/things.js';
 
 export function ficus(ctx, info, at, state, t) {
   if (!state.watered) return;
@@ -155,4 +158,16 @@ export function typedScreen(ctx, info, at, state) {
       x += 1;
     }
   }
+}
+
+// --- the pushed hallway clock (toys.js clock) ------------------------------------------------------------------
+// The same clock as The Last Bus's (render/things.js drawBigClock), at the engine clock's size and place
+// (render/world.js drawWallClock), so the straight clock and the pushed one are the same object.
+export function pushedClock(ctx, info, at, s) {
+  if (!(s.ahead > 0)) return;
+  const cx = s.x * T + T / 2;
+  const cy = s.y * T + T - 14 + 7 - 1;
+  const wob = Number.isFinite(s.since) && s.since >= 0 && s.since < 0.6 ? Math.sin(s.since * 30) * 0.12 * (1 - s.since / 0.6) : 0;
+  const tilt = Math.min(0.35, 0.05 + s.ahead * 0.005) + wob;
+  drawBigClock(ctx, cx, cy, 6.5, s.minute + s.ahead, s.start, tilt, s.ahead);
 }

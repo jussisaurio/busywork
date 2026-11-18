@@ -296,6 +296,25 @@ export default [
     intent: 'Kev, back with his coffee, sits down and reads the gibberish you typed on his screen, and nods: 🤔👍. ' +
       'It stays there, under his code.',
   },
+  // The hallway clock pushed fast (toys.js clock_*), The Last Bus's clock: drawn only, nobody acts on it.
+  {
+    name: 'clock-pushed',
+    cmds: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.8s'],
+    intent: 'You have pushed the hallway clock on half an hour: it hangs crooked, a red wedge where the minutes ' +
+      'jumped. Kev, at his desk, looks up at it, hopeful, then at his watch: 🤩🕔⌚😞.',
+  },
+  {
+    name: 'clock-lin',
+    cmds: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot', 'pretend until 3:01.4'],
+    intent: 'Lin, on her way down the hallway, glances up at the fast clock and panics, then checks her watch and ' +
+      'scowls: 😱🕔⌚😒.',
+  },
+  {
+    name: 'clock-boss',
+    cmds: ['goto clock pretend', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot', 'pretend until 3:24.5'],
+    intent: 'The boss, passing, has stepped over under the crooked clock and reaches up to set it right, with a ' +
+      'look (🤨).',
+  },
   {
     name: 'end-restroom',
     cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',

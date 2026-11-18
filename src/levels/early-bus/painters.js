@@ -4,6 +4,7 @@
 // All coordinates are logical px.
 import { T, clamp, easeOutCubic, fillCircle, fillEllipse, rrect, clockHands } from '../../render/util.js';
 import { C } from '../../render/palette.js';
+import { drawBigClock } from '../../render/things.js';
 
 const FRONT = 14; // the wall front face's height (world.js)
 const frontY = (y) => y * T + T - FRONT;
@@ -15,37 +16,8 @@ const SLAB_LINE = 'rgba(80,72,60,0.22)';
 const KERB = '#e7e2d6';
 
 // --- the wall clock -------------------------------------------------------------------------------------------
-// A round wall clock of radius r centred on (cx, cy), reading `minute` (game minutes since `start`), hung `tilt`
-// radians askew. Ticks at every hour, bold at 12/3/6/9; the 12 is a red pip, so a crooked clock reads as crooked.
-// ahead: the minutes it runs fast, shaded as a red wedge behind the minute hand (from where the hand should be to
-// where it is), so a pushed clock reads as pushed even at map scale.
-export function drawBigClock(ctx, cx, cy, r, minute, start, tilt = 0, ahead = 0) {
-  fillEllipse(ctx, cx + r * 0.15, cy + r * 0.2, r, r, 'rgba(20,12,8,0.30)'); // its shadow on the wall
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(tilt);
-  fillCircle(ctx, 0, 0, r, '#1f1814');
-  fillCircle(ctx, 0, 0, r * 0.84, C.cream);
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    const big = i % 3 === 0;
-    fillCircle(ctx, Math.cos(a) * r * 0.68, Math.sin(a) * r * 0.68, r * (big ? 0.09 : 0.05), C.ink);
-  }
-  if (ahead > 0) {
-    const a1 = (((start + minute) % 60) / 60) * Math.PI * 2 - Math.PI / 2;
-    const a0 = a1 - (Math.min(ahead, 59) / 60) * Math.PI * 2;
-    ctx.fillStyle = 'rgba(214,64,48,0.55)';
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.arc(0, 0, r * 0.8, a0, a1);
-    ctx.closePath();
-    ctx.fill();
-  }
-  fillCircle(ctx, 0, -r * 0.68, r * 0.11, C.tomato);
-  clockHands(ctx, 0, 0, minute, r * 0.38, r * 0.15, r * 0.62, r * 0.09, C.tomatoDark, start);
-  fillCircle(ctx, 0, 0, r * 0.1, C.ink);
-  ctx.restore();
-}
+// drawBigClock lives in the shared kit (render/things.js): Meeting's hallway clock is pushed the same way.
+export { drawBigClock };
 
 // --- the coat stand -------------------------------------------------------------------------------------------
 // The boss's wooden coat stand seen from the front, standing on (cx, by), h px tall; coat: his navy jacket hangs on it.
