@@ -199,7 +199,7 @@ const base = runDay({ sampleAt: [5, 20, 33, 47, 64, 80, 88] });
   const bm = arr(R, 'boss', 'meeting_head', MEETING_GATHER_AT), lm = arr(R, 'lin', 'meeting_lin', MEETING_GATHER_AT);
   ok(bm != null && bm <= MEETING_AT, `boss at meeting_head by 4:00 (${fmtS(bm)})`);
   ok(lm != null && lm <= MEETING_AT, `lin at meeting_lin by 4:00 (${fmtS(lm)})`);
-  ok(said(R, 'boss', '📊👀').length === 1 && !said(R, 'boss', '🙅📊').length && !R.counts['meeting:calledOff'], 'boss reacts 📊👀 (projector ok)');
+  ok(said(R, 'boss', '📊👀').length === 1 && !said(R, 'boss', '📊❌').length && !R.counts['meeting:calledOff'], 'boss reacts 📊👀 (projector ok)');
   ok(npc(R, 'boss').override === 'meeting' && npc(R, 'lin').override === 'meeting', 'override = meeting');
   common(R, 'day1');
 }
@@ -282,7 +282,7 @@ let projRun = null;
 {
   const R = runDay({ hooks: [breakAt(at('3:11'))], until: MEETING_AT + 3 }); // past 4:00: the call-off takes a few seconds
   ok(!R.counts['kev:alerted'] && R.game.world.projector === 'broken', 'proj 3:11 (after kevGone): stays broken');
-  ok(said(R, 'boss', '🙅📊').length === 1 && said(R, 'boss', '👋🚪').length === 1 && R.counts['meeting:calledOff'] === 1, 'proj 3:11: at 4:00 the boss calls it off 🙅📊 👋🚪');
+  ok(said(R, 'boss', '📊❌').length === 1 && said(R, 'boss', '👋🚪').length === 1 && R.counts['meeting:calledOff'] === 1, 'proj 3:11: at 4:00 the boss calls it off 📊❌ 👋🚪');
   common(R, 'proj 3:11');
 }
 { // late repairs keep Kev in the building; at 3:54 he finishes first, then joins the meeting

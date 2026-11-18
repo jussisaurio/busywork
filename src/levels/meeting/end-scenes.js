@@ -29,7 +29,8 @@ const B_POINT_YOU = ['👉', '@player'];
 const B_WHAT = ['❓'];
 const B_BLAME_YOU = ['😠', '👉', '@player'];
 const B_BLAME_KEV = ['😠', '👉', '@kev'];
-const B_PROJ = ['📽️', '💥', '🙅'];
+const B_PROJ = ['📽️', '💥'];
+const B_NO_SLIDES = ['📊', '❌'];
 const B_OUT = ['👋', '🚪'];
 const B_DOTS = ['📊', '❓'];
 const B_MUG = ['☕', '😠', '👉', '@player'];
@@ -175,12 +176,13 @@ function fireDoorSide(ctx, x, t, dx) {
   fillEllipse(ctx, x + 27, 206, 3, 3, on ? '#ff3b30' : '#5a1f18');
 }
 
-// The projector win: no projector, no slides. The boss points at the smoking projector, then waves everyone out;
-// Lin is already getting up. You sit at your place, the picture of patience.
+// The projector win: no projector, no slides. The boss stands over the smoking projector, a hand over his face, then
+// throws his hands up (📽️💥, 📊❌) and waves everyone out (👋🚪); Lin gets up. You sit at your place,
+// the picture of patience. Nobody is blamed, so nobody points (Jussi's playtest: a point read as blaming Kev).
 function tableauProjector(ctx, game, t, e) {
   floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, '#3d7a72', '#397369');
   drawScreen(ctx, 392, 106, 176, 70, { bar: [6, 6, 6], face: '#d9d6cc', scan: ['rgba(0,0,0,0.08)', 6, 11, t] });
-  const out = e > 2.2; // he points, then waves them out
+  const out = e > 3; // the room empties
   const l = person(t);
   l.dir = out ? Math.PI * 0.9 : 0;
   l.head = out ? Math.PI * 0.9 : Math.sin(t * 1.5) * 0.3 + 0.2;
@@ -188,13 +190,14 @@ function tableauProjector(ctx, game, t, e) {
   l.arms = out ? 'folder' : 'desk';
   l.scale = 2;
   drawPerson(ctx, game.level.looks.lin, l, out ? 250 : 270, 222);
+  // the boss, right behind the projector, facing the room over it
   const b = person(t);
-  b.dir = out ? Math.PI : Math.PI * 0.75; // at the projector, then at the door (left)
+  b.dir = Math.PI / 2;
   b.head = b.dir;
-  b.arms = 'point';
+  b.arms = e < 0.8 ? 'facepalm' : 'shrug'; // a hand over his face, then his hands thrown up
   b.jacket = bossJacket(game);
-  b.scale = 2.2;
-  drawPerson(ctx, game.level.looks.boss, b, 660, 222);
+  b.scale = 2.3;
+  drawPerson(ctx, game.level.looks.boss, b, 540, 224);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   rrect(ctx, 262, 238, 440, 86, 30);
   ctx.fill();
@@ -210,15 +213,16 @@ function tableauProjector(ctx, game, t, e) {
   drawProjector(ctx, 0, 0, 'broken', 0, t);
   ctx.restore();
   // you, in your tomato chair in front of the table, hands folded
-  chair(ctx, 560, 330, TOMATO, 2.4, -Math.PI / 2);
+  chair(ctx, 640, 330, TOMATO, 2.4, -Math.PI / 2);
   const p = person(t);
   p.dir = -Math.PI / 2;
   p.head = -Math.PI / 2 + Math.sin(t * 0.8) * 0.2;
   p.pose = 'sit';
   p.arms = 'desk';
   p.scale = 2.3;
-  drawPerson(ctx, game.level.looks.player, p, 560, 322);
-  bubble(ctx, out ? B_OUT : B_PROJ, 660, 150, e);
+  drawPerson(ctx, game.level.looks.player, p, 640, 322);
+  const says = out ? B_OUT : e > 1.5 ? B_NO_SLIDES : B_PROJ;
+  bubble(ctx, says, 600, 140, out ? e - 3 : e > 1.5 ? e - 1.5 : e);
 }
 
 function tableauFail(ctx, game, t, e) {
@@ -749,7 +753,7 @@ export const END_SCENES = {
     bib: { win: false, icons: ['🥪', '🟡', '⌨️'], draw: tableauBib }, // Lin saw the mustard: you type in a bib (end-scenes-combo.js)
     campfire: { win: true, icons: ['📽️', '🔥', '🔒'], draw: tableauCampfire }, // both routes: marshmallows at the projector
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
-    projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
+    projector: { win: true, icons: ['📽️', '💥', '🚫'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
     ...FAIL_SCENES, // the plain fails with a cause: sip, call, puppets (end-scenes-fails.js)
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator

@@ -187,8 +187,10 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 - **The verdict** (`verdict.js`, at the gather, only with the projector broken and the boss in the room). The mug in
   your hand (`why: 'mug'`) or on your desk (`why: 'desk'`): BLAMED, the table staring at you. On Kev's desk with you
   in the room: still a win (`why: 'kev'`), the table staring at Kev's empty chair. End scenes `mug` and `kev`.
-- **Meeting** (gather at 3:54). The boss sits at the head (`presenter`): projector broken, he points at it 📽️💥, then
-  🙅📊, then 👋🚪 (`meeting:calledOff`); otherwise he looks at `meeting_presenter` 📊👀. A locked-out boss is gone.
+- **Meeting** (gather at 3:54). The boss sits at the head (`presenter`): projector broken, he faces it, a hand over his
+  face 📽️💥, throws his hands up 📊❌, then 👋🚪 (`meeting:calledOff`; never a point: on a plain projector win nobody is
+  blamed, and a point read as blaming Kev, Jussi's playtest); otherwise he looks at `meeting_presenter` 📊👀. A
+  locked-out boss is gone.
 
 ## World and events
 `initialWorld()`:

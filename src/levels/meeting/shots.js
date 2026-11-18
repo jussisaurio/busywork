@@ -144,10 +144,17 @@ export default [
       'gone, and the meeting cannot start without him.',
   },
   {
+    name: 'boss-calls-off',
+    cmds: [...SPILL, 'put coffee busy', 'goto meeting_seat busy', 'busy until 3:56', 'wait until 3:58'],
+    intent: 'The meeting room just before 4:00. You stand at your chair. The boss, seated at the head, faces the dead ' +
+      'projector, which smokes on the table (📽️💥): no slides, so the meeting is off. He blames nobody.',
+  },
+  {
     name: 'end-projector',
     cmds: [...SPILL, 'put coffee busy', 'goto meeting_seat busy', 'busy until 4:00'],
     intent: 'End card, a win: at 4:00 the projector is dead. You sit at the table, the picture of patience. The boss ' +
-      'points at the smoking projector (📽️💥🙅) and then waves everyone out: the meeting is called off.',
+      'stands right behind the smoking projector and throws his hands up (📽️💥, then 📊❌: no slides), then waves ' +
+      'everyone out: the meeting is called off. Lin gets up to go. Nobody is blamed.',
   },
   {
     name: 'end-kev-blamed',

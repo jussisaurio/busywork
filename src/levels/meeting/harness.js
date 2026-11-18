@@ -111,7 +111,7 @@ export default {
       case 'boss:letIn': return 'you push the fire door open for the boss: he\'s back in 🚪 (the alarm buzzes)';
       case 'boss:hug': return 'the boss throws his arms round you 🤗 … 🙏😊';
       case 'boss:badge': return 'beep: the boss holds his keycard to the fire door\'s reader and comes back in 🪪';
-      case 'meeting:calledOff': return 'the boss points at the dead projector 📽️💥🙅 and waves everyone out 👋🚪';
+      case 'meeting:calledOff': return 'the boss faces the dead projector, a hand over his face 📽️💥, throws up his hands 📊❌ and waves everyone out 👋🚪';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'projector:broken': return 'the projector is broken 💥';

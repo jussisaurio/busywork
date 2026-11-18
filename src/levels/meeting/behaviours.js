@@ -83,16 +83,19 @@ export const BEHAVIOURS = {
     },
   },
 
-  // The boss takes his seat at the head of the table (once). A dead projector: no slides, no meeting. He points at
-  // it, calls it off and waves everyone out (the end card: the room emptying). Otherwise he looks to the presenter.
+  // The boss takes his seat at the head of the table (once). A dead projector: no slides, no meeting. He faces it,
+  // a hand over his face, throws his hands up (no slides) and waves everyone out (the end card: his despair over the
+  // smoking box). Not a point: that is blame, and nobody here is blamed (looks.js; Jussi's playtest, 2026-11-18).
+  // _offAt: when he gave up on it (loopTime), for the poses. Otherwise he looks to the presenter.
   presenter: {
-    state: { _presented: false },
+    state: { _presented: false, _offAt: null },
     arrive(game, npc, sim) {
       if (npc._presented) return;
       npc._presented = true;
       if (game.world.projector !== 'ok') {
         sim.faceSpot(game, npc, 'projector');
-        sim.speak(game, npc, [{ say: ['📽️', '💥'] }, { say: ['🙅', '📊'], after: 1.3 }, { say: ['👋', '🚪'], after: 2.6 }]);
+        npc._offAt = game.loopTime;
+        sim.speak(game, npc, [{ say: ['📽️', '💥'] }, { say: ['📊', '❌'], after: 1.3 }, { say: ['👋', '🚪'], after: 2.6 }]);
         game.events.emit('meeting:calledOff', {});
       } else {
         sim.faceSpot(game, npc, 'meeting_presenter');
