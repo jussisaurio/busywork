@@ -1,6 +1,6 @@
 // The endings shelf's memory: every distinct ending the player has seen, per level, kept across browser sessions.
 // game.persist.endingsBy[levelId] = [{ key, o }] in the order found; o is the outcome trimmed to what an end scene
-// reads ({ result, routes, why, stopped }), so the shelf can draw it again on the title card of a later session.
+// reads ({ result, routes, why, where, stopped }), so the shelf can draw it again on the title card of a later session.
 // game.persist.endingNew: the key of the ending the current end card found (it stamps in), else null; not saved.
 //
 // The key is decided by the end card (render/screens.js endingKey): the scene the card draws, plus outcome.why.
@@ -25,6 +25,7 @@ export function endingsOf(game) {
 const trim = (o) => {
   const t = { result: o.result, routes: Array.isArray(o.routes) ? [...o.routes] : [] };
   if (o.why !== undefined) t.why = o.why;
+  if (o.where !== undefined) t.where = o.where;
   if (o.stopped) t.stopped = { ...o.stopped };
   return t;
 };
