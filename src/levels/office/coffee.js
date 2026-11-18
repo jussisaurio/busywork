@@ -17,7 +17,7 @@ export const COFFEE_CUP = { icon: '☕', draw: 'cup' };
 export function pourCoffee(on = 'coffee_machine') {
   return {
     on, text: 'pour a coffee', duration: 1.0, sneaky: false,
-    can: (p) => !p.held,
+    hand: 'empty',
     done(game, a) {
       game.player.held = 'coffee';
       game.events.emit('coffee:taken', { by: 'player' });

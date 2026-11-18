@@ -209,7 +209,7 @@ const behind = (n, d = 3) => ({ x: n.x - Math.cos(n.dir) * d, y: n.y - Math.sin(
 
   const h3 = createHarness({ level });
   h3.begin();
-  h3.run('move S 0.4s');
+  h3.run('goto 9,9'); // open floor: nothing else in reach (the mustard keyboard is behind your chair)
   const p = h3.game.player;
   h3.run('interact');
   const n3 = h3.log.find((e) => e.name === 'noise');

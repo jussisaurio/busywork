@@ -87,6 +87,7 @@ export const RESTROOM_ROWS = {
   wash_up: {
     on: 'restroom', text: 'wash off the mustard', duration: 1.6, sneaky: false,
     can: (p) => p.inside === 'restroom' && !!p.smeared,
+    over: ['come_out', 'go_in', 'knock_boss', 'knock_lin'], // in there with mustard on you: wash first, then come out
     done(game) {
       game.player.smeared = null;
       say(game, 'player', ['🧼', '😌'], { kind: 'thought', ttl: 1.8 });
@@ -96,13 +97,15 @@ export const RESTROOM_ROWS = {
   come_out: {
     on: 'restroom', text: 'come out', duration: 0.4, sneaky: false,
     can: (p) => p.inside === 'restroom',
+    over: ['go_in', 'knock_boss', 'knock_lin'], // (never both: you are in there, they are)
     done(game) {
       comeOut(game);
     },
   },
   go_in: {
     on: 'restroom', text: 'go in', duration: 0.4, sneaky: false,
-    can: (p) => !p.inside && !p.held && !p._stall && p.y < 13.5, // (not through the wall from the balcony)
+    hand: 'empty', can: (p) => !p.inside && !p._stall && p.y < 13.5, // (not through the wall from the balcony)
+    over: ['knock_boss', 'knock_lin'], // (never both: an occupied stall is taken)
     done(game) {
       goInside(game, 'restroom', DOOR);
       // With the mustard on you, E washes it before it lets you out: say so as you go in (👕🟡🧼), so the first E

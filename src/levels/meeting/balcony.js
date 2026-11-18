@@ -107,6 +107,7 @@ export const BALCONY_ROWS = {
   go_out: {
     on: 'fire_door', text: 'push the bar and step out', duration: 0.3, sneaky: false,
     can: (p, w) => !outside(p) && !w.bossLockedOut,
+    over: ['pound'], // (never both: outside)
     done(game) {
       const p = game.player;
       openDoor(game, 0.9);
@@ -117,7 +118,7 @@ export const BALCONY_ROWS = {
   },
   badge_in: {
     on: 'fire_door', text: 'hold the keycard to the reader', duration: 0.5, sneaky: false,
-    can: (p) => outside(p) && p.held === 'keycard',
+    hand: 'keycard', can: (p) => outside(p),
     done(game) {
       const boss = findNpc(game, 'boss');
       if (boss?.override === 'lockedOut') { // right behind you: he sees his card at the reader
@@ -133,6 +134,7 @@ export const BALCONY_ROWS = {
   follow_in: {
     on: 'fire_door', text: 'slip in while it\'s open', duration: 0.2, sneaky: false,
     can: (p, w) => outside(p) && !!w.fireDoor?.open,
+    over: ['go_out', 'let_boss_in', 'pound'], // while it's open, you slip in; pounding is for a shut door
     done: comeIn,
   },
 };

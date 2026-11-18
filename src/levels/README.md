@@ -49,6 +49,12 @@ A level needs all of these. The validator rejects a level without them at load:
 - an `icon` for each item type (what people say for it), and a `draw` (how it is drawn: DESIGN.md "Visual
   language").
 
+Each interaction row says what it needs in your hand as data, `hand` (nothing, `'empty'`, `'any'` or an item
+type), and puts everything else in `can`. On one target, an action that uses what you hold wins; otherwise one
+that needs nothing in hand. Two that could both be left: give one an `over` naming the other, or the validator
+refuses the level (CONTRACTS.md "What E does"). One kind of thing (every computer, every plant) is one
+interactable type with one set of rows; tell the instances apart with the legend's `id`, not a type each.
+
 The tools also need `gate` and `route-checks.js`. `roles.authority` is optional: without one, nobody assigns work
 and only an inspection can catch you.
 

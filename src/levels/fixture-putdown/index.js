@@ -62,7 +62,8 @@ export default {
   interactions: {
     write_note: {
       on: 'own_desk', text: 'write "cancel the meeting" on a note', duration: 1.5, sneaky: true, saw: '📝',
-      can: (p, w) => !p.held && w.note === 'pad',
+      hand: 'empty', can: (p, w) => w.note === 'pad',
+      over: ['sit'], // standing at your desk with the pad there: the note, not the chair
       done(game) {
         playerHolds(game, 'note');
         game.events.emit('note:written', {});

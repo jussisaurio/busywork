@@ -10,8 +10,9 @@
 //     and requires the same trace.
 //   - A pose is drawn only (render/characters.js reads game.toys.poses): arms, a scowl, the head turned to the prop.
 //     npc.dir, his path and his override never change.
-//   - E: a toy is offered only when nothing else is (no route target, nothing in your hand to drop or eat), so it
-//     never takes a key press a route would have used (play/interactions.js).
+//   - E: a press toy is an action on its target like a row, under the same hand rule (play/interactions.js): it
+//     needs no held item unless it says (`hand`), so on its target any action that uses what you hold wins over it.
+//     Sharing a target with a row that needs no held item either, one of the two names the other in `over`.
 //
 // A toy:
 //   id       unique; a harness goto target (you walk up to it) and the event `toy:<id>`
@@ -26,6 +27,8 @@
 //   every    seconds before it can fire again (default: press 1, pass / near 3, per person)
 //   state    the toy's own starting state ({ tilted: false }); react.set changes it; painters read it (toyState)
 //   text     press: the harness's words for the verb ('push the bar')
+//   hand, over  press: what it needs in your hand, and the actions on its target it wins over (as for a row:
+//            play/interactions.js). Its target: the interactable on its tile, else its prop
 //   line     the harness's line when it fires (`<by>` is replaced by who did it)
 //   react    what happens, all optional:
 //     say    [icons] or { icons, kind, ttl, who }: a bubble. who: 'by' (default: whoever fired it), 'prop' (from
@@ -55,7 +58,7 @@
 //     from him) or notices someone (game.watch), his override changes, or WALK_CAP seconds pass. Seeing stays where
 //     he really is (vision cones are drawn from his sim position), so a sighting is never drawn from the wrong place
 //     for longer than the lag (at most about 2 s of his walk).
-import { INTERACT_RADIUS, NPC_SPEED } from '../../config.js';
+import { NPC_SPEED } from '../../config.js';
 import { walkAt, dist } from '../../game/toy-walk.js';
 import { say, burst } from '../../core/fx.js';
 import { npcSees } from '../../game/perception.js';
@@ -66,11 +69,11 @@ const DEFAULT_POSE = 1.5;
 const WALK_MAX = 3.5; // tiles: farther from `stand` than this, he reaches in passing (no walk)
 const WALK_CAP = 7; // s: a walk still behind him after this snaps back
 
-// A fresh game.toys for a new loop: { focus, byId: { id: { state, firedAt, by, n, last } }, poses: { who: pose } }.
+// A fresh game.toys for a new loop: { byId: { id: { state, firedAt, by, n, last } }, poses: { who: pose } }.
 export function createToys(level) {
   const byId = {};
   for (const t of level.toys ?? []) byId[t.id] = { state: { ...t.state }, firedAt: null, landsAt: null, by: null, n: 0, last: {} };
-  return { focus: null, byId, poses: {}, walks: {} };
+  return { byId, poses: {}, walks: {} };
 }
 
 // The prop's centre in tile units.
@@ -96,35 +99,6 @@ const ready = (game, toy, t, who) => {
   const last = t.last[who];
   return last === undefined || game.loopTime - last >= (toy.every ?? (toy.on === 'press' ? 1 : DEFAULT_EVERY));
 };
-
-// The press toy in reach of the player, as a focus (play/interactions.js asks only when nothing else is), or null.
-// The press toys of a level and where each is (a level's toys and spots never change): asked for every step.
-const PRESS = new WeakMap(); // level -> [{ toy, at }]
-function pressToys(level) {
-  let list = PRESS.get(level);
-  if (!list) PRESS.set(level, (list = level.toys.filter((toy) => toy.on === 'press').map((toy) => ({ toy, at: toyPos(level, toy) }))));
-  return list;
-}
-
-export function toyFocus(game) {
-  if (!game.level.toys) return null;
-  const p = game.player;
-  let best = null;
-  let bestD = Infinity;
-  const list = pressToys(game.level);
-  for (let i = 0; i < list.length; i++) {
-    const { toy, at } = list[i];
-    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
-    if (Math.abs(at.x - p.x) > INTERACT_RADIUS || Math.abs(at.y - p.y) > INTERACT_RADIUS) continue;
-    const d = Math.hypot(at.x - p.x, at.y - p.y);
-    if (!(d <= INTERACT_RADIUS && d < bestD)) continue;
-    const t = game.toys.byId[toy.id];
-    if (toy.when && !toy.when(game.world, t.state, game, p)) continue;
-    bestD = d;
-    best = { kind: 'interactable', id: toy.id, x: at.x, y: at.y, toy: true };
-  }
-  return best;
-}
 
 // The player pressed E on the toy focus `f`.
 export function pressToy(game, f) {

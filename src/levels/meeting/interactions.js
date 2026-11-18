@@ -24,19 +24,17 @@ import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { leaveDay } from '../../play/scenario.js';
 import { catchNow } from '../../play/rules.js';
 import { RESTROOM_ROWS } from './restroom.js';
-import { BALCONY_ROWS, openDoor } from './balcony.js';
-import { COMPUTERS } from './map.js';
+import { BALCONY_ROWS, openDoor, outside } from './balcony.js';
+import { COMPUTER_OWNERS } from './map.js';
 
 // Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
 const HOME_PATH = [{ x: 4.5, y: 12.5 }, { x: 4.5, y: 14.5 }, { x: 2.5, y: 15.5 }];
 const WITH_KEV = 6; // tiles: Kev on his way out (3:00) this close, and you leave together
 
-const WHOSE = { player: 'your', boss: 'the boss\'s', lin: 'Lin\'s', kev: 'Kev\'s' };
-
 export const INTERACTIONS = {
   brew_coffee: {
     on: 'coffee_machine', text: 'pour a coffee', duration: 1.0, sneaky: false,
-    can: (p, w) => !p.held && w.coffee === 'pot', // the day's only cup; Kev may get there first (2:38)
+    hand: 'empty', can: (p, w) => w.coffee === 'pot', // the day's only cup; Kev may get there first (2:38)
     done(game, a) {
       game.player.held = 'coffee';
       game.world.coffee = 'taken';
@@ -46,7 +44,7 @@ export const INTERACTIONS = {
   },
   spill_coffee: {
     on: 'projector', text: 'spill coffee on it', duration: 1.2, sneaky: true, saw: '📽️',
-    can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
+    hand: 'coffee', can: (p, w) => w.projector === 'ok',
     done(game, a) {
       playerHolds(game, 'mug'); // the cup stays in your hand, empty: the evidence (items.js)
       game.world.projector = 'broken';
@@ -59,7 +57,7 @@ export const INTERACTIONS = {
   },
   take_keycard: {
     on: 'coat_rack', text: 'take the keycard from the jacket', duration: 1.0, sneaky: true, saw: '🪪',
-    can: (p, w) => !p.held && w.keycard === 'rack', // the boss may grab his jacket mid-steal
+    hand: 'empty', can: (p, w) => w.keycard === 'rack', // the boss may grab his jacket mid-steal
     done(game) {
       playerHolds(game, 'keycard');
       game.events.emit('keycard:taken', {});
@@ -69,7 +67,8 @@ export const INTERACTIONS = {
   // lock-out (no keycard win today), and he is so glad he hugs you (clocks.js bossLetIn), and sees what's in your hand.
   let_boss_in: {
     on: 'fire_door', text: 'let the boss in', duration: 0.6, sneaky: false,
-    can: (p, w) => w.bossLockedOut,
+    can: (p, w) => w.bossLockedOut && !outside(p), // from the balcony you can't push the bar: you pound (toys.js)
+    over: ['go_out', 'pound'], // (never both: go_out is while he isn't locked out; pound from outside)
     done(game) {
       const w = game.world;
       const boss = findNpc(game, 'boss');
@@ -102,24 +101,23 @@ export const INTERACTIONS = {
   ...RESTROOM_ROWS, // the cubicle: go in, wash off the mustard, come out (restroom.js)
   take_sandwich: {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
-    can: (p, w) => !p.held && w.sandwich === 'fridge',
+    hand: 'empty', can: (p, w) => w.sandwich === 'fridge',
     done(game) {
       playerHolds(game, 'sandwich');
       game.events.emit('sandwich:taken', {});
     },
   },
   // ---- More places for the coffee (the day's only cup; brew_coffee). Each one spends it: no projector today.
-  // The boss's ficus (map.js Y), from his doorway: the soil drinks it, a new leaf shoots out (painters-more.js ficus)
-  // and on his next look at it the boss is delighted (toys.js ficus). You are left with nothing in your hands.
-  water_ficus: waterPlant('ficus'),
-  // The hallway ficus (map.js V), the same pour and the same leaf. Nobody minds it.
-  water_plant: waterPlant('plant'),
-  // ---- Every computer on the floor (map.js COMPUTERS: the three empty desks', yours once you sit at it, Lin's,
-  // Kev's, the boss's) takes the cup the same way: drownComputer, below. One row a machine type, nothing else differs.
-  ...Object.fromEntries(Object.entries(COMPUTERS).map(([on, owner]) => [`drown_${on}`, drownComputer(on, owner)])),
+  // Either potted plant (map.js Y, the boss's ficus, from his doorway; V, the hallway one): the soil drinks it, a new
+  // leaf shoots out (painters-more.js ficus). On his next look at his own the boss is delighted (toys.js ficus);
+  // nobody minds the other. You are left with nothing in your hands.
+  water_plant: waterPlant(),
+  // ---- Every computer on the floor (map.js: the three empty desks', yours once you sit at it, Lin's, Kev's, the
+  // boss's) takes the cup the same way: drownComputer, below. Only which machine and whose differ.
+  drown_computer: drownComputer(),
 };
 
-// The day's cup into a computer's keys (`on`: its interactable type; `owner`: whose, null for an empty desk's). It
+// The day's cup into a computer's keys (whose: map.js COMPUTER_OWNERS, nobody's for an empty desk). It
 // shorts with a bang and a shower of sparks that the whole floor hears: the boss, anywhere on it, knows exactly who
 // (caught, why 'computer'; end-scenes-more.js tableauComputer, with the machine's owner horrified). He has to be on
 // the floor to hear it: locked out on the balcony or off the floor, it just dies smoking. world.drowned says which
@@ -127,15 +125,16 @@ export const INTERACTIONS = {
 // The desk's free end beside a computer is where a cup is set down (map.js SPOTS lies; Jussi, 2026-11-18: "if you
 // want to lay the mug down on a desk, you have to be targeting the desk"). The empty mug has nothing to pour.
 // Your own takes it only once you sit at it (standing, E at P sits you down).
-function drownComputer(on, owner) {
+function drownComputer() {
   return {
-    on, text: `pour the coffee into ${WHOSE[owner] ?? 'the spare'} computer`,
+    on: ['computer', 'own_desk'], text: 'pour the coffee into the computer',
     duration: 1.0, sneaky: false, pose: 'reach', // not sneaky: nobody stops a pour, the bang is what gives you away
-    can: (p) => p.held === 'coffee' && (owner !== 'player' || p.seated),
+    hand: 'coffee', can: (p, w, it) => it.type !== 'own_desk' || p.seated,
     done(game, a) {
       playerLetsGo(game, 'computer');
       game.world.cup = 'computer';
       const id = a.targetId; // which machine (the timed action's target: play/interactions.js)
+      const owner = COMPUTER_OWNERS[id] ?? null;
       game.world.drowned = { id, owner, x: Math.floor(a.x), y: Math.floor(a.y) };
       game.world._computerAt = game.loopTime;
       burst(game, 'sparks', a.x, a.y - 0.2, 14, { speed: 2.2, ttl: 0.7 });
@@ -150,13 +149,14 @@ function drownComputer(on, owner) {
   };
 }
 
-// Pouring the day's cup into a potted plant (`on`: its interactable, ficus or plant): world.cup = on, and
-// world._<on>At the moment (painters-more.js ficus draws the leaf from it).
-function waterPlant(on) {
+// Pouring the day's cup into a potted plant (which: its id, ficus or plant): world.cup = the id, and
+// world._<id>At the moment (painters-more.js ficus draws the leaf from it).
+function waterPlant() {
   return {
-    on, text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
-    can: (p) => p.held === 'coffee',
+    on: 'plant', text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
+    hand: 'coffee',
     done(game, a) {
+      const on = a.targetId;
       playerLetsGo(game, on);
       game.world.cup = on; // where the day's cup went (unset until then: no golden moves for a day without it)
       game.world[`_${on}At`] = game.loopTime;

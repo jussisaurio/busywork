@@ -136,7 +136,7 @@ function flipSwitch(game) {
 const INTERACTIONS = {
   take_letter: {
     on: 'tray', text: 'take your letter back', duration: 2.5, sneaky: true, saw: '✉️', // longer than any glance
-    can: (p, w) => !p.held && w.letter === 'tray',
+    hand: 'empty', can: (p, w) => w.letter === 'tray',
     done(game, a) {
       const w = game.world;
       playerHolds(game, 'letter');
@@ -151,7 +151,7 @@ const INTERACTIONS = {
   // Your desk while you hold the letter: it goes in your drawer and you sit down (out of everyone's sight for good).
   stash_letter: {
     on: 'own_desk', text: 'put your letter in your drawer', instant: true,
-    can: (p) => p.held === 'letter',
+    hand: 'letter',
     done(game) {
       const w = game.world;
       playerLetsGo(game, 'drawer');
@@ -165,6 +165,7 @@ const INTERACTIONS = {
     on: 'office_switch', text: "switch his office lights off", duration: 0.5, sneaky: false,
     noise: { radius: 2 }, // the clack: out in the hallway, far from his chair
     can: (p, w) => w.officeLight !== 'off',
+    over: ['flip_switch_on'], // (never both)
     done: flipSwitch,
   },
   flip_switch_on: {
@@ -180,7 +181,8 @@ const INTERACTIONS = {
   // on you mid-pour, tells too.
   rig_coffee: {
     on: 'coffee_machine', text: 'pour the water jug into the vent on the back of the machine', duration: 1.5, sneaky: true, saw: '#jug',
-    can: (p, w) => !p.held && !w.rigged && w.coffee === 'none',
+    hand: 'empty', can: (p, w) => !w.rigged && w.coffee === 'none',
+    over: ['pour_coffee'], // (never both: w.coffee)
     done(game) {
       game.world.rigged = true;
       burst(game, 'sweat', 21.85, 1.2, 8, { speed: 0.9, ttl: 0.6 }); // the splash, behind the machine
@@ -189,12 +191,13 @@ const INTERACTIONS = {
   },
   // Once Lin's coffee has brewed, the full pot pours a cup (DESIGN.md "A thing that looks usable is usable"), power or
   // no power: pouring needs none. The cup leads nowhere: it only fills your hands.
-  pour_coffee: { ...pourCoffee(), can: (p, w) => !p.held && w.coffee === 'brewed' },
+  pour_coffee: { ...pourCoffee(), hand: 'empty', can: (p, w) => w.coffee === 'brewed' },
   // Eating your letter (hold E, as any edible thing): paper, not food, so no 😋 but a wince, and bits of paper, not
   // crumbs. Ten minutes later it comes back up (index.js sick). Replaces the engine's eat_letter.
   eat_letter: {
     on: 'self', text: 'eat your letter', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '✉️',
-    can: (p, w) => p.held === 'letter' && !w.soggy, // once was enough: eat_soggy
+    hand: 'letter', can: (p, w) => !w.soggy, // once was enough: eat_soggy
+    over: ['eat_soggy'], // (never both)
     done(game) {
       const w = game.world;
       const p = game.player;
@@ -209,7 +212,7 @@ const INTERACTIONS = {
   // it. Once was enough, and the screen says so.
   eat_soggy: {
     on: 'self', text: 'try to eat your soggy letter again', duration: 0.9, hold: true, preview: 'lift', idle: true, saw: '✉️',
-    can: (p, w) => p.held === 'letter' && w.soggy,
+    hand: 'letter', can: (p, w) => w.soggy,
     done(game) {
       say(game, 'player', ['🤢'], { kind: 'thought', ttl: 1.4 });
       shake(game, 0.03, 0.15);

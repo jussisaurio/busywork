@@ -9,6 +9,7 @@ import { ficus, deadComputer, kevPage, typedScreen, pushedClock } from './painte
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside, doorSwing } from './balcony.js';
+import { deadAt } from './map.js';
 import { OFFICE_WINDOWS, OFFICE_CABINETS, OFFICE_CLOCK, OFFICE_DESK_OWNERS, OFFICE_ELEVATOR, OFFICE_ZONE_SEEDS, officeDesk } from '../office/decor.js';
 
 // The fire door (mechanics.js DOORS, balcony.js): locked, someone is shut out there without a card (the boss, or
@@ -91,7 +92,7 @@ export const DECOR = {
     // is drawn every frame, so it is a prop, not a painting; R (the restroom door) only anchors it, once on the map.
     { tile: 'R', draw: hallPicture, state: (w, game) => ({ x: PICTURE.x - 0.5, y: PICTURE.y, ...pictureTilt(game) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
-    // The boss's ficus after the coffee (interactions.js water_ficus): wet soil, a new leaf shooting out.
+    // Either ficus after the coffee (interactions.js water_plant): wet soil, a new leaf shooting out.
     { tile: 'Y', draw: ficus, state: (w, game) => ({ watered: w.cup === 'ficus', since: since(game, w._ficusAt) }) },
     { tile: 'V', draw: ficus, state: (w, game) => ({ watered: w.cup === 'plant', since: since(game, w._plantAt) }) }, // the hallway one
     // The computer the cup went into, whichever desk it is on (interactions.js drownComputer; world.drowned says
@@ -107,7 +108,8 @@ export const DECOR = {
       return { secs: d.n > 0 ? (d.n - 1) * 3 + Math.min(d.since, 3) : 0, head };
     } },
     // Gibberish on a screen whose keyboard you mashed (toys.js type_*): a line a press, until its owner deletes it.
-    ...KEYBOARDS.map((k) => ({ tile: 'C', draw: typedScreen, state: (w, game) => ({ x: k.x, y: k.y, keys: toyState(game, k.id).keys }) })),
+    // what you typed, until the machine is drowned: then its screen is dead (map.js deadAt; deadComputer above)
+    ...KEYBOARDS.map((k) => ({ tile: 'C', draw: typedScreen, state: (w, game) => ({ x: k.x, y: k.y, keys: deadAt(w, k.x, k.y) ? 0 : toyState(game, k.id).keys }) })),
     // The hallway clock pushed fast (toys.js clock), drawn over the plain one; R only anchors it, like the picture.
     { tile: 'R', draw: pushedClock, state: (w, game) => {
       const c = toyState(game, 'clock');

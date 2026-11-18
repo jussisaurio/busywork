@@ -124,6 +124,7 @@ const INTERACTIONS = {
   pull_cable: {
     on: 'boss_cable', text: 'pull his plug out', duration: 1.0, sneaky: false,
     can: (p, w) => !w.glitch && w.pc === 'free' && w.list === 'on' && behindDesk(p),
+    over: ['fix_cable'], // (never both: glitch)
     done(game) {
       game.world.glitch = true;
       game.world.pulledAt = game.clock.minute;
@@ -155,6 +156,7 @@ const INTERACTIONS = {
   try_locked: {
     on: 'boss_pc', text: 'take your face off the list', instant: true,
     can: (p, w) => w.locked && !w.glitch && w.list === 'on' && atScreen(p),
+    over: ['strike_name'], // (never both: locked)
     done(game) {
       game.world.lockJolt = game.clock.minute;
       say(game, 'player', ['🔒'], { kind: 'thought', ttl: 1.4 });

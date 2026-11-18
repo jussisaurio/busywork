@@ -76,6 +76,8 @@ const CASES = [
   ['self row hold not a boolean', { ...M, interactions: { ...M.interactions, hum: { on: 'self', icon: '🎵', text: 'hum', instant: true, preview: 'shrug', hold: 'yes', can: () => true, done() {} } } }, 'meeting', /interactions\.hum\.hold: not true or false/],
   ['edible: true (what does eating leave?)', { ...M, items: { ...M.items, sandwich: { ...M.items.sandwich, edible: true } } }, 'meeting', /items\.sandwich\.edible: not \{ leaves \}/],
   ['edible without leaves', { ...M, items: { ...M.items, sandwich: { ...M.items.sandwich, edible: {} } } }, 'meeting', /items\.sandwich\.edible: not \{ leaves \}/],
+  ['two rows on one target, same hand, neither over the other', { ...FP, interactions: { ...FP.interactions, doodle: { on: 'own_desk', text: 'doodle', instant: true, hand: 'empty', done() {} } } }, 'fixture-putdown', /interactions: own_desk: write_note \/ doodle \(holding empty\): both could be what E does/],
+  ['a hand naming no item', { ...FP, interactions: { ...FP.interactions, doodle: { on: 'own_desk', text: 'doodle', instant: true, hand: 'pen', over: ['sit', 'write_note'], done() {} } } }, 'fixture-putdown', /interactions\.doodle\.hand: 'pen' is not 'empty', 'any', an item type/],
   ['edible leaves an unknown mark', { ...M, items: { ...M.items, sandwich: { ...M.items.sandwich, edible: { leaves: 'ketchup' } } } }, 'meeting', /items\.sandwich\.edible\.leaves: no mark 'ketchup'/],
 ];
 for (const [what, level, key, re] of CASES) {

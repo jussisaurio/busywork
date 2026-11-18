@@ -9,7 +9,7 @@ import { createFakeCanvas } from './lib/fake-canvas.mjs';
 import { captureVerbs, verbsIntents } from './lib/verbs.mjs';
 import { getLevel } from '../src/levels/index.js';
 import { createHarness } from '../src/agent/harness.js';
-import { actionRow } from '../src/play/interactions.js';
+import { actionRow, rowApplies } from '../src/play/interactions.js';
 import { putSpots } from '../src/sim/mechanics/putdown.js';
 
 let fails = 0;
@@ -49,7 +49,7 @@ function expected(level, type) {
   const names = [...Object.keys(level.interactions ?? {}), ...Object.keys(level.items).map((t) => `eat_${t}`), 'drop'];
   const selves = [...new Set(names)].filter((v) => {
     const row = actionRow(g, v);
-    return row?.on === 'self' && row.can(g.player, g.world, null);
+    return row?.on === 'self' && rowApplies(g, row);
   });
   const spots = putSpots(level).filter((e) => e.accepts.includes(type))
     .map((e) => ({ name: e.name, taken: atStart.find((i) => i.spot === e.name && i.type !== type)?.type ?? null }));

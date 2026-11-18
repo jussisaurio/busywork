@@ -74,7 +74,7 @@ export const canPut = (p, w, e) => !!p.held && e.accepts.includes(p.held) && !it
 
 // The row (interactions.js adds it to every level's table as 'put'). done(game, focus): focus.item is the spot.
 export const PUT_ROW = {
-  on: 'spot', icon: '📥', text: 'put it down', instant: true, can: canPut,
+  on: 'spot', hand: 'any', icon: '📥', text: 'put it down', instant: true, can: canPut,
   done: (game, a) => putHeld(game, a.item),
 };
 
@@ -85,6 +85,8 @@ export function putFocus(game, than, row) {
   if (!p.held || !row) return null;
   let best = null;
   for (const e of putSpots(game.level)) {
+    // Out of reach along either axis is out of reach (the distance is never less), and far cheaper to test.
+    if (Math.abs(e.x - p.x) > INTERACT_RADIUS || Math.abs(e.y - p.y) > INTERACT_RADIUS) continue;
     const d = Math.hypot(e.x - p.x, e.y - p.y);
     if (!(d <= INTERACT_RADIUS && d < than) || !row.can(p, game.world, e)) continue;
     than = d;

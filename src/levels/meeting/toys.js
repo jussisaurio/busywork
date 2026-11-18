@@ -12,7 +12,7 @@
 //              (😤). Each steps out of their way to stand under it (toy `stand`), fixes it at arm's length, and hurries
 //              back to their errand; the frame scrapes on its nail (creak). Three people, one nail.
 //              Its tilt is whoever touched it last (pictureTilt: you +1, Kev -1, Lin straight); painters.js draws it.
-//   ficus      the boss's plant, after you pour the coffee into it (interactions.js water_ficus): on his next look
+//   ficus      the boss's plant, after you pour the coffee into it (interactions.js water_plant): on his next look
 //              at it he is delighted, once (🌿😍, his head turned to it).
 //   kev_doze   Kev without his coffee (you poured the last cup; npcs.js want: 🥱☕ every few seconds): back at his
 //              desk, from 2:48 he nods off, head on the keyboard 💤, and a line of one letter runs across his screen
@@ -31,6 +31,7 @@ import { at as clockAt } from '../../config.js';
 import { findNpc, inZone } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside } from './balcony.js';
+import { deadAt } from './map.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
 const UNDER_PICTURE = { x: 25, y: 7.4 }; // where Kev and Lin stand to fix it: right under it, at arm's length
@@ -67,9 +68,10 @@ const seatedAt = (game, id, k) => {
   const n = findNpc(game, id);
   return !!n && n.active && n.pose === 'sit' && Math.hypot(n.x - (k.x + 0.5), n.y - (k.y + 1.5)) < 0.6;
 };
-// Free to type on: nobody sitting at it, and not the full cup in your hand (the cup at a computer pours, every one:
-// interactions.js drownComputer). The empty mug, or anything else in hand, types as empty hands do.
-const freeKeyboard = (k) => (w, s, game) => game.player.held !== 'coffee' && (!k.owner || !seatedAt(game, k.owner, k));
+// Free to type on: nobody sitting at it. Typing takes both hands (hand: 'empty'); with the full cup in hand E at a
+// computer pours it in instead (interactions.js drownComputer), and with the mug it is the desk's put or nothing.
+// A drowned computer's keys type nothing (map.js deadAt).
+const freeKeyboard = (k) => (w, s, game) => !deadAt(w, k.x, k.y) && (!k.owner || !seatedAt(game, k.owner, k));
 const typed = (game, k) => toyState(game, k.id).keys > 0;
 // Not yet read since your last press.
 const unread = (game, k, readId) => {
@@ -84,7 +86,7 @@ const caughtTyping = (k) => (w, s, game) => {
 const [LIN_KB, KEV_KB] = KEYBOARDS;
 const TYPE_TOYS = [
   ...KEYBOARDS.map((k) => ({
-    id: k.id, at: { x: k.x, y: k.y }, on: 'press', text: 'type on the keyboard', every: 0.5,
+    id: k.id, at: { x: k.x, y: k.y }, on: 'press', hand: 'empty', text: 'type on the keyboard', every: 0.5,
     state: { keys: 0 }, when: freeKeyboard(k),
     line: k.owner ? `you mash ${k.owner === 'lin' ? 'Lin' : 'Kev'}'s keyboard: a line of gibberish on the screen`
       : 'you mash the keyboard: a line of gibberish on the screen',
@@ -188,6 +190,7 @@ export const TOYS = [
   },
   {
     id: 'knock_boss', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('boss'), every: 2,
+    over: ['knock_lin'], // (never both: one stall)
     line: 'you knock on the restroom door: the boss answers from inside 🚽😠',
     react: { ...KNOCK, say: { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 } },
     try: ['goto restroom_door', 'pretend until 3:19', 'interact'],

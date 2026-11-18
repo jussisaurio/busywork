@@ -15,7 +15,6 @@
 //   repeats     name -> { while(world), every: [min, max] seconds, ...spec }: a sound every so often
 //   murmur      { spot }: where the meeting murmurs from when everyone gathers (meeting:gather)
 //   elevator    { spot, radius }: NPCs leaving or arriving this near the spot ding instead of a door
-import { COMPUTERS } from './map.js';
 
 export const SOUNDS = {
   actions: {
@@ -24,10 +23,8 @@ export const SOUNDS = {
       spill_coffee: { sfx: 'pour', spot: 'projector' },
       take_sandwich: { sfx: 'fridgeOpen', spot: 'fridge' },
       take_keycard: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
-      water_ficus: { sfx: 'pour', who: 'player' },
       water_plant: { sfx: 'pour', who: 'player' },
-      // every computer (map.js COMPUTERS; interactions.js drownComputer): the same pour, then the same bang (events)
-      ...Object.fromEntries(Object.keys(COMPUTERS).map((on) => [`drown_${on}`, { sfx: 'pour', who: 'player' }])),
+      drown_computer: { sfx: 'pour', who: 'player' }, // every computer: the same pour, then the same bang (events)
     },
     done: {
       brew_coffee: { sfx: 'machineBeep', spot: 'coffee' },
