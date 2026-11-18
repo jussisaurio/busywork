@@ -5,7 +5,7 @@
 // hand, 'dropped' on the floor, 'eaten', a spot name on a spot, or a cast id with him. An item without a `place`
 // keeps no such field (a level may keep its own state instead).
 //
-// Two NPC takes:
+// The NPC takes:
 //   npcTakes   the plain take: he picks it up as part of his day (off his own desk, a free cup, what he finds on his
 //              spot). He carries it; it is no longer what he wants; place = his id.
 //   takesBack  its owner or its confiscator takes his thing back (from your hand, your desk, the floor, when he
@@ -13,7 +13,9 @@
 //              all of the below. Else the confiscator pockets it (place = his id, nothing in his hand) and the
 //              owner carries it (as npcTakes). Event `<type>:recovered { by, type, from }`, from: 'player' (your
 //              hand), a spot name (it lay there), 'floor'.
-// Both take it from where it is: `it`, a world item (removed from world.items), else your hand.
+//   npcPockets into his pocket, nothing in his hand (place = his id). takesBack's confiscator, and a level's own
+//              beat that pockets a thing with events of its own (meeting: the boss snatching his keycard back).
+// Each takes it from where it is: `it`, a world item (removed from world.items), else your hand.
 
 // world[place] = where, if the item keeps a place.
 export function setPlace(game, type, where) {
@@ -51,6 +53,11 @@ export function npcTakes(game, npc, type, it = null) {
   setPlace(game, type, npc.id);
 }
 
+export function npcPockets(game, npc, type, it = null) {
+  lift(game, type, it);
+  setPlace(game, type, npc.id);
+}
+
 export function takesBack(game, npc, type, it = null) {
   const flags = game.level.items?.[type];
   const from = it ? it.spot ?? 'floor' : 'player';
@@ -59,9 +66,7 @@ export function takesBack(game, npc, type, it = null) {
     flags.owner.reclaim(game, npc);
     return;
   }
-  if (flags?.contraband === npc.id) {
-    lift(game, type, it);
-    setPlace(game, type, npc.id);
-  } else npcTakes(game, npc, type, it);
+  if (flags?.contraband === npc.id) npcPockets(game, npc, type, it);
+  else npcTakes(game, npc, type, it);
   game.events.emit(`${type}:recovered`, { by: npc.id, type, from });
 }

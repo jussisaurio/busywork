@@ -20,14 +20,18 @@ import { say, burst, shake } from '../../core/fx.js';
 import { findNpc, inZone } from '../../game/perception.js';
 import { setOverride } from '../../sim/override.js';
 import { leaving } from '../../sim/npcs.js';
+import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { leaveDay } from '../../play/scenario.js';
 import { catchNow } from '../../play/rules.js';
 import { RESTROOM_ROWS } from './restroom.js';
 import { BALCONY_ROWS, openDoor } from './balcony.js';
+import { COMPUTERS } from './map.js';
 
 // Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
 const HOME_PATH = [{ x: 4.5, y: 12.5 }, { x: 4.5, y: 14.5 }, { x: 2.5, y: 15.5 }];
 const WITH_KEV = 6; // tiles: Kev on his way out (3:00) this close, and you leave together
+
+const WHOSE = { player: 'your', boss: 'the boss\'s', lin: 'Lin\'s', kev: 'Kev\'s' };
 
 export const INTERACTIONS = {
   brew_coffee: {
@@ -44,8 +48,7 @@ export const INTERACTIONS = {
     on: 'projector', text: 'spill coffee on it', duration: 1.2, sneaky: true, saw: '📽️',
     can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
     done(game, a) {
-      game.player.held = 'mug'; // the cup stays in your hand, empty: the evidence (items.js)
-      game.world.mug = 'player';
+      playerHolds(game, 'mug'); // the cup stays in your hand, empty: the evidence (items.js)
       game.world.projector = 'broken';
       burst(game, 'sparks', a.x, a.y, 16, { speed: 2.5, ttl: 0.6 });
       burst(game, 'puff', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
@@ -58,8 +61,7 @@ export const INTERACTIONS = {
     on: 'coat_rack', text: 'take the keycard from the jacket', duration: 1.0, sneaky: true, saw: '🪪',
     can: (p, w) => !p.held && w.keycard === 'rack', // the boss may grab his jacket mid-steal
     done(game) {
-      game.player.held = 'keycard';
-      game.world.keycard = 'player';
+      playerHolds(game, 'keycard');
       game.events.emit('keycard:taken', {});
     },
   },
@@ -102,8 +104,7 @@ export const INTERACTIONS = {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
     can: (p, w) => !p.held && w.sandwich === 'fridge',
     done(game) {
-      game.player.held = 'sandwich';
-      game.world.sandwich = 'player';
+      playerHolds(game, 'sandwich');
       game.events.emit('sandwich:taken', {});
     },
   },
@@ -113,52 +114,34 @@ export const INTERACTIONS = {
   water_ficus: waterPlant('ficus'),
   // The hallway ficus (map.js V), the same pour and the same leaf. Nobody minds it.
   water_plant: waterPlant('plant'),
-  // The typewriter on the empty desk behind yours (map.js W): the cup goes into its keys. It shorts with a bang and
-  // a shower of sparks that the whole floor hears: the boss, anywhere on it, knows exactly who (caught, why
-  // 'typewriter'). He has to be on the floor to hear it: locked out on the balcony or off the floor, it just dies.
-  drown_typewriter: {
-    on: 'typewriter', text: 'pour the coffee into the typewriter', duration: 1.0, sneaky: true, saw: '☕', pose: 'reach',
-    can: (p) => p.held === 'coffee',
-    done(game, a) {
-      game.player.held = null;
-      game.world.cup = 'typewriter';
-      game.world._typewriterAt = game.loopTime;
-      burst(game, 'sparks', a.x, a.y - 0.2, 14, { speed: 2.2, ttl: 0.7 });
-      burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.4, lift: 1.0, ttl: 1.6 });
-      shake(game, 0.35, 0.4);
-      game.events.emit('coffee:typewriter', {});
-      const boss = findNpc(game, 'boss');
-      const onFloor = boss && boss.active && boss.override !== 'lockedOut' && !inZone(game, 'outside', boss.x, boss.y);
-      if (onFloor) catchNow(game, 'action', boss.id, ['⌨️', '💥', '👉', '@player'], 'typewriter');
-      else say(game, 'player', ['⌨️', '💀'], { kind: 'thought', ttl: 1.6 });
-    },
-  },
-  // ---- Everyone's computer (Jussi, 2026-11-18: "make it possible to fuck up everyone's computer, and if you want to
-  // lay the mug down on a desk, you have to be targeting the desk"). The full cup at a computer (the middle of a desk,
-  // map.js B N U; yours, P, once you sit at it) goes into its keys, the typewriter's bang and the same catch (why
-  // 'computer', world.drowned: whose; end-scenes-desks.js shows its owner). The desk's free end beside it is where a
-  // cup is set down (map.js SPOTS lies). The empty mug has nothing to pour: at a computer E does nothing.
-  drown_my_computer: drownComputer('own_desk', 'player', (p) => p.seated),
-  drown_lin_computer: drownComputer('lin_computer', 'lin'),
-  drown_kev_computer: drownComputer('kev_computer', 'kev'),
-  drown_boss_computer: drownComputer('boss_computer', 'boss'),
+  // ---- Every computer on the floor (map.js COMPUTERS: the three empty desks', yours once you sit at it, Lin's,
+  // Kev's, the boss's) takes the cup the same way: drownComputer, below. One row a machine type, nothing else differs.
+  ...Object.fromEntries(Object.entries(COMPUTERS).map(([on, owner]) => [`drown_${on}`, drownComputer(on, owner)])),
 };
 
-// The day's cup into a computer's keys (`on`: its interactable; `owner`: whose; `also(p)`: a further condition).
-function drownComputer(on, owner, also = () => true) {
+// The day's cup into a computer's keys (`on`: its interactable type; `owner`: whose, null for an empty desk's). It
+// shorts with a bang and a shower of sparks that the whole floor hears: the boss, anywhere on it, knows exactly who
+// (caught, why 'computer'; end-scenes-more.js tableauComputer, with the machine's owner horrified). He has to be on
+// the floor to hear it: locked out on the balcony or off the floor, it just dies smoking. world.drowned says which
+// machine ({ id, owner, x, y }: painters-more.js deadComputer draws it dead on that desk).
+// The desk's free end beside a computer is where a cup is set down (map.js SPOTS lies; Jussi, 2026-11-18: "if you
+// want to lay the mug down on a desk, you have to be targeting the desk"). The empty mug has nothing to pour.
+// Your own takes it only once you sit at it (standing, E at P sits you down).
+function drownComputer(on, owner) {
   return {
-    on, text: `pour the coffee into ${owner === 'player' ? 'your' : owner === 'boss' ? 'the boss\'s' : `${owner === 'kev' ? 'Kev' : 'Lin'}'s`} computer`,
-    duration: 1.0, sneaky: true, saw: '☕', pose: 'reach',
-    can: (p) => p.held === 'coffee' && also(p),
+    on, text: `pour the coffee into ${WHOSE[owner] ?? 'the spare'} computer`,
+    duration: 1.0, sneaky: false, pose: 'reach', // not sneaky: nobody stops a pour, the bang is what gives you away
+    can: (p) => p.held === 'coffee' && (owner !== 'player' || p.seated),
     done(game, a) {
-      game.player.held = null;
+      playerLetsGo(game, 'computer');
       game.world.cup = 'computer';
-      game.world.drowned = owner;
+      const id = a.targetId; // which machine (the timed action's target: play/interactions.js)
+      game.world.drowned = { id, owner, x: Math.floor(a.x), y: Math.floor(a.y) };
       game.world._computerAt = game.loopTime;
       burst(game, 'sparks', a.x, a.y - 0.2, 14, { speed: 2.2, ttl: 0.7 });
       burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.4, lift: 1.0, ttl: 1.6 });
       shake(game, 0.35, 0.4);
-      game.events.emit('coffee:computer', { owner });
+      game.events.emit('coffee:computer', { id, owner });
       const boss = findNpc(game, 'boss');
       const onFloor = boss && boss.active && boss.override !== 'lockedOut' && !inZone(game, 'outside', boss.x, boss.y);
       if (onFloor) catchNow(game, 'action', boss.id, ['⌨️', '💥', '👉', '@player'], 'computer');
@@ -174,7 +157,7 @@ function waterPlant(on) {
     on, text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
     can: (p) => p.held === 'coffee',
     done(game, a) {
-      game.player.held = null;
+      playerLetsGo(game, on);
       game.world.cup = on; // where the day's cup went (unset until then: no golden moves for a day without it)
       game.world[`_${on}At`] = game.loopTime;
       burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.5, lift: 0.9, ttl: 1.0 });

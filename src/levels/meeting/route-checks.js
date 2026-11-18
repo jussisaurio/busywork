@@ -3,6 +3,40 @@
 //   { name, expect: { result, routes? }, play(ctx) }   ctx: { g, run, waitFor, npc, log, transcript } (tools/routes.mjs)
 //   { name, expect: { result, routes? }, cmds: [...] }  harness commands, run in order
 // expect.routes: routes the outcome must include.
+// ---- The cup into a computer: one event, the same on every machine on the floor (interactions.js drownComputer;
+// map.js COMPUTERS). One check a machine: with the full cup in hand E at it pours (never the typing toy, toys.js
+// type_*, never a put), the same event, the same dead machine on that desk, the same catch and end scene.
+//   id: its interactable; owner: whose (null: an empty desk's); to: the commands that take you to it, cup in hand
+const MACHINES = [
+  { id: 'spare_computer_0', owner: null, to: ['goto 4,12 busy'] }, // the empty desk behind Lin's
+  { id: 'spare_computer_1', owner: null, to: ['goto spare_desk busy'] }, // behind yours (the mustard chair)
+  { id: 'spare_computer_2', owner: null, to: ['goto 22,12 busy'] }, // behind Kev's
+  { id: 'own_desk', owner: 'player', to: ['sit busy'] }, // yours, once seated
+  { id: 'lin_computer', owner: 'lin', to: ['busy until 3:00', 'goto 4,7 busy'] }, // Lin off to the fridge; behind her monitor
+  { id: 'kev_computer', owner: 'kev', to: ['goto 22,7 busy'] }, // behind his monitor, Kev at his desk
+  { id: 'boss_computer', owner: 'boss', to: ['busy until 2:46', 'goto 4,4 busy'] }, // he is out on his 2:44 walk round the floor
+];
+const EVERY_COMPUTER = MACHINES.map((m) => ({
+  name: `the full cup at ${m.id} (${m.owner ?? 'nobody'}'s) → E pours it in: BANG ⌨️💥, the boss hears it → caught (why computer)`,
+  expect: { result: 'caught' },
+  play({ run, g, log, waitFor }) {
+    run('goto coffee_machine busy');
+    run('interact');
+    for (const cmd of m.to) run(cmd);
+    const f = g.player.focus;
+    if (f?.id !== m.id || f?.action !== `drown_${m.id.replace(/_\d$/, '')}`) throw new Error(`with the cup E is ${f?.action}@${f?.id}, not the pour`);
+    if (g.toys?.focus) throw new Error(`a toy is offered too: ${g.toys.focus.id}`);
+    run('interact');
+    const pours = log.filter((e) => e.name === 'coffee:computer');
+    if (pours.length !== 1 || pours[0].payload.id !== m.id || pours[0].payload.owner !== m.owner) throw new Error(`pours: ${JSON.stringify(pours.map((e) => e.payload))}`);
+    if (log.some((e) => e.name.startsWith('toy:type_'))) throw new Error('E typed on the keyboard');
+    if (g.player.held) throw new Error(`still holding ${g.player.held}`);
+    if (g.world.cup !== 'computer' || g.world.drowned?.id !== m.id) throw new Error(`world.drowned ${JSON.stringify(g.world.drowned)}`);
+    waitFor((gg) => gg.outcome, { maxSec: 10 });
+    if (g.outcome?.why !== 'computer') throw new Error(`why ${g.outcome?.why}, not computer`);
+  },
+}));
+
 export default [
   {
     name: 'do nothing → fail',
@@ -228,7 +262,7 @@ export default [
     },
   },
   // ---- The mug on Lin's desk, on the boss's, and the cup into a computer (verdict.js verdictDesks; interactions.js
-  // drownComputer). The spill comes after the boss's last look into the meeting room (3:22 walk): he never hunts, so
+  // drownComputer: EVERY_COMPUTER above). The spill comes after the boss's last look into the meeting room (3:22 walk): he never hunts, so
   // the mug in your hand is just a mug. The put waits for 3:35, when he goes for his jacket and Lin for the restroom.
   ...[
     { why: 'lin', eat: false, name: 'spill after the boss\'s last look in, plant the mug on Lin\'s desk while she and the boss are out (3:36) → the boss points at Lin 😠👉, she shrinks 😨 → win' },
@@ -288,21 +322,6 @@ export default [
       run('busy until 4:00');
       waitFor((g) => g.outcome, { maxSec: 10 });
       if (g.outcome?.why !== 'bossMug') throw new Error(`why ${g.outcome?.why}, expected bossMug`);
-    },
-  },
-  {
-    name: 'pour the cup into Lin\'s computer while the boss is on the floor → BANG ⌨️💥, caught (why computer)',
-    expect: { result: 'caught' },
-    play({ run, g, log, waitFor }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('busy until 3:00'); // Lin off to the fridge: nobody stops the pour, and the boss is at his desk
-      run('goto 4,7 busy'); // behind her monitor: the computer, not the desk's free end, is the nearest target
-      if (g.player.focus?.id !== 'lin_computer') throw new Error(`target is ${g.player.focus?.id}`);
-      run('interact');
-      if (!log.some((e) => e.name === 'coffee:computer' && e.payload.owner === 'lin')) throw new Error('no pour into Lin\'s computer');
-      waitFor((gg) => gg.outcome, { maxSec: 10 });
-      if (g.outcome?.why !== 'computer') throw new Error(`why ${g.outcome?.why}`);
     },
   },
   {
@@ -619,18 +638,7 @@ export default [
       if (!log.some((e) => e.name === 'coffee:ficus')) throw new Error('the coffee never went into the plant');
     },
   },
-  {
-    name: 'coffee into the typewriter → bang, the boss hears it → caught (typewriter)',
-    expect: { result: 'caught' },
-    play({ g, run, waitFor }) {
-      run('goto coffee_machine busy');
-      run('interact');
-      run('goto typewriter busy');
-      run('interact');
-      waitFor((gg) => gg.outcome, { maxSec: 10 });
-      if (g.outcome?.why !== 'typewriter') throw new Error(`caught for ${g.outcome?.why}, not the typewriter`);
-    },
-  },
+  ...EVERY_COMPUTER,
   {
     // The boss is hunting for the cup: finding it in your hand in his office is proof, not a show-out (rules.js react).
     name: 'projector killed, then into the boss\'s office holding the mug, pretending → caught, not shown out',

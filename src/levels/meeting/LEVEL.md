@@ -69,7 +69,7 @@ run, not read off this table.
   `keycard:takenBack`; the caught beat waits up to 8 s for him); the caught end card shows it on his pocket (😠🪪).
 - **Owners.** Only Lin knows the sandwich is hers: taking or eating it is sneaky only to her. To Kev and the boss it
   is just lunch (but eating where the boss sees you fills his ❓). She sees it and comes for it (😠🥪): she walks over and
-  takes it at arm's length (items.js `walk`, the engine's claim.js), to the fridge, or, if she is hunting, that ends her hunt.
+  takes it at arm's length (the engine's claim.js; every owner walks), and keeps it; if she is hunting, that ends her hunt.
   Eat it or put it out of her sight before she gets there and she gives up. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
   bag beside the machine is empty). From then on (`clocks.js`): the cup in your hand is yours, and he asks for it
   (☕🥺❓, at most every 20 real seconds, within 4 tiles); set down on the machine or on his desk it looks free, and he
@@ -239,7 +239,7 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 | `kevGone`, `linKnows` | bool |
 | `cardBack` | bool: caught over the keycard, the boss took it back |
 | `mug` | `null` \| `'player'` (after the spill) \| `'coffee'` \| `'kev_desk'` \| `'my_desk'` \| `'lin_desk'` \| `'boss_desk'` (the put spot) |
-| `cup`, `drowned` | where the day's cup went (`'ficus'`, `'plant'`, `'typewriter'`, `'computer'`); `drowned`: whose computer |
+| `cup`, `drowned` | where the day's cup went (`'ficus'`, `'plant'`, `'computer'`); `drowned`: which computer, `{id, owner, x, y}` |
 | `items` | floor and put-down items (engine) |
 
 Level events (all `{}` unless shown): `projector:broken`, `kev:alerted`, `projector:fixing`, `projector:fixed`,
@@ -247,7 +247,7 @@ Level events (all `{}` unless shown): `projector:broken`, `kev:alerted`, `projec
 `coffee:missing {by}`, `coffee:kevTook {spot}`, `coffee:asked`, `boss:jacket`, `boss:lockedOut`, `boss:badge`, `boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`, `boss:fume`,
 `keycard:takenBack`, `kev:left`, `boss:mugHunt`, `mug:found {spot}`, `meeting:calledOff`.
 The engine's `item:put {type, spot}` fires for the mug. `outcome.why` carries the verdict's reason. With the boss as authority and these
-items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered`,
+items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered {by, type, from}`,
 and `sandwich:eaten`.
 
 ## Sightlines
@@ -276,19 +276,22 @@ and `sandwich:eaten`.
   projector route this loop. The joke: the one act of care in the whole office goes to a plant, with stolen coffee.
   The hallway ficus (`V`, 28,12, by the fire door) takes the cup the same way (`water_plant`, `world.cup = 'plant'`,
   `coffee:plant`) and grows the same leaf; nobody is delighted, it is nobody's plant (Jussi's playtest, 2026-11-18).
-- **The typewriter** (`W`, 13,11: the workstation on the empty mustard-chair desk behind yours; nobody's today, so
-  it's no prank on Lin or Kev, and it isn't your own, whose E is the sit). The coffee goes into its keys
-  (`drown_typewriter`, `world.cup = 'typewriter'`, `coffee:typewriter`): a bang, sparks, smoke. The boss, anywhere on
-  the floor, hears it: caught at once (engine seam `rules.js catchNow`, why `'typewriter'`). Locked out or off the
-  floor, it just dies smoking (`painters-more.js deadTypewriter`). End scene `typewriter`: you sooty, hair on end, by
-  the dripping, sparking machine; the boss holds out the box. The joke: an audacious, pointless act of sabotage,
-  rewarded with exactly the ending it deserves.
-- **Everyone's computer** (Jussi, 2026-11-18: "make it possible to fuck up everyone's computer"). The full cup at the
-  boss's (`B`), Lin's (`N`) or Kev's (`U`) computer, or at yours once seated (`P`), goes into its keys
-  (`drown_*_computer`, `world.cup = 'computer'`, `world.drowned`, `coffee:computer {owner}`): the typewriter's bang
-  and the same rule, caught if the boss is on the floor (why `'computer'`). End scene `computer`: the typewriter's
-  picture, and its owner (Lin, or Kev if still in) horrified 😱💻. The empty mug at a computer does nothing. Seated
-  with the full cup, E now pours into your own computer (before, it set the cup down; stand at `my_desk_spot` for that).
+- **The cup into a computer** (Jussi, 2026-11-18: "make it possible to fuck up everyone's computer"; unified the
+  same day after his playtest found two versions). One event, the same on all seven machines (`map.js COMPUTERS`):
+  the three empty desks' (`W`: `spare_computer_0`, `_1`, `_2`, west to east; `_1` is behind yours), yours once seated
+  (`P`), Lin's (`N`), Kev's (`U`), the boss's (`B`). One definition, `interactions.js drownComputer`, a row a machine
+  type (`drown_<type>`), differing only in which machine and whose. With the full cup E at a computer pours, 1 s,
+  not sneaky: nobody stops a pour, the owner sitting at it included (before, a witness cut it short and it was an
+  ordinary catch with no bang; that was the difference Jussi heard). `world.cup = 'computer'`, `world.drowned =
+  {id, owner, x, y}`, `coffee:computer {id, owner}`: a bang (sound `splashZap`, after `pour`), sparks, smoke, and
+  that machine drawn dead on its desk (`painters-more.js deadComputer`). The boss, anywhere on the floor, hears it:
+  caught at once (engine seam `rules.js catchNow`, why `'computer'`). Locked out or off the floor, it just dies
+  smoking (⌨️💀). End scene `computer` (`end-scenes-more.js tableauComputer`): you sooty, hair on end, by the dripping,
+  sparking machine; the boss holds out the box; its owner, if it has one and they are in (Lin; Kev until he goes
+  home), horrified 😱💻. The joke: an audacious, pointless act of sabotage, rewarded with exactly the ending it
+  deserves. With the full cup the typing toy (`toys.js type_*`) is never offered; the empty mug has nothing to pour,
+  so at a free keyboard it types, as empty hands do. Seated with the full cup, E pours into your own computer (stand
+  at `my_desk_spot` to set it down). The empty desks have no put spot: nothing can be set down on them.
 - **Kev dozes** (toys `kev_doze`, `kev_wake`). Robbed of his coffee (`wants: 'coffee'`), sat at his desk between 2:48
   and 2:58, Kev slumps face-first onto his keyboard (pose `slump`, engine seam in `render/characters.js`) and thinks
   💤; a line of one letter grows across his screen (`painters-more.js kevPage`). Come within 2.5 tiles and he jolts

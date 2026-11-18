@@ -41,7 +41,7 @@ export default {
     my_desk_spot: 'my_desk', // beside your seat: where you set things down on your desk
     boss_office_door: 'boss_door',
     boss_doorway: 'boss_doorway', // standing in his doorway: his plant is in reach, his office is not entered
-    typewriter: 'typewriter', // at the empty desk behind yours, its typewriter in front of you
+    spare_desk: 'spare_desk', // at the empty desk behind yours, its computer in front of you
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
     restroom_door: 'restroom',
@@ -58,8 +58,8 @@ export default {
   names: NAME,
 
   mapKey: [
-    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, Y the boss\'s plant, W the typewriter on the empty desk behind yours, : outside lobby, L entrance (glass door, staff keycard),',
-    '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, B N U the boss\'s, Lin\'s and Kev\'s computers, R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
+    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, Y the boss\'s plant, W the computer on an empty desk, : outside lobby, L entrance (glass door, staff keycard),',
+    '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, B N U the boss\'s, Lin\'s and Kev\'s computers (yours is on P), R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
@@ -69,7 +69,6 @@ export default {
     : o.result === 'blamed' && o.why === 'snatched' ? 'BLAMED 🪪😏 (the boss snatched his keycard off you on the balcony and let the door shut in your face; at 4:00 you\'re still out there pounding)'
     : o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${WIN_WHY[o.why] ?? ''}`
     : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
-    : o.result === 'caught' && o.why === 'typewriter' ? 'CAUGHT ⌨️💥 (the coffee shorted the typewriter with a bang the whole floor heard; fired: you leave with a box 📦)'
     : o.result === 'caught' && o.why === 'computer' ? 'CAUGHT ⌨️💥 (the coffee shorted a computer with a bang the whole floor heard; fired: you leave with a box 📦)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
     : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
@@ -132,7 +131,7 @@ export default {
       case 'projector:fixing': return 'Kev is fixing the projector';
       case 'projector:fixed': return 'the projector is fixed';
       case 'keycard:taken': return 'you took the keycard 🪪';
-      case 'keycard:recovered': return 'the boss spotted his keycard on the floor, walked over and picked it up 🪪❗';
+      case 'keycard:recovered': return p.from === 'player' ? 'the boss walked over and took his keycard out of your hand 🪪❗' : 'the boss spotted his keycard on the floor, walked over and picked it up 🪪❗';
       case 'sandwich:taken': return 'you took the sandwich 🥪';
       case 'sandwich:eaten': return 'you ate the sandwich';
       case 'sandwich:returned': return 'Lin took her sandwich back';
@@ -169,8 +168,7 @@ export default {
       case 'meeting:gather': return 'everyone heads to the meeting room';
       case 'coffee:ficus': return 'you pour the coffee into the boss\'s plant: the soil drinks it, and a new leaf shoots out 🌱';
       case 'coffee:plant': return 'you pour the coffee into the hallway plant: the soil drinks it, and a new leaf shoots out 🌱';
-      case 'coffee:computer': return `you pour the coffee into ${p.owner === 'player' ? 'your own' : `${NAME[p.owner] ?? p.owner}'s`} computer: BANG, sparks, smoke ⌨️💥`;
-      case 'coffee:typewriter': return 'you pour the coffee into the typewriter\'s keys: BANG, sparks, smoke ⌨️💥';
+      case 'coffee:computer': return `you pour the coffee into ${p.owner === 'player' ? 'your own' : p.owner ? `${NAME[p.owner] ?? p.owner}'s` : 'the spare'} computer: BANG, sparks, smoke ⌨️💥`;
       default: return undefined;
     }
   },

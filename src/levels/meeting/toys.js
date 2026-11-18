@@ -19,7 +19,8 @@
 //              (painters-more.js kevPage), until his 2:58 goodbye. Drawn only: asleep, he sees just as awake.
 //   kev_wake   come within 2.5 tiles of a dozing Kev and he jolts awake 😳 (and stays awake). So you can't walk
 //              past a sleeping Kev: the sight he keeps never surprises anyone.
-//   type_*     any free workstation (Lin's or Kev's while they are away, the three empty ones): stand at the
+//   type_*     any free workstation (Lin's or Kev's while they are away, the three empty ones), unless the full cup
+//              is in your hand (then E pours it in: interactions.js drownComputer): stand at the
 //              keyboard and mash it, a clatter of keys, and a document of gibberish fills the screen, a line a press
 //              (typedScreen in painters-more.js). Nothing else: it is not your desk, so it is not looking busy
 //              (your own desk is where sitting and typing counts). The owners answer back:
@@ -59,14 +60,16 @@ export const KEYBOARDS = [
   { id: 'type_lin', x: 4, y: 8, owner: 'lin' },
   { id: 'type_kev', x: 22, y: 8, owner: 'kev' },
   { id: 'type_west', x: 4, y: 11 },
-  { id: 'type_mustard', x: 13, y: 11 }, // the mustard chair's (map.js W): its own interactable wins with the cup
+  { id: 'type_mustard', x: 13, y: 11 }, // the mustard chair's, behind yours
   { id: 'type_east', x: 22, y: 11 },
 ];
 const seatedAt = (game, id, k) => {
   const n = findNpc(game, id);
   return !!n && n.active && n.pose === 'sit' && Math.hypot(n.x - (k.x + 0.5), n.y - (k.y + 1.5)) < 0.6;
 };
-const freeKeyboard = (k) => (w, s, game) => !k.owner || !seatedAt(game, k.owner, k);
+// Free to type on: nobody sitting at it, and not the full cup in your hand (the cup at a computer pours, every one:
+// interactions.js drownComputer). The empty mug, or anything else in hand, types as empty hands do.
+const freeKeyboard = (k) => (w, s, game) => game.player.held !== 'coffee' && (!k.owner || !seatedAt(game, k.owner, k));
 const typed = (game, k) => toyState(game, k.id).keys > 0;
 // Not yet read since your last press.
 const unread = (game, k, readId) => {
