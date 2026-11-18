@@ -369,7 +369,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
 
   function interact() {
     const p = game.player;
-    const focus = p.focus ?? game.toys.focus; // a toy only when nothing else is in reach (play/interactions.js)
+    const focus = p.focus; // a press toy is a target like any other (play/interactions.js)
     if (!focus) {
       frame();
       return { text: 'nothing to interact with here' };
@@ -451,7 +451,7 @@ function compass(rad) {
 }
 // The focus hint in words (a human sees the target lit up with the E key cap).
 function focusText(game, withHold = true) {
-  const f = game.player.focus ?? game.toys?.focus;
+  const f = game.player.focus;
   if (!f) return 'none in reach';
   if (f.toy) return `${f.id}: ${game.level.toys.find((t) => t.id === f.id).text ?? 'poke it'}`; // (level.toys)
   const say = (v) => (v === 'drop' ? `drop the ${game.player.held}` : actionRow(game, v)?.text ?? v ?? 'interact');

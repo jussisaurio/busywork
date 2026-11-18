@@ -102,7 +102,7 @@ export const RESTROOM_ROWS = {
   },
   go_in: {
     on: 'restroom', text: 'go in', duration: 0.4, sneaky: false,
-    can: (p) => !p.inside && !p.held && !p._stall && p.y < 13.5, // (not through the wall from the balcony)
+    hand: 'empty', can: (p) => !p.inside && !p._stall && p.y < 13.5, // (not through the wall from the balcony)
     done(game) {
       goInside(game, 'restroom', DOOR);
       // With the mustard on you, E washes it before it lets you out: say so as you go in (👕🟡🧼), so the first E

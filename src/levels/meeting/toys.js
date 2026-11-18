@@ -67,9 +67,9 @@ const seatedAt = (game, id, k) => {
   const n = findNpc(game, id);
   return !!n && n.active && n.pose === 'sit' && Math.hypot(n.x - (k.x + 0.5), n.y - (k.y + 1.5)) < 0.6;
 };
-// Free to type on: nobody sitting at it, and not the full cup in your hand (the cup at a computer pours, every one:
-// interactions.js drownComputer). The empty mug, or anything else in hand, types as empty hands do.
-const freeKeyboard = (k) => (w, s, game) => game.player.held !== 'coffee' && (!k.owner || !seatedAt(game, k.owner, k));
+// Free to type on: nobody sitting at it. Typing takes both hands (hand: 'empty'); with the full cup in hand E at a
+// computer pours it in instead (interactions.js drownComputer), and with the mug it is the desk's put or nothing.
+const freeKeyboard = (k) => (w, s, game) => !k.owner || !seatedAt(game, k.owner, k);
 const typed = (game, k) => toyState(game, k.id).keys > 0;
 // Not yet read since your last press.
 const unread = (game, k, readId) => {
@@ -84,7 +84,7 @@ const caughtTyping = (k) => (w, s, game) => {
 const [LIN_KB, KEV_KB] = KEYBOARDS;
 const TYPE_TOYS = [
   ...KEYBOARDS.map((k) => ({
-    id: k.id, at: { x: k.x, y: k.y }, on: 'press', text: 'type on the keyboard', every: 0.5,
+    id: k.id, at: { x: k.x, y: k.y }, on: 'press', hand: 'empty', text: 'type on the keyboard', every: 0.5,
     state: { keys: 0 }, when: freeKeyboard(k),
     line: k.owner ? `you mash ${k.owner === 'lin' ? 'Lin' : 'Kev'}'s keyboard: a line of gibberish on the screen`
       : 'you mash the keyboard: a line of gibberish on the screen',

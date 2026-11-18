@@ -74,7 +74,7 @@ export const canPut = (p, w, e) => !!p.held && e.accepts.includes(p.held) && !it
 
 // The row (interactions.js adds it to every level's table as 'put'). done(game, focus): focus.item is the spot.
 export const PUT_ROW = {
-  on: 'spot', icon: '📥', text: 'put it down', instant: true, can: canPut,
+  on: 'spot', hand: 'any', icon: '📥', text: 'put it down', instant: true, can: canPut,
   done: (game, a) => putHeld(game, a.item),
 };
 

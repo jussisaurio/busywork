@@ -36,7 +36,7 @@ const WHOSE = { player: 'your', boss: 'the boss\'s', lin: 'Lin\'s', kev: 'Kev\'s
 export const INTERACTIONS = {
   brew_coffee: {
     on: 'coffee_machine', text: 'pour a coffee', duration: 1.0, sneaky: false,
-    can: (p, w) => !p.held && w.coffee === 'pot', // the day's only cup; Kev may get there first (2:38)
+    hand: 'empty', can: (p, w) => w.coffee === 'pot', // the day's only cup; Kev may get there first (2:38)
     done(game, a) {
       game.player.held = 'coffee';
       game.world.coffee = 'taken';
@@ -46,7 +46,7 @@ export const INTERACTIONS = {
   },
   spill_coffee: {
     on: 'projector', text: 'spill coffee on it', duration: 1.2, sneaky: true, saw: '📽️',
-    can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
+    hand: 'coffee', can: (p, w) => w.projector === 'ok',
     done(game, a) {
       playerHolds(game, 'mug'); // the cup stays in your hand, empty: the evidence (items.js)
       game.world.projector = 'broken';
@@ -59,7 +59,7 @@ export const INTERACTIONS = {
   },
   take_keycard: {
     on: 'coat_rack', text: 'take the keycard from the jacket', duration: 1.0, sneaky: true, saw: '🪪',
-    can: (p, w) => !p.held && w.keycard === 'rack', // the boss may grab his jacket mid-steal
+    hand: 'empty', can: (p, w) => w.keycard === 'rack', // the boss may grab his jacket mid-steal
     done(game) {
       playerHolds(game, 'keycard');
       game.events.emit('keycard:taken', {});
@@ -102,7 +102,7 @@ export const INTERACTIONS = {
   ...RESTROOM_ROWS, // the cubicle: go in, wash off the mustard, come out (restroom.js)
   take_sandwich: {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
-    can: (p, w) => !p.held && w.sandwich === 'fridge',
+    hand: 'empty', can: (p, w) => w.sandwich === 'fridge',
     done(game) {
       playerHolds(game, 'sandwich');
       game.events.emit('sandwich:taken', {});
@@ -131,7 +131,7 @@ function drownComputer(on, owner) {
   return {
     on, text: `pour the coffee into ${WHOSE[owner] ?? 'the spare'} computer`,
     duration: 1.0, sneaky: false, pose: 'reach', // not sneaky: nobody stops a pour, the bang is what gives you away
-    can: (p) => p.held === 'coffee' && (owner !== 'player' || p.seated),
+    hand: 'coffee', can: (p) => (owner !== 'player' || p.seated),
     done(game, a) {
       playerLetsGo(game, 'computer');
       game.world.cup = 'computer';
@@ -155,7 +155,7 @@ function drownComputer(on, owner) {
 function waterPlant(on) {
   return {
     on, text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
-    can: (p) => p.held === 'coffee',
+    hand: 'coffee',
     done(game, a) {
       playerLetsGo(game, on);
       game.world.cup = on; // where the day's cup went (unset until then: no golden moves for a day without it)

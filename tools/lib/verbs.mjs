@@ -23,7 +23,7 @@
 import { createHarness } from '../../src/agent/harness.js';
 import { createRenderer } from '../../src/render/renderer.js';
 import { HUD_H, T, VIEW_W, VIEW_H, UI_FAMILY } from '../../src/render/util.js';
-import { actionRow } from '../../src/play/interactions.js';
+import { actionRow, rowApplies } from '../../src/play/interactions.js';
 import { putSpots } from '../../src/sim/mechanics/putdown.js';
 import { npcSees } from '../../src/game/perception.js';
 import { isDark } from '../../src/game/darkness.js';
@@ -287,7 +287,7 @@ function tilePanels(level, lib, type, tile) {
   add(sequence(level, lib, seed('carry'), (S) => {
     hand(S.g, type, at.x, at.y);
     S.h.frame();
-    out.selves = selfVerbs(S.g).filter((v) => actionRow(S.g, v).can(S.g.player, S.g.world, null));
+    out.selves = selfVerbs(S.g).filter((v) => rowApplies(S.g, actionRow(S.g, v)));
     S.input.setAxis(tile.dir[0], tile.dir[1]);
     S.run(WALK);
     S.shoot({ verb: 'carry', phase: 'walking', label: 'carry · walking', intent: `You walk holding the ${type}.` });
@@ -336,7 +336,7 @@ function tilePanels(level, lib, type, tile) {
       S.h.frame();
       const p = S.g.player;
       const row = actionRow(S.g, verb);
-      if (!row.can(p, S.g.world, null)) { out.missing.push(`${verb}: no longer possible after a frame`); return; }
+      if (!rowApplies(S.g, row)) { out.missing.push(`${verb}: no longer possible after a frame`); return; }
       const m = S.mark();
       row.done(S.g, { type: verb, targetId: 'self', kind: 'self', id: 'self', x: p.x, y: p.y, item: null });
       S.run(AFTER);

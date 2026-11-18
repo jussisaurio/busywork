@@ -117,7 +117,7 @@ export const BALCONY_ROWS = {
   },
   badge_in: {
     on: 'fire_door', text: 'hold the keycard to the reader', duration: 0.5, sneaky: false,
-    can: (p) => outside(p) && p.held === 'keycard',
+    hand: 'keycard', can: (p) => outside(p),
     done(game) {
       const boss = findNpc(game, 'boss');
       if (boss?.override === 'lockedOut') { // right behind you: he sees his card at the reader

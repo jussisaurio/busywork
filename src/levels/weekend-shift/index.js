@@ -128,7 +128,7 @@ const INTERACTIONS = {
   // usual slacking rule applies if he sees you. Put it back on the counter and it's as it was.
   take_noodles: {
     on: 'noodles', text: 'pick up your noodles', duration: PICK_UP_TIME, sneaky: false,
-    can: (p, w) => !p.held && (w.noodles === 'cold' || w.noodles === 'ready'),
+    hand: 'empty', can: (p, w) => (w.noodles === 'cold' || w.noodles === 'ready'),
     done(game) {
       const w = game.world;
       game.player.held = w.noodles === 'cold' ? 'noodles' : 'hot_noodles';
@@ -138,7 +138,7 @@ const INTERACTIONS = {
   },
   put_noodles: {
     on: 'noodles', text: 'put your noodles back on the counter', duration: PICK_UP_TIME, sneaky: false,
-    can: (p) => p.held === 'noodles' || p.held === 'hot_noodles',
+    hand: ['noodles', 'hot_noodles'],
     done(game) {
       const w = game.world;
       w.noodles = game.player.held === 'noodles' ? 'cold' : 'ready';
@@ -148,7 +148,7 @@ const INTERACTIONS = {
   },
   eat_noodles: { // raw: you crunch the dry block out of the cup (😬). The cup's gone: nothing to heat
     on: 'self', text: 'eat your noodles dry', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '🍜',
-    can: (p) => p.held === 'noodles',
+    hand: 'noodles',
     done(game) {
       const p = game.player;
       p.held = null;
@@ -160,7 +160,7 @@ const INTERACTIONS = {
   },
   eat_hot_noodles: { // cooked: a long, happy slurp (😋🍜), content
     on: 'self', text: 'eat your noodles', duration: SLURP_S, hold: true, preview: 'lift', idle: true, saw: '🍜',
-    can: (p) => p.held === 'hot_noodles',
+    hand: 'hot_noodles',
     done(game) {
       const p = game.player;
       p.held = null;

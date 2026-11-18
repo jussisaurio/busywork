@@ -64,7 +64,7 @@ const ZONES = {
 const INTERACTIONS = {
   nuke_popcorn: {
     on: 'microwave', text: 'microwave the popcorn for twenty minutes', duration: 1.0, sneaky: true, saw: '🍿',
-    can: (p, w) => !p.held && w.popcorn === 'bag',
+    hand: 'empty', can: (p, w) => w.popcorn === 'bag',
     done(game, a) {
       game.world.popcorn = 'burning';
       burst(game, 'puff', a.x, a.y, 12, { speed: 0.6, lift: 1.0, ttl: 1.8 });
@@ -84,7 +84,7 @@ const INTERACTIONS = {
   },
   take_cake: {
     on: 'cake_stand', text: 'take the cake', duration: 0.8, sneaky: true, owner: 'gus', saw: '🎂',
-    can: (p, w) => !p.held && w.cake === 'stand',
+    hand: 'empty', can: (p, w) => w.cake === 'stand',
     done(game) {
       playerHolds(game, 'cake');
       game.events.emit('cake:taken', {});

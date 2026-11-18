@@ -505,7 +505,7 @@ export function pushRow(clock) {
     duration: 1.5,
     sneaky: true,
     saw: '🕐',
-    can: (p) => !p.held,
+    hand: 'empty',
     done(game) {
       game.world[c.field] += 10;
       game.events.emit('clock:pushed', { clock, off: game.world[c.field] });

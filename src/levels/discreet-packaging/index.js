@@ -122,7 +122,7 @@ const INTERACTIONS = {
   push_camera: {
     on: 'cctv', text: 'poke the camera with the broom', duration: 1.0, sneaky: true, saw: '📹',
     // From the back office only: it hangs on that side of the wall, not the corridor's.
-    can: (p, w) => p.held === 'broom' && w.camAim !== 'plant' && p.y > 5,
+    hand: 'broom', can: (p, w) => w.camAim !== 'plant' && p.y > 5,
     done(game) {
       game.world.camAim = 'plant'; // clunk: it swivels into the plant and sticks; the broom comes back down with you
       burst(game, 'puff', 20.4, 5.2, 7, { speed: 0.9, ttl: 0.6 }); // the fronds shake where it hit
@@ -133,7 +133,7 @@ const INTERACTIONS = {
   },
   take_broom: {
     on: 'broom_stand', text: 'take the broom', duration: 0.4, sneaky: false,
-    can: (p, w) => !p.held && w.broom === 'stand',
+    hand: 'empty', can: (p, w) => w.broom === 'stand',
     done(game) {
       playerHolds(game, 'broom');
       game.events.emit('broom:taken', {});
@@ -141,7 +141,7 @@ const INTERACTIONS = {
   },
   return_broom: {
     on: 'broom_stand', text: 'put the broom back', duration: 0.4, sneaky: false,
-    can: (p, w) => p.held === 'broom',
+    hand: 'broom',
     done(game) {
       playerLetsGo(game, 'stand');
       game.events.emit('broom:returned', {});
@@ -149,7 +149,7 @@ const INTERACTIONS = {
   },
   take_parcel: {
     on: 'pigeonholes', text: 'take your parcel', duration: 1.0, sneaky: true, saw: '💝',
-    can: (p, w) => !p.held && w.parcel === 'shelf' && w.parcelFor === 'player',
+    hand: 'empty', can: (p, w) => w.parcel === 'shelf' && w.parcelFor === 'player',
     done(game) {
       game.player.held = 'parcel';
       game.world.parcel = 'player';
@@ -159,7 +159,7 @@ const INTERACTIONS = {
   // Holding your box at the shelf, peel your label off it and Bob's off his, and swap them: now the pink box is his.
   swap_labels: {
     on: 'pigeonholes', text: "swap your box's label with Bob's", duration: 1.5, sneaky: true, saw: '💝',
-    can: (p, w) => p.held === 'parcel' && w.brown === 'shelf' && w.parcelFor === 'player',
+    hand: 'parcel', can: (p, w) => w.brown === 'shelf' && w.parcelFor === 'player',
     done(game, a) {
       const w = game.world;
       w.parcelFor = 'bob';
@@ -175,7 +175,7 @@ const INTERACTIONS = {
   // weeps over Mum's hearts and you hug his cardboard.
   take_brown: {
     on: 'pigeonholes', text: 'take the brown box with your face on it', duration: 0.6, sneaky: false,
-    can: (p, w) => !p.held && w.brown === 'shelf' && w.parcelFor === 'bob',
+    hand: 'empty', can: (p, w) => w.brown === 'shelf' && w.parcelFor === 'bob',
     done(game) {
       game.player.held = 'brownbox';
       game.world.brown = 'player';
@@ -184,7 +184,7 @@ const INTERACTIONS = {
   },
   return_brown: {
     on: 'pigeonholes', text: 'put the brown box back on the shelf', duration: 0.6, sneaky: false,
-    can: (p, w) => p.held === 'brownbox' && w.brown === 'player',
+    hand: 'brownbox', can: (p, w) => w.brown === 'player',
     done(game) {
       game.player.held = null;
       game.world.brown = 'shelf';
@@ -193,7 +193,7 @@ const INTERACTIONS = {
   },
   stash_parcel: {
     on: 'drawer', text: 'stuff it in your desk drawer', duration: 1.0, sneaky: true, saw: '💝',
-    can: (p) => p.held === 'parcel',
+    hand: 'parcel',
     done(game, a) {
       game.player.held = null;
       game.world.parcel = 'drawer';

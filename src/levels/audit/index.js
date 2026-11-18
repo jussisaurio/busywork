@@ -109,7 +109,7 @@ const twice = (w, type) => RECORDS.every((r) => w[r]) && RECORDS.filter((r) => w
 const INTERACTIONS = {
   pick_up: {
     on: 'item', text: 'take the laptop', duration: 0.5, sneaky: true, saw: '💻',
-    can: (p, w, item) => !p.held && w.items.includes(item) && LAPTOPS.includes(item.type),
+    hand: 'empty', can: (p, w, item) => w.items.includes(item) && LAPTOPS.includes(item.type),
     done(game, a) {
       game.world.items = game.world.items.filter((i) => i !== a.item);
       playerHolds(game, a.item.type);
@@ -119,7 +119,7 @@ const INTERACTIONS = {
   pour_coffee: pourCoffee(),
   drink_coffee: {
     on: 'self', text: 'drink the coffee', duration: 1.2, sneaky: false, hold: true, preview: 'lift', // hold E, as for eating; a tap too (the cup keeps: no drop)
-    can: (p) => p.held === 'coffee',
+    hand: 'coffee',
     done(game) {
       game.player.held = null;
       game.events.emit('coffee:drunk', {});
