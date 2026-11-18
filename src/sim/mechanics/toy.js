@@ -37,20 +37,37 @@
 //            asleep, his head forward on the desk, glances not shown (drawn only: he sees exactly as before)
 //     set    { key: value }: the toy's new state
 //     burst  { kind, n?, speed?, lift?, ttl? }: particles at the prop (core/fx.js BURST_KINDS)
+//   stand    pass / near, optional: { x, y } (tile units), where a person stands to do it, at arm's length from the
+//            prop. He is drawn walking over, doing it there (the pose waits for him to arrive) and hurrying back to
+//            where he really is (game/toy-walk.js toyWalkAt). Drawn only, like the pose: his body in the sim walks on.
 //   try      harness commands after which it has fired (the gate's `toys` check plays them)
-import { INTERACT_RADIUS } from '../../config.js';
+//
+// The walk to `stand` (game/toy-walk.js): a toy cannot stop or route a person, so the sim never knows. The drawn body
+// leaves his path where the toy fired, walks to `stand` (NPC_SPEED), does the pose there, then walks back to where
+// it left him and follows his real track (recorded every step in game.toys.walks) at WALK_BACK times his speed until
+// it is on him again. Bounded so the picture never lies about something that matters:
+//   - only when he is on his feet, not in an override (a hunt, a scene, the meeting) and `stand` is within WALK_MAX
+//     tiles of him; otherwise the old reach in passing
+//   - it ends at once, snapping the drawing back onto him, the moment he tells on or catches anyone (a sightline
+//     from him) or notices someone (game.watch), his override changes, or WALK_CAP seconds pass. Seeing stays where
+//     he really is (vision cones are drawn from his sim position), so a sighting is never drawn from the wrong place
+//     for longer than the lag (at most about 2 s of his walk).
+import { INTERACT_RADIUS, NPC_SPEED } from '../../config.js';
+import { walkAt, dist } from '../../game/toy-walk.js';
 import { say, burst } from '../../core/fx.js';
 import { npcSees } from '../../game/perception.js';
 
 const DEFAULT_EVERY = 3;
 const DEFAULT_RADIUS = 2;
 const DEFAULT_POSE = 1.5;
+const WALK_MAX = 3.5; // tiles: farther from `stand` than this, he reaches in passing (no walk)
+const WALK_CAP = 7; // s: a walk still behind him after this snaps back
 
 // A fresh game.toys for a new loop: { focus, byId: { id: { state, firedAt, by, n, last } }, poses: { who: pose } }.
 export function createToys(level) {
   const byId = {};
   for (const t of level.toys ?? []) byId[t.id] = { state: { ...t.state }, firedAt: null, by: null, n: 0, last: {} };
-  return { focus: null, byId, poses: {} };
+  return { focus: null, byId, poses: {}, walks: {} };
 }
 
 // The prop's centre in tile units.
@@ -108,12 +125,14 @@ export function updateToys(game) {
   const toys = game.level.toys;
   if (!toys || !game.toys) return;
   const p = game.player;
+  updateWalks(game);
   for (const toy of toys) {
     if (toy.on === 'press') continue;
     const t = game.toys.byId[toy.id];
     const at = toyPos(game.level, toy);
     const r = toy.radius ?? DEFAULT_RADIUS;
     for (const n of game.npcs) {
+      if (game.toys.walks?.[n.id]) continue; // already off to one: he deals with one thing at a time
       if (!n.active || !toy.npcs.includes(n.id) || !ready(game, toy, t, n.id)) continue;
       const to = toy.on === 'pass' ? at : p;
       if (Math.hypot(to.x - n.x, to.y - n.y) > r) continue;
@@ -121,6 +140,21 @@ export function updateToys(game) {
       if (toy.when && !toy.when(game.world, t.state, game, n)) continue;
       fire(game, toy, n.id);
     }
+  }
+}
+
+// The walks: record each walker's real track, and end the ones caught up or cut short (header).
+function updateWalks(game) {
+  const walks = game.toys.walks;
+  for (const id in walks) {
+    const w = walks[id];
+    const n = game.npcs.find((m) => m.id === id);
+    const cut = !n || !n.active || n.override !== w.override || game.loopTime - w.t0 > WALK_CAP
+      || game.fx.lines?.some((l) => l && l.from === id) || (game.watch && Object.hasOwn(game.watch, id));
+    if (cut) { delete walks[id]; continue; }
+    const last = w.trail[w.trail.length - 1];
+    if (!last || last.x !== n.x || last.y !== n.y) w.trail.push({ x: n.x, y: n.y });
+    if (!walkAt(game, w)) delete walks[id];
   }
 }
 
@@ -134,7 +168,15 @@ export function fire(game, toy, who) {
   t.by = who;
   t.n += 1;
   if (r.set) Object.assign(t.state, r.set);
-  if (r.pose) game.toys.poses[who] = { ...r.pose, until: game.loopTime + (r.pose.for ?? DEFAULT_POSE), x: at.x, y: at.y };
+  // A walk over to it first (header): the pose waits until he is there.
+  let from = game.loopTime;
+  const n = toy.stand && who !== 'player' ? game.npcs.find((m) => m.id === who) : null;
+  if (n && n.active && n.pose !== 'sit' && !n.override && !game.toys.walks[who] && dist(n, toy.stand) <= WALK_MAX) {
+    const fix = r.pose?.for ?? DEFAULT_POSE;
+    game.toys.walks[who] = { t0: game.loopTime, from: { x: n.x, y: n.y }, stand: { ...toy.stand }, at, fix, override: n.override, trail: [] };
+    from += dist(n, toy.stand) / NPC_SPEED;
+  }
+  if (r.pose) game.toys.poses[who] = { ...r.pose, from, until: from + (r.pose.for ?? DEFAULT_POSE), x: at.x, y: at.y };
   if (r.burst) burst(game, r.burst.kind, at.x, at.y, r.burst.n ?? 8, r.burst);
   if (r.say) {
     const s = Array.isArray(r.say) ? { icons: r.say } : r.say;

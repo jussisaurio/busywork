@@ -391,6 +391,10 @@ painters read `toyState(game, id)` (`{ ...state, n, by, since }`, `since` null u
 commands after which it has fired. The behaviour golden skips toy events and toy bubbles, so adding a toy moves
 no behaviour golden; the gate's `toys` check plays `try` and needs the firing frame to draw differently, and
 `toy-neutral` replays every winning golden plan with every toy fired over and over and needs the same trace.
+`stand` (pass / near, optional, `{ x, y }`): where a person stands to do it. He is drawn walking over, doing the
+pose there and hurrying back along his real track (`game/toy-walk.js`); the sim body walks on, so it stays
+neutral. Only when he is on his feet, in no override and within 3.5 tiles of it; cut at once by a sightline from
+him, a notice, an override or 7 s.
 Example: meeting `toys.js` (the fire door's bar).
 
 ### Behaviours (hooks) and the sim API

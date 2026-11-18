@@ -8,6 +8,7 @@ import { C } from './palette.js';
 import { headY, lookFor, playerHeld } from './characters.js';
 import { drawClock } from './things.js';
 import { findNpc } from '../game/perception.js';
+import { toyWalkAt } from '../game/toy-walk.js';
 import { NOTICE, DOUBLE_TAKE } from '../config.js';
 
 // The part of the map on screen, in map pixels (renderer.js: smaller while the end beat zooms in). Bubbles, the
@@ -28,8 +29,9 @@ function anchorOf(game, owner) {
     }
     const n = game.npcs && findNpc(game, owner);
     if (!n || !n.active) return false;
-    ANCHOR.x = fin(n.x) * T;
-    ANCHOR.y = headY(game.level.looks, n, 'bubbleDy');
+    const w = toyWalkAt(game, n); // drawn walking over to a toy's prop (sim/mechanics/toy.js)
+    ANCHOR.x = fin(w ? w.x : n.x) * T;
+    ANCHOR.y = headY(game.level.looks, n, 'bubbleDy') + (w ? (w.y - n.y) * T : 0);
     return true;
   }
   if (owner && typeof owner === 'object' && Number.isFinite(owner.x) && Number.isFinite(owner.y)) {

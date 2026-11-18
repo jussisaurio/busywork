@@ -254,14 +254,15 @@ export default [
   },
   {
     name: 'picture-kev',
-    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 2:38.5'],
-    intent: 'The picture war, 2: Kev, on his coffee run, reaches up to the crooked picture (😒) and tilts it the ' +
-      'other way.',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 2:39.3'],
+    intent: 'The picture war, 2: Kev, on his coffee run, has stepped out of his way to stand right under the crooked ' +
+      'picture, and reaches up to it, scowling (😒), to tilt it the other way.',
   },
   {
     name: 'picture-lin',
-    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 3:02.3'],
-    intent: 'The picture war, 3: Lin, on her way to the fridge, reaches up to it, cross (😤), and straightens it.',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 3:03.3'],
+    intent: 'The picture war, 3: Lin, on her way to the fridge, has stepped over to stand right under it, and ' +
+      'reaches up, cross (😤), to straighten it.',
   },
   {
     name: 'end-restroom',

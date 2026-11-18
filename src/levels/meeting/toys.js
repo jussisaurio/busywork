@@ -10,7 +10,8 @@
 //              restroom (👕🟡👉🚽). He doesn't care whose sandwich it was.
 //   picture_*  the picture in the hallway by the kitchen door (24,6). You tilt it; Kev, passing on his coffee run,
 //              can't stand it and tilts it the other way (😒); Lin, on her way to the fridge, straightens it, cross
-//              (😤). Each turns to it and fixes it, and the frame scrapes on its nail (creak). Three people, one nail.
+//              (😤). Each steps out of their way to stand under it (toy `stand`), fixes it at arm's length, and hurries
+//              back to their errand; the frame scrapes on its nail (creak). Three people, one nail.
 //              Its tilt is whoever touched it last (pictureTilt: you +1, Kev -1, Lin straight); painters.js draws it.
 //   ficus      the boss's plant, after you pour the coffee into it (interactions.js water_ficus): on his next look
 //              at it he is delighted, once (🌿😍, his head turned to it).
@@ -23,6 +24,7 @@ import { at as clockAt } from '../../config.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
+const UNDER_PICTURE = { x: 25, y: 7.4 }; // where Kev and Lin stand to fix it: right under it, at arm's length
 const hallSide = (npc) => npc.y > PICTURE.y + 0.6; // in the hallway, not the kitchen behind the wall
 const PICTURE_TOYS = [['picture', 1], ['picture_kev', -1], ['picture_lin', 0]];
 export function pictureTilt(game) {
@@ -34,7 +36,7 @@ export function pictureTilt(game) {
   }
   return { tilt: v, since: f === null ? null : game.loopTime - f };
 }
-const FIX = { sfx: 'creak', pose: { arms: 'reach', face: true, for: 1.4 } };
+const FIX = { sfx: 'creak', pose: { arms: 'reach', face: true, angry: true, for: 1.4 } };
 const KNOCK = { sfx: 'bang', pose: { arms: 'bang', face: true, for: 0.6 } };
 const inside = (id) => (w, s, game) => game.player._stall === id;
 
@@ -70,17 +72,17 @@ export const TOYS = [
     try: ['goto picture', 'interact'],
   },
   {
-    id: 'picture_kev', at: PICTURE, on: 'pass', npcs: ['kev'], radius: 3, every: 4,
+    id: 'picture_kev', at: PICTURE, on: 'pass', npcs: ['kev'], radius: 3, every: 4, stand: UNDER_PICTURE,
     when: (w, s, game, npc) => hallSide(npc) && pictureTilt(game).tilt === 1,
-    line: 'on his way past, <by> reaches up to the crooked picture 😒 and tilts it the other way',
-    react: { ...FIX, say: ['😒'] },
+    line: '<by> stops, steps over to the crooked picture 😒 and tilts it the other way',
+    react: { ...FIX, say: { icons: ['😒'], ttl: 3 } }, // up from setting off until the fix is done
     try: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 2:46'],
   },
   {
-    id: 'picture_lin', at: PICTURE, on: 'pass', npcs: ['lin'], radius: 3, every: 4,
+    id: 'picture_lin', at: PICTURE, on: 'pass', npcs: ['lin'], radius: 3, every: 4, stand: UNDER_PICTURE,
     when: (w, s, game, npc) => hallSide(npc) && pictureTilt(game).tilt !== 0,
-    line: 'on her way past, <by> reaches up to the crooked picture 😤 and straightens it',
-    react: { ...FIX, say: ['😤'] },
+    line: '<by> stops, steps over to the crooked picture 😤 and straightens it',
+    react: { ...FIX, say: { icons: ['😤'], ttl: 3 } },
     try: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 3:08'],
   },
   {

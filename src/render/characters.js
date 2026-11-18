@@ -6,6 +6,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { NOTICE, MARKS, HOLD_TIME, WORK_PENALTY_MIN } from '../config.js';
+import { toyWalkAt } from '../game/toy-walk.js';
 
 const genericLooks = new Map();
 function shade(hex, f) {
@@ -911,7 +912,8 @@ export function drawCharacters(ctx, game, t, mem) {
   const npcs = game.npcs || [];
   for (let i = 0; i < npcs.length; i++) if (npcs[i] && npcs[i].active) order.push(npcs[i]);
   if (game.player && !game.player.hidden) order.push(game.player); // hidden: gone (scenario.js leaveDay), or in a cubicle
-  order.sort((a, b) => fin(a.y) - fin(b.y));
+  const y = (e) => (e === game.player ? fin(e.y) : fin(toyWalkAt(game, e)?.y, fin(e.y))); // a toy's walk is drawn there
+  order.sort((a, b) => y(a) - y(b));
   for (let i = 0; i < order.length; i++) {
     const e = order[i];
     if (e === game.player) drawPlayer(ctx, game, t);
@@ -1016,12 +1018,12 @@ function wornLook(looks, disguise) {
 
 // A toy's reaction on this person for a moment (level.toys, sim/mechanics/toy.js): arms, a scowl, the head turned to
 // the prop. Drawn only: his facing in the sim never changes.
-function wearToyPose(game, e, s) {
+function wearToyPose(game, e, s, at = e) {
   const pose = game.toys?.poses[e.id]; // a toy's pose (sim/mechanics/toy.js), while it lasts
-  if (!pose || game.loopTime >= pose.until) return;
+  if (!pose || game.loopTime >= pose.until || game.loopTime < (pose.from ?? -Infinity)) return; // from: on arrival
   if (pose.arms) s.arms = pose.arms;
   if (pose.angry) s.angry = true;
-  if (pose.face) s.head = Math.atan2(pose.y - fin(e.y), pose.x - fin(e.x));
+  if (pose.face) s.head = Math.atan2(pose.y - fin(at.y), pose.x - fin(at.x));
   if (pose.slump) { s.slump = true; s.head = s.dir; } // asleep: no glances shown (what he sees is unchanged)
 }
 
@@ -1129,7 +1131,17 @@ function drawNpc(ctx, game, n, t) {
     s.arms = 'reach';
     s.item = itemGlyph(game.level.items, n.pocketing.type);
   }
-  wearToyPose(game, n, s);
+  // Walking over to a toy's prop and back (game/toy-walk.js): drawn there, on his feet, his hands free.
+  const walk = toyWalkAt(game, n);
+  if (walk) {
+    s.dir = walk.dir;
+    s.head = s.dir;
+    s.glance = 0;
+    s.pose = walk.moving ? 'walk' : 'stand';
+    s.moving = walk.moving;
+    if (!rule || walk.fixing) s.arms = walk.moving ? 'walk' : 'idle';
+  }
+  wearToyPose(game, n, s, walk || n);
   pointAt(game, n, s);
   orderTurn(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.
@@ -1149,8 +1161,8 @@ function drawNpc(ctx, game, n, t) {
   const auth = game.level.roles?.authority?.id;
   if (game.caught && n.id && n.id === auth) s.angry = true; // the authority, catching you
   if (game.rules?.grudge?.by === n.id && n.id) s.angry = true; // she saw you, and she'll tell him when he's back
-  const px = fin(n.x) * T;
-  let py = fin(n.y) * T + stoop;
+  const px = fin(walk ? walk.x : n.x) * T;
+  let py = fin(walk ? walk.y : n.y) * T + stoop;
   // A witness who just saw you at it (game.watch, play/rules.js) starts: a little hop (render/effects.js drawWitnesses
   // opens the eye beside her head).
   if (n.id !== auth && game.watch && Object.hasOwn(game.watch, n.id)) {
