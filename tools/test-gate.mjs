@@ -4,7 +4,7 @@ import { checkGate, gateReport, coldReadReport, gateBudget, DEFAULT_BUDGET } fro
 import { STAGES } from './cold-read.mjs';
 import { getLevel } from '../src/levels/index.js';
 import { validateLevel } from '../src/levels/validate.js';
-import { evaluate, usedLessons, skippedLessons, levelData } from './fuzz.mjs';
+import { evaluate, usedLessons, skippedLessons, levelData, fuzz, parsePlan, planToCmds } from './fuzz.mjs';
 
 let fails = 0;
 const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m); } else console.log('ok  ', m); };
@@ -128,6 +128,38 @@ ok(checkGate(rr, RL).find((c) => c.name === 'put')?.text === 'every projector wi
   ok(gateBudget('meeting', undefined, own).budget === 60000 && gateBudget('meeting', undefined, own).from === 'level', 'budget: the level\'s gate.budget without --budget');
   ok(gateBudget('meeting', '500', own).budget === 500 && gateBudget('meeting', '500', own).from === 'flag', 'budget: --budget beats the level\'s');
   ok(gateBudget('meeting', undefined, { ...own, budget: undefined }).budget === DEFAULT_BUDGET, 'budget: the default when the level names none');
+}
+
+// Known plans: a route a known plan wins passes "routes" by replay; one only the search won passes with a note.
+{
+  const kr = healthy();
+  kr.known = { plans: 9, wins: 2, variations: 0, unplayed: 0, routes: { projector: ['pretend until 4:00'], keycard: ['pretend until 4:00'] } };
+  let c = checkGate(kr, L).find((x) => x.name === 'routes');
+  ok(c.ok && /known winning plan, replayed/.test(c.text) && !c.detail.length, 'routes: every route won by a known plan says so');
+  kr.known.routes = { keycard: ['pretend until 4:00'] };
+  c = checkGate(kr, L).find((x) => x.name === 'routes');
+  ok(c.ok && /only the search found one for projector/.test(c.text) && /gate\.goldenPlans/.test(c.detail[0]) && /interact/.test(c.detail[1]),
+    'routes: a route only the search won passes, and its plan is printed to record');
+  delete kr.wins.projector;
+  delete kr.wins['keycard+projector'];
+  ok(!checkGate(kr, L).find((x) => x.name === 'routes').ok, 'routes: a route neither a known plan nor the search wins fails');
+
+  // Plans read back from harness commands: the plan language's own commands round-trip, the rest stay verbatim.
+  const F = levelData('fixture');
+  const cmds = ['goto microwave pretend', 'interact', 'wait 1.5s', 'pretend until 2:40', 'eat', 'sit pretend', 'wait until 3:00'];
+  ok(planToCmds(parsePlan(cmds, F), F).join(';') === cmds.join(';') && !parsePlan(cmds, F).steps.some((s) => s.k === 'raw'), 'parsePlan: a fuzz plan round-trips with no raw step');
+  const hand = parsePlan(['move E 1s', 'goto cake_stand busy', 'pretend until 2:40.5'], F);
+  ok(hand.steps.map((s) => s.k).join() === 'raw,goto,raw' && hand.steps[1].busy && hand.endBusy === false, 'parsePlan: raw movement and a fractional time stay verbatim; busy reads as pretend; no stance means idle');
+  ok(parsePlan(['goto cake_stand', 'restart', 'wait 1s'], F) === null, 'parsePlan: a plan over several loops is not a fuzz plan');
+
+  // A real search on the fixture: the known plans win both routes before a single random day, and they and their
+  // variations are judged like any other win (a tiny budget: nothing here rests on what the random part finds).
+  const fz = await fuzz({ level: 'fixture', budget: 150, workers: 1 });
+  ok(Object.keys(fz.known.routes).sort().join() === 'cake,calendar' && fz.known.variations > 0, `fuzz: the fixture's known plans win both routes (${fz.known.plans} played, ${fz.known.variations} variations)`);
+  ok(fz.wins.cake.knownCount > 0 && fz.wins.cake.count > fz.wins.cake.knownCount, 'fuzz: known wins are counted, and their variations add wins of their own');
+  ok(checkGate(fz).find((x) => x.name === 'routes').ok, 'gate: routes pass at a budget far too small for the random search');
+  const bare = await fuzz({ level: 'fixture', budget: 150, workers: 1, known: [] });
+  ok(bare.known.plans === 0 && bare.randomEvaluated === 45, 'fuzz: known: [] is the pure random search');
 }
 
 // Two real days (level 1, the minimal keycard win, with and without pretend).

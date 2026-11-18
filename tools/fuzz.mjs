@@ -10,10 +10,18 @@
 // candidates are mutations/crossovers of elites. Winning elites are then shrunk (drop steps while the
 // same win survives), so the report shows the minimal plan for every way to win.
 //
-//   node tools/fuzz.mjs [--level meeting] [--budget 6000] [--seed 1] [--batch 288] [--workers N] [--json out.json] [--verbose]
+// Known plans come first. The level's recorded plans (knownPlans: its golden.json and gate.goldenPlans) are played
+// before anything random, so "is there a plan that wins route X" is answered by replaying a plan already known to
+// win it, not by whether the dice find one. Then every one-step variation of each known win is played (each
+// pretend flag flipped, each step dropped, pretend never held): the cheapest unintended wins sit next to the
+// intended ones. The random search starts from that archive and spends its days on what only it can find. Every
+// win, whatever found it (a known plan, a variation, a random plan, a mutation, a shrink or window candidate),
+// is judged by the same code (offer()).
 //
-// The archive depends only on --level, --seed, --budget and --batch (plans per generation), never on --workers
-// or the machine, so a seed reproduces anywhere.
+//   node tools/fuzz.mjs [--level meeting] [--budget 6000] [--seed 1] [--batch 288] [--workers N] [--json out.json] [--verbose] [--no-known]
+//
+// The archive depends only on --level, --seed, --budget, --batch (plans per generation) and the level's known
+// plans, never on --workers or the machine, so a seed reproduces anywhere. --no-known is the pure random search.
 //
 // Flags in the report are heuristics for a designer to look at, not test failures (tools/gate.mjs turns
 // them into a pass/fail verdict):
@@ -30,7 +38,7 @@
 // all of these.
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { availableParallelism } from 'node:os';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { jobs } from './lib/jobs.mjs';
 import { createHarness } from '../src/agent/harness.js';
@@ -108,11 +116,63 @@ function stepToCmd(s, L) {
     case 'put': return `put ${s.t}${s.busy ? ' pretend' : ''}`;
     case 'until': return `${s.busy ? 'pretend' : 'wait'} until ${fmt(s.m, L)}`;
     case 'for': return `${s.busy ? 'pretend' : 'wait'} ${s.s}s`;
+    case 'raw': return s.c; // a known plan's command the plan language has no step for (parsePlan), kept verbatim
     default: throw new Error(`bad step ${JSON.stringify(s)}`);
   }
 }
 // L: levelData(id); the final stance is held until the level's meeting.
 export const planToCmds = (plan, L) => [...plan.steps.map((s) => stepToCmd(s, L)), `${plan.endBusy ? 'pretend' : 'wait'} until ${fmt(L.meetingAt, L)}`];
+
+// The step for one harness command, the inverse of stepToCmd. A command the plan language cannot write exactly
+// (raw movement, a fractional clock time, a plain `sit`) becomes a `raw` step: replayed verbatim, and mutations can
+// only move, drop or replace it.
+function cmdToStep(c, L) {
+  const w = c.split(' ');
+  const busy = w[w.length - 1] === 'pretend';
+  let s = null;
+  if (c === 'interact') s = { k: 'do' };
+  else if (c === 'eat') s = { k: 'eat' };
+  else if (c === 'sit pretend') s = { k: 'sit' };
+  else if (w[0] === 'goto' || w[0] === 'put') s = { k: w[0], t: w[1], busy };
+  else if ((w[0] === 'pretend' || w[0] === 'wait') && w[1] === 'until') {
+    try { s = { k: 'until', m: at(w[2], L.start), busy: w[0] === 'pretend' }; } catch { s = null; }
+  } else if (w[0] === 'pretend' || w[0] === 'wait') s = { k: 'for', s: parseFloat(w[1]), busy: w[0] === 'pretend' };
+  return s && stepToCmd(s, L) === c ? s : { k: 'raw', c };
+}
+
+// A list of harness commands as a plan, or null when it is not one day played from its start (restart, continue).
+// 'busy' is the harness's old name for 'pretend' (harness.js): read as 'pretend', so a cmd lesson sees it. A plan
+// without a final stance held until the meeting gets the idle one, which is what replaying it does anyway.
+export function parsePlan(cmds, L) {
+  if (cmds.some((c) => /^(restart|continue|start)\b/.test(c))) return null;
+  const cs = cmds.map((c) => c.split(' ').map((x) => (x === 'busy' ? 'pretend' : x)).join(' '));
+  const last = cs[cs.length - 1]?.match(/^(pretend|wait) until (\S+)$/);
+  const stance = !!last && last[2] === fmt(L.meetingAt, L);
+  return { steps: (stance ? cs.slice(0, -1) : cs).map((c) => cmdToStep(c, L)), endBusy: stance ? last[1] === 'pretend' : false };
+}
+
+// The plans a level already knows, as lists of harness commands: every plan of its golden.json (one per outcome
+// an earlier search found, tools/golden.mjs) and its hand-written gate.goldenPlans. To give a route a known
+// winning plan, add one to gate.goldenPlans.
+export function knownPlans(id) {
+  const file = fileURLToPath(new URL(`../src/levels/${id}/golden.json`, import.meta.url));
+  const recorded = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')).plans.map((p) => p.cmds) : [];
+  const seen = new Set();
+  return [...recorded, ...(getLevel(id).gate?.goldenPlans ?? [])].filter((c) => !seen.has(c.join(';')) && seen.add(c.join(';')));
+}
+
+// Every one-step variation of a plan: each pretend flag flipped, pretend never held, each step dropped.
+function variations(plan) {
+  const out = [];
+  const edit = (f) => { const p = clone(plan); f(p); out.push(p); };
+  plan.steps.forEach((s, i) => { if ('busy' in s) edit((p) => { p.steps[i].busy = !s.busy; }); });
+  edit((p) => { p.endBusy = !plan.endBusy; });
+  edit((p) => { for (const s of p.steps) if ('busy' in s) s.busy = false; p.endBusy = false; });
+  plan.steps.forEach((_, i) => edit((p) => { p.steps.splice(i, 1); }));
+  return out;
+}
+// The share of the budget the variations of known wins may use.
+const VARIATION_SHARE = 0.25;
 
 function randomStep(rng, L) {
   // Only levels with spots that take items put things down (no rng draw otherwise: level 1's plans stay the same).
@@ -291,10 +351,13 @@ if (!isMainThread && workerData?.worker) {
 // Runs the search. Returns plain data:
 //   { level, seed, budget, batch, workers, evaluated, secs, randomWins, randomEvaluated,
 //     bins: Map(bin -> { plan, res }),
-//     wins: { [routes joined by '+']: { count, randomCount, keyTimes: { milestone: [min, max] },
+//     wins: { [routes joined by '+']: { count, randomCount, knownCount, keyTimes: { milestone: [min, max] },
 //             without: { lessonId: smallest winning plan that skipped it }, minimal: plan, windows: [...] } },
+//     known: { plans, wins, variations, unplayed, routes: { routeId: the first known plan that wins it } },
 //     crashes: [{ cmds, error }] (the first 10), crashCount }
-export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, batch = BATCH, workers = defaultWorkers(), progress = null } = {}) {
+// known: the plans played first, as lists of harness commands (default: the level's knownPlans; [] for none).
+// They and the variations of the winning ones count in the budget (variations up to VARIATION_SHARE of it).
+export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, batch = BATCH, workers = defaultWorkers(), progress = null, known = knownPlans(level) } = {}) {
   const L = levelData(level);
   const rng = createRng(seed);
   const pool = makePool(workers, level);
@@ -320,16 +383,19 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
     return res;
   };
 
-  const offer = (plan, res, random) => {
+  // Every day played is judged here, whatever proposed its plan. from: 'random', 'known' or undefined (the rest).
+  const offer = (plan, res, from) => {
+    const random = from === 'random';
     evaluated++;
     if (random) randomEvaluated++;
     if (res.error) return;
     const wk = winKey(res);
     if (wk) {
       if (random) randomWins++;
-      const s = (wins[wk] ??= { count: 0, randomCount: 0, keyTimes: {}, without: {} });
+      const s = (wins[wk] ??= { count: 0, randomCount: 0, knownCount: 0, keyTimes: {}, without: {} });
       s.count++;
       if (random) s.randomCount++;
+      if (from === 'known') s.knownCount++;
       for (const k of L.keyActions) {
         const m = res.ms[k];
         if (m === undefined) continue;
@@ -346,19 +412,53 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
     if (!cur || size(plan) < size(cur.plan)) elites.set(bin, { plan: clone(plan), res });
   };
 
+  // The known plans: the winning ones (parents for the search besides the elites: a bin keeps only its simplest
+  // plan, and the longer known wins are worth mutating too) and the first known win of each route.
+  const knownInfo = { plans: 0, wins: 0, variations: 0, unplayed: 0, routes: {} };
+  const knownWins = [];
+
   try {
+    // 0. The known plans, then the one-step variations of the ones that win.
+    {
+      const plans = known.map((cmds) => parsePlan(cmds, L)).filter(Boolean);
+      knownInfo.plans = plans.length;
+      knownInfo.unplayed = known.length - plans.length;
+      const res = await run(plans);
+      plans.forEach((p, i) => {
+        offer(p, res[i], 'known');
+        if (!winKey(res[i]) || res[i].error) return;
+        knownWins.push({ plan: p, res: res[i] });
+        for (const id of res[i].routes) knownInfo.routes[id] ??= planToCmds(p, L);
+      });
+      knownInfo.wins = knownWins.length;
+      const keyOf = (p) => planToCmds(p, L).join(';');
+      const seen = new Set(plans.map(keyOf));
+      const cap = Math.floor(budget * VARIATION_SHARE);
+      const vars = [];
+      // Simplest wins first, so a small budget covers the short plans before it runs out.
+      for (const w of [...knownWins].sort((a, b) => size(a.plan) - size(b.plan))) {
+        for (const v of variations(w.plan)) {
+          if (vars.length >= cap) break;
+          if (!seen.has(keyOf(v)) && seen.add(keyOf(v))) vars.push(v);
+        }
+      }
+      knownInfo.variations = vars.length;
+      const vres = await run(vars);
+      vars.forEach((p, i) => offer(p, vres[i]));
+    }
+
     // 1. Random sampling (also the baseline for "how often does a random plan win?").
-    const initN = Math.min(Math.floor(budget * 0.3), 3000);
+    const initN = Math.max(0, Math.min(Math.floor(budget * 0.3), 3000, budget - evaluated));
     {
       const plans = Array.from({ length: initN }, () => randomPlan(rng, L));
       const res = await run(plans);
-      plans.forEach((p, i) => offer(p, res[i], true));
+      plans.forEach((p, i) => offer(p, res[i], 'random'));
     }
 
     // 2. MAP-Elites: mutate elites, wins and rare bins more often.
-    while (evaluated < budget) {
+    while (evaluated < budget && elites.size) {
       const bins = [...elites.values()];
-      const winBins = bins.filter((e) => winKey(e.res));
+      const winBins = [...bins.filter((e) => winKey(e.res)), ...knownWins];
       const plans = [];
       for (let i = 0; i < batch && evaluated + plans.length < budget; i++) {
         const pickWin = winBins.length && rng.chance(0.35);
@@ -367,7 +467,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
         plans.push(mutate(rng, L, a.plan, b?.plan));
       }
       const res = await run(plans);
-      plans.forEach((p, i) => offer(p, res[i], false));
+      plans.forEach((p, i) => offer(p, res[i]));
       progress?.(`  ${evaluated} days, ${elites.size} bins, ${winBins.length} winning bins`);
     }
 
@@ -380,11 +480,11 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
         const cands = plan.steps.map((_, i) => ({ steps: plan.steps.filter((__, j) => j !== i), endBusy: plan.endBusy }));
         if (!cands.length) break;
         const out = await run(cands);
+        cands.forEach((p, j) => offer(p, out[j]));
         const i = out.findIndex((r) => winKey(r) === wk);
         if (i >= 0) {
           plan = cands[i];
           changed = true;
-          evaluated += i + 1;
         }
       }
       wins[wk].minimal = plan;
@@ -404,7 +504,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
           return p;
         });
         const res = await run(cands);
-        evaluated += cands.length;
+        cands.forEach((p, j) => offer(p, res[j]));
         const spans = [];
         ms.forEach((m, j) => {
           if (winKey(res[j]) !== wk) return;
@@ -420,7 +520,7 @@ export async function fuzz({ level = DEFAULT_LEVEL, budget = 6000, seed = 1, bat
   }
 
   const secs = (performance.now() - t0) / 1000;
-  return { level, seed, budget, batch, workers, evaluated, secs, randomWins, randomEvaluated, bins: elites, wins, crashes, crashCount };
+  return { level, seed, budget, batch, workers, evaluated, secs, randomWins, randomEvaluated, bins: elites, wins, known: knownInfo, crashes, crashCount };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -432,7 +532,7 @@ const pct = (n, d) => `${((100 * n) / Math.max(1, d)).toFixed(2)}%`;
 export function winLines(r, wk) {
   const L = levelData(r.level);
   const w = r.wins[wk];
-  const out = [`WIN ${wk}: ${w.count} winning days found, ${w.randomCount} of them from random plans`];
+  const out = [`WIN ${wk}: ${w.count} winning days found, ${w.knownCount ?? 0} of them known plans, ${w.randomCount} from random plans`];
   const kt = Object.entries(w.keyTimes).map(([k, [a, b]]) => `${k} ${fmt(a, L)}–${fmt(b, L)}`).join(', ');
   if (kt) out.push(`  key actions seen in wins: ${kt}`);
   out.push(`  minimal plan (${size(w.minimal)} steps):`);
@@ -444,6 +544,14 @@ export function winLines(r, wk) {
   return out;
 }
 
+// What the known plans gave the search, one line.
+export function knownLine(r) {
+  const k = r.known;
+  if (!k?.plans) return 'known plans: none played (the search started from nothing)';
+  const routes = Object.keys(k.routes);
+  return `known plans: ${k.plans} played first, ${k.wins} of them win (${routes.length ? `routes ${routes.join(', ')}` : 'no route'}); ${k.variations} one-step variations of those wins played${k.unplayed ? `; ${k.unplayed} not one day from its start, left out` : ''}`;
+}
+
 export function report(r, { verbose = false } = {}) {
   const L = levelData(r.level);
   const lines = [];
@@ -453,6 +561,7 @@ export function report(r, { verbose = false } = {}) {
   for (const e of r.bins.values()) results[e.res.result] = (results[e.res.result] ?? 0) + 1;
   say(`outcome bins by result: ${Object.entries(results).map(([k, v]) => `${k} ${v}`).join(', ')}`);
   say(`random plans that win: ${r.randomWins}/${r.randomEvaluated} (${pct(r.randomWins, r.randomEvaluated)})`);
+  say(knownLine(r));
   const flags = [];
   const combos = combosOf(r);
   if (!combos.length) say('\nno wins found (raise --budget?)');
@@ -483,9 +592,9 @@ export function report(r, { verbose = false } = {}) {
 // depends only on level, seed, budget and batch.
 export const toJson = (r, L = levelData(r.level)) => ({
   level: r.level, evaluated: r.evaluated, seed: r.seed, budget: r.budget, batch: r.batch, secs: r.secs,
-  randomWins: r.randomWins, randomEvaluated: r.randomEvaluated,
+  randomWins: r.randomWins, randomEvaluated: r.randomEvaluated, known: r.known,
   wins: Object.fromEntries(Object.entries(r.wins).map(([k, w]) => [k, {
-    count: w.count, randomCount: w.randomCount, keyTimes: w.keyTimes,
+    count: w.count, randomCount: w.randomCount, knownCount: w.knownCount, keyTimes: w.keyTimes,
     without: Object.fromEntries(Object.entries(w.without).map(([id, p]) => [id, planToCmds(p, L)])),
     minimal: planToCmds(w.minimal, L), windows: w.windows,
   }])),
@@ -517,6 +626,7 @@ if (isMainThread && process.argv[1] === SELF) {
     batch: Number(arg('batch', BATCH)),
     workers: Number(arg('workers', defaultWorkers())),
     progress: verbose ? console.log : null,
+    ...(process.argv.includes('--no-known') ? { known: [] } : {}),
   });
   console.log(report(r, { verbose }));
   if (jsonOut) writeFileSync(jsonOut, JSON.stringify(toJson(r), null, 2));
