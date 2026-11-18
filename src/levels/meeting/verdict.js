@@ -38,5 +38,16 @@ export function verdictFull(game, a) {
     if (p.busyPose === 'phone') return { why: 'call' };
     if (a.present) return { why: 'puppets' };
   }
+  return verdictWhere(game, a);
+}
+
+// ---- "Where were you?" (end-scenes-fails.js tableauWorking). Blamed, and at 4:00 you were at your own desk, typing:
+// the one person in the office working. The room turns to look (through the wall: your desk is just south of it).
+// why 'working'. The restroom is meeting.where (outcome.where), not this.
+function verdictWhere(game, a) {
+  const p = game.player;
+  if (a.result === 'blamed' && p.seated && p.busyPose === 'typing') {
+    return { why: 'working', stare: { at: 'player', think: ['🪑', '❓'], say: ['👀', '⌨️', '@player'] } };
+  }
   return null;
 }

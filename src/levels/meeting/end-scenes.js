@@ -56,6 +56,7 @@ function endKind(o) {
 // ---- The plain fails (end-scenes-fails.js): a fail the verdict gave a cause (verdict.js verdictFull) draws it.
 function endKindFull(o) {
   const k = endKind(o);
+  if (k === 'blamed' && o?.why === 'working') return 'working'; // "where were you?": at your desk, typing
   return k === 'fail' && FAIL_SCENES[o?.why] ? o.why : k;
 }
 

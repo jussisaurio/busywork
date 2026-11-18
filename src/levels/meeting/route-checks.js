@@ -251,7 +251,7 @@ export default [
     },
   },
   {
-    name: 'same, mug back on the machine, but back at your desk at 4:00 → blamed (your empty chair)',
+    name: 'same, mug back on the machine, but still by the machine at 4:00 → blamed (your empty chair)',
     expect: { result: 'blamed', routes: ['projector'] },
     play({ run, waitFor, g }) {
       run('goto coffee_machine busy');
@@ -261,7 +261,6 @@ export default [
       run('goto projector busy');
       run('interact');
       run('put coffee busy');
-      run('sit busy');
       run('busy until 4:00');
       waitFor((g) => g.outcome, { maxSec: 10 });
       if (g.outcome?.why) throw new Error(`blamed for the empty chair expected, got why ${g.outcome.why}`);
@@ -285,6 +284,24 @@ export default [
       run('busy until 4:00');
       waitFor((g) => g.outcome, { maxSec: 10 });
       if (g.outcome?.where !== 'restroom') throw new Error(`where ${g.outcome?.where}, not the restroom`);
+    },
+  },
+  // ---- "Where were you?" at your desk (verdict.js verdictWhere; end-scenes-fails.js tableauWorking), one block.
+  {
+    name: 'same, mug back on the machine, but typing at your own desk at 4:00 → blamed, the room stares at the one person working (why working)',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector busy');
+      run('interact');
+      run('put coffee busy');
+      run('sit busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.why !== 'working') throw new Error(`why ${g.outcome?.why}, not working`);
     },
   },
   {

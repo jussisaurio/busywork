@@ -278,9 +278,16 @@ export default [
   },
   {
     name: 'end-blamed-chair',
-    cmds: [...SPILL, 'put coffee busy', 'sit busy', 'busy until 4:00'],
+    cmds: [...SPILL, 'put coffee busy', 'busy until 4:00'],
     intent: 'End card, a loss: the meeting fell apart, but you were the only one not in the meeting room, so everyone ' +
       'points at your empty chair: blamed.',
+  },
+  {
+    name: 'end-where-desk',
+    cmds: [...SPILL, 'put coffee busy', 'sit busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, blamed ("where were you?"): the projector died, and at 4:00 you were at your own desk, typing. ' +
+      'You sit in the foreground hammering at the keyboard (⌨️💨); behind you, crowded in the meeting-room doorway, ' +
+      'the boss, Lin and Kev stare at the one person in the office working (🪑❓, then 👀⌨️❓).',
   },
   {
     name: 'end-blamed-mug',

@@ -10,10 +10,10 @@
 // Same draw signature as end-scenes.js (draw(ctx, game, t, e, outcome), inside TAB, screen space). Objects are
 // drawn, never emoji; only bubbles speak emoji.
 import { rrect, fillEllipse, drawScreen } from '../../render/util.js';
-import { C, TEAL, OLIVE } from '../../render/palette.js';
-import { chair } from '../../render/tableau-furniture.js';
+import { C, TEAL, OLIVE, TOMATO } from '../../render/palette.js';
+import { chair, woodDesk } from '../../render/tableau-furniture.js';
 import { drawPerson } from '../../render/characters.js';
-import { TAB, person, bubble, floorCarpet } from '../../render/tableau.js';
+import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { findNpc } from '../../game/perception.js';
 
 function bossJacket(game) {
@@ -192,8 +192,86 @@ function duckShadow(ctx, x, y, t, e) {
   ctx.lineCap = 'butt';
 }
 
+// ---- "Where were you?" (verdict.js verdictWhere, why 'working'): blamed, and you were at your own desk, typing.
+// The open office, empty but for you, hammering away in the foreground. Behind you, in the meeting-room doorway,
+// the whole meeting has come to look: the boss filling the door, Lin and Kev peering round the frame. The one
+// person in the building working. (Locked out, the boss is not there; projector, a wisp of smoke over their heads.)
+function tableauWorking(ctx, game, t, e, o) {
+  const routes = Array.isArray(o?.routes) ? o.routes : [];
+  const lockedOut = routes.includes('keycard');
+  const smoke = routes.includes('projector');
+  const wallH = 128;
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
+  backWall(ctx, wallH);
+  // the meeting-room door, open: a glimpse of the teal rug and the lit screen beyond
+  const dx = 548, dw = 132, dy = TAB.y + 14, dh = wallH - 19;
+  ctx.fillStyle = C.wallTop;
+  ctx.fillRect(dx - 8, dy - 8, dw + 16, dh + 8);
+  ctx.fillStyle = C.meetingRug;
+  ctx.fillRect(dx, dy, dw, dh);
+  ctx.fillStyle = 'rgba(255,255,235,0.55)';
+  ctx.fillRect(dx + 20, dy + 8, dw - 40, 30);
+  if (smoke) {
+    for (let i = 0; i < 3; i++) {
+      const k = (t * 0.4 + i / 3) % 1;
+      fillEllipse(ctx, dx + dw / 2 - 20 + i * 16 + Math.sin(t + i) * 6, dy + 46 - k * 40, 10 + k * 10, 7 + k * 6,
+        `rgba(120,120,120,${0.45 * (1 - k)})`);
+    }
+  }
+  // the meeting, crowded into the doorway, staring
+  const lean = Math.min(1, e / 1.2);
+  if (kevHere(game)) {
+    const k = person(t);
+    k.dir = Math.PI / 2 + 0.3;
+    k.head = Math.PI / 2 + 0.3;
+    k.glance = 1;
+    k.scale = 1.9;
+    drawPerson(ctx, game.level.looks.kev, k, dx + dw - 6 + 10 * (1 - lean), dy + dh - 10);
+  }
+  const l = person(t);
+  l.dir = Math.PI / 2 - 0.3;
+  l.head = Math.PI / 2 - 0.3;
+  l.scale = 1.9;
+  drawPerson(ctx, game.level.looks.lin, l, dx + 10 - 10 * (1 - lean), dy + dh - 6);
+  if (!lockedOut) {
+    const b = person(t);
+    b.dir = Math.PI / 2;
+    b.head = Math.PI / 2;
+    b.arms = e > 2.2 ? 'point' : 'idle';
+    b.jacket = bossJacket(game);
+    b.scale = 2.1;
+    drawPerson(ctx, game.level.looks.boss, b, dx + dw / 2, dy + dh - 2);
+  }
+  // you: at your desk, nearest us, facing us, typing hard, eyes on the screen
+  const yx = 340, yy = 290; // your desk top's centre
+  chair(ctx, yx, yy - 22, TOMATO, 2.6, -Math.PI / 2);
+  const p = person(t);
+  p.dir = Math.PI / 2;
+  p.head = Math.PI / 2 + Math.sin(t * 9) * 0.05;
+  p.pose = 'sit';
+  p.arms = 'type';
+  p.scale = 2.6;
+  drawPerson(ctx, game.level.looks.player, p, yx, yy - 30);
+  woodDesk(ctx, yx, yy - 4, 200, 44);
+  // the monitor's back, glowing round the edges
+  ctx.fillStyle = 'rgba(190,225,255,0.4)';
+  rrect(ctx, yx + 30, yy - 34, 60, 36, 4);
+  ctx.fill();
+  ctx.fillStyle = '#3b3e44';
+  rrect(ctx, yx + 33, yy - 31, 54, 30, 3);
+  ctx.fill();
+  ctx.fillRect(yx + 56, yy - 2, 8, 4);
+  // what they're saying
+  bubble(ctx, ['⌨️', '💨'], yx, yy - 112, e - 0.4, 'speech', 1.2);
+  const head = dy + dh - 66;
+  if (!lockedOut) bubble(ctx, e < 2.2 ? ['🪑', '❓'] : ['👀', '⌨️', '❓'], dx + dw / 2, head, e < 2.2 ? e - 0.8 : e - 2.2, 'thought');
+  else bubble(ctx, ['👀'], dx + dw / 2, head, e - 0.8, 'thought');
+  bubble(ctx, ['👀'], dx - 28, head + 14, e - 1.2, 'thought', 0.9); // Lin
+}
+
 export const FAIL_SCENES = {
   sip: { win: false, icons: ['☝️', '☕', '😐'], draw: tableauSip }, // the last cup in your hand: you drink it up front
   call: { win: false, icons: ['☝️', '📱', '⌚'], draw: tableauCall }, // on the phone at 4:00: you keep the call going
   puppets: { win: false, icons: ['📽️', '🦆', '😐'], draw: tableauPuppets }, // in the room: a duck in the beam
+  working: { win: false, icons: ['🪑', '⌨️', '👀'], draw: tableauWorking }, // blamed, at your desk, the only one working
 };
