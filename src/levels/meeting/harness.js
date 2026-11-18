@@ -17,7 +17,7 @@
 //   describe(event, memo) one line for a level event, null to say nothing, undefined for the harness's own
 //                         text. memo: a scratch object, fresh for each describeEvents() call.
 
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 
 const PROJECTOR = { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' };
