@@ -15,14 +15,20 @@ Jussi is the only playtester and the only judge of funny. Agents pitch wide; onl
 | 3b | Engine: a toy (a prop plus a reaction, no route effect) costs a few lines and does not upset the gate. First measure what one costs today | measured 2026-11-18: a reaction-only prop is about 20 lines; a hunted item is about 100 and cannot be kept off the routes. Proposal: a `level.toys` field run by its own mechanic, cosmetic only, with a gate check that toys change no outcome. Not built |
 | 4 | Jussi ticks pitches | done 2026-11-18. His reasons are in `PITCHES.md`; the patterns are in DESIGN, "Jussi's taste" |
 | 5a | Build slice 1 in Meeting (below) | done 2026-11-18 (see "Slice 1 status"). Gate passes. Not seen in a browser |
-| 6 | Jussi plays Meeting for ten minutes | ready |
-| 5b | Build slice 2, adjusted by what he says after playing | waiting on 6 |
+| 6 | Jussi plays Meeting | under way since 2026-11-18. His notes: `src/levels/meeting/PLAYTEST.md` (not committed until he says so; the repo is public). Fixes: "Playtest round 1" below |
+| 5b | Build slice 2, adjusted by what he says after playing | partly built during the playtest (below). The rest waits for a lead and a full round |
 
 Decided by Jussi:
 - The typing penalty stays. Levels add punishments specific to the mistake on top of it.
 - No blank slots for unfound routes. A found route may still show its icon.
 - You can leave by the elevator at any time. It is always a loss.
 - A boss who is looking for the cup and finds it in your hand catches you, in his office as anywhere else.
+- The fire door is a real fire door: anyone pushes out from inside; getting back in needs the card or someone coming
+  through. If an NPC can do a thing, so can you.
+- Every computer can take the coffee. To set the cup down you target the desk, not the computer.
+- The boss may force you out of the restroom ("might be funny": on trial).
+- Confirmed funny by him in play: the go-home card with the boss ringing, the crickets, coffee into a computer, the
+  Samaritan revenge lockout, the stack of work that shows the back-to-your-desk penalty.
 
 Decided by the overseer (say so if wrong):
 - "Lin takes the fall" is a win, like the Kev one.
@@ -59,10 +65,34 @@ Meeting:
   puppets), "where were you" typing at your desk, the bib, the campfire, Kev's doze drawn with rising z's.
 - Slice 1 is built. Skipped: "where were you" in the boss's chair (his office is private; needs new player state).
 
+## Playtest round 1 (2026-11-18, all merged)
+The game is published at https://jussisaurio.github.io/busywork/ (GitHub Pages from main; every push redeploys).
+`PLAYTEST_LEVEL` in `src/config.js` boots Meeting with no level menu; `?dev` gives the menu.
+
+- Engine: Tab no longer pauses; restart is a 1 s hold of R; a toy can make a person walk over (`stand`, drawn only),
+  and its change lands when he arrives; `walkThrough`; `authority.idleOkIn`; put spots take `shown` and `lies`.
+- Meeting fixes: the restroom hold meter and wash hint; Lin keeps the sandwich she takes back; every plant takes
+  coffee; Kev's whole body dozes; the cup sits on the machine and on desks; the projector win blames nobody.
+- Meeting additions: the walkable balcony (endings `balcony`, `snatched`, `together`); walking in behind the boss;
+  the restroom holds one (Lin knocks and waits, the boss ejects you); typing on any free keyboard; the hallway clock
+  (cosmetic); coffee into any computer (`computer`); the mug on Lin's desk (`lin`, `linHungry`) and the boss's
+  (`bossMug`).
+- Not reproduced: the boss seeing the card from beyond his cone. The sight test matches the cone; the drawn cone
+  fades over its last third and may read short. Waiting on Jussi: draw the cone to its true reach, or not.
+- Overseer and builder calls he may overrule: "together" counts as the keycard route; seated at your desk with the
+  full cup, E pours into your own computer; Lin's and the boss's desks take the empty mug only; the boss never
+  notices the mug on his own desk before 4:00; the clock does nothing real; Kev tilts the picture the other way and
+  only Lin straightens it; typing at another desk gives no busy credit.
+
 ### Known rough edges (prune as they are fixed)
-- The fire door's red blink and the Samaritan hug are small at map scale.
-- An NPC can walk into the restroom while you are in it. The wash bubble floats over the door.
-- A toy cannot stop an NPC, so Lin and Kev fix the picture without breaking stride.
+- A late tattle while you are on the balcony teleports you to your desk.
+- A toy walk is drawn only: the person's real body, and what it sees, carries on along its route. Unchecked whether
+  a catch can come from where the person does not appear to stand.
+- The walk-in frame does not show the player; the balcony is small on the map; the pounding bubble covers the reader.
+- The wall clock is small; its tilt and wedge are hard to see. No eject pose at the restroom (bubbles only).
+- Put-down items bob (an engine fix moved render goldens in four other levels and was backed out).
+- Meeting's sim cost is about 1.7x its perf budget after a fix; the budget predates the toys.
+- The Samaritan hug is small at map scale. The wash bubble floats over the restroom door.
 - `goto kev_desk` / `boss_desk` in the harness stands you inside the seated NPC (shows in the mustard shot). Fixing
   it changes 37 recorded plans; `sit` stopping on soft stops changes 26. Both wait for a decision.
 - The shelf's three meeting-table endings look alike at shelf size. The shelf with the new endings is unchecked.
@@ -75,13 +105,14 @@ Meeting:
 - The bib: the sandwich covers Lin's face mid-bite; the ending assumes an 'evidence' catch in Meeting is the mustard.
 - The last-cup and phone-call fails are close in spirit. Kev is usually gone by 4:00, so his reactions rarely show.
 - Kev's doze is small at map scale (blue z's over his head).
-- `play.mjs` help lists some targets twice. Meeting's sim cost is 1.64x its perf budget (advisory).
+- `play.mjs` help lists some targets twice.
 - `check.mjs` in a worktree needs `BUSYWORK_CANVAS_DIR` pointed at main's `tools/.deps`.
 
 ## Slice 2 (after Jussi has played)
-Typing on any typewriter; a red stapler; the wall clock (reuse the other level's mechanic); giving things to people
-and crowding them; locked out together; the flip chart; Lin takes the fall; soot face, the foam and the noticed
-projector; Lin's hunt escalating; panic spill. Desk phones only if they come as a general prop.
+Built in the playtest round: typing on any keyboard, the wall clock (cosmetic), locked out together, Lin takes the fall.
+Left: a red stapler; the clock as a real mechanic (needs his decision); giving things to people and crowding them;
+the flip chart; soot face, the foam and the noticed projector; Lin's hunt escalating; panic spill. Desk phones only
+if they come as a general prop.
 
 ## Queued, not started
 - **Blind play with pictures, not words** (Jussi agreed, 2026-11-18). Today the harness tells the blind player what
