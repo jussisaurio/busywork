@@ -15,7 +15,7 @@ import { drawProjector } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
-import { tableauBib } from './end-scenes-combo.js';
+import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
 
@@ -50,6 +50,7 @@ function endKind(o) {
   if (o.result === 'blamed' && (o.why === 'mug' || o.why === 'desk')) return 'mug';
   // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
   if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
+  if (o.result === 'win' && routes.includes('keycard') && routes.includes('projector')) return 'campfire'; // both at once
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
 }
@@ -738,6 +739,7 @@ export const END_SCENES = {
   kindOf: endKind,
   scenes: {
     bib: { win: false, icons: ['🥪', '🟡', '⌨️'], draw: tableauBib }, // Lin saw the mustard: you type in a bib (end-scenes-combo.js)
+    campfire: { win: true, icons: ['📽️', '🔥', '🔒'], draw: tableauCampfire }, // both routes: marshmallows at the projector
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },

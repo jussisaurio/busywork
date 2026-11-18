@@ -283,6 +283,32 @@ export default [
     },
   },
   {
+    name: 'both routes in one loop: spill after Kev leaves, mug back on the machine, the card while the boss hunts the kitchen → locked out and no projector → win (the campfire)',
+    expect: { result: 'win', routes: ['keycard', 'projector'] },
+    play({ run, waitFor, npc, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector');
+      run('interact');
+      run('put coffee');
+      run('goto my_seat busy');
+      run('sit busy');
+      waitFor(() => npc('boss').x > 19, { maxSec: 120 }); // he has gone to the kitchen, looking for the cup
+      run('goto coat_rack');
+      waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+      run('interact');
+      if (g.player.held !== 'keycard') throw new Error('no keycard: ' + g.world.keycard);
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.result !== 'win' || !g.outcome.routes.includes('keycard') || !g.outcome.routes.includes('projector')) {
+        throw new Error(`both routes expected, got ${g.outcome?.result} ${g.outcome?.routes}`);
+      }
+    },
+  },
+  {
     name: 'combo, but eat it at the fridge and sit at your desk → hunting Lin sees the mustard 🥪❗👉, the boss hears → caught (the bib)',
     expect: { result: 'caught' },
     play({ run, waitFor, npc, g, log }) {

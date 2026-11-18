@@ -290,6 +290,16 @@ export default [
       'things: fired.',
   },
   {
+    name: 'end-campfire',
+    cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:06', 'goto projector', 'interact', 'put coffee',
+      'goto my_seat busy', 'sit busy', 'busy until 3:18.75', 'goto coat_rack', 'busy until 3:21.6', 'interact',
+      'goto meeting_seat busy', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a win by both routes at once: the projector is dead and the boss is locked out on the balcony. ' +
+      'The meeting room with the lights down, lit orange by the smoking projector on the table. You and Lin stand at ' +
+      'the table and warm your hands at it (😌); she toasts a marshmallow over it on a straightened paperclip, and it ' +
+      'browns (😋).',
+  },
+  {
     name: 'end-bib',
     cmds: ['busy until 2:47', 'goto fridge busy', 'interact', 'eat', 'goto my_seat busy', 'sit', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
     intent: 'End card, a loss: you ate Lin\'s sandwich and she saw the mustard on you. You sit typing at your desk in a ' +

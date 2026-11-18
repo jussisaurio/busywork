@@ -3,9 +3,13 @@
 // different files. Objects are drawn, never emoji; only bubbles speak emoji.
 //   bib       caught, why 'bib' (clocks.js: hunting Lin saw the mustard on you and told): you type at your desk in a
 //             giant paper bib, and Lin stands at your elbow eating a fresh sandwich, slowly, staring at you.
-import { rrect, fillEllipse, fillCircle } from '../../render/util.js';
+//   campfire  a win by both routes in one loop (the projector dead and the boss locked out): nobody left to run the
+//             meeting, the lights down, and you and Lin warm your hands at the smoking projector while she toasts a
+//             marshmallow over it on a straightened paperclip.
+import { rrect, fillEllipse, fillCircle, drawScreen } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
+import { drawProjector } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
 import { walnutDesk } from '../../render/tableau-furniture.js';
 
@@ -104,4 +108,100 @@ function paperBib(ctx, x, y, sc, t) {
   fillCircle(ctx, x - w * 0.3, top + h * 0.55, 3, '#e8b923');
   fillCircle(ctx, x - w * 0.22, top + h * 0.62, 2, '#e8b923');
   ctx.restore();
+}
+
+// Both routes in one loop (end-scenes.js endKind: a win with routes keycard and projector): the boss is out on the
+// balcony, the projector is dead and smoking on the meeting table, and with nobody to run the meeting the lights are
+// down. You and Lin stand at the table and warm your hands at it; she toasts a marshmallow over it on a straightened
+// paperclip: white, then golden, then drawn back to her and eaten, and on to the next.
+const MALLOW = 5.2; // s per marshmallow: held over the smoke, browning, then pulled back
+const PJ = { x: 480, y: 262, sc: 3 }; // the projector on the table
+const B_COSY = ['😌'];
+const B_YUM = ['😋'];
+export function tableauCampfire(ctx, game, t, e) {
+  const looks = game.level.looks;
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.meetingRug, '#397369');
+  drawScreen(ctx, PJ.x - 88, 104, 176, 62, { bar: [6, 6, 6], face: '#9d9a92', scan: ['rgba(0,0,0,0.1)', 4, 10, t] }); // dead
+  // lights down: the room dark but for the glow off the projector
+  ctx.fillStyle = 'rgba(14,18,30,0.5)';
+  ctx.fillRect(TAB.x, TAB.y, TAB.w, TAB.h);
+  const flick = 0.85 + Math.sin(t * 7.3) * 0.08 + Math.sin(t * 13.1) * 0.05;
+  const glow = ctx.createRadialGradient(PJ.x, PJ.y - 14, 4, PJ.x, PJ.y - 14, 190);
+  glow.addColorStop(0, `rgba(255,170,80,${(0.55 * flick).toFixed(3)})`);
+  glow.addColorStop(0.45, `rgba(255,130,50,${(0.22 * flick).toFixed(3)})`);
+  glow.addColorStop(1, 'rgba(255,120,40,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(TAB.x, TAB.y, TAB.w, TAB.h);
+  // you (left) and Lin (right), standing at the table's far side, side on to it and to each other
+  const sc = 2.3;
+  const py = 236;
+  const p = person(t);
+  p.dir = 0;
+  p.head = Math.sin(t * 0.6) * 0.15;
+  p.arms = 'reach'; // palms out to the warmth, rubbing
+  p.scale = sc;
+  drawPerson(ctx, looks.player, p, PJ.x - 78, py);
+  const k = (e % MALLOW) / MALLOW;
+  const out = k < 0.8 ? 1 : 1 - (k - 0.8) / 0.2; // over the fire, then drawn back to her to eat
+  const lx = PJ.x + 80;
+  const l = person(t);
+  l.dir = Math.PI;
+  l.head = Math.PI + (k > 0.85 ? 0.25 : 0.05); // eyes on the marshmallow
+  l.arms = 'holdout';
+  l.scale = sc;
+  drawPerson(ctx, looks.lin, l, lx, py);
+  // the table in front of you both, the projector on it
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  rrect(ctx, PJ.x - 150, 248, 312, 70, 26);
+  ctx.fill();
+  ctx.fillStyle = C.walnutEdge;
+  rrect(ctx, PJ.x - 156, 238, 312, 72, 26);
+  ctx.fill();
+  ctx.fillStyle = C.walnutTop;
+  rrect(ctx, PJ.x - 156, 238, 312, 62, 26);
+  ctx.fill();
+  fillEllipse(ctx, PJ.x, PJ.y + 4, 120, 26, 'rgba(255,150,70,0.16)'); // firelight on the table top
+  ctx.save();
+  ctx.translate(PJ.x, PJ.y);
+  ctx.scale(PJ.sc, PJ.sc);
+  drawProjector(ctx, 0, 0, 'broken', 0, t);
+  ctx.restore();
+  // the smoke off it, a column lit orange from below, and embers going up in it
+  for (let i = 0; i < 6; i++) {
+    const q = (t * 0.32 + i / 6) % 1;
+    const sx = PJ.x - 6 + Math.sin(t * 1.1 + i * 2.1) * 6 * q;
+    const sy = PJ.y - 22 - q * 120;
+    const warm = Math.max(0, 1 - q * 2.5);
+    fillCircle(ctx, sx, sy, 7 + q * 16, `rgba(${Math.round(120 + 110 * warm)},${Math.round(115 + 30 * warm)},${Math.round(110 - 40 * warm)},${(0.5 * (1 - q)).toFixed(3)})`);
+  }
+  for (let i = 0; i < 5; i++) {
+    const q = (t * 0.55 + i * 0.37) % 1;
+    fillCircle(ctx, PJ.x - 8 + Math.sin(i * 5.3 + t * 2) * 14 * q, PJ.y - 22 - q * 70, 1.6 * (1 - q) + 0.4, `rgba(255,${Math.round(150 + 80 * q)},70,${(1 - q).toFixed(3)})`);
+  }
+  fillEllipse(ctx, PJ.x - 6, PJ.y - 20, 22 * flick, 6, 'rgba(255,140,50,0.35)'); // the glow off its hot vents
+  // her hand (characters.js holdout, in profile facing left: 13 px out, 3 px up), and the paperclip from it
+  const hx = lx - 13 * sc;
+  const hy = py - 3 * sc;
+  const tipX = hx - (16 + 42 * out);
+  const tipY = hy - 4 + 2 * out; // in the smoke, just over the projector's top
+  ctx.strokeStyle = '#c9cdd2';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(hx + 4, hy + 2); // the clip's last loop, still bent round her fingers
+  ctx.quadraticCurveTo(hx - 4, hy + 4, hx - 2, hy);
+  ctx.lineTo(tipX, tipY);
+  ctx.stroke();
+  // the marshmallow on the end: white, browning while it's over the smoke
+  const brown = Math.min(1, k / 0.75);
+  const mc = (a, b) => Math.round(a + (b - a) * brown);
+  ctx.fillStyle = `rgb(${mc(250, 196)},${mc(246, 128)},${mc(236, 58)})`;
+  rrect(ctx, tipX - 9, tipY - 8, 15, 15, 4);
+  ctx.fill();
+  ctx.fillStyle = `rgba(110,60,25,${(0.7 * brown).toFixed(3)})`; // the toasted side, toward the projector
+  rrect(ctx, tipX - 9, tipY - 8, 6, 15, 3);
+  ctx.fill();
+  fillCircle(ctx, tipX + 1, tipY - 4, 2, 'rgba(255,255,255,0.6)');
+  // faces: you, at peace; Lin, at her marshmallow
+  bubble(ctx, B_COSY, PJ.x - 84, 160, e % 6, 'thought', 1.1);
+  if (k > 0.82) bubble(ctx, B_YUM, lx + 4, 160, (k - 0.82) * MALLOW, 'speech', 1.1);
 }
