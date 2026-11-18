@@ -17,7 +17,7 @@ export const MAP = [
   '#..TNT......TPT......TUT.....#', // 8
   '#............................#', // 9
   '#............................#', // 10
-  '#..TTT......TWT......TTT.....#', // 11
+  '#..TWT......TWT......TWT.....#', // 11
   '#...........................V#', // 12
   '#GGGLGGGGG###############R#X##', // 13
   '#:::::::::################===#', // 14
@@ -53,16 +53,19 @@ export const LEGEND = {
   // The other ficus, in the hallway corner by the fire door: it takes the coffee too (interactions.js water_plant), and
   // just grows its leaf; only the boss's own plant delights him (toys.js ficus).
   V: { kind: 'plant', solid: true, opaque: false, interactable: 'plant', draw: 'plant' },
-  // The typewriter on the empty desk behind yours (the mustard chair: whoever sits there is out today). A desk tile like T, but
-  // the day's cup can go into its keys (interactions.js drown_typewriter; painters-more.js deadTypewriter).
-  W: { kind: 'desk', solid: true, opaque: false, interactable: 'typewriter', draw: 'desk' },
-  // Their computers, each in the middle of its desk (the keyboard in front of the chair): the day's cup goes into
-  // the keys (interactions.js drown_computer; Jussi, 2026-11-18: "make it possible to fuck up everyone's computer").
-  // Setting a cup down is the desk's free end beside it (SPOTS lies), a target of its own. Yours is P (own_desk).
+  // The computers, each in the middle of its desk (the keyboard in front of the chair): the day's cup goes into the
+  // keys, the same on every one (interactions.js drownComputer; COMPUTERS below). W: the three empty desks along the
+  // south row (spare_computer_0, _1, _2, west to east; _1 is behind yours, the mustard chair). Yours is P (own_desk).
+  // Setting a cup down is the desk's free end beside the computer (SPOTS lies), a target of its own.
+  W: { kind: 'desk', solid: true, opaque: false, interactable: 'spare_computer', draw: 'desk' },
   B: { kind: 'desk', solid: true, opaque: false, interactable: 'boss_computer', draw: 'desk' },
   N: { kind: 'desk', solid: true, opaque: false, interactable: 'lin_computer', draw: 'desk' },
   U: { kind: 'desk', solid: true, opaque: false, interactable: 'kev_computer', draw: 'desk' },
 };
+
+// Every computer on the floor: its interactable type -> whose it is (null: nobody's, an empty desk). The one list
+// the pour (interactions.js), its sound (sounds.js) and the checks read: a machine is in it or it is not a computer.
+export const COMPUTERS = { spare_computer: null, own_desk: 'player', lin_computer: 'lin', kev_computer: 'kev', boss_computer: 'boss' };
 
 // Named spots: tile coords + facing ('N'|'E'|'S'|'W'). Entities stand at (x+0.5, y+0.5).
 export const SPOTS = {
@@ -90,7 +93,7 @@ export const SPOTS = {
 
   boss_door: { x: 6, y: 7, face: 'S' }, // hallway outside the boss's office door
   boss_doorway: { x: 6, y: 6, face: 'E' }, // in his doorway, not in his office: the ficus (Y) is in reach
-  typewriter: { x: 13, y: 12, face: 'N' }, // in the empty mustard chair's place: the typewriter (W) in front of you
+  spare_desk: { x: 13, y: 12, face: 'N' }, // in the empty mustard chair's place: its computer (W, spare_computer_1) in front of you
   meeting_door: { x: 14, y: 7, face: 'N' }, // hallway outside the meeting room: the boss looks in (behaviours.js peek)
   door_in: { x: 4, y: 12, face: 'S' }, // inside the entrance
   door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance (the lobby)

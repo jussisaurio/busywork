@@ -5,7 +5,7 @@ import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.j
 import { dayCue, TILE } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
 import { PICTURE, pictureTilt, KEYBOARDS, CLOCK } from './toys.js';
-import { ficus, deadTypewriter, kevPage, typedScreen, pushedClock } from './painters-more.js';
+import { ficus, deadComputer, kevPage, typedScreen, pushedClock } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside, doorSwing } from './balcony.js';
@@ -97,11 +97,9 @@ export const DECOR = {
     // The boss's ficus after the coffee (interactions.js water_ficus): wet soil, a new leaf shooting out.
     { tile: 'Y', draw: ficus, state: (w, game) => ({ watered: w.cup === 'ficus', since: since(game, w._ficusAt) }) },
     { tile: 'V', draw: ficus, state: (w, game) => ({ watered: w.cup === 'plant', since: since(game, w._plantAt) }) }, // the hallway one
-    // The typewriter on the empty desk, after the cup went into its keys (interactions.js drown_typewriter).
-    { tile: 'W', draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'typewriter', since: since(game, w._typewriterAt) }) },
-    // The same, anyone's computer (interactions.js drownComputer): the boss's (B), Lin's (N), Kev's (U), yours (P).
-    ...[['B', 'boss'], ['N', 'lin'], ['U', 'kev'], ['P', 'player']].map(([tile, owner]) => (
-      { tile, draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'computer' && w.drowned === owner, since: since(game, w._computerAt) }) })),
+    // The computer the cup went into, whichever desk it is on (interactions.js drownComputer; world.drowned says
+    // where). One prop for all of them: the tile only anchors it, the painter draws at the drowned machine.
+    { tile: 'P', draw: deadComputer, state: (w, game) => ({ at: w.cup === 'computer' ? w.drowned : null, since: since(game, w._computerAt) }) },
     // Kev's screen while he dozes on his keyboard (toys.js kev_doze, every 3 s while asleep): seconds asleep so far.
     { tile: 'C', draw: kevPage, state: (w, game) => {
       const d = toyState(game, 'kev_doze');
