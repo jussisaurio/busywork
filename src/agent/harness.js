@@ -275,7 +275,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
     if (cmd === 'help') return { text: helpText(game.level) };
     if (cmd === 'look') return { text: '' };
     if (cmd === 'continue' || cmd === 'start') {
-      if (game.phase === 'day' && !game.outcome) return { text: 'the day is still going (use restart to give up)' };
+      if (game.phase === 'day' && !game.outcome && !game.caught) return { text: 'the day is still going (use restart to give up)' };
       while (game.phase === 'day') frame(); // let the end-of-day beat finish
       startLoop(game);
       return { text: `--- LOOP ${game.persist.loop} begins: ${clock(0)}, at your desk ---` };
@@ -302,7 +302,7 @@ export function createHarness({ level = defaultLevel, onFrame = null, pressStops
       }
       case 'sit': {
         if (game.player.seated) { result = { text: 'you are already sitting at your desk' }; break; }
-        const g = goto('my_seat', PRETEND(tokens[0]));
+        const g = goto('my_seat', PRETEND(tokens[0])); // a look or a ❓ on the way doesn't stop you sitting down
         if (!/^walked/.test(g.text)) { result = g; break; }
         result = interact();
         break;
@@ -463,8 +463,8 @@ export function observe(game, { map = true, debug = false } = {}) {
   const out = [];
   const p = game.player;
   const H = game.level.harness ?? {};
-  // Same as the HUD: one slot per route, blank until found.
-  const routes = game.level.routes.map(({ id, icon }) => `[${game.persist.routesFound.includes(id) ? icon : ' ? '}]`).join('');
+  // Same as the HUD: a slot per route found, none for the rest.
+  const routes = game.level.routes.filter(({ id }) => game.persist.routesFound.includes(id)).map(({ icon }) => `[${icon}]`).join('') || 'none found yet';
   const { meetingAt, start } = game.level.day;
   out.push(`LOOP ${game.persist.loop} | ${formatClock(game.clock.minute, start)} (meeting at ${formatClock(meetingAt, start)}, ${Math.max(0, Math.ceil(meetingAt - game.clock.minute))} game min left) | route slots: ${routes}`);
 
