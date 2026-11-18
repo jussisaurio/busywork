@@ -69,7 +69,7 @@ const WALK_CAP = 7; // s: a walk still behind him after this snaps back
 // A fresh game.toys for a new loop: { focus, byId: { id: { state, firedAt, by, n, last } }, poses: { who: pose } }.
 export function createToys(level) {
   const byId = {};
-  for (const t of level.toys ?? []) byId[t.id] = { state: { ...t.state }, firedAt: null, by: null, n: 0, last: {} };
+  for (const t of level.toys ?? []) byId[t.id] = { state: { ...t.state }, firedAt: null, landsAt: null, by: null, n: 0, last: {} };
   return { focus: null, byId, poses: {}, walks: {} };
 }
 
@@ -82,12 +82,13 @@ export function toyPos(level, toy) {
   return { x: toy.at.x + 0.5, y: toy.at.y + 0.5 };
 }
 
-// What a painter reads: the toy's state, plus `since` (seconds since it last fired, null if never) and `by`.
+// What a painter reads: the toy's state, plus `since` (seconds since it last fired, null if never) and `by`. While a
+// walk is on its way (stand), the state is still what it was: what he does lands when he gets there (fire, land).
 const NO_TOY = { since: null, by: null, n: 0 };
 export function toyState(game, id) {
   const t = game.toys?.byId[id];
   if (!t) return NO_TOY;
-  const state = t.held && game.loopTime < t.held.until ? t.held.state : t.state; // a reset still on its way (fire)
+  const state = t.held && game.loopTime < t.held.until ? t.held.state : t.state; // a change still on its way (fire)
   return { ...state, since: t.firedAt === null ? null : game.loopTime - t.firedAt, by: t.by, n: t.n };
 }
 
@@ -155,11 +156,23 @@ function updateWalks(game) {
     const n = game.npcs.find((m) => m.id === id);
     const cut = !n || !n.active || n.override !== w.override || game.loopTime - w.t0 > WALK_CAP
       || game.fx.lines?.some((l) => l && l.from === id) || (game.watch && Object.hasOwn(game.watch, id));
-    if (cut) { delete walks[id]; continue; }
+    if (cut) { land(game, w, id); delete walks[id]; continue; } // he does it from where he is, as with no walk
     const last = w.trail[w.trail.length - 1];
     if (!last || last.x !== n.x || last.y !== n.y) w.trail.push({ x: n.x, y: n.y });
     if (!walkAt(game, w)) delete walks[id];
   }
+}
+
+// A walk cut short (updateWalks): what he went to do lands now, from where he is (the pose too), never dropped.
+function land(game, w, who) {
+  const now = game.loopTime;
+  for (const id of [w.toy, ...w.resets]) {
+    const b = game.toys.byId[id];
+    if (b?.held && b.held.until > now) b.held.until = now;
+    if (b && b.landsAt > now) b.landsAt = now;
+  }
+  const pose = game.toys.poses[who];
+  if (pose && pose.from > now) { pose.until = now + (pose.until - pose.from); pose.from = now; }
 }
 
 // The reaction. who: 'player' or an NPC id.
@@ -167,26 +180,29 @@ export function fire(game, toy, who) {
   const t = game.toys.byId[toy.id];
   const at = toyPos(game.level, toy);
   const r = toy.react ?? {};
-  t.firedAt = game.loopTime;
-  t.last[who] = game.loopTime;
-  t.by = who;
-  t.n += 1;
-  if (r.set) Object.assign(t.state, r.set);
-  if (r.add) for (const k in r.add) t.state[k] = (t.state[k] ?? 0) + r.add[k];
-  // A walk over to it first (header): the pose waits until he is there.
+  // A walk over to it first (header): the pose, and what he changes, wait until he is there.
   let from = game.loopTime;
   const n = toy.stand && who !== 'player' ? game.npcs.find((m) => m.id === who) : null;
   if (n && n.active && n.pose !== 'sit' && !n.override && !game.toys.walks[who] && dist(n, toy.stand) <= WALK_MAX) {
     const fix = r.pose?.for ?? DEFAULT_POSE;
-    game.toys.walks[who] = { t0: game.loopTime, from: { x: n.x, y: n.y }, stand: { ...toy.stand }, at, fix, override: n.override, trail: [] };
+    game.toys.walks[who] = { t0: game.loopTime, from: { x: n.x, y: n.y }, stand: { ...toy.stand }, at, fix, override: n.override, trail: [],
+      toy: toy.id, resets: r.reset ?? [] };
     from += dist(n, toy.stand) / NPC_SPEED;
   }
-  // A reset lands when the pose starts: until he is there, the toy still shows what it showed (toyState).
+  const hold = (b) => { b.held = from > game.loopTime ? { state: { ...b.state }, until: from } : null; };
+  t.firedAt = game.loopTime;
+  t.landsAt = from; // when it shows: on arrival (painters that order toys by time read it, e.g. the picture's tilt)
+  t.last[who] = game.loopTime;
+  t.by = who;
+  t.n += 1;
+  if (r.set || r.add) hold(t);
+  if (r.set) Object.assign(t.state, r.set);
+  if (r.add) for (const k in r.add) t.state[k] = (t.state[k] ?? 0) + r.add[k];
   for (const id of r.reset ?? []) {
     const o = game.level.toys.find((x) => x.id === id);
     const b = o && game.toys.byId[id];
     if (!b) continue;
-    b.held = from > game.loopTime ? { state: b.state, until: from } : null;
+    hold(b);
     b.state = { ...o.state };
   }
   if (r.pose) game.toys.poses[who] = { ...r.pose, from, until: from + (r.pose.for ?? DEFAULT_POSE), x: at.x, y: at.y };

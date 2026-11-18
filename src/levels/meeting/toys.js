@@ -39,8 +39,8 @@ export function pictureTilt(game) {
   let f = null;
   let v = 0;
   for (const [id, tilt] of PICTURE_TOYS) {
-    const at = game.toys?.byId[id]?.firedAt;
-    if (at != null && (f === null || at >= f)) { f = at; v = tilt; }
+    const at = game.toys?.byId[id]?.landsAt; // when the hand is on it: Kev's and Lin's on arrival (toy stand)
+    if (at != null && at <= game.loopTime && (f === null || at >= f)) { f = at; v = tilt; }
   }
   return { tilt: v, since: f === null ? null : game.loopTime - f };
 }
