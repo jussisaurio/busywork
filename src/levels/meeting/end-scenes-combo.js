@@ -6,12 +6,12 @@
 //   campfire  a win by both routes in one loop (the projector dead and the boss locked out): nobody left to run the
 //             meeting, the lights down, and you and Lin warm your hands at the smoking projector while she toasts a
 //             marshmallow over it on a straightened paperclip.
-import { rrect, fillEllipse, fillCircle, drawScreen } from '../../render/util.js';
+import { rrect, fillEllipse, fillCircle } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawProjector } from '../../render/world.js';
-import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { walnutDesk } from '../../render/tableau-furniture.js';
+import { TAB, person, bubble } from '../../render/tableau.js';
+import { walnutDesk, officeRoom } from '../../render/tableau-furniture.js';
+import { meetingRoom, brokenProjector } from './end-set.js';
 
 const B_LIN_STARE = [['👀', '@player'], ['😋']];
 const B_YOU_WANT = ['🥪', '🥺'];
@@ -20,8 +20,7 @@ const B_YOU_WANT = ['🥪', '🥺'];
 // lunch). Lin, at your elbow, eats a fresh sandwich: a slow bite, a long chew, her eyes on you the whole time.
 // Now and then you glance at the sandwich.
 export function tableauBib(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, 92);
+  officeRoom(ctx, 92);
   const looks = game.level.looks;
   const px = 420;
   const py = 262;
@@ -120,8 +119,7 @@ const B_COSY = ['😌'];
 const B_YUM = ['😋'];
 export function tableauCampfire(ctx, game, t, e) {
   const looks = game.level.looks;
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.meetingRug, '#397369');
-  drawScreen(ctx, PJ.x - 88, 104, 176, 62, { bar: [6, 6, 6], face: '#9d9a92', scan: ['rgba(0,0,0,0.1)', 4, 10, t] }); // dead
+  meetingRoom(ctx, t, 'dead');
   // lights down: the room dark but for the glow off the projector
   ctx.fillStyle = 'rgba(14,18,30,0.5)';
   ctx.fillRect(TAB.x, TAB.y, TAB.w, TAB.h);
@@ -151,21 +149,9 @@ export function tableauCampfire(ctx, game, t, e) {
   l.scale = sc;
   drawPerson(ctx, looks.lin, l, lx, py);
   // the table in front of you both, the projector on it
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  rrect(ctx, PJ.x - 150, 248, 312, 70, 26);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, PJ.x - 156, 238, 312, 72, 26);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, PJ.x - 156, 238, 312, 62, 26);
-  ctx.fill();
+  walnutDesk(ctx, PJ.x - 156, 238, 312, { depth: 62, skirt: 72, r: 26, shadow: { color: 'rgba(0,0,0,0.25)', dx: 6, dy: 10, h: 70 } });
   fillEllipse(ctx, PJ.x, PJ.y + 4, 120, 26, 'rgba(255,150,70,0.16)'); // firelight on the table top
-  ctx.save();
-  ctx.translate(PJ.x, PJ.y);
-  ctx.scale(PJ.sc, PJ.sc);
-  drawProjector(ctx, 0, 0, 'broken', 0, t);
-  ctx.restore();
+  brokenProjector(ctx, t, PJ.x, PJ.y, PJ.sc);
   // the smoke off it, a column lit orange from below, and embers going up in it
   for (let i = 0; i < 6; i++) {
     const q = (t * 0.32 + i / 6) % 1;

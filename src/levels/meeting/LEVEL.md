@@ -19,10 +19,13 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `clocks.js` | `level.clockFor`: Kev and the cup, the card taken back |
 | `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
 | `verdict.js` | the 4:00 room's judgement of the mug (`meeting.verdict`) |
+| `endings.js` | every ending's reason (`outcome.why`) once: its end scene per result (`endKind`), the room's stare, the boss's arms |
+| `poses.js` | `POSES`, `CONES`: what the cast are drawn doing (how they look is `office/looks.js`, shared) |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
 | `balcony.js` | the fire door your way: out, back in by card or behind someone, the snatch, the 4:00 balcony verdicts |
 | `decor.js`, `end-scenes.js`, `sounds.js` | presentation (`end-scenes-balcony.js`: the three balcony endings) |
+| `end-set.js` | the end scenes' sets, once: the meeting room, presenting, at the table, the balcony and fire door |
 | `painters.js` | the level's drawn things: the sandwich, party popper, cricket, empty coffee bag, fire door and balcony |
 | `shots.js` | the screenshots (with their intents) for the pictures cold read (`docs/COLD-READ.md`) |
 | `premise.md`, `cold-read.md` | the card and cast prose the cold readers see; their recorded verdicts |

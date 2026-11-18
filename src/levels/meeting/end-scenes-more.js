@@ -9,22 +9,17 @@
 import { rrect, fillEllipse, fillCircle } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { TAB, person, bubble, floorCarpet, backWall } from '../../render/tableau.js';
-import { findNpc } from '../../game/perception.js';
+import { person, bubble } from '../../render/tableau.js';
+import { officeRoom } from '../../render/tableau-furniture.js';
+import { bossJacket } from './end-set.js';
 
 const B_COMPUTER = [['⌨️', '💥', '👉', '@player'], ['📦', '👉', '@player']];
-
-function bossJacket(game) {
-  const boss = game.npcs && findNpc(game, 'boss');
-  return boss ? game.world.jacket === boss.id : true;
-}
 
 const OWNER_SAYS = ['😱', '💻'];
 const OWNER_IN = { lin: () => true, kev: (w) => !w.kevGone }; // whose machine brings them onto the card, and when
 
 export function tableauComputer(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, 92);
+  officeRoom(ctx, 92);
   // the desk, the dead machine on it
   deadDesk(ctx, 470, 214, t, e);
   // you, beside it: blackened, hair on end, frozen

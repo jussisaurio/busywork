@@ -1,6 +1,6 @@
 // The meeting's own drawn things (DESIGN.md "Visual language": the world is drawn, never an emoji).
 //   sandwich  Lin's lunch: items.sandwich.draw, so it is drawn in the fridge thief's hand, on the floor, in the HUD
-//             and in Lin's arms (looks.js poses '#sandwich')
+//             and in Lin's arms (poses.js POSES '#sandwich')
 //   popper    the keycard win's party popper (end-scenes.js)
 //   cricket   the failed meeting's lone cricket (end-scenes.js)
 //   emptyBag  a decor prop (decor.js; render/world.js PROP_PAINTERS signature): the empty coffee bag on the counter
