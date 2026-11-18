@@ -1,5 +1,5 @@
 // Browser entry point: wires input, renderer, audio and the fixed-step loop.
-import { FIXED_DT } from './config.js';
+import { FIXED_DT, PLAYTEST_LEVEL } from './config.js';
 import { createGame } from './state.js';
 import { loadEndings } from './game/endings.js';
 import { startLoop, runFrame } from './game/loop.js';
@@ -22,8 +22,11 @@ const canvas = document.getElementById('game');
 
 // ?level=<id> picks the level; without it, the registry's default. An unknown id replaces the canvas with
 // getLevel's error (which lists the levels), so a typo is visible, not a silent level 1.
+const params = new URLSearchParams(location.search);
+const dev = params.has('dev');
+const playtest = !!PLAYTEST_LEVEL && !dev; // the playtest build: one level, no menu (config.js)
 function pickLevel() {
-  const id = new URLSearchParams(location.search).get('level');
+  const id = params.get('level') ?? (playtest ? PLAYTEST_LEVEL : null);
   if (id === null) return undefined;
   try {
     return getLevel(id);
@@ -36,8 +39,8 @@ function pickLevel() {
   }
 }
 
-const levelParam = new URLSearchParams(location.search).get('level');
-mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k] === defaultLevel));
+const levelParam = params.get('level');
+if (!playtest) mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k] === defaultLevel), dev);
 
 const input = createInput(window);
 const game = createGame({ input, level: pickLevel() });

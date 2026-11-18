@@ -6,6 +6,7 @@
 //   node tools/test-smoke.mjs [levelId ...]
 import { createFakeCanvas } from './lib/fake-canvas.mjs';
 import { levels } from '../src/levels/index.js';
+import { PLAYTEST_LEVEL } from '../src/config.js';
 
 // Known failures: 'levelId:step' -> why. A listed failure must still fail (a pass is an error: delete the line).
 const KNOWN_FAILURES = {};
@@ -23,7 +24,7 @@ const consoleErrors = [];
 const realError = console.error;
 console.error = (...a) => consoleErrors.push(a.map(String).join(' '));
 
-function bootDom(levelId) {
+function bootDom(levelId, search = `?level=${levelId}`) {
   const listeners = {};
   const on = (t) => (type, fn) => (t[type] ||= []).push(fn);
   const canvas = fake.makeCanvas('main', 300, 150);
@@ -41,11 +42,12 @@ function bootDom(levelId) {
     hidden: false, activeElement: null, body: el('body'), addEventListener: on(docL),
     getElementById: (id) => (id === 'game' ? canvas : null), createElement: el,
   };
-  globalThis.location = { search: `?level=${levelId}` };
+  globalThis.location = { search };
   let raf = null;
   globalThis.requestAnimationFrame = (fn) => { raf = fn; return 1; };
   return {
     canvas,
+    body: document.body,
     key(type, code, extra = {}) {
       const e = { type, code, key: extra.key ?? code, shiftKey: code.startsWith('Shift'), repeat: false, ctrlKey: false, metaKey: false, altKey: false, preventDefault() {}, ...extra };
       for (const fn of listeners[type] ?? []) fn(e);
@@ -149,7 +151,22 @@ async function playLevel(id) {
   return { failures, stepLog };
 }
 
+// The playtest build (config.js PLAYTEST_LEVEL): a bare URL boots that level with no level menu; ?dev has the menu.
+async function bootSearch(search) {
+  const dom = bootDom(null, search);
+  await import(`../src/main.js?smoke=search${search}`);
+  return { dom, game: globalThis.window.__game, menu: dom.body.children.some((c) => c.id === 'level-picker') };
+}
 let bad = 0;
+if (PLAYTEST_LEVEL && !process.argv.slice(2).length) {
+  try {
+    const p = await bootSearch('');
+    if (p.game.level !== levels[PLAYTEST_LEVEL] || p.menu) throw new Error(`bare URL: level ${p.game.level.id}, menu ${p.menu}`);
+    const d = await bootSearch('?dev');
+    if (!d.menu) throw new Error('?dev has no level menu');
+    console.log(`ok   playtest build: bare URL boots ${PLAYTEST_LEVEL} without the menu, ?dev has it`);
+  } catch (err) { bad++; realError(`FAIL playtest build: ${err.message}`); }
+}
 const t0 = Date.now();
 const only = process.argv.slice(2);
 const ids = Object.keys(levels).filter((id) => !only.length || only.includes(id));
