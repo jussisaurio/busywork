@@ -28,9 +28,29 @@ const peek = (flag) => ({
   },
 });
 
+// The boss looks in on the kitchen on his way back from the restroom (his 3:22 walk: cast.js), before the meeting
+// room. He stops in the hallway at its double doors and looks in at the coffee machine long enough to see who's
+// standing about (LOOK_IN_SEC; the suspicion meter fills in config SUSPICION_FILL_SEC). From the doors his cone
+// takes in the whole kitchen: the machine, the fridge, the table. Without it the kitchen was the one room he never
+// saw all afternoon, and an hour by the coffee machine doing nothing cost nothing (the open plan and the hallway are
+// on his rounds and his walks). The 3:22 walk, not the 3:12: a detour on the way out eats his restroom absence.
+// Decision by the builder (2026-11-18, for review): this walk, and the doors as where he stands.
+const LOOK_IN_SEC = 2;
+
 export const BEHAVIOURS = {
   peekOut: peek('_peekOut'), // on his way to the restroom
   peekBack: peek('_peekBack'), // on his way back
+  lookInKitchen: {
+    spot: 'kitchen_door',
+    state: { _lookedInKitchen: false },
+    // Not once he knows about the projector: his mug hunt walks the kitchen anyway (mechanics.js HUNTS), and after it
+    // he is off for his smoke.
+    pending: (npc) => !npc._knows && !npc._lookedInKitchen,
+    arrive(game, npc, sim) {
+      npc._lookedInKitchen = true;
+      sim.lookAt(game, npc, 'coffee', LOOK_IN_SEC);
+    },
+  },
 
   // Lin opens the fridge, even if her 3:04 entry starts while she's still walking there (both entries name this).
   checkFridge: {

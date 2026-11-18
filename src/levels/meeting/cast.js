@@ -42,7 +42,7 @@ export const NPC_DEFS = [
       s('2:44', { do: 'patrol', route: 'boss_patrol' }),
       s('2:56', { do: 'sit', spot: 'boss_desk' }),
       s('3:12', { do: 'away', spot: 'restroom', prelude: 'peekOut' }), // office empty ~3:12–3:29 (long walk), but Lin is watching
-      s('3:22', { do: 'sit', spot: 'boss_desk', prelude: 'peekBack' }), // both walks look in on the meeting room
+      s('3:22', { do: 'sit', spot: 'boss_desk', prelude: ['lookInKitchen', 'peekBack'] }), // both walks look in on the meeting room; this one on the kitchen first (behaviours.js lookInKitchen)
       s('3:33', { do: 'say', icons: ['🚬', '❓'], kind: 'thought' }),
       // Out through the fire door for a smoke on the balcony, jacket (and keycard) on. The door swings shut behind him.
       s('3:35', { do: 'visit', spot: 'smoke', prelude: 'fetchJacket', anim: 'smoking' }),
