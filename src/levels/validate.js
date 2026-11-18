@@ -394,11 +394,14 @@ export function levelProblems(level, key) {
     if (t.when !== undefined && !isFn(t.when)) bad(`${path}.when`, 'not a function (world, state, game, npc) -> bool');
     for (const k of ['radius', 'every']) if (t[k] !== undefined && !(isNum(t[k]) && t[k] > 0)) bad(`${path}.${k}`, 'not a number > 0');
     if (t.state !== undefined && !isObj(t.state)) bad(`${path}.state`, 'not an object');
+    if (t.stand !== undefined && !(t.on !== 'press' && isObj(t.stand) && isNum(t.stand.x) && isNum(t.stand.y))) bad(`${path}.stand`, 'not { x, y } (tile units) on a pass or near toy');
     const r = t.react;
     if (!isObj(r)) bad(`${path}.react`, 'not an object (say, sfx, pose, set, burst)');
     else {
-      const extra = Object.keys(r).filter((k) => !['say', 'sfx', 'pose', 'set', 'burst'].includes(k));
-      if (extra.length) bad(`${path}.react`, `unknown ${extra.join(', ')}: a reaction is only say, sfx, pose, set, burst`);
+      const extra = Object.keys(r).filter((k) => !['say', 'sfx', 'pose', 'set', 'add', 'reset', 'burst'].includes(k));
+      if (extra.length) bad(`${path}.react`, `unknown ${extra.join(', ')}: a reaction is only say, sfx, pose, set, add, reset, burst`);
+      if (r.add !== undefined && !(isObj(r.add) && Object.values(r.add).every(isNum))) bad(`${path}.react.add`, 'not { key: number }');
+      if (r.reset !== undefined && !(Array.isArray(r.reset) && r.reset.every((id) => (level.toys ?? []).some((o) => o?.id === id)))) bad(`${path}.react.reset`, 'not a list of toy ids');
       if (r.say !== undefined) icons(`${path}.react.say`, Array.isArray(r.say) ? r.say : r.say?.icons);
       if (r.sfx !== undefined && !(isStr(r.sfx) && isFn(SFX[r.sfx]))) bad(`${path}.react.sfx`, `no sound ${q(r.sfx)} in audio/sfx.js`);
       if (r.pose !== undefined && r.pose.arms !== undefined && !ARM_POSES.includes(r.pose.arms)) bad(`${path}.react.pose.arms`, `no arm pose ${q(r.pose.arms)}`);

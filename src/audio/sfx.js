@@ -513,6 +513,12 @@ export function key(E, o = {}) {
   sample(E, E.buffers.key, { t: T(E, o), rate, gain: (space ? 0.09 : rand(0.05, 0.09)) * G(o), pan: o.pan });
 }
 
+// A burst of mashed keys (a toy: typing on someone else's keyboard).
+export function clatter(E, o = {}) {
+  const t = T(E, o);
+  for (let i = 0; i < 7; i++) key(E, { ...o, t: t + i * 0.07 + rand(0, 0.03), space: i === 4 });
+}
+
 // Soft carpet footstep.
 export function step(E, o = {}) {
   sample(E, E.buffers.step, { t: T(E, o), rate: rand(0.85, 1.15) * (o.alt ? 0.92 : 1), gain: 0.08 * G(o), pan: o.pan, lp: 1800 });

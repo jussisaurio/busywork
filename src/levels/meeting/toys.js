@@ -20,7 +20,15 @@
 //              (painters-more.js kevPage), until his 2:58 goodbye. Drawn only: asleep, he sees just as awake.
 //   kev_wake   come within 2.5 tiles of a dozing Kev and he jolts awake 😳 (and stays awake). So you can't walk
 //              past a sleeping Kev: the sight he keeps never surprises anyone.
+//   type_*     any free workstation (Lin's or Kev's while they are away, the three empty ones): stand at the
+//              keyboard and mash it, a clatter of keys, and a document of gibberish fills the screen, a line a press
+//              (typedScreen in painters-more.js). Nothing else: it is not your desk, so it is not looking busy
+//              (your own desk is where sitting and typing counts). The owners answer back:
+//   lin_reads, lin_wipes  Lin sits down to it: she reads it 😳⌨️, then hammers delete, cross (😤), and it is gone.
+//   kev_reads  Kev sits down to it, reads it, and nods 🤔👍. He leaves it there, under his code.
+//   lin_sees, kev_sees  catching you at their keyboard: Lin points 😠⌨️, Kev 🤨⌨️.
 import { at as clockAt } from '../../config.js';
+import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
@@ -45,7 +53,81 @@ const DOZE_TO = clockAt('2:58'); // his 🎒👋
 const dozing = (game, n) => n.wants === 'coffee' && n.pose === 'sit' && !n.moving && !n.override
   && game.clock.minute >= DOZE_FROM && game.clock.minute < DOZE_TO && !toyState(game, 'kev_wake').woke;
 
+// --- typing on any keyboard ---------------------------------------------------------------------------------------
+// The free workstations: the monitor's tile, and whose it is (they sit at the chair one tile south).
+export const KEYBOARDS = [
+  { id: 'type_lin', x: 4, y: 8, owner: 'lin' },
+  { id: 'type_kev', x: 22, y: 8, owner: 'kev' },
+  { id: 'type_west', x: 4, y: 11 },
+  { id: 'type_mustard', x: 13, y: 11 }, // the mustard chair's (map.js W): its own interactable wins with the cup
+  { id: 'type_east', x: 22, y: 11 },
+];
+const seatedAt = (game, id, k) => {
+  const n = findNpc(game, id);
+  return !!n && n.active && n.pose === 'sit' && Math.hypot(n.x - (k.x + 0.5), n.y - (k.y + 1.5)) < 0.6;
+};
+const freeKeyboard = (k) => (w, s, game) => !k.owner || !seatedAt(game, k.owner, k);
+const typed = (game, k) => toyState(game, k.id).keys > 0;
+// Not yet read since your last press.
+const unread = (game, k, readId) => {
+  const r = toyState(game, readId).since;
+  return typed(game, k) && (r === null || r > toyState(game, k.id).since);
+};
+const atIt = (game, k) => Math.hypot(game.player.x - (k.x + 0.5), game.player.y - (k.y + 1.5)) < 1.6;
+const caughtTyping = (k) => (w, s, game) => {
+  const t = toyState(game, k.id).since;
+  return t !== null && t < 1.5 && atIt(game, k) && !game.player.hidden;
+};
+const [LIN_KB, KEV_KB] = KEYBOARDS;
+const TYPE_TOYS = [
+  ...KEYBOARDS.map((k) => ({
+    id: k.id, at: { x: k.x, y: k.y }, on: 'press', text: 'type on the keyboard', every: 0.5,
+    state: { keys: 0 }, when: freeKeyboard(k),
+    line: k.owner ? `you mash ${k.owner === 'lin' ? 'Lin' : 'Kev'}'s keyboard: a line of gibberish on the screen`
+      : 'you mash the keyboard: a line of gibberish on the screen',
+    react: { sfx: 'clatter', pose: { arms: 'type', face: true, for: 0.6 }, add: { keys: 1 } },
+    try: k.owner === 'lin' ? ['pretend until 2:59', 'goto lin_desk busy', 'interact']
+      : k.owner === 'kev' ? ['pretend until 2:40', 'goto type_kev busy', 'interact'] : [`goto ${k.id} busy`, 'interact'],
+  })),
+  {
+    id: 'lin_reads', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'pass', npcs: ['lin'], radius: 1.4, every: 2,
+    when: (w, s, game, n) => seatedAt(game, 'lin', LIN_KB) && unread(game, LIN_KB, 'lin_reads'),
+    line: 'Lin sits down to her screen and reads what you typed 😳⌨️',
+    react: { say: { icons: ['😳', '⌨️'], ttl: 1.8 }, pose: { face: true, for: 1.8 } },
+    try: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:13'],
+  },
+  {
+    id: 'lin_wipes', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'pass', npcs: ['lin'], radius: 1.4, every: 2,
+    when: (w, s, game) => seatedAt(game, 'lin', LIN_KB) && typed(game, LIN_KB) && toyState(game, 'lin_reads').since >= 1.8,
+    line: 'Lin hammers delete, cross 😤, and your gibberish is gone',
+    react: { say: { icons: ['😤'], ttl: 1.6 }, sfx: 'clatter', pose: { arms: 'type', angry: true, for: 1.6 }, reset: ['type_lin'] },
+    try: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 3:14'],
+  },
+  {
+    id: 'kev_reads', at: { x: KEV_KB.x, y: KEV_KB.y }, on: 'pass', npcs: ['kev'], radius: 1.4, every: 2,
+    when: (w, s, game) => seatedAt(game, 'kev', KEV_KB) && unread(game, KEV_KB, 'kev_reads'),
+    line: 'Kev sits down, reads what you typed on his screen, and nods 🤔👍',
+    react: { say: { icons: ['🤔', '👍'], ttl: 2.2 }, pose: { face: true, for: 2 } },
+    try: ['pretend until 2:40', 'goto type_kev busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy', 'pretend until 2:50'],
+  },
+  {
+    id: 'lin_sees', at: { x: LIN_KB.x, y: LIN_KB.y }, on: 'near', npcs: ['lin'], radius: 10, sees: true, every: 6,
+    when: caughtTyping(LIN_KB),
+    line: 'Lin sees you at her keyboard and points 😠⌨️',
+    react: { say: { icons: ['😠', '⌨️'], ttl: 1.8 }, pose: { arms: 'point', angry: true, face: true, for: 1.4 } },
+    try: ['pretend until 3:06', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact'],
+  },
+  {
+    id: 'kev_sees', at: { x: KEV_KB.x, y: KEV_KB.y }, on: 'near', npcs: ['kev'], radius: 10, sees: true, every: 6,
+    when: caughtTyping(KEV_KB),
+    line: 'Kev sees you at his keyboard 🤨⌨️',
+    react: { say: { icons: ['🤨', '⌨️'], ttl: 1.8 }, pose: { face: true, for: 1.4 } },
+    try: ['pretend until 2:41', 'goto type_kev busy', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact'],
+  },
+];
+
 export const TOYS = [
+  ...TYPE_TOYS,
   {
     id: 'fire_door', at: { x: 27, y: 13 }, on: 'press', text: 'push the bar',
     line: 'you push the fire door\'s bar: it opens a crack, the alarm buzzes and the reader blinks red, and you let it swing shut',

@@ -36,6 +36,8 @@
 //            his head turns to the prop (arms: a render/characters.js pose, e.g. 'point', 'reach', 'shrug'); slump:
 //            asleep, his head forward on the desk, glances not shown (drawn only: he sees exactly as before)
 //     set    { key: value }: the toy's new state
+//     add    { key: n }: added to the toy's state (a count: lines typed on a screen)
+//     reset  [toy ids]: those toys' state back to how it started (the owner deletes what you typed)
 //     burst  { kind, n?, speed?, lift?, ttl? }: particles at the prop (core/fx.js BURST_KINDS)
 //   stand    pass / near, optional: { x, y } (tile units), where a person stands to do it, at arm's length from the
 //            prop. He is drawn walking over, doing it there (the pose waits for him to arrive) and hurrying back to
@@ -168,6 +170,11 @@ export function fire(game, toy, who) {
   t.by = who;
   t.n += 1;
   if (r.set) Object.assign(t.state, r.set);
+  if (r.add) for (const k in r.add) t.state[k] = (t.state[k] ?? 0) + r.add[k];
+  for (const id of r.reset ?? []) {
+    const o = game.level.toys.find((x) => x.id === id);
+    if (o) game.toys.byId[id].state = { ...o.state };
+  }
   // A walk over to it first (header): the pose waits until he is there.
   let from = game.loopTime;
   const n = toy.stand && who !== 'player' ? game.npcs.find((m) => m.id === who) : null;

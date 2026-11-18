@@ -4,8 +4,8 @@
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue, TILE } from '../../config.js';
 import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
-import { PICTURE, pictureTilt } from './toys.js';
-import { ficus, deadTypewriter, kevPage } from './painters-more.js';
+import { PICTURE, pictureTilt, KEYBOARDS } from './toys.js';
+import { ficus, deadTypewriter, kevPage, typedScreen } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
@@ -101,6 +101,8 @@ export const DECOR = {
       const head = pose?.slump && game.loopTime < pose.until && kev ? { x: kev.x * TILE, y: kev.y * TILE - 20 } : null;
       return { secs: d.n > 0 ? (d.n - 1) * 3 + Math.min(d.since, 3) : 0, head };
     } },
+    // Gibberish on a screen whose keyboard you mashed (toys.js type_*): a line a press, until its owner deletes it.
+    ...KEYBOARDS.map((k) => ({ tile: 'C', draw: typedScreen, state: (w, game) => ({ x: k.x, y: k.y, keys: toyState(game, k.id).keys }) })),
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },

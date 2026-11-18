@@ -8,6 +8,8 @@
 //              off the desk's edge into a puddle, smoke curling up, a spark now and then. state: { dead, since }
 //   kevPage    Kev's screen while he dozes on his keyboard (toys.js kev_doze): a growing line of one letter.
 //              state: { secs }
+//   typedScreen  a workstation's screen after you mashed its keyboard (toys.js type_*): a white document window
+//              filling up with gibberish, a line a press. state: { x, y, keys } (the monitor's tile)
 import { fillEllipse, fillCircle, clamp, easeOutBack, T, emoji, glyphScope } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 
@@ -131,4 +133,26 @@ function snore(ctx, head, t) {
   }
   ctx.globalAlpha = 1;
   glyphScope(was);
+}
+
+// A document of gibberish on a workstation's screen (render/world.js drawWorkstation: the screen is 20 x 7 px).
+const LINE_CHARS = 18;
+export function typedScreen(ctx, info, at, state) {
+  if (!(state.keys > 0)) return;
+  const midX = state.x * T + T / 2;
+  const top = state.y * T + 3 + 3; // monTopY
+  ctx.fillStyle = '#f4f1e6';
+  ctx.fillRect(midX - 10, top + 8, 20, 7);
+  ctx.fillStyle = '#2b2b2b';
+  const lines = Math.min(3, state.keys);
+  for (let l = 0; l < lines; l++) {
+    // the newest line is the last; a full screen scrolls (the same three lines, as far as anyone can tell)
+    let x = midX - 9;
+    for (let c = 0; c < LINE_CHARS; c++) {
+      const h = Math.sin((state.keys - lines + l) * 12.9898 + c * 78.233) * 43758.5453;
+      if (h - Math.floor(h) < 0.22) { x += 1; continue; } // a space
+      ctx.fillRect(x, top + 9 + l * 2, 0.8, 1.2);
+      x += 1;
+    }
+  }
 }

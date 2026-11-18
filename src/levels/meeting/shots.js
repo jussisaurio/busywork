@@ -264,6 +264,38 @@ export default [
     intent: 'The picture war, 3: Lin, on her way to the fridge, has stepped over to stand right under it, and ' +
       'reaches up, cross (😤), to straighten it.',
   },
+  // Typing on any keyboard (toys.js type_*): a toy, not a way to look busy.
+  {
+    name: 'type-lin',
+    cmds: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.2s'],
+    intent: 'Typing on someone else\'s keyboard: Lin is off to the fridge, and you stand at her desk (left, the teal ' +
+      'chair) mashing her keyboard. Her screen shows a white document filling with lines of gibberish.',
+  },
+  {
+    name: 'type-lin-sees',
+    cmds: ['pretend until 3:06', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact',
+      'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.6s', 'interact', 'wait 0.3s'],
+    intent: 'Lin, coming back along the hallway, sees you at her keyboard: she points at you, cross (😠⌨️).',
+  },
+  {
+    name: 'type-lin-reads',
+    cmds: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy',
+      'pretend until 3:12.5'],
+    intent: 'Lin sits down at her desk and finds your gibberish on her screen: 😳⌨️. You sit at your desk.',
+  },
+  {
+    name: 'type-lin-wipes',
+    cmds: ['pretend until 2:59', 'goto lin_desk busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy',
+      'pretend until 3:13.6'],
+    intent: 'Lin hammers delete, cross (😤): her screen is her own grid again.',
+  },
+  {
+    name: 'type-kev-reads',
+    cmds: ['pretend until 2:40', 'goto type_kev busy', 'interact', 'wait 0.6s', 'interact', 'goto my_desk_spot busy',
+      'pretend until 2:46.5'],
+    intent: 'Kev, back with his coffee, sits down and reads the gibberish you typed on his screen, and nods: 🤔👍. ' +
+      'It stays there, under his code.',
+  },
   {
     name: 'end-restroom',
     cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
