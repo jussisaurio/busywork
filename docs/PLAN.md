@@ -53,8 +53,10 @@ Meeting:
   on for Meeting's sandwich and keycard only, because turning it on everywhere changed outcomes in fixture,
   discreet-packaging and audit); the fire door and both Good Samaritan losses; go home; the restroom (knock, hide,
   wash, Kev's nudge, blamed from the restroom); the picture war.
-- Built on a branch, not reviewed or merged: the ficus, coffee into a typewriter, Kev dozing.
-- Not started: the plain fails (shadow puppets), "where were you" at your desk, the bib, the campfire.
+- Merged later the same day: the ficus, coffee into a typewriter, Kev dozing; the fix for the cup in the boss's
+  office (above). `gate.mjs --level meeting` passes.
+- In progress, two builders: the plain fails (shadow puppets) and "where were you" at your desk; the bib, the
+  campfire and Kev's doze, which does not read yet (no 💤 shows, the slump is a dark dot).
 
 ### Known rough edges (prune as they are fixed)
 - The fire door's red blink and the Samaritan hug are small at map scale.
@@ -64,6 +66,10 @@ Meeting:
   it changes 37 recorded plans; `sit` stopping on soft stops changes 26. Both wait for a decision.
 - The shelf's three meeting-table endings look alike at shelf size. The shelf with the new endings is unchecked.
 - Nothing new has been seen in a real browser or heard.
+- The ficus: your own 🌱 thought covers the plant, and nothing shows the coffee going in.
+- The typewriter is drawn as a terminal; the catch is instant and remote (nobody walks over); your face is not
+  sooty on the end card; the plant in the fired box could be taken for the ficus.
+- `play.mjs` help lists some targets twice. Meeting's sim cost is 1.64x its perf budget (advisory).
 - `check.mjs` in a worktree needs `BUSYWORK_CANVAS_DIR` pointed at main's `tools/.deps`.
 
 ## Slice 2 (after Jussi has played)
