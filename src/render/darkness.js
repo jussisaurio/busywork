@@ -11,8 +11,8 @@
 // switch or a breaker panel on its wall tile, on the face that looks into the room, and the little lamp that glows
 // on it while it is off.
 import { T, fin, clamp, fillCircle, ellipse, circle } from './util.js';
-import { C, CONE_TINT_DEFAULT } from './palette.js';
-import { castRay } from './cones.js';
+import { C } from './palette.js';
+import { castRay, sightColor } from './cones.js';
 import { headY, lookFor, drawCharacters } from './characters.js';
 import { viewerOf } from '../game/perception.js';
 import { darkZones, dimZones, isDark, nearViewer, torchViewer } from '../game/darkness.js';
@@ -404,14 +404,15 @@ function freshDark(game, zones, t) {
   return { zones: prev.fresh, k: 1 - (t - prev.at) / DARK_FADE };
 }
 
-const tintOf = (n) => (Array.isArray(n.coneTint) ? n.coneTint : CONE_TINT_DEFAULT);
 const rgba = ([r, g, b], a) => `rgba(${r},${g},${b},${clamp(a, 0, 1).toFixed(3)})`;
 
 // Everyone's arm's-length sight into the dark (cones on): a dim fan with an edge, over the veil. And, while a room
-// has just gone dark, each daylight cone shrinking from its full reach to that fan.
-function drawNearSight(ctx, game, map, zones, fade) {
+// has just gone dark, each daylight cone shrinking from its full reach to that fan. Coloured as his cone is
+// (cones.js sightColor): red when he notices you.
+function drawNearSight(ctx, game, map, zones, fade, t) {
   if (!game.settings?.showCones) return;
   const npcs = (game.npcs || []).filter((n) => n && n.active && n.vision);
+  const tintOf = (n) => sightColor(game, n, t).rgb;
   if (fade) {
     ctx.save();
     darkPath(ctx, fade.zones);
@@ -551,7 +552,7 @@ function drawVeil(ctx, game, map, zones, t, fade = null) {
     ctx.stroke();
     ctx.restore();
   }
-  drawNearSight(ctx, game, map, zones, fade);
+  drawNearSight(ctx, game, map, zones, fade, t);
   // The torch itself, in the holder's hand (the beam is not a glow from nowhere).
   hands.forEach((h) => paintTorch(ctx, h));
 
