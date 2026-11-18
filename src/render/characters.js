@@ -391,7 +391,11 @@ function drawBox(ctx, g) {
   ctx.fill();
 }
 
-const SLUMP = 11; // px the head drops forward when asleep at a desk (s.slump: a toy's pose)
+// Asleep at a desk (s.slump: a toy's pose): the whole upper body leans LEAN px forward over the desk, and the head
+// drops SLUMP px further, onto it. The torso goes with it, so the head never parts from the body (a playtester saw a
+// head floating over an empty chair when only the head moved).
+const LEAN = 6;
+const SLUMP = 6;
 const G = { d: 0, cd: 0, sd: 0, fx: 0, fy: 0, rx: 0, ry: 0, bodyY: 0, brx: 0, bry: 0, headY: 0, hr: 0 };
 
 // Draw a person whose feet/centre are at (x, y) in the current transform.
@@ -442,6 +446,7 @@ export function drawPerson(ctx, look, s, x, y) {
     }
   }
 
+  if (s.slump) ctx.translate(cd * LEAN, sd * LEAN); // the rest of him leans in (the legs stay under the desk)
   computeHands(s, G);
   if (s.arms === 'holdout' && s.item) fillEllipse(ctx, HAND.fx, HAND.fy, 4.5, 1.8, 'rgba(25,15,8,0.4)'); // the floor under it
   if (north) drawArms(ctx, look, s, G, bodyDark);
