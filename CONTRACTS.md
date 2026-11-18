@@ -768,6 +768,11 @@ an unknown id exits 2 and lists the registry.
   harness frames over the golden plans), render cost (ms per frame through the fake canvas) and the golden replay's wall time, against
   `tools/perf-budget.json` (`--write` records it); exit 1 when a number is over 2.5x its budget. The gate prints the same as one advisory line.
   Not a `test-*.mjs`: timing under the parallel runner would be flaky.
+- **Round** (`tools/round.mjs [--session <uuid>] [--since <ISO | 3h | 45m>] [--json]`): read-only report on a round of agent
+  work, from the Claude Code transcripts in `~/.claude/projects/` (default: the newest session) and from git. One row per agent
+  (wall time, turns, tokens, tool calls, check/gate/golden runs, waiting gaps, parent), concurrency of subagents, unmerged
+  branches, and a few flags. It prints numbers and agent descriptions, never message text; what the files do not say
+  prints `unknown`. Use `--since` for one round: a session can span days. Not a `test-*.mjs`.
 - **`BUSYWORK_JOBS=<n>`** (`tools/lib/jobs.mjs`): one cap on parallelism for check/merge, `--all`, the fuzzer's workers and cold-read's readers; unset, each keeps its own default.
 
 A refactor must leave both golden tools passing. Re-record only for an intended behaviour change, and say so in
