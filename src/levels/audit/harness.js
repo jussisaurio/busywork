@@ -1,5 +1,6 @@
 // The audit's words for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
-const NAME = { auditor: 'the auditor', boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES } from '../office/cast.js';
+const NAME = { auditor: 'the auditor', ...OFFICE_NAMES };
 const name = (id) => NAME[id] ?? id;
 
 const DESK = ['the boss\'s desk', 'Lin\'s desk', 'your desk', 'Kev\'s desk'];

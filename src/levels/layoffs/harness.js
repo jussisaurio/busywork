@@ -1,5 +1,5 @@
 // The Layoff List in words, for the AI-agent harness (src/levels/meeting/harness.js documents the fields).
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 
 export default {

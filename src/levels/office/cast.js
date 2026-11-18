@@ -10,6 +10,9 @@ export const OFFICE_PEOPLE = {
   kev: { id: 'kev', icon: '@kev', color: '#5f6b3a', /* olive hoodie */ voice: 'kev', coneTint: [214, 230, 140] },
 };
 
+// How the AI-agent harness names the office people (harness `names`); a level adds its own.
+export const OFFICE_NAMES = Object.freeze({ boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' });
+
 // A schedule entry maker for a day that starts at `start` (minutes after midnight, level.day.start):
 // `const s = scheduler(START); s('3:12', { do: 'sit', spot: 'boss_desk' })`.
 export const scheduler = (start) => (time, entry) => ({ at: at(time, start), ...entry });

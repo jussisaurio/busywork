@@ -2,7 +2,7 @@
 import { clockArg } from '../../config.js';
 import { START } from './cast.js';
 
-const NAME = { boss: 'the boss', lin: 'Lin', kev: 'Kev', player: 'you' };
+import { OFFICE_NAMES as NAME } from '../office/cast.js';
 const name = (id) => NAME[id] ?? id;
 const CLOCK_NAME = { boss: "the boss's clock", open: 'the open-plan clock', boss_clock: "the boss's clock", open_clock: 'the open-plan clock' };
 
