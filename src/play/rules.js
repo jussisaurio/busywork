@@ -122,22 +122,42 @@ function trespassing(game, npc) {
   return null;
 }
 
+// Are the office rules live right now? The one answer for every caller: null when they are, else the first reason
+// they are not:
+//   'over'     not the day, or the day is decided (game.outcome)
+//   'caught'   someone caught you: the catch's beat is playing out
+//   'leaving'  gone for the day (scenario.js leaveDay): nobody sees you
+//   'hidden'   out of sight (player.hidden: in a cubicle): nobody sees you
+//   'out'      shown out of someone's office (player.js showOut): on your way back to your desk
+//   'working'  serving assigned work (rules.working)
+// Witnesses, suspicion, the cones (game.watch) and a level's show-out want null. A catch also lands while you are
+// shown out or serving assigned work (canCatch): evidence doesn't wait, and a walk to your desk is no alibi.
+export function rulesOff(game) {
+  if (game.phase !== 'day' || game.outcome) return 'over';
+  if (game.caught) return 'caught';
+  if (game.scenario?.leave) return 'leaving';
+  if (game.player.hidden) return 'hidden';
+  if (game.rules.out) return 'out';
+  if (game.rules.working) return 'working';
+  return null;
+}
+const canCatch = (off) => off === null || off === 'out' || off === 'working';
+
 export function updateRules(game, dt) {
   rulesStep(game, dt);
   publishWatch(game);
 }
 
 // What each NPC has in sight that the rules object to, after this step: game.watch[id] = 'disguise' | 'action' |
-// 'scene' | 'evidence' | 'contraband' | 'trespass', absent if nothing (and empty while you're caught, the day is decided, or you're
-// serving assigned work: the rules react to nothing then). Published every step for the renderer (cones.js), so
+// 'scene' | 'evidence' | 'contraband' | 'trespass', absent if nothing (and empty whenever the rules are off: rulesOff).
+// Published every step for the renderer (cones.js), so
 // a cone glows exactly when its owner would react. Read-only: nothing in the sim reads it, and it's not in world.
 function publishWatch(game) {
   const watch = {};
-  const s = game.rules;
-  if (game.phase === 'day' && !game.caught && !game.outcome && !s.working && !game.scenario?.leave && !game.player.hidden) {
+  if (rulesOff(game) === null) {
     const p = game.player;
     for (const npc of game.npcs) {
-      const offence = offenceFor(game, s, npc);
+      const offence = offenceFor(game, game.rules, npc);
       if (offence && npcSees(game, npc, p.x, p.y)) watch[npc.id] = offence;
     }
   }
@@ -145,11 +165,9 @@ function publishWatch(game) {
 }
 
 function rulesStep(game, dt) {
-  if (game.phase !== 'day' || game.outcome) return;
+  if (rulesOff(game) === 'over') return;
   claimsDue(game); // even in a catch's beat: he walks over for his thing (sim/mechanics/claim.js)
-  if (game.caught) return;
-  // Gone (scenario.js leaveDay) or out of sight (player.hidden: in a cubicle): nobody sees you, nothing applies.
-  if (game.scenario?.leave || game.player.hidden) return;
+  if (!canCatch(rulesOff(game))) return;
   const s = game.rules;
   const p = game.player;
   updateDisguise(game); // who knows better, who is fooled for the first time
@@ -275,7 +293,6 @@ function react(game, s, npc, offence) {
   if (proof) offence = 'contraband';
   else if (offence === 'trespass') return showOutOf(game, s, npc, trespassing(game, npc), cam);
   if (npc.id === r.authority?.id) {
-    sightline(game, npc.id, 'caught', 1.6, screenChain(cam));
     caught(game, offence, r.authority.id, cam);
     return;
   }
@@ -343,7 +360,7 @@ function claimsDue(game) {
 export function showOutNow(game, npcId) {
   const s = game.rules;
   const npc = findNpc(game, npcId);
-  const entry = npc && game.phase === 'day' && !game.caught && !game.outcome && !s.out && !s.working && trespassing(game, npc);
+  const entry = npc && rulesOff(game) === null && trespassing(game, npc);
   if (!entry) return false;
   showOutOf(game, s, npc, entry, null);
   return true;
@@ -351,9 +368,10 @@ export function showOutNow(game, npcId) {
 
 // For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand; a drowned
 // typewriter, so loud it needs no witness). why: a string
-// the outcome carries (outcome.why: its end scene). False if the day is already over or someone already caught you.
+// the outcome carries (outcome.why: its end scene). False if no catch can land now (rulesOff, canCatch): the day is
+// over, someone already caught you, or you are gone or hidden.
 export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
-  if (game.phase !== 'day' || game.caught || game.outcome || game.scenario?.leave) return false;
+  if (!canCatch(rulesOff(game))) return false;
   caught(game, reason, by, null, icons);
   if (why) game.caught.why = why;
   return true;
@@ -438,8 +456,9 @@ function assignWork(game, reason, by = null) {
 // What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
 const JUDGE = { claims, enforcing, comeFor, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
 
-// The catch: a spiky alert (CONTRACTS "Bubbles": the star means someone has spotted YOU), ❗👉 and your face by
-// default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what
+// The catch, the only one: every catch (a reaction, a mechanic's judge, a heard tattle, a level's catchNow) comes here
+// and looks the same. His red sightline to you (through the screen, with cam), a spiky alert (CONTRACTS "Bubbles":
+// the star means someone has spotted YOU), ❗👉 and your face by default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what
 // he says instead (a mechanic's own words, e.g. a fetch's `alert`).
 function caught(game, reason, by = roles(game).authority.id, cam = null, icons = CAUGHT_ICONS) {
   if (game.caught) return;
@@ -449,6 +468,7 @@ function caught(game, reason, by = roles(game).authority.id, cam = null, icons =
   p.locked = true;
   setBusy(game, false, null);
   game.clock.ff = false;
+  sightline(game, by, 'caught', 1.6, screenChain(cam));
   say(game, by, pointing(cam, icons), { kind: 'alert' });
   game.events.emit('caught', withVia({ by, reason }, cam));
   shake(game, 0.3, 0.4);

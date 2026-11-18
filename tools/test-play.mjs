@@ -17,7 +17,8 @@ import { DIRS } from '../src/core/vision.js';
 import { spotPos } from '../src/game/perception.js';
 import { updatePlayer } from '../src/play/player.js';
 import { updateInteractions } from '../src/play/interactions.js';
-import { updateRules, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
+import { updateRules, catchNow, rulesOff, NOTICE, SCENE_RADIUS } from '../src/play/rules.js';
+import { startClaim, check as claimCheck, entries as claimEntries } from '../src/sim/mechanics/claim.js';
 import { updateScenario, END_BEAT } from '../src/play/scenario.js';
 import { advanceClock } from '../src/game/loop.js';
 import { createNpc } from '../src/sim/npcs.js';
@@ -1009,6 +1010,7 @@ game.level.roles.private = PRIVATE;
   ok(t.length === 1 && t[0].payload.by === 'boss' && t[0].payload.zone === 'boss_office', "trespass {by:'boss', zone:'boss_office'}, pretending or not");
   ok(evs('say').some((e) => e.payload.owner === 'boss' && e.payload.icons.join('') === '👉@player🚪'), 'boss says 👉 your face 🚪');
   ok(!game.caught && !game.outcome && p().locked && game.rules.out, 'shown out: locked, not caught');
+  ok(rulesOff(game) === 'out' && !Object.keys(game.watch).length, `shown out: the rules are off, so no cone glows red while you go (watch: ${JSON.stringify(game.watch)})`);
   const boss = game.npcs.find((n) => n.id === 'boss');
   ok(p().held === 'keycard' && boss._claim?.item === 'keycard', 'he comes for his keycard: walks over, no snatch from his desk');
   walksOver(boss);
@@ -1024,6 +1026,39 @@ game.level.roles.private = PRIVATE;
   place(4.5, 5.5);
   run(2);
   ok(evs('trespass').length === 0, 'boss away: nobody shows you out');
+}
+delete game.level.roles.private;
+
+section('one catch: every way in looks the same (rules.js caught)');
+{
+  const caughtLine = () => game.fx.lines.some((l) => l.from === 'boss' && l.to === 'player' && l.kind === 'caught');
+  // A level's own catch (catchNow: the typewriter, the keycard he sees after the hug) draws his red sightline too.
+  newDay([fakeNpc('boss', 'boss_desk')]);
+  place(13.5, 7.5);
+  ok(catchNow(game, 'action', 'boss') && game.caught?.by === 'boss', 'catchNow: caught');
+  ok(caughtLine(), 'catchNow: his red sightline runs to you, as at any other catch');
+  // Hidden (a cubicle): nobody sees you, so no catch lands.
+  newDay([fakeNpc('boss', 'boss_desk')]);
+  place(13.5, 7.5);
+  p().hidden = true;
+  ok(rulesOff(game) === 'hidden' && !catchNow(game, 'action', 'boss') && !game.caught, 'hidden in a cubicle: catchNow does not catch you');
+  p().hidden = false;
+}
+
+section('claims: asked again on his way over, he still goes back to what he was doing');
+{
+  const lin = fakeNpc('lin', 'lin_desk', { override: 'hunting' });
+  newDay([lin]);
+  place(13.5, 9.5);
+  p().held = 'sandwich';
+  const f = claimEntries(game.level).find((e) => e.item === 'sandwich' && e.npcs.includes('lin'));
+  ok(startClaim(game, lin, 'sandwich', { word: true }), 'she sets off for her sandwich');
+  claimCheck(game, lin, f);
+  ok(lin.override === 'claiming' && lin._claim.was === 'hunting', 'her walk remembers the hunt');
+  ok(startClaim(game, lin, 'sandwich', { word: false }), 'asked again (a second reaction) on her way');
+  claimCheck(game, lin, f);
+  ok(lin.override === 'claiming' && lin._claim.started && lin._claim.was === 'hunting', `the second claim keeps the hunt to go back to (was: ${lin._claim.was})`);
+  p().held = null;
 }
 
 section('input module (createInput on a fake EventTarget)');

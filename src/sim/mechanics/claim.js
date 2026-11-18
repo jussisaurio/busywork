@@ -62,10 +62,13 @@ const there = (game, npc, c) => withinReach(npc, target(game, c)) || !!(c.at && 
 export const claimDue = (game, npc) => stillThere(game, npc._claim) && there(game, npc, npc._claim);
 
 // The way in (the rules' comeFor; a level, on a catch). item: the type; opts.at: the world item, if not your hand.
-// True if he is now on his way; false: he is there already, take it now.
+// True if he is now on his way; false: he is there already, take it now. Asked again while he is on his way, the new
+// claim replaces the old one, but he still goes back afterwards to what he was doing before the first (`was`).
 export function startClaim(game, npc, item, opts = {}) {
   const c = { item, ...opts };
   if (there(game, npc, c)) return false;
+  const prev = npc._claim;
+  if (prev?.started) c.was = prev.was;
   npc._claim = c;
   return true;
 }
@@ -80,7 +83,7 @@ export function check(game, npc, f) {
   const c = npc._claim;
   if (!c || c.item !== f.item || c.started) return;
   c.started = true;
-  c.was = npc.override === f.override ? null : npc.override;
+  c.was = npc.override === f.override ? c.was ?? null : npc.override; // already claiming: the first claim's `was`
   npc._wait = 0;
   setOverride(npc, f.override);
 }
