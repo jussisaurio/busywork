@@ -29,9 +29,15 @@ export const working = (lure, npc) => npc.override === lure.work.override;
 export const owns = (lure, npc) =>
   npc.id === lure.npc && (npc.override === lure.override || npc.override === lure.work.override);
 
+// On a lure's job already (on his way or working).
+function onAJob(lures, npc) {
+  for (let i = 0; i < lures.length; i++) if (owns(lures[i], npc)) return true;
+  return false;
+}
+
 export function check(game, npc, lure) {
   if (npc.id !== lure.npc || !npc.active || npc._gone || !lure.when(game.world)) return;
-  if (npc.override && game.level.lures.some((l) => owns(l, npc))) return; // one job at a time
+  if (npc.override && onAJob(game.level.lures, npc)) return; // one job at a time
   setOverride(npc, lure.override);
   holdFor(npc, lure.react?.wait ?? 0);
   speak(game, npc, lure.react?.says);

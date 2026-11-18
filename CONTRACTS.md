@@ -760,12 +760,17 @@ an unknown id exits 2 and lists the registry.
   commands (`wait until 3:00`) are read with `at(hhmm, day.start)`.
 - **Fuzz** (`tools/fuzz.mjs`): searches harness plans for surprising outcomes (MAP-Elites over bins of result,
   routes and milestones; wins shrunk to a minimum, with timing windows). `[--budget 6000] [--seed 1]
-  [--batch 288] [--workers N] [--verbose] [--json out.json]`. The output depends only on level, seed, budget and
-  batch. A report for a designer, not a test.
+  [--batch 288] [--workers N] [--no-known] [--verbose] [--json out.json]`. It plays the level's known plans first
+  (`knownPlans`: every `golden.json` plan and `gate.goldenPlans`), then small variations of the known wins (a busy
+  flag flipped, a step dropped; at most a quarter of the budget), then searches at random from there. Every win,
+  known or found, is judged the same way. `--no-known` searches from nothing. The output depends only on level,
+  seed, budget, batch and the known plans. A report for a designer, not a test.
 - **Gate** (`tools/gate.mjs`): the pass/fail filter a level must pass before a human plays it. It fuzzes
   (`--budget 30000`; 7 s on fixture, 36 s on weekend-shift, 103 s on meeting; without `--budget`, the level's `gate.budget` when it has one, so a level whose
   rarest win needs more days needs no flag) and exits 1 on any failed check:
-  - `routes`: a route no plan wins.
+  - `routes`: a route no plan wins. A route with a known winning plan passes by replaying it, so the answer does
+    not depend on the search or on the order of `gate.targets`. A route only the search won passes with a note and
+    the plan to record in `gate.goldenPlans`.
   - `easy`: a win in 3 plan steps or fewer (the final stance held until the meeting is not a step).
   - `random`: random plans win more than 1% of the time.
   - `crash`: a command threw, or a day never ended.
@@ -823,6 +828,9 @@ an unknown id exits 2 and lists the registry.
   harness frames over the golden plans), render cost (ms per frame through the fake canvas) and the golden replay's wall time, against
   `tools/perf-budget.json` (`--write` records it); exit 1 when a number is over 2.5x its budget. The gate prints the same as one advisory line.
   Not a `test-*.mjs`: timing under the parallel runner would be flaky.
+- **Profile** (`tools/profile.mjs --level <id> [--plans 60] [--reps 3] [--alloc [--top 28]]`): why a level's sim costs what it
+  does. User-CPU ms per 1000 frames over a spread of the golden plans (steadier than wall time on a busy machine), or with
+  `--alloc` the bytes allocated per frame by function. How to read it is at the top of the file.
 - **Round** (`tools/round.mjs [--session <uuid>] [--since <ISO | 3h | 45m>] [--json]`): read-only report on a round of agent
   work, from the Claude Code transcripts in `~/.claude/projects/` (default: the newest session) and from git. One row per agent
   (wall time, turns, tokens, tool calls, check/gate/golden runs, waiting gaps, parent), concurrency of subagents, unmerged
