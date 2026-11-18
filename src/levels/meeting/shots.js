@@ -5,14 +5,13 @@
 // bubbles as a player at normal speed sees them: one lasts 2.5 game seconds, which is about 0.4 s of pretending (the
 // clock runs at x6), so the wait must land inside that. A wait stops early when someone notices something
 // ('wait 2s', 'wait 2s' steps past two such stops).
-const POUR = ['goto coffee_machine busy', 'interact']; // 2:34: the day's only cup, before Kev's 2:38 coffee run
-const HIDE = ['goto my_desk_spot busy', 'put my_desk']; // the cup on your own desk, out of Kev's way
+import { POUR, HIDE, TO_THE_RACK } from './plans.js';
 const SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:06', 'goto my_desk_spot busy', 'interact', 'goto projector busy',
   'interact']; // after Kev has gone home (3:05)
 // The spill after the boss's last look in (3:22), for a mug planted on Lin's or the boss's desk (route-checks.js)
 const DESK_SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:25', 'goto my_desk_spot busy', 'interact', 'goto projector',
   'interact'];
-const KEYCARD = ['busy until 3:11', 'busy 1.35s', 'goto boss_office_door busy', 'goto coat_rack busy']; // the boss is out
+const KEYCARD = ['busy until 3:11', 'busy 1.35s', ...TO_THE_RACK]; // the boss is out (frame-exact; route-checks.js stealCard waits for it)
 const LET_IN = [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'goto fire_door busy',
   'interact']; // the keycard taken, the boss locked out, and you push the door open for him
 
@@ -393,7 +392,7 @@ export default [
   },
   {
     name: 'end-restroom',
-    cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
+    cmds: [...POUR, 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
       'put coffee busy', 'goto restroom_door busy', 'busy until 3:40', 'interact', 'busy until 4:00', 'wait 8s'],
     intent: 'End card, blamed: the projector died, but at 4:00 you were in the restroom. The table stares at your ' +
       'empty chair in its pool of light; then you walk in from the right, wiping your wet hands on your trousers (🚽🙂).',
@@ -426,7 +425,7 @@ export default [
   // ---- More coffee, Kev's doze, the plain fails, the bib, the campfire (one block: a parallel builder appends too).
   {
     name: 'ficus-delight',
-    cmds: ['goto coffee_machine busy', 'interact', 'goto boss_doorway busy', 'interact', 'wait 0.3s'],
+    cmds: [...POUR, 'goto boss_doorway busy', 'interact', 'wait 0.3s'],
     intent: 'You stand in the boss\'s office doorway, empty-handed: you just poured the day\'s only cup of coffee into ' +
       'his potted plant. A glossy new leaf has shot out of it, the soil is dark and wet, and the boss at his desk ' +
       'looks at the plant, delighted (🌿😍).',
@@ -480,7 +479,7 @@ export default [
   },
   {
     name: 'end-campfire',
-    cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:06', 'goto projector', 'interact', 'put coffee',
+    cmds: [...POUR, 'sit busy', 'busy until 3:06', 'goto projector', 'interact', 'put coffee',
       'goto my_seat busy', 'sit busy', 'busy until 3:18.75', 'goto coat_rack', 'busy until 3:21.6', 'interact',
       'goto meeting_seat busy', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
     intent: 'End card, a win by both routes at once: the projector is dead and the boss is locked out on the balcony. ' +
@@ -530,7 +529,7 @@ export default [
   },
   {
     name: 'end-lin-hungry',
-    cmds: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'goto fridge busy', 'interact',
+    cmds: [...POUR, ...HIDE, 'goto fridge busy', 'interact',
       'eat', 'goto restroom_door busy', 'interact', 'interact', 'interact', 'goto my_seat busy', 'sit busy',
       'busy until 3:25', 'goto my_desk_spot busy', 'interact', 'goto projector', 'interact', 'goto 6,10',
       'busy until 3:36', 'put lin_desk', 'goto meeting_seat busy', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
