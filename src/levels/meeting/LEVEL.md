@@ -69,7 +69,7 @@ run, not read off this table.
   `keycard:takenBack`; the caught beat waits up to 8 s for him); the caught end card shows it on his pocket (😠🪪).
 - **Owners.** Only Lin knows the sandwich is hers: taking or eating it is sneaky only to her. To Kev and the boss it
   is just lunch (but eating where the boss sees you fills his ❓). She sees it and comes for it (😠🥪): she walks over and
-  takes it at arm's length (items.js `walk`, the engine's claim.js), to the fridge, or, if she is hunting, that ends her hunt.
+  takes it at arm's length (the engine's claim.js; every owner walks), and keeps it; if she is hunting, that ends her hunt.
   Eat it or put it out of her sight before she gets there and she gives up. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
   bag beside the machine is empty). From then on (`clocks.js`): the cup in your hand is yours, and he asks for it
   (☕🥺❓, at most every 20 real seconds, within 4 tiles); set down on the machine or on his desk it looks free, and he
@@ -247,7 +247,7 @@ Level events (all `{}` unless shown): `projector:broken`, `kev:alerted`, `projec
 `coffee:missing {by}`, `coffee:kevTook {spot}`, `coffee:asked`, `boss:jacket`, `boss:lockedOut`, `boss:badge`, `boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`, `boss:fume`,
 `keycard:takenBack`, `kev:left`, `boss:mugHunt`, `mug:found {spot}`, `meeting:calledOff`.
 The engine's `item:put {type, spot}` fires for the mug. `outcome.why` carries the verdict's reason. With the boss as authority and these
-items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered`,
+items, the engine's templated events read `boss:suspicious`, `boss:workAssigned`, `keycard:recovered {by, type, from}`,
 and `sandwich:eaten`.
 
 ## Sightlines

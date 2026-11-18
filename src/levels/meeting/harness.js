@@ -131,7 +131,7 @@ export default {
       case 'projector:fixing': return 'Kev is fixing the projector';
       case 'projector:fixed': return 'the projector is fixed';
       case 'keycard:taken': return 'you took the keycard 🪪';
-      case 'keycard:recovered': return 'the boss spotted his keycard on the floor, walked over and picked it up 🪪❗';
+      case 'keycard:recovered': return p.from === 'player' ? 'the boss walked over and took his keycard out of your hand 🪪❗' : 'the boss spotted his keycard on the floor, walked over and picked it up 🪪❗';
       case 'sandwich:taken': return 'you took the sandwich 🥪';
       case 'sandwich:eaten': return 'you ate the sandwich';
       case 'sandwich:returned': return 'Lin took her sandwich back';
