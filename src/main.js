@@ -1,12 +1,14 @@
 // Browser entry point: wires input, renderer, audio and the fixed-step loop.
 import { FIXED_DT } from './config.js';
 import { createGame } from './state.js';
+import { loadEndings } from './game/endings.js';
 import { startLoop, runFrame } from './game/loop.js';
 import { updateFx } from './core/fx.js';
 import { createInput } from './play/input.js';
 import { createRenderer } from './render/renderer.js';
 import { PAUSE_BTN } from './render/hud.js';
 import { playButton } from './render/screens.js';
+import { noteEndCard } from './render/shelf.js';
 import { VIEW_W, VIEW_H } from './render/util.js';
 import { createAudio } from './audio/audio.js';
 import { getLevel, levels, defaultLevel } from './levels/index.js';
@@ -37,6 +39,7 @@ mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k]
 
 const input = createInput(window);
 const game = createGame({ input, level: pickLevel() });
+loadEndings(game); // the endings shelf: what earlier sessions found (localStorage)
 const renderer = createRenderer(canvas);
 const audio = createAudio();
 audio.attach(game);
@@ -125,7 +128,10 @@ function frame(now) {
         acc -= FIXED_DT;
         runFrame(game, FIXED_DT);
       }
-      if (game.phase === 'end') game._endedAt = game.time;
+      if (game.phase === 'end') {
+        game._endedAt = game.time;
+        noteEndCard(game); // the endings shelf (render/shelf.js)
+      }
     }
   }
 

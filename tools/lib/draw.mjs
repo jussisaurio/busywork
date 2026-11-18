@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { join, resolve } from 'node:path';
 import { updateFx } from '../../src/core/fx.js';
 import { FIXED_DT } from '../../src/config.js';
+import { noteEndCard } from '../../src/render/shelf.js';
 
 export const TOOLS = fileURLToPath(new URL('..', import.meta.url));
 export const DEPS = join(TOOLS, '.deps');
@@ -77,6 +78,7 @@ export function playToEndCard(h, r, what) {
   const g = h.game;
   for (let i = 0; i < MAX_DRAIN_FRAMES && g.phase === 'day'; i++) h.frame();
   if (g.phase !== 'end') throw new Error(`${what}: the day never reached its end card`);
+  noteEndCard(g); // its ending goes on the shelf, as main.js does
   r.render(g); // the end card comes up
   for (let s = 0; s < END_AFTER - 1e-9; s += FIXED_DT) {
     g.time += FIXED_DT;

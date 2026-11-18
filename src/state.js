@@ -10,7 +10,7 @@ export function createGame({ events, input, level = defaultLevel } = {}) {
     events: events ?? createEvents(),
     level,
     map: parseMap(level.map.rows, level.map.legend),
-    persist: { loop: 0, routesFoundBy: { [level.id]: [] } },
+    persist: { loop: 0, routesFoundBy: { [level.id]: [] }, endingsBy: {}, endingNew: null }, // endings: game/endings.js
     phase: 'title',
     settings: { showCones: true, muted: false },
     debug: { speed: 1 },

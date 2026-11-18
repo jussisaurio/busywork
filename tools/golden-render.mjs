@@ -18,6 +18,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRenderer } from '../src/render/renderer.js';
+import { noteEndCard } from '../src/render/shelf.js';
 import { createHarness } from '../src/agent/harness.js';
 import { updateFx } from '../src/core/fx.js';
 import { worldEmoji } from '../src/render/util.js';
@@ -99,7 +100,12 @@ function renderTrace(cmds, seed) {
   const g = h.game;
   const renderer = createRenderer(fake.makeCanvas('main'), { strict: true });
   const out = [];
+  let noted = null;
   const draw = (label) => {
+    if (g.phase === 'end' && g.outcome !== noted) { // the ending goes on the shelf, as main.js does
+      noted = g.outcome;
+      noteEndCard(g);
+    }
     fake.scene = label;
     hash = createHash('sha1');
     pending.clear();

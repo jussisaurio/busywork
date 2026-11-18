@@ -529,6 +529,56 @@ draw('end without outcome');
   ok(Object.entries(kinds).every(([r, k]) => r === k) && DEFAULT_END_SCENES.kindOf(null) === 'fail', 'default end scenes: one per result');
 }
 
+// The endings shelf (render/shelf.js, game/endings.js): an end card notes its ending (main.js does it; the renderer
+// writes nothing), the key is the scene plus outcome.why, a repeat is not new, and each picture is drawn once.
+{
+  const { noteEndCard } = await import('../src/render/shelf.js');
+  const { loadEndings } = await import('../src/game/endings.js');
+  const ends = () => game.persist.endingsBy[game.level.id] ?? [];
+  game.persist.endingsBy = {};
+  const end = (o) => day((g) => { g.outcome = { newRoutes: [], loop: 1, minute: MEETING_AT, ...o }; g.phase = 'end'; noteEndCard(g); });
+  end({ result: 'win', routes: ['projector'], why: 'kev' });
+  ok(ends().length === 1 && ends()[0].key === 'kev:kev' && game.persist.endingNew === 'kev:kev', `the first ending is noted, new (${ends()[0]?.key})`);
+  const made = fake.created;
+  for (const dt of [0, 0.5, 1, 2]) {
+    game.time += dt;
+    draw(`shelf one +${dt}`);
+  }
+  ok(fake.created === made + 1, `one offscreen picture per ending, drawn once (${fake.created - made})`);
+  end({ result: 'win', routes: ['projector'], why: 'kev' });
+  ok(ends().length === 1 && game.persist.endingNew === null, 'the same ending again is not new');
+  end({ result: 'blamed', routes: ['projector'], why: 'mug' });
+  end({ result: 'blamed', routes: ['projector'], why: 'desk' });
+  end({ result: 'blamed', routes: ['projector'] });
+  end({ result: 'fail', routes: [] });
+  ok(ends().map((e) => e.key).join() === 'kev:kev,mug:mug,mug:desk,blamed,fail', `distinct endings, in the order found: ${ends().map((e) => e.key).join()}`);
+  for (const dt of [0, 1, 2]) {
+    game.time += dt;
+    draw(`shelf many +${dt}`);
+  }
+  day((g) => { g.phase = 'title'; });
+  draw('title with a shelf');
+  // Storage: kept across sessions when there is localStorage, harmless when it throws or holds junk.
+  const store = {};
+  const had = globalThis.window.localStorage;
+  globalThis.window.localStorage = { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } };
+  end({ result: 'caught', routes: [] });
+  const fresh = createGame();
+  loadEndings(fresh);
+  ok((fresh.persist.endingsBy.meeting ?? []).length === 6, 'a new session reads back what was found');
+  store['busywork.endings.v1'] = '{not json';
+  const junk = createGame();
+  loadEndings(junk);
+  ok(Object.keys(junk.persist.endingsBy).length === 0, 'unreadable storage: an empty shelf');
+  globalThis.window.localStorage = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); } };
+  end({ result: 'caught', routes: [], why: 'x' });
+  loadEndings(createGame());
+  ok(ends().length === 7, 'storage that throws: still noted for this session');
+  globalThis.window.localStorage = had;
+  game.persist.endingsBy = {};
+  game.persist.endingNew = null;
+}
+
 // Resize / DPR changes
 for (const [w, h, dpr] of [[1920, 1080, 1], [800, 1200, 3], [1, 1, 1], [3000, 600, 1.5], [1280, 800, 2]]) {
   Object.assign(globalThis.window, { innerWidth: w, innerHeight: h, devicePixelRatio: dpr });
