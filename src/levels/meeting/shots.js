@@ -159,6 +159,12 @@ export default [
     intent: 'End card, a loss: the meeting happened, and you stood in front of a blank screen with no slides (📊❌🦗).',
   },
   {
+    name: 'fire-door-push',
+    cmds: ['goto fire_door', 'interact', 'wait 0.05s'],
+    intent: 'You stand at the fire door in the lobby corner, arms out, pushing its bar. It will not open: the card ' +
+      'reader by the handle blinks red (with a buzz you cannot see). The balcony is outside, behind it.',
+  },
+  {
     name: 'end-caught',
     cmds: ['pretend until 3:18', 'goto coat_rack pretend', 'wait until 3:26.6', 'interact'], // he walks back in from the restroom (🤨) as you reach
     intent: 'End card, a loss: the boss caught you at his jacket, reaching for his keycard (😠🪪). The card is on his ' +

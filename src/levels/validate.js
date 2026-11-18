@@ -377,6 +377,33 @@ export function levelProblems(level, key) {
     if (f?.caught !== undefined && !(isNum(f.caught) && f.caught >= 0)) bad(`fetches[${i}].caught`, 'not a time in seconds');
     if (f?.alert !== undefined && !(Array.isArray(f.alert) && f.alert.length && f.alert.every(isStr))) bad(`fetches[${i}].alert`, 'not a list of icons');
   }
+  // Toys (sim/mechanics/toy.js): a prop and a cosmetic reaction. The reaction is data, so it can touch nothing else.
+  const toyIds = new Set();
+  for (const [i, t] of list('toys', level.toys ?? []).entries()) {
+    const path = `toys[${i}]`;
+    if (!isObj(t)) { bad(path, 'not an object'); continue; }
+    if (!isStr(t.id) || toyIds.has(t.id)) bad(`${path}.id`, 'missing or not unique');
+    toyIds.add(t.id);
+    if (isStr(t.at)) spot(`${path}.at`, t.at);
+    else if (!(isObj(t.at) && isNum(t.at.x) && isNum(t.at.y))) bad(`${path}.at`, 'not a spot name or a tile { x, y }');
+    if (!['press', 'pass', 'near'].includes(t.on)) bad(`${path}.on`, "not 'press', 'pass' or 'near'");
+    if (t.on !== 'press') for (const [k, id] of list(`${path}.npcs`, t.npcs).entries()) npc(`${path}.npcs[${k}]`, id);
+    if (t.when !== undefined && !isFn(t.when)) bad(`${path}.when`, 'not a function (world, state, game, npc) -> bool');
+    for (const k of ['radius', 'every']) if (t[k] !== undefined && !(isNum(t[k]) && t[k] > 0)) bad(`${path}.${k}`, 'not a number > 0');
+    if (t.state !== undefined && !isObj(t.state)) bad(`${path}.state`, 'not an object');
+    const r = t.react;
+    if (!isObj(r)) bad(`${path}.react`, 'not an object (say, sfx, pose, set, burst)');
+    else {
+      const extra = Object.keys(r).filter((k) => !['say', 'sfx', 'pose', 'set', 'burst'].includes(k));
+      if (extra.length) bad(`${path}.react`, `unknown ${extra.join(', ')}: a reaction is only say, sfx, pose, set, burst`);
+      if (r.say !== undefined) icons(`${path}.react.say`, Array.isArray(r.say) ? r.say : r.say?.icons);
+      if (r.sfx !== undefined && !(isStr(r.sfx) && isFn(SFX[r.sfx]))) bad(`${path}.react.sfx`, `no sound ${q(r.sfx)} in audio/sfx.js`);
+      if (r.pose !== undefined && r.pose.arms !== undefined && !ARM_POSES.includes(r.pose.arms)) bad(`${path}.react.pose.arms`, `no arm pose ${q(r.pose.arms)}`);
+      if (r.set !== undefined && !isObj(r.set)) bad(`${path}.react.set`, 'not an object');
+      if (r.burst !== undefined && !BURSTS.includes(r.burst?.kind)) bad(`${path}.react.burst.kind`, `not one of ${BURSTS.join(', ')}`);
+    }
+    if (!(Array.isArray(t.try) && t.try.length && t.try.every(isStr))) bad(`${path}.try`, 'not a list of harness commands after which it has fired (the gate plays it)');
+  }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {
     const path = `inspections[${i}]`;

@@ -1000,6 +1000,16 @@ function wornLook(looks, disguise) {
   return look;
 }
 
+// A toy's reaction on this person for a moment (level.toys, sim/mechanics/toy.js): arms, a scowl, the head turned to
+// the prop. Drawn only: his facing in the sim never changes.
+function wearToyPose(game, e, s) {
+  const pose = game.toys?.poses[e.id]; // a toy's pose (sim/mechanics/toy.js), while it lasts
+  if (!pose || game.loopTime >= pose.until) return;
+  if (pose.arms) s.arms = pose.arms;
+  if (pose.angry) s.angry = true;
+  if (pose.face) s.head = Math.atan2(pose.y - fin(e.y), pose.x - fin(e.x));
+}
+
 function drawPlayer(ctx, game, t) {
   const p = game.player;
   const s = S;
@@ -1021,6 +1031,7 @@ function drawPlayer(ctx, game, t) {
   s.typing = bp === 'typing';
   s.sweat = !!game.caught || (game.clock && game.clock.forced > 0);
   s.stain = p.smeared || null;
+  wearToyPose(game, p, s);
   if (game.caught) s.head = s.dir + Math.sin(t * 9) * 0.5; // panicked looking around
   const x = fin(p.x) * T;
   const y = fin(p.y) * T;
@@ -1103,6 +1114,7 @@ function drawNpc(ctx, game, n, t) {
     s.arms = 'reach';
     s.item = itemGlyph(game.level.items, n.pocketing.type);
   }
+  wearToyPose(game, n, s);
   pointAt(game, n, s);
   orderTurn(game, n, s);
   // What he carries (npc.carry): in hand while the hands are free, otherwise set down beside him.

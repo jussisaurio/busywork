@@ -626,8 +626,8 @@ function drawLineMark(ctx, x, y, age, a, color) {
 // What E would do now (player.focus, play/interactions.js). It lights the target up (drawLitTarget).
 export function drawFocusHint(ctx, game, t, view = FULL_VIEW) {
   const p = game.player;
-  if (!p || !p.focus || p.action || p.locked || game.phase !== 'day') return;
-  const f = p.focus;
+  const f = p?.focus ?? game.toys?.focus; // a toy (sim/mechanics/toy.js) only when nothing else is in reach
+  if (!p || !f || p.action || p.locked || game.phase !== 'day') return;
   if (!Number.isFinite(f.x) || !Number.isFinite(f.y)) return;
   drawLitTarget(ctx, f, p, t, view);
 }

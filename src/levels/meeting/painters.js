@@ -182,6 +182,8 @@ export function emptyBag(ctx, info, at) {
 //   locked  the boss is out there without his card: the reader blinks red
 //   beep    seconds since his card opened it (green for a moment), or null
 //   hit     seconds since his last go at it, or null: the door shudders and dust puffs off it
+//   denied  seconds since you pushed the bar from inside (toys.js), or null: the bar gives a little and the reader
+//           blinks red three times
 export function fireDoor(ctx, info, at, state, t) {
   const px = at.x * T;
   const py = at.y * T;
@@ -205,10 +207,12 @@ export function fireDoor(ctx, info, at, state, t) {
   for (let k = 0; k <= 12; k += 4) { ctx.moveTo(px + 10 + k, py + 5); ctx.lineTo(px + 10 + k, py + 13); }
   for (let k = 0; k <= 8; k += 4) { ctx.moveTo(px + 10, py + 5 + k); ctx.lineTo(px + 22, py + 5 + k); }
   ctx.stroke();
+  const denied = Number.isFinite(state.denied) && state.denied >= 0 && state.denied < 1.0 ? state.denied : null;
+  const push = denied !== null && denied < 0.3 ? 1.5 : 0; // the bar, pushed in
   ctx.fillStyle = '#b9bfc3'; // push bar
-  ctx.fillRect(px + 6, py + 18, T - 12, 3);
+  ctx.fillRect(px + 6, py + 18 + push, T - 12, 3);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(px + 6, py + 21, T - 12, 1);
+  ctx.fillRect(px + 6, py + 21 + push, T - 12, 1);
   ctx.restore();
   ctx.fillStyle = '#1f7a3e'; // EXIT sign over the door, green
   rrect(ctx, px + 9, py - 6, 14, 6, 1);
@@ -221,8 +225,10 @@ export function fireDoor(ctx, info, at, state, t) {
   rrect(ctx, px + T - 4, py + 12, 4, 8, 1);
   ctx.fill();
   const green = Number.isFinite(state.beep) && state.beep >= 0 && state.beep < 1.2;
-  const red = state.locked && Math.floor(t * 2.5) % 2 === 0;
-  if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
+  const no = denied !== null && Math.floor(denied * 6) % 2 === 0; // your push: three red blinks
+  const red = (state.locked && Math.floor(t * 2.5) % 2 === 0) || no;
+  if (no) fillCircle(ctx, px + T - 2, py + 14.5, 5, 'rgba(255,59,48,0.35)');
+  else if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
   fillCircle(ctx, px + T - 2, py + 14.5, 1.3, green ? '#5dff8a' : red ? '#ff3b30' : '#5a2a28');
   if (hit !== null) { // dust off the door, and thud lines in the air
     const k = hit / 0.45;

@@ -69,10 +69,11 @@ for (const cmd of past) {
 
 const cmds = rest.slice(1);
 if (!cmds.length) cmds.push('look');
-for (const cmd of cmds) {
+for (const [i, cmd] of cmds.entries()) {
   const r = h.run(cmd);
   console.log(`> ${cmd}`);
   if (r.text) console.log(r.text);
+  if (cmd.trim() === 'look' && i < cmds.length - 1) console.log(h.observe(obsOpts)); // a look between commands: now (the last one prints below)
   const ev = h.describeEvents(r.events, { verbose: obsOpts.debug });
   if (ev.length) console.log(ev.join('\n'));
   if (r.ok && cmd.trim() !== 'look' && cmd.trim() !== 'help') appendFileSync(file, JSON.stringify({ cmd }) + '\n');

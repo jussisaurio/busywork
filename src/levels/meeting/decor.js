@@ -5,13 +5,16 @@ import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.j
 import { dayCue } from '../../config.js';
 import { emptyBag, fireDoor, balcony } from './painters.js';
 import { findNpc } from '../../game/perception.js';
+import { toyState } from '../../sim/mechanics/toy.js';
 
-// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it.
+// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it;
+// denied: seconds since you last pushed its bar from inside (toys.js).
 const since = (game, at) => (at != null ? game.loopTime - at : null);
 const fireDoorState = (w, game) => {
   const b = findNpc(game, 'boss');
   const out = !!b && b.override === 'lockedOut';
-  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null };
+  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null,
+    denied: toyState(game, 'fire_door').since };
 };
 
 
