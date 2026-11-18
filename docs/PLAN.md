@@ -14,7 +14,7 @@ Jussi is the only playtester and the only judge of funny. Agents pitch wide; onl
 | 3a | Engine: the endings shelf. Every distinct ending seen is kept per level and shown as pictures; no blank slots, no count | merged 2026-11-18. Not tried in a real browser. The three meeting-table endings look alike at shelf size |
 | 3b | Engine: a toy (a prop plus a reaction, no route effect) costs a few lines and does not upset the gate. First measure what one costs today | measured 2026-11-18: a reaction-only prop is about 20 lines; a hunted item is about 100 and cannot be kept off the routes. Proposal: a `level.toys` field run by its own mechanic, cosmetic only, with a gate check that toys change no outcome. Not built |
 | 4 | Jussi ticks pitches | done 2026-11-18. His reasons are in `PITCHES.md`; the patterns are in DESIGN, "Jussi's taste" |
-| 5a | Build slice 1 in Meeting (below) | started 2026-11-18 |
+| 5a | Build slice 1 in Meeting (below) | engine and half the Meeting items merged 2026-11-18; the rest in progress (see "Slice 1 status") |
 | 6 | Jussi plays Meeting for ten minutes | waiting on 5a |
 | 5b | Build slice 2, adjusted by what he says after playing | waiting on 6 |
 
@@ -46,6 +46,24 @@ Meeting:
 - Kev without coffee dozes off.
 - A set of plain fails (shadow puppets is one). "Where were you?" for the restroom and your desk. The bib.
 - The campfire: both routes in one loop.
+
+### Slice 1 status
+- Merged: `level.toys` with its gate checks; route slots; two harness bugs; the owner walks over (opt-in per item,
+  on for Meeting's sandwich and keycard only, because turning it on everywhere changed outcomes in fixture,
+  discreet-packaging and audit); the fire door and both Good Samaritan losses; go home; the restroom (knock, hide,
+  wash, Kev's nudge, blamed from the restroom); the picture war.
+- Built on a branch, not reviewed or merged: the ficus, coffee into a typewriter, Kev dozing.
+- Not started: the plain fails (shadow puppets), "where were you" at your desk, the bib, the campfire.
+
+### Known rough edges (prune as they are fixed)
+- The fire door's red blink and the Samaritan hug are small at map scale.
+- An NPC can walk into the restroom while you are in it. The wash bubble floats over the door.
+- A toy cannot stop an NPC, so Lin and Kev fix the picture without breaking stride.
+- `goto kev_desk` / `boss_desk` in the harness stands you inside the seated NPC (shows in the mustard shot). Fixing
+  it changes 37 recorded plans; `sit` stopping on soft stops changes 26. Both wait for a decision.
+- The shelf's three meeting-table endings look alike at shelf size. The shelf with the new endings is unchecked.
+- Nothing new has been seen in a real browser or heard.
+- `check.mjs` in a worktree needs `BUSYWORK_CANVAS_DIR` pointed at main's `tools/.deps`.
 
 ## Slice 2 (after Jussi has played)
 Typing on any typewriter; a red stapler; the wall clock (reuse the other level's mechanic); giving things to people

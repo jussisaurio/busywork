@@ -208,8 +208,8 @@ Attendance is a rule in every level: being in the right place at the deadline is
 their desk.
 
 ## Routes and HUD (icons only)
-- A level has a small number of routes (ways to win). Each has an icon and a slot. A found route shows its icon; an
-  unfound one is a blank slot. The slots show on the HUD, the title and the end card.
+- A level has a small number of routes (ways to win). Each has an icon. A found route shows its icon on the HUD, the
+  title and the end card; an unfound one shows nothing, so the player is never told how many there are.
 - The clock is big and always visible. It turns red near the deadline (when is the level's choice). Once the day
   is decided it stops at the minute the end card shows. The mission badge's clock face shows the deadline.
 - Mission badge icons only. **No route status chips.** Objects show their state in the world.
