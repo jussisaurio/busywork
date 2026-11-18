@@ -16,6 +16,10 @@ import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
 import { popper, cricket } from './painters.js';
+import { tableauTypewriter } from './end-scenes-more.js';
+
+// Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
+const MORE_CAUGHT = new Set(['typewriter']);
 
 const B_ANGRY = ['😠'];
 const B_POINT_YOU = ['👉', '@player'];
@@ -33,7 +37,10 @@ function endKind(o) {
   const routes = Array.isArray(o.routes) ? o.routes : [];
   // why 'samaritan': you let the boss in off the balcony (clocks.js bossLetIn). Holding his card: caught, and locked
   // out yourself. Without it: no route, and his arm round you at the blank screen.
-  if (o.result === 'caught') return o.why === 'samaritan' ? 'samaritanCaught' : 'caught';
+  if (o.result === 'caught') {
+    if (o.why === 'samaritan') return 'samaritanCaught';
+    return MORE_CAUGHT.has(o.why) ? o.why : 'caught'; // end-scenes-more.js
+  }
   if (o.result === 'fail' && o.why === 'samaritan') return 'samaritan';
   // why 'home' / 'homeKev': you just went home (interactions.js go_home); with Kev, if he was on his way out too.
   if (o.result === 'fail' && (o.why === 'home' || o.why === 'homeKev')) return o.why;
@@ -740,5 +747,7 @@ export const END_SCENES = {
     samaritanCaught: { win: false, icons: ['🤗', '🪪', '🔒'], draw: tableauSamaritanCaught }, // let him in, holding his card
     home: { win: false, icons: ['🚌', '📱', '😠'], draw: tableauHome }, // you just went home; the boss is calling
     homeKev: { win: false, icons: ['👋', '🚌', '📱'], draw: tableauHome }, // you went home with Kev at 3:00
+    // ---- More scenes (end-scenes-more.js)
+    typewriter: { win: false, icons: ['☕', '⌨️', '💥'], draw: tableauTypewriter }, // the coffee went into a typewriter
   },
 };

@@ -266,4 +266,34 @@ export default [
     intent: 'End card, a loss: the projector died of coffee, and you are holding the empty mug, so everyone points at ' +
       'you: blamed.',
   },
+  // ---- More coffee, Kev's doze, the plain fails, the bib, the campfire (one block: a parallel builder appends too).
+  {
+    name: 'ficus-delight',
+    cmds: ['goto coffee_machine busy', 'interact', 'goto boss_doorway busy', 'interact', 'wait 0.3s'],
+    intent: 'You stand in the boss\'s office doorway, empty-handed: you just poured the day\'s only cup of coffee into ' +
+      'his potted plant. A glossy new leaf has shot out of it, the soil is dark and wet, and the boss at his desk ' +
+      'looks at the plant, delighted (🌿😍).',
+  },
+  {
+    name: 'typewriter-bang',
+    cmds: [...POUR, 'goto typewriter busy', 'interact'],
+    beat: 0.5,
+    intent: 'You stand at the empty desk behind yours: you just poured the coffee into its typewriter. The screen is ' +
+      'dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss, in his ' +
+      'office, heard the bang: he points at you (⌨️💥👉 and your face).',
+  },
+  {
+    name: 'end-typewriter',
+    cmds: [...POUR, 'goto typewriter busy', 'interact'],
+    intent: 'End card, a loss: the typewriter you poured the coffee into sparks, smokes and drips on its desk. You ' +
+      'stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your ' +
+      'things: fired.',
+  },
+  {
+    name: 'kev-dozing',
+    cmds: [...POUR, ...HIDE, 'sit busy', 'busy until 2:53.4'],
+    intent: 'Kev (olive hoodie, right) never got his afternoon coffee: you poured the last cup, and it sits on your ' +
+      'desk. He has nodded off at his desk, his head down on the keyboard (💤), and on his screen a line of the same ' +
+      'letter runs across under his code. You type at your desk.',
+  },
 ];

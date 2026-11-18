@@ -349,7 +349,8 @@ export function showOutNow(game, npcId) {
   return true;
 }
 
-// For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand). why: a string
+// For a level hook: a catch the level decides (the boss you let in sees his own keycard in your hand; a drowned
+// typewriter, so loud it needs no witness). why: a string
 // the outcome carries (outcome.why: its end scene). False if the day is already over or someone already caught you.
 export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
   if (game.phase !== 'day' || game.caught || game.outcome || game.scenario?.leave) return false;

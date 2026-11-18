@@ -11,13 +11,13 @@ export const MAP = [
   '#.......G..........#.........#', // 2
   '#..TTT..G..TTJTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
-  '#......HG..........#.........#', // 5
+  '#......YG..........#.........#', // 5
   '#GGGGGDGG#####D#######DD######', // 6
   '#............................#', // 7
   '#..TTT......TPT......TTT.....#', // 8
   '#............................#', // 9
   '#............................#', // 10
-  '#..TTT......TTT......TTT.....#', // 11
+  '#..TTT......TWT......TTT.....#', // 11
   '#...........................H#', // 12
   '#GGGLGGGGG###############R#X##', // 13
   '#:::::::::################===#', // 14
@@ -47,6 +47,12 @@ export const LEGEND = {
   X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall', interactable: 'fire_door' },
   // The balcony: a concrete slab four floors up with a railing (painters.js balcony). Outside, like the lobby.
   '=': { kind: 'balcony', solid: false, opaque: false, draw: 'outside' },
+  // The boss's ficus, in the corner of his office by the glass: a potted plant like the other (core/map.js H), but
+  // you can pour the day's only cup into it, from his doorway (interactions.js water_ficus; painters-more.js ficus).
+  Y: { kind: 'plant', solid: true, opaque: false, interactable: 'ficus', draw: 'plant' },
+  // The typewriter on the empty desk behind yours (the mustard chair: whoever sits there is out today). A desk tile like T, but
+  // the day's cup can go into its keys (interactions.js drown_typewriter; painters-more.js deadTypewriter).
+  W: { kind: 'desk', solid: true, opaque: false, interactable: 'typewriter', draw: 'desk' },
 };
 
 // Named spots: tile coords + facing ('N'|'E'|'S'|'W'). Entities stand at (x+0.5, y+0.5).
@@ -68,6 +74,8 @@ export const SPOTS = {
   kitchen_table: { x: 25, y: 4, face: 'N' },
 
   boss_door: { x: 6, y: 7, face: 'S' }, // hallway outside the boss's office door
+  boss_doorway: { x: 6, y: 6, face: 'E' }, // in his doorway, not in his office: the ficus (Y) is in reach
+  typewriter: { x: 13, y: 12, face: 'N' }, // in the empty mustard chair's place: the typewriter (W) in front of you
   meeting_door: { x: 14, y: 7, face: 'N' }, // hallway outside the meeting room: the boss looks in (behaviours.js peek)
   door_in: { x: 4, y: 12, face: 'S' }, // inside the entrance
   door_out: { x: 4, y: 14, face: 'N' }, // outside the entrance (the lobby)

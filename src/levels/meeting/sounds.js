@@ -22,6 +22,8 @@ export const SOUNDS = {
       spill_coffee: { sfx: 'pour', spot: 'projector' },
       take_sandwich: { sfx: 'fridgeOpen', spot: 'fridge' },
       take_keycard: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
+      water_ficus: { sfx: 'pour', who: 'player' },
+      drown_typewriter: { sfx: 'pour', who: 'player' },
     },
     done: {
       brew_coffee: { sfx: 'machineBeep', spot: 'coffee' },
@@ -43,6 +45,7 @@ export const SOUNDS = {
     'coffee:taken': { sfx: 'machineBeep', spot: 'coffee', when: (p) => !!(p?.by && p.by !== 'player') }, // someone else got the last cup
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },
     'boss:jacket': { sfx: 'rustle', who: 'boss' },
+    'coffee:typewriter': { sfx: 'splashZap', who: 'player' }, // the keys short: a bang and a fizz
     // The fire door (mechanics.js DOORS): his card on the reader, or the escalation without it.
     'boss:badge': { sfx: 'machineBeep', spot: 'fire_door' }, // back from his smoke, card to the reader
     'boss:lockedOut': { sfx: 'rattle', spot: 'fire_door' }, // the handle won't give
