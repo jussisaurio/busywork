@@ -15,6 +15,7 @@ import { drawProjector } from '../../render/world.js';
 import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
+import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
 
@@ -50,6 +51,12 @@ function endKind(o) {
   if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
+}
+
+// ---- The plain fails (end-scenes-fails.js): a fail the verdict gave a cause (verdict.js verdictFull) draws it.
+function endKindFull(o) {
+  const k = endKind(o);
+  return k === 'fail' && FAIL_SCENES[o?.why] ? o.why : k;
 }
 
 function bossJacket(game) {
@@ -733,11 +740,12 @@ function meetingScreen(ctx, t, dead, dx) {
 }
 
 export const END_SCENES = {
-  kindOf: endKind,
+  kindOf: endKindFull,
   scenes: {
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
+    ...FAIL_SCENES, // the plain fails with a cause: sip, call, puppets (end-scenes-fails.js)
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
     restroom: { win: false, icons: ['🪑', '🚽', '🙂'], draw: tableauRestroom }, // blamed, and in walks you, hands wet

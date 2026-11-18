@@ -11,6 +11,46 @@ export default [
       run('busy until 4:00');
     },
   },
+  // ---- The plain fails with a cause (verdict.js verdictFull; end-scenes-fails.js), one block.
+  {
+    name: 'typing at your desk at 4:00 → the plain fail: you hurry in to the blank screen (no why)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('busy until 4:00');
+      if (g.outcome?.why != null) throw new Error(`why ${g.outcome.why}, not the plain fail`);
+    },
+  },
+  {
+    name: 'the last cup still in your hand at 4:00 → you drink it up front (why sip)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      run('busy until 4:00');
+      if (g.outcome?.why !== 'sip') throw new Error(`why ${g.outcome?.why}, not sip`);
+    },
+  },
+  {
+    name: 'on the phone (pretending, standing) at 4:00 → you keep the call going up front (why call)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto kitchen_table busy');
+      run('busy until 4:00');
+      if (g.outcome?.why !== 'call') throw new Error(`why ${g.outcome?.why}, not call`);
+    },
+  },
+  {
+    name: 'already in the meeting room at 4:00, hands empty → a duck in the beam (why puppets)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, g }) {
+      run('goto meeting_seat busy');
+      run('busy until 3:59');
+      run('wait until 4:00');
+      waitFor((g) => g.outcome, { busy: false, maxSec: 20 });
+      if (g.outcome?.why !== 'puppets') throw new Error(`why ${g.outcome?.why}, not puppets`);
+    },
+  },
   {
     name: 'projector too early, slip out pretending → Kev fixes it → fail',
     expect: { result: 'fail' },

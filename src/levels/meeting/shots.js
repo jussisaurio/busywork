@@ -160,6 +160,28 @@ export default [
     cmds: ['busy until 4:00'],
     intent: 'End card, a loss: the meeting happened, and you stood in front of a blank screen with no slides (📊❌🦗).',
   },
+  // ---- The plain fails with a cause (end-scenes-fails.js; verdict.js verdictFull), one block.
+  {
+    name: 'end-fail-sip',
+    cmds: [...POUR, 'sit busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you had the day\'s last cup of coffee in your hand. Up front by the ' +
+      'blank screen you held up one finger (☝️) and are now drinking it, tipped right back, while the boss and Lin ' +
+      'wait (😐).',
+  },
+  {
+    name: 'end-fail-call',
+    cmds: ['goto kitchen_table busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you were pretending to be on the phone when 4:00 came. Up front by ' +
+      'the blank screen you keep the call going, phone at your ear, one finger up at the room (☝️📱: one sec). The ' +
+      'boss taps his wrist (⌚), then gets cross.',
+  },
+  {
+    name: 'end-fail-puppets',
+    cmds: ['goto meeting_seat busy', 'busy until 3:59', 'wait until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you were already in the meeting room. You stand in the projector beam, ' +
+      'back to us, hands up, and your shadow on the white screen is a duck, its beak opening and shutting. The boss ' +
+      'stares (😐); Lin covers her mouth, trying not to laugh (🤭).',
+  },
   {
     name: 'fire-door-push',
     cmds: ['goto fire_door', 'interact', 'wait 0.3s'],
