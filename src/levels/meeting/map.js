@@ -25,20 +25,22 @@ export const MAP = [
   '##EE##########################', // 16
 ];
 
+import { OWN_DESK, FRIDGE, COAT_RACK, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
+
 // Each letter: { kind, solid, opaque, interactable?, npcPassable?, draw? } (core/map.js). draw: what the renderer
 // draws it as (render/world.js TILE_DRAWS); without one, its kind (coat_rack, coffee_machine, own_desk, entrance,
 // restroom and elevator are draws too).
 export const LEGEND = {
-  K: { kind: 'coat_rack', solid: true, opaque: false, interactable: 'coat_rack' },
-  F: { kind: 'fridge', solid: true, opaque: true, interactable: 'fridge', draw: 'refrigerator' },
-  C: { kind: 'coffee_machine', solid: true, opaque: false, interactable: 'coffee_machine' },
+  K: { ...COAT_RACK, interactable: 'coat_rack' },
+  F: { ...FRIDGE, interactable: 'fridge' },
+  C: COFFEE_POT,
   J: { kind: 'projector', solid: true, opaque: false, interactable: 'projector', draw: 'meeting_table' }, // the slideProjector prop on top
-  P: { kind: 'own_desk', solid: true, opaque: false, interactable: 'own_desk' },
+  P: OWN_DESK,
   // The glass entrance onto the lobby and the elevator. Solid to you all day, but you can always just go home
   // (interactions.js go_home: you walk out to the elevator, and the day is lost).
-  L: { kind: 'entrance', solid: true, opaque: false, npcPassable: true, interactable: 'exit' },
-  R: { kind: 'restroom', solid: true, opaque: true, interactable: 'restroom' }, // one cubicle: knock, or go in (restroom.js)
-  E: { kind: 'elevator', solid: true, opaque: true },
+  L: { ...ENTRANCE, interactable: 'exit' },
+  R: { ...RESTROOM, interactable: 'restroom' }, // one cubicle: knock, or go in (restroom.js)
+  E: ELEVATOR,
   // The fire door at the far end, past the toilets: a steel door with a wired-glass window, onto the balcony where the
   // boss smokes. It locks behind whoever goes through; from outside only a keycard opens it (mechanics.js DOORS for
   // NPCs). Solid to you: you go through it by its rows (balcony.js: push the bar out; badge or slip back in), open to
