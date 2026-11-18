@@ -218,6 +218,12 @@ export default [
       'you in (👉🚪): back to work. You can slip in while it is open.',
   },
   {
+    name: 'balcony-walk-in',
+    cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 3:48', 'wait 2s', 'goto 27,14', 'move N 0.3s'],
+    intent: 'The boss still holds the fire door open, and you walk in through the open doorway past him, off the ' +
+      'balcony and back into the hallway: no key pressed but the way you walk.',
+  },
+  {
     name: 'end-balcony',
     cmds: ['goto fire_door', 'interact', 'wait 1.5s', 'busy until 4:00', 'busy until 4:00', 'wait 8s'],
     intent: 'End card, a loss: you stepped out onto the balcony without a card, and stayed there. Inside, the meeting ' +
@@ -291,6 +297,19 @@ export default [
     cmds: ['goto restroom_door', 'pretend until 3:19', 'interact', 'wait 0.6s'],
     intent: 'The restroom is taken (the boss, 3:18): you knock on its door, and he answers through it, cross (🚽😠 and ' +
       'his face).',
+  },
+  {
+    name: 'restroom-eject',
+    cmds: ['goto fridge', 'interact', 'eat', 'goto restroom_door busy', 'interact', 'busy until 3:18', 'busy until 3:19', 'wait 0.9s', 'interact', 'wait 0.5s'],
+    intent: 'You were in the restroom washing mustard off your sweater when the boss wanted it: he pounded on the ' +
+      'door and now you stand outside it, put out mid-wash, startled (🧼😳), the mustard still down your front, ' +
+      'while he points you off (👉) on his way in.',
+  },
+  {
+    name: 'restroom-lin-waits',
+    cmds: ['goto restroom_door busy', 'busy until 3:31', 'interact', 'busy until 3:34', 'busy until 3:35', 'wait 2.2s'],
+    intent: 'You are inside the restroom (not drawn). Lin wants it: she stands at its door, waiting, checking the ' +
+      'time (⌚❓) after her knock.',
   },
   {
     name: 'kev-mustard',

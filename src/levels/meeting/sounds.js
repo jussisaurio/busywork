@@ -58,6 +58,8 @@ export const SOUNDS = {
     'boss:letIn': { sfx: 'denied', spot: 'fire_door' }, // you hold the door for him: the held-door alarm buzzes
     'boss:hug': { sfx: 'rustle', who: 'boss' }, // 🤗
     'boss:pockets': { sfx: 'rustle', spot: 'fire_door' }, // 🪪❓ patting every pocket
+    'restroom:knock': { sfx: 'bang', spot: 'restroom', opts: { hits: 2 } }, // ✊🚪 someone wants the cubicle you're in
+    'restroom:pound': { sfx: 'bang', spot: 'restroom', opts: { hits: 4 } }, // 👊🚪😤 the boss
     'boss:knock': { sfx: 'bang', spot: 'fire_door', opts: { hits: 2 } }, // ✊🚪 polite
     'boss:bang': { sfx: 'bang', spot: 'fire_door' }, // 😠🚪🪪
     'boss:pound': { sfx: 'bang', spot: 'fire_door', opts: { hits: 4 } }, // 👊👊🚪
