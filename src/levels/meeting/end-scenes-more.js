@@ -12,8 +12,9 @@ import { drawPerson } from '../../render/characters.js';
 import { person, bubble } from '../../render/tableau.js';
 import { officeRoom } from '../../render/tableau-furniture.js';
 import { bossJacket } from './end-set.js';
+import { WHYS } from './endings.js';
 
-const B_COMPUTER = [['⌨️', '💥', '👉', '@player'], ['📦', '👉', '@player']];
+const B_COMPUTER = [WHYS.computer.catch, ['📦', '👉', '@player']]; // what he said in the day, then the box
 
 const OWNER_SAYS = ['😱', '💻'];
 const OWNER_IN = { lin: () => true, kev: (w) => !w.kevGone }; // whose machine brings them onto the card, and when

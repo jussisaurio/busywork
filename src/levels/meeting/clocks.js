@@ -15,14 +15,14 @@
 //
 // It also listens for the catch: caught over his keycard (holding it, or with your hand on it at the jacket), the boss
 // takes it back (world.cardBack).
-import { npcSees } from '../../game/perception.js';
+import { npcSees, findNpc } from '../../game/perception.js';
 import { startClaim } from '../../sim/mechanics/claim.js';
 import { endOverride } from '../../sim/override.js';
-import { npcTakes } from '../../sim/take.js';
-import { catchNow } from '../../play/rules.js';
+import { npcTakes, npcPockets } from '../../sim/take.js';
+import { catchFor } from './endings.js';
 import { whoInside, atTheDoor } from './restroom.js';
 import { doorClock, bossOnBalcony, playerAtDoor } from './balcony.js';
-import { oncePerGame } from '../../core/events.js';
+import { levelListeners } from '../../core/events.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -69,7 +69,7 @@ function bossLetIn(game, boss, sim) {
   w.hugDone = true;
   if (p.held === 'keycard') {
     if (boss.override === 'grateful') endOverride(boss);
-    catchNow(game, 'contraband', 'boss', ['🪪', '❗', '👉', '@player'], 'samaritan');
+    catchFor(game, 'contraband', 'boss', 'samaritan');
     return;
   }
   w.samaritan = true;
@@ -124,33 +124,37 @@ function kevAndTheCup(game, kev, sim) {
   game.events.emit('coffee:asked', {});
 }
 
-// Caught over his keycard: with it in your hand, or with your hand on it (Lin's shout stops the take at the jacket).
-// Either way he takes it back, onto his pocket, and the end card shows it there.
-const listen = oncePerGame((game) => {
-  game.events.on('action:cancel', (e) => {
-    if (game.level?.id === 'meeting' && e?.type === 'take_keycard') game.world._cardTry = game.loopTime;
+// The catches with a sequel of their own, in one handler:
+//   his keycard  caught with it in your hand, or with your hand on it (Lin's shout stops the take at the jacket): he
+//                takes it back, into his pocket, and the end card shows it there. He walks over for it
+//                (sim/mechanics/claim.js; the catch's beat waits for him), unless he is at arm's length.
+//   the mustard  hunting Lin saw it on you and told (roles.js evidence): outcome.why 'bib', its own end scene
+//                (end-scenes-combo.js tableauBib: you type in a giant paper bib while Lin eats a fresh sandwich at
+//                your elbow).
+const listen = levelListeners((level) => level?.clockFor === clockFor, (game, on) => {
+  on('action:cancel', (e) => {
+    if (e?.type === 'take_keycard') game.world._cardTry = game.loopTime;
   });
-  const takeBack = () => {
-    if (game.player.held === 'keycard') game.player.held = null;
-    game.world.keycard = 'boss';
-    game.world.cardBack = true;
-    game.events.emit('keycard:takenBack', {});
-  };
-  // He walks over for it (sim/mechanics/claim.js; the catch's beat waits for him), unless he is at arm's length.
-  game.events.on('caught', (e) => {
-    if (game.level?.id !== 'meeting') return;
-    const reaching = game.world._cardTry != null && game.loopTime - game.world._cardTry < 10;
-    if (game.player.held !== 'keycard' && !reaching) return;
-    const boss = game.npcs.find((n) => n.id === 'boss');
-    if (boss && e?.by === 'boss' && !e?.via && startClaim(game, boss, 'keycard', { onCatch: true, any: true })) return;
-    takeBack();
+  on('caught', (e) => {
+    cardOnCatch(game, e);
+    if (e?.reason === 'evidence' && game.caught && !game.caught.why) game.caught.why = 'bib';
   });
-  game.events.on('claim:done', (e) => {
-    if (game.level?.id === 'meeting' && e.item === 'keycard') takeBack();
-  });
-  // Caught over the mustard (hunting Lin saw it on you and told: roles.js evidence): outcome.why 'bib', its own end
-  // scene (end-scenes-combo.js tableauBib: you type in a giant paper bib while Lin eats a fresh sandwich at your elbow).
-  game.events.on('caught', (e) => {
-    if (game.level?.id === 'meeting' && e?.reason === 'evidence' && game.caught && !game.caught.why) game.caught.why = 'bib';
+  on('claim:done', (e) => {
+    if (e.item === 'keycard') takeBack(game);
   });
 });
+
+function cardOnCatch(game, e) {
+  const reaching = game.world._cardTry != null && game.loopTime - game.world._cardTry < 10;
+  if (game.player.held !== 'keycard' && !reaching) return;
+  const boss = findNpc(game, 'boss');
+  if (boss && e?.by === 'boss' && !e?.via && startClaim(game, boss, 'keycard', { onCatch: true, any: true })) return;
+  takeBack(game);
+}
+
+// Into his pocket (sim/take.js npcPockets: out of your hand, world.keycard his id).
+function takeBack(game) {
+  npcPockets(game, findNpc(game, 'boss'), 'keycard');
+  game.world.cardBack = true;
+  game.events.emit('keycard:takenBack', {});
+}

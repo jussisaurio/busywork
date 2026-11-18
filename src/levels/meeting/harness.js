@@ -18,17 +18,11 @@
 //                         text. memo: a scratch object, fresh for each describeEvents() call.
 
 import { OFFICE_NAMES as NAME } from '../office/cast.js';
+import { endText } from './endings.js';
 const name = (id) => NAME[id] ?? id;
 
 const PROJECTOR = { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' };
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
-// A win's verdict (verdict.js): who the table blames for the cup.
-const WIN_WHY = {
-  kev: '; the whole table stares at Kev\'s empty chair ☕👉',
-  lin: '; the boss glares at Lin, the empty mug on her desk ☕😠👉, and she shrinks 😨',
-  linHungry: '; the boss glares at Lin, the empty mug on her desk ☕😠👉; she ate no lunch either, and is in tears 😭🥪',
-  bossMug: '; Lin looks from the dead projector to the boss: the empty mug is on his own desk 🤨☕👉, and he sputters 😳',
-};
 const SPOT = { coffee: 'the coffee machine', kev_desk: 'Kev\'s desk', my_desk: 'your desk', lin_desk: 'Lin\'s desk', boss_desk: 'the boss\'s desk' }; // put spots (map.js)
 
 export default {
@@ -63,22 +57,7 @@ export default {
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
-  // o.why: the verdict's reason (verdict.js): 'mug' you held the cup, 'desk' it sat on your desk, 'kev' it sat on his.
-  outcomeText: (o) => (o.result === 'win' && o.why === 'together' ? `WIN 🔒🚬 (meeting cancelled via: ${o.routes.join(' + ')}; you and the boss are both locked out on the balcony, and there's nobody left to hold it)`
-    : o.result === 'blamed' && o.why === 'balcony' ? 'BLAMED 🔒👀 (you were locked out on the balcony at 4:00; the whole table came to stare at you through the fire door\'s window)'
-    : o.result === 'blamed' && o.why === 'snatched' ? 'BLAMED 🪪😏 (the boss snatched his keycard off you on the balcony and let the door shut in your face; at 4:00 you\'re still out there pounding)'
-    : o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${WIN_WHY[o.why] ?? ''}`
-    : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
-    : o.result === 'caught' && o.why === 'computer' ? 'CAUGHT ⌨️💥 (the coffee shorted a computer with a bang the whole floor heard; fired: you leave with a box 📦)'
-    : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
-    : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
-    : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
-    : o.result === 'blamed' && o.where === 'restroom' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}; the table stared at your empty chair, then a flush 🚽, and you walked in drying your hands)`
-    : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
-    : o.why === 'home' ? 'FAIL: you just went home 🚌; at 4:00 your phone buzzes on the bus, the boss\'s face on it 📱😠'
-    : o.why === 'homeKev' ? 'FAIL: you went home with Kev at 3:00 👋👋🚌; at 4:00 your phone buzzes, the boss\'s face on it 📱😠'
-    : o.why === 'samaritan' ? 'FAIL: you let the boss in off the balcony 🤗; he presented with his arm round you, and a blank slide 🦗'
-    : 'FAIL: the meeting happened and you presented a blank slide 🦗'),
+  outcomeText: endText, // one line per end scene (endings.js)
 
   // Only what a player would see: the ❓ meter over the boss's head (when it shows).
   statusText: (game) => (game.suspicion.boss > 0 ? [`a ❓ meter over the boss's head: ${Math.round(game.suspicion.boss * 100)}%`] : []),

@@ -11,6 +11,7 @@ import { TOMATO } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, confetti } from '../../render/tableau.js';
 import { chair, walnutDesk } from '../../render/tableau-furniture.js';
+import { WHYS } from './endings.js';
 import { bossJacket, balconySet, knock, bangingOnTheDoor, fireDoor } from './end-set.js';
 
 // The end of the meeting table, inside, with your chair at it: empty.
@@ -20,7 +21,7 @@ function tableEnd(ctx) {
 }
 
 // ---- 'balcony': alone out there at 4:00
-const B_WHERE = [['🪑', '❓'], ['👉', '🚪', '@player']];
+const B_WHERE = [WHYS.balcony.stare.think, ['👉', '🚪', '@player']]; // what the room thinks in the day; he points
 export function tableauBalcony(ctx, game, t, e) {
   balconySet(ctx);
   tableEnd(ctx);

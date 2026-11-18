@@ -113,6 +113,7 @@ export const SPOTS = {
   meeting_kev: { x: 15, y: 5, face: 'N' },
   meeting_presenter: { x: 17, y: 3, face: 'W' }, // where the player ends up if the meeting happens
   meeting_player: { x: 13, y: 5, face: 'N' }, // your (empty, mustard) chair at the meeting table
+  kitchen_door: { x: 22, y: 7, face: 'N' }, // hallway outside the kitchen's double doors: the boss looks in (behaviours.js lookInKitchen)
 };
 
 // Areas in tile units, half-open: x0 <= x < x1, y0 <= y < y1 (perception.js inZone(game, name, x, y)).
