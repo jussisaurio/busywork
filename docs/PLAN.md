@@ -22,6 +22,7 @@ Decided by Jussi:
 - The typing penalty stays. Levels add punishments specific to the mistake on top of it.
 - No blank slots for unfound routes. A found route may still show its icon.
 - You can leave by the elevator at any time. It is always a loss.
+- A boss who is looking for the cup and finds it in your hand catches you, in his office as anywhere else.
 
 Decided by the overseer (say so if wrong):
 - "Lin takes the fall" is a win, like the Kev one.
