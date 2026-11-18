@@ -471,12 +471,6 @@ export function leaving(npc) {
   return npc.active && !npc._gone && npc._plan?.vanish === 'leave' && !npc._plan.done;
 }
 
-// A witness takes their thing back (rules.js: an owner who knows an item is theirs).
-export function npcTakes(npc, item) {
-  npc.carry = item;
-  if (npc.wants === item) npc.wants = null;
-}
-
 // 4:00: everyone at the table turns to one place, thinks, then says it. The default is the attendance rule: your
 // empty chair, 🪑❓ … 😠👉 and your face. A level's meeting.verdict can name another (scenario.js):
 //   at     a spot name, or 'player' (default: meeting.chair)

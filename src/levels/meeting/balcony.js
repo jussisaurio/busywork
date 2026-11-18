@@ -24,6 +24,7 @@
 import { say } from '../../core/fx.js';
 import { findNpc, inZone, npcSees } from '../../game/perception.js';
 import { endOverride, speak, holdFor } from '../../sim/override.js';
+import { npcPockets } from '../../sim/take.js';
 import { walkThrough, inputOf, playerLocked } from '../../play/player.js';
 
 const DOOR_TILE = { x: 27, y: 13 };
@@ -152,8 +153,7 @@ export function bossOnBalcony(game, boss) {
 function snatch(game, boss) {
   const w = game.world;
   const p = game.player;
-  p.held = null;
-  w.keycard = boss.id;
+  npcPockets(game, boss, 'keycard');
   w.snatched = true;
   if (boss.override === 'lockedOut') { // his plan comes back: in through the door, with his card
     w.bossLockedOut = false;

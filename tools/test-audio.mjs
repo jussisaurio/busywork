@@ -355,7 +355,7 @@ function eventList() {
     for (const reason of ['action', 'scene', 'contraband', undefined]) ev.push(['witness:tattle', { by, reason, heard: by === 'lin' }]);
   }
   ev.push(['witness:tattle', { by: 'lin', reason: 'action', heard: true, late: true, icon: '🪪' }]);
-  ev.push(['coffee:taken', { by: 'player' }], ['coffee:taken', { by: 'kev' }], ['coffee:missing', { by: 'kev' }], ['coffee:confiscated', { by: 'kev' }]);
+  ev.push(['coffee:taken', { by: 'player' }], ['coffee:taken', { by: 'kev' }], ['coffee:missing', { by: 'kev' }], ['coffee:recovered', { by: 'kev', type: 'coffee', from: 'player' }]);
   ev.push(['boss:suspicious', {}], ['boss:workAssigned', { reason: 'idle' }], ['boss:workAssigned', { reason: 'tattle' }], ['work:done', {}]);
   ev.push(['caught', { by: 'boss', reason: 'action' }]);
   ev.push(['projector:broken', {}], ['kev:alerted', {}], ['projector:fixing', {}], ['projector:fixed', {}]);

@@ -5,6 +5,7 @@
 import { at, deg } from '../../config.js';
 import { scheduler } from '../office/cast.js';
 import { OWN_DESK, RESTROOM } from '../office/legend.js';
+import { playerHolds } from '../../sim/take.js';
 
 const MAP = [
   '################', // 0
@@ -63,8 +64,7 @@ export default {
       on: 'own_desk', text: 'write "cancel the meeting" on a note', duration: 1.5, sneaky: true, saw: '📝',
       can: (p, w) => !p.held && w.note === 'pad',
       done(game) {
-        game.player.held = 'note';
-        game.world.note = 'player';
+        playerHolds(game, 'note');
         game.events.emit('note:written', {});
       },
     },

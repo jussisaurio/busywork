@@ -16,9 +16,10 @@ import { SUSPICION_FILL_SEC, SUSPICION_DECAY_SEC, WORK_PENALTY_MIN, NOTICE } fro
 import { say, shake, sightline } from '../core/fx.js';
 import { npcSees, seenVia, findNpc, inZone } from '../game/perception.js';
 import { SCREEN_ICON } from '../sim/mechanics/camera.js';
-import { npcTakes, npcSayLater } from '../sim/npcs.js';
+import { npcSayLater } from '../sim/npcs.js';
+import { takesBack } from '../sim/take.js';
 import { judge } from '../sim/mechanics/index.js';
-import { mustWalk, withinReach } from '../sim/mechanics/claim.js';
+import { startClaim, claimDue } from '../sim/mechanics/claim.js';
 import { cancelAction, dropHeld } from './interactions.js';
 import { setBusy, sendToDesk, showOut } from './player.js';
 import { DOUBLE_TAKE, updateDisguise, disguiseView, doubleTakeIcons, unmasked } from './disguise.js';
@@ -196,7 +197,7 @@ function rulesStep(game, dt) {
   // Witnesses (sneaky actions, the scene, the evidence) and contraband.
   for (const npc of game.npcs) {
     const offence = offenceFor(game, s, npc);
-    const coming = offence === 'contraband' && npc._claim && !npc._claim.done && npc._claim.item === p.held; // on his way already
+    const coming = offence === 'contraband' && npc._claim && !npc._claim.done && !npc._claim.at && npc._claim.item === p.held; // on his way already
     if (offence && !coming && npcSees(game, npc, p.x, p.y)) {
       if (!s.seen[npc.id]) notice(game, s, npc, offence);
       s.seen[npc.id] = (s.seen[npc.id] || 0) + dt;
@@ -285,20 +286,14 @@ function react(game, s, npc, offence) {
   if (offence === 'evidence') game.world[r.evidence.knows] = true; // ends her hunt (sim)
   sightline(game, npc.id, 'tattle', 1.2, screenChain(cam));
 
-  // Owners take their things back, whatever else you were up to. An item with `walk`: at arm's length, so from
-  // further off he walks over first (sim/mechanics/claim.js; claimsDue takes it when he gets there, with his word).
+  // Owners take their things back, whatever else you were up to: at arm's length, so he walks over for it first
+  // (sim/mechanics/claim.js; claimsDue takes it when he gets there, with his word when that was all you did).
   const held = p.held;
-  const flags = itemFlags(game, held);
-  if (claims(game, npc, held)) {
-    if (flags.walk && !cam && mustWalk(game, npc)) {
-      npc._claim = { item: held, word: offence === 'contraband' };
-      if (offence === 'contraband') return;
-    } else takeItem(game, npc, held);
-  }
+  if (claims(game, npc, held)) comeFor(game, npc, held, null, offence === 'contraband');
 
-  // Just carrying their thing: they take it and that's the end of it, with a word (the owner's `says`).
+  // Just carrying their thing: he comes for it and that's the end of it (his word when he takes it).
   if (offence === 'contraband') {
-    ownerWord(game, npc, flags?.owner, cam);
+    game.events.emit('witness:tattle', withVia({ by: npc.id, reason: 'contraband', heard: false }, cam));
     return;
   }
   // Caught in the act (or at the scene): they shout and point at you (your face: whom they mean). The authority
@@ -310,39 +305,36 @@ function react(game, s, npc, offence) {
   else if (!s.grudge) s.grudge = { by: npc.id, icon: icon ?? '❗', reason: offence, t: 0 };
 }
 
-function takeItem(game, npc, held) {
-  const owner = itemFlags(game, held).owner;
-  game.player.held = null;
-  if (owner.reclaim) owner.reclaim(game, npc);
-  else {
-    npcTakes(npc, held);
-    game.events.emit(`${held}:confiscated`, { by: npc.id });
-  }
+// He comes for his thing (in your hand, it = null; or the world item `it`, on your desk): he walks over and takes
+// it at arm's length (sim/mechanics/claim.js), or now if he is there already. word: he says his piece (the owner's
+// `says`) as he takes it.
+function comeFor(game, npc, type, it, word) {
+  if (!startClaim(game, npc, type, { at: it, word })) takeBack(game, npc, type, it, word);
 }
 
-function ownerWord(game, npc, owner, cam) {
-  for (const line of owner?.says ?? []) {
+// His owner or confiscator takes it back (sim/take.js), with his word if `word` (the owner's `says`).
+function takeBack(game, npc, type, it, word) {
+  takesBack(game, npc, type, it);
+  if (!word) return;
+  for (const line of itemFlags(game, type)?.owner?.says ?? []) {
     if (line.after) npcSayLater(npc, line.after, line.say, line.kind ?? 'speech', line.ttl);
     else say(game, npc.id, line.say, { kind: line.kind ?? 'speech', ttl: line.ttl });
   }
-  game.events.emit('witness:tattle', withVia({ by: npc.id, reason: 'contraband', heard: false }, cam));
 }
 
-// Owners on their way over for their thing (react above, sim/mechanics/claim.js): within arm's length and you
-// still hold it, he takes it. A catch's claim (a level's startClaim, onCatch): the level does the take, on
-// 'claim:done'.
+// Owners on their way over for their thing (comeFor, sim/mechanics/claim.js): there, and it is still where he
+// is going for it (your hand, your desk), he takes it. A catch's claim (a level's startClaim, onCatch): the level
+// does the take, on 'claim:done'.
 function claimsDue(game) {
-  const p = game.player;
   for (const npc of game.npcs) {
     const c = npc._claim;
-    if (!c || c.done || !c.started || (!c.any && p.held !== c.item) || !withinReach(npc, p)) continue;
+    if (!c || c.done || !c.started || !claimDue(game, npc)) continue;
     c.done = true;
     if (c.onCatch) {
       game.events.emit('claim:done', { by: npc.id, item: c.item });
       continue;
     }
-    takeItem(game, npc, c.item);
-    if (c.word) ownerWord(game, npc, itemFlags(game, c.item).owner, null);
+    takeBack(game, npc, c.item, c.at ?? null, c.word);
   }
 }
 
@@ -369,23 +361,15 @@ export function catchNow(game, reason, by, icons = CAUGHT_ICONS, why = null) {
 
 // He finds you in his private place: 👉 you 🚪, and you walk back to your desk (player.js showOut). Not a catch and
 // not assigned work: it costs you the walk and where you were. Whatever you were doing there stops. Holding his own
-// thing (his contraband, or an item he owns), he takes it back first, pretend phone call or not; anything else
-// you keep. Nobody but the owner minds: a witness doesn't tell on you for being in the boss's office.
+// thing (his contraband, or an item he owns), he comes after you for it (comeFor: he follows you out and takes it
+// at arm's length), pretend phone call or not; anything else you keep. Nobody but the owner minds: a witness doesn't tell on you for being in the boss's office.
 function showOutOf(game, s, npc, entry, cam) {
   const p = game.player;
   cancelAction(game, 'trespass');
   const held = p.held;
   const flags = itemFlags(game, held);
   const his = held && claims(game, npc, held); // his, and he knows it right now (an owner's when)
-  if (held && (flags.contraband === npc.id || his)) {
-    p.held = null;
-    if (his && flags.owner.reclaim) flags.owner.reclaim(game, npc);
-    else {
-      npcTakes(npc, held);
-      if (flags.place) game.world[flags.place] = npc.id;
-      game.events.emit(`${held}:confiscated`, { by: npc.id });
-    }
-  }
+  if (held && (flags.contraband === npc.id || his)) comeFor(game, npc, held, null, false);
   if (!cam) { // he turns to you while he says it (a stare, as the sim's lookAt, without stopping him), then back
     const dir = Math.atan2(p.y - npc.y, p.x - npc.x);
     npc._stare = { t: SHOW_OUT_STARE, dir, back: npc._stare ? npc._stare.back : npc._faceTarget };
@@ -452,7 +436,7 @@ function assignWork(game, reason, by = null) {
 }
 
 // What the mechanics may ask of the rules (src/sim/mechanics/index.js judge).
-const JUDGE = { claims, enforcing, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
+const JUDGE = { claims, enforcing, comeFor, caught: (game, reason, by, icons) => caught(game, reason, by, null, icons) };
 
 // The catch: a spiky alert (CONTRACTS "Bubbles": the star means someone has spotted YOU), ❗👉 and your face by
 // default. cam: the camera he saw you through (camVia), if only on a screen: he points at it first. icons: what

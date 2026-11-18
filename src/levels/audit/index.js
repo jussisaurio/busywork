@@ -11,6 +11,7 @@
 import { at } from '../../config.js';
 import { itemOn } from '../../sim/mechanics/putdown.js';
 import { npcSees } from '../../game/perception.js';
+import { npcTakes, playerHolds } from '../../sim/take.js';
 import { speak, holdFor, spotLeg } from '../../sim/override.js';
 import { COFFEE_CUP, pourCoffee } from '../office/coffee.js';
 import { CAST, BEHAVIOURS, START, KEV_GO } from './cast.js';
@@ -110,11 +111,8 @@ const INTERACTIONS = {
     on: 'item', text: 'take the laptop', duration: 0.5, sneaky: true, saw: '💻',
     can: (p, w, item) => !p.held && w.items.includes(item) && LAPTOPS.includes(item.type),
     done(game, a) {
-      const p = game.player;
-      const w = game.world;
-      w.items = w.items.filter((i) => i !== a.item);
-      p.held = a.item.type;
-      w[game.level.items[a.item.type].place] = 'player';
+      game.world.items = game.world.items.filter((i) => i !== a.item);
+      playerHolds(game, a.item.type);
       game.events.emit('item:pickup', { type: a.item.type });
     },
   },
@@ -182,9 +180,7 @@ const foundLaptop = (type, home) => (game, npc) => {
     return true;
   }
   if (d > ARM_REACH) return false;
-  w.items = w.items.filter((i) => i !== it);
-  npc.carry = type;
-  w[type] = npc.id;
+  npcTakes(game, npc, type, it);
   speak(game, npc, [{ say: ['😠', '💻'] }]);
   game.events.emit('laptop:reclaimed', { type, by: npc.id });
   return true;

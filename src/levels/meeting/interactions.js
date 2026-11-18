@@ -20,6 +20,7 @@ import { say, burst, shake } from '../../core/fx.js';
 import { findNpc, inZone } from '../../game/perception.js';
 import { setOverride } from '../../sim/override.js';
 import { leaving } from '../../sim/npcs.js';
+import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { leaveDay } from '../../play/scenario.js';
 import { catchNow } from '../../play/rules.js';
 import { RESTROOM_ROWS } from './restroom.js';
@@ -47,8 +48,7 @@ export const INTERACTIONS = {
     on: 'projector', text: 'spill coffee on it', duration: 1.2, sneaky: true, saw: '📽️',
     can: (p, w) => p.held === 'coffee' && w.projector === 'ok',
     done(game, a) {
-      game.player.held = 'mug'; // the cup stays in your hand, empty: the evidence (items.js)
-      game.world.mug = 'player';
+      playerHolds(game, 'mug'); // the cup stays in your hand, empty: the evidence (items.js)
       game.world.projector = 'broken';
       burst(game, 'sparks', a.x, a.y, 16, { speed: 2.5, ttl: 0.6 });
       burst(game, 'puff', a.x, a.y, 10, { speed: 0.6, lift: 0.9, ttl: 1.6 });
@@ -61,8 +61,7 @@ export const INTERACTIONS = {
     on: 'coat_rack', text: 'take the keycard from the jacket', duration: 1.0, sneaky: true, saw: '🪪',
     can: (p, w) => !p.held && w.keycard === 'rack', // the boss may grab his jacket mid-steal
     done(game) {
-      game.player.held = 'keycard';
-      game.world.keycard = 'player';
+      playerHolds(game, 'keycard');
       game.events.emit('keycard:taken', {});
     },
   },
@@ -105,8 +104,7 @@ export const INTERACTIONS = {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
     can: (p, w) => !p.held && w.sandwich === 'fridge',
     done(game) {
-      game.player.held = 'sandwich';
-      game.world.sandwich = 'player';
+      playerHolds(game, 'sandwich');
       game.events.emit('sandwich:taken', {});
     },
   },
@@ -135,7 +133,7 @@ function drownComputer(on, owner) {
     duration: 1.0, sneaky: false, pose: 'reach', // not sneaky: nobody stops a pour, the bang is what gives you away
     can: (p) => p.held === 'coffee' && (owner !== 'player' || p.seated),
     done(game, a) {
-      game.player.held = null;
+      playerLetsGo(game, 'computer');
       game.world.cup = 'computer';
       const id = a.targetId; // which machine (the timed action's target: play/interactions.js)
       game.world.drowned = { id, owner, x: Math.floor(a.x), y: Math.floor(a.y) };
@@ -159,7 +157,7 @@ function waterPlant(on) {
     on, text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
     can: (p) => p.held === 'coffee',
     done(game, a) {
-      game.player.held = null;
+      playerLetsGo(game, on);
       game.world.cup = on; // where the day's cup went (unset until then: no golden moves for a day without it)
       game.world[`_${on}At`] = game.loopTime;
       burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.5, lift: 0.9, ttl: 1.0 });

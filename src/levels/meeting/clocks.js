@@ -18,6 +18,7 @@
 import { npcSees } from '../../game/perception.js';
 import { startClaim } from '../../sim/mechanics/claim.js';
 import { endOverride } from '../../sim/override.js';
+import { npcTakes } from '../../sim/take.js';
 import { catchNow } from '../../play/rules.js';
 import { whoInside, atTheDoor } from './restroom.js';
 import { doorClock, bossOnBalcony, playerAtDoor } from './balcony.js';
@@ -82,9 +83,7 @@ function kevAndTheCup(game, kev, sim) {
   const it = w.items.find((i) => i.type === 'coffee');
   // Unattended where a cup is free to anyone: he takes it.
   if (it && FREE_SPOTS.includes(it.spot) && Math.hypot(it.x - kev.x, it.y - kev.y) <= TAKE_RADIUS && npcSees(game, kev, it.x, it.y)) {
-    w.items = w.items.filter((i) => i !== it);
-    kev.carry = 'coffee';
-    kev.wants = null;
+    npcTakes(game, kev, 'coffee', it);
     kev._faceTarget = Math.atan2(it.y - kev.y, it.x - kev.x);
     sim.speak(game, kev, [{ say: ['🤤', '☕'] }, { say: ['😌'], after: 1.3 }]);
     sim.holdFor(kev, 1.4);

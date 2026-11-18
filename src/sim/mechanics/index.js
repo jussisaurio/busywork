@@ -1,6 +1,6 @@
 // The level's NPC mechanics, in check order: level.lures, then level.hunts, then level.doors, then the spots a
 // cast member owns (putdown.js), then level.inspections, then level.fetches, each in level order, then the claims
-// (claim.js: one per item with `walk`, started by the office rules or a level's catch).
+// (claim.js: one per owned or contraband item, started by the office rules or a level's catch).
 // A mechanic kind (lure.js, hunt.js, door.js, putdown.js, inspection.js, fetch.js) exports, each optional except owns/key/build:
 //   entries(level)            its data list, if not level[field]
 //   owns(data, npc)           npc.override is this mechanic's (for this NPC)

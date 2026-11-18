@@ -7,21 +7,21 @@
 //   override  his override on the way (plan key `${plan}#${seq}`, debug label `label`)
 //   plan, label
 //   react     { wait, says?, event? }: on spotting it he stands `wait` s, then walks over. Event payload { by }
-//   found     { says?, event?, set? } on picking it up: npc.carry = the item (world[place] = his id when the item
-//             has a `place`), then the world fields `set`, his bubbles, the event (payload { by, type })
+//   found     { says?, event?, set? } on picking it up: he takes it (sim/take.js npcTakes: he carries it), then the
+//             world fields `set`, his bubbles, the event (payload { by, type })
 //   caught    s after he picked it up, the office rules catch the player (play/rules.js caught, by him). Absent:
 //             he just keeps it and goes back to his day
 //   reason    the caught reason (default 'found')
 //   alert     icons the catcher says as he catches you (an alert bubble), instead of the rules' ❗👉 and your
 //             face, e.g. ['#parcel', '👉', '@player']: what he found, and whose it is
 // Owned items (items[type].owner) get a fetch of their own (entries): the owner who sees his thing on the floor
-// (while his `when` holds) walks over and picks it up: his owner.reclaim if he has one, else he carries it. Event
-// item:reclaimed { by, type }. A level fetch naming the same item and npc replaces it.
+// (while his `when` holds) walks over and takes it back (sim/take.js takesBack: his owner.reclaim if he has one, else
+// he carries it, `<type>:recovered`). A level fetch naming the same item and npc replaces it.
 // Contraband (items[type].contraband, with a place) gets one too: its confiscator, on duty (not in one of the
 // authority's offDuty overrides), who sees it on the floor does a double take (the item, ❗: a realize bubble, turned
 // to it), walks over, picks it up and holds it a beat (npc.pocketing: render bends him over it, the item in his
 // hands), pockets it with a face (the item's `pockets` lines, default a huff) and goes back to his day.
-// world[place] = his id from the pick-up; event `<type>:recovered { by, type }`. Snatched from under his nose on
+// He takes it back as sim/take.js takesBack (to his pocket: world[place] = his id; `<type>:recovered`). Snatched from under his nose on
 // the way, he stops dead: the item, ❓, and a look round (`missed`). If he watched you take it, the office rules
 // see it in your hand as usual. Drop it again later and he goes for it again.
 // Optional fields for any fetch: react.face (turn to it on spotting), pocket { hold } (the beat with it in his
@@ -35,6 +35,7 @@
 import { npcSees } from '../../game/perception.js';
 import { findPath } from '../nav.js';
 import { setOverride, endOverride, holdFor, speak } from '../override.js';
+import { npcTakes, takesBack } from '../take.js';
 
 // Contraband reclaims (the implicit fetch above).
 const SPOT_WAIT = 0.8; // s of double take before he sets off
@@ -52,7 +53,7 @@ export function entries(level) {
   for (const [type, flags] of Object.entries(level.items ?? {})) {
     const id = flags?.owner?.id;
     if (!id || id === 'player' || list.some((f) => f.item === type && f.npcs.includes(id))) continue;
-    list.push({ item: type, npcs: [id], override: 'picking_up', plan: `pickup_${type}`, label: `picking up his ${type}`, when: flags.owner.when, reclaim: flags.owner.reclaim, found: { event: 'item:reclaimed' } });
+    list.push({ item: type, npcs: [id], override: 'picking_up', plan: `pickup_${type}`, label: `picking up his ${type}`, when: flags.owner.when, back: true });
   }
   for (const [type, flags] of Object.entries(level.items ?? {})) {
     const by = flags?.contraband;
@@ -64,10 +65,9 @@ export function entries(level) {
       plan: `reclaim_${type}`,
       label: `going for his ${type}`,
       when: onDuty,
-      pocketed: true, // to his pocket (world[place] = his id), not his hand
+      back: true, // he takes it back (take.js takesBack: to his pocket, `<type>:recovered`)
       react: { wait: SPOT_WAIT, face: true, says: [{ say: [flags.icon, '❗'], kind: 'realize', ttl: 1.2 }] },
       pocket: { hold: POCKET_HOLD, says: flags.pockets ?? POCKET_SAYS },
-      found: { event: `${type}:recovered` },
       missed: { says: [{ say: [flags.icon, '❓'], kind: 'thought', ttl: 1.4 }] },
       again: true,
     });
@@ -136,14 +136,8 @@ function arrive(game, npc, f) {
   const w = game.world;
   const it = stillThere(game, npc, f);
   if (!it) return f.missed ? missed(game, npc, f) : endOverride(npc);
-  w.items = w.items.filter((i) => i !== it);
-  const place = game.level.items?.[f.item]?.place;
-  if (f.reclaim) f.reclaim(game, npc); // an owner's own way of taking it back (items[type].owner.reclaim)
-  else if (f.pocketed) w[place] = npc.id;
-  else {
-    npc.carry = f.item;
-    if (place) w[place] = npc.id;
-  }
+  if (f.back) takesBack(game, npc, f.item, it); // his own thing (the implicit fetches above)
+  else npcTakes(game, npc, f.item, it);
   npc._fetch = { t: game.loopTime };
   if (f.found?.set) Object.assign(w, f.found.set);
   speak(game, npc, f.found?.says);

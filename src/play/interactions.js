@@ -19,6 +19,7 @@ import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 import { actionNoise } from '../sim/mechanics/attention.js';
 import { PUT_ROW, putFocus } from '../sim/mechanics/putdown.js';
 import { toyFocus, pressToy } from '../sim/mechanics/toy.js';
+import { playerHolds, playerLetsGo } from '../sim/take.js';
 
 const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
@@ -49,9 +50,8 @@ function eatRow(type, item) {
     can: (p) => p.held === type,
     done(game) {
       const p = game.player;
-      p.held = null;
+      playerLetsGo(game, 'eaten');
       if (leaves) p.smeared = leaves; // the evidence is now on you
-      if (item.place) game.world[item.place] = 'eaten';
       burst(game, item.edible?.burst ?? 'crumbs', p.x, p.y, 12, { speed: 1.0, ttl: 0.7 });
       say(game, 'player', [face], { kind: 'thought', ttl: 1.5 });
       game.events.emit(`${type}:eaten`, {});
@@ -266,13 +266,10 @@ function completeAction(game) {
 }
 
 function pickUp(game, a) {
-  const p = game.player;
   const w = game.world;
   const item = a.item;
   w.items = w.items.filter((i) => i !== item);
-  p.held = item.type;
-  const place = game.level.items?.[item.type]?.place;
-  if (place) w[place] = 'player';
+  playerHolds(game, item.type);
   game.events.emit('item:pickup', { type: item.type });
 }
 
@@ -292,8 +289,6 @@ export function dropHeld(game) {
   const type = p.held;
   if (!type) return;
   w.items.push({ type, x: p.x, y: p.y });
-  const place = game.level.items?.[type]?.place;
-  if (place) w[place] = 'dropped';
-  p.held = null;
+  playerLetsGo(game, 'dropped');
   game.events.emit('item:drop', { type });
 }
