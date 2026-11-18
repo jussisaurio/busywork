@@ -456,4 +456,11 @@ export default [
       if (g.outcome?.why !== 'typewriter') throw new Error(`caught for ${g.outcome?.why}, not the typewriter`);
     },
   },
+  {
+    // The boss is hunting for the cup: finding it in your hand in his office is proof, not a show-out (rules.js react).
+    name: 'projector killed, then into the boss\'s office holding the mug, pretending → caught, not shown out',
+    expect: { result: 'caught' },
+    cmds: ['goto coffee_machine', 'interact', 'wait until 3:10', 'goto projector pretend', 'interact',
+      'goto boss_desk pretend', 'pretend 4.5s', 'goto meeting_room pretend', 'wait until 4:00'],
+  },
 ];
