@@ -150,6 +150,7 @@ const INTERACTIONS = {
   take_parcel: {
     on: 'pigeonholes', text: 'take your parcel', duration: 1.0, sneaky: true, saw: '💝',
     hand: 'empty', can: (p, w) => w.parcel === 'shelf' && w.parcelFor === 'player',
+    over: ['take_brown'], // (never both: parcelFor is one or the other)
     done(game) {
       game.player.held = 'parcel';
       game.world.parcel = 'player';

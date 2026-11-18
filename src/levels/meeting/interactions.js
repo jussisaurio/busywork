@@ -24,7 +24,7 @@ import { playerHolds, playerLetsGo } from '../../sim/take.js';
 import { leaveDay } from '../../play/scenario.js';
 import { catchNow } from '../../play/rules.js';
 import { RESTROOM_ROWS } from './restroom.js';
-import { BALCONY_ROWS, openDoor } from './balcony.js';
+import { BALCONY_ROWS, openDoor, outside } from './balcony.js';
 import { COMPUTERS } from './map.js';
 
 // Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
@@ -69,7 +69,8 @@ export const INTERACTIONS = {
   // lock-out (no keycard win today), and he is so glad he hugs you (clocks.js bossLetIn), and sees what's in your hand.
   let_boss_in: {
     on: 'fire_door', text: 'let the boss in', duration: 0.6, sneaky: false,
-    can: (p, w) => w.bossLockedOut,
+    can: (p, w) => w.bossLockedOut && !outside(p), // from the balcony you can't push the bar: you pound (toys.js)
+    over: ['go_out', 'pound'], // (never both: go_out is while he isn't locked out; pound from outside)
     done(game) {
       const w = game.world;
       const boss = findNpc(game, 'boss');

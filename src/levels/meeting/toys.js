@@ -188,6 +188,7 @@ export const TOYS = [
   },
   {
     id: 'knock_boss', at: { x: 25, y: 13 }, on: 'press', text: 'knock', when: inside('boss'), every: 2,
+    over: ['knock_lin'], // (never both: one stall)
     line: 'you knock on the restroom door: the boss answers from inside 🚽😠',
     react: { ...KNOCK, say: { icons: ['🚽', '😠', '@boss'], who: 'prop', ttl: 1.8 } },
     try: ['goto restroom_door', 'pretend until 3:19', 'interact'],

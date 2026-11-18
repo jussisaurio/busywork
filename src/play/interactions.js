@@ -121,9 +121,10 @@ function actionsOf(level) {
     table = { ...level.interactions };
     const add = (verb, row) => { if (!(verb in table)) table[verb] = row; };
     for (const [type, item] of Object.entries(level.items ?? {})) if (item.edible) add(`eat_${type}`, eatRow(type, item));
-    // An item with `keep` never leaves your hand but by a put: no drop for it.
-    const kept = Object.entries(level.items ?? {}).filter(([, item]) => item.keep).map(([type]) => type);
-    const drop = kept.length ? { ...GENERIC.drop, can: (p) => !kept.includes(p.held) } : GENERIC.drop;
+    // An item with `keep` never leaves your hand but by a put: drop takes the others.
+    const types = Object.entries(level.items ?? {});
+    const drop = types.some(([, item]) => item.keep)
+      ? { ...GENERIC.drop, hand: types.filter(([, item]) => !item.keep).map(([type]) => type) } : GENERIC.drop;
     for (const [verb, row] of Object.entries(GENERIC)) add(verb, verb === 'drop' ? drop : row);
     tables.set(level, table);
   }
@@ -172,6 +173,29 @@ export function actionTargets(level, interactables) {
   };
 }
 const NONE = [];
+
+// Where order would decide: on each target, in each hand state (empty, or each item type), the pairs of actions
+// whose hand puts them in one rank with neither `over` the other. can/when are not run (they read the day), so a
+// pair is listed if both could ever be left. validate.js refuses a level with any.
+// -> ['<target>: a / b (<hand states>)']
+export function handConflicts(level, interactables) {
+  const t = actionTargets(level, interactables);
+  const groups = [...t.on, ...t.props.map((pr) => [`the toys at ${Math.floor(pr.x)},${Math.floor(pr.y)}`, pr.entries]),
+    ['a floor item', t.item], ['self (tap)', t.tap], ['self (hold E)', t.hold]];
+  const pairs = new Map();
+  for (const held of [null, ...Object.keys(level.items ?? {})]) {
+    for (const [where, es] of groups) {
+      for (let i = 0; i < es.length; i++) for (let j = i + 1; j < es.length; j++) {
+        const a = es[i], b = es[j], r = handRank(a.hand, held);
+        if (r === null || r !== handRank(b.hand, held) || a.over?.includes(b.verb) || b.over?.includes(a.verb)) continue;
+        const k = `${where}: ${a.verb} / ${b.verb}`;
+        if (!pairs.has(k)) pairs.set(k, []);
+        pairs.get(k).push(held ?? 'empty');
+      }
+    }
+  }
+  return [...pairs].map(([k, hands]) => `${k} (holding ${hands.join(', ')})`);
+}
 const built = new WeakMap();
 function targetsOf(game) {
   let t = built.get(game.level);

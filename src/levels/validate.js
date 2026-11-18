@@ -25,7 +25,10 @@
 //               the cosmetic cue times (config.js DAY_CUES) numbers if present; absent ones default (dayCue)
 //   meeting     { override, room (a zone), chair (a spot), presenter? (a spot; none: a fail plays where you stand), verdict? (a function),
 //               where? (names: zones, or places you go inside; scenario.js outcome.where) }
-//   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot';
+//   interactions  an object of rows; `on` an interactable type on the map, or 'self', 'item' or 'spot' (or a list);
+//               hand (optional) 'empty', 'any', an item type or a list of them; over (optional) a list of verbs;
+//               no two actions (rows, press toys) on one target that one hand state leaves in one rank of the hand
+//               rule, unless one is `over` the other (play/interactions.js handConflicts);
 //               noise.at (optional) a spot or an { x, y } on the map; no `icon` (*: the target lights up with the E key cap instead);
 //               a 'self' row's preview one of render/characters.js ARM_POSES (the player's pose while it is what E
 //               would do: nothing else shows it), its hold (optional) a boolean
@@ -86,6 +89,7 @@ import { DESK_DRAWS, PROP_PAINTERS, TILE_DRAWS } from '../render/world.js';
 import { THINGS } from '../render/things.js';
 import { ARM_POSES } from '../render/characters.js';
 import { CONTROL_KINDS } from '../game/darkness.js';
+import { handConflicts } from '../play/interactions.js';
 import { BURST_KINDS as BURSTS } from '../core/fx.js';
 
 const DOS = new Set(['sit', 'visit', 'patrol', 'away', 'leave', 'say']);
@@ -127,6 +131,10 @@ export function levelProblems(level, key) {
   const behaviour = (path, name) => { if (!has(behaviours, name)) bad(path, `no behaviour ${q(name)} in level.behaviours`); };
   const route = (path, name) => { if (!has(patrols, name)) bad(path, `no route ${q(name)} in level.patrols`); };
   const itemType = (path, type) => { if (!has(items, type)) bad(path, `no item type ${q(type)} in level.items`); };
+  const hand = (path, v) => {
+    if (v === undefined || v === 'empty' || v === 'any') return;
+    for (const type of [v].flat()) if (!isStr(type) || !has(items, type)) bad(path, `${q(type)} is not 'empty', 'any', an item type or a list of item types`);
+  };
   const list = (path, v) => { if (!Array.isArray(v)) { bad(path, 'not a list'); return []; } return v; };
   const itemTypes = (path, v) => { // one item type or a non-empty list of them
     if (!Array.isArray(v)) return itemType(path, v);
@@ -288,7 +296,9 @@ export function levelProblems(level, key) {
     for (const [verb, row] of Object.entries(level.interactions)) {
       const path = `interactions.${verb}`;
       if (!isObj(row)) { bad(path, 'not an object'); continue; }
-      if (!ROW_TARGETS.has(row.on) && !interTypes.has(row.on)) bad(`${path}.on`, `no interactable ${q(row.on)} on the map`);
+      for (const on of [row.on].flat()) if (!ROW_TARGETS.has(on) && !interTypes.has(on)) bad(`${path}.on`, `no interactable ${q(on)} on the map`);
+      hand(`${path}.hand`, row.hand);
+      if (row.over !== undefined && !(Array.isArray(row.over) && row.over.every(isStr))) bad(`${path}.over`, 'not a list of verbs (or toy ids)');
       if (row.noise?.at !== undefined) noiseAt(`${path}.noise.at`, row.noise.at);
       if (row.noise !== undefined) noiseTiming(`${path}.noise`, row.noise);
       if (row.icon !== undefined) bad(`${path}.icon`, 'an icon over the target reads as the object: drop it (the target lights up with the key cap)');
@@ -393,6 +403,9 @@ export function levelProblems(level, key) {
     if (!['press', 'pass', 'near'].includes(t.on)) bad(`${path}.on`, "not 'press', 'pass' or 'near'");
     if (t.on !== 'press') for (const [k, id] of list(`${path}.npcs`, t.npcs).entries()) npc(`${path}.npcs[${k}]`, id);
     if (t.when !== undefined && !isFn(t.when)) bad(`${path}.when`, 'not a function (world, state, game, npc) -> bool');
+    if (t.on === 'press') hand(`${path}.hand`, t.hand);
+    else if (t.hand !== undefined || t.over !== undefined) bad(`${path}.hand`, 'only a press toy is pressed: hand and over are for E');
+    if (t.over !== undefined && !(Array.isArray(t.over) && t.over.every(isStr))) bad(`${path}.over`, 'not a list of verbs (or toy ids)');
     for (const k of ['radius', 'every']) if (t[k] !== undefined && !(isNum(t[k]) && t[k] > 0)) bad(`${path}.${k}`, 'not a number > 0');
     if (t.state !== undefined && !isObj(t.state)) bad(`${path}.state`, 'not an object');
     if (t.stand !== undefined && !(t.on !== 'press' && isObj(t.stand) && isNum(t.stand.x) && isNum(t.stand.y))) bad(`${path}.stand`, 'not { x, y } (tile units) on a pass or near toy');
@@ -410,6 +423,10 @@ export function levelProblems(level, key) {
       if (r.burst !== undefined && !BURSTS.includes(r.burst?.kind)) bad(`${path}.react.burst.kind`, `not one of ${BURSTS.join(', ')}`);
     }
     if (!(Array.isArray(t.try) && t.try.length && t.try.every(isStr))) bad(`${path}.try`, 'not a list of harness commands after which it has fired (the gate plays it)');
+  }
+  // The hand rule (play/interactions.js): order in a table never picks what E does.
+  if (map && isObj(level.interactions) && !out.length) { // (on a level otherwise sound: toys need their spots)
+    for (const c of handConflicts(level, map.interactables)) bad('interactions', `${c}: both could be what E does (give one an \`over\` naming the other, or a hand)`);
   }
   const records = []; // [path, world field] (checked against initialWorld() below)
   for (const [i, insp] of (level.inspections ?? []).entries()) {

@@ -165,6 +165,7 @@ const INTERACTIONS = {
     on: 'office_switch', text: "switch his office lights off", duration: 0.5, sneaky: false,
     noise: { radius: 2 }, // the clack: out in the hallway, far from his chair
     can: (p, w) => w.officeLight !== 'off',
+    over: ['flip_switch_on'], // (never both)
     done: flipSwitch,
   },
   flip_switch_on: {
@@ -181,6 +182,7 @@ const INTERACTIONS = {
   rig_coffee: {
     on: 'coffee_machine', text: 'pour the water jug into the vent on the back of the machine', duration: 1.5, sneaky: true, saw: '#jug',
     hand: 'empty', can: (p, w) => !w.rigged && w.coffee === 'none',
+    over: ['pour_coffee'], // (never both: w.coffee)
     done(game) {
       game.world.rigged = true;
       burst(game, 'sweat', 21.85, 1.2, 8, { speed: 0.9, ttl: 0.6 }); // the splash, behind the machine
@@ -195,6 +197,7 @@ const INTERACTIONS = {
   eat_letter: {
     on: 'self', text: 'eat your letter', duration: EAT_TIME, hold: true, preview: 'lift', idle: true, saw: '✉️',
     hand: 'letter', can: (p, w) => !w.soggy, // once was enough: eat_soggy
+    over: ['eat_soggy'], // (never both)
     done(game) {
       const w = game.world;
       const p = game.player;

@@ -204,6 +204,7 @@ const INTERACTIONS = {
     on: 'roster', text: "write Kev's name in Saturday's slot on the board", duration: WRITE_S, sneaky: true,
     saw: '🗓️', // the board (its week strip, Saturday ringed); longer than any glance away
     can: (p, w) => w.roster !== 'kev' && !w.rosterLocked,
+    over: ['write_boss'], // (never both)
     done: (game) => write(game, 'kev'),
   },
   write_boss: {
