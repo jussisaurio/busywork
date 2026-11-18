@@ -56,7 +56,7 @@ export const BEHAVIOURS = {
     pending: (npc) => !npc._jacket,
     arrive(game, npc, sim) {
       const w = game.world;
-      w.jacket = npc.id; // he's wearing it now (looks.js POSES)
+      w.jacket = npc.id; // he's wearing it now (poses.js POSES)
       npc._jacket = true;
       if (w.keycard === 'rack') w.keycard = npc.id;
       sim.holdFor(npc, 0.8);

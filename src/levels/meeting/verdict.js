@@ -9,19 +9,23 @@
 // beaming at you (why 'samaritan': the end card has his arm round your shoulder and a blank screen).
 import { findNpc } from '../../game/perception.js';
 import { balconyVerdict } from './balcony.js';
+import { WHYS } from './endings.js';
+
+// A verdict for reason `why`: where the room looks and what it says are the why's (endings.js).
+const judged = (why, result) => ({ result, why, stare: WHYS[why].stare });
 
 export function verdict(game, { routes, present }) {
   const w = game.world;
   const out = balconyVerdict(game); // on the balcony at 4:00: where you are decides it (balcony.js)
   if (out) return out;
-  if (!routes.length && w.samaritan) return { why: 'samaritan', stare: { at: 'player', think: ['🤗'], say: ['👏', '@player'] } };
+  if (!routes.length && w.samaritan) return judged('samaritan');
   if (!routes.includes('projector')) return null;
   const boss = findNpc(game, 'boss');
   if (!boss?.active || boss.override !== game.level.meeting.override) return null;
   if (w.mug === 'player' || w.mug === 'my_desk') {
-    return { result: 'blamed', why: w.mug === 'player' ? 'mug' : 'desk', stare: { at: 'player', think: ['📽️', '💥'], say: ['☕', '😠', '👉', '@player'], line: 'tattle' } };
+    return judged(w.mug === 'player' ? 'mug' : 'desk', 'blamed');
   }
-  if (w.mug === 'kev_desk' && present) return { why: 'kev', stare: { at: 'meeting_kev', think: ['☕', '@kev'], say: ['😠', '👉', '@kev'] } };
+  if (w.mug === 'kev_desk' && present) return judged('kev');
   return present ? verdictDesks(game) : null;
 }
 
@@ -39,15 +43,8 @@ function verdictDesks(game) {
   const m = game.level.meeting;
   const lin = findNpc(game, 'lin');
   const linHere = lin?.active && lin.override === m.override;
-  if (w.mug === 'lin_desk' && linHere) {
-    const hungry = w.sandwich === 'eaten';
-    return { why: hungry ? 'linHungry' : 'lin', stare: { at: 'meeting_lin', think: ['☕', '@lin'], say: ['😠', '👉', '@lin'],
-      by: { lin: { at: 'meeting_head', think: ['☕', '❓'], say: hungry ? ['😭', '🥪'] : ['😨'] } } } };
-  }
-  if (w.mug === 'boss_desk') {
-    return { why: 'bossMug', stare: { at: 'meeting_head', think: ['☕', '@boss'], say: ['🤨', '👉', '@boss'],
-      by: { boss: { at: 'meeting_lin', think: ['☕', '❓'], say: ['😳', '☕', '❓'] } } } };
-  }
+  if (w.mug === 'lin_desk' && linHere) return judged(w.sandwich === 'eaten' ? 'linHungry' : 'lin');
+  if (w.mug === 'boss_desk') return judged('bossMug');
   return null;
 }
 
@@ -77,7 +74,7 @@ export function verdictFull(game, a) {
 function verdictWhere(game, a) {
   const p = game.player;
   if (a.result === 'blamed' && p.seated && p.busyPose === 'typing') {
-    return { why: 'working', stare: { at: 'player', think: ['🪑', '❓'], say: ['👀', '⌨️', '@player'] } };
+    return judged('working');
   }
   return null;
 }

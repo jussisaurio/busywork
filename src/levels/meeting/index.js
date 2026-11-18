@@ -35,8 +35,8 @@
 //            emoji under the 🕓 (render screens.js)
 //   decor    set dressing: chairs, wall decor, desk clutter, the key legend (decor.js; render world.js, hud.js)
 //   looks    how each person is drawn, by id (office/looks.js; render characters.js lookFor)
-//   poses    what the cast is drawn doing: arms rules and marks (office/looks.js; render characters.js)
-//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (office/looks.js; render cones.js)
+//   poses    what the cast is drawn doing: arms rules and marks (poses.js; render characters.js)
+//   cones    what makes a vision cone flare besides the rules' game.watch: alert overrides (poses.js; render cones.js)
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
 //   voices   how the cast talks, by cast `voice` name (office/voices.js; audio/babble.js)
@@ -48,7 +48,8 @@ import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { DECOR } from './decor.js';
-import { LOOKS, POSES, CONES } from '../office/looks.js';
+import { LOOKS } from '../office/looks.js';
+import { POSES, CONES } from './poses.js';
 import { END_SCENES } from './end-scenes.js';
 import { SOUNDS } from './sounds.js';
 import { OFFICE_VOICES } from '../office/voices.js';

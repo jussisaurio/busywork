@@ -7,14 +7,16 @@
 //     draw(ctx, game, t, e, outcome) -> paints the picture inside TAB (screen space, already clipped);
 //                       e = seconds since the card came up. Objects in it are drawn (drawThing, painters.js), never
 //                       emoji; only bubbles speak emoji (DESIGN.md "Visual language" rule 5)
-import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, drawScreen, hash } from '../../render/util.js';
-import { drawThing } from '../../render/things.js';
-import { C, TOMATO, OLIVE } from '../../render/palette.js';
+// Which scene each outcome gets is endings.js endKind. The sets the scenes stand on (the meeting room, the table, the
+// balcony) are end-set.js; each scene here draws its set, then only what is its own.
+import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, hash } from '../../render/util.js';
+import { TOMATO } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
-import { drawProjector } from '../../render/world.js';
-import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from '../../render/tableau.js';
-import { chair } from '../../render/tableau-furniture.js';
-import { findNpc } from '../../game/perception.js';
+import { TAB, person, bubble, confetti } from '../../render/tableau.js';
+import { chair, walnutDesk, officeRoom, drawLift, walkWithBox } from '../../render/tableau-furniture.js';
+import { endKind, WHYS } from './endings.js';
+import { bossJacket, kevHere, meetingRoom, presenting, AUDIENCE, atTheTable, brokenProjector, balconySet, knock,
+  bangingOnTheDoor, fireDoor, youNodding } from './end-set.js';
 import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
 import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
@@ -22,66 +24,20 @@ import { tableauComputer } from './end-scenes-more.js';
 import { tableauLin, tableauBossMug } from './end-scenes-desks.js';
 import { BALCONY_SCENES } from './end-scenes-balcony.js';
 
-// Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
-const MORE_CAUGHT = new Set(['computer']);
-// Wins whose verdict reason has a scene of its own (verdict.js verdictDesks; end-scenes-desks.js).
-const DESK_WINS = new Set(['lin', 'linHungry', 'bossMug']);
-MORE_CAUGHT.add('bib'); // caught over the mustard (clocks.js): end-scenes-combo.js
-
 const B_ANGRY = ['😠'];
 const B_POINT_YOU = ['👉', '@player'];
 const B_WHAT = ['❓'];
 const B_BLAME_YOU = ['😠', '👉', '@player'];
-const B_BLAME_KEV = ['😠', '👉', '@kev'];
 const B_PROJ = ['📽️', '💥'];
 const B_NO_SLIDES = ['📊', '❌'];
 const B_OUT = ['👋', '🚪'];
 const B_DOTS = ['📊', '❓'];
-const B_MUG = ['☕', '😠', '👉', '@player'];
-const B_KEV = ['☕', '@kev'];
-
-function endKind(o) {
-  if (!o) return 'fail';
-  const routes = Array.isArray(o.routes) ? o.routes : [];
-  // why 'samaritan': you let the boss in off the balcony (clocks.js bossLetIn). Holding his card: caught, and locked
-  // out yourself. Without it: no route, and his arm round you at the blank screen.
-  if (o.result === 'caught') {
-    if (o.why === 'samaritan') return 'samaritanCaught';
-    return MORE_CAUGHT.has(o.why) ? o.why : 'caught'; // end-scenes-more.js
-  }
-  if (o.result === 'fail' && o.why === 'samaritan') return 'samaritan';
-  // why 'home' / 'homeKev': you just went home (interactions.js go_home); with Kev, if he was on his way out too.
-  if (o.result === 'fail' && (o.why === 'home' || o.why === 'homeKev')) return o.why;
-  // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
-  // why 'balcony' / 'snatched' / 'together': 4:00 found you on the balcony (balcony.js balconyVerdict).
-  if (o.why === 'balcony' || o.why === 'snatched' || o.why === 'together') return o.why;
-  if (o.result === 'blamed' && (o.why === 'mug' || o.why === 'desk')) return 'mug';
-  // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
-  if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
-  if (o.result === 'win' && routes.includes('keycard') && routes.includes('projector')) return 'campfire'; // both at once
-  if (o.result === 'win' && !routes.includes('keycard') && DESK_WINS.has(o.why)) return o.why;
-  if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
-  return 'fail';
-}
-
-// ---- The plain fails (end-scenes-fails.js): a fail the verdict gave a cause (verdict.js verdictFull) draws it.
-function endKindFull(o) {
-  const k = endKind(o);
-  if (k === 'blamed' && o?.why === 'working') return 'working'; // "where were you?": at your desk, typing
-  return k === 'fail' && FAIL_SCENES[o?.why] ? o.why : k;
-}
-
-export function bossJacket(game) {
-  const boss = game.npcs && findNpc(game, 'boss');
-  return boss ? game.world.jacket === boss.id : true;
-}
 
 // The keycard win, either side of the fire door. Inside (left) you cheer in the empty office. Outside (right), on
 // the smokers' balcony, the boss pounds on the fire door, its card reader blinking red, butts ground out at his feet.
 const B_LOCKED = [['😠', '🚪', '🪪'], ['👊', '👊', '🚪']];
 function tableauKeycard(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, 286, TAB.h);
-  balconySlab(ctx, 484, TAB.y, 286, TAB.h);
+  balconySet(ctx);
   confetti(ctx, TAB.x, 280, TAB.y, TAB.h, e, 36);
   const p = person(t);
   p.dir = Math.PI / 2;
@@ -90,18 +46,9 @@ function tableauKeycard(ctx, game, t, e) {
   p.smug = true;
   p.scale = 2.3;
   drawPerson(ctx, game.level.looks.player, p, 340, 280 - Math.abs(Math.sin(t * 6)) * 8);
-  // his fists land about twice a second; the door jumps on each
-  const beat = (t * 2.2) % 1;
-  const hit = beat < 0.18;
-  fireDoorSide(ctx, 470, t, hit ? Math.sin(beat * 90) * 2 : 0);
-  const b = person(t);
-  b.dir = Math.PI; // facing the door
-  b.head = Math.PI + Math.sin(t * 2) * 0.1;
-  b.arms = 'bang';
-  b.angry = true;
-  b.jacket = bossJacket(game);
-  b.scale = 2.2;
-  drawPerson(ctx, game.level.looks.boss, b, 548, 272);
+  const { beat, hit, dx } = knock(t);
+  fireDoor(ctx, t, dx);
+  bangingOnTheDoor(ctx, game, 'boss', t, { angry: true });
   if (hit) { // impact rings off the steel
     ctx.strokeStyle = 'rgba(255,255,255,0.85)';
     ctx.lineWidth = 2;
@@ -123,72 +70,11 @@ function tableauKeycard(ctx, game, t, e) {
   }
 }
 
-// The balcony: the sky and the rooftops over the railing at the back, concrete pavers, a sand-bucket ashtray in
-// the far corner and his butts all round it.
-export function balconySlab(ctx, x, y, w, h) {
-  ctx.fillStyle = '#a7c9de';
-  ctx.fillRect(x, y, w, 70);
-  for (const [cx, cy] of [[560, y + 22], [700, y + 34]]) fillEllipse(ctx, cx, cy, 30, 8, '#c9dde8');
-  ctx.fillStyle = '#7d8a96';
-  for (let i = 0; i < 6; i++) ctx.fillRect(x + 10 + i * 48, y + 44 - (i % 3) * 10, 36, 30 + (i % 3) * 10);
-  ctx.fillStyle = '#a3a8ab';
-  ctx.fillRect(x, y + 70, w, h - 70);
-  ctx.fillStyle = 'rgba(0,0,0,0.12)';
-  for (let gx = 0; gx <= w; gx += 48) ctx.fillRect(x + gx, y + 70, 1.5, h - 70);
-  for (let gy = 70; gy <= h; gy += 40) ctx.fillRect(x, y + gy, w, 1.5);
-  ctx.fillStyle = '#5c6670';
-  ctx.fillRect(x, y + 62, w, 5);
-  for (let rx = x + 10; rx < x + w; rx += 22) ctx.fillRect(rx, y + 62, 3, 14);
-  ctx.fillStyle = '#c0392b';
-  rrect(ctx, 720, 250, 24, 24, 4);
-  ctx.fill();
-  fillEllipse(ctx, 732, 251, 12, 4, '#d8c690');
-  for (let i = 0; i < 14; i++) {
-    const a = i * 2.39996;
-    const r = 18 + (i % 5) * 7;
-    ctx.save();
-    ctx.translate(722 + Math.cos(a) * r, 282 + Math.sin(a) * r * 0.35);
-    ctx.rotate(a);
-    ctx.fillStyle = '#f2ede2';
-    ctx.fillRect(-4, -1.2, 5, 2.4);
-    ctx.fillStyle = '#d58a3a';
-    ctx.fillRect(1, -1.2, 3, 2.4);
-    ctx.restore();
-  }
-}
-
-// The wall between them, end on, with the red fire door in it (shoved dx px by his fists), the EXIT sign over it
-// and the card reader on his side, blinking red.
-export function fireDoorSide(ctx, x, t, dx) {
-  ctx.fillStyle = C.wallFront;
-  ctx.fillRect(x, TAB.y, 18, TAB.h);
-  ctx.fillStyle = '#4a4f55';
-  ctx.fillRect(x - 2, 150, 22, 140);
-  ctx.fillStyle = '#b8402f';
-  ctx.fillRect(x + 2 + dx, 154, 14, 134);
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.fillRect(x + 2 + dx, 154, 3, 134);
-  ctx.fillStyle = '#b9bfc3'; // push bar, on the inside
-  ctx.fillRect(x - 6 + dx, 222, 8, 4);
-  ctx.fillStyle = '#1f7a3e'; // EXIT
-  rrect(ctx, x - 12, 132, 42, 14, 2);
-  ctx.fill();
-  ctx.fillStyle = '#d9ffe4';
-  ctx.fillRect(x - 6, 137, 30, 4);
-  ctx.fillStyle = '#2b2e33'; // the reader, outside
-  rrect(ctx, x + 22, 200, 10, 16, 2);
-  ctx.fill();
-  const on = Math.sin(t * 7) > 0;
-  if (on) fillEllipse(ctx, x + 27, 206, 7, 7, 'rgba(255,59,48,0.3)');
-  fillEllipse(ctx, x + 27, 206, 3, 3, on ? '#ff3b30' : '#5a1f18');
-}
-
 // The projector win: no projector, no slides. The boss stands over the smoking projector, a hand over his face, then
 // throws his hands up (📽️💥, 📊❌) and waves everyone out (👋🚪); Lin gets up. You sit at your place,
 // the picture of patience. Nobody is blamed, so nobody points (Jussi's playtest: a point read as blaming Kev).
 function tableauProjector(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, '#3d7a72', '#397369');
-  drawScreen(ctx, 392, 106, 176, 70, { bar: [6, 6, 6], face: '#d9d6cc', scan: ['rgba(0,0,0,0.08)', 6, 11, t] });
+  meetingRoom(ctx, t, 'dead');
   const out = e > 3; // the room empties
   const l = person(t);
   l.dir = out ? Math.PI * 0.9 : 0;
@@ -205,20 +91,9 @@ function tableauProjector(ctx, game, t, e) {
   b.jacket = bossJacket(game);
   b.scale = 2.3;
   drawPerson(ctx, game.level.looks.boss, b, 540, 224);
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  rrect(ctx, 262, 238, 440, 86, 30);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, 256, 228, 440, 86, 30);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, 256, 228, 440, 76, 30);
-  ctx.fill();
-  ctx.save();
-  ctx.translate(470, 268);
-  ctx.scale(3, 3);
-  drawProjector(ctx, 0, 0, 'broken', 0, t);
-  ctx.restore();
+  // the table, close up, the dead projector on it, big
+  walnutDesk(ctx, 256, 228, 440, { depth: 76, skirt: 86, r: 30, shadow: { color: 'rgba(0,0,0,0.25)', dx: 6, dy: 10, h: 86 } });
+  brokenProjector(ctx, t, 470, 268, 3);
   // you, in your tomato chair in front of the table, hands folded
   chair(ctx, 640, 330, TOMATO, 2.4, -Math.PI / 2);
   const p = person(t);
@@ -232,45 +107,16 @@ function tableauProjector(ctx, game, t, e) {
   bubble(ctx, says, 600, 140, out ? e - 3 : e > 1.5 ? e - 1.5 : e);
 }
 
+// The plain fail: you hurry in, sweating, to the blank screen; the room stares; the lone cricket.
 function tableauFail(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  // blank white slide, glowing
-  drawScreen(ctx, 382, 104, 196, 84, {
-    glow: ['rgba(255,255,235,0.35)', 10, 6, 6], bar: [6, 6, 6], face: '#ffffff', edge: 'rgba(0,0,0,0.12)',
-  });
-  // presenter
+  presenting(ctx, game, t, { kev: { glance: 1 }, lin: { glance: 1 }, boss: { head: Math.PI + 0.15, glance: 1 } });
   const p = person(t);
   p.dir = Math.PI / 2;
   p.head = p.dir + Math.sin(t * 2.6) * 0.5;
   p.sweat = true;
   p.scale = 2.3;
   drawPerson(ctx, game.level.looks.player, p, 480, 262);
-  // staring coworkers
-  const k = person(t);
-  k.dir = 0.25;
-  k.head = 0.05;
-  k.pose = 'sit';
-  k.arms = 'desk';
-  k.glance = 1;
-  k.scale = 2;
-  if (!game.world || !game.world.kevGone) drawPerson(ctx, game.level.looks.kev, k, 262, 206); // he went home at 3:00 (unless kept late)
-  const l = person(t);
-  l.dir = -0.15;
-  l.head = -0.25;
-  l.pose = 'sit';
-  l.arms = 'desk';
-  l.glance = 1;
-  l.scale = 2;
-  drawPerson(ctx, game.level.looks.lin, l, 300, 300);
-  const b = person(t);
-  b.dir = Math.PI;
-  b.head = Math.PI + 0.15;
-  b.glance = 1;
-  b.jacket = bossJacket(game);
-  b.scale = 2.2;
-  drawPerson(ctx, game.level.looks.boss, b, 676, 268);
-  bubble(ctx, B_DOTS, 676, 186, e, 'thought');
-  // the lone cricket
+  bubble(ctx, B_DOTS, AUDIENCE.boss[0], 180, e, 'thought');
   const hop = Math.abs(Math.sin(e * 5));
   cricket(ctx, 480 + Math.sin(e * 0.9) * 80, 322 - hop * 14, 22);
 }
@@ -279,8 +125,7 @@ function tableauFail(ctx, game, t, e) {
 // keycard win the other way round: you on the balcony, fists on the fire door; he, inside, dangles his card at you.
 const B_LET_ME_IN = [['🙏', '🚪'], ['👊', '👊', '🚪']];
 function tableauSamaritanCaught(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, 286, TAB.h);
-  balconySlab(ctx, 484, TAB.y, 286, TAB.h);
+  balconySet(ctx);
   const b = person(t);
   b.dir = 0; // facing the door, and you behind it
   b.head = Math.sin(t * 1.6) * 0.12;
@@ -291,26 +136,15 @@ function tableauSamaritanCaught(ctx, game, t, e) {
   b.scale = 2.3;
   drawPerson(ctx, game.level.looks.boss, b, 380, 276);
   bubble(ctx, e < 2.4 ? ['🪪', '😏'] : ['👋'], 380, 186, e < 2.4 ? e : e - 2.4);
-  const beat = (t * 2.2) % 1;
-  const hit = beat < 0.18;
-  fireDoorSide(ctx, 470, t, hit ? Math.sin(beat * 90) * 2 : 0);
-  const p = person(t);
-  p.dir = Math.PI;
-  p.head = Math.PI + Math.sin(t * 2) * 0.1;
-  p.arms = 'bang';
-  p.sweat = true;
-  p.scale = 2.2;
-  drawPerson(ctx, game.level.looks.player, p, 548, 272);
+  fireDoor(ctx, t, knock(t).dx);
+  bangingOnTheDoor(ctx, game, 'player', t, { sweat: true });
   bubble(ctx, B_LET_ME_IN[Math.floor(e / 1.6) % 2], 560, 196, e % 1.6, 'alert');
 }
 
 // The Good Samaritan, not caught: you let him in and he's so grateful he presents with you, his arm round your
 // shoulder, beaming at the room, in front of the blank screen. The cricket hops.
 function tableauSamaritan(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
-  drawScreen(ctx, 382, 104, 196, 84, {
-    glow: ['rgba(255,255,235,0.35)', 10, 6, 6], bar: [6, 6, 6], face: '#ffffff', edge: 'rgba(0,0,0,0.12)',
-  });
+  presenting(ctx, game, t, { kev: { glance: 1 }, lin: { glance: 1 }, boss: false }); // he is up front, with you
   const p = person(t);
   p.dir = Math.PI / 2;
   p.head = p.dir + Math.sin(t * 2.6) * 0.5;
@@ -335,23 +169,8 @@ function tableauSamaritan(ctx, game, t, e) {
   ctx.quadraticCurveTo(474, 246, 444 + squeeze, 256);
   ctx.stroke();
   fillEllipse(ctx, 442 + squeeze, 257, 5.5, 5, game.level.looks.boss.skin);
-  const k = person(t);
-  k.dir = 0.25;
-  k.head = 0.05;
-  k.pose = 'sit';
-  k.arms = 'desk';
-  k.glance = 1;
-  k.scale = 2;
-  if (!game.world || !game.world.kevGone) drawPerson(ctx, game.level.looks.kev, k, 262, 206);
-  const l = person(t);
-  l.dir = -0.15;
-  l.head = -0.25;
-  l.pose = 'sit';
-  l.arms = 'desk';
-  l.glance = 1;
-  l.scale = 2;
-  drawPerson(ctx, game.level.looks.lin, l, 300, 300);
-  bubble(ctx, e < 2.6 ? ['🤗'] : ['👏', '@player'], 530, 180, e < 2.6 ? e : e - 2.6);
+  const { think, say } = WHYS.samaritan.stare; // what the room thinks in the day, on the card too
+  bubble(ctx, e < 2.6 ? think : say, 530, 180, e < 2.6 ? e : e - 2.6);
   const hop = Math.abs(Math.sin(e * 5));
   cricket(ctx, 600 + Math.sin(e * 0.9) * 60, 322 - hop * 14, 22);
 }
@@ -476,28 +295,12 @@ function phoneWithBoss(ctx, game, t, x, y, buzz) {
   }
 }
 
-// Fired: you shuffle off to the elevator with your desk in a box; the boss points the way.
+// Fired: you shuffle off to the lift with your desk in a box; the boss points the way.
 const LIFT = { x: 612, y: TAB.y, w: 104, h: 104 };
-
 function tableauCaught(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.officeA, C.officeB);
-  backWall(ctx, 92);
-  drawLift(ctx, t);
-  // the walk of shame: slow, then a stop at the open doors
-  const walkK = clamp(e / 3.6, 0, 1);
-  const px = 350 + (LIFT.x + LIFT.w / 2 - 350) * easeOutCubic(walkK);
-  const walking = walkK < 0.98;
-  const p = person(t);
-  p.dir = walking ? 0.12 : -Math.PI / 2 + 0.25;
-  p.head = walking ? 0.55 : -Math.PI / 2 + 0.6; // eyes on the floor, then on the lift
-  p.pose = walking ? 'walk' : 'stand';
-  p.moving = walking;
-  p.phase = t * 7;
-  p.arms = 'box';
-  p.sweat = true;
-  p.jacket = false;
-  p.scale = 2.4;
-  drawPerson(ctx, game.level.looks.player, p, px, 268);
+  officeRoom(ctx, 92);
+  drawLift(ctx, t, LIFT, { shine: true });
+  walkWithBox(ctx, game.level.looks.player, t, e, 350, LIFT.x + LIFT.w / 2); // the walk of shame, to the open doors
   // the boss, rooted to the spot, pointing the way out
   const b = person(t);
   b.dir = 0.08;
@@ -512,45 +315,6 @@ function tableauCaught(ctx, game, t, e) {
   bubble(ctx, game.world?.cardBack ? ['😠', '🪪'] : B_ANGRY, 276, 206, e, 'alert');
 }
 
-// Elevator set into the back wall, doors open, cab lit, the down arrow glowing.
-function drawLift(ctx, t) {
-  const { x, y, w, h } = LIFT;
-  ctx.fillStyle = C.steelDark;
-  ctx.fillRect(x - 6, y + 14, w + 12, h - 14);
-  ctx.fillStyle = '#f2d9a2'; // lit cab
-  ctx.fillRect(x, y + 20, w, h - 20);
-  ctx.fillStyle = '#d9bc84';
-  ctx.fillRect(x, y + h - 22, w, 22); // cab floor
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.fillRect(x + 8, y + 24, w - 16, 3); // ceiling light
-  ctx.fillStyle = C.steel; // doors, slid into the frame
-  ctx.fillRect(x, y + 20, 12, h - 20);
-  ctx.fillRect(x + w - 12, y + 20, 12, h - 20);
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.fillRect(x + 3, y + 22, 1.5, h - 24);
-  ctx.fillRect(x + w - 9, y + 22, 1.5, h - 24);
-  // light spilling onto the carpet
-  ctx.fillStyle = 'rgba(255,236,190,0.22)';
-  ctx.beginPath();
-  ctx.moveTo(x, y + h);
-  ctx.lineTo(x + w, y + h);
-  ctx.lineTo(x + w + 26, y + h + 44);
-  ctx.lineTo(x - 26, y + h + 44);
-  ctx.closePath();
-  ctx.fill();
-  // floor indicator: a blinking down arrow
-  ctx.fillStyle = '#1f1814';
-  rrect(ctx, x + w / 2 - 12, y + 2, 24, 12, 3);
-  ctx.fill();
-  ctx.fillStyle = Math.sin(t * 5) > -0.3 ? '#f0b24a' : '#7a5a2a';
-  ctx.beginPath();
-  ctx.moveTo(x + w / 2 - 5, y + 5);
-  ctx.lineTo(x + w / 2 + 5, y + 5);
-  ctx.lineTo(x + w / 2, y + 11);
-  ctx.closePath();
-  ctx.fill();
-}
-
 // Blamed: the meeting fell apart, but you weren't there. Everyone glares at your empty tomato chair.
 // routes add their scars: 'projector' leaves it smoking on the table; 'keycard' leaves the boss's place empty
 // (he is locked out on the smokers' balcony).
@@ -558,40 +322,14 @@ function tableauBlamed(ctx, game, t, e, o) {
   const routes = Array.isArray(o.routes) ? o.routes : [];
   const smoke = routes.includes('projector');
   const lockedOut = routes.includes('keycard');
-  const kev = !game.world || !game.world.kevGone;
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.meetingRug, '#397369');
-  meetingScreen(ctx, t, smoke, 0);
-  // the boss behind the table, fists on it
-  if (!lockedOut) {
-    const b = person(t);
-    b.dir = Math.PI / 2;
-    b.head = Math.PI / 2;
-    b.arms = 'bang';
-    b.angry = true;
-    b.jacket = bossJacket(game);
-    b.scale = 2.5;
-    drawPerson(ctx, game.level.looks.boss, b, 476, 222);
-  }
-  meetingTable(ctx); // a slide printout at each place but yours
-  if (smoke) smokingProjector(ctx, t, 420);
-  // Lin and Kev at the table ends, turned to the chair
-  const l = person(t);
-  l.dir = 0.42;
-  l.head = 0.42;
-  l.arms = 'point';
-  l.angry = true;
-  l.scale = 2.4;
-  drawPerson(ctx, game.level.looks.lin, l, 272, 262);
-  if (kev) {
-    const k = person(t);
-    k.dir = Math.PI - 0.42;
-    k.head = Math.PI - 0.3 + Math.sin(t * 1.7) * 0.2;
-    k.glance = 1;
-    k.scale = 2.4;
-    drawPerson(ctx, game.level.looks.kev, k, 680, 262);
-  }
-  poolOfLight(ctx, 476, 316); // your chair: empty, in a pool of light
-  chair(ctx, 476, 302, TOMATO, 2.6, -Math.PI / 2); // yours (decor.js)
+  const kev = kevHere(game);
+  atTheTable(ctx, game, t, e, {
+    screen: smoke ? 'dead' : 'blank',
+    boss: lockedOut ? null : { arms: 'bang', angry: true }, // behind the table, fists on it
+    smoke: smoke ? 420 : null,
+    lin: { dir: 0.42, head: 0.42, arms: 'point', angry: true }, // Lin and Kev at the table ends, turned to the chair
+    kev: { head: Math.PI - 0.3 + Math.sin(t * 1.7) * 0.2, glance: 1 },
+  });
   // what they're saying
   bubble(ctx, lockedOut && !kev ? B_BLAME_YOU : B_POINT_YOU, 272, 206, e, 'speech', 1.4);
   if (!lockedOut) bubble(ctx, B_ANGRY, 476, 168, e, 'alert');
@@ -618,152 +356,50 @@ function tableauRestroom(ctx, game, t, e, o) {
   if (!walking) bubble(ctx, B_LOO, 740, 222, e - 2, 'speech', 1.2);
 }
 
-// The meeting table (the blamed scene's): shadow, walnut top, a slide printout at each end place.
-export function meetingTable(ctx) {
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  rrect(ctx, 302, 236, 350, 54, 24);
-  ctx.fill();
-  ctx.fillStyle = C.walnutEdge;
-  rrect(ctx, 296, 228, 350, 56, 24);
-  ctx.fill();
-  ctx.fillStyle = C.walnutTop;
-  rrect(ctx, 296, 228, 350, 47, 24);
-  ctx.fill();
-  for (const x of [336, 606]) {
-    ctx.fillStyle = C.white;
-    ctx.fillRect(x - 12, 240, 24, 17);
-    ctx.fillStyle = 'rgba(0,0,0,0.18)';
-    ctx.fillRect(x - 8, 245, 16, 1.4);
-    ctx.fillRect(x - 8, 249, 11, 1.4);
-  }
-}
-
-export function smokingProjector(ctx, t, x) {
-  ctx.save();
-  ctx.translate(x, 254);
-  ctx.scale(2.4, 2.4);
-  drawProjector(ctx, 0, 0, 'broken', 0, t);
-  ctx.restore();
-}
-
-export function poolOfLight(ctx, x, y) {
-  for (let i = 3; i >= 1; i--) fillEllipse(ctx, x, y, 26 + i * 14, 7 + i * 4, `rgba(255,240,200,${(0.08 * (4 - i)).toFixed(3)})`);
-}
-
 // Blamed by the mug (verdict.js why 'mug'/'desk'): the projector smokes on the table, and the empty mug is in your
 // hand (or, found on your desk, back on the table in front of you). The boss pounds the table; the room points.
 function tableauMug(ctx, game, t, e, o) {
   const inHand = o.why !== 'desk';
-  const kev = !game.world || !game.world.kevGone;
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.meetingRug, '#397369');
-  meetingScreen(ctx, t, true, 0);
-  const b = person(t);
-  b.dir = Math.PI / 2;
-  b.head = Math.PI / 2;
-  b.arms = 'bang';
-  b.angry = true;
-  b.jacket = bossJacket(game);
-  b.scale = 2.5;
-  drawPerson(ctx, game.level.looks.boss, b, 476, 222);
-  meetingTable(ctx);
-  smokingProjector(ctx, t, 380);
-  if (!inHand) {
-    poolOfLight(ctx, 560, 252);
-    drawThing(ctx, game, 'mug', 560, 248, 26);
-  }
-  const l = person(t);
-  l.dir = 0.42;
-  l.head = 0.42;
-  l.arms = 'point';
-  l.angry = true;
-  l.scale = 2.4;
-  drawPerson(ctx, game.level.looks.lin, l, 272, 262);
-  if (kev) {
-    const k = person(t);
-    k.dir = Math.PI - 0.42;
-    k.head = Math.PI - 0.42;
-    k.arms = 'point';
-    k.scale = 2.4;
-    drawPerson(ctx, game.level.looks.kev, k, 680, 262);
-  }
-  // you, in front of the table, caught with it: eyes darting, the empty mug in your hands
-  poolOfLight(ctx, 476, 324);
-  const p = person(t);
-  p.dir = Math.PI / 2;
-  p.head = Math.PI / 2 + Math.sin(t * 3.1) * 0.5;
-  p.sweat = true;
-  p.scale = 2.4;
-  if (inHand) {
-    p.arms = 'mug';
-    p.item = '#mug';
-  }
-  drawPerson(ctx, game.level.looks.player, p, 476, 312);
-  bubble(ctx, B_MUG, 476, 150, e, 'alert');
+  atTheTable(ctx, game, t, e, {
+    boss: { arms: 'bang', angry: true },
+    smoke: 380,
+    spot: inHand ? null : { light: [560, 252], mug: [560, 248] },
+    lin: { dir: 0.42, head: 0.42, arms: 'point', angry: true },
+    kev: { arms: 'point' },
+    // you, in front of the table, caught with it: eyes darting, the empty mug in your hands
+    you: { dir: Math.PI / 2, head: Math.PI / 2 + Math.sin(t * 3.1) * 0.5, sweat: true, ...(inHand ? { arms: 'mug', item: '#mug' } : {}) },
+    youLit: true,
+  });
+  bubble(ctx, WHYS[o.why].stare.say, 476, 150, e, 'alert');
   bubble(ctx, B_POINT_YOU, 272, 206, e, 'speech', 1.4);
 }
 
 // The win the mug buys (verdict.js why 'kev'): the boss found it on Kev's desk. Kev went home at 3:00, so the whole
-// table turns on his empty chair, the empty mug in front of it. You sit among them, nodding along.
+// table turns on his empty chair, the empty mug in front of it. You stand among them, nodding along.
 function tableauKev(ctx, game, t, e) {
-  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h, C.meetingRug, '#397369');
-  meetingScreen(ctx, t, true, 0);
-  const b = person(t);
-  b.dir = 0.35;
-  b.head = 0.35;
-  b.arms = 'point';
-  b.angry = true;
-  b.jacket = bossJacket(game);
-  b.scale = 2.5;
-  drawPerson(ctx, game.level.looks.boss, b, 476, 222);
-  meetingTable(ctx);
-  smokingProjector(ctx, t, 400);
-  // Kev's place: the empty chair in a pool of light, the evidence in front of it
-  poolOfLight(ctx, 682, 290);
-  chair(ctx, 682, 276, OLIVE, 2.6, Math.PI); // Kev's (decor.js)
-  const pe = clamp((e - 0.4) / 0.3, 0, 1);
-  if (pe > 0) {
-    ctx.save();
-    ctx.translate(620, 246);
-    ctx.scale(easeOutBack(pe), easeOutBack(pe));
-    drawThing(ctx, game, 'mug', 0, 0, 26);
-    ctx.restore();
-  }
-  const l = person(t);
-  l.dir = 0;
-  l.head = 0;
-  l.arms = 'point';
-  l.angry = true;
-  l.scale = 2.4;
-  drawPerson(ctx, game.level.looks.lin, l, 272, 262);
-  // you, in front of the table, turned to the chair with everyone else; now and then a glance at us
-  const p = person(t);
-  p.dir = -0.3;
-  p.head = Math.sin(t * 0.9) > 0.85 ? Math.PI / 2 : -0.3;
-  p.smug = true;
-  p.scale = 2.4;
-  drawPerson(ctx, game.level.looks.player, p, 476, 312);
-  bubble(ctx, B_BLAME_KEV, 476, 150, e, 'alert');
-  bubble(ctx, B_KEV, 272, 206, e, 'thought', 1.4);
-}
-
-// The meeting-room screen: a blank glowing slide (nobody presented), or dead if the projector went.
-export function meetingScreen(ctx, t, dead, dx) {
-  const x = 392 + dx;
-  const bar = [6, 6, 6];
-  if (dead) drawScreen(ctx, x, 104, 176, 62, { bar, face: '#9d9a92', scan: ['rgba(0,0,0,0.1)', 4, 10, t] });
-  else drawScreen(ctx, x, 104, 176, 62, { bar, glow: ['rgba(255,255,235,0.3)', 6, 0, 6], glowOverBar: true, face: '#ffffff' });
+  const { think, say } = WHYS.kev.stare;
+  atTheTable(ctx, game, t, e, {
+    boss: { dir: 0.35, head: 0.35, arms: WHYS.kev.boss, angry: true },
+    smoke: 400,
+    spot: { light: [682, 290], mug: [620, 246], pop: true }, // Kev's place: his chair, the evidence in front of it
+    kevAway: true,
+    lin: { dir: 0, head: 0, arms: 'point', angry: true },
+    you: youNodding(t, -0.3), // turned to the chair with everyone else
+  });
+  bubble(ctx, say, 476, 150, e, 'alert');
+  bubble(ctx, think, 272, 206, e, 'thought', 1.4);
 }
 
 export const END_SCENES = {
-  kindOf: endKindFull,
+  kindOf: endKind, // endings.js: which scene each outcome gets
   scenes: {
     bib: { win: false, icons: ['🥪', '🟡', '⌨️'], draw: tableauBib }, // Lin saw the mustard: you type in a bib (end-scenes-combo.js)
     campfire: { win: true, icons: ['📽️', '🔥', '🔒'], draw: tableauCampfire }, // both routes: marshmallows at the projector
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🚫'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
-    ...FAIL_SCENES, // the plain fails with a cause: sip, call, puppets (end-scenes-fails.js)
-    caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator
+    ...FAIL_SCENES, // the plain fails with a cause, and "where were you?" (end-scenes-fails.js)
+    caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the lift
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
     restroom: { win: false, icons: ['🪑', '🚽', '🙂'], draw: tableauRestroom }, // blamed, and in walks you, hands wet
     mug: { win: false, icons: ['☕', '👉', '😠'], draw: tableauMug }, // the empty mug was yours: in your hand, on your desk
@@ -772,10 +408,8 @@ export const END_SCENES = {
     samaritanCaught: { win: false, icons: ['🤗', '🪪', '🔒'], draw: tableauSamaritanCaught }, // let him in, holding his card
     home: { win: false, icons: ['🚌', '📱', '😠'], draw: tableauHome }, // you just went home; the boss is calling
     homeKev: { win: false, icons: ['👋', '🚌', '📱'], draw: tableauHome }, // you went home with Kev at 3:00
-    // ---- More scenes (end-scenes-more.js)
-    computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer }, // the coffee went into a computer, anyone's
-    // end-scenes-desks.js: the empty mug on Lin's desk (she takes the fall; ate her lunch too: tears), on the boss's
-    // own
+    computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer }, // the coffee went into a computer (end-scenes-more.js)
+    // end-scenes-desks.js: the empty mug on Lin's desk (she takes the fall; ate her lunch too: tears), on the boss's own
     lin: { win: true, icons: ['☕', '👉', '😨'], draw: tableauLin },
     linHungry: { win: true, icons: ['☕', '😭', '🥪'], draw: tableauLin },
     bossMug: { win: true, icons: ['☕', '🤨', '😳'], draw: tableauBossMug },

@@ -1107,7 +1107,7 @@ function drawNpc(ctx, game, n, t) {
   s.moving = !!n.moving;
   s.phase = t * 10 + (n.id ? n.id.length * 1.3 : 0);
   s.seed = n.id ? hash(n.id.length, n.id.charCodeAt(0), n.id.charCodeAt(n.id.length - 1)) : 0;
-  // The level's poses (level.poses, e.g. src/levels/office/looks.js): the first arms rule that holds, else
+  // The level's poses (level.poses, e.g. src/levels/meeting/poses.js): the first arms rule that holds, else
   // sitting at a desk (typing, atWork) or walking; then every marks rule that holds.
   const poses = game.level.poses || NO_POSES;
   let rule = null;
