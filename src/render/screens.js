@@ -8,7 +8,7 @@ import {
 } from './util.js';
 import { C } from './palette.js';
 import { lookFor, drawPerson } from './characters.js';
-import { drawRouteSlots, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
+import { drawRouteSlots, shownRoutes, clockDigits, drawLegendRow, LEGEND_PLAY } from './hud.js';
 import { sparkle } from './world.js';
 import { TAB, person, bubble, floorCarpet, confetti, backWall } from './tableau.js';
 import { clockFace } from './things.js';
@@ -149,7 +149,7 @@ export function drawTitle(ctx, game, t, mem) {
   // Routes found so far + loop count
   const found = game.persist ? game.persist.routesFound : [];
   const routes = game.level.routes;
-  const span = rowSpan(routes.length, 42, 4);
+  const span = rowSpan(shownRoutes(routes, found).length, 42, 4);
   const rx = VIEW_W / 2 - span / 2;
   drawRouteSlots(ctx, routes, found, rx, 424, 42, 4);
   const loops = (game.persist && game.persist.loop) | 0;
@@ -343,16 +343,17 @@ export function drawEnd(ctx, game, t, mem) {
     ctx.restore();
   }
 
-  // route slots, new ones stamp in
+  // route slots (found ones only), new ones stamp in
   const size = 50;
   const gap = 10;
-  const sx = VIEW_W / 2 - rowSpan(slots.length, size, gap) / 2;
-  const sy = 404;
   const found = (game.persist && game.persist.routesFound) || [];
+  const shown = shownRoutes(slots, found);
+  const sx = VIEW_W / 2 - rowSpan(shown.length, size, gap) / 2;
+  const sy = 404;
   drawRouteSlots(ctx, slots, found, sx, sy, size, gap, { hide: newRoutes });
   j = 0;
-  for (let i = 0; i < slots.length; i++) {
-    const { id, icon } = slots[i];
+  for (let i = 0; i < shown.length; i++) {
+    const { id, icon } = shown[i];
     if (!newRoutes.includes(id)) continue;
     const se = e - stampAt(j++);
     if (se < 0) continue;

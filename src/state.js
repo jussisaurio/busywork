@@ -4,6 +4,7 @@ import { createEvents } from './core/events.js';
 import { createFx } from './core/fx.js';
 import { defaultLevel } from './levels/index.js';
 import { spotPos } from './game/perception.js';
+import { createToys } from './sim/mechanics/toy.js';
 
 export function createGame({ events, input, level = defaultLevel } = {}) {
   const game = {
@@ -55,6 +56,7 @@ export function resetLoop(game) {
   game.world = game.level.initialWorld();
   const authority = game.level.roles?.authority;
   game.suspicion = authority ? { [authority.id]: 0 } : {}; // the authority's ❓ meter (play/rules.js), keyed by his id
+  game.toys = createToys(game.level); // level.toys: cosmetic only (sim/mechanics/toy.js)
   game.watch = {}; // npc id -> the offence he has in sight; play/rules.js publishes it every step, render reads it
   game.caught = null;
   game.outcome = null;

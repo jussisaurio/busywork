@@ -40,7 +40,9 @@
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
 //   voices   how the cast talks, by cast `voice` name (voices.js; audio/babble.js)
+//   toys     props that answer back and decide nothing: the fire door's bar (toys.js; src/sim/mechanics/toy.js)
 import { at } from '../../config.js';
+import { TOYS } from './toys.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
@@ -85,6 +87,7 @@ export default {
   hunts: HUNTS,
   doors: DOORS,
   behaviours: BEHAVIOURS,
+  toys: TOYS,
   clockFor,
   meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)

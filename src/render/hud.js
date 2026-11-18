@@ -36,10 +36,12 @@ export function drawHud(ctx, game, t, mem) {
   drawGoal(ctx, game.level.title?.badge ?? NO_BADGE);
   drawHeld(ctx, game.level.items, game.player && game.player.held);
   // loop counter + found routes
-  panel(ctx, 342, 6, 160, 44);
+  const found = game.persist ? game.persist.routesFound : [];
+  const nFound = shownRoutes(game.level.routes, found).length; // the panel grows with each route found
+  panel(ctx, 342, 6, nFound ? 84 + nFound * 40 - 4 - 8 : 66, 44);
   loopIcon(ctx, 362, 28, 8.5, C.hudText, 3);
   text(ctx, String(Math.max(0, (game.persist && game.persist.loop) | 0)), 377, 29, font(22, MONO_FAMILY, 'bold'), C.hudText, 'left');
-  drawRouteSlots(ctx, game.level.routes, game.persist ? game.persist.routesFound : [], 418, 10, 36, 4);
+  drawRouteSlots(ctx, game.level.routes, found, 418, 10, 36, 4);
   drawStatus(ctx, game, clock, t);
   if (game.phase === 'day') {
     drawPauseButton(ctx, !!game.paused);
@@ -212,34 +214,29 @@ function drawHeld(ctx, items, held) {
   }
 }
 
-// Route slots, one per route (the level's routes, in order). A found route shows its icon; an unfound
-// one is a blank slot (never a greyed-out icon: that would reveal the solution). opts.hide lists found
-// routes to draw blank anyway (the end screen stamps them in). Shared with the title and end screens.
+// The routes found so far, in the level's order: the only ones the HUD, the title and the end card show.
+export const shownRoutes = (routes, found) => routes.filter((r) => Array.isArray(found) && found.includes(r.id));
+
+// Route slots: one per found route, packed from x in the level's order, each showing its icon. An unfound route
+// shows nothing at all (no blank slot, no count: how many ways out there are is for the player to find).
+// opts.hide lists found routes to leave out for now, their place kept (the end screen stamps them in). Shared
+// with the title and end screens. Returns how many slots it laid out.
 export function drawRouteSlots(ctx, routes, found, x, y, size, gap, opts) {
-  const list = Array.isArray(found) ? found : [];
-  for (let i = 0; i < routes.length; i++) {
-    const { id, icon } = routes[i];
+  const shown = shownRoutes(routes, found);
+  for (let i = 0; i < shown.length; i++) {
+    const { id, icon } = shown[i];
+    if (opts && opts.hide && opts.hide.includes(id)) continue;
     const sx = x + i * (size + gap);
-    const hidden = opts && opts.hide && opts.hide.includes(id);
-    const on = list.includes(id) && !hidden;
-    ctx.fillStyle = on ? '#3d3027' : '#231b16';
+    ctx.fillStyle = '#3d3027';
     rrect(ctx, sx, y, size, size, 7);
     ctx.fill();
-    if (on) {
-      ctx.strokeStyle = C.ochre;
-      ctx.lineWidth = 2;
-      rrect(ctx, sx + 1, y + 1, size - 2, size - 2, 6);
-      ctx.stroke();
-      emoji(ctx, icon, sx + size / 2, y + size / 2 + 1, size * 0.58);
-    } else {
-      ctx.strokeStyle = 'rgba(243,230,200,0.2)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 3]);
-      rrect(ctx, sx + 3, y + 3, size - 6, size - 6, 5);
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
+    ctx.strokeStyle = C.ochre;
+    ctx.lineWidth = 2;
+    rrect(ctx, sx + 1, y + 1, size - 2, size - 2, 6);
+    ctx.stroke();
+    emoji(ctx, icon, sx + size / 2, y + size / 2 + 1, size * 0.58);
   }
+  return shown.length;
 }
 
 function drawStatus(ctx, game, clock, t) {
