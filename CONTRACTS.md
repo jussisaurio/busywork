@@ -213,7 +213,13 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 - `meeting`: `{ override, room, chair, presenter? }`. `override` is the NPCs' override name at the meeting;
   `room` the zone you must be in at `meetingAt`; `chair` the spot the room stares at when you are blamed;
   `presenter` the spot a failed meeting puts you at (none: the fail plays where you stand). The event `meeting:gather` and the cancel reason `'meeting'`
-  are engine words, the same in every level.
+  are engine words, the same in every level. `where?`: names, in order, of zones or of places you go inside
+  (`player.inside`, `play/player.js goInside`); the first one you are in at `meetingAt` is `outcome.where` and the
+  verdict's `where`, for an end scene that depends on where you were (meeting: the restroom). Inside, you come out.
+- Leaving the day (`play/scenario.js leaveDay(game, why, path)`): a level's way out, at any time. You walk `path`,
+  you are gone (`player.hidden`), and after a beat the day ends: `fail`, `outcome.why = why`. Events `player:leave`,
+  `player:gone`. Going inside (`goInside(game, name, at)`, `comeOut(game)`): hidden, not moving, the rules see
+  nothing; pretending still fast-forwards. Events `player:in`, `player:out`.
 - `failSign`: `{ spot, offset: [dx, dy] }`, where a failed meeting's 🦗 sign appears (offset in tiles from the
   spot's corner). Absent: no sign.
 - `routes`: `[{ id, icon, achieved(world) }]` in route-slot order (HUD, title, end card). `achieved` is checked at
@@ -370,6 +376,21 @@ stop sound), active and not gone, faces it for 1.5 s; a second noise retargets h
 The authority hears nothing in his `deafIn` zone. With no override he turns his body and waits; in any
 override only his head turns and his plan goes on. Glances due meanwhile still draw from the rng. Events
 `noise {x, y, radius}`, then `npc:heard {id}` per listener in cast order. Example: fixture-attention (the printer).
+
+**Toy** (`level.toys`, `toy.js`): a prop with a cosmetic reaction, for a laugh that changes nothing. `{ id, at,
+on, npcs?, radius?, sees?, when?, every?, state?, text?, line?, react, try }`. `at`: a spot or a tile `{x, y}`.
+`on`: `'press'` (E next to it; it takes E focus only when no route target or held item has it), `'pass'` (an NPC
+in `npcs` walks within `radius`, default 2) or `'near'` (an NPC in `npcs` within `radius` of you, `sees` to need
+sight). `when(world, state, game, npc)` reads only. `every`: seconds between firings per person (default 1 for
+press, 3 otherwise). `react: { say, sfx, pose: { arms, angry, face, for }, set, burst }`: a bubble (`say: [icons]`
+or `{ icons, kind, ttl, who: 'by' | 'prop' | id }`), an `SFX` sound at the prop, a pose for `for` s (default 1.5),
+`set` merged into the toy's own state, a burst at the prop. Toy state lives in `game.toys`, never in `world`;
+painters read `toyState(game, id)` (`{ ...state, n, by, since }`, `since` null until it fires). Event
+`toy:<id> {id, by, x, y}`. `text`/`line`: the harness's focus text and event line (`<by>` = who). `try`: harness
+commands after which it has fired. The behaviour golden skips toy events and toy bubbles, so adding a toy moves
+no behaviour golden; the gate's `toys` check plays `try` and needs the firing frame to draw differently, and
+`toy-neutral` replays every winning golden plan with every toy fired over and over and needs the same trace.
+Example: meeting `toys.js` (the fire door's bar).
 
 ### Behaviours (hooks) and the sim API
 `behaviours`: `{ [name]: { spot?, pending?(npc), arrive(game, npc, sim, extra?) } }`, small level-only scripts

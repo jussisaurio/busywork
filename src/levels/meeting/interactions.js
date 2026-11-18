@@ -17,6 +17,15 @@
 //   done(game, a)    the result, applied right after 'action:done'
 // For one target the first possible row wins.
 import { say, burst, shake } from '../../core/fx.js';
+import { findNpc } from '../../game/perception.js';
+import { setOverride } from '../../sim/override.js';
+import { leaving } from '../../sim/npcs.js';
+import { leaveDay } from '../../play/scenario.js';
+import { RESTROOM_ROWS } from './restroom.js';
+
+// Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
+const HOME_PATH = [{ x: 4.5, y: 12.5 }, { x: 4.5, y: 14.5 }, { x: 2.5, y: 15.5 }];
+const WITH_KEV = 6; // tiles: Kev on his way out (3:00) this close, and you leave together
 
 export const INTERACTIONS = {
   brew_coffee: {
@@ -52,6 +61,39 @@ export const INTERACTIONS = {
       game.events.emit('keycard:taken', {});
     },
   },
+  // The Good Samaritan: he's been pounding on the fire door, so you push the bar and let him in. It undoes the
+  // lock-out (no keycard win today), and he is so glad he hugs you (clocks.js bossLetIn), and sees what's in your hand.
+  let_boss_in: {
+    on: 'fire_door', text: 'let the boss in', duration: 0.6, sneaky: false,
+    can: (p, w) => w.bossLockedOut,
+    done(game) {
+      const w = game.world;
+      const boss = findNpc(game, 'boss');
+      w.bossLockedOut = false;
+      w.letIn = game.loopTime;
+      if (boss) {
+        boss._bangLine = null;
+        setOverride(boss, 'grateful'); // off duty (roles.js); no mechanic owns it, so he walks his day: in through the door
+      }
+      game.events.emit('boss:letIn', {});
+    },
+  },
+  // Just go home. Any time: you walk out to the elevator, and you lose (scenario.js leaveDay; outcome.why 'home', the
+  // bus with your phone buzzing, end-scenes.js). With Kev on his way out at 3:00 you ride down together, both waving
+  // 👋 (why 'homeKev').
+  go_home: {
+    on: 'exit', text: 'go home', duration: 0.5, sneaky: false,
+    can: () => true,
+    done(game) {
+      const p = game.player;
+      const kev = findNpc(game, 'kev');
+      const withKev = !!kev && leaving(kev) && Math.hypot(kev.x - p.x, kev.y - p.y) <= WITH_KEV;
+      if (!leaveDay(game, withKev ? 'homeKev' : 'home', HOME_PATH)) return;
+      say(game, 'player', withKev ? ['👋'] : ['😌'], { kind: withKev ? 'speech' : 'thought', ttl: 1.8 });
+      if (withKev) say(game, 'kev', ['👋', '😄'], { kind: 'speech', ttl: 1.8 });
+    },
+  },
+  ...RESTROOM_ROWS, // the cubicle: go in, wash off the mustard, come out (restroom.js)
   take_sandwich: {
     on: 'fridge', text: 'take the sandwich', duration: 0.8, sneaky: true, owner: 'lin', saw: '🥪',
     can: (p, w) => !p.held && w.sandwich === 'fridge',

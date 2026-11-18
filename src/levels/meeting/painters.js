@@ -10,6 +10,7 @@
 // Each is a things.js painter (ctx, x, y, size, t): centred on (x, y), about `size` px tall, in the 16 px box.
 import { box } from '../../render/things.js';
 import { fillEllipse, fillCircle, rrect, fin, T } from '../../render/util.js';
+import { C } from '../../render/palette.js';
 
 // A sandwich from the side: two slices of bread, ham, a frill of lettuce and a smear of mustard.
 export function sandwich(ctx, x, y, size) {
@@ -182,6 +183,8 @@ export function emptyBag(ctx, info, at) {
 //   locked  the boss is out there without his card: the reader blinks red
 //   beep    seconds since his card opened it (green for a moment), or null
 //   hit     seconds since his last go at it, or null: the door shudders and dust puffs off it
+//   denied  seconds since you pushed the bar from inside (toys.js), or null: the bar gives a little and the reader
+//           blinks red three times
 export function fireDoor(ctx, info, at, state, t) {
   const px = at.x * T;
   const py = at.y * T;
@@ -189,8 +192,26 @@ export function fireDoor(ctx, info, at, state, t) {
   const dx = hit === null ? 0 : Math.sin(hit * 70) * 2.2 * (1 - hit / 0.45);
   ctx.fillStyle = '#4a4f55'; // steel frame
   ctx.fillRect(px + 2, py, T - 4, T - 1);
+  // Ajar: your push opens it a crack, then it swings shut (state.denied); letting him in, it opens wide (state.open).
+  // The daylight off the balcony shows in the gap on the handle side; the door swings on its hinge, left.
+  const den = Number.isFinite(state.denied) && state.denied >= 0 ? state.denied : null;
+  const crack = den === null ? 0 : den < 0.2 ? den / 0.2 : den < 0.9 ? 1 : Math.max(0, 1 - (den - 0.9) / 0.3);
+  const op = Number.isFinite(state.open) && state.open >= 0 ? state.open : null;
+  const wide = op === null ? 0 : op < 0.4 ? op / 0.4 : op < 2.4 ? 1 : Math.max(0, 1 - (op - 2.4) / 0.5);
+  const gap = Math.max(crack * 5, wide * (T - 8) * 0.75);
+  if (gap > 0) {
+    ctx.fillStyle = '#d6e8f0';
+    ctx.fillRect(px + T - 4 - gap, py + 2, gap, T - 4);
+    ctx.fillStyle = 'rgba(163,168,171,0.9)'; // the balcony's concrete at the bottom of the gap
+    ctx.fillRect(px + T - 4 - gap, py + T - 8, gap, 6);
+  }
   ctx.save();
   ctx.translate(dx, 0);
+  if (gap > 0) { // the door, foreshortened as it swings
+    ctx.translate(px + 4, 0);
+    ctx.scale((T - 8 - gap) / (T - 8), 1);
+    ctx.translate(-(px + 4), 0);
+  }
   ctx.fillStyle = '#b8402f'; // the door, fire red
   ctx.fillRect(px + 4, py + 2, T - 8, T - 4);
   ctx.fillStyle = 'rgba(255,255,255,0.14)';
@@ -205,10 +226,12 @@ export function fireDoor(ctx, info, at, state, t) {
   for (let k = 0; k <= 12; k += 4) { ctx.moveTo(px + 10 + k, py + 5); ctx.lineTo(px + 10 + k, py + 13); }
   for (let k = 0; k <= 8; k += 4) { ctx.moveTo(px + 10, py + 5 + k); ctx.lineTo(px + 22, py + 5 + k); }
   ctx.stroke();
+  const denied = den !== null && den < 1.2 ? den : null;
+  const push = denied !== null && denied < 0.3 ? 1.5 : 0; // the bar, pushed in
   ctx.fillStyle = '#b9bfc3'; // push bar
-  ctx.fillRect(px + 6, py + 18, T - 12, 3);
+  ctx.fillRect(px + 6, py + 18 + push, T - 12, 3);
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(px + 6, py + 21, T - 12, 1);
+  ctx.fillRect(px + 6, py + 21 + push, T - 12, 1);
   ctx.restore();
   ctx.fillStyle = '#1f7a3e'; // EXIT sign over the door, green
   rrect(ctx, px + 9, py - 6, 14, 6, 1);
@@ -221,8 +244,10 @@ export function fireDoor(ctx, info, at, state, t) {
   rrect(ctx, px + T - 4, py + 12, 4, 8, 1);
   ctx.fill();
   const green = Number.isFinite(state.beep) && state.beep >= 0 && state.beep < 1.2;
-  const red = state.locked && Math.floor(t * 2.5) % 2 === 0;
-  if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
+  const no = denied !== null && Math.floor(denied * 6) % 2 === 0; // your push: red blinks while it's held open
+  const red = (state.locked && Math.floor(t * 2.5) % 2 === 0) || no;
+  if (no) fillCircle(ctx, px + T - 2, py + 14.5, 5, 'rgba(255,59,48,0.35)');
+  else if (red) fillCircle(ctx, px + T - 2, py + 14.5, 3.2, 'rgba(255,59,48,0.3)');
   fillCircle(ctx, px + T - 2, py + 14.5, 1.3, green ? '#5dff8a' : red ? '#ff3b30' : '#5a2a28');
   if (hit !== null) { // dust off the door, and thud lines in the air
     const k = hit / 0.45;
@@ -292,4 +317,30 @@ export function balcony(ctx, info, at, state) {
     ctx.fillRect(0.6, -0.5, 1.2, 1);
     ctx.restore();
   }
+}
+
+// The hallway picture by the kitchen door (toys.js picture_*), on its nail on the wall's front face: state
+// { x, y, tilt (-1, 0, 1), since (seconds since someone last touched it, or null) }. It swings a little and settles.
+const PIC_FRONT = 14; // render/world.js FRONT: the visible wall face
+export function hallPicture(ctx, info, at, state) {
+  const w = 2 * T - 20;
+  const nx = state.x * T + 10 + w / 2;
+  const ny = state.y * T + T - PIC_FRONT + 1;
+  const s = Number.isFinite(state.since) && state.since >= 0 && state.since < 0.8 ? state.since : null;
+  const a = (state.tilt || 0) * 0.16 + (s === null ? 0 : Math.sin(s * 28) * 0.1 * (1 - s / 0.8));
+  ctx.save();
+  ctx.translate(nx, ny);
+  ctx.rotate(a);
+  ctx.fillStyle = '#1f1814';
+  ctx.fillRect(-w / 2 - 1, 0, w + 2, PIC_FRONT - 4);
+  ctx.fillStyle = C.cream;
+  ctx.fillRect(-w / 2, 1, w, PIC_FRONT - 6);
+  const px = -w / 2;
+  ctx.fillStyle = C.olive;
+  ctx.fillRect(px + 4, 2, 14, 5);
+  fillCircle(ctx, px + 26, 5, 3, C.teal);
+  ctx.fillStyle = C.ochre;
+  ctx.fillRect(px + 32, 2, 4, 5);
+  ctx.restore();
+  fillCircle(ctx, nx, ny - 0.5, 1.1, '#2a2a2a'); // the nail
 }

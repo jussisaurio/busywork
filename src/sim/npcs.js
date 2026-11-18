@@ -117,6 +117,8 @@ export function createNpc(game, def, now = 0) {
     _fetchPath: undefined, // ...whether he can walk to where it lies: { tile, ok }
     _fetchAt: undefined, // ...the tile he is heading for: { x, y }
     _fetchMissed: null, // ...the item type gone before he got there: he stands and looks round
+    _claim: null, // on his way to take his thing back off you (mechanics/claim.js)...
+    _claimAt: null, // ...and the tile he is heading for
     pocketing: null, // render: { type, at: loopTime } while he holds a reclaimed item up before pocketing it (fetch.js)
   };
   // The fields the level's hooks keep (a behaviour's `state`). Every field an NPC will ever get is on it from the

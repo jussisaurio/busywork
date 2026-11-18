@@ -7,7 +7,7 @@
 //     draw(ctx, game, t, e, outcome) -> paints the picture inside TAB (screen space, already clipped);
 //                       e = seconds since the card came up. Objects in it are drawn (drawThing, painters.js), never
 //                       emoji; only bubbles speak emoji (DESIGN.md "Visual language" rule 5)
-import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, drawScreen } from '../../render/util.js';
+import { clamp, easeOutBack, easeOutCubic, rrect, fillEllipse, drawScreen, hash } from '../../render/util.js';
 import { drawThing } from '../../render/things.js';
 import { C, TOMATO, OLIVE } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
@@ -31,9 +31,16 @@ const B_KEV = ['☕', '@kev'];
 function endKind(o) {
   if (!o) return 'fail';
   const routes = Array.isArray(o.routes) ? o.routes : [];
-  if (o.result === 'caught') return 'caught';
+  // why 'samaritan': you let the boss in off the balcony (clocks.js bossLetIn). Holding his card: caught, and locked
+  // out yourself. Without it: no route, and his arm round you at the blank screen.
+  if (o.result === 'caught') return o.why === 'samaritan' ? 'samaritanCaught' : 'caught';
+  if (o.result === 'fail' && o.why === 'samaritan') return 'samaritan';
+  // why 'home' / 'homeKev': you just went home (interactions.js go_home); with Kev, if he was on his way out too.
+  if (o.result === 'fail' && (o.why === 'home' || o.why === 'homeKev')) return o.why;
   // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
-  if (o.result === 'blamed') return o.why === 'mug' || o.why === 'desk' ? 'mug' : 'blamed';
+  if (o.result === 'blamed' && (o.why === 'mug' || o.why === 'desk')) return 'mug';
+  // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
+  if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
 }
@@ -239,6 +246,207 @@ function tableauFail(ctx, game, t, e) {
   cricket(ctx, 480 + Math.sin(e * 0.9) * 80, 322 - hop * 14, 22);
 }
 
+// The Good Samaritan, caught: you let him in, he hugged you, and over your shoulder saw his card in your hand. The
+// keycard win the other way round: you on the balcony, fists on the fire door; he, inside, dangles his card at you.
+const B_LET_ME_IN = [['🙏', '🚪'], ['👊', '👊', '🚪']];
+function tableauSamaritanCaught(ctx, game, t, e) {
+  floorCarpet(ctx, TAB.x, TAB.y, 286, TAB.h);
+  balconySlab(ctx, 484, TAB.y, 286, TAB.h);
+  const b = person(t);
+  b.dir = 0; // facing the door, and you behind it
+  b.head = Math.sin(t * 1.6) * 0.12;
+  b.arms = 'holdout';
+  b.item = '#keycard';
+  b.smug = true;
+  b.jacket = bossJacket(game);
+  b.scale = 2.3;
+  drawPerson(ctx, game.level.looks.boss, b, 380, 276);
+  bubble(ctx, e < 2.4 ? ['🪪', '😏'] : ['👋'], 380, 186, e < 2.4 ? e : e - 2.4);
+  const beat = (t * 2.2) % 1;
+  const hit = beat < 0.18;
+  fireDoorSide(ctx, 470, t, hit ? Math.sin(beat * 90) * 2 : 0);
+  const p = person(t);
+  p.dir = Math.PI;
+  p.head = Math.PI + Math.sin(t * 2) * 0.1;
+  p.arms = 'bang';
+  p.sweat = true;
+  p.scale = 2.2;
+  drawPerson(ctx, game.level.looks.player, p, 548, 272);
+  bubble(ctx, B_LET_ME_IN[Math.floor(e / 1.6) % 2], 560, 196, e % 1.6, 'alert');
+}
+
+// The Good Samaritan, not caught: you let him in and he's so grateful he presents with you, his arm round your
+// shoulder, beaming at the room, in front of the blank screen. The cricket hops.
+function tableauSamaritan(ctx, game, t, e) {
+  floorCarpet(ctx, TAB.x, TAB.y, TAB.w, TAB.h);
+  drawScreen(ctx, 382, 104, 196, 84, {
+    glow: ['rgba(255,255,235,0.35)', 10, 6, 6], bar: [6, 6, 6], face: '#ffffff', edge: 'rgba(0,0,0,0.12)',
+  });
+  const p = person(t);
+  p.dir = Math.PI / 2;
+  p.head = p.dir + Math.sin(t * 2.6) * 0.5;
+  p.sweat = true;
+  p.scale = 2.3;
+  drawPerson(ctx, game.level.looks.player, p, 456, 266);
+  const b = person(t);
+  b.dir = Math.PI / 2;
+  b.head = Math.PI / 2 - 0.5 + Math.sin(t * 1.2) * 0.15; // beaming at you, then the room
+  b.smug = true;
+  b.jacket = bossJacket(game);
+  b.scale = 2.3;
+  const squeeze = Math.max(0, Math.sin(t * 3)) * 2;
+  drawPerson(ctx, game.level.looks.boss, b, 516 - squeeze, 262);
+  // his arm, round your shoulder: a sleeve from his shoulder across your back to a hand on your far shoulder
+  const sleeve = bossJacket(game) ? game.level.looks.boss.body : game.level.looks.boss.shirt;
+  ctx.strokeStyle = sleeve;
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(502 - squeeze, 257);
+  ctx.quadraticCurveTo(474, 246, 444 + squeeze, 256);
+  ctx.stroke();
+  fillEllipse(ctx, 442 + squeeze, 257, 5.5, 5, game.level.looks.boss.skin);
+  const k = person(t);
+  k.dir = 0.25;
+  k.head = 0.05;
+  k.pose = 'sit';
+  k.arms = 'desk';
+  k.glance = 1;
+  k.scale = 2;
+  if (!game.world || !game.world.kevGone) drawPerson(ctx, game.level.looks.kev, k, 262, 206);
+  const l = person(t);
+  l.dir = -0.15;
+  l.head = -0.25;
+  l.pose = 'sit';
+  l.arms = 'desk';
+  l.glance = 1;
+  l.scale = 2;
+  drawPerson(ctx, game.level.looks.lin, l, 300, 300);
+  bubble(ctx, e < 2.6 ? ['🤗'] : ['👏', '@player'], 530, 180, e < 2.6 ? e : e - 2.6);
+  const hop = Math.abs(Math.sin(e * 5));
+  cricket(ctx, 600 + Math.sin(e * 0.9) * 60, 322 - hop * 14, 22);
+}
+
+// You went home. On the bus, by the window, the town sliding past; the phone in your lap buzzes, and buzzes, the boss's
+// face on its screen. With Kev (you left together at 3:00) he sits beside you, untroubled.
+const BUS_SEATS = [300, 410, 520, 630];
+const BUS_BLUE = ['#3f6d9e', '#2b4e74'];
+function tableauHome(ctx, game, t, e, o) {
+  const withKev = o?.why === 'homeKev';
+  busInside(ctx, t);
+  for (const x of BUS_SEATS) chair(ctx, x, 268, BUS_BLUE, 2.6, Math.PI / 2);
+  const buzz = e > 1.2 && (e % 1.4) < 0.7; // the phone buzzes in bursts, from a beat after the card comes up
+  // Kev beside you (he left at 3:00 as always; today you went with him), smug, eyes out of the window
+  if (withKev) {
+    const k = person(t);
+    k.pose = 'sit';
+    k.arms = 'desk';
+    k.smug = true;
+    k.head = Math.PI / 2 - 0.5 + Math.sin(t * 0.7) * 0.15;
+    k.scale = 2.3;
+    drawPerson(ctx, game.level.looks.kev, k, BUS_SEATS[2], 252);
+  }
+  // you, eyes down on the phone; the guilt shows once it buzzes
+  const p = person(t);
+  p.pose = 'sit';
+  p.arms = 'desk';
+  p.head = Math.PI / 2 + (buzz ? Math.sin(t * 9) * 0.2 : 0);
+  p.sweat = buzz;
+  p.scale = 2.3;
+  drawPerson(ctx, game.level.looks.player, p, BUS_SEATS[1], 252);
+  phoneWithBoss(ctx, game, t, BUS_SEATS[1] + 2, 286, buzz);
+  bubble(ctx, e < 1.2 ? ['😌'] : ['😬'], BUS_SEATS[1], 178, e < 1.2 ? e : e - 1.2, 'thought', 1.2);
+  if (withKev) bubble(ctx, ['😌'], BUS_SEATS[2], 178, e, 'thought', 1.2);
+}
+
+// The inside of a city bus: a panelled side under a band of windows, the town scrolling past, a yellow grab rail,
+// and a ribbed grey floor.
+const TOWN = ['#c98a6a', '#9fb2a0', '#d8c69a', '#a89cb8'];
+function busInside(ctx, t) {
+  ctx.fillStyle = '#596067';
+  ctx.fillRect(TAB.x, TAB.y, TAB.w, TAB.h); // floor
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  for (let y = TAB.y + 130; y < TAB.y + TAB.h; y += 9) ctx.fillRect(TAB.x, y, TAB.w, 3);
+  ctx.fillStyle = '#d5dbdf'; // the side panel
+  ctx.fillRect(TAB.x, TAB.y, TAB.w, 124);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillRect(TAB.x, TAB.y + 124, TAB.w, 6);
+  const top = TAB.y + 10;
+  const h = 78;
+  const scroll = (t * 70) % 1840;
+  for (const [x, w] of [[TAB.x + 16, 170], [TAB.x + 204, 170], [TAB.x + 392, 172]]) {
+    ctx.save();
+    ctx.beginPath();
+    rrect(ctx, x, top, w, h, 8);
+    ctx.clip();
+    ctx.fillStyle = '#bfe0ee';
+    ctx.fillRect(x, top, w, h);
+    // the town going by: houses, and a lamp post now and then
+    for (let i = 0; i < 40; i++) {
+      let bx = TAB.x + i * 46 - scroll;
+      if (bx < TAB.x - 60) bx += 1840;
+      if (bx + 50 < x || bx > x + w) continue;
+      const bh = 26 + hash(i, 7) * 40;
+      ctx.fillStyle = TOWN[i % 4];
+      ctx.fillRect(bx, top + h - bh, 42, bh);
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      for (let wy = top + h - bh + 6; wy < top + h - 8; wy += 12) {
+        ctx.fillRect(bx + 8, wy, 8, 6);
+        ctx.fillRect(bx + 26, wy, 8, 6);
+      }
+      if (i % 3 === 0) {
+        ctx.fillStyle = '#3e4448';
+        ctx.fillRect(bx + 44, top + 10, 3, h);
+        ctx.fillRect(bx + 36, top + 10, 14, 3);
+      }
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.22)'; // glare
+    ctx.fillRect(x, top + 6, w, 6);
+    ctx.restore();
+    ctx.strokeStyle = '#3c4247';
+    ctx.lineWidth = 5;
+    rrect(ctx, x, top, w, h, 8);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#e8b830'; // the grab rail along the side
+  ctx.fillRect(TAB.x, TAB.y + 104, TAB.w, 5);
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillRect(TAB.x, TAB.y + 104, TAB.w, 1.5);
+}
+
+// Your phone, in your lap: the boss's face on the screen, and when it buzzes it shivers, with buzz marks either side.
+function phoneWithBoss(ctx, game, t, x, y, buzz) {
+  const jx = buzz ? Math.sin(t * 70) * 1.6 : 0;
+  ctx.save();
+  ctx.translate(x + jx, y);
+  ctx.fillStyle = '#22262a';
+  rrect(ctx, -13, -20, 26, 40, 5);
+  ctx.fill();
+  ctx.fillStyle = buzz ? '#f2f7fb' : '#c9d6df';
+  rrect(ctx, -10, -16, 20, 30, 3);
+  ctx.fill();
+  ctx.beginPath();
+  rrect(ctx, -10, -16, 20, 30, 3);
+  ctx.clip();
+  const b = person(t);
+  b.angry = true;
+  b.jacket = bossJacket(game);
+  b.scale = 1.1;
+  drawPerson(ctx, game.level.looks.boss, b, 0, 4);
+  ctx.restore();
+  if (!buzz) return;
+  ctx.strokeStyle = 'rgba(40,40,40,0.75)';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  for (const side of [-1, 1]) {
+    for (const r of [19, 25]) {
+      ctx.beginPath();
+      ctx.arc(x, y, r, side < 0 ? Math.PI - 0.5 : -0.5, side < 0 ? Math.PI + 0.5 : 0.5);
+      ctx.stroke();
+    }
+  }
+}
+
 // Fired: you shuffle off to the elevator with your desk in a box; the boss points the way.
 const LIFT = { x: 612, y: TAB.y, w: 104, h: 104 };
 
@@ -359,6 +567,26 @@ function tableauBlamed(ctx, game, t, e, o) {
   bubble(ctx, lockedOut && !kev ? B_BLAME_YOU : B_POINT_YOU, 272, 206, e, 'speech', 1.4);
   if (!lockedOut) bubble(ctx, B_ANGRY, 476, 168, e, 'alert');
   if (kev) bubble(ctx, B_WHAT, 680, 206, e, 'thought', 1.4);
+}
+
+// Blamed, from the restroom (o.where): the same table staring at your empty chair, and then, after the flush, you
+// walk in from the right, wiping your wet hands on your trousers. Everyone turns.
+const B_LOO = ['🚽', '🙂'];
+function tableauRestroom(ctx, game, t, e, o) {
+  tableauBlamed(ctx, game, t, e, o);
+  const k = clamp((e - 0.9) / 1.1, 0, 1);
+  if (k <= 0) return;
+  const p = person(t);
+  const walking = k < 1;
+  p.dir = Math.PI;
+  p.head = Math.PI;
+  p.pose = walking ? 'walk' : 'stand';
+  p.moving = walking;
+  p.phase = t * 7;
+  p.arms = walking ? 'walk' : 'pat';
+  p.scale = 2.4;
+  drawPerson(ctx, game.level.looks.player, p, 800 - easeOutCubic(k) * 60, 282);
+  if (!walking) bubble(ctx, B_LOO, 740, 222, e - 2, 'speech', 1.2);
 }
 
 // The meeting table (the blamed scene's): shadow, walnut top, a slide printout at each end place.
@@ -505,7 +733,12 @@ export const END_SCENES = {
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
+    restroom: { win: false, icons: ['🪑', '🚽', '🙂'], draw: tableauRestroom }, // blamed, and in walks you, hands wet
     mug: { win: false, icons: ['☕', '👉', '😠'], draw: tableauMug }, // the empty mug was yours: in your hand, on your desk
     kev: { win: true, icons: ['☕', '👉', '🪑'], draw: tableauKev }, // the empty mug was on Kev's desk; Kev went home
+    samaritan: { win: false, icons: ['🚪', '🤗', '🦗'], draw: tableauSamaritan }, // let him in: grateful, and no slides
+    samaritanCaught: { win: false, icons: ['🤗', '🪪', '🔒'], draw: tableauSamaritanCaught }, // let him in, holding his card
+    home: { win: false, icons: ['🚌', '📱', '😠'], draw: tableauHome }, // you just went home; the boss is calling
+    homeKev: { win: false, icons: ['👋', '🚌', '📱'], draw: tableauHome }, // you went home with Kev at 3:00
   },
 };

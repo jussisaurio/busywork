@@ -58,6 +58,14 @@ export function updatePlayer(game, dt) {
     return;
   }
 
+  // Inside somewhere (goInside: a level's cubicle): out of sight, going nowhere. Pretending still fast-forwards.
+  if (p.inside) {
+    const wait = input.isDown('busy') && !p.action;
+    setBusy(game, wait, 'phone');
+    game.clock.ff = wait;
+    return;
+  }
+
   const ax = input.axis();
   const wantsMove = ax.x !== 0 || ax.y !== 0;
   // A bulky thing in your arms (level.items[type].bulky: a big pink box) leaves no hand for a folder or a phone:
@@ -107,6 +115,32 @@ export function sitAtDesk(game) {
     p.seated = true;
     game.events.emit('player:sit', {});
   }
+}
+
+// Into a place the map doesn't show (a level's: meeting's restroom). You stand at `at` ({ x, y } tile units), hidden
+// (not drawn, the rules see nothing: rules.js), and you don't move until comeOut. player.inside = name: the
+// deadline reads it (scenario.js: outcome.where).
+export function goInside(game, name, at) {
+  const p = game.player;
+  standUp(game);
+  setBusy(game, false, null);
+  if (at) {
+    p.x = at.x;
+    p.y = at.y;
+  }
+  p.moving = false;
+  p.inside = name;
+  p.hidden = true;
+  game.events.emit('player:in', { inside: name });
+}
+
+export function comeOut(game) {
+  const p = game.player;
+  if (!p.inside) return;
+  const was = p.inside;
+  p.inside = null;
+  p.hidden = false;
+  game.events.emit('player:out', { inside: was });
 }
 
 export function standUp(game) {

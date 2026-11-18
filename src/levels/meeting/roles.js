@@ -8,7 +8,8 @@ export const ROLES = {
   //   deafIn    the zone where he can't hear a witness shout (the lobby and the balcony, outside)
   //   tattle    what he does on a tattle he hears: 'caught'. Told you took his keycard (or wrecked the projector),
   //             he takes the card back and you're done (clocks.js listen), not sent to type for twenty minutes.
-  authority: { id: 'boss', offDuty: ['lockedOut', 'meeting'], helpless: ['lockedOut'], deafIn: 'outside', tattle: 'caught' },
+  // grateful: let back in through the fire door, he hugs you (clocks.js) and has eyes for nothing else.
+  authority: { id: 'boss', offDuty: ['lockedOut', 'meeting', 'grateful'], helpless: ['lockedOut', 'grateful'], deafIn: 'outside', tattle: 'caught' },
   // A mark on the player (a player field) that lasts the loop and that pretending doesn't hide. The witness `by`
   // reads it as guilt while in override `while` (Lin hunting her sandwich sees the mustard); telling on you sets
   // world[knows] (her hunt is over).

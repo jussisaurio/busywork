@@ -15,6 +15,8 @@
 //   put         seconds: putting it down on a spot is a sneaky timed action, not an instant one (putdown.js)
 //   keep        it leaves your hand only by a put: no drop, and assigned work sends you to your desk holding it
 //   bulky       no pretending while you hold it (no hand free for a phone or a folder)
+//   walk        whoever takes it back (its owner on sight, its confiscator on a catch) walks over and takes it at
+//               arm's length, instead of out of your hand from across the room (sim/mechanics/claim.js)
 import { sandwich } from './painters.js';
 
 export const ITEMS = {
@@ -23,7 +25,7 @@ export const ITEMS = {
   // to your ear like a phone, steam and all: Kev squints at it (☕❓) and decides you're on a call (📱🤷). Set down
   // where he finds it unattended (the machine, his own desk), he takes it as free.
   coffee: { icon: '☕', draw: 'cup', keep: true }, // full and steaming
-  keycard: { icon: '🪪', draw: 'card', place: 'keycard', contraband: 'boss' }, // an ID card on a lanyard
+  keycard: { icon: '🪪', draw: 'card', place: 'keycard', contraband: 'boss', walk: true }, // an ID card on a lanyard; caught with it, the boss walks over for it (clocks.js)
   // The cup, empty, once its coffee is all over the projector (interactions.js spill_coffee). It's evidence: you
   // can't just let it fall (keep), and setting it down anywhere is a furtive 0.8 s (put). Once the boss has seen
   // the projector (behaviours.js peek) the cup in your hand is all the proof he needs: he catches you with it.
@@ -41,13 +43,15 @@ export const ITEMS = {
     draw: sandwich,
     place: 'sandwich',
     edible: { leaves: 'splat' }, // the mustard down your front: Lin's evidence (roles.js)
+    walk: true, // Lin walks over to take it back (no snatching it from her desk, through glass)
     // Only Lin knows it's hers: to anyone else, taking or eating it is just lunch.
     owner: {
       id: 'lin',
       says: [{ say: ['😠', '🥪'] }],
       // Before lunch she puts it back in the fridge; mid-hunt she has found it, and that's the end of the hunt.
       reclaim(game, npc) {
-        game.world.sandwich = npc.override === 'hunting' ? 'lin' : 'fridge';
+        const hunting = npc.override === 'hunting' || npc._claim?.was === 'hunting'; // she walked over from her hunt
+        game.world.sandwich = hunting ? 'lin' : 'fridge';
         game.events.emit('sandwich:returned', {});
       },
     },

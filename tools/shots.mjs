@@ -94,6 +94,8 @@ export const BEAT_AT = 0.8;
 // How long `beat: <s>` runs on, in real seconds, for a beat to come up after the commands stopped ('pretend until
 // 5:00' can stop a frame before the deadline's outcome).
 export const BEAT_WAIT = 2;
+// How far into the beat that is up: a catch's, walking out of the day (scenario.js leaveDay), or the deadline's.
+const age0 = (g) => (g.caught ? g.caught.t : g.scenario.leave && !g.outcome ? g.scenario.leave.t : g.scenario.beatT);
 
 // Draws one shot of `level` (a level object). Returns { png: Buffer, phase, outcome, beat ('caught', 'outcome' or
 // false), beatT (seconds into the beat drawn, or null), clock, at }: clock is the
@@ -118,21 +120,21 @@ export function renderShot(level, shot, lib = loadCanvas(), harness = {}, ending
     }
     let beat = false;
     if (shot.beat !== undefined && shot.beat !== false) {
-      const inBeat = () => g.phase === 'day' && !!(g.caught || g.outcome);
-      const age = () => (g.caught ? g.caught.t : g.scenario.beatT);
+      const inBeat = () => g.phase === 'day' && !!(g.caught || g.outcome || g.scenario.leave); // leave: walking out (scenario.js leaveDay)
+      const age = () => age0(g);
       const want = shot.beat === true ? null : shot.beat;
       if (want !== null) for (let i = 0; i < Math.round(BEAT_WAIT * 60) && g.phase === 'day' && !inBeat(); i++) h.frame();
       if (!inBeat()) {
         throw new Error(`shot '${shot.name}': beat: ${shot.beat}, but its commands do not stop in a beat (${g.phase === 'end' ? 'the day is already over: a command that starts in a beat runs it out, so stop before it and give beat the seconds' : `nobody caught you, and the deadline has not come${want !== null ? ` within ${BEAT_WAIT} s` : ''}`})`);
       }
-      beat = g.caught ? 'caught' : 'outcome';
+      beat = g.caught ? 'caught' : g.scenario.leave && !g.outcome ? 'leave' : 'outcome';
       const until = want ?? (beat === 'caught' ? BEAT_AT : 0);
       for (let i = 0; i < 6000 && inBeat() && age() < until - 1e-9; i++) h.frame();
       if (!inBeat()) throw new Error(`shot '${shot.name}': beat: ${shot.beat} is past the end of the ${beat === 'caught' ? 'caught beat (CAUGHT_DELAY, 1.6 s)' : "deadline's beat (about 2 s)"}`);
     }
-    const beatT = beat ? (g.caught ? g.caught.t : g.scenario.beatT) : null;
+    const beatT = beat ? age0(g) : null;
     const clock = g.clock.minute; // the drawn moment's (an end card has no clock: then the moment the commands ended on)
-    if (!beat && (g.phase === 'end' || g.outcome || g.caught)) playToEndCard(h, r, `shot '${shot.name}'`);
+    if (!beat && (g.phase === 'end' || g.outcome || g.caught || g.scenario.leave)) playToEndCard(h, r, `shot '${shot.name}'`);
     view.draw(() => r.render(g));
     return { png: canvas.toBuffer('image/png'), phase: g.phase, outcome: g.outcome ?? null, beat, beatT, clock, at: formatClock(clock, level.day.start) };
   });
@@ -153,7 +155,8 @@ export async function renderShots(id, { lib = loadCanvas(), shots, same = false 
 // end the day (the picture is the end card, not the moment the clock gives), ', the caught beat' or ', 0.8 s into the
 // deadline's beat' for a beat.
 export const shotWhen = (s) => `landed ${s.at}${s.phase === 'end' ? ', then the end card'
-  : s.beat === 'outcome' ? `, ${(s.beatT ?? 0).toFixed(1)} s into the deadline's beat` : s.beat ? ', the caught beat' : ''}`;
+  : s.beat === 'outcome' ? `, ${(s.beatT ?? 0).toFixed(1)} s into the deadline's beat`
+  : s.beat === 'leave' ? `, ${(s.beatT ?? 0).toFixed(1)} s into walking out` : s.beat ? ', the caught beat' : ''}`;
 
 // The shots that render pixel-identical to an earlier one: [[earlier, later]]. Same pixels, same PNG bytes (the
 // encoder is deterministic), so the bytes are compared.

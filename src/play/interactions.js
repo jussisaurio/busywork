@@ -18,6 +18,7 @@ import { say, burst } from '../core/fx.js';
 import { inputOf, playerLocked, setBusy, sitAtDesk } from './player.js';
 import { actionNoise } from '../sim/mechanics/attention.js';
 import { PUT_ROW, putFocus } from '../sim/mechanics/putdown.js';
+import { toyFocus, pressToy } from '../sim/mechanics/toy.js';
 
 const ITEM_RADIUS = 1.0; // pick-up reach for floor items
 
@@ -161,6 +162,7 @@ export function updateInteractions(game, dt) {
     if (p.action) cancelAction(game, game.caught ? 'caught' : 'locked');
     p.focus = null;
     p.hold = null;
+    if (game.toys) game.toys.focus = null;
     return;
   }
 
@@ -173,11 +175,18 @@ export function updateInteractions(game, dt) {
       p.action.t += dt;
       if (p.action.t >= p.action.duration) completeAction(game);
     }
+    if (game.toys) game.toys.focus = null;
     if (p.action) return; // focus stays frozen on the action's target
   }
 
   p.focus = findFocus(game);
   const f = p.focus;
+  // A toy (level.toys) only when E has nothing else to do: it never takes a press a route would have used.
+  if (game.toys) game.toys.focus = f || p.hold ? null : toyFocus(game);
+  if (game.toys?.focus && input.pressed('interact')) {
+    pressToy(game, game.toys.focus);
+    return;
+  }
   if (p.hold) {
     // E is down on a target with two verbs: let go for the tap's, keep holding (standing still) for the other.
     input.pressed('interact');

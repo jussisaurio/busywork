@@ -64,11 +64,12 @@ run, not read off this table.
 - **Authority:** the boss. Off duty at the `meeting` and while locked out (`lockedOut`: helpless, deaf on the balcony).
 - **Tattling:** Lin or Kev catching you at something sneaky shout ❗👉. The boss on the floor hears it, and a heard
   tattle is a catch (`roles.js` `tattle: 'caught'`). While he is away, they wait and tell him when he is back (👉🪪).
-  Caught over the keycard (holding it, or with your hand on it at the jacket), he takes it back (`world.cardBack`,
-  `keycard:takenBack`); the caught end card shows it on his pocket (😠🪪).
+  Caught over the keycard (holding it, or with your hand on it at the jacket), he walks over and takes it back (`world.cardBack`,
+  `keycard:takenBack`; the caught beat waits up to 8 s for him); the caught end card shows it on his pocket (😠🪪).
 - **Owners.** Only Lin knows the sandwich is hers: taking or eating it is sneaky only to her. To Kev and the boss it
-  is just lunch (but eating where the boss sees you fills his ❓). She takes it back on sight (😠🥪): to the fridge,
-  or, if she is hunting, that ends her hunt. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
+  is just lunch (but eating where the boss sees you fills his ❓). She sees it and comes for it (😠🥪): she walks over and
+  takes it at arm's length (items.js `walk`, the engine's claim.js), to the fridge, or, if she is hunting, that ends her hunt.
+  Eat it or put it out of her sight before she gets there and she gives up. Kev wants the coffee only after he finds the pot empty (☕❓😩, the coffee
   bag beside the machine is empty). From then on (`clocks.js`): the cup in your hand is yours, and he asks for it
   (☕🥺❓, at most every 20 real seconds, within 4 tiles); set down on the machine or on his desk it looks free, and he
   takes it (🤤☕ … 😌, `coffee:kevTook`); on your desk it is yours and he leaves it alone. Before that, a colleague
@@ -148,6 +149,34 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   green), through. No card: override `lockedOut`, `world.bossLockedOut = true`, `boss:lockedOut` (a rattle), and the
   escalation lines every ~2.5 s with their events (`boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`,
   `boss:fume`), bang sounds and screen shakes, until the day ends. Only you are near enough to hear.
+- **The Good Samaritan** (`interactions.js` `let_boss_in`, `clocks.js` `bossLetIn`). Any other time, pushing the fire
+  door's bar is a toy: it opens a crack, the held-door alarm buzzes, the reader blinks red, it swings shut. While he is
+  locked out, the same push lets him in: `world.bossLockedOut = false` (the keycard route is gone), `boss:letIn`, the
+  door stands open, override `grateful` (off duty, `roles.js`). He comes through and hugs you (`boss:hug`: 🤗, 🙏😊,
+  arms round you). Holding his card when he lets go: 🪪❗👉, caught, `outcome.why = 'samaritan'` (end card: you locked
+  out on the balcony, he dangles the card inside: 🤗🪪🔒). Not holding it: `world.samaritan`, and at 4:00 a fail with
+  `why: 'samaritan'` (end card: his arm round your shoulder at the blank screen: 🚪🤗🦗). The joke: the one kind
+  thing you do all day is the thing that sinks you.
+- **Just go home** (`interactions.js` `go_home` on the entrance L, interactable `exit`; engine `scenario.js`
+  `leaveDay`). Any time, E at the entrance: you walk out through the lobby to the elevator, you are gone
+  (`player.hidden`; the rules see nothing), and after a beat the day ends: a fail with `why: 'home'` (end card: on
+  the bus, relieved 😌, then the phone in your lap buzzes with the boss's face on it 😬: 🚌📱😠). With Kev on his way
+  out (3:00, within 6 tiles) you both wave 👋, `why: 'homeKev'`, and he sits beside you on the bus. The joke: the
+  most obvious way out of the meeting works perfectly, and follows you home.
+- **The restroom** (`restroom.js`, door R, interactable `restroom`; engine `player.js` `goInside`/`comeOut`,
+  meeting `where`). Taken (the boss 3:18–3:22, Lin 3:35–3:37): E knocks (`toys.js` `knock_*`), and they answer
+  through the door, cross (🚽😠 / 🚽😤 with their face). Free, hands empty: E goes in; you are hidden (the rules see
+  nothing) and pretending still runs the clock. Inside with mustard down you, E washes it off (🧼😌, the tap);
+  else E comes out (the flush). Kev, near you while you are smeared, points at his chest and the restroom
+  (`mustard`, 👕🟡👉🚽). Inside at 4:00: `outcome.where === 'restroom'`; blamed, the end card is the empty-chair
+  table and then you walk in from the right, wiping your hands on your trousers (🪑🚽🙂). The jokes: the boss's
+  voice through a toilet door; Kev's helpful mime; and the one place nobody can see you is the one place you can't
+  claim you were working.
+- **The picture war** (`toys.js` `picture`, `picture_kev`, `picture_lin`; painter `painters.js` `hallPicture`, a
+  decor prop now, not a static painting; it moved one tile west, to tiles 24-25 by the kitchen door). E tilts it.
+  Kev, on his coffee run (2:38), reaches up and tilts it the other way (😒); Lin, on her way to the fridge (3:02),
+  straightens it (😤). The frame creaks on its nail each time. Its tilt is whoever touched it last. Toys cannot
+  stop an NPC, so they reach up in passing. The joke: three people fight a silent war over one nail.
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.

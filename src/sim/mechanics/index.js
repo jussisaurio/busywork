@@ -1,5 +1,6 @@
 // The level's NPC mechanics, in check order: level.lures, then level.hunts, then level.doors, then the spots a
-// cast member owns (putdown.js), then level.inspections, then level.fetches, each in level order.
+// cast member owns (putdown.js), then level.inspections, then level.fetches, each in level order, then the claims
+// (claim.js: one per item with `walk`, started by the office rules or a level's catch).
 // A mechanic kind (lure.js, hunt.js, door.js, putdown.js, inspection.js, fetch.js) exports, each optional except owns/key/build:
 //   entries(level)            its data list, if not level[field]
 //   owns(data, npc)           npc.override is this mechanic's (for this NPC)
@@ -20,8 +21,9 @@ import * as door from './door.js';
 import * as putdown from './putdown.js';
 import * as inspection from './inspection.js';
 import * as fetch from './fetch.js';
+import * as claim from './claim.js';
 
-const KINDS = [['lures', lure], ['hunts', hunt], ['doors', door], ['spots', putdown], ['inspections', inspection], ['fetches', fetch]];
+const KINDS = [['lures', lure], ['hunts', hunt], ['doors', door], ['spots', putdown], ['inspections', inspection], ['fetches', fetch], ['claims', claim]];
 const cache = new WeakMap();
 
 export function mechanics(level) {

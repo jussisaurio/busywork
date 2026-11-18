@@ -10,6 +10,8 @@ const HIDE = ['goto my_desk_spot busy', 'put my_desk']; // the cup on your own d
 const SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:06', 'goto my_desk_spot busy', 'interact', 'goto projector busy',
   'interact']; // after Kev has gone home (3:05)
 const KEYCARD = ['busy until 3:11', 'busy 1.35s', 'goto boss_office_door busy', 'goto coat_rack busy']; // the boss is out
+const LET_IN = [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'goto fire_door busy',
+  'interact']; // the keycard taken, the boss locked out, and you push the door open for him
 
 export default [
   {
@@ -157,6 +159,94 @@ export default [
     name: 'end-fail',
     cmds: ['busy until 4:00'],
     intent: 'End card, a loss: the meeting happened, and you stood in front of a blank screen with no slides (📊❌🦗).',
+  },
+  {
+    name: 'fire-door-push',
+    cmds: ['goto fire_door', 'interact', 'wait 0.3s'],
+    intent: 'You stand at the fire door in the lobby corner, arms out, pushing its bar. It opens a crack (daylight in ' +
+      'the gap) and the card reader by the handle blinks red: the held-door alarm, with a buzz you cannot see. You ' +
+      'let it swing shut. The balcony is outside, behind it.',
+  },
+  {
+    name: 'boss-let-in',
+    cmds: [...LET_IN, 'busy until 4:00', 'busy 0.2s'],
+    intent: 'The boss was locked out on the balcony. You pushed the fire door open for him (it stands open, daylight ' +
+      'in the doorway), and he has come through and thrown his arms round you, overjoyed (🤗). The keycard in your ' +
+      'hand is his.',
+  },
+  {
+    name: 'end-samaritan-caught',
+    cmds: [...LET_IN, 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: you let him in, he hugged you and saw his keycard in your hand. Now it is the other way ' +
+      'round: you are locked out on the balcony pounding the fire door, and inside the boss dangles his card at you, ' +
+      'smug, then waves bye.',
+  },
+  {
+    name: 'end-samaritan',
+    cmds: [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'interact', 'goto fire_door busy',
+      'interact', 'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a loss: you let the locked-out boss in without his card on you. He is so grateful he stands at ' +
+      'the blank screen with his arm round your shoulder, beaming (🤗, then 👏 at you). No slides; the cricket hops.',
+  },
+  {
+    name: 'go-home',
+    cmds: ['goto exit pretend', 'pretend until 3:03', 'interact'],
+    beat: 0.9, // walking out
+    intent: 'You give up and go home: through the glass entrance into the lobby, towards the elevator. Kev, who leaves ' +
+      'at 3:00 every day, is right behind you: you both wave (👋, 👋😄).',
+  },
+  {
+    name: 'end-home',
+    cmds: ['goto exit', 'interact', 'wait 8s'],
+    intent: 'End card, a loss: you just went home. You sit on the bus by the window, the town sliding past, relieved ' +
+      '(😌); then the phone in your lap buzzes and buzzes, the boss\'s angry face on its screen (😬).',
+  },
+  {
+    name: 'end-home-kev',
+    cmds: ['goto exit pretend', 'pretend until 3:03', 'interact', 'wait 8s'],
+    intent: 'End card, a loss: you went home with Kev at 3:00. You sit side by side on the bus; Kev is untroubled (😌), ' +
+      'while the phone in your lap buzzes with the boss\'s angry face on it (😬).',
+  },
+  {
+    name: 'knock-boss',
+    cmds: ['goto restroom_door', 'pretend until 3:19', 'interact', 'wait 0.6s'],
+    intent: 'The restroom is taken (the boss, 3:18): you knock on its door, and he answers through it, cross (🚽😠 and ' +
+      'his face).',
+  },
+  {
+    name: 'kev-mustard',
+    cmds: ['goto fridge pretend', 'interact', 'eat', 'goto kev_desk', 'wait 0.8s'],
+    intent: 'You ate Lin\'s sandwich and the mustard is down your front. Kev, near you, points at his own chest and at ' +
+      'the restroom (👕🟡👉🚽).',
+  },
+  {
+    name: 'restroom-wash',
+    cmds: ['goto fridge', 'interact', 'eat', 'goto restroom_door', 'interact', 'interact', 'wait 0.5s'],
+    intent: 'You went into the restroom (you vanish: nobody can see you in there) and washed the mustard off at the ' +
+      'sink (🧼😌 over the door).',
+  },
+  {
+    name: 'picture-tilt',
+    cmds: ['goto picture', 'interact', 'wait 1s'],
+    intent: 'The picture war, 1: you knock the hallway picture by the kitchen door crooked; it hangs askew on its nail.',
+  },
+  {
+    name: 'picture-kev',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 2:38.5'],
+    intent: 'The picture war, 2: Kev, on his coffee run, reaches up to the crooked picture (😒) and tilts it the ' +
+      'other way.',
+  },
+  {
+    name: 'picture-lin',
+    cmds: ['goto picture', 'interact', 'goto my_desk_spot', 'pretend until 3:02.3'],
+    intent: 'The picture war, 3: Lin, on her way to the fridge, reaches up to it, cross (😤), and straightens it.',
+  },
+  {
+    name: 'end-restroom',
+    cmds: ['goto coffee_machine busy', 'interact', 'sit busy', 'busy until 3:10', 'goto projector busy', 'interact',
+      'put coffee busy', 'goto restroom_door busy', 'busy until 3:40', 'interact', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, blamed: the projector died, but at 4:00 you were in the restroom. The table stares at your ' +
+      'empty chair in its pool of light; then you walk in from the right, wiping your wet hands on your trousers (🚽🙂).',
   },
   {
     name: 'end-caught',

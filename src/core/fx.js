@@ -13,7 +13,7 @@ export function createFx() {
 // icons: array of emoji strings, read left to right.
 // opts.kind: 'speech' (babble audio) | 'thought' (silent, cloud style) | 'alert' (spiky star: someone has spotted YOU) |
 //   'realize' (round, pale blue, rays: "oh!", a belief changes, a trick works; never alarm) | 'sign'
-// opts.ttl: seconds. opts.voice: babble voice id (defaults to owner id).
+// opts.ttl: seconds. opts.voice: babble voice id (defaults to owner id). opts.toy: the toy id that said it (toy.js).
 export function say(game, owner, icons, opts = {}) {
   const kind = opts.kind ?? 'speech';
   const ownerKey = typeof owner === 'string' ? owner : `${owner.x},${owner.y}`;
@@ -29,7 +29,12 @@ export function say(game, owner, icons, opts = {}) {
     voice: opts.voice ?? null, // who speaks from a point (a phone, a voice offstage); the harness names it
   };
   game.fx.bubbles.push(bubble);
-  game.events.emit('say', { owner, icons, kind, voice: opts.voice ?? ownerKey });
+  const payload = { owner, icons, kind, voice: opts.voice ?? ownerKey };
+  if (opts.toy) { // a toy's (sim/mechanics/toy.js): cosmetic, and the behaviour goldens skip it
+    payload.toy = opts.toy;
+    bubble.toy = opts.toy;
+  }
+  game.events.emit('say', payload);
   return bubble;
 }
 

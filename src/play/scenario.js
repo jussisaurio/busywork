@@ -7,15 +7,39 @@ import { CAUGHT_DELAY, PLAYER_SPEED } from '../config.js';
 import { say, burst } from '../core/fx.js';
 import { spotPos, inZone } from '../game/perception.js';
 import { stareAt } from '../sim/npcs.js';
+import { claimPending } from '../sim/mechanics/claim.js';
 import { cancelAction } from './interactions.js';
-import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength } from './player.js';
+import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength, comeOut } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
 const CRICKETS_AT = 0.9; // fail beat: the 🦗 sign appears at this point (where: level.failSign; none if absent)
 // A fail sends you to the front (meeting.presenter, if any): you hurry there, at least this fast, and in at most WALK_MAX s.
 const HURRY = PLAYER_SPEED * 1.5;
 const WALK_MAX = 2.5;
+const CLAIM_WAIT = 8; // s at most that a catch's beat waits for a claim (he walks over to take his thing)
 const SIT_BEAT = 0.6; // s after you reach your desk (sent there just before the deadline) before the card
+const LEAVE_BEAT = 1.6; // s after you are gone (leaveDay) before the card
+
+// A level's way out of the day (meeting: home by the elevator). You walk `path` (straight legs, tile centres in tile
+// units: through a door that is solid to you is fine), you are gone (player.hidden: not drawn, nobody sees you) and,
+// after a beat, the day ends: 'fail', outcome.why = why. Nothing catches you on the way: you have already lost.
+// Returns false when the day is already decided.
+export function leaveDay(game, why, path = []) {
+  const s = game.scenario;
+  if (game.phase !== 'day' || game.caught || game.outcome || s.leave) return false;
+  const p = game.player;
+  cancelAction(game, 'leave');
+  setBusy(game, false, null);
+  standUp(game);
+  game.clock.forced = 0;
+  game.clock.ff = false;
+  game.rules.sent = null;
+  game.rules.out = null;
+  p.locked = true;
+  s.leave = { why, t: 0, gone: null, walk: path.length ? { path: path.map((q) => ({ x: q.x, y: q.y })), wp: 0 } : null };
+  game.events.emit('player:leave', { why });
+  return true;
+}
 
 export function updateScenario(game, dt) {
   if (game.phase !== 'day') return;
@@ -38,11 +62,38 @@ export function updateScenario(game, dt) {
     return;
   }
 
+  // Walking out (leaveDay): the walk, gone, a beat, the card.
+  const lv = s.leave;
+  if (lv) {
+    lv.t += dt;
+    if (lv.walk && stepWalk(game, lv.walk, PLAYER_SPEED, dt)) lv.walk = null;
+    if (!lv.walk && lv.gone == null) {
+      lv.gone = lv.t;
+      game.player.hidden = true;
+      game.player.moving = false;
+      game.events.emit('player:gone', { why: lv.why });
+    }
+    if (lv.gone != null && lv.t - lv.gone >= LEAVE_BEAT) {
+      game.outcome = makeOutcome(game, 'fail', [], []);
+      game.outcome.why = lv.why;
+      endDay(game);
+    }
+    return;
+  }
+
   // Busted beat, then the end screen.
   if (game.caught) {
     game.caught.t += dt;
-    if (game.caught.t >= CAUGHT_DELAY) {
+    // A catch's take on its way (sim/mechanics/claim.js: he walks over for his thing): the beat waits for him.
+    const waiting = claimPending(game) && game.caught.t < CLAIM_WAIT;
+    if (game.caught.t >= CAUGHT_DELAY && !waiting) {
+      for (const n of game.npcs) { // out of time on his way over: he takes it as the card comes up
+        if (!n._claim?.onCatch || n._claim.done) continue;
+        n._claim.done = true;
+        game.events.emit('claim:done', { by: n.id, item: n._claim.item });
+      }
       game.outcome = makeOutcome(game, 'caught', [], []);
+      if (game.caught.why) game.outcome.why = game.caught.why; // a level's catch (rules.js catchNow): its end scene
       endDay(game);
     }
     return;
@@ -76,16 +127,21 @@ function startMeeting(game, s) {
   const routes = level.outcomeOrder.filter((id) => level.routes.find((r) => r.id === id).achieved(w));
   const present = inZone(game, level.meeting.room, at.x, at.y);
   const base = !routes.length ? 'fail' : present ? 'win' : 'blamed';
+  // Where you were (level.meeting.where: names, in order, of zones or of places you go inside, player.inside): the
+  // verdict and the end scene read it (outcome.where; absent when you were in none of them). Inside, you come out.
+  const where = (level.meeting.where ?? []).find((z) => z === p.inside || (!p.inside && inZone(game, z, at.x, at.y))) ?? null;
+  comeOut(game);
   // The level can judge the room itself (level.meeting.verdict(game, { result, routes, present })): null keeps
   // the rule above; else { result?, why?, stare? }. why: a string the outcome carries (for end scenes, the
   // harness); stare: where the table looks (npcs.js stareAt; blamed without one: your empty chair).
-  const v = level.meeting.verdict?.(game, { result: base, routes, present }) ?? null;
+  const v = level.meeting.verdict?.(game, { result: base, routes, present, where }) ?? null;
   const result = v?.result ?? base;
   const found = game.persist.routesFound;
   const newRoutes = result === 'win' ? routes.filter((r) => !found.includes(r)) : [];
   found.push(...newRoutes);
   game.outcome = makeOutcome(game, result, routes, newRoutes);
   if (v?.why) game.outcome.why = v.why;
+  if (where) game.outcome.where = where;
 
   // Freeze the player for the beat.
   cancelAction(game, 'meeting');

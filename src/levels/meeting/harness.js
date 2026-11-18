@@ -36,14 +36,13 @@ export default {
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
     restroom_door: 'restroom',
-    fire_door: 'fire_door', // the balcony side: NPCs only (goto walks you as close as you get)
     meeting_room: 'meeting_presenter',
     meeting_seat: 'meeting_player',
   },
 
   stops: {
     hard: ['boss:workAssigned'],
-    soft: ['boss:suspicious', 'sandwich:returned', 'coffee:kevTook'],
+    soft: ['boss:suspicious', 'sandwich:returned', 'coffee:kevTook', 'boss:hug'],
   },
 
   names: NAME,
@@ -56,10 +55,15 @@ export default {
 
   // o.why: the verdict's reason (verdict.js): 'mug' you held the cup, 'desk' it sat on your desk, 'kev' it sat on his.
   outcomeText: (o) => (o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
+    : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
     : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
     : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
+    : o.result === 'blamed' && o.where === 'restroom' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}; the table stared at your empty chair, then a flush 🚽, and you walked in drying your hands)`
     : o.result === 'blamed' ? `BLAMED 🪑👉 (the meeting fell apart via ${o.routes.join(' + ')}, but everyone was in the meeting room except you)`
+    : o.why === 'home' ? 'FAIL: you just went home 🚌; at 4:00 your phone buzzes on the bus, the boss\'s face on it 📱😠'
+    : o.why === 'homeKev' ? 'FAIL: you went home with Kev at 3:00 👋👋🚌; at 4:00 your phone buzzes, the boss\'s face on it 📱😠'
+    : o.why === 'samaritan' ? 'FAIL: you let the boss in off the balcony 🤗; he presented with his arm round you, and a blank slide 🦗'
     : 'FAIL: the meeting happened and you presented a blank slide 🦗'),
 
   // Only what a player would see: the ❓ meter over the boss's head (when it shows).
@@ -68,6 +72,7 @@ export default {
   npcText(game, n) {
     const bits = [];
     if (n.override === 'lockedOut') bits.push('locked out on the balcony, behind the fire door');
+    if (n.override === 'grateful') bits.push(game.world.hugAt != null ? 'hugging you 🤗' : 'just let in off the balcony, beaming');
     if (n.override === 'fixing') bits.push(`fixing the projector ${Math.round(game.world.fixProgress * 100)}%`);
     if (n.override === 'hunting' && n.id === 'boss') bits.push('searching the office, peering at every desk');
     if (n.carry) bits.push(`holding ${n.carry === 'coffee' ? 'a coffee ☕' : n.carry}`);
@@ -100,6 +105,8 @@ export default {
       case 'coffee:squint': return 'Kev squints at the cup at your ear ☕❓';
       case 'coffee:shrug': return 'Kev decides you\'re on the phone 📱🤷 and lets you be';
       case 'keycard:takenBack': return 'the boss takes his keycard back off you 🪪';
+      case 'boss:letIn': return 'you push the fire door open for the boss: he\'s back in 🚪 (the alarm buzzes)';
+      case 'boss:hug': return 'the boss throws his arms round you 🤗 … 🙏😊';
       case 'boss:badge': return 'beep: the boss holds his keycard to the fire door\'s reader and comes back in 🪪';
       case 'meeting:calledOff': return 'the boss points at the dead projector 📽️💥🙅 and waves everyone out 👋🚪';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
@@ -123,6 +130,11 @@ export default {
         return { 'boss:knock': 'knock knock: the boss at the fire door ✊🚪', 'boss:bang': 'the boss bangs on the fire door 😠🚪🪪',
           'boss:pound': 'the boss pounds on the fire door with both fists 👊👊🚪', 'boss:fume': 'the boss lights another cigarette, fuming 🚬😤' }[e.name];
       }
+      case 'player:leave': return p.why === 'homeKev' ? 'you go home with Kev: out through the entrance to the elevator, both waving 👋👋' : 'you go home: out through the entrance to the elevator 😌';
+      case 'player:in': return p.inside === 'restroom' ? 'you go into the restroom and shut the door 🚽 (nobody can see you in here)' : null;
+      case 'player:out': return p.inside === 'restroom' ? 'flush 🚽: you come out of the restroom' : null;
+      case 'restroom:washed': return 'you scrub the mustard off your sweater at the sink 🧼 (the tap runs)';
+      case 'player:gone': return 'ding: the elevator doors close behind you';
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
       case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';
       case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗, then glares at Kev 😠'

@@ -228,6 +228,46 @@ export default [
     },
   },
   {
+    name: 'same, mug back on the machine, but in the restroom at 4:00 → blamed, and you walk in drying your hands (where restroom)',
+    expect: { result: 'blamed', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('sit busy');
+      waitFor((g) => g.world.kevGone);
+      run('goto projector busy');
+      run('interact');
+      run('put coffee busy');
+      run('goto restroom_door busy');
+      run('busy until 3:40');
+      run('interact');
+      if (g.player.inside !== 'restroom') throw new Error('not inside the restroom');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.where !== 'restroom') throw new Error(`where ${g.outcome?.where}, not the restroom`);
+    },
+  },
+  {
+    name: 'eat the sandwich, go into the restroom, wash off the mustard, come out clean; then knock while the boss is in there → 🚽😠 through the door',
+    expect: { result: 'fail' },
+    play({ run, g, log }) {
+      run('goto fridge');
+      run('interact');
+      run('eat');
+      run('goto restroom_door');
+      run('interact');
+      if (g.player.inside !== 'restroom' || !g.player.hidden) throw new Error('did not go in');
+      run('interact');
+      if (g.player.smeared) throw new Error('still smeared');
+      if (!log.some((e) => e.name === 'restroom:washed')) throw new Error('no wash');
+      run('interact');
+      if (g.player.inside || g.player.hidden) throw new Error('did not come out');
+      run('pretend until 3:19');
+      run('interact');
+      if (g.player.inside) throw new Error('walked into an occupied restroom');
+    },
+  },
+  {
     name: 'keycard during boss restroom, timing Lin\'s glance → win',
     expect: { result: 'win', routes: ['keycard'] },
     play({ run, waitFor, npc }) {
@@ -311,7 +351,71 @@ export default [
       waitFor(() => { const l = npc('lin'); return l.active && Math.abs(l.glance.offset) < 0.3; }, { busy: true, maxSec: 30 });
       run('interact');
       run('wait 10s');
+      waitFor(() => g.world.cardBack || !!g.outcome, { maxSec: 10 }); // he walks over for it (items.js walk)
       if (!g.world.cardBack) throw new Error('caught at the jacket, but the boss did not take his card back');
+    },
+  },
+  {
+    name: 'keycard in the gap, then let the locked-out boss in → he hugs you 🤗, sees his card 🪪❗ → caught (samaritan)',
+    expect: { result: 'caught' },
+    play({ run, waitFor, npc, g, log }) {
+      run('busy until 3:11');
+      waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+      run('goto boss_office_door busy');
+      run('goto coat_rack busy');
+      waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+      run('interact');
+      run('goto meeting_seat busy');
+      waitFor(() => g.world.bossLockedOut, { busy: true, maxSec: 400 });
+      run('goto fire_door busy');
+      run('interact');
+      waitFor(() => !!g.outcome, { maxSec: 30 });
+      if (!log.some((e) => e.name === 'boss:hug')) throw new Error('no hug');
+      if (g.outcome.why !== 'samaritan') throw new Error('why: ' + g.outcome.why);
+    },
+  },
+  {
+    name: 'keycard in the gap, leave it on the floor, let the boss in → he hugs you 🤗 → at 4:00 a blank slide (samaritan fail)',
+    expect: { result: 'fail' },
+    play({ run, waitFor, npc, g, log }) {
+      run('busy until 3:11');
+      waitFor(() => !npc('boss').active || (npc('boss').label?.startsWith('away') && npc('boss').y > 8));
+      run('goto boss_office_door busy');
+      run('goto coat_rack busy');
+      waitFor(() => { const l = npc('lin'); return !l.active || Math.abs(l.glance.offset) > 1.15; }, { busy: true, maxSec: 30 });
+      run('interact');
+      run('goto meeting_seat busy');
+      waitFor(() => g.world.bossLockedOut, { busy: true, maxSec: 400 });
+      run('interact'); // nothing else in reach: a tap drops it
+      if (g.player.held) throw new Error('still holding ' + g.player.held);
+      run('goto fire_door busy');
+      run('interact');
+      run('busy until 4:00'); // the hug stops it
+      run('busy until 4:00');
+      if (!log.some((e) => e.name === 'boss:hug')) throw new Error('no hug');
+      if (g.outcome?.why !== 'samaritan') throw new Error('why: ' + g.outcome?.why);
+    },
+  },
+  {
+    name: 'just go home at 2:31 → out to the elevator, gone, the day lost (home: the bus, the phone buzzing)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto exit');
+      run('interact');
+      run('wait 5s');
+      if (g.outcome?.why !== 'home') throw new Error('why: ' + g.outcome?.why);
+      if (!g.player.hidden) throw new Error('you are still on the floor');
+    },
+  },
+  {
+    name: 'go home with Kev at 3:03 → both wave 👋👋 (homeKev)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto exit pretend');
+      run('pretend until 3:03');
+      run('interact');
+      run('wait 5s');
+      if (g.outcome?.why !== 'homeKev') throw new Error('why: ' + g.outcome?.why);
     },
   },
   {

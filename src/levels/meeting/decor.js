@@ -3,15 +3,19 @@
 // Positions are tiles unless noted; facings are 'N', 'S', 'E' or 'W'; colours are [seat, back] pairs.
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
-import { emptyBag, fireDoor, balcony } from './painters.js';
+import { emptyBag, fireDoor, balcony, hallPicture } from './painters.js';
+import { PICTURE, pictureTilt } from './toys.js';
 import { findNpc } from '../../game/perception.js';
+import { toyState } from '../../sim/mechanics/toy.js';
 
-// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it.
+// The boss at the fire door (mechanics.js DOORS): seconds since his card beeped it open, since his last go at it;
+// denied: seconds since you last pushed its bar from inside (toys.js).
 const since = (game, at) => (at != null ? game.loopTime - at : null);
 const fireDoorState = (w, game) => {
   const b = findNpc(game, 'boss');
   const out = !!b && b.override === 'lockedOut';
-  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null };
+  return { locked: out, hit: out ? since(game, b._bangAt) : null, beep: b ? since(game, b._badgeAt) : null,
+    denied: toyState(game, 'fire_door').since, open: w.letIn != null ? since(game, w.letIn) : null };
 };
 
 
@@ -48,7 +52,6 @@ export const DECOR = {
   ],
   paintings: [
     { x: 10, y: 6, variant: 0 },
-    { x: 25, y: 6, variant: 1 },
     { x: 2, y: 0, variant: 1 },
   ],
   cabinets: { x0: 21, x1: 23, y: 0 }, // kitchen upper cabinets over the counter
@@ -79,6 +82,9 @@ export const DECOR = {
     // he's locked out; butts pile up round the ashtray, one per go at the door.
     { tile: 'X', draw: fireDoor, state: fireDoorState },
     { tile: '=', draw: balcony, state: (w, game) => ({ butts: Math.max(0, (findNpc(game, 'boss')?._bangI ?? 0) - 1) }) },
+    // The hallway picture by the kitchen door (toys.js picture_*): crooked or straight, whoever touched it last. It
+    // is drawn every frame, so it is a prop, not a painting; R (the restroom door) only anchors it, once on the map.
+    { tile: 'R', draw: hallPicture, state: (w, game) => ({ x: PICTURE.x - 0.5, y: PICTURE.y, ...pictureTilt(game) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.

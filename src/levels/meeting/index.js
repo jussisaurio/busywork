@@ -40,7 +40,9 @@
 //   endScenes  the end card: outcome -> scene, its icon row and hand-drawn picture (end-scenes.js; render screens.js)
 //   sounds   what the level's actions, events, signs and things sound like (sounds.js; audio/audio.js)
 //   voices   how the cast talks, by cast `voice` name (voices.js; audio/babble.js)
+//   toys     props that answer back and decide nothing: the fire door's bar (toys.js; src/sim/mechanics/toy.js)
 import { at } from '../../config.js';
+import { TOYS } from './toys.js';
 import { MAP, LEGEND, SPOTS, ZONES, ROUTES } from './map.js';
 import { NPC_DEFS } from './cast.js';
 import harness from './harness.js';
@@ -85,8 +87,9 @@ export default {
   hunts: HUNTS,
   doors: DOORS,
   behaviours: BEHAVIOURS,
+  toys: TOYS,
   clockFor,
-  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict },
+  meeting: { override: 'meeting', room: 'meeting_room', chair: 'meeting_player', presenter: 'meeting_presenter', verdict, where: ['restroom'] }, // where: 4:00 in the restroom (restroom.js)
   failSign: { spot: 'projector', offset: [0.5, 1.5] }, // a failed meeting's 🦗 sign: under the projector (scenario)
   routes: [
     { id: 'projector', icon: '📽️', achieved: (w) => w.projector === 'broken' },
@@ -106,6 +109,10 @@ export default {
     linKnows: false, // hunting Lin saw the mustard on you: hunt over, she knows who did it
     mug: null, // the cup after the spill: 'player' | a spot it was put on (coffee, kev_desk, my_desk)
     _cardTry: null, // when Lin's shout stopped your hand at the jacket (clocks.js)
+    letIn: null, // the loop time you let the locked-out boss back in through the fire door (interactions.js let_boss_in)
+    hugAt: null, // when he hugged you for it (clocks.js bossLetIn)
+    hugDone: false, // he has let go
+    samaritan: false, // he hugged you and saw no keycard: he's grateful, and you still have no slides (verdict.js)
     cardBack: false, // caught with the keycard: the boss took it back off you (clocks.js listen; the end card)
   }),
   harness,
