@@ -113,6 +113,7 @@ export function initialPhones() {
 }
 
 // The phone tick: from level.clockFor, once per step (the first NPC's). Returns nothing.
+const PICKED = new Set(); // who is already on his way to a phone this step: holds nothing between steps
 export function phoneTick(game, sim) {
   if (game.phase !== 'day') return;
   const w = game.world;
@@ -120,7 +121,9 @@ export function phoneTick(game, sim) {
   const day = game.level.day;
   const npcs = game.npcs;
   const byId = (id) => npcs.find((n) => n.id === id);
-  const picked = new Set(PHONE_IDS.map((p) => w[CALL[p]]).filter(Boolean));
+  const picked = PICKED; // one set, emptied and refilled every step (this runs every step: no new set and lists each time)
+  picked.clear();
+  for (const p of PHONE_IDS) if (w[CALL[p]]) picked.add(w[CALL[p]]);
   if (w.jobBy) picked.add(w.jobBy);
   const free = (n) => n.active && !n._gone && !onPhone(n) && !picked.has(n.id);
   const pick = (p, ownerId) => {

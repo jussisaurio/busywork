@@ -109,20 +109,27 @@ export function pressToy(game, f) {
 }
 
 // Every step (game/loop.js): pass and near toys.
-// The non-press toys of a level with what never changes per step worked out once (position, radius squared, interval).
-const ACTIVE = new WeakMap();
-function activeToys(level) {
-  let list = ACTIVE.get(level);
-  if (!list) {
-    list = [];
-    for (const toy of level.toys) {
+// What never changes during a loop is worked out once: each non-press toy with its position, radius squared, interval,
+// its record in game.toys and the people it names (toy.npcs, in game.npcs order). The step then asks only the people
+// a toy names (usually one), not everyone in the office.
+// The list is kept per game.npcs array and is good while game.toys is the same object: startLoop makes both anew
+// every loop, so a new loop (or a test's own game) builds a fresh list. Nothing replaces an NPC inside game.npcs.
+const ACTIVE = new WeakMap(); // game.npcs -> { toys: game.toys, list }
+function activeToys(game) {
+  let c = ACTIVE.get(game.npcs);
+  if (!c || c.toys !== game.toys) {
+    const list = [];
+    for (const toy of game.level.toys) {
       if (toy.on === 'press') continue;
       const r = toy.radius ?? DEFAULT_RADIUS;
-      list.push({ toy, at: toyPos(level, toy), r, r2: r * r, pass: toy.on === 'pass', every: toy.every ?? DEFAULT_EVERY });
+      list.push({
+        toy, at: toyPos(game.level, toy), r, r2: r * r, pass: toy.on === 'pass', every: toy.every ?? DEFAULT_EVERY,
+        t: game.toys.byId[toy.id], npcs: game.npcs.filter((n) => toy.npcs.includes(n.id)),
+      });
     }
-    ACTIVE.set(level, list);
+    ACTIVE.set(game.npcs, (c = { toys: game.toys, list }));
   }
-  return list;
+  return c.list;
 }
 
 export function updateToys(game) {
@@ -131,21 +138,22 @@ export function updateToys(game) {
   const p = game.player;
   const walks = game.toys.walks;
   updateWalks(game);
-  const npcs = game.npcs;
-  for (const { toy, at, r, r2, pass, every } of activeToys(game.level)) {
-    const to = pass ? at : p;
-    let t = null;
+  const list = activeToys(game);
+  for (let k = 0; k < list.length; k++) {
+    const a = list[k];
+    const to = a.pass ? a.at : p;
+    const npcs = a.npcs;
     for (let i = 0; i < npcs.length; i++) {
       const n = npcs[i];
       const dx = to.x - n.x;
       const dy = to.y - n.y;
       const d2 = dx * dx + dy * dy; // Math.hypot is slow: only the razor's edge (within 1e-9 of the radius) needs it
-      if (d2 > r2 * (1 + 1e-9) || (d2 >= r2 * (1 - 1e-9) && Math.hypot(dx, dy) > r)) continue;
-      if (walks[n.id]) continue; // already off to one: he deals with one thing at a time
-      if (!n.active || !toy.npcs.includes(n.id)) continue;
-      t = t ?? game.toys.byId[toy.id];
+      if (d2 > a.r2 * (1 + 1e-9) || (d2 >= a.r2 * (1 - 1e-9) && Math.hypot(dx, dy) > a.r)) continue;
+      if (!n.active || walks[n.id]) continue; // (a walker is already off to one: he deals with one thing at a time)
+      const toy = a.toy;
+      const t = a.t;
       const last = t.last[n.id];
-      if (!(last === undefined || game.loopTime - last >= every)) continue;
+      if (!(last === undefined || game.loopTime - last >= a.every)) continue;
       if (toy.when && !toy.when(game.world, t.state, game, n)) continue; // before the sight check: it is the cheap one
       if (toy.sees && !npcSees(game, n, to.x, to.y)) continue;
       fire(game, toy, n.id);

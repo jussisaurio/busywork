@@ -37,6 +37,9 @@ const DROP_IN_CORRIDOR = [...TAKE, 'goto corridor pretend', 'interact', 'goto ow
 // 1. Someone sees it, walks over, picks it up, and you are caught for it.
 {
   const { h, g, ev } = play(MON, DROP_IN_CORRIDOR);
+  for (let i = 0; i < 60 * 600 && !g.caught && g.phase === 'day'; i++) h.frame();
+  const line = g.fx.lines.find((l) => l.kind === 'caught' && l.to === 'player');
+  ok(line && line.from === g.caught?.by, `the catch draws his red sightline to you, as every catch does (${line?.from})`);
   finish(h);
   const spotted = ev('parcel:spotted');
   const found = ev('parcel:found');

@@ -335,6 +335,10 @@ authority is a witness: he shouts and points ❗👉 at a sneaky action he sees.
   shows you out: 🤨 `@player`, then 👉 `@player` 🚪, and you walk to `player_desk` (`rules.out`, locked). He takes
   back a held item that is his (contraband, or owned while his `when` holds). Ranked below the other offences; not caught, no tattle.
   Reason `'trespass'`. A level hook can trigger it without sight: `showOutNow(game, npcId)` (play/rules.js).
+- When the rules are live: `rulesOff(game)` (play/rules.js) is `null`, else why not (`'over'`, `'caught'`,
+  `'leaving'`, `'hidden'`, `'out'`, `'working'`). Off, nobody reacts and no cone glows (`game.watch` is empty). A
+  catch (a mechanic's judge, a level's `catchNow`) still lands while you are shown out or at assigned work, never
+  while you are hidden or leaving. Every catch, whoever triggers it, draws the catcher's red `'caught'` sightline.
 - Example: fixture `ROLES` (authority only); meeting `roles.js` (all three, plus `private`).
 
 ### Mechanics

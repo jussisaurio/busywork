@@ -140,8 +140,7 @@ function fail(game, npc, insp, index) {
   game.events.emit('inspect:done', { by: npc.id, failed: index });
   if (f.then === 'caught') {
     st.caught = true; // he stays on it, checking no further, and the rules catch the player (judge)
-    npc._plan.legs.length = npc._plan.li;
-    sightline(game, npc.id, 'caught', 1.6);
+    npc._plan.legs.length = npc._plan.li; // his sightline comes with the catch (play/rules.js caught)
     return;
   }
   npc._insp = null;

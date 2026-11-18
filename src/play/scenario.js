@@ -9,6 +9,7 @@ import { spotPos, inZone } from '../game/perception.js';
 import { stareAt } from '../sim/npcs.js';
 import { claimPending } from '../sim/mechanics/claim.js';
 import { cancelAction } from './interactions.js';
+import { rulesOff } from './rules.js';
 import { setBusy, standUp, sitAtDesk, planWalk, stepWalk, walkLength, comeOut } from './player.js';
 
 export const END_BEAT = 2.0; // sim seconds of in-world beat after the meeting outcome (after the walk, if any)
@@ -23,10 +24,11 @@ const LEAVE_BEAT = 1.6; // s after you are gone (leaveDay) before the card
 // A level's way out of the day (meeting: home by the elevator). You walk `path` (straight legs, tile centres in tile
 // units: through a door that is solid to you is fine), you are gone (player.hidden: not drawn, nobody sees you) and,
 // after a beat, the day ends: 'fail', outcome.why = why. Nothing catches you on the way: you have already lost.
-// Returns false when the day is already decided.
+// Returns false when the day is already decided, or you are already on your way out (rules.js rulesOff). Hidden, shown
+// out or sent to your desk, you can still go.
 export function leaveDay(game, why, path = []) {
   const s = game.scenario;
-  if (game.phase !== 'day' || game.caught || game.outcome || s.leave) return false;
+  if (['over', 'caught', 'leaving'].includes(rulesOff(game))) return false;
   const p = game.player;
   cancelAction(game, 'leave');
   setBusy(game, false, null);

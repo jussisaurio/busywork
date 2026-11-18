@@ -36,11 +36,11 @@ export function woodDesk(ctx, cx, y, w, h = 46) {
 }
 
 // A walnut desk top, front edge showing: (x, y) its top-left, w wide, `depth` the lit top, `skirt` the whole slab
-// with its front edge, `r` the corner radius. opts: shadow { color, dx, h } under it; hi (dy) a highlight line
+// with its front edge, `r` the corner radius. opts: shadow { color, dx, dy = 8, h } under it; hi (dy) a highlight line
 // along the top, or null for none.
 export function walnutDesk(ctx, x, y, w, { depth, skirt, r, shadow, hi = null }) {
   ctx.fillStyle = shadow.color;
-  rrect(ctx, x + shadow.dx, y + 8, w, shadow.h, r);
+  rrect(ctx, x + shadow.dx, y + (shadow.dy ?? 8), w, shadow.h, r);
   ctx.fill();
   ctx.fillStyle = C.walnutEdge;
   rrect(ctx, x, y, w, skirt, r);

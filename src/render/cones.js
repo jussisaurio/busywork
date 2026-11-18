@@ -71,6 +71,19 @@ function noticeLevel(game, npc) {
   return lvl;
 }
 
+// The colour of this NPC's sight right now, for his cone and for his near sight in the dark (darkness.js) alike: one
+// rule decides when sight is hostile. His tint (coneTint), mixed toward red as hard as he notices you (noticeLevel),
+// pulsing while he does. Returns { rgb: [r, g, b], notice, pulse }.
+export function sightColor(game, npc, t) {
+  return mixRed(coneTint(npc), noticeLevel(game, npc), t);
+}
+function mixRed(tint, notice, t) {
+  const pulse = notice > 0 ? 0.75 + 0.25 * Math.sin(t * (8 + notice * 10)) : 1;
+  const mix = notice * (0.6 + 0.4 * pulse);
+  const rgb = [0, 1, 2].map((i) => Math.round(tint[i] + (RED[i] - tint[i]) * mix));
+  return { rgb, notice, pulse };
+}
+
 // The cone's fan: from (ox, oy) along dir, cut by walls at most `radius` tiles out (the current path).
 function fan(ctx, map, ox, oy, dir, fov, radius) {
   const cx = ox * T;
@@ -292,11 +305,7 @@ function drawFan(ctx, map, v, tint, notice, base, t, dark = NO_DARK, near = null
   const fov = clamp(fin(v.fov, 1.5), 0.05, Math.PI * 2);
   const radius = Math.max(0.5, fin(v.radius, 6));
   const dir = fin(v.dir);
-  const pulse = notice > 0 ? 0.75 + 0.25 * Math.sin(t * (8 + notice * 10)) : 1;
-  const mix = notice * (0.6 + 0.4 * pulse);
-  const r = Math.round(tint[0] + (RED[0] - tint[0]) * mix);
-  const g = Math.round(tint[1] + (RED[1] - tint[1]) * mix);
-  const b = Math.round(tint[2] + (RED[2] - tint[2]) * mix);
+  const { rgb: [r, g, b], pulse } = mixRed(tint, notice, t);
   const a = clamp(base + notice * 0.28 * pulse, 0, 0.6);
   const cx = ox * T;
   const cy = oy * T;

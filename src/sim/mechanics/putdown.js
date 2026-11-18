@@ -155,8 +155,7 @@ export function judge(game, rules) {
       if (!claims && !(npc.id === flags?.contraband && rules.enforcing(game, npc))) continue;
       if (it.toldBy?.includes(npc.id) || !npcSees(game, npc, it.x, it.y)) continue;
       if (npc.id === game.level.roles?.authority?.id) {
-        sightline(game, npc.id, 'caught', 1.6);
-        rules.caught(game, 'contraband');
+        rules.caught(game, 'contraband', npc.id);
         return true;
       }
       (it.toldBy ??= []).push(npc.id);

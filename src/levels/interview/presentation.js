@@ -38,7 +38,7 @@ export const DECOR = {
 
 export const LOOKS = MEETING_LOOKS;
 
-// What the cast are seen doing (level 1's looks.js POSES documents the fields). On a line: the line's handset at
+// What the cast are seen doing (level 1's poses.js POSES documents the fields). On a line: the line's handset at
 // the ear (Lin slams hers down); someone else's interview gets a shrug. Kev holds Lin's loose plug up at her chair
 // and jams it in, crouches to plug in his charger and stands by, scrolling on his mobile. A walk of their own day
 // has something in hand (Kev's coffee and mobile, Lin's tea and her notes); a summons (a ring) has them set off

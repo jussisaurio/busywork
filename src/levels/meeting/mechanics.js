@@ -113,7 +113,7 @@ export const DOORS = [
     label: 'locked out',
     locked: { set: { bossLockedOut: true }, event: 'boss:lockedOut' },
     // The escalation: pockets, a polite knock, a bang, both fists, a fuming cigarette, begging. Then round again from
-    // the bang: he never goes back to polite. arms: his pose for the line (looks.js POSES; default fists on the door).
+    // the bang: he never goes back to polite. arms: his pose for the line (poses.js POSES; default fists on the door).
     bang: {
       first: 0.7,
       lines: [

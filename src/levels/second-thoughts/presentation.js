@@ -95,7 +95,7 @@ export const DECOR = {
   legendAt: { x: 19.5, y: 15.5 }, // over the blank wall right of the lobby
 };
 
-// level.poses (level 1's looks.js documents it): Kev's hands in the fuse box or at the machine's plug, the boss's on
+// level.poses (level 1's poses.js documents it): Kev's hands in the fuse box or at the machine's plug, the boss's on
 // the lighting panel, fuming; Lin wiping up your sick at arm's length.
 // Anyone holding a phone torch keeps free hands: render/darkness.js draws the arm and the phone.
 // The boss dreading his tray (index.js dread): a shrug as he sighs at it, one hand drumming on the desk, a hand to

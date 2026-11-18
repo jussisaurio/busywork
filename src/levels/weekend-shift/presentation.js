@@ -237,7 +237,7 @@ export const DECOR = {
 
 export const LOOKS = LEVEL1_LOOKS;
 
-// level.poses (level 1's looks.js documents the fields). Things in hand are '#<name>' things (decor.things, or the
+// level.poses (level 1's poses.js documents the fields). Things in hand are '#<name>' things (decor.things, or the
 // engine's): Kev kneels at the copier ratcheting a spanner (and props.js turns one in its works), the boss holds his
 // phone's handset to his ear (props.js runs its cord to that hand), Lin carries her lunch box there and back, and
 // pointing is the arm.
