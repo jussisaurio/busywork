@@ -13,6 +13,7 @@ inputs give the same day, and the tools depend on that.
 | `CONTRACTS.md` | reference: every level field, engine module and tool flag. Look things up; do not read it end to end |
 | `docs/COLD-READ.md` | the LLM read passes over a level, and how to read their reports |
 | `docs/KAIZEN.md` | how we work and what went wrong before. Read "What we got wrong" before running a team of agents |
+| `docs/PLAN.md` | what we are working on now, and what is waiting on whom |
 | `docs/history/` | old plans and audits. Not current; do not follow them |
 
 Code: `src/levels/<id>/` is one level. Everything else in `src/` is the engine (`sim`, `play`, `render`, `audio`,

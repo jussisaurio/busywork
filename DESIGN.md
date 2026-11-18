@@ -47,6 +47,20 @@ how many ways there are to win. Figuring that out *is* the game.
 - **When a playtester asks for an explanation, make the consequence more visible instead of adding words.**
 - **The AI harness follows the same rule.** It reports only what a player would see on screen.
 
+## What makes it fun
+Decided by Jussi on 2026-11-18. `docs/PLAN.md` says how far the work on these has got.
+- **The office answers back.** Most of what you can poke is not a route. It is a toy: you do a small thing and
+  someone reacts, and the reaction is funny by itself. Take Kev's stapler and he hunts for it. A toy needs no
+  purpose. Between the windows a route needs, toys are the play. There should be many more than routes.
+- **Endings are the collection.** Every distinct ending counts, wins and losses alike, and the same route can end
+  several ways depending on what you left where (the mug on Kev's desk gets Kev blamed). Finding every stupid way to
+  lose is a goal of its own. The game keeps the endings you have seen and shows them. It never shows how many are
+  left: no blank slots. (Open: one small tick when a level's set is complete, or nothing at all.)
+- **Payoffs are outrageous.** The method stays believable; the result should be as big as the office can stand. The
+  boss locked out on the balcony, pounding the door, is the right size. "The meeting is called off" is too small.
+- **A punishment is about what you did.** Being sent to type is the plain default and stays as a cost in time. A
+  level that can show a punishment specific to the mistake should: those are funnier.
+
 ## Tone / feel
 - Goose energy, office edition. Think Mr. Bean in a tomato-red sweater: one strong silhouette in a muted mid-century
   office (mustard, teal, walnut, beige carpet).
