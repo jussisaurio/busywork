@@ -205,4 +205,11 @@ export default [
       'stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your ' +
       'things: fired.',
   },
+  {
+    name: 'kev-dozing',
+    cmds: [...POUR, ...HIDE, 'sit busy', 'busy until 2:53.4'],
+    intent: 'Kev (olive hoodie, right) never got his afternoon coffee: you poured the last cup, and it sits on your ' +
+      'desk. He has nodded off at his desk, his head down on the keyboard (💤), and on his screen a line of the same ' +
+      'letter runs across under his code. You type at your desk.',
+  },
 ];

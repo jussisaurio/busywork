@@ -6,6 +6,8 @@
 //   deadTypewriter  the workstation on the empty desk (map.js W) after the cup went into its keys
 //              (interactions.js drown_typewriter): screen dead and cracked, coffee pooled on the keys and dripping
 //              off the desk's edge into a puddle, smoke curling up, a spark now and then. state: { dead, since }
+//   kevPage    Kev's screen while he dozes on his keyboard (toys.js kev_doze): a growing line of one letter.
+//              state: { secs }
 import { fillEllipse, fillCircle, clamp, easeOutBack, T } from '../../render/util.js';
 import { C } from '../../render/palette.js';
 
@@ -89,5 +91,27 @@ export function deadTypewriter(ctx, info, at, state, t) {
       ctx.stroke();
     }
     fillCircle(ctx, midX, kbY + 2, 2.5, 'rgba(255,240,150,0.8)');
+  }
+}
+
+// Kev's screen while he dozes, face on the keyboard (toys.js kev_doze): one key held down, a line of the same letter
+// running across under his code, wrapping onto a second line. state: { secs } (seconds asleep so far; 0: nothing).
+// `at` is ignored: the prop hangs on another tile (decor.js), Kev's monitor is on his desk's middle tile.
+const KEV_DESK = { x: 22, y: 8 };
+const PER_SEC = 0.6; // letters a second
+export function kevPage(ctx, info, at, state) {
+  if (!(state.secs > 0)) return;
+  const midX = KEV_DESK.x * T + T / 2;
+  const top = KEV_DESK.y * T + 3 + 3; // render/world.js drawWorkstation monTopY
+  const n = Math.min(18, Math.floor(state.secs * PER_SEC) + 1);
+  ctx.fillStyle = '#1f3d2a'; // his screen (decor.js desks.kev), the lower two lines cleared for it
+  ctx.fillRect(midX - 10, top + 10.5, 20, 4.5);
+  ctx.fillStyle = '#7fe08a';
+  for (let i = 0; i < n; i++) {
+    const row = i < 9 ? 0 : 1;
+    const x = midX - 9 + (i % 9) * 2;
+    const y = top + 11 + row * 2;
+    ctx.fillRect(x, y, 0.7, 1.6); // the same letter, over and over: a stem
+    ctx.fillRect(x + 0.7, y + 0.6, 0.7, 0.5); // and its arm
   }
 }

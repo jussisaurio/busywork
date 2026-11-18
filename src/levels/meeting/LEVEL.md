@@ -214,6 +214,13 @@ and `sandwich:eaten`.
   floor, it just dies smoking (`painters-more.js deadTypewriter`). End scene `typewriter`: you sooty, hair on end, by
   the dripping, sparking machine; the boss holds out the box. The joke: an audacious, pointless act of sabotage,
   rewarded with exactly the ending it deserves.
+- **Kev dozes** (toys `kev_doze`, `kev_wake`). Robbed of his coffee (`wants: 'coffee'`), sat at his desk between 2:48
+  and 2:58, Kev slumps face-first onto his keyboard (pose `slump`, engine seam in `render/characters.js`) and thinks
+  💤; a line of one letter grows across his screen (`painters-more.js kevPage`). Come within 2.5 tiles and he jolts
+  awake 😳 and types busily; he stays awake the rest of the day. Cosmetic only: asleep, he sees exactly as awake
+  (toys cannot change sight), and you cannot get close without waking him, so his sight never surprises you; his
+  3:00 exit is untouched. The joke: the man you robbed of his coffee falls asleep on his keyboard, typing one letter
+  forever.
 
 ## HUD
 - The clock turns red at 3:50 (`clockRedAt`). The wall clock starts ticking at 3:50, tick-tock from 3:55, a tick

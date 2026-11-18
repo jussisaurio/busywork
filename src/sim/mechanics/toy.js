@@ -5,7 +5,7 @@
 //   - A toy's state lives in game.toys (createToys, a fresh one each loop), never in game.world, a person or the
 //     player. Its `when` reads; its reaction is data the engine applies (react below), never a function of the game.
 //   - The only things a reaction writes: game.toys, game.fx (a bubble, a burst) and one event, `toy:<id>`. Its bubble's
-//     'say' event carries `toy: <id>`. The behaviour goldens skip both (tools/lib/trace.mjs), so adding a toy moves no
+//     'say' event carries `toy: <id>`, and it never covers a real line still showing (core/fx.js say). The behaviour goldens skip both (tools/lib/trace.mjs), so adding a toy moves no
 //     golden; the gate's `toy-neutral` check replays every winning golden plan with every toy fired over and over
 //     and requires the same trace.
 //   - A pose is drawn only (render/characters.js reads game.toys.poses): arms, a scowl, the head turned to the prop.
@@ -31,8 +31,9 @@
 //     say    [icons] or { icons, kind, ttl, who }: a bubble. who: 'by' (default: whoever fired it), 'prop' (from
 //            the prop: a voice behind a door), a cast id or 'player'
 //     sfx    a recipe in audio/sfx.js, played at the prop (audio/audio.js)
-//     pose   { arms?, angry?, face?, for? }: drawn on whoever fired it for `for` seconds (default 1.5); face: his
-//            head turns to the prop (arms: a render/characters.js pose, e.g. 'point', 'reach', 'shrug')
+//     pose   { arms?, angry?, face?, slump?, for? }: drawn on whoever fired it for `for` seconds (default 1.5); face:
+//            his head turns to the prop (arms: a render/characters.js pose, e.g. 'point', 'reach', 'shrug'); slump:
+//            asleep, his head forward on the desk, glances not shown (drawn only: he sees exactly as before)
 //     set    { key: value }: the toy's new state
 //     burst  { kind, n?, speed?, lift?, ttl? }: particles at the prop (core/fx.js BURST_KINDS)
 //   try      harness commands after which it has fired (the gate's `toys` check plays them)

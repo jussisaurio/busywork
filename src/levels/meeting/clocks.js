@@ -57,7 +57,7 @@ function kevAndTheCup(game, kev, sim) {
     kev._askedAt = null; // ask now, if he still sees it
   }
   if (kev._askedAt != null && game.loopTime - kev._askedAt < ASK_GAP) return;
-  if (kev._sayQ?.length || game.fx.bubbles.some((b) => b.owner === kev.id && b.age < 0.9)) return; // let his last line (😩 at the empty pot) land first
+  if (kev._sayQ?.length || game.fx.bubbles.some((b) => b.owner === kev.id && !b.toy && b.age < 0.9)) return; // let his last line (😩 at the empty pot) land first
   if (Math.hypot(cup.x - kev.x, cup.y - kev.y) > ASK_RADIUS || !npcSees(game, kev, cup.x, cup.y)) return;
   kev._faceTarget = Math.atan2(cup.y - kev.y, cup.x - kev.x);
   if (p.busyPose === 'phone') { // the cup at your ear (pretending, standing): is that... a phone?

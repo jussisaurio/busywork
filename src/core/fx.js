@@ -17,6 +17,9 @@ export function createFx() {
 export function say(game, owner, icons, opts = {}) {
   const kind = opts.kind ?? 'speech';
   const ownerKey = typeof owner === 'string' ? owner : `${owner.x},${owner.y}`;
+  // A toy's bubble never covers a real line still showing: level code may read the bubbles (when did he last
+  // speak?), and a toy must decide nothing (sim/mechanics/toy.js). The real line wins; the toy shows its pose.
+  if (opts.toy && game.fx.bubbles.some((b) => b.ownerKey === ownerKey && !b.toy)) return null;
   game.fx.bubbles = game.fx.bubbles.filter((b) => b.ownerKey !== ownerKey);
   const bubble = {
     id: ++bubbleSeq,
