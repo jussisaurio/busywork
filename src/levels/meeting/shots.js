@@ -160,6 +160,28 @@ export default [
     cmds: ['busy until 4:00'],
     intent: 'End card, a loss: the meeting happened, and you stood in front of a blank screen with no slides (📊❌🦗).',
   },
+  // ---- The plain fails with a cause (end-scenes-fails.js; verdict.js verdictFull), one block.
+  {
+    name: 'end-fail-sip',
+    cmds: [...POUR, 'sit busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you had the day\'s last cup of coffee in your hand. Up front by the ' +
+      'blank screen you held up one finger (☝️) and are now drinking it, tipped right back, while the boss and Lin ' +
+      'wait (😐).',
+  },
+  {
+    name: 'end-fail-call',
+    cmds: ['goto kitchen_table busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you were pretending to be on the phone when 4:00 came. Up front by ' +
+      'the blank screen you keep the call going, phone at your ear, one finger up at the room (☝️📱: one sec). The ' +
+      'boss taps his wrist (⌚), then gets cross.',
+  },
+  {
+    name: 'end-fail-puppets',
+    cmds: ['goto meeting_seat busy', 'busy until 3:59', 'wait until 4:00', 'wait 8s'],
+    intent: 'End card, a loss: no slides, and you were already in the meeting room. You stand in the projector beam, ' +
+      'back to us, hands up, and your shadow on the white screen is a duck, its beak opening and shutting. The boss ' +
+      'stares (😐); Lin covers her mouth, trying not to laugh (🤭).',
+  },
   {
     name: 'fire-door-push',
     cmds: ['goto fire_door', 'interact', 'wait 0.3s'],
@@ -256,9 +278,16 @@ export default [
   },
   {
     name: 'end-blamed-chair',
-    cmds: [...SPILL, 'put coffee busy', 'sit busy', 'busy until 4:00'],
+    cmds: [...SPILL, 'put coffee busy', 'busy until 4:00'],
     intent: 'End card, a loss: the meeting fell apart, but you were the only one not in the meeting room, so everyone ' +
       'points at your empty chair: blamed.',
+  },
+  {
+    name: 'end-where-desk',
+    cmds: [...SPILL, 'put coffee busy', 'sit busy', 'busy until 4:00', 'wait 8s'],
+    intent: 'End card, blamed ("where were you?"): the projector died, and at 4:00 you were at your own desk, typing. ' +
+      'You sit in the foreground hammering at the keyboard (⌨️💨); behind you, crowded in the meeting-room doorway, ' +
+      'the boss, Lin and Kev stare at the one person in the office working (🪑❓, then 👀⌨️❓).',
   },
   {
     name: 'end-blamed-mug',

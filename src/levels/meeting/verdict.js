@@ -20,3 +20,34 @@ export function verdict(game, { routes, present }) {
   if (w.mug === 'kev_desk' && present) return { why: 'kev', stare: { at: 'meeting_kev', think: ['☕', '@kev'], say: ['😠', '👉', '@kev'] } };
   return null;
 }
+
+// ---- The plain fails (end-scenes-fails.js). The verdict above, then: a fail with nothing else to say gets the
+// cause you can see at 4:00 (outcome.why), the first that holds:
+//   the day's last cup in your hand          -> 'sip'      you drink it up front, slowly
+//   on the phone (pretending, standing)      -> 'call'     you keep the call going up front
+//   already in the meeting room              -> 'puppets'  you stand in the beam and make a duck
+//   anywhere else                            -> none: the plain fail (you hurry in to the blank screen)
+// Not while at work you were sent to (the end card is the order's then: render/screens.js 'stopped').
+export function verdictFull(game, a) {
+  const v = verdict(game, a);
+  if (v) return v;
+  const p = game.player;
+  if (game.rules.stoppedBy && game.clock.forced > 0) return null;
+  if (a.result === 'fail') {
+    if (p.held === 'coffee') return { why: 'sip' };
+    if (p.busyPose === 'phone') return { why: 'call' };
+    if (a.present) return { why: 'puppets' };
+  }
+  return verdictWhere(game, a);
+}
+
+// ---- "Where were you?" (end-scenes-fails.js tableauWorking). Blamed, and at 4:00 you were at your own desk, typing:
+// the one person in the office working. The room turns to look (through the wall: your desk is just south of it).
+// why 'working'. The restroom is meeting.where (outcome.where), not this.
+function verdictWhere(game, a) {
+  const p = game.player;
+  if (a.result === 'blamed' && p.seated && p.busyPose === 'typing') {
+    return { why: 'working', stare: { at: 'player', think: ['🪑', '❓'], say: ['👀', '⌨️', '@player'] } };
+  }
+  return null;
+}

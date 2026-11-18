@@ -16,6 +16,7 @@ import { TAB, person, bubble, floorCarpet, floorTiles, confetti, backWall } from
 import { chair } from '../../render/tableau-furniture.js';
 import { findNpc } from '../../game/perception.js';
 import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
+import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
 
@@ -53,6 +54,13 @@ function endKind(o) {
   if (o.result === 'win' && routes.includes('keycard') && routes.includes('projector')) return 'campfire'; // both at once
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
+}
+
+// ---- The plain fails (end-scenes-fails.js): a fail the verdict gave a cause (verdict.js verdictFull) draws it.
+function endKindFull(o) {
+  const k = endKind(o);
+  if (k === 'blamed' && o?.why === 'working') return 'working'; // "where were you?": at your desk, typing
+  return k === 'fail' && FAIL_SCENES[o?.why] ? o.why : k;
 }
 
 function bossJacket(game) {
@@ -736,13 +744,14 @@ function meetingScreen(ctx, t, dead, dx) {
 }
 
 export const END_SCENES = {
-  kindOf: endKind,
+  kindOf: endKindFull,
   scenes: {
     bib: { win: false, icons: ['🥪', '🟡', '⌨️'], draw: tableauBib }, // Lin saw the mustard: you type in a bib (end-scenes-combo.js)
     campfire: { win: true, icons: ['📽️', '🔥', '🔒'], draw: tableauCampfire }, // both routes: marshmallows at the projector
     keycard: { win: true, icons: ['🔒', '🪪', '👊'], draw: tableauKeycard }, // locked out: his card is in your pocket
     projector: { win: true, icons: ['📽️', '💥', '🙅'], draw: tableauProjector }, // the projector died; no meeting
     fail: { win: false, icons: ['📊', '❌', '🦗'], draw: tableauFail },
+    ...FAIL_SCENES, // the plain fails with a cause: sip, call, puppets (end-scenes-fails.js)
     caught: { win: false, icons: ['😠', '👉', '📦'], draw: tableauCaught }, // fired: box of desk stuff, pointed at the elevator
     blamed: { win: false, icons: ['🪑', '👉', '😠'], draw: tableauBlamed }, // the meeting happened; your chair was empty
     restroom: { win: false, icons: ['🪑', '🚽', '🙂'], draw: tableauRestroom }, // blamed, and in walks you, hands wet
