@@ -27,7 +27,7 @@ export const inputOf = (game) => game.input ?? NULL_INPUT;
 
 // True while the player can't move or act on their own.
 export function playerLocked(game) {
-  return !!(game.player.locked || game.clock.forced > 0 || game.caught || game.outcome);
+  return !!(game.player.locked || game.player.through || game.clock.forced > 0 || game.caught || game.outcome);
 }
 
 export function updatePlayer(game, dt) {
@@ -49,6 +49,16 @@ export function updatePlayer(game, dt) {
   if (game.rules.out && !game.caught && !game.outcome) {
     game.clock.ff = false;
     serveOut(game, game.rules.out, dt);
+    return;
+  }
+  // Through a door the map calls solid (walkThrough): the scripted steps, then you're free.
+  if (p.through && !game.caught && !game.outcome) {
+    setBusy(game, false, null);
+    game.clock.ff = false;
+    if (stepWalk(game, p.through, PLAYER_SPEED, dt)) {
+      p.through = null;
+      p.moving = false;
+    }
     return;
   }
   // Caught / end beat / externally locked: frozen.
@@ -217,6 +227,16 @@ function serveOut(game, out, dt) {
   game.player.locked = false;
   sitAtDesk(game);
   game.events.emit('trespass:out', { by: out.by });
+}
+
+// Through a door that is solid to the player's own feet (a level's: meeting's fire door). path: [{ x, y }, ...] in
+// tile units, walked straight, no collision, at a normal walk; she can't move or act until she's through.
+export function walkThrough(game, path) {
+  const p = game.player;
+  standUp(game);
+  setBusy(game, false, null);
+  p.moving = false;
+  p.through = { path: path.map((q) => ({ x: q.x, y: q.y })), wp: 0 };
 }
 
 // A walk the player is made to take (to her desk, to the front of the room): the path from where she is to `to`

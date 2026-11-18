@@ -23,6 +23,7 @@ import { leaving } from '../../sim/npcs.js';
 import { leaveDay } from '../../play/scenario.js';
 import { catchNow } from '../../play/rules.js';
 import { RESTROOM_ROWS } from './restroom.js';
+import { BALCONY_ROWS, openDoor } from './balcony.js';
 
 // Out through the entrance (L, 4,13) and across the lobby to the elevator (E): tile units, straight legs.
 const HOME_PATH = [{ x: 4.5, y: 12.5 }, { x: 4.5, y: 14.5 }, { x: 2.5, y: 15.5 }];
@@ -72,6 +73,7 @@ export const INTERACTIONS = {
       const boss = findNpc(game, 'boss');
       w.bossLockedOut = false;
       w.letIn = game.loopTime;
+      openDoor(game, 2.4); // wide, until he's through (balcony.js doorClock)
       if (boss) {
         boss._bangLine = null;
         setOverride(boss, 'grateful'); // off duty (roles.js); no mechanic owns it, so he walks his day: in through the door
@@ -79,6 +81,7 @@ export const INTERACTIONS = {
       game.events.emit('boss:letIn', {});
     },
   },
+  ...BALCONY_ROWS, // out onto the balcony and back in (balcony.js): after let_boss_in, which the same push is while he pounds
   // Just go home. Any time: you walk out to the elevator, and you lose (scenario.js leaveDay; outcome.why 'home', the
   // bus with your phone buzzing, end-scenes.js). With Kev on his way out at 3:00 you ride down together, both waving
   // 👋 (why 'homeKev').

@@ -49,7 +49,29 @@ export function drawHud(ctx, game, t, mem) {
       drawPaused(ctx, t);
       drawKeyLegend(ctx, game);
     }
+    if (game.restartHold > 0) drawRestartHold(ctx, game.restartHold);
   }
+}
+
+// Holding R: the loop mark in the middle of the map, an ochre ring filling round it from the top, clockwise: the
+// same arc as an action's (render/characters.js drawActionProgress), bigger. No words.
+function drawRestartHold(ctx, k) {
+  const cx = VIEW_W / 2;
+  const cy = HUD_H + (VIEW_H - HUD_H) / 2;
+  fillCircle(ctx, cx, cy, 44, 'rgba(18,14,10,0.45)');
+  loopIcon(ctx, cx, cy, 16, C.cream, 4);
+  ctx.lineWidth = 7;
+  ctx.strokeStyle = 'rgba(24,19,15,0.5)';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 34, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = C.ochre;
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 34, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
 }
 
 // --- pause ---------------------------------------------------------------------------

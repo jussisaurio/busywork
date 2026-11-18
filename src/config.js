@@ -3,6 +3,10 @@
 
 export const TILE = 32; // pixels per tile at 1x zoom
 export const FIXED_DT = 1 / 60; // simulation step (real seconds)
+// A playtest build: when set to a level id, a URL without ?dev boots straight into that level and mounts no level menu
+// (the menu was the only way to another level). ?dev gives the menu and every level; ?level=<id> works either way (the
+// tools use it; this is not a security boundary). null: no playtest build.
+export const PLAYTEST_LEVEL = 'meeting';
 export const SEED = 20261114; // same seed every loop -> deterministic days
 
 // --- Clock -----------------------------------------------------------------

@@ -20,6 +20,7 @@ import { startClaim } from '../../sim/mechanics/claim.js';
 import { endOverride } from '../../sim/override.js';
 import { catchNow } from '../../play/rules.js';
 import { whoInside } from './restroom.js';
+import { doorClock, bossOnBalcony } from './balcony.js';
 const ASK_GAP = 20; // real seconds between Kev's asks
 const ASK_RADIUS = 4; // tiles: how close the cup must be for Kev to ask for it
 const TAKE_RADIUS = 3.5; // tiles: how close an unattended cup must be for Kev to spot it
@@ -32,6 +33,8 @@ const HUG_WAIT = 12; // real seconds after the door: if he never reaches you, he
 export function clockFor(game, npc, sim) {
   listen(game);
   game.player._stall = whoInside(game); // the restroom's rows read it (restroom.js)
+  doorClock(game, npc); // the fire door's swing (balcony.js)
+  if (npc.id === 'boss') bossOnBalcony(game, npc); // his card in your hand out there: he snatches it
   const now = game.clock.minute;
   if (npc.id === 'kev') kevAndTheCup(game, npc, sim);
   if (npc.id === 'boss' && (npc.override === 'grateful' || inHug(game.world))) bossLetIn(game, npc, sim); // (the gather may come mid-hug)

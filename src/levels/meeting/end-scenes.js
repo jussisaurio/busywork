@@ -20,6 +20,7 @@ import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
 import { tableauLin, tableauBossMug, tableauComputer } from './end-scenes-desks.js';
+import { BALCONY_SCENES } from './end-scenes-balcony.js';
 
 // Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
 const MORE_CAUGHT = new Set(['typewriter', 'computer']);
@@ -52,6 +53,8 @@ function endKind(o) {
   // why 'home' / 'homeKev': you just went home (interactions.js go_home); with Kev, if he was on his way out too.
   if (o.result === 'fail' && (o.why === 'home' || o.why === 'homeKev')) return o.why;
   // o.why: the verdict's reason (verdict.js): 'mug'/'desk' the empty mug was yours; 'kev' it was on Kev's desk.
+  // why 'balcony' / 'snatched' / 'together': 4:00 found you on the balcony (balcony.js balconyVerdict).
+  if (o.why === 'balcony' || o.why === 'snatched' || o.why === 'together') return o.why;
   if (o.result === 'blamed' && (o.why === 'mug' || o.why === 'desk')) return 'mug';
   // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
   if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
@@ -122,7 +125,7 @@ function tableauKeycard(ctx, game, t, e) {
 
 // The balcony: the sky and the rooftops over the railing at the back, concrete pavers, a sand-bucket ashtray in
 // the far corner and his butts all round it.
-function balconySlab(ctx, x, y, w, h) {
+export function balconySlab(ctx, x, y, w, h) {
   ctx.fillStyle = '#a7c9de';
   ctx.fillRect(x, y, w, 70);
   for (const [cx, cy] of [[560, y + 22], [700, y + 34]]) fillEllipse(ctx, cx, cy, 30, 8, '#c9dde8');
@@ -156,7 +159,7 @@ function balconySlab(ctx, x, y, w, h) {
 
 // The wall between them, end on, with the red fire door in it (shoved dx px by his fists), the EXIT sign over it
 // and the card reader on his side, blinking red.
-function fireDoorSide(ctx, x, t, dx) {
+export function fireDoorSide(ctx, x, t, dx) {
   ctx.fillStyle = C.wallFront;
   ctx.fillRect(x, TAB.y, 18, TAB.h);
   ctx.fillStyle = '#4a4f55';
@@ -777,5 +780,6 @@ export const END_SCENES = {
     linHungry: { win: true, icons: ['☕', '😭', '🥪'], draw: tableauLin },
     bossMug: { win: true, icons: ['☕', '🤨', '😳'], draw: tableauBossMug },
     computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer },
+    ...BALCONY_SCENES, // out on the balcony at 4:00: alone, snatched, together (end-scenes-balcony.js)
   },
 };

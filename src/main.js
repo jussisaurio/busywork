@@ -1,5 +1,5 @@
 // Browser entry point: wires input, renderer, audio and the fixed-step loop.
-import { FIXED_DT } from './config.js';
+import { FIXED_DT, PLAYTEST_LEVEL } from './config.js';
 import { createGame } from './state.js';
 import { loadEndings } from './game/endings.js';
 import { startLoop, runFrame } from './game/loop.js';
@@ -15,13 +15,18 @@ import { getLevel, levels, defaultLevel } from './levels/index.js';
 import { mountLevelPicker } from './play/level-picker.js';
 
 const SPEEDS = [1, 2, 4, 8];
+const RESTART_HOLD = 1; // seconds R is held to restart the day
+let restartSpent = false;
 
 const canvas = document.getElementById('game');
 
 // ?level=<id> picks the level; without it, the registry's default. An unknown id replaces the canvas with
 // getLevel's error (which lists the levels), so a typo is visible, not a silent level 1.
+const params = new URLSearchParams(location.search);
+const dev = params.has('dev');
+const playtest = !!PLAYTEST_LEVEL && !dev; // the playtest build: one level, no menu (config.js)
 function pickLevel() {
-  const id = new URLSearchParams(location.search).get('level');
+  const id = params.get('level') ?? (playtest ? PLAYTEST_LEVEL : null);
   if (id === null) return undefined;
   try {
     return getLevel(id);
@@ -34,8 +39,8 @@ function pickLevel() {
   }
 }
 
-const levelParam = new URLSearchParams(location.search).get('level');
-mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k] === defaultLevel));
+const levelParam = params.get('level');
+if (!playtest) mountLevelPicker(levels, levelParam ?? Object.keys(levels).find((k) => levels[k] === defaultLevel), dev);
 
 const input = createInput(window);
 const game = createGame({ input, level: pickLevel() });
@@ -54,6 +59,11 @@ const pauseIfPlaying = () => {
   if (game.phase === 'day' && !game.outcome && !game.caught) game.paused = true;
 };
 window.addEventListener('blur', pauseIfPlaying);
+// Tab is not a game key: left alone it moves focus to the page's own controls and then out of the window, and the
+// blur above pauses the day. Swallow it while a day runs.
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab' && game.phase === 'day') e.preventDefault();
+});
 document.addEventListener('visibilitychange', () => document.hidden && pauseIfPlaying());
 const PAD = 6; // forgiving hit area around drawn buttons
 const viewPoint = (e) => {
@@ -107,6 +117,8 @@ function frame(now) {
 
   if (game.phase === 'title' || game.phase === 'end') {
     acc = 0;
+    game.restartHold = 0;
+    restartSpent = input.isDown('restart'); // R held through the card must be let go before it counts
     // E is both 'start' and 'interact': the key that starts the day must not also use whatever is in front of you on
     // its first frame (Saturday: you start seated, so it rang the boss's phone).
     input.pressed('interact');
@@ -117,9 +129,20 @@ function frame(now) {
       if (game.paused) game.paused = false;
       else pauseIfPlaying();
     }
-    if (input.pressed('restart')) {
-      startLoop(game); // also unpauses (resetLoop)
-    } else if (game.paused) {
+    // Restart is a hold (RESTART_HOLD s of real time, a ring fills on screen); a tap or an early release does nothing.
+    input.pressed('restart');
+    if (input.isDown('restart') && !restartSpent) {
+      game.restartHold = Math.min(1, (game.restartHold ?? 0) + realDt / RESTART_HOLD);
+      if (game.restartHold >= 1) {
+        restartSpent = true; // one restart per hold: release R before the next
+        game.restartHold = 0;
+        startLoop(game); // also unpauses (resetLoop)
+      }
+    } else {
+      game.restartHold = 0;
+      if (!input.isDown('restart')) restartSpent = false;
+    }
+    if (game.paused) {
       acc = 0;
       input.pressed('interact'); // a press made while paused doesn't fire on resume
     } else {

@@ -21,7 +21,8 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `verdict.js` | the 4:00 room's judgement of the mug (`meeting.verdict`) |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
-| `decor.js`, `looks.js`, `end-scenes.js`, `sounds.js`, `voices.js` | presentation |
+| `balcony.js` | the fire door your way: out, back in by card or behind someone, the snatch, the 4:00 balcony verdicts |
+| `decor.js`, `looks.js`, `end-scenes.js`, `sounds.js`, `voices.js` | presentation (`end-scenes-balcony.js`: the three balcony endings) |
 | `painters.js` | the level's drawn things: the sandwich, party popper, cricket, empty coffee bag, fire door and balcony |
 | `coffee.js` | the office coffee pot as a part other levels borrow: a cup item and a `pour_coffee` row (level 1 keeps its own pot) |
 | `shots.js` | the screenshots (with their intents) for the pictures cold read (`docs/COLD-READ.md`) |
@@ -149,9 +150,25 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
   green), through. No card: override `lockedOut`, `world.bossLockedOut = true`, `boss:lockedOut` (a rattle), and the
   escalation lines every ~2.5 s with their events (`boss:pockets`, `boss:knock`, `boss:bang`, `boss:pound`,
   `boss:fume`), bang sounds and screen shakes, until the day ends. Only you are near enough to hear.
-- **The Good Samaritan** (`interactions.js` `let_boss_in`, `clocks.js` `bossLetIn`). Any other time, pushing the fire
-  door's bar is a toy: it opens a crack, the held-door alarm buzzes, the reader blinks red, it swings shut. While he is
-  locked out, the same push lets him in: `world.bossLockedOut = false` (the keycard route is gone), `boss:letIn`, the
+- **The balcony, your way** (`balcony.js`; decided by Jussi: if an NPC can do it, so can you). From inside, E pushes
+  the bar any time: the door swings open, you step out (`fireDoor:out`; no card on you: 🪪❓), and it shuts behind
+  you. From outside the reader takes only a keycard: with his card, a beep and back in (`fireDoor:badge`); without
+  it the reader blinks red at you and E pounds on the door (`toys.js` `pound`, nobody comes). Anyone coming through
+  holds the door open a moment: slip in behind them (`follow_in`). The boss on his smoke is off the clock
+  (`roles.js` `idleOkIn: 'balcony'`): your standing about is fine, he offers you a cigarette (`smoke_offer`, 🚬❓),
+  and when he badges back in he holds the door and points you in (👉🚪, `fireDoor:held`). His card in your hand out
+  there: he sees it as he comes through and snatches it (🪪😤, `keycard:snatched`, `world.snatched`); locked out
+  himself, he snatches it at the reader. At 4:00 on the balcony (`verdict.js` via `balconyVerdict`):
+  - **alone** (`why: 'balcony'`), blamed: the table stares through the door (🔒🪑👀). The joke: you escaped the
+    meeting onto a balcony that only opens one way, and the whole meeting can see you.
+  - **snatched** (`why: 'snatched'`), blamed: he took his card, badged in 😏 and shut the door in your face; he sits
+    at the table with it pointing at your empty chair while you pound (🪪😏🔒). The joke: the keycard win the wrong
+    way round, with you as the one locked out.
+  - **together** (`why: 'together'`), a keycard win: his card stashed inside, you out there when he comes for his
+    smoke, and now nobody can open the door. He pounds, gives up, offers you one (🔒👊🚬). The joke: the meeting
+    can't happen because the only two people it needs are locked out together, and he's fine with it.
+- **The Good Samaritan** (`interactions.js` `let_boss_in`, `clocks.js` `bossLetIn`). While he is locked out, pushing
+  the fire door's bar lets him in (this row beats stepping out): `world.bossLockedOut = false` (the keycard route is gone), `boss:letIn`, the
   door stands open, override `grateful` (off duty, `roles.js`). He comes through and hugs you (`boss:hug`: 🤗, 🙏😊,
   arms round you). Holding his card when he lets go: 🪪❗👉, caught, `outcome.why = 'samaritan'` (end card: you locked
   out on the balcony, he dangles the card inside: 🤗🪪🔒). Not holding it: `world.samaritan`, and at 4:00 a fail with

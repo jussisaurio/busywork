@@ -51,5 +51,7 @@ createServer(async (req, res) => {
     send(404, 'not found\n');
   }
 }).listen(PORT, '127.0.0.1', () => {
-  console.log(`busywork: http://127.0.0.1:${PORT}/ (serving ${ROOT}, caching off)`);
+  console.log(`busywork: serving ${ROOT}, caching off`);
+  console.log(`  playtest build (config.js PLAYTEST_LEVEL): http://127.0.0.1:${PORT}/`);
+  console.log(`  dev, level menu and every level:           http://127.0.0.1:${PORT}/?dev`);
 });
