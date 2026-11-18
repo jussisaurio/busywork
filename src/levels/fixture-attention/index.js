@@ -18,6 +18,7 @@
 //   #W..........#  8   W the workstation
 //   #############  9
 import { at, deg } from '../../config.js';
+import { scheduler } from '../office/cast.js';
 import { OWN_DESK } from '../office/legend.js';
 
 const MAP = [
@@ -50,7 +51,7 @@ const SPOTS = {
   meeting_player: { x: 4, y: 4, face: 'N' }, // the empty chair he stares at if you're blamed
 };
 
-const s = (time, entry) => ({ at: at(time), ...entry });
+const s = scheduler();
 
 const NPC_DEFS = [
   {
