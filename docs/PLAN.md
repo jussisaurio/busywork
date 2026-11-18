@@ -37,6 +37,8 @@ Decided by the overseer (say so if wrong):
 - Coffee can be poured on things. On a person it is slapstick (wet and cross, not hurt) and loses the day.
 - The projector should be noticed by someone who sees or hears it, not known at once. It changes the projector
   route's timing, so it is its own change, in slice 2.
+- Engineering and process calls are the overseer's (Jussi, 2026-11-18: he judges what is fun and funny and reports
+  bugs; he does not arbitrate engineering). Decide, or ask an agent that knows the code, and record who decided.
 - GitHub issues are not used. This file is the tracker, because every agent reads the repo and not the website.
 
 ## Slice 1 (engine first, then the cheapest things that add the most)
@@ -50,7 +52,7 @@ Meeting:
 - The fire door: push it and the reader blinks red. Open it for the locked-out boss: the Good Samaritan loss.
 - The elevator: leave at any time, and lose.
 - The restroom: knock when it is taken; go in; wash off the mustard, with Kev nudging you to.
-- Coffee: into the ficus (toy); into a typewriter (a loss).
+- Coffee: into the ficus (toy); into a computer (a loss).
 - The picture war, with Lin's and Kev's irritation plain to see.
 - Kev without coffee dozes off.
 - A set of plain fails (shadow puppets is one). "Where were you?" for the restroom and your desk. The bib.
@@ -61,7 +63,7 @@ Meeting:
   on for Meeting's sandwich and keycard only, because turning it on everywhere changed outcomes in fixture,
   discreet-packaging and audit); the fire door and both Good Samaritan losses; go home; the restroom (knock, hide,
   wash, Kev's nudge, blamed from the restroom); the picture war.
-- Merged later the same day: the ficus, coffee into a typewriter, Kev dozing; the fix for the cup in the boss's
+- Merged later the same day: the ficus, coffee into a computer, Kev dozing; the fix for the cup in the boss's
   office (above). `gate.mjs --level meeting` passes.
 - Merged last: the plain fails by what you are doing at 4:00 (cup in hand, on the phone, in the room: shadow
   puppets), "where were you" typing at your desk, the bib, the campfire, Kev's doze drawn with rising z's.
@@ -86,6 +88,35 @@ The game is published at https://jussisaurio.github.io/busywork/ (GitHub Pages f
   notices the mug on his own desk before 4:00; Kev tilts the picture the other way and
   only Lin straightens it; typing at another desk gives no busy credit.
 
+## Cleanup round (2026-11-18, one lead; merged unless marked)
+Asked for by Jussi after the playtest: less duplicated and special-cased code. Calls were the builders' and the
+lead's, accepted by the overseer.
+
+- `src/levels/office/`: the voices, cast, legend, decor, looks and coffee that levels had copied. Not a level.
+- One take (`src/sim/take.js`): an owner always walks over to arm's length; the `walk` flag is gone.
+- One catch path: `rulesOff(game)` in `play/rules.js`; `caught()` draws the sightline.
+- Meeting's end scenes: `endings.js` (one classification), `end-set.js` (each set once), `poses.js`.
+- One rule for E (`pick()` in `play/interactions.js`): an action that uses the held item wins, else one that needs
+  nothing in hand. Hand needs are data (`hand`), and the validator refuses two actions on one target that only table
+  order tells apart. Player-visible: E presses a toy before it drops your item; typing needs empty hands;
+  `let_boss_in` needs you inside. A drowned computer is dead (types nothing). Not tried with real keys.
+- Meeting has one `computer` type and one `plant` type.
+- The gate replays each level's known plans first, then one-step variations of the wins, then searches. `routes`
+  passes when a known plan wins on replay, so the verdict no longer hangs on fuzz luck. `tools/profile.mjs` (CPU,
+  `--alloc`).
+- The idle projector win (found by the fuzzer: stand in the kitchen all afternoon, pour at the end). The engine rule
+  is sound; the boss never saw the kitchen. He now looks in at its doors on his 3:22 walk back.
+- Running: door knocking (four implementations into one) and the smaller Meeting leftovers.
+
+Open after the round:
+- Idle holes in Meeting: the kitchen until 3:22, the meeting room and 25,10 (his peeks do not hold). Whether it
+  feels wrong in play is Jussi's call. If so: a general rule, and a gate check on the longest stretch a win stands
+  unwatched, not more stops on his schedule.
+- audit: the reclaimed laptop jumps from hands to desk after the owner walks over.
+- early-bus: the `clock` route has no recorded winning plan (the gate prints the plan to add to `gate.goldenPlans`).
+- Tools: copied `arg` helpers and test `ok` boilerplate; `tools/press-stops.mjs` may be dead; gate timings in
+  CONTRACTS.md are stale; merged worktree branches not deleted.
+
 ### Known rough edges (prune as they are fixed)
 - A late tattle while you are on the balcony teleports you to your desk.
 - A toy walk is drawn only: the person's real body, and what it sees, carries on along its route. Unchecked whether
@@ -93,15 +124,15 @@ The game is published at https://jussisaurio.github.io/busywork/ (GitHub Pages f
 - The walk-in frame does not show the player; the balcony is small on the map; the pounding bubble covers the reader.
 - The wall clock is small; its tilt and wedge are hard to see. No eject pose at the restroom (bubbles only).
 - Put-down items bob (an engine fix moved render goldens in four other levels and was backed out).
-- Meeting's sim cost is about 1.7x its perf budget after a fix; the budget predates the toys.
+- Meeting's sim cost is about 3.5 ms/kframe; the perf budget predates the toys. Left: per-step level hooks (Interview
+  `phoneTick`, Meeting `clockFor` per NPC), the `toyState` spread, `publishWatch` double work.
 - The Samaritan hug is small at map scale. The wash bubble floats over the restroom door.
 - `goto kev_desk` / `boss_desk` in the harness stands you inside the seated NPC (shows in the mustard shot). Fixing
   it changes 37 recorded plans; `sit` stopping on soft stops changes 26. Both wait for a decision.
 - The shelf's three meeting-table endings look alike at shelf size. The shelf with the new endings is unchecked.
 - Nothing new has been seen in a real browser or heard.
 - The ficus: your own 🌱 thought covers the plant, and nothing shows the coffee going in.
-- The typewriter is drawn as a terminal; the catch is instant and remote (nobody walks over); your face is not
-  sooty on the end card; the plant in the fired box could be taken for the ficus.
+- Coffee into a computer: your face is not sooty in play, only on the end card; the plant in the fired box could be taken for the ficus.
 - The campfire's timing is tight (take the card at about 3:21.6); its shot uses fixed clock times and will break
   first if Lin's glance or the boss's hunt moves. A player may never find it.
 - The bib: the sandwich covers Lin's face mid-bite; the ending assumes an 'evidence' catch in Meeting is the mustard.
