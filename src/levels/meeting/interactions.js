@@ -61,4 +61,19 @@ export const INTERACTIONS = {
       game.events.emit('sandwich:taken', {});
     },
   },
+  // ---- More places for the coffee (the day's only cup; brew_coffee). Each one spends it: no projector today.
+  // The boss's ficus (map.js Y), from his doorway: the soil drinks it, a new leaf shoots out (painters-more.js ficus)
+  // and on his next look at it the boss is delighted (toys.js ficus). You are left with nothing in your hands.
+  water_ficus: {
+    on: 'ficus', text: 'pour the coffee into the plant', duration: 1.0, sneaky: false, pose: 'reach',
+    can: (p) => p.held === 'coffee',
+    done(game, a) {
+      game.player.held = null;
+      game.world.cup = 'ficus'; // where the day's cup went (unset until then: no golden moves for a day without it)
+      game.world._ficusAt = game.loopTime;
+      burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.5, lift: 0.9, ttl: 1.0 });
+      say(game, 'player', ['🌱'], { kind: 'thought', ttl: 1.4 });
+      game.events.emit('coffee:ficus', {});
+    },
+  },
 };

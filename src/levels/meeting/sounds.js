@@ -22,6 +22,7 @@ export const SOUNDS = {
       spill_coffee: { sfx: 'pour', spot: 'projector' },
       take_sandwich: { sfx: 'fridgeOpen', spot: 'fridge' },
       take_keycard: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
+      water_ficus: { sfx: 'pour', who: 'player' },
     },
     done: {
       brew_coffee: { sfx: 'machineBeep', spot: 'coffee' },

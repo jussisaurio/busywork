@@ -33,6 +33,7 @@ export default {
     kev_desk: 'kev_desk',
     my_desk_spot: 'my_desk', // beside your seat: where you set things down on your desk
     boss_office_door: 'boss_door',
+    boss_doorway: 'boss_doorway', // standing in his doorway: his plant is in reach, his office is not entered
     kitchen_table: 'kitchen_table',
     entrance: 'door_in',
     restroom_door: 'restroom',
@@ -48,7 +49,7 @@ export default {
   names: NAME,
 
   mapKey: [
-    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, : outside lobby, L entrance (glass door, staff keycard),',
+    'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, Y the boss\'s plant, : outside lobby, L entrance (glass door, staff keycard),',
     '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
@@ -128,6 +129,7 @@ export default {
         : `the boss spots the empty mug on ${SPOT[p.spot] ?? p.spot} ☕🤷`;
       case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';
+      case 'coffee:ficus': return 'you pour the coffee into the boss\'s plant: the soil drinks it, and a new leaf shoots out 🌱';
       default: return undefined;
     }
   },

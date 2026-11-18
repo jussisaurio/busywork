@@ -4,6 +4,7 @@
 import { C, OXBLOOD, MUSTARD, TOMATO, TEAL, OLIVE } from '../../render/palette.js';
 import { dayCue } from '../../config.js';
 import { emptyBag, fireDoor, balcony } from './painters.js';
+import { ficus } from './painters-more.js';
 import { findNpc } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 
@@ -83,6 +84,8 @@ export const DECOR = {
     { tile: 'X', draw: fireDoor, state: fireDoorState },
     { tile: '=', draw: balcony, state: (w, game) => ({ butts: Math.max(0, (findNpc(game, 'boss')?._bangI ?? 0) - 1) }) },
     { tile: 'K', draw: 'coatRack', state: (w) => ({ coat: w.jacket === 'rack', tag: w.keycard === 'rack' }) },
+    // The boss's ficus after the coffee (interactions.js water_ficus): wet soil, a new leaf shooting out.
+    { tile: 'Y', draw: ficus, state: (w, game) => ({ watered: w.cup === 'ficus', since: since(game, w._ficusAt) }) },
   ],
   // Meeting table notepads by tile column; the north ones get a water glass.
   notepads: { north: [12, 14, 15], south: [12, 13, 14, 15] },

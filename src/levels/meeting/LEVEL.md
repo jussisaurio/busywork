@@ -202,6 +202,12 @@ and `sandwich:eaten`.
 - `L` (the glass entrance) is solid for you but `npcPassable`, so NPCs walk through it. `K` coat rack, `F` fridge,
   `C` coffee machine, `J` projector, `P` your desk.
 
+## More beats (BATCH2)
+- **The ficus** (`Y`, 7,5, in the corner of the boss's office). From his doorway (`boss_doorway`, 6,6, outside his
+  office zone) the coffee goes into his plant (`water_ficus`, `world.cup = 'ficus'`, `coffee:ficus`). A leaf shoots
+  out (`painters-more.js ficus`); the boss, if he sees it, is delighted 🌿😍 (toy `ficus`). The cup is gone: no
+  projector route this loop. The joke: the one act of care in the whole office goes to a plant, with stolen coffee.
+
 ## HUD
 - The clock turns red at 3:50 (`clockRedAt`). The wall clock starts ticking at 3:50, tick-tock from 3:55, a tick
   every half minute from 3:57. The projector beam lights the screen from 3:55 (`beamAt`, read by `decor.js`).

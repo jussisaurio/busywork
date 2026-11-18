@@ -182,4 +182,12 @@ export default [
     intent: 'End card, a loss: the projector died of coffee, and you are holding the empty mug, so everyone points at ' +
       'you: blamed.',
   },
+  // ---- More coffee, Kev's doze, the plain fails, the bib, the campfire (one block: a parallel builder appends too).
+  {
+    name: 'ficus-delight',
+    cmds: ['goto coffee_machine busy', 'interact', 'goto boss_doorway busy', 'interact', 'wait 0.3s'],
+    intent: 'You stand in the boss\'s office doorway, empty-handed: you just poured the day\'s only cup of coffee into ' +
+      'his potted plant. A glossy new leaf has shot out of it, the soil is dark and wet, and the boss at his desk ' +
+      'looks at the plant, delighted (🌿😍).',
+  },
 ];

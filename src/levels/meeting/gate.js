@@ -29,8 +29,9 @@ export default {
     'coffee_machine', 'projector', 'coat_rack', 'fridge',
     'boss_desk', 'lin_desk', 'kev_desk', 'my_desk_spot', 'boss_office_door', 'kitchen_table', 'entrance',
     'restroom_door', 'meeting_room', 'meeting_seat',
+    'ficus', 'boss_doorway',
   ],
-  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge'],
+  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'ficus'],
   renderEvents: [
     'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:lockedOut', 'boss:bang', 'boss:pound',
     'boss:workAssigned',
@@ -56,6 +57,7 @@ export default {
     'boss:mugHunt': () => 'mugHunt',
     'mug:found': (p) => `found@${p.spot}`,
     caught: () => 'caught',
+    'coffee:ficus': () => 'ficus',
   },
   binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught',
     'put@coffee', 'put@kev_desk', 'put@my_desk', 'mugHunt'],
