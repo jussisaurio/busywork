@@ -923,9 +923,16 @@ export function drawCharacters(ctx, game, t, mem) {
 // At the loop's start a chevron bobs over your head: no rings at all, so nothing about you reads as a sound.
 function drawPlayerRing(ctx, game, t, mem) {
   const p = game.player;
-  if (!p || p.hidden || game.phase !== 'day') return;
+  if (!p || game.phase !== 'day') return;
   const x = fin(p.x) * T;
   const y = fin(p.y) * T + 7;
+  // Inside a place the map doesn't show (a cubicle: player.inside), you aren't drawn, but what you do in there is:
+  // its progress fills on the floor where you went in, as every action's does (a playtester pressed E in the
+  // restroom, saw nothing happen for the 1.6 s wash, and thought he was stuck in there).
+  if (p.hidden) {
+    if (p.inside) drawActionProgress(ctx, p, x, y);
+    return;
+  }
   const since = t - fin(mem && mem.dayStart, -10);
   if (since >= 0 && since < 2.4) {
     const a = clamp((2.4 - since) / 0.4, 0, 1);
