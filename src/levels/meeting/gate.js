@@ -30,8 +30,10 @@ export default {
     'boss_desk', 'lin_desk', 'kev_desk', 'my_desk_spot', 'boss_office_door', 'kitchen_table', 'entrance',
     'restroom_door', 'meeting_room', 'meeting_seat', 'fire_door', 'exit',
     'ficus', 'boss_doorway', 'typewriter', 'plant', 'balcony',
+    'lin_computer', 'kev_computer', 'boss_computer',
   ],
-  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'fire_door', 'exit', 'restroom_door', 'ficus', 'typewriter', 'plant'],
+  interactable: ['coffee_machine', 'projector', 'coat_rack', 'fridge', 'fire_door', 'exit', 'restroom_door', 'ficus', 'typewriter', 'plant',
+    'lin_computer', 'kev_computer', 'boss_computer'],
   renderEvents: [
     'projector:broken', 'projector:fixing', 'projector:fixed', 'boss:jacket', 'boss:badge', 'boss:lockedOut', 'boss:bang', 'boss:pound',
     'boss:workAssigned',
@@ -66,13 +68,14 @@ export default {
     'coffee:ficus': () => 'ficus',
     'coffee:plant': () => 'ficus',
     'coffee:typewriter': () => 'typewriter',
+    'coffee:computer': (p) => `computer@${p.owner}`,
     'fireDoor:out': () => 'balcony',
     'fireDoor:badge': () => 'badgeIn',
     'keycard:snatched': () => 'snatched',
   },
   binKeys: ['poured', 'broke', 'fixed', 'card', 'cardLost', 'lockout', 'sandwich', 'ate', 'hunt', 'work', 'caught',
-    'put@coffee', 'put@kev_desk', 'put@my_desk', 'mugHunt', 'balcony', 'snatched'],
-  keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate', 'put@coffee', 'put@kev_desk'],
+    'put@coffee', 'put@kev_desk', 'put@my_desk', 'put@lin_desk', 'put@boss_desk', 'mugHunt', 'balcony', 'snatched'],
+  keyActions: ['poured', 'broke', 'card', 'sandwich', 'ate', 'put@coffee', 'put@kev_desk', 'put@lin_desk', 'put@boss_desk'],
   goldenPlans: [
     // Raw movement, with and without pretend, around the kitchen and Kev.
     ['move E 1.5s', 'move S 2s pretend', 'move W 1s', 'wait 3s', 'goto coffee_machine', 'interact', 'move N 2s', 'wait until 2:50', 'pretend until 4:00'],

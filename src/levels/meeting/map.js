@@ -9,12 +9,12 @@ export const MAP = [
   '##############################', // 0
   '#K......G..........#FTCT.....#', // 1
   '#.......G..........#.........#', // 2
-  '#..TTT..G..TTJTTT..#....TTT..#', // 3
+  '#..TBT..G..TTJTTT..#....TTT..#', // 3
   '#.......G..TTTTTT..#.........#', // 4
   '#......YG..........#.........#', // 5
   '#GGGGGDGG#####D#######DD######', // 6
   '#............................#', // 7
-  '#..TTT......TPT......TTT.....#', // 8
+  '#..TNT......TPT......TUT.....#', // 8
   '#............................#', // 9
   '#............................#', // 10
   '#..TTT......TWT......TTT.....#', // 11
@@ -56,19 +56,29 @@ export const LEGEND = {
   // The typewriter on the empty desk behind yours (the mustard chair: whoever sits there is out today). A desk tile like T, but
   // the day's cup can go into its keys (interactions.js drown_typewriter; painters-more.js deadTypewriter).
   W: { kind: 'desk', solid: true, opaque: false, interactable: 'typewriter', draw: 'desk' },
+  // Their computers, each in the middle of its desk (the keyboard in front of the chair): the day's cup goes into
+  // the keys (interactions.js drown_computer; Jussi, 2026-11-18: "make it possible to fuck up everyone's computer").
+  // Setting a cup down is the desk's free end beside it (SPOTS lies), a target of its own. Yours is P (own_desk).
+  B: { kind: 'desk', solid: true, opaque: false, interactable: 'boss_computer', draw: 'desk' },
+  N: { kind: 'desk', solid: true, opaque: false, interactable: 'lin_computer', draw: 'desk' },
+  U: { kind: 'desk', solid: true, opaque: false, interactable: 'kev_computer', draw: 'desk' },
 };
 
 // Named spots: tile coords + facing ('N'|'E'|'S'|'W'). Entities stand at (x+0.5, y+0.5).
 export const SPOTS = {
   player_desk: { x: 13, y: 9, face: 'N' }, // player's seat; player spawns here
-  boss_desk: { x: 4, y: 2, face: 'S' },
-  lin_desk: { x: 4, y: 9, face: 'N' },
   // Put down (sim/mechanics/putdown.js): the empty mug lies on the tile the spot faces. Kev's desk is where it
   // frames Kev (verdict.js); your own is where it frames you (owner 'player': the boss who knows sees it there).
   // The full cup goes on them too: on yours it is yours, and Kev leaves it be; on Kev's desk or the machine it looks
   // free to him, and he takes it (clocks.js).
-  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug', 'coffee'] },
+  kev_desk: { x: 22, y: 9, face: 'N', accepts: ['mug', 'coffee'], lies: { dx: 1 }, shown: { dx: 0, dy: 0.12 } },
   my_desk: { x: 12, y: 9, face: 'N', accepts: ['mug', 'coffee'], owner: 'player' }, // the desk left of P: sit wins at P
+  // Their desks take the empty mug too (verdict.js verdictDesks): Lin takes the fall; the boss's own desk is plain to
+  // Lin through his glass. Only the mug: a full cup left there is a different story, not told yet.
+  // Every desk's cup lies at its free end, one tile right of the computer (lies), drawn on the near half of the desk
+  // top (shown), not over the keyboard (Jussi's playtest: it floated on Kev's keys).
+  boss_desk: { x: 4, y: 2, face: 'S', accepts: ['mug'], lies: { dx: 1 }, shown: { dx: 0, dy: -0.12 } },
+  lin_desk: { x: 4, y: 9, face: 'N', accepts: ['mug'], lies: { dx: 1 }, shown: { dx: 0, dy: 0.12 } },
 
   coat_rack: { x: 2, y: 1, face: 'W' }, // stand here to reach K
   projector: { x: 13, y: 2, face: 'S' }, // stand here to reach J (Kev repairs from here)

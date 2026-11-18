@@ -22,7 +22,14 @@ const name = (id) => NAME[id] ?? id;
 
 const PROJECTOR = { ok: 'working', broken: 'sparking and smoking 💥', fixing: 'Kev is working on it 🔧' };
 const f1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
-const SPOT = { coffee: 'the coffee machine', kev_desk: 'Kev\'s desk', my_desk: 'your desk' }; // put spots (map.js)
+// A win's verdict (verdict.js): who the table blames for the cup.
+const WIN_WHY = {
+  kev: '; the whole table stares at Kev\'s empty chair ☕👉',
+  lin: '; the boss glares at Lin, the empty mug on her desk ☕😠👉, and she shrinks 😨',
+  linHungry: '; the boss glares at Lin, the empty mug on her desk ☕😠👉; she ate no lunch either, and is in tears 😭🥪',
+  bossMug: '; Lin looks from the dead projector to the boss: the empty mug is on his own desk 🤨☕👉, and he sputters 😳',
+};
+const SPOT = { coffee: 'the coffee machine', kev_desk: 'Kev\'s desk', my_desk: 'your desk', lin_desk: 'Lin\'s desk', boss_desk: 'the boss\'s desk' }; // put spots (map.js)
 
 export default {
   mission: 'MISSION: 4:00 PM. You promised slides. You made none. Make sure the meeting never happens.',
@@ -52,7 +59,7 @@ export default {
 
   mapKey: [
     'MAP (# wall, G glass you can see through, T desk/table, D door, H plant, Y the boss\'s plant, W the typewriter on the empty desk behind yours, : outside lobby, L entrance (glass door, staff keycard),',
-    '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
+    '     K coat rack, F fridge, C coffee machine, J projector (sticker on it: ☕🚫), P your desk, B N U the boss\'s, Lin\'s and Kev\'s computers, R restroom, X fire door (staff keycard) onto = the smokers\' balcony (outside), E elevator, i item,',
     '     @ you, b boss, l Lin, k Kev, * floor someone can see right now):',
   ],
 
@@ -60,9 +67,10 @@ export default {
   outcomeText: (o) => (o.result === 'win' && o.why === 'together' ? `WIN 🔒🚬 (meeting cancelled via: ${o.routes.join(' + ')}; you and the boss are both locked out on the balcony, and there's nobody left to hold it)`
     : o.result === 'blamed' && o.why === 'balcony' ? 'BLAMED 🔒👀 (you were locked out on the balcony at 4:00; the whole table came to stare at you through the fire door\'s window)'
     : o.result === 'blamed' && o.why === 'snatched' ? 'BLAMED 🪪😏 (the boss snatched his keycard off you on the balcony and let the door shut in your face; at 4:00 you\'re still out there pounding)'
-    : o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${o.why === 'kev' ? '; the whole table stares at Kev\'s empty chair ☕👉' : ''}`
+    : o.result === 'win' ? `WIN 🎉 (meeting cancelled via: ${o.routes.join(' + ')})${WIN_WHY[o.why] ?? ''}`
     : o.result === 'caught' && o.why === 'samaritan' ? 'CAUGHT 🤗🪪 (you let the boss in, he hugged you and saw his keycard in your hand: now you are the one locked out on the balcony)'
     : o.result === 'caught' && o.why === 'typewriter' ? 'CAUGHT ⌨️💥 (the coffee shorted the typewriter with a bang the whole floor heard; fired: you leave with a box 📦)'
+    : o.result === 'caught' && o.why === 'computer' ? 'CAUGHT ⌨️💥 (the coffee shorted a computer with a bang the whole floor heard; fired: you leave with a box 📦)'
     : o.result === 'caught' ? 'CAUGHT by the boss 😠 (fired: you leave with a box 📦)'
     : o.result === 'blamed' && o.why === 'mug' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is in your hand)'
     : o.result === 'blamed' && o.why === 'desk' ? 'BLAMED ☕👉 (the projector died of coffee, and the empty mug is on your desk)'
@@ -116,7 +124,7 @@ export default {
       case 'boss:letIn': return 'you push the fire door open for the boss: he\'s back in 🚪 (the alarm buzzes)';
       case 'boss:hug': return 'the boss throws his arms round you 🤗 … 🙏😊';
       case 'boss:badge': return 'beep: the boss holds his keycard to the fire door\'s reader and comes back in 🪪';
-      case 'meeting:calledOff': return 'the boss points at the dead projector 📽️💥🙅 and waves everyone out 👋🚪';
+      case 'meeting:calledOff': return 'the boss faces the dead projector, a hand over his face 📽️💥, throws up his hands 📊❌ and waves everyone out 👋🚪';
       case 'boss:suspicious': return 'the boss eyes you ❓ (a meter over his head starts filling)';
       case 'boss:workAssigned': return `the boss assigned you work 📄 (${p.reason})`;
       case 'projector:broken': return 'the projector is broken 💥';
@@ -152,11 +160,13 @@ export default {
       case 'kev:left': return 'ding: the elevator doors close behind Kev';
       case 'boss:mugHunt': return 'the boss stares at the dead projector 📽️💥, then around the office ☕❓ (he goes looking for the cup)';
       case 'mug:found': return p.spot === 'kev_desk' ? 'the boss spots the empty mug on Kev\'s desk ☕❗, then glares at Kev 😠'
+        : p.spot === 'lin_desk' ? 'the boss spots the empty mug on Lin\'s desk ☕❗, then glares at Lin 😠'
         : `the boss spots the empty mug on ${SPOT[p.spot] ?? p.spot} ☕🤷`;
       case 'item:put': return `you put the ${p.type} down on ${SPOT[p.spot] ?? p.spot}`;
       case 'meeting:gather': return 'everyone heads to the meeting room';
       case 'coffee:ficus': return 'you pour the coffee into the boss\'s plant: the soil drinks it, and a new leaf shoots out 🌱';
       case 'coffee:plant': return 'you pour the coffee into the hallway plant: the soil drinks it, and a new leaf shoots out 🌱';
+      case 'coffee:computer': return `you pour the coffee into ${p.owner === 'player' ? 'your own' : `${NAME[p.owner] ?? p.owner}'s`} computer: BANG, sparks, smoke ⌨️💥`;
       case 'coffee:typewriter': return 'you pour the coffee into the typewriter\'s keys: BANG, sparks, smoke ⌨️💥';
       default: return undefined;
     }

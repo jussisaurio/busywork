@@ -37,8 +37,8 @@ keycard. At 3:48 he holds his card to its reader (🪪, a beep, a green light) a
 stuck out there: the reader blinks red, and he pats his pockets (🪪❓), knocks (✊🚪), bangs (😠🚪🪪), pounds with
 both fists (👊👊🚪), lights another cigarette in a fury (🚬😤), begs (🙏🚪), and goes round again, the door shaking,
 until 4:00. Lin is in the far corner and the meeting room is round the other side: only you are near enough to hear
-him. At 3:54 everyone walks to the meeting room. At 4:00 he stands at the head of the table. If the projector is dead he points at it (📽️💥), says no
-(🙅📊) and waves everyone out (👋🚪): the meeting is off.
+him. At 3:54 everyone walks to the meeting room. At 4:00 he stands at the head of the table. If the projector is dead he faces it, a hand over his face
+(📽️💥), throws his hands up (📊❌) and waves everyone out (👋🚪): the meeting is off.
 
 **Kev** sits at his desk. At 2:38 he goes to the kitchen for his afternoon coffee. The machine has one cup left in
 the pot, and the coffee bag beside it is empty. If the pot is full he pours it and drinks it. If it is empty he

@@ -25,6 +25,10 @@ export const SOUNDS = {
       water_ficus: { sfx: 'pour', who: 'player' },
       water_plant: { sfx: 'pour', who: 'player' },
       drown_typewriter: { sfx: 'pour', who: 'player' },
+      drown_my_computer: { sfx: 'pour', who: 'player' },
+      drown_lin_computer: { sfx: 'pour', who: 'player' },
+      drown_kev_computer: { sfx: 'pour', who: 'player' },
+      drown_boss_computer: { sfx: 'pour', who: 'player' },
     },
     done: {
       brew_coffee: { sfx: 'machineBeep', spot: 'coffee' },
@@ -47,6 +51,7 @@ export const SOUNDS = {
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },
     'boss:jacket': { sfx: 'rustle', who: 'boss' },
     'coffee:typewriter': { sfx: 'splashZap', who: 'player' }, // the keys short: a bang and a fizz
+    'coffee:computer': { sfx: 'splashZap', who: 'player' }, // the same, anyone's computer (interactions.js drownComputer)
     // The fire door (mechanics.js DOORS): his card on the reader, or the escalation without it.
     'boss:badge': { sfx: 'machineBeep', spot: 'fire_door' }, // back from his smoke, card to the reader
     'boss:lockedOut': { sfx: 'rattle', spot: 'fire_door' }, // the handle won't give

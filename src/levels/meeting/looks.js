@@ -42,6 +42,9 @@ export const LOOKS = {
 //          hand while his hands are free, else set down beside him.
 //   marks  every rule that holds sets its flags: angry (a scowl), badge (a tag on a 'suit' torso),
 //          jacket: false (a look with a `shirt` is drawn in it). The authority scowls on his own when he catches you.
+const BLAMES = new Set(['kev', 'lin', 'linHungry']);
+const calledOff = (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving;
+
 export const POSES = {
   arms: [
     // Locked out on the balcony (mechanics.js DOORS): fists on the fire door, except where his line says otherwise
@@ -51,8 +54,16 @@ export const POSES = {
     // Let back in (clocks.js bossLetIn): both arms round you.
     { when: (n, w) => n.id === 'boss' && w.hugAt != null && !w.hugDone, arms: 'box' },
     { when: (n) => n.override === 'fixing', arms: 'reach', item: '#wrench', crank: true },
-    // No projector, no slides: the boss points at the dead projector and calls it off (behaviours.js presenter).
-    { when: (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving, arms: 'point' },
+    // No projector, no slides (behaviours.js presenter): facing the dead projector, the boss puts a hand over his face,
+    // throws his hands up as he says there are no slides (📊❌), then the hand goes back over his face. Never a point:
+    // a point is blame, and on a plain projector win nobody is blamed.
+    // At 4:00 a verdict that blames someone else (verdict.js: Kev's chair, Lin): now he points. The cup on his own
+    // desk: his hands go up, protesting.
+    { when: (n, w, g) => calledOff(n, w) && BLAMES.has(g.outcome?.why), arms: 'point' },
+    { when: (n, w, g) => calledOff(n, w) && g.outcome?.why === 'bossMug', arms: 'shrug' },
+    { when: (n, w, g) => calledOff(n, w) && n._offAt != null && g.loopTime - n._offAt >= 1.3 && g.loopTime - n._offAt < 2.6,
+      arms: 'shrug' },
+    { when: calledOff, arms: 'facepalm' },
     { when: (n) => !n.override && n.anim === 'smoking', arms: (n) => (n.moving ? 'walk' : 'puff'), item: '#cigarette' },
     { when: (n, w) => n.id === 'lin' && w.sandwich === 'lin', arms: 'carry', item: '#sandwich' },
   ],

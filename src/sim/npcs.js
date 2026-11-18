@@ -482,16 +482,19 @@ export function npcTakes(npc, item) {
 //   at     a spot name, or 'player' (default: meeting.chair)
 //   think  the thought bubble (default ['🪑', '❓']); say  the speech 1 s later (default ['😠', '👉', '@player'])
 //   line   a sightline kind (fx.js) from each of them to the player, for the beat (optional)
+// stare.by: { [npcId]: { at?, think?, say?, line? } } replaces the stare for that one NPC (the one the room stares
+// at does not stare at herself: she looks back at the boss and shrinks).
 export function stareAt(game, stare = {}) {
   const m = game.level.meeting;
-  const c = stare.at === 'player' ? game.player : spotPos(game, stare.at ?? m.chair);
   for (const n of game.npcs) {
     if (!n.active || n.override !== m.override) continue;
+    const s = stare.by?.[n.id] ?? stare;
+    const c = s.at === 'player' ? game.player : spotPos(game, s.at ?? m.chair);
     n._faceTarget = Math.atan2(c.y - n.y, c.x - n.x);
     n._gl.hold = 0; // stop any glance: all eyes on the chair
-    say(game, n.id, stare.think ?? ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
-    npcSayLater(n, 1.0, stare.say ?? ['😠', '👉', '@player'], 'speech');
-    if (stare.line) sightline(game, n.id, stare.line, 2.0);
+    say(game, n.id, s.think ?? ['🪑', '❓'], { kind: 'thought', voice: n.voice, ttl: 1.0 });
+    npcSayLater(n, 1.0, s.say ?? ['😠', '👉', '@player'], 'speech');
+    if (s.line) sightline(game, n.id, s.line, 2.0);
   }
 }
 

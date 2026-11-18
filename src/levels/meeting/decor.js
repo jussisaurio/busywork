@@ -99,6 +99,9 @@ export const DECOR = {
     { tile: 'V', draw: ficus, state: (w, game) => ({ watered: w.cup === 'plant', since: since(game, w._plantAt) }) }, // the hallway one
     // The typewriter on the empty desk, after the cup went into its keys (interactions.js drown_typewriter).
     { tile: 'W', draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'typewriter', since: since(game, w._typewriterAt) }) },
+    // The same, anyone's computer (interactions.js drownComputer): the boss's (B), Lin's (N), Kev's (U), yours (P).
+    ...[['B', 'boss'], ['N', 'lin'], ['U', 'kev'], ['P', 'player']].map(([tile, owner]) => (
+      { tile, draw: deadTypewriter, state: (w, game) => ({ dead: w.cup === 'computer' && w.drowned === owner, since: since(game, w._computerAt) }) })),
     // Kev's screen while he dozes on his keyboard (toys.js kev_doze, every 3 s while asleep): seconds asleep so far.
     { tile: 'C', draw: kevPage, state: (w, game) => {
       const d = toyState(game, 'kev_doze');
