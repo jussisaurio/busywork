@@ -19,9 +19,12 @@ import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
 import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
 import { tableauTypewriter } from './end-scenes-more.js';
+import { tableauLin, tableauBossMug, tableauComputer } from './end-scenes-desks.js';
 
 // Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
-const MORE_CAUGHT = new Set(['typewriter']);
+const MORE_CAUGHT = new Set(['typewriter', 'computer']);
+// Wins whose verdict reason has a scene of its own (verdict.js verdictDesks; end-scenes-desks.js).
+const DESK_WINS = new Set(['lin', 'linHungry', 'bossMug']);
 MORE_CAUGHT.add('bib'); // caught over the mustard (clocks.js): end-scenes-combo.js
 
 const B_ANGRY = ['😠'];
@@ -53,6 +56,7 @@ function endKind(o) {
   // o.where (scenario.js, meeting.where): at 4:00 you were in the restroom; you come out late, drying your hands.
   if (o.result === 'blamed') return o.where === 'restroom' ? 'restroom' : 'blamed';
   if (o.result === 'win' && routes.includes('keycard') && routes.includes('projector')) return 'campfire'; // both at once
+  if (o.result === 'win' && !routes.includes('keycard') && DESK_WINS.has(o.why)) return o.why;
   if (o.result === 'win') return routes.includes('keycard') ? 'keycard' : o.why === 'kev' ? 'kev' : 'projector';
   return 'fail';
 }
@@ -64,7 +68,7 @@ function endKindFull(o) {
   return k === 'fail' && FAIL_SCENES[o?.why] ? o.why : k;
 }
 
-function bossJacket(game) {
+export function bossJacket(game) {
   const boss = game.npcs && findNpc(game, 'boss');
   return boss ? game.world.jacket === boss.id : true;
 }
@@ -612,7 +616,7 @@ function tableauRestroom(ctx, game, t, e, o) {
 }
 
 // The meeting table (the blamed scene's): shadow, walnut top, a slide printout at each end place.
-function meetingTable(ctx) {
+export function meetingTable(ctx) {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   rrect(ctx, 302, 236, 350, 54, 24);
   ctx.fill();
@@ -631,7 +635,7 @@ function meetingTable(ctx) {
   }
 }
 
-function smokingProjector(ctx, t, x) {
+export function smokingProjector(ctx, t, x) {
   ctx.save();
   ctx.translate(x, 254);
   ctx.scale(2.4, 2.4);
@@ -639,7 +643,7 @@ function smokingProjector(ctx, t, x) {
   ctx.restore();
 }
 
-function poolOfLight(ctx, x, y) {
+export function poolOfLight(ctx, x, y) {
   for (let i = 3; i >= 1; i--) fillEllipse(ctx, x, y, 26 + i * 14, 7 + i * 4, `rgba(255,240,200,${(0.08 * (4 - i)).toFixed(3)})`);
 }
 
@@ -740,7 +744,7 @@ function tableauKev(ctx, game, t, e) {
 }
 
 // The meeting-room screen: a blank glowing slide (nobody presented), or dead if the projector went.
-function meetingScreen(ctx, t, dead, dx) {
+export function meetingScreen(ctx, t, dead, dx) {
   const x = 392 + dx;
   const bar = [6, 6, 6];
   if (dead) drawScreen(ctx, x, 104, 176, 62, { bar, face: '#9d9a92', scan: ['rgba(0,0,0,0.1)', 4, 10, t] });
@@ -767,5 +771,11 @@ export const END_SCENES = {
     homeKev: { win: false, icons: ['👋', '🚌', '📱'], draw: tableauHome }, // you went home with Kev at 3:00
     // ---- More scenes (end-scenes-more.js)
     typewriter: { win: false, icons: ['☕', '⌨️', '💥'], draw: tableauTypewriter }, // the coffee went into a typewriter
+    // end-scenes-desks.js: the empty mug on Lin's desk (she takes the fall; ate her lunch too: tears), on the boss's
+    // own; the cup into someone's computer
+    lin: { win: true, icons: ['☕', '👉', '😨'], draw: tableauLin },
+    linHungry: { win: true, icons: ['☕', '😭', '🥪'], draw: tableauLin },
+    bossMug: { win: true, icons: ['☕', '🤨', '😳'], draw: tableauBossMug },
+    computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer },
   },
 };

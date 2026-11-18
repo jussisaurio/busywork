@@ -2,6 +2,7 @@
 // the table, the room looks from the projector to the coffee cup, and from the cup to whoever has it.
 //   the cup in your hand, or on your desk  -> blamed, whatever else you did: the table turns on you (📽️💥 ☕😠👉 and your face)
 //   the cup on Kev's desk (you're in the room) -> the win stands, and the table stares at Kev's empty chair
+//   on Lin's desk, or the boss's own (you're in the room) -> verdictDesks below
 //   anywhere else (back on the machine) -> the rule as before
 // Locked out, the boss isn't there to ask: the rule as before.
 // Nothing cancelled it, but you let him in off the balcony (clocks.js bossLetIn: world.samaritan): the fail, and he's
@@ -18,6 +19,32 @@ export function verdict(game, { routes, present }) {
     return { result: 'blamed', why: w.mug === 'player' ? 'mug' : 'desk', stare: { at: 'player', think: ['📽️', '💥'], say: ['☕', '😠', '👉', '@player'], line: 'tattle' } };
   }
   if (w.mug === 'kev_desk' && present) return { why: 'kev', stare: { at: 'meeting_kev', think: ['☕', '@kev'], say: ['😠', '👉', '@kev'] } };
+  return present ? verdictDesks(game) : null;
+}
+
+// ---- The cup on the other two desks (Jussi's playtest: "i cant leave the mug on boss desk, or lin desk"; his rule:
+// if it would work in an office, it works here). You in the room, the boss at the head:
+//   on Lin's desk, Lin at the table -> 'lin' (a win): the boss looks from the cup to Lin, sitting right there 😠👉,
+//                                      and she shrinks 😨. You ate her sandwich too: 'linHungry', she's in tears 😭🥪
+//                                      (the worst-coworker card). A ticked pitch; the overseer made it a win.
+//   on the boss's own desk           -> 'bossMug' (a win): Lin, whose desk faces his glass office, saw it there all
+//                                      afternoon. She looks from the dead projector to him 🤨☕👉; he knows he didn't
+//                                      do it, and can't prove it: hands up, sweating 😳☕❓, and the meeting is over. 
+//                                      Builder's pick (2026-11-18), for Jussi to overrule.
+function verdictDesks(game) {
+  const w = game.world;
+  const m = game.level.meeting;
+  const lin = findNpc(game, 'lin');
+  const linHere = lin?.active && lin.override === m.override;
+  if (w.mug === 'lin_desk' && linHere) {
+    const hungry = w.sandwich === 'eaten';
+    return { why: hungry ? 'linHungry' : 'lin', stare: { at: 'meeting_lin', think: ['☕', '@lin'], say: ['😠', '👉', '@lin'],
+      by: { lin: { at: 'meeting_head', think: ['☕', '❓'], say: hungry ? ['😭', '🥪'] : ['😨'] } } } };
+  }
+  if (w.mug === 'boss_desk') {
+    return { why: 'bossMug', stare: { at: 'meeting_head', think: ['☕', '@boss'], say: ['🤨', '👉', '@boss'],
+      by: { boss: { at: 'meeting_lin', think: ['☕', '❓'], say: ['😳', '☕', '❓'] } } } };
+  }
   return null;
 }
 

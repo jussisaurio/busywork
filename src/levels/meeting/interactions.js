@@ -130,7 +130,39 @@ export const INTERACTIONS = {
       else say(game, 'player', ['⌨️', '💀'], { kind: 'thought', ttl: 1.6 });
     },
   },
+  // ---- Everyone's computer (Jussi, 2026-11-18: "make it possible to fuck up everyone's computer, and if you want to
+  // lay the mug down on a desk, you have to be targeting the desk"). The full cup at a computer (the middle of a desk,
+  // map.js B N U; yours, P, once you sit at it) goes into its keys, the typewriter's bang and the same catch (why
+  // 'computer', world.drowned: whose; end-scenes-desks.js shows its owner). The desk's free end beside it is where a
+  // cup is set down (map.js SPOTS lies). The empty mug has nothing to pour: at a computer E does nothing.
+  drown_my_computer: drownComputer('own_desk', 'player', (p) => p.seated),
+  drown_lin_computer: drownComputer('lin_computer', 'lin'),
+  drown_kev_computer: drownComputer('kev_computer', 'kev'),
+  drown_boss_computer: drownComputer('boss_computer', 'boss'),
 };
+
+// The day's cup into a computer's keys (`on`: its interactable; `owner`: whose; `also(p)`: a further condition).
+function drownComputer(on, owner, also = () => true) {
+  return {
+    on, text: `pour the coffee into ${owner === 'player' ? 'your' : owner === 'boss' ? 'the boss\'s' : `${owner === 'kev' ? 'Kev' : 'Lin'}'s`} computer`,
+    duration: 1.0, sneaky: true, saw: '☕', pose: 'reach',
+    can: (p) => p.held === 'coffee' && also(p),
+    done(game, a) {
+      game.player.held = null;
+      game.world.cup = 'computer';
+      game.world.drowned = owner;
+      game.world._computerAt = game.loopTime;
+      burst(game, 'sparks', a.x, a.y - 0.2, 14, { speed: 2.2, ttl: 0.7 });
+      burst(game, 'puff', a.x, a.y - 0.3, 6, { speed: 0.4, lift: 1.0, ttl: 1.6 });
+      shake(game, 0.35, 0.4);
+      game.events.emit('coffee:computer', { owner });
+      const boss = findNpc(game, 'boss');
+      const onFloor = boss && boss.active && boss.override !== 'lockedOut' && !inZone(game, 'outside', boss.x, boss.y);
+      if (onFloor) catchNow(game, 'action', boss.id, ['⌨️', '💥', '👉', '@player'], 'computer');
+      else say(game, 'player', ['⌨️', '💀'], { kind: 'thought', ttl: 1.6 });
+    },
+  };
+}
 
 // Pouring the day's cup into a potted plant (`on`: its interactable, ficus or plant): world.cup = on, and
 // world._<on>At the moment (painters-more.js ficus draws the leaf from it).

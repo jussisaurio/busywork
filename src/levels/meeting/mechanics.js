@@ -13,14 +13,15 @@ const SEES_CUP = 3.5; // tiles: how close the hunting boss must be to spot the c
 // desk: that's put down's, and he catches you). On Kev's desk: Kev did it. On the machine: back where it belongs.
 // Not while you stand beside it: then it's anybody's guess whose it is, and he keeps looking.
 const NEAR_CUP = 2.5; // tiles
+// On his own desk he never looks (his hunt doesn't go there; verdict.js verdictDesks); on Lin's: Lin did it.
 function cupFound(game, npc) {
   const it = game.world.items.find((i) => i.type === 'mug');
-  if (!it || it.spot === 'my_desk') return false;
+  if (!it || it.spot === 'my_desk' || it.spot === 'boss_desk') return false;
   const p = game.player;
   if (Math.hypot(it.x - p.x, it.y - p.y) < NEAR_CUP) return false;
   if (Math.hypot(it.x - npc.x, it.y - npc.y) > SEES_CUP || !npcSees(game, npc, it.x, it.y)) return false;
-  const kev = it.spot === 'kev_desk';
-  speak(game, npc, kev ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', '@kev'], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
+  const who = { kev_desk: '@kev', lin_desk: '@lin' }[it.spot];
+  speak(game, npc, who ? [{ say: ['☕', '❗'], kind: 'alert' }, { say: ['😠', who], after: 1.2 }] : [{ say: ['☕', '🤷'] }]);
   game.events.emit('mug:found', { spot: it.spot });
   return true;
 }

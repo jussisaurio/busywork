@@ -42,6 +42,7 @@ export const LOOKS = {
 //          hand while his hands are free, else set down beside him.
 //   marks  every rule that holds sets its flags: angry (a scowl), badge (a tag on a 'suit' torso),
 //          jacket: false (a look with a `shirt` is drawn in it). The authority scowls on his own when he catches you.
+const BLAMES = new Set(['kev', 'lin', 'linHungry']);
 const calledOff = (n, w) => n.id === 'boss' && n.override === 'meeting' && w.projector !== 'ok' && !n.moving;
 
 export const POSES = {
@@ -56,8 +57,10 @@ export const POSES = {
     // No projector, no slides (behaviours.js presenter): facing the dead projector, the boss puts a hand over his face,
     // throws his hands up as he says there are no slides (📊❌), then the hand goes back over his face. Never a point:
     // a point is blame, and on a plain projector win nobody is blamed.
-    // At 4:00 a verdict that blames someone else (verdict.js: Kev's chair): now he points.
-    { when: (n, w, g) => calledOff(n, w) && g.outcome?.why === 'kev', arms: 'point' },
+    // At 4:00 a verdict that blames someone else (verdict.js: Kev's chair, Lin): now he points. The cup on his own
+    // desk: his hands go up, protesting.
+    { when: (n, w, g) => calledOff(n, w) && BLAMES.has(g.outcome?.why), arms: 'point' },
+    { when: (n, w, g) => calledOff(n, w) && g.outcome?.why === 'bossMug', arms: 'shrug' },
     { when: (n, w, g) => calledOff(n, w) && n._offAt != null && g.loopTime - n._offAt >= 1.3 && g.loopTime - n._offAt < 2.6,
       arms: 'shrug' },
     { when: calledOff, arms: 'facepalm' },

@@ -9,6 +9,9 @@ const POUR = ['goto coffee_machine busy', 'interact']; // 2:34: the day's only c
 const HIDE = ['goto my_desk_spot busy', 'put my_desk']; // the cup on your own desk, out of Kev's way
 const SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:06', 'goto my_desk_spot busy', 'interact', 'goto projector busy',
   'interact']; // after Kev has gone home (3:05)
+// The spill after the boss's last look in (3:22), for a mug planted on Lin's or the boss's desk (route-checks.js)
+const DESK_SPILL = [...POUR, ...HIDE, 'sit busy', 'busy until 3:25', 'goto my_desk_spot busy', 'interact', 'goto projector',
+  'interact'];
 const KEYCARD = ['busy until 3:11', 'busy 1.35s', 'goto boss_office_door busy', 'goto coat_rack busy']; // the boss is out
 const LET_IN = [...KEYCARD, 'busy 0.42s', 'interact', 'goto meeting_seat busy', 'busy until 3:49', 'goto fire_door busy',
   'interact']; // the keycard taken, the boss locked out, and you push the door open for him
@@ -348,5 +351,53 @@ export default [
     intent: 'Kev (olive hoodie, right) never got his afternoon coffee: you poured the last cup, and it sits on your ' +
       'desk. He has nodded off at his desk, his head down on the keyboard (💤), and on his screen a line of the same ' +
       'letter runs across under his code. You type at your desk.',
+  },
+  // ---- The other desks and everyone's computer (route-checks.js: Lin's desk, the boss's desk, Lin's computer).
+  {
+    name: 'mug-on-lins-desk',
+    cmds: [...DESK_SPILL, 'goto 6,10', 'busy until 3:36', 'put lin_desk', 'busy 0.5s'],
+    intent: 'You have just set the empty mug down on the free right-hand end of Lin\'s desk (bottom left), on the desk ' +
+      'top beside her monitor, not on her keyboard. Lin and the boss are both out of the room.',
+  },
+  {
+    name: 'mug-on-boss-desk',
+    cmds: [...DESK_SPILL, 'goto 9,7', 'busy until 3:38', 'put boss_desk', 'busy 0.5s'],
+    intent: 'You have just set the empty mug down on the free right-hand end of the boss\'s desk in his empty glass ' +
+      'office (top left), on the desk top beside his monitor.',
+  },
+  {
+    name: 'cup-on-kevs-desk',
+    cmds: [...POUR, 'goto 23,9 busy', 'put kev_desk', 'busy 0.5s'],
+    intent: 'You have just set the full cup down on the free right-hand end of Kev\'s desk, on the desk top beside his ' +
+      'monitor, not floating over his keyboard.',
+  },
+  {
+    name: 'end-lin',
+    cmds: [...DESK_SPILL, 'goto 6,10', 'busy until 3:36', 'put lin_desk', 'goto meeting_seat busy', 'busy until 4:00',
+      'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a win: the meeting room, the projector dead. The boss points at Lin across the table, the empty ' +
+      'mug in front of her; she shrinks and sweats (😨). You sit nodding along, smug.',
+  },
+  {
+    name: 'end-lin-hungry',
+    cmds: ['goto coffee_machine busy', 'interact', 'goto my_desk_spot busy', 'put my_desk', 'goto fridge busy', 'interact',
+      'eat', 'goto restroom_door busy', 'interact', 'interact', 'interact', 'goto my_seat busy', 'sit busy',
+      'busy until 3:25', 'goto my_desk_spot busy', 'interact', 'goto projector', 'interact', 'goto 6,10',
+      'busy until 3:36', 'put lin_desk', 'goto meeting_seat busy', 'busy until 4:00', 'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a win, but you also ate her lunch: the boss points at Lin over the empty mug, and she is in ' +
+      'tears (😭🥪), face in her hand.',
+  },
+  {
+    name: 'end-boss-mug',
+    cmds: [...DESK_SPILL, 'goto 9,7', 'busy until 3:38', 'put boss_desk', 'goto meeting_seat busy', 'busy until 4:00',
+      'busy until 4:00', 'busy until 4:00'],
+    intent: 'End card, a win: the empty mug sits in front of the boss at the head of the table. Lin points at him and ' +
+      'stares (🤨👉 his face); he sputters (😳☕❓), hands up, sweating.',
+  },
+  {
+    name: 'end-computer',
+    cmds: [...POUR, 'busy until 3:00', 'goto 4,7 busy', 'interact', 'busy 1s'],
+    intent: 'End card, a loss: you poured the coffee into Lin\'s computer. It sparks, smokes and drips; you stand ' +
+      'blackened with soot, the boss holds out a box for your things, and Lin stares in horror (😱💻).',
   },
 ];

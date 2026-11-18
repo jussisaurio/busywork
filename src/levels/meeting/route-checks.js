@@ -227,6 +227,97 @@ export default [
       if (g.outcome?.why !== 'kev') throw new Error(`the table should stare at Kev's chair, why ${g.outcome?.why}`);
     },
   },
+  // ---- The mug on Lin's desk, on the boss's, and the cup into a computer (verdict.js verdictDesks; interactions.js
+  // drownComputer). The spill comes after the boss's last look into the meeting room (3:22 walk): he never hunts, so
+  // the mug in your hand is just a mug. The put waits for 3:35, when he goes for his jacket and Lin for the restroom.
+  ...[
+    { why: 'lin', eat: false, name: 'spill after the boss\'s last look in, plant the mug on Lin\'s desk while she and the boss are out (3:36) → the boss points at Lin 😠👉, she shrinks 😨 → win' },
+    { why: 'linHungry', eat: true, name: 'same, but you ate her sandwich first (washed off in the restroom) → she is in tears 😭🥪 → win' },
+  ].map(({ why, eat, name }) => ({
+    name,
+    expect: { result: 'win', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto my_desk_spot busy');
+      run('put my_desk');
+      if (eat) {
+        run('goto fridge busy');
+        run('interact');
+        run('eat');
+        run('goto restroom_door busy');
+        run('interact'); // in
+        run('interact'); // wash
+        run('interact'); // out
+        run('goto my_seat busy');
+      }
+      run('sit busy');
+      run('busy until 3:25');
+      run('goto my_desk_spot busy');
+      run('interact');
+      run('goto projector');
+      run('interact');
+      run('goto 6,10');
+      run('busy until 3:36');
+      run('put lin_desk');
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.world.mug !== 'lin_desk') throw new Error(`the mug is at ${g.world.mug}, not Lin's desk`);
+      if (g.outcome?.why !== why) throw new Error(`why ${g.outcome?.why}, expected ${why}`);
+    },
+  })),
+  {
+    name: 'same, but plant it on the boss\'s own desk once he is off for his smoke (3:38) → Lin looks at him 🤨👉, he sputters 😳☕❓ → win',
+    expect: { result: 'win', routes: ['projector'] },
+    play({ run, waitFor, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto my_desk_spot busy');
+      run('put my_desk');
+      run('sit busy');
+      run('busy until 3:25');
+      run('goto my_desk_spot busy');
+      run('interact');
+      run('goto projector');
+      run('interact');
+      run('goto 9,7');
+      run('busy until 3:38');
+      run('put boss_desk'); // stands at the desk's free end, in his empty office
+      run('goto meeting_seat busy');
+      run('busy until 4:00');
+      waitFor((g) => g.outcome, { maxSec: 10 });
+      if (g.outcome?.why !== 'bossMug') throw new Error(`why ${g.outcome?.why}, expected bossMug`);
+    },
+  },
+  {
+    name: 'pour the cup into Lin\'s computer while the boss is on the floor → BANG ⌨️💥, caught (why computer)',
+    expect: { result: 'caught' },
+    play({ run, g, log, waitFor }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('busy until 3:00'); // Lin off to the fridge: nobody stops the pour, and the boss is at his desk
+      run('goto 4,7 busy'); // behind her monitor: the computer, not the desk's free end, is the nearest target
+      if (g.player.focus?.id !== 'lin_computer') throw new Error(`target is ${g.player.focus?.id}`);
+      run('interact');
+      if (!log.some((e) => e.name === 'coffee:computer' && e.payload.owner === 'lin')) throw new Error('no pour into Lin\'s computer');
+      waitFor((gg) => gg.outcome, { maxSec: 10 });
+      if (g.outcome?.why !== 'computer') throw new Error(`why ${g.outcome?.why}`);
+    },
+  },
+  {
+    name: 'at Kev\'s desk with the cup: his keyboard is one target, the desk\'s free end another (the put)',
+    expect: { result: 'fail' },
+    play({ run, g }) {
+      run('goto coffee_machine busy');
+      run('interact');
+      run('goto 23,9 busy');
+      if (g.player.focus?.action !== 'put' || g.player.focus?.id !== 'kev_desk') throw new Error(`at the free end the target is ${g.player.focus?.action}@${g.player.focus?.id}`);
+      run('goto 22,7 busy');
+      if (g.player.focus?.id !== 'kev_computer') throw new Error(`behind his monitor the target is ${g.player.focus?.id}`);
+      run('busy until 4:00');
+    },
+  },
   {
     name: 'same, but leave the mug on your own desk while he hunts elsewhere → back from his smoke he sees it there → caught',
     expect: { result: 'caught' },

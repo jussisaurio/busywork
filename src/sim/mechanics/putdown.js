@@ -37,11 +37,14 @@ import { speak } from '../override.js';
 
 export const FIND_RADIUS = 2; // tiles: how close a cast owner must be to notice what's on his spot
 
-// Where an item on spot s lies: the centre of the tile the spot faces (its own tile if it has no face).
+// Where an item on spot s lies: the centre of the tile the spot faces (its own tile if it has no face), moved
+// `lies: { dx, dy }` whole tiles when the spot says so (a desk's free end, not the keyboard in front of the chair).
 export function restOf(s) {
   const d = DIRS[s.face];
-  if (d === undefined) return { x: s.x + 0.5, y: s.y + 0.5 };
-  return { x: s.x + 0.5 + Math.round(Math.cos(d)), y: s.y + 0.5 + Math.round(Math.sin(d)) };
+  const ox = s.lies?.dx ?? 0;
+  const oy = s.lies?.dy ?? 0;
+  if (d === undefined) return { x: s.x + 0.5 + ox, y: s.y + 0.5 + oy };
+  return { x: s.x + 0.5 + Math.round(Math.cos(d)) + ox, y: s.y + 0.5 + Math.round(Math.sin(d)) + oy };
 }
 
 // A world item lying on a spot, for a level's initialWorld().

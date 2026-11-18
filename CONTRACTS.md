@@ -346,7 +346,9 @@ type)` builds one for `initialWorld`), and `world[place]` becomes the spot's nam
 judge it as if you held it, even while you pretend. `owner: <cast id>`: he reacts once to each item he sees
 there within 2 tiles: `found: 'take'` (default) or a hook name, run as `arrive(game, npc, sim, { type, spot,
 item })`. No owner: nobody minds. `shown: { dx, dy }` (tiles): draw what lies there that far off where it lies,
-render only (meeting: the cup beside the coffee machine, on the counter). Events `item:put {type, spot}`, `item:found {type, spot, by}`. Example:
+render only (meeting: the cup beside the coffee machine, on the counter). `lies: { dx, dy }` (whole tiles): it
+really lies that far off the faced tile, for reach and sight too, and the harness `put` stands that far along (meeting:
+a desk's free end, so the computer in front of the chair is a target of its own). Events `item:put {type, spot}`, `item:found {type, spot, by}`. Example:
 fixture-putdown (`player_desk` is yours, `box` is the boss's with `found: 'readNote'`).
 
 **Inspection** (`level.inspections`, `inspection.js`): from minute `at` one NPC walks an ordered list of checks.
@@ -619,7 +621,9 @@ game = {
     and type. Time runs ×8 (`FORCED_MULT`) only while you type. What a heard tattle costs: `roles.authority.tattle`.
 - `updateScenario(game, dt)`: phase changes. After a catch, `CAUGHT_DELAY` s, then outcome `'caught'`. At
   `day.meetingAt`: the outcome, `persist.routesFound` updated (wins only), a 2 s in-world beat, then `phase='end'`
-  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). Fail: you walk to
+  and `day:end {outcome}`. Blamed: the room stares at `meeting.chair` (🪑❓ then 😠👉 `@player`). A verdict's
+  `stare: { at?, think?, say?, line?, by? }` (`sim/npcs.js stareAt`) changes where and what; `by: { [npcId]: stare }`
+  gives one NPC his own (the one being stared at looks back). Fail: you walk to
   `meeting.presenter` (none: you stay put), and the 🦗 sign shows at `failSign`. Sent to your desk and not there yet: you walk there. The
   outcome is decided at `meetingAt`; the beat waits for the walk.
 
