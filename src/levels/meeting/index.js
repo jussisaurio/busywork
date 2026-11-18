@@ -63,7 +63,9 @@ import { clockFor } from './clocks.js';
 export default {
   id: 'meeting',
   map: { rows: MAP, legend: LEGEND },
-  spots: SPOTS,
+  // kitchen_door: the hallway outside the kitchen's double doors, facing in. The boss looks in from here
+  // (behaviours.js lookInKitchen). It belongs in map.js SPOTS: it is here only while another branch has map.js open.
+  spots: { ...SPOTS, kitchen_door: { x: 22, y: 7, face: 'N' } },
   zones: ZONES,
   patrols: ROUTES,
   cast: NPC_DEFS,

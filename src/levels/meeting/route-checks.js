@@ -45,6 +45,24 @@ export default [
       run('busy until 4:00');
     },
   },
+  // ---- Standing about. The boss's sight is what makes idling cost (rules.js suspicion): his rounds cover the open
+  // plan, his walks the hallway, and on his way back from the restroom he looks in at the kitchen (behaviours.js
+  // lookInKitchen). Only the balcony is a break spot (roles.js idleOkIn). Found by the fuzzer: an hour by the
+  // coffee machine with the cup, never pretending, then the projector once he was off for his smoke, won.
+  {
+    name: 'an hour by the coffee machine with the cup, never pretending → he looks in on the kitchen on his way back from the restroom and sends you to type → no win',
+    expect: { result: 'fail' },
+    play({ run, g, log }) {
+      for (const cmd of ['goto coffee_machine', 'interact', 'wait until 3:37', 'goto projector', 'interact', 'put coffee', 'goto meeting_room', 'wait until 4:00']) {
+        if (g.phase !== 'day') break;
+        run(cmd);
+      }
+      const sent = log.find((e) => e.name === 'boss:workAssigned');
+      if (sent?.payload.reason !== 'idle') throw new Error('he never sent you to your desk for standing about');
+      // Sent while he looks in from the kitchen doors: 3:22 he is back from the restroom, his walk passes them.
+      if (sent.minute < 52 || sent.minute > 56) throw new Error(`sent at minute ${sent.minute}, not on his 3:22 walk`);
+    },
+  },
   // ---- The plain fails with a cause (verdict.js verdictFull; end-scenes-fails.js), one block.
   {
     name: 'typing at your desk at 4:00 → the plain fail: you hurry in to the blank screen (no why)',

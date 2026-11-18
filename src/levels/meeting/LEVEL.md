@@ -17,7 +17,7 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | `interactions.js`, `items.js`, `roles.js` | the player's actions, the four items, the office rules' cast |
 | `mechanics.js` | Kev's repair (a lure), Lin's sandwich hunt and the boss's mug hunt (hunts), the fire door (doors) |
 | `clocks.js` | `level.clockFor`: Kev and the cup, the card taken back |
-| `behaviours.js` | hooks: `peekOut`, `peekBack`, `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
+| `behaviours.js` | hooks: `peekOut`, `peekBack`, `lookInKitchen`, `checkFridge`, `fetchJacket`, `pourCoffee`, `presenter` |
 | `verdict.js` | the 4:00 room's judgement of the mug (`meeting.verdict`) |
 | `harness.js`, `gate.js` | the AI harness's words; the gate's lessons, fuzz targets, milestones, golden plans |
 | `route-checks.js` | the scripted speedruns `tools/routes.mjs` plays (a win per route, the combo, the near misses) |
@@ -48,7 +48,7 @@ out. Breaking the projector leaves you holding the evidence: the empty mug (see 
 | 3:04 | | kitchen table (eats) | |
 | 3:07 | | desk (sits ~3:12) | |
 | 3:12 | restroom (gone 3:18–3:22), looking in at the meeting-room door on the way (`peekOut`) | | |
-| 3:22 | desk (sits ~3:29), looking in again on the way back (`peekBack`) | | |
+| 3:22 | desk (sits ~3:30), looking in at the kitchen (~3:23, `lookInKitchen`) and the meeting room again on the way back (`peekBack`) | | |
 | 3:30 | | restroom (gone 3:35–3:37) | |
 | 3:33 | 🚬❓ (a mug hunt, if one runs, ends 3:34) | | |
 | 3:35 | jacket (and keycard) from the rack (`fetchJacket`), then out through the fire door to smoke on the balcony (arrives ~3:44) | | |
@@ -206,6 +206,10 @@ The gate's lessons (`gate.js` `mustUse`): every win uses `pretend`; every projec
 - **The peeks** (`peekOut`, `peekBack`: the boss's 3:12 and 3:22 preludes). He walks to `meeting_door` and looks in,
   once per walk, even when the projector is fine (a prelude's `pending` sees only the NPC). Projector broken: he
   knows (`_knows`), and his mug hunt starts.
+- **The kitchen look** (`lookInKitchen`, the boss's 3:22 prelude, before `peekBack`). He stops at the kitchen's
+  double doors (`kitchen_door`, hallway) and looks in at the coffee machine for 2 s: anyone standing about in the
+  kitchen gets sent to type. Without it the kitchen was never in his sight, and an hour there with the cup, never
+  pretending, won (the fuzzer found it). Skipped once he knows about the projector: his mug hunt walks the kitchen.
 - **The mug hunt** (hunt). 📽️💥 then ☕❓ (`boss:mugHunt`), then he walks `mug_hunt` (meeting door, the coffee
   machine, Kev's desk, your desk) looking around, until 3:34 or until he sees the mug within 3.5 tiles: on Kev's desk
   ☕❗ then 😠 with Kev's face, on the machine ☕🤷 (`mug:found {spot}`). On your desk it's put down's business
