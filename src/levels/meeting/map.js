@@ -49,25 +49,27 @@ export const LEGEND = {
   X: { kind: 'fire_door', solid: true, opaque: false, npcPassable: true, draw: 'wall', interactable: 'fire_door' },
   // The balcony: a concrete slab four floors up with a railing (painters.js balcony). Outside, like the lobby.
   '=': { kind: 'balcony', solid: false, opaque: false, draw: 'outside' },
-  // The boss's ficus, in the corner of his office by the glass: a potted plant like the other (core/map.js H), but
-  // you can pour the day's only cup into it, from his doorway (interactions.js water_ficus; painters-more.js ficus).
-  Y: { kind: 'plant', solid: true, opaque: false, interactable: 'ficus', draw: 'plant' },
-  // The other ficus, in the hallway corner by the fire door: it takes the coffee too (interactions.js water_plant), and
-  // just grows its leaf; only the boss's own plant delights him (toys.js ficus).
-  V: { kind: 'plant', solid: true, opaque: false, interactable: 'plant', draw: 'plant' },
+  // The potted plants you can pour the day's only cup into (interactions.js water_plant; painters-more.js ficus): one
+  // kind of thing, told apart by id. Y, 'ficus': the boss's, in the corner of his office by the glass, reached from
+  // his doorway; only his own plant delights him (toys.js ficus). V, 'plant': the hallway one by the fire door.
+  Y: { kind: 'plant', solid: true, opaque: false, interactable: 'plant', id: 'ficus', draw: 'plant' },
+  V: { kind: 'plant', solid: true, opaque: false, interactable: 'plant', id: 'plant', draw: 'plant' },
   // The computers, each in the middle of its desk (the keyboard in front of the chair): the day's cup goes into the
-  // keys, the same on every one (interactions.js drownComputer; COMPUTERS below). W: the three empty desks along the
-  // south row (spare_computer_0, _1, _2, west to east; _1 is behind yours, the mustard chair). Yours is P (own_desk).
+  // keys, the same on every one (interactions.js drown_computer). One kind of thing, 'computer', told apart by id
+  // (whose: COMPUTER_OWNERS). W: the three empty desks along the south row (spare_computer_0, _1, _2, west to east;
+  // _1 is behind yours, the mustard chair). Yours is P (own_desk: the same pour, once you sit at it).
   // Setting a cup down is the desk's free end beside the computer (SPOTS lies), a target of its own.
-  W: { kind: 'desk', solid: true, opaque: false, interactable: 'spare_computer', draw: 'desk' },
-  B: { kind: 'desk', solid: true, opaque: false, interactable: 'boss_computer', draw: 'desk' },
-  N: { kind: 'desk', solid: true, opaque: false, interactable: 'lin_computer', draw: 'desk' },
-  U: { kind: 'desk', solid: true, opaque: false, interactable: 'kev_computer', draw: 'desk' },
+  W: { kind: 'desk', solid: true, opaque: false, interactable: 'computer', id: 'spare_computer', draw: 'desk' },
+  B: { kind: 'desk', solid: true, opaque: false, interactable: 'computer', id: 'boss_computer', draw: 'desk' },
+  N: { kind: 'desk', solid: true, opaque: false, interactable: 'computer', id: 'lin_computer', draw: 'desk' },
+  U: { kind: 'desk', solid: true, opaque: false, interactable: 'computer', id: 'kev_computer', draw: 'desk' },
 };
 
-// Every computer on the floor: its interactable type -> whose it is (null: nobody's, an empty desk). The one list
-// the pour (interactions.js), its sound (sounds.js) and the checks read: a machine is in it or it is not a computer.
-export const COMPUTERS = { spare_computer: null, own_desk: 'player', lin_computer: 'lin', kev_computer: 'kev', boss_computer: 'boss' };
+// Whose each computer is, by its id (the rest: nobody's, an empty desk). The pour (interactions.js) and the checks
+// read it; what a computer is and does is the same for all of them.
+export const COMPUTER_OWNERS = { own_desk: 'player', lin_computer: 'lin', kev_computer: 'kev', boss_computer: 'boss' };
+// A drowned computer is dead: its keys type nothing and its screen shows nothing (toys.js, decor.js). by tile.
+export const deadAt = (w, x, y) => w.cup === 'computer' && w.drowned?.x === x && w.drowned?.y === y;
 
 // Named spots: tile coords + facing ('N'|'E'|'S'|'W'). Entities stand at (x+0.5, y+0.5).
 export const SPOTS = {

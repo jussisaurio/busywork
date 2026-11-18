@@ -135,11 +135,14 @@ whole object at load: see "Errors" below.
 - `map.rows`: equal-length strings, one char per tile. A row of the wrong length, or a char the legend lacks, is a
   load error. There is no camera: the screen shows 30×17 tiles (`render/util.js` `PLAY_W`, `PLAY_H`). A smaller
   map draws in the top-left corner; a larger one is cut off.
-- `map.legend`: `{ [char]: { kind, solid, opaque, interactable?, npcPassable?, draw? } }`, merged over the base
+- `map.legend`: `{ [char]: { kind, solid, opaque, interactable?, id?, npcPassable?, draw? } }`, merged over the base
   legend: `#` wall, `G` glass, `.` floor, `:` outside, `D` door, `T` desk, `H` plant. `solid` blocks walking,
   `opaque` blocks sight, `npcPassable` lets NPCs (not the player) through a solid tile. `interactable: '<type>'`
   makes each tile of that char an interactable of that type (ids `<type>`, or `<type>_0`, `<type>_1`, ... when the
-  char repeats). `draw` is what the tile looks like (below); without it, the renderer uses `kind`.
+  char repeats). `id` names the instances instead of the type: several letters can be one kind of thing, with one
+  set of rows, told apart by id (Meeting: every computer is `computer`, ids `lin_computer`, `spare_computer_0`, ...;
+  a row reads which from `a.targetId` or its `can`'s third argument). `draw` is what the tile looks like (below);
+  without it, the renderer uses `kind`.
 - The generic `sit` row targets the interactable type `own_desk`. A level without one never lets you sit back down.
 - Example: fixture `LEGEND` (calendar, microwave, cake stand, `own_desk`, and `F` with `draw: 'refrigerator'`).
 
@@ -234,16 +237,24 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 
 ### Interactions and items
 - `interactions`: the player's actions, `{ [verb]: row }` (`{}` for none). The engine appends `eat_<type>` for each
-  edible item, then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's. For one
-  target the first row whose `can` holds wins; the nearest target wins; `'self'` rows apply only when nothing else
-  does.
+  edible item, then `sit`, `drop`, `pick_up` and `put`. A level row of the same verb replaces the engine's.
+- **What E does** (`play/interactions.js`). A target is an interactable (the rows `on` its type and the press toys
+  on its tile), a press toy's prop on a tile of its own, a floor item, a put spot, or yourself (`'self'`). The
+  nearest target with something to do wins; two within a quarter tile of each other, a row's before a toy's.
+  `'self'` only when no other target is in reach. On the target, **the hand rule** (Jussi, 2026-11-18): an action
+  that uses the item in your hand wins (one naming that item before one taking `'any'`); otherwise one that needs
+  no held item. Two still left in one rank: the one whose `over` names the other. Order in the table never decides:
+  the validator refuses a level where two actions could be left on one target in one hand state with neither
+  `over` the other (`handConflicts`; it does not run `can`, so give exclusive pairs an `over` too).
 - Of the `'self'` rows, a tap of E does the first possible one without `hold` (a level's own, else `drop`). Holding
   E for `HOLD_TIME` (0.35 s) while standing still does the first possible `hold: true` row (`eat_<type>`); moving
   starts the hold over. So eating never takes the drop key. With no tap row (an item with `keep`), a tap eats.
 
 | Row field | Meaning |
 |---|---|
-| `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot) |
+| `on` | what offers it: an interactable type on the map, `'self'` (what you hold), `'item'` (a floor item), `'spot'` (a put-down spot); or a list of them |
+| `hand` | what it needs in your hand, as data: omitted = nothing (it works whatever you hold and does not use it); `'empty'`; `'any'` (something, which it uses: `drop`, `put`); an item type or a list of them (that item, which it uses). Never test `p.held` in `can` |
+| `over` | verbs (or press-toy ids) on the same target it wins over, when the hand rule leaves both |
 | `preview` | `'self'` rows (required): the player's arm pose (`render/characters.js` `ARM_POSES`) while it is what E would do, and while doing it. `drop` holds the arm out over the floor (`'holdout'`), eating lifts the item to the mouth (`'lift'`), drinking lifts it and tips it at the lips (`'sip'`). `'facepalm'` puts the free hand flat over the face (dismay; usable by NPC `poses` too). The validator refuses a `'self'` row without one |
 | `hold` | `'self'` rows: `true` = holding E does it, a tap does the others |
 | `text` | the harness's words for it. A player sees the target light up with the E key cap |
@@ -253,7 +264,7 @@ Any other kind draws only floor. To show something there, add a `decor.props` en
 | `idle` | the authority reads it as slacking (his ❓ fills) |
 | `saw` | the icon a witness's late 👉 shows for it |
 | `noise` | `{ radius, at?, npcs? }`: a noise when done (see Attention) |
-| `can(p, w, item)` | offered while true; a running action is cancelled `'invalid'` when it turns false |
+| `can(p, w, item)` | the other conditions (not the hand): offered while true; a running action is cancelled `'invalid'` when it or `hand` turns false. `item`: the interactable (`{ id, type, x, y }`), floor item or spot |
 | `done(game, a)` | the result, right after `action:done`; `a` has `x, y` (the target) and `item` |
 
 - `items`: `{ [type]: { icon, draw, tint?, place?, edible?, contraband?, contrabandIn?, pockets?, owner?, keep?, bulky? } }`.
@@ -392,7 +403,8 @@ override only his head turns and his plan goes on. Glances due meanwhile still d
 
 **Toy** (`level.toys`, `toy.js`): a prop with a cosmetic reaction, for a laugh that changes nothing. `{ id, at,
 on, npcs?, radius?, sees?, when?, every?, state?, text?, line?, react, try }`. `at`: a spot or a tile `{x, y}`.
-`on`: `'press'` (E next to it; it takes E focus only when no route target or held item has it), `'pass'` (an NPC
+`on`: `'press'` (E at it: a target like any other, under the hand rule above, with `hand` and `over` as a row's;
+`text` is the harness's words), `'pass'` (an NPC
 in `npcs` walks within `radius`, default 2) or `'near'` (an NPC in `npcs` within `radius` of you, `sees` to need
 sight). `when(world, state, game, npc)` reads only. `every`: seconds between firings per person (default 1 for
 press, 3 otherwise). `react: { say, sfx, pose: { arms, angry, face, for }, set, burst }`: a bubble (`say: [icons]`

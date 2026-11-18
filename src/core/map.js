@@ -16,9 +16,10 @@ const BASE_LEGEND = {
 const OUT_OF_BOUNDS = { kind: 'wall', solid: true, opaque: true };
 
 // rows: array of equal-length strings.
-// legend: extra/override entries. An entry with `interactable: '<id>'` registers
-// each occurrence of that char as an interactable with that id. If the char appears
-// more than once, ids are suffixed _0, _1, ... in reading order.
+// legend: extra/override entries. An entry with `interactable: '<type>'` registers
+// each occurrence of that char as an interactable of that type (the rows `on` it act on it), with the id `id` if
+// the entry has one, else the type: several letters can be one kind of thing (a computer) told apart by id. If the
+// char appears more than once, ids are suffixed _0, _1, ... in reading order.
 export function parseMap(rows, legend = {}) {
   const defs = { ...BASE_LEGEND, ...legend };
   const h = rows.length;
@@ -38,7 +39,8 @@ export function parseMap(rows, legend = {}) {
       const d = defs[c];
       if (d.interactable) {
         const n = seen[c] = (seen[c] ?? -1) + 1;
-        const id = counts[c] > 1 ? `${d.interactable}_${n}` : d.interactable;
+        const base = d.id ?? d.interactable;
+        const id = counts[c] > 1 ? `${base}_${n}` : base;
         interactables.push({ id, type: d.interactable, char: c, x, y, cx: x + 0.5, cy: y + 0.5 });
       }
     }

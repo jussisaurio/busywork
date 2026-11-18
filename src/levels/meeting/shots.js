@@ -440,6 +440,12 @@ export default [
     intent: 'You stand at the empty desk behind yours: you just poured the coffee into its computer. The screen is dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss heard the bang: he points at you (⌨️💥👉 and your face).',
   },
   {
+    name: 'computer-bang-typed',
+    cmds: ['goto spare_desk busy', 'interact', ...POUR, 'goto spare_desk busy', 'interact'],
+    beat: 0.5,
+    intent: 'The same as computer-bang-spare, but you had typed gibberish on that computer first: the screen is dead and cracked all the same, with no trace of the typed document on it.',
+  },
+  {
     name: 'computer-bang-kev',
     cmds: [...POUR, 'goto 22,7 busy', 'interact'],
     beat: 0.5,

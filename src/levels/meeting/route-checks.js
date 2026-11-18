@@ -4,7 +4,7 @@
 //   { name, expect: { result, routes? }, cmds: [...] }  harness commands, run in order
 // expect.routes: routes the outcome must include.
 // ---- The cup into a computer: one event, the same on every machine on the floor (interactions.js drownComputer;
-// map.js COMPUTERS). One check a machine: with the full cup in hand E at it pours (never the typing toy, toys.js
+// map.js COMPUTER_OWNERS). One check a machine: with the full cup in hand E at it pours (never the typing toy, toys.js
 // type_*, never a put), the same event, the same dead machine on that desk, the same catch and end scene.
 //   id: its interactable; owner: whose (null: an empty desk's); to: the commands that take you to it, cup in hand
 const MACHINES = [
@@ -24,8 +24,7 @@ const EVERY_COMPUTER = MACHINES.map((m) => ({
     run('interact');
     for (const cmd of m.to) run(cmd);
     const f = g.player.focus;
-    if (f?.id !== m.id || f?.action !== `drown_${m.id.replace(/_\d$/, '')}`) throw new Error(`with the cup E is ${f?.action}@${f?.id}, not the pour`);
-    if (g.toys?.focus) throw new Error(`a toy is offered too: ${g.toys.focus.id}`);
+    if (f?.id !== m.id || f?.action !== 'drown_computer') throw new Error(`with the cup E is ${f?.toy ? 'a toy' : f?.action}@${f?.id}, not the pour`);
     run('interact');
     const pours = log.filter((e) => e.name === 'coffee:computer');
     if (pours.length !== 1 || pours[0].payload.id !== m.id || pours[0].payload.owner !== m.owner) throw new Error(`pours: ${JSON.stringify(pours.map((e) => e.payload))}`);
@@ -37,7 +36,30 @@ const EVERY_COMPUTER = MACHINES.map((m) => ({
   },
 }));
 
+// A drowned computer is dead (map.js deadAt): what you typed on it before is gone from its screen, and its keys
+// type nothing after (Jussi saw a typed document drawn over the dead screen, 2026-11-18).
+const DEAD_COMPUTER = {
+  name: 'type on the spare computer, then pour the cup into it → its screen is dead, not your document; its keys type nothing',
+  expect: { result: 'caught' },
+  play({ run, g, log }) {
+    run('goto spare_desk busy');
+    run('interact');
+    if (!log.some((e) => e.name === 'toy:type_mustard')) throw new Error('never typed on it');
+    run('goto coffee_machine busy');
+    run('interact');
+    run('goto spare_desk busy');
+    run('interact');
+    if (g.world.drowned?.id !== 'spare_computer_1') throw new Error(`drowned ${JSON.stringify(g.world.drowned)}`);
+    const screen = g.level.decor.props.find((pr) => pr.state && pr.draw?.name === 'typedScreen' && pr.state(g.world, g).x === 13);
+    const keys = screen.state(g.world, g).keys;
+    if (keys > 0) throw new Error(`the dead screen still shows ${keys} typed lines`);
+    const kb = g.level.toys.find((t) => t.id === 'type_mustard');
+    if (kb.when(g.world, g.toys.byId[kb.id].state, g, g.player)) throw new Error('the dead keyboard can still be typed on');
+  },
+};
+
 export default [
+  DEAD_COMPUTER,
   {
     name: 'do nothing → fail',
     expect: { result: 'fail' },

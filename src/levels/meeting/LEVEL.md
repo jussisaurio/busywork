@@ -270,16 +270,19 @@ and `sandwich:eaten`.
 
 ## More beats (BATCH2)
 - **The ficus** (`Y`, 7,5, in the corner of the boss's office). From his doorway (`boss_doorway`, 6,6, outside his
-  office zone) the coffee goes into his plant (`water_ficus`, `world.cup = 'ficus'`, `coffee:ficus`). A leaf shoots
+  office zone) the coffee goes into his plant (`water_plant`, `world.cup = 'ficus'`, `coffee:ficus`). A leaf shoots
   out (`painters-more.js ficus`); the boss, if he sees it, is delighted 🌿😍 (toy `ficus`). The cup is gone: no
   projector route this loop. The joke: the one act of care in the whole office goes to a plant, with stolen coffee.
   The hallway ficus (`V`, 28,12, by the fire door) takes the cup the same way (`water_plant`, `world.cup = 'plant'`,
   `coffee:plant`) and grows the same leaf; nobody is delighted, it is nobody's plant (Jussi's playtest, 2026-11-18).
+  Both are one kind of thing (interactable `plant`, ids `ficus` and `plant`): one row, `water_plant`.
 - **The cup into a computer** (Jussi, 2026-11-18: "make it possible to fuck up everyone's computer"; unified the
-  same day after his playtest found two versions). One event, the same on all seven machines (`map.js COMPUTERS`):
+  same day after his playtest found two versions). One event, the same on all seven machines:
   the three empty desks' (`W`: `spare_computer_0`, `_1`, `_2`, west to east; `_1` is behind yours), yours once seated
-  (`P`), Lin's (`N`), Kev's (`U`), the boss's (`B`). One definition, `interactions.js drownComputer`, a row a machine
-  type (`drown_<type>`), differing only in which machine and whose. With the full cup E at a computer pours, 1 s,
+  (`P`), Lin's (`N`), Kev's (`U`), the boss's (`B`). One kind of thing, interactable `computer` (yours: `own_desk`),
+  told apart by id; whose each is: `map.js COMPUTER_OWNERS`. One row, `drown_computer`. A drowned machine is dead
+  (`map.js deadAt`): its keyboard types nothing and what you typed on it is gone from its screen. With the full
+  cup E at a computer pours (the hand rule: the pour uses the cup, so it beats the typing toy), 1 s,
   not sneaky: nobody stops a pour, the owner sitting at it included (before, a witness cut it short and it was an
   ordinary catch with no bang; that was the difference Jussi heard). `world.cup = 'computer'`, `world.drowned =
   {id, owner, x, y}`, `coffee:computer {id, owner}`: a bang (sound `splashZap`, after `pour`), sparks, smoke, and

@@ -12,7 +12,7 @@
 //              (😤). Each steps out of their way to stand under it (toy `stand`), fixes it at arm's length, and hurries
 //              back to their errand; the frame scrapes on its nail (creak). Three people, one nail.
 //              Its tilt is whoever touched it last (pictureTilt: you +1, Kev -1, Lin straight); painters.js draws it.
-//   ficus      the boss's plant, after you pour the coffee into it (interactions.js water_ficus): on his next look
+//   ficus      the boss's plant, after you pour the coffee into it (interactions.js water_plant): on his next look
 //              at it he is delighted, once (🌿😍, his head turned to it).
 //   kev_doze   Kev without his coffee (you poured the last cup; npcs.js want: 🥱☕ every few seconds): back at his
 //              desk, from 2:48 he nods off, head on the keyboard 💤, and a line of one letter runs across his screen
@@ -31,6 +31,7 @@ import { at as clockAt } from '../../config.js';
 import { findNpc, inZone } from '../../game/perception.js';
 import { toyState } from '../../sim/mechanics/toy.js';
 import { outside } from './balcony.js';
+import { deadAt } from './map.js';
 
 export const PICTURE = { x: 24.5, y: 6 }; // centred on tiles 24-25 of the wall's front face, by the kitchen door
 const UNDER_PICTURE = { x: 25, y: 7.4 }; // where Kev and Lin stand to fix it: right under it, at arm's length
@@ -69,7 +70,8 @@ const seatedAt = (game, id, k) => {
 };
 // Free to type on: nobody sitting at it. Typing takes both hands (hand: 'empty'); with the full cup in hand E at a
 // computer pours it in instead (interactions.js drownComputer), and with the mug it is the desk's put or nothing.
-const freeKeyboard = (k) => (w, s, game) => !k.owner || !seatedAt(game, k.owner, k);
+// A drowned computer's keys type nothing (map.js deadAt).
+const freeKeyboard = (k) => (w, s, game) => !deadAt(w, k.x, k.y) && (!k.owner || !seatedAt(game, k.owner, k));
 const typed = (game, k) => toyState(game, k.id).keys > 0;
 // Not yet read since your last press.
 const unread = (game, k, readId) => {

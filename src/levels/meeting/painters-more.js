@@ -1,7 +1,7 @@
 // More of the meeting's drawn things: decor props (render/world.js PROP_PAINTERS signature: ctx, info, at, state, t;
 // `at` is the prop's tile). Kept apart from painters.js so builders working in parallel touch different files.
 //   ficus      the boss's potted ficus (map.js Y), after you pour the day's only cup into it (interactions.js
-//              water_ficus): a dark wet ring in the soil and a new leaf that shoots out and stays. state:
+//              water_plant): a dark wet ring in the soil and a new leaf that shoots out and stays. state:
 //              { watered, since } (since: seconds since the pour, null before)
 //   deadComputer  the computer the cup went into (interactions.js drownComputer), any of the seven: screen dead
 //              and cracked, coffee pooled on the keys and dripping off the desk's edge into a puddle, smoke
