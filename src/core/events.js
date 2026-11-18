@@ -15,3 +15,15 @@ export function createEvents() {
     },
   };
 }
+
+// A setup that subscribes to a game's events once per game object (events persist across loops, so a clock that
+// called `game.events.on` every step would stack handlers). `const listen = oncePerGame((game) => {...})`, then call
+// listen(game) as often as you like.
+export function oncePerGame(setup) {
+  const done = new WeakSet();
+  return (game) => {
+    if (done.has(game.events)) return;
+    done.add(game.events);
+    setup(game);
+  };
+}

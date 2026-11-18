@@ -33,6 +33,7 @@ import gate from './gate.js';
 import { letter } from './things.js';
 import { COFFEE_CUP, pourCoffee } from '../meeting/coffee.js';
 import { OWN_DESK, FRIDGE, COFFEE_POT, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
+import { oncePerGame } from '../../core/events.js';
 
 const t = (hhmm) => at(hhmm, START);
 
@@ -421,16 +422,13 @@ const gone = (w) => w.letter === 'eaten' || w.letter === 'binned' || w.letter ==
 
 // Caught by his look at the puddle (INSPECT) gets the soggy end card. Once per game object (events persist across
 // loops).
-const listening = new WeakSet();
-function listen(game) {
-  if (listening.has(game.events)) return;
-  listening.add(game.events);
+const listen = oncePerGame((game) => {
   game.events.on('day:end', (e) => {
     if (game.level?.id !== 'second-thoughts') return;
     const o = e?.outcome;
     if (o?.result === 'caught' && game.caught?.reason === 'inspection') o.why = 'soggy';
   });
-}
+});
 
 // The level's own clock work, once a step (from clockFor, on the boss's turn: he is first in the cast).
 const SURGE = 1.2; // s: the short runs down the wiring from the coffee machine to the fuse box

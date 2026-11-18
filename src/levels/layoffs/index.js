@@ -35,6 +35,7 @@ import { OFFICE_VOICES } from '../office/voices.js';
 import harness from './harness.js';
 import gate from './gate.js';
 import { OWN_DESK, COFFEE_MACHINE, ENTRANCE, RESTROOM, ELEVATOR } from '../office/legend.js';
+import { oncePerGame } from '../../core/events.js';
 
 // Level 1's floor (src/levels/meeting/map.js), with the boss's desk turned round and no projector.
 //  Boss office (glass S/E walls)  | Meeting room                    | Kitchen
@@ -275,10 +276,7 @@ function stare(npc, sim, dir, s) {
 }
 
 // The boss's check as world state.
-const listening = new WeakSet();
-function listen(game) {
-  if (listening.has(game.events)) return;
-  listening.add(game.events);
+const listen = oncePerGame((game) => {
   const ours = () => game.level?.id === 'layoffs' && game.phase === 'day';
   // He puts your face back: the list pops out again with you on it.
   game.events.on('boss:checks', () => {
@@ -294,7 +292,7 @@ function listen(game) {
     const b = ours() && findNpc(game, 'boss');
     if (b) b._faceTarget = Math.atan2(game.player.y - b.y, game.player.x - b.x);
   });
-}
+});
 
 function bossClock(game, npc, sim) {
   const w = game.world;

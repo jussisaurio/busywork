@@ -34,6 +34,7 @@ import { say, burst, sightline } from '../../core/fx.js';
 import { inZone, findNpc, npcSees } from '../../game/perception.js';
 import { leaving } from '../../sim/npcs.js';
 import { LOOK_UPS, START } from './cast.js';
+import { oncePerGame } from '../../core/events.js';
 
 // Clock -> where it hangs: its interactable id, the zone it rules, the stepladder under it, its world field (minutes
 // fast).
@@ -90,10 +91,7 @@ function beatAt(npc, t) {
 }
 
 // Tattles reach the boss through the event bus, once per game object (events persist across loops).
-const listening = new WeakSet();
-function listen(game) {
-  if (listening.has(game.events)) return;
-  listening.add(game.events);
+const listen = oncePerGame((game) => {
   game.events.on('witness:tattle', (p) => {
     if (game.level?.id !== 'early-bus' || game.phase !== 'day') return;
     const w = game.world;
@@ -106,7 +104,7 @@ function listen(game) {
     const o = p?.outcome;
     if (o?.result === 'caught' && game.caught?.reason === 'scene') o.why = 'street';
   });
-}
+});
 
 // level.clockFor: the minute npc's schedule reads this step.
 export function clockFor(game, npc, sim) {
