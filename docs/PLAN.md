@@ -106,7 +106,8 @@ lead's, accepted by the overseer.
   `--alloc`).
 - The idle projector win (found by the fuzzer: stand in the kitchen all afternoon, pour at the end). The engine rule
   is sound; the boss never saw the kitchen. He now looks in at its doors on his 3:22 walk back.
-- Running: door knocking (four implementations into one) and the smaller Meeting leftovers.
+- A fist on a door is defined once (`meeting/knocks.js`). An item is judged where it is drawn (`shown` is gone,
+  `lies` takes fractions). One caught handler and one place for ending text (`endings.js`). The round is closed.
 
 Open after the round:
 - Idle holes in Meeting: the kitchen until 3:22, the meeting room and 25,10 (his peeks do not hold). Whether it
@@ -114,6 +115,7 @@ Open after the round:
   unwatched, not more stops on his schedule.
 - audit: the reclaimed laptop jumps from hands to desk after the owner walks over.
 - early-bus: the `clock` route has no recorded winning plan (the gate prints the plan to add to `gate.goldenPlans`).
+- `harness.js` keeps its own spot-name map; early-bus and layoffs still guard on `level.id` (use `levelListeners`).
 - Tools: copied `arg` helpers and test `ok` boilerplate; `tools/press-stops.mjs` may be dead; gate timings in
   CONTRACTS.md are stale; merged worktree branches not deleted.
 
