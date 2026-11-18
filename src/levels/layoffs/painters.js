@@ -8,9 +8,10 @@
 //   deskPhone  a desk phone: the handset on its cradle (or off it), shaking with a glow and ring arcs while it rings
 //   mobile     Lin's mobile lying on her desk, shaking with buzz lines while it buzzes
 //   socket     his monitor's cable: a floor socket behind his desk, the plug half out (screen black) or pushed home
-// The phone pieces follow the interview level's painters (src/levels/interview/painters.js), copied, not shared.
+// The phone pieces follow the interview level's painters (src/levels/interview/painters.js); the glow and the ring arcs
+// are the shared ones (render/util.js).
 import { box } from '../../render/things.js';
-import { fillCircle, rrect, circle, clamp } from '../../render/util.js';
+import { fillCircle, rrect, clamp, glow, ringArcs } from '../../render/util.js';
 
 // One password asterisk: a bold black six-spoked star.
 export function pwstar(ctx, x, y, size) {
@@ -109,37 +110,6 @@ export function handset(ctx, x, y, size) {
   ctx.stroke();
 }
 
-function glow(ctx, x, y, r, colour, a) {
-  const g = ctx.createRadialGradient(x, y, 1, x, y, r);
-  g.addColorStop(0, colour);
-  g.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.globalAlpha = a;
-  ctx.fillStyle = g;
-  circle(ctx, x, y, r);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-}
-
-// Short ring arcs either side of (x, y): the bell itself.
-function arcs(ctx, x, y, colour, t, r0 = 9) {
-  const k = (t * 2.2) % 1;
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 2; i++) {
-    const r = r0 + (i + k) * 5;
-    ctx.globalAlpha = clamp(1 - (i + k) / 2, 0, 1);
-    ctx.strokeStyle = colour;
-    ctx.lineWidth = 2.2;
-    for (const s of [-1, 1]) {
-      ctx.beginPath();
-      ctx.arc(x, y, r, s > 0 ? -0.55 : Math.PI - 0.55, s > 0 ? 0.55 : Math.PI + 0.55);
-      ctx.stroke();
-    }
-  }
-  ctx.globalAlpha = 1;
-  ctx.lineCap = 'butt';
-}
-
-// The handset lying on its cradle: a bar with an earpiece and a mouthpiece.
 function cradled(ctx, x, y, w = 16) {
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   rrect(ctx, x - w / 2, y - 1, w, 5, 2.5);
@@ -190,7 +160,7 @@ export function deskPhone(ctx, x, y, t, { ringing = false, off = false, aside = 
     cradled(ctx, x, y - 5);
   }
   if (aside) lyingHandset(ctx, x - 21, y + 5, x - 7, y + 3, t);
-  if (ringing) arcs(ctx, x, y - 3, RING, t);
+  if (ringing) ringArcs(ctx, x, y - 3, RING, t);
 }
 
 // A handset lying on the desk at (x, y), tilted, its coiled cord running back to the phone's side (cx, cy); the

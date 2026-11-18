@@ -166,6 +166,37 @@ export function fillEllipse(ctx, x, y, rx, ry, color) {
   ctx.fill();
 }
 
+// A soft round glow of `colour` fading out to nothing at radius r, at alpha a.
+export function glow(ctx, x, y, r, colour, a) {
+  const g = ctx.createRadialGradient(x, y, 1, x, y, r);
+  g.addColorStop(0, colour);
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.globalAlpha = a;
+  ctx.fillStyle = g;
+  circle(ctx, x, y, r);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+// Short ring arcs either side of (x, y), starting at radius r0 and spreading: a bell ringing. t is seconds.
+export function ringArcs(ctx, x, y, colour, t, r0 = 9) {
+  const k = (t * 2.2) % 1;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 2; i++) {
+    const r = r0 + (i + k) * 5;
+    ctx.globalAlpha = clamp(1 - (i + k) / 2, 0, 1);
+    ctx.strokeStyle = colour;
+    ctx.lineWidth = 2.2;
+    for (const s of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(x, y, r, s > 0 ? -0.55 : Math.PI - 0.55, s > 0 ? 0.55 : Math.PI + 0.55);
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+  ctx.lineCap = 'butt';
+}
+
 // Star / burst polygon (alert bubbles, stamps).
 export function starPath(ctx, x, y, rOuter, rInner, points, rot = 0) {
   ctx.beginPath();
