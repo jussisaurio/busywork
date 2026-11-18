@@ -431,20 +431,46 @@ export default [
       'his potted plant. A glossy new leaf has shot out of it, the soil is dark and wet, and the boss at his desk ' +
       'looks at the plant, delighted (🌿😍).',
   },
+  // ---- The cup into a computer (interactions.js drownComputer): one event on every machine. An empty desk's,
+  // Kev's, your own, the boss's: the pour's beat and the end card of each.
   {
-    name: 'typewriter-bang',
-    cmds: [...POUR, 'goto typewriter busy', 'interact'],
+    name: 'computer-bang-spare',
+    cmds: [...POUR, 'goto spare_desk busy', 'interact'],
     beat: 0.5,
-    intent: 'You stand at the empty desk behind yours: you just poured the coffee into its typewriter. The screen is ' +
-      'dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss, in his ' +
-      'office, heard the bang: he points at you (⌨️💥👉 and your face).',
+    intent: 'You stand at the empty desk behind yours: you just poured the coffee into its computer. The screen is dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss heard the bang: he points at you (⌨️💥👉 and your face).',
   },
   {
-    name: 'end-typewriter',
-    cmds: [...POUR, 'goto typewriter busy', 'interact'],
-    intent: 'End card, a loss: the typewriter you poured the coffee into sparks, smokes and drips on its desk. You ' +
-      'stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your ' +
-      'things: fired.',
+    name: 'computer-bang-kev',
+    cmds: [...POUR, 'goto 22,7 busy', 'interact'],
+    beat: 0.5,
+    intent: 'You stand behind Kev\'s monitor: you just poured the coffee into his computer, Kev sitting at it. The screen is dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss heard the bang: he points at you (⌨️💥👉 and your face).',
+  },
+  {
+    name: 'computer-bang-own',
+    cmds: [...POUR, 'sit busy', 'interact'],
+    beat: 0.5,
+    intent: 'You sit at your own desk: you just poured the coffee into your own computer. The screen is dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss heard the bang: he points at you (⌨️💥👉 and your face).',
+  },
+  {
+    name: 'computer-bang-boss',
+    cmds: [...POUR, 'busy until 2:46', 'goto 4,4 busy', 'interact'],
+    beat: 0.5,
+    intent: 'You stand in the boss\'s office at his desk: you just poured the coffee into his computer. The screen is dead and cracked, coffee pools on the keys and drips off the desk, smoke rises and sparks fly. The boss heard the bang: he points at you (⌨️💥👉 and your face).',
+  },
+  {
+    name: 'end-computer-spare',
+    cmds: [...POUR, 'goto spare_desk busy', 'interact'],
+    intent: 'End card, a loss: the spare computer you poured the coffee into sparks, smokes and drips on its desk. You stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your things: fired. Nobody else is on the card.',
+  },
+  {
+    name: 'end-computer-kev',
+    cmds: [...POUR, 'goto 22,7 busy', 'interact'],
+    intent: 'End card, a loss: Kev\'s computer, which you poured the coffee into, sparks, smokes and drips on its desk. You stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your things: fired. Kev stands at the right edge, horrified (😱💻).',
+  },
+  {
+    name: 'end-computer-own',
+    cmds: [...POUR, 'sit busy', 'interact'],
+    intent: 'End card, a loss: your own computer, which you poured the coffee into, sparks, smokes and drips on its desk. You stand beside it blackened with soot, hair on end. The boss points at it, then holds out an empty box for your things: fired. Nobody else is on the card.',
   },
   {
     name: 'end-campfire',
@@ -513,7 +539,7 @@ export default [
       'stares (🤨👉 his face); he sputters (😳☕❓), hands up, sweating.',
   },
   {
-    name: 'end-computer',
+    name: 'end-computer-lin',
     cmds: [...POUR, 'busy until 3:00', 'goto 4,7 busy', 'interact', 'busy 1s'],
     intent: 'End card, a loss: you poured the coffee into Lin\'s computer. It sparks, smokes and drips; you stand ' +
       'blackened with soot, the boss holds out a box for your things, and Lin stares in horror (😱💻).',

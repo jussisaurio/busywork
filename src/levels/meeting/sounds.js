@@ -15,6 +15,8 @@
 //   repeats     name -> { while(world), every: [min, max] seconds, ...spec }: a sound every so often
 //   murmur      { spot }: where the meeting murmurs from when everyone gathers (meeting:gather)
 //   elevator    { spot, radius }: NPCs leaving or arriving this near the spot ding instead of a door
+import { COMPUTERS } from './map.js';
+
 export const SOUNDS = {
   actions: {
     start: {
@@ -24,11 +26,8 @@ export const SOUNDS = {
       take_keycard: { sfx: 'rustle', spot: 'coat_rack', opts: { gain: 0.6 } },
       water_ficus: { sfx: 'pour', who: 'player' },
       water_plant: { sfx: 'pour', who: 'player' },
-      drown_typewriter: { sfx: 'pour', who: 'player' },
-      drown_my_computer: { sfx: 'pour', who: 'player' },
-      drown_lin_computer: { sfx: 'pour', who: 'player' },
-      drown_kev_computer: { sfx: 'pour', who: 'player' },
-      drown_boss_computer: { sfx: 'pour', who: 'player' },
+      // every computer (map.js COMPUTERS; interactions.js drownComputer): the same pour, then the same bang (events)
+      ...Object.fromEntries(Object.keys(COMPUTERS).map((on) => [`drown_${on}`, { sfx: 'pour', who: 'player' }])),
     },
     done: {
       brew_coffee: { sfx: 'machineBeep', spot: 'coffee' },
@@ -50,8 +49,7 @@ export const SOUNDS = {
     'coffee:taken': { sfx: 'machineBeep', spot: 'coffee', when: (p) => !!(p?.by && p.by !== 'player') }, // someone else got the last cup
     'sandwich:missing': { sfx: 'fridgeOpen', spot: 'fridge', opts: { short: true } },
     'boss:jacket': { sfx: 'rustle', who: 'boss' },
-    'coffee:typewriter': { sfx: 'splashZap', who: 'player' }, // the keys short: a bang and a fizz
-    'coffee:computer': { sfx: 'splashZap', who: 'player' }, // the same, anyone's computer (interactions.js drownComputer)
+    'coffee:computer': { sfx: 'splashZap', who: 'player' }, // the keys short: a bang and a fizz, any computer (interactions.js drownComputer)
     // The fire door (mechanics.js DOORS): his card on the reader, or the escalation without it.
     'boss:badge': { sfx: 'machineBeep', spot: 'fire_door' }, // back from his smoke, card to the reader
     'boss:lockedOut': { sfx: 'rattle', spot: 'fire_door' }, // the handle won't give

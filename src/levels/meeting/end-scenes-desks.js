@@ -1,10 +1,9 @@
-// The end scenes for the cup on someone else's desk, and in someone's computer (end-scenes.js reads them into
+// The end scenes for the cup on someone else's desk (end-scenes.js reads them into
 // END_SCENES; same draw signature: draw(ctx, game, t, e, outcome), inside TAB, screen space). Kept apart so builders
 // working in parallel touch different files. Objects are drawn, never emoji; only bubbles speak emoji.
 //   lin / linHungry  win, verdict.js verdictDesks: the empty mug was on Lin's desk. The boss points at her across the
 //                    table; she shrinks. You ate her lunch too: she is in tears. You sit among them, nodding along.
 //   bossMug          win: the mug was on the boss's own desk. The table looks at him; he sputters, hands up.
-//   computer         caught, interactions.js drownComputer: the typewriter's picture, and whose computer it was.
 import { clamp, easeOutBack } from '../../render/util.js';
 import { drawThing } from '../../render/things.js';
 import { C, OLIVE } from '../../render/palette.js';
@@ -12,7 +11,6 @@ import { drawPerson } from '../../render/characters.js';
 import { TAB, person, bubble, floorCarpet } from '../../render/tableau.js';
 import { chair } from '../../render/tableau-furniture.js';
 import { meetingTable, smokingProjector, poolOfLight, meetingScreen, bossJacket } from './end-scenes.js';
-import { tableauTypewriter } from './end-scenes-more.js';
 
 const B_BLAME_LIN = ['😠', '👉', '@lin'];
 const B_LIN_SCARED = ['😨'];
@@ -102,21 +100,4 @@ export function tableauBossMug(ctx, game, t, e) {
   youNodding(ctx, game, t, -Math.PI / 2);
   bubble(ctx, B_BOSS_SPUTTERS, 476, 150, e, 'speech');
   bubble(ctx, B_STARE_BOSS, 272, 206, e, 'thought', 1.4);
-}
-
-// Whose computer it was (world.drowned): the typewriter's picture, and its owner beside the dead machine, if she is
-// on the floor. The boss's own: he stands there all the same; his face is the joke.
-const OWNER_SAYS = { lin: ['😱', '💻'], kev: ['😱', '💻'] };
-export function tableauComputer(ctx, game, t, e) {
-  tableauTypewriter(ctx, game, t, e);
-  const who = game.world?.drowned;
-  if (!OWNER_SAYS[who] || (who === 'kev' && game.world.kevGone)) return;
-  const o = person(t);
-  o.dir = Math.PI - 0.3; // at the right edge, past you, turned to her dead machine
-  o.head = Math.PI - 0.3;
-  o.arms = 'facepalm';
-  o.sweat = true;
-  o.scale = 2.2;
-  drawPerson(ctx, game.level.looks[who], o, 728, 300);
-  bubble(ctx, OWNER_SAYS[who], 722, 214, e, 'speech', 1.2);
 }

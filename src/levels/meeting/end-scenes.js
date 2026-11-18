@@ -18,12 +18,12 @@ import { findNpc } from '../../game/perception.js';
 import { tableauBib, tableauCampfire } from './end-scenes-combo.js';
 import { FAIL_SCENES } from './end-scenes-fails.js';
 import { popper, cricket } from './painters.js';
-import { tableauTypewriter } from './end-scenes-more.js';
-import { tableauLin, tableauBossMug, tableauComputer } from './end-scenes-desks.js';
+import { tableauComputer } from './end-scenes-more.js';
+import { tableauLin, tableauBossMug } from './end-scenes-desks.js';
 import { BALCONY_SCENES } from './end-scenes-balcony.js';
 
 // Catches with a scene of their own (outcome.why from rules.js catchNow; the scene key is the why).
-const MORE_CAUGHT = new Set(['typewriter', 'computer']);
+const MORE_CAUGHT = new Set(['computer']);
 // Wins whose verdict reason has a scene of its own (verdict.js verdictDesks; end-scenes-desks.js).
 const DESK_WINS = new Set(['lin', 'linHungry', 'bossMug']);
 MORE_CAUGHT.add('bib'); // caught over the mustard (clocks.js): end-scenes-combo.js
@@ -773,13 +773,12 @@ export const END_SCENES = {
     home: { win: false, icons: ['🚌', '📱', '😠'], draw: tableauHome }, // you just went home; the boss is calling
     homeKev: { win: false, icons: ['👋', '🚌', '📱'], draw: tableauHome }, // you went home with Kev at 3:00
     // ---- More scenes (end-scenes-more.js)
-    typewriter: { win: false, icons: ['☕', '⌨️', '💥'], draw: tableauTypewriter }, // the coffee went into a typewriter
+    computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer }, // the coffee went into a computer, anyone's
     // end-scenes-desks.js: the empty mug on Lin's desk (she takes the fall; ate her lunch too: tears), on the boss's
-    // own; the cup into someone's computer
+    // own
     lin: { win: true, icons: ['☕', '👉', '😨'], draw: tableauLin },
     linHungry: { win: true, icons: ['☕', '😭', '🥪'], draw: tableauLin },
     bossMug: { win: true, icons: ['☕', '🤨', '😳'], draw: tableauBossMug },
-    computer: { win: false, icons: ['☕', '💻', '💥'], draw: tableauComputer },
     ...BALCONY_SCENES, // out on the balcony at 4:00: alone, snatched, together (end-scenes-balcony.js)
   },
 };
