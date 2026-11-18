@@ -9,7 +9,7 @@ import { clamp, easeOutCubic, rrect, fillEllipse } from '../../render/util.js';
 import { OXBLOOD, MUSTARD } from '../../render/palette.js';
 import { drawPerson } from '../../render/characters.js';
 import { person, bubble } from '../../render/tableau.js';
-import { officeRoom, chair, walnutDesk } from '../../render/tableau-furniture.js';
+import { officeRoom, chair, walnutDesk, walkWithBox } from '../../render/tableau-furniture.js';
 import { drawList } from './list.js';
 
 const B_ANGRY = ['😠'];
@@ -119,20 +119,8 @@ function bossTyping(ctx, game, t, angry, glare = false) {
 }
 
 // You walking out to the right with your desk in a box (a plant in it), eyes down.
-function walkOut(ctx, game, t, e, look, x0, x1) {
-  const k = clamp(e / 4, 0, 1);
-  const walking = k < 0.98;
-  const p = person(t);
-  p.dir = walking ? 0.15 : Math.PI / 2;
-  p.head = walking ? 0.7 : Math.PI / 2 + 0.6;
-  p.pose = walking ? 'walk' : 'stand';
-  p.moving = walking;
-  p.phase = t * 7;
-  p.arms = 'box';
-  p.sweat = true;
-  p.scale = 2.4;
-  drawPerson(ctx, look, p, x0 + (x1 - x0) * easeOutCubic(k), 302);
-}
+const walkOut = (ctx, game, t, e, look, x0, x1) =>
+  walkWithBox(ctx, look, t, e, x0, x1, { y: 302, secs: 4, dir: [0.15, Math.PI / 2], head: [0.7, Math.PI / 2 + 0.6] });
 
 // --- the scenes ----------------------------------------------------------------------------------------------
 
