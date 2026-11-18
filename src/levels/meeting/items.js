@@ -48,10 +48,11 @@ export const ITEMS = {
     owner: {
       id: 'lin',
       says: [{ say: ['😠', '🥪'] }],
-      // Before lunch she puts it back in the fridge; mid-hunt she has found it, and that's the end of the hunt.
-      reclaim(game, npc) {
-        const hunting = npc.override === 'hunting' || npc._claim?.was === 'hunting'; // she walked over from her hunt
-        game.world.sandwich = hunting ? 'lin' : 'fridge';
+      // She keeps it: from then on it is in her hand (looks.js), and her fridge check finds she has it already. Mid-hunt
+      // that is the end of the hunt. (It used to go back to the fridge before lunch: it vanished from her hand and
+      // was in the fridge again at once, a second sandwich to the player who had just watched her take it.)
+      reclaim(game) {
+        game.world.sandwich = 'lin';
         game.events.emit('sandwich:returned', {});
       },
     },
