@@ -54,6 +54,11 @@ const pauseIfPlaying = () => {
   if (game.phase === 'day' && !game.outcome && !game.caught) game.paused = true;
 };
 window.addEventListener('blur', pauseIfPlaying);
+// Tab is not a game key: left alone it moves focus to the page's own controls and then out of the window, and the
+// blur above pauses the day. Swallow it while a day runs.
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab' && game.phase === 'day') e.preventDefault();
+});
 document.addEventListener('visibilitychange', () => document.hidden && pauseIfPlaying());
 const PAD = 6; // forgiving hit area around drawn buttons
 const viewPoint = (e) => {
