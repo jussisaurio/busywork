@@ -69,7 +69,9 @@ export const SPOTS = {
 
   coat_rack: { x: 2, y: 1, face: 'W' }, // stand here to reach K
   projector: { x: 13, y: 2, face: 'S' }, // stand here to reach J (Kev repairs from here)
-  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug', 'coffee'] }, // a cup back on the machine
+  // A cup back by the machine: it lies on the machine's tile (Kev's finding and every sightline use that), drawn on
+  // the counter beside it, on the saucer (shown), not standing over the pot.
+  coffee: { x: 22, y: 2, face: 'N', accepts: ['mug', 'coffee'], shown: { dx: -0.9, dy: 0 } },
   fridge: { x: 20, y: 2, face: 'N' },
   kitchen_table: { x: 25, y: 4, face: 'N' },
 

@@ -197,6 +197,7 @@ export function levelProblems(level, key) {
       if (s.owner !== undefined && s.owner !== null && s.owner !== 'player') npc(`${path}.owner`, s.owner);
       if (s.found !== undefined && s.found !== 'take') behaviour(`${path}.found`, s.found);
       if (s.unseen !== undefined && s.unseen !== 'take' && s.unseen !== 'leave') behaviour(`${path}.unseen`, s.unseen);
+      if (s.shown !== undefined && !(isObj(s.shown) && isNum(s.shown.dx ?? 0) && isNum(s.shown.dy ?? 0))) bad(`${path}.shown`, 'not { dx, dy } in tiles');
     }
   }
   if (!isObj(level.zones)) bad('zones', 'missing');
